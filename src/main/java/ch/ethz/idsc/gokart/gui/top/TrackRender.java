@@ -73,7 +73,7 @@ public class TrackRender implements RenderInterface {
     // graphics.setStroke(s);
     BasicStroke thick = new BasicStroke(width);
     graphics.setStroke(thick);
-    graphics.setColor(Color.WHITE);
+    graphics.setColor(Color.YELLOW);
     path2d = geometricLayer.toPath2D(leftBoundary);
     if (closed)
       path2d.closePath();
@@ -83,6 +83,7 @@ public class TrackRender implements RenderInterface {
     if (closed)
       path2d.closePath();
     graphics.draw(path2d);
+    graphics.setColor(Color.WHITE);
     graphics.setStroke(defaultStroke);
   }
 }
