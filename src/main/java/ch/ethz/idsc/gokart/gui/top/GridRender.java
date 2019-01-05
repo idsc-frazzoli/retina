@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
@@ -12,6 +13,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 
+// TODO JPH name conflict owl
 public enum GridRender implements RenderInterface {
   INSTANCE;
   // ---

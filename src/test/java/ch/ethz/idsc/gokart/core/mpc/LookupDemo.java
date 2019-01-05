@@ -26,7 +26,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
     return Tensors.matrix((i, j) -> function.apply((T) vi.get(i), (T) vj.get(j)), vi.length(), vj.length());
   }
 
-  // TODO TENSOR V065 simplify, also other places
   public static void main(String[] args) throws IOException {
     Clip clip_powers = ManualConfig.GLOBAL.torqueLimitClip();
     final Tensor powers = Subdivide.of(clip_powers, RES);

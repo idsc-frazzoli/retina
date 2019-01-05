@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.retina.util.gui;
 
 import java.awt.Shape;
