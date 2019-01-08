@@ -5,13 +5,13 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.offline.tab.UniqueTimePoseQualityTable;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum EphemeralUniqueTimePoseQuality {
   ;
   public static void main(String[] args) throws IOException {
     File folder = new File("/media/datahaki/media/ethz/gokart/topic/racing4o");
-    File target = UserHome.file("Projects/ephemeral/src/main/resources/dubilab/app/pose/4o");
+    File target = HomeDirectory.file("Projects/ephemeral/src/main/resources/dubilab/app/pose/4o");
     for (File file : folder.listFiles()) {
       System.out.println(file);
       UniqueTimePoseQualityTable.process(file, target);

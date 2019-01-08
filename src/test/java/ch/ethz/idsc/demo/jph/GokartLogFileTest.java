@@ -6,12 +6,12 @@ import java.util.Objects;
 
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.UserName;
 import junit.framework.TestCase;
 
 public class GokartLogFileTest extends TestCase {
   public void test_datahaki() {
-    String username = UserHome.file("").getName();
+    String username = UserName.get();
     if (username.equals("datahaki"))
       for (GokartLogFile gokartLogFile : GokartLogFile.values())
         try {

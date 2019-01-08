@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.function.BiFunction;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -13,6 +12,7 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.img.ArrayPlot;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -40,7 +40,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
     {
       Tensor matrix = build(MotorFunction::getAccelerationEstimation, powers.negate(), speeds);
       Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
-      Export.of(UserHome.Pictures("linearinterplook2d.png"), rgba);
+      Export.of(HomeDirectory.Pictures("linearinterplook2d.png"), rgba);
     }
     {
       final int dimN = 250;
@@ -60,12 +60,12 @@ import ch.ethz.idsc.tensor.sca.Clip;
       {
         Tensor matrix = build(lookUpTable2D::lookup, powers.negate(), speeds);
         Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
-        Export.of(UserHome.Pictures("lookupTable.png"), rgba);
+        Export.of(HomeDirectory.Pictures("lookupTable.png"), rgba);
       }
       {
         Tensor matrix = build(inverseLookupTable::lookup, accelerations.negate(), speeds);
         Tensor rgba = ArrayPlot.of(matrix, ColorDataGradients.THERMOMETER);
-        Export.of(UserHome.Pictures("inverseTable.png"), rgba);
+        Export.of(HomeDirectory.Pictures("inverseTable.png"), rgba);
       }
       // System.out.println(inverseLookupTable.lookup(Quantity.of(number, string), y));
     }

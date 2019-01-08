@@ -27,7 +27,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
     Tensor controlPoints = ResourceData.of("/dubilab/controlpoints/eight/20180603.csv").multiply(Quantity.of(1, SI.METER));
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
-    // TODO: do this smarter
+    // TODO do this smarter
     for (int i = 0; i < controlPoints.length(); i++) {
       Tensor iTensor = controlPoints.get(i);
       Scalar x = iTensor.Get(0);
@@ -43,7 +43,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
     Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/eight/20180603.csv")).multiply(Quantity.of(1, SI.METER));
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
-    // TODO: do this smarter
+    // TODO do this smarter
     for (int i = 0; i < controlPoints.length(); i++) {
       Tensor iTensor = controlPoints.get(i);
       Scalar x = iTensor.Get(0);
@@ -55,13 +55,13 @@ public class DubendorfTrack extends MPCBSplineTrack {
         getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
   }
 
-  /* TODO: jph how to update Ephemeral version
+  /* TODO jph how to update Ephemeral version
    * Can't access data
    * private static DubendorfTrack chicane_track() {
    * Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/chicane/chicane.csv")).multiply(Quantity.of(1, SI.METER));
    * Tensor controlPointsX = Tensors.empty();
    * Tensor controlPointsY = Tensors.empty();
-   * // TODO: do this smarter
+   * // TODO do this smarter
    * for (int i = 0; i < controlPoints.length(); i++) {
    * Tensor iTensor = controlPoints.get(i);
    * Scalar x = iTensor.Get(0);

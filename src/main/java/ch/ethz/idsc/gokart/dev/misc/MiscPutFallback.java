@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.dev.misc;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 
 /* package */ enum MiscPutFallback implements MiscPutProvider {
   INSTANCE;

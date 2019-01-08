@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core;
 
 import java.util.Comparator;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 
 /** comparator for collections of {@link PutProvider}s according to their
  * {@link ProviderRank}.

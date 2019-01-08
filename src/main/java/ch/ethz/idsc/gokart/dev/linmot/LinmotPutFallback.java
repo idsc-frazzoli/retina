@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.dev.linmot;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 
 /** when no other {@link LinmotPutProvider} controls the break, then
  * the break is commanded to be in operation mode with non-breaking position */

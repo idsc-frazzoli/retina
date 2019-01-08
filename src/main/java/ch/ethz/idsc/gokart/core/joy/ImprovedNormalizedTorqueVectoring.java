@@ -49,7 +49,7 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
   }
 
   /** @param wantedAcceleration [m(s^2]
-   * @param wantedZTorque [ONE] TODO: currently dimensionless. Should we change that?
+   * @param wantedZTorque [ONE] TODO currently dimensionless. Should we change that?
    * @param velocity [m/s]
    * @return the required motor currents [Arms] */
   private Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
@@ -58,7 +58,7 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
     Scalar max = minMax.Get(1);
     Scalar halfRange = max.subtract(min).divide(RealScalar.of(2));
     Scalar mid = (Scalar) Mean.of(minMax);
-    // get acceleration remapped to [-1,1] TODO: find handy Tensor function
+    // get acceleration remapped to [-1,1] TODO find handy Tensor function
     Scalar remappedMeanAcceleration = //
         wantedAcceleration.subtract(mid).divide(halfRange);//
     // get clipped individual accelerations

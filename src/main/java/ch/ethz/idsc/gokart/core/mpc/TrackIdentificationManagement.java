@@ -103,7 +103,7 @@ public class TrackIdentificationManagement implements RenderInterface {
         Tensor ctrpoints = initialGuess.getControlPointGuess(spacing, controlPointResolution);
         if (ctrpoints != null) {
           // we have a guess
-          // TODO: do this more elegantly
+          // TODO do this more elegantly
           Tensor radiusCtrPoints = Tensors.vector(i -> Quantity.of(1, SI.METER), ctrpoints.get(0).length());
           constraints = new LinkedList<>();
           /* if (closedTrack) {

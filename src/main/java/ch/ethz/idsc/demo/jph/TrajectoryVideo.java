@@ -21,10 +21,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.owl.math.planar.Arrowhead;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
@@ -40,7 +37,9 @@ import ch.ethz.idsc.sophus.group.LieDifferences;
 import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
 import ch.ethz.idsc.sophus.group.Se2Group;
+import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.sophus.math.SmoothingKernel;
+import ch.ethz.idsc.sophus.planar.Arrowhead;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -48,6 +47,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Entrywise;
 import ch.ethz.idsc.tensor.red.Mean;
@@ -155,7 +155,7 @@ abstract class TrajectoryVideo implements OfflineLogListener {
   public static void main(String[] args) throws Exception {
     File file = DatahakiLogFileLocator.INSTANCE.getAbsoluteFile(GokartLogFile._20180904T183437_b00c893a);
     System.out.println(file);
-    try (Mp4AnimationWriter mp4 = new Mp4AnimationWriter(UserHome.file("video.mp4").getPath(), new Dimension(900, 840), 2)) {
+    try (Mp4AnimationWriter mp4 = new Mp4AnimationWriter(HomeDirectory.file("video.mp4").getPath(), new Dimension(900, 840), 2)) {
       TrajectoryVideo trajectoryImages = new TrajectoryVideo() {
         @Override
         public void image(BufferedImage bufferedImage) {

@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.Aedat31FrameListener;
 import ch.ethz.idsc.retina.dev.davis.Aedat31Imu6Listener;
 import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
@@ -17,6 +16,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
 class Aedat31TableExport implements DavisDvsListener, Aedat31FrameListener, Aedat31Imu6Listener {
@@ -60,11 +60,11 @@ class Aedat31TableExport implements DavisDvsListener, Aedat31FrameListener, Aeda
     davisEventProvider.aedat31Imu6Listeners.add(aedat31TableExport);
     davisEventProvider.start();
     System.out.println("done");
-    Export.of(UserHome.file("frames.csv"), aedat31TableExport.table_frame.toTable());
+    Export.of(HomeDirectory.file("frames.csv"), aedat31TableExport.table_frame.toTable());
     System.out.println("write frames done");
-    Export.of(UserHome.file("imu6.csv"), aedat31TableExport.table_imu6.toTable());
+    Export.of(HomeDirectory.file("imu6.csv"), aedat31TableExport.table_imu6.toTable());
     System.out.println("write imu6 done");
-    Export.of(UserHome.file("polarity.csv"), aedat31TableExport.table_polarity().toTable());
+    Export.of(HomeDirectory.file("polarity.csv"), aedat31TableExport.table_polarity().toTable());
     System.out.println("write polarity done");
   }
 }

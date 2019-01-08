@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.NumberQ;
@@ -28,6 +27,7 @@ import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 import ch.ethz.idsc.tensor.img.ImageResize;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.ResourceData;
@@ -155,6 +155,6 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
       }
       image = ImageFormat.from(bufferedImage);
     }
-    Export.of(UserHome.Pictures("gokart_operation.png"), image);
+    Export.of(HomeDirectory.Pictures("gokart_operation.png"), image);
   }
 }

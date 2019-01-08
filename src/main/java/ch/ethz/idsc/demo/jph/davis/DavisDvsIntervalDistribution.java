@@ -6,10 +6,10 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.DavisSerial;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Put;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
@@ -30,7 +30,7 @@ enum DavisDvsIntervalDistribution {
       public void windowClosing(WindowEvent event) {
         Tensor bins = Tensors.vectorInt(davisDvsIntervalTracker.bins);
         try {
-          Put.of(UserHome.file("deltas.math"), bins);
+          Put.of(HomeDirectory.file("deltas.math"), bins);
           System.out.println("saved");
         } catch (IOException e1) {
           e1.printStackTrace();

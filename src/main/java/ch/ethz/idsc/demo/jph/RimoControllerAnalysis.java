@@ -8,7 +8,6 @@ import java.nio.ByteOrder;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -16,6 +15,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
 class RimoControllerAnalysis implements OfflineTableSupplier {
@@ -42,9 +42,9 @@ class RimoControllerAnalysis implements OfflineTableSupplier {
 
   public static void main(String[] args) throws IOException {
     String string = "20180427T125356_p2";
-    File file = UserHome.file("gokart/rimoctrl/" + string + "/log.lcm");
+    File file = HomeDirectory.file("gokart/rimoctrl/" + string + "/log.lcm");
     OfflineTableSupplier offlineTableSupplier = new RimoControllerAnalysis(ByteOrder.BIG_ENDIAN);
     OfflineLogPlayer.process(file, offlineTableSupplier);
-    Export.of(UserHome.file(string + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file(string + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
   }
 }

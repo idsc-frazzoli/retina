@@ -21,7 +21,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.gokart.core.AutoboxSockets;
 import ch.ethz.idsc.gokart.core.ProviderRanks;
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;

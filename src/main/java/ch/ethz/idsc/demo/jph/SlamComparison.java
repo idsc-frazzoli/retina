@@ -19,10 +19,10 @@ import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeWrap;
 import ch.ethz.idsc.gokart.offline.slam.PoseScatterImage;
 import ch.ethz.idsc.gokart.offline.slam.ScatterImage;
 import ch.ethz.idsc.gokart.offline.slam.WallScatterImage;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /** aggregation of lidar scans relative to pose into single image
  * 
@@ -42,8 +42,8 @@ enum SlamComparison {
       OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
       OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
       OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
-      Export.of(UserHome.file(folder.getName() + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
-      ImageIO.write(scatterImage.getImage(), "png", UserHome.Pictures(folder.getName() + ".png"));
+      Export.of(HomeDirectory.file(folder.getName() + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
+      ImageIO.write(scatterImage.getImage(), "png", HomeDirectory.Pictures(folder.getName() + ".png"));
     }
   }
 }
