@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.slam.core;
 import ch.ethz.idsc.demo.mg.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
-import ch.ethz.idsc.owl.math.group.Se2CoveringIntegrator;
+import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 

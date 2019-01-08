@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.retina.util.math;
 
-import ch.ethz.idsc.owl.math.planar.ArcTan2D;
+import ch.ethz.idsc.sophus.planar.ArcTan2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

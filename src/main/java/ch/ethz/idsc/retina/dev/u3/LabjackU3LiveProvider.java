@@ -7,14 +7,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /** Labjack U3
  * readout ADC */
 public final class LabjackU3LiveProvider implements StartAndStoppable, Runnable {
   // TODO retrieve executable from properties file resources/custom/...
-  private static final File DIRECTORY = UserHome.file("Public/exodriver/examples/U3");
+  private static final File DIRECTORY = HomeDirectory.file("Public", "exodriver", "examples", "U3");
   private static final File EXECUTABLE = new File(DIRECTORY, "u3adctxt");
 
   public static boolean isFeasible() {

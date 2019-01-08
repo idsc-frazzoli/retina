@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 enum CanProcess {
   ;
@@ -20,8 +20,8 @@ enum CanProcess {
   public static void main(String[] args) throws FileNotFoundException, IOException {
     // File file = UserHome.file("Documents/steering/calibration.txt");
     // File file = UserHome.file("Documents/steering/passive_operations.txt");
-    File file = UserHome.file("Documents/steering/active_operations.txt");
-    try (PrintWriter printWriter = new PrintWriter(UserHome.file("log_" + file.getName()))) {
+    File file = HomeDirectory.file("Documents", "steering", "active_operations.txt");
+    try (PrintWriter printWriter = new PrintWriter(HomeDirectory.file("log_" + file.getName()))) {
       try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
         String prefix = "";
         int maxline = 1700000;

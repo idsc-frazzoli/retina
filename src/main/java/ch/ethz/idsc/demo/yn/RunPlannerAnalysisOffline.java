@@ -8,14 +8,14 @@ import java.io.IOException;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.slam.PlannerAnalysisOffline;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum RunPlannerAnalysisOffline {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    File file = UserHome.file("gokart/logs");
+    File file = HomeDirectory.file("gokart/logs");
     System.out.println(file.getName());
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(file);
     OfflineLogListener oll = new PlannerAnalysisOffline();

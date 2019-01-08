@@ -3,13 +3,13 @@ package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.io.File;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 public enum EvaluationFileLocations {
-  HANDLABEL_CSV(UserHome.Pictures("handlabels")), //
-  ESTIMATED_CSV(UserHome.Pictures("estimatedlabels")), //
-  EVALRESULTS_CSV(UserHome.Pictures("evalResults")), //
-  TESTING(UserHome.Pictures("testImages")),;
+  HANDLABEL_CSV(HomeDirectory.Pictures("handlabels")), //
+  ESTIMATED_CSV(HomeDirectory.Pictures("estimatedlabels")), //
+  EVALRESULTS_CSV(HomeDirectory.Pictures("evalResults")), //
+  TESTING(HomeDirectory.Pictures("testImages")),;
   private final File folder;
   // private static final File HANDLABEL_CSV = UserHome.Pictures("handlabels");
   // private static final File ESTIMATED_CSV = UserHome.Pictures("estimatedlabels");

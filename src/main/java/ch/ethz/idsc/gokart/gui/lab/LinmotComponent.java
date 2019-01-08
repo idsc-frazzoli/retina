@@ -122,8 +122,8 @@ import ch.ethz.idsc.tensor.sca.Round;
       jCheckBoxStatusWord[lsw.ordinal()].setSelected(selected);
     }
     jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.state_variable));
-    jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
-    jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
+    jTextFieldActualPosition.setText(Integer.toString(linmotGetEvent.actual_position));
+    jTextFieldDemandPosition.setText(Integer.toString(linmotGetEvent.demand_position));
     Scalar scalar = RealScalar.of(linmotGetEvent.getPositionDiscrepancyRaw());
     jTextFieldDemandPosition.setBackground(ColorFormat.toColor( //
         ColorDataGradients.TEMPERATURE.apply(LinmotConfig.NOMINAL_POSITION_DELTA.rescale(scalar))));

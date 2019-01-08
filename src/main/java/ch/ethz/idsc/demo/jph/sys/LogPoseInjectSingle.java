@@ -7,7 +7,7 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.pose.LidarGyroPoseEstimator;
 import ch.ethz.idsc.gokart.offline.pose.LogPoseInject;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 enum LogPoseInjectSingle {
   ;
@@ -16,7 +16,7 @@ enum LogPoseInjectSingle {
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
     LogPoseInject.process( //
         gokartLogInterface.file(), //
-        UserHome.file("some.lcm"), //
+        HomeDirectory.file("some.lcm"), //
         new LidarGyroPoseEstimator(gokartLogInterface));
   }
 }

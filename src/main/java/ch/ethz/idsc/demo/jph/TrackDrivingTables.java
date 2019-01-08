@@ -6,17 +6,17 @@ import java.io.IOException;
 
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.tab.BasicTrackReplayTable;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum TrackDrivingTables {
   ;
   public static void main(String[] args) throws IOException {
     File folder = new File("/media/datahaki/data/ethz/export_azure");
-    File dest = UserHome.file("track_azure");
+    File dest = HomeDirectory.file("track_azure");
     dest.mkdir();
     for (File file : folder.listFiles()) {
       String title = file.getName();

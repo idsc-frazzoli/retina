@@ -18,7 +18,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -53,18 +52,18 @@ import ch.ethz.idsc.owl.math.Lexicographic;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
-import ch.ethz.idsc.owl.math.group.Se2Geodesic;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
-import ch.ethz.idsc.owl.subdiv.curve.BSpline1CurveSubdivision;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
+import ch.ethz.idsc.sophus.curve.BSpline1CurveSubdivision;
+import ch.ethz.idsc.sophus.group.Se2Geodesic;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -107,21 +106,15 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private Region<Tensor> unionRegion;
   private Scalar tangentSpeed = null;
   // TODO magic const redundant
-  private final CostFunction waypointCost = WaypointDistanceCost.linear( //
-      Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), // 1 round of refinement
-      Tensors.vector(85.33, 85.33), 8.0f, new Dimension(640, 640));
-  private final GokartPoseListener gokartPoseListener = new GokartPoseListener() {
-    @Override
-    public void getEvent(GokartPoseEvent getEvent) { // arrives at 50[Hz]
-      gokartPoseEvent = getEvent;
-    }
-  };
-  private final RimoGetListener rimoGetListener = new RimoGetListener() {
-    @Override
-    public void getEvent(RimoGetEvent getEvent) {
-      tangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
-    }
-  };
+  private final CostFunction waypointCost = WaypointDistanceCost.of( //
+      Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), true, // 1 round of refinement
+      RealScalar.of(1), // width of virtual lane in model coordinates
+      RealScalar.of(7.5), // model2pixel conversion factor
+      new Dimension(640, 640)); // resolution of image
+  /** arrives at 50[Hz] */
+  private final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
+  private final RimoGetListener rimoGetListener = //
+      rimoGetEvent -> tangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
 
   public GokartTrajectoryModule() {
     MinMax minMax = MinMax.of(STANDARD.footprint());

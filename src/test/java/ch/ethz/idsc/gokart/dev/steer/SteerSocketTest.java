@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.dev.steer;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import junit.framework.TestCase;
 
 public class SteerSocketTest extends TestCase {

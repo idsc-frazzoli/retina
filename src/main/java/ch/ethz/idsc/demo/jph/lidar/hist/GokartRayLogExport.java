@@ -5,13 +5,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Put;
 
 enum GokartRayLogExport {
@@ -34,8 +34,8 @@ enum GokartRayLogExport {
     };
     File file = new File("/media/datahaki/media/ethz/gokartlogs", "20180112T105400_9e1d3699.lcm.00");
     OfflineLogPlayer.process(file, offlineLogListener);
-    Put.of(UserHome.file("ray_angles.wmt"), listener.histogram);
-    Put.of(UserHome.file("ray_times.wmt"), temporalHistogram.histogram);
-    Put.of(UserHome.file("ray_planar.wmt"), planarHistogram.compile());
+    Put.of(HomeDirectory.file("ray_angles.wmt"), listener.histogram);
+    Put.of(HomeDirectory.file("ray_times.wmt"), temporalHistogram.histogram);
+    Put.of(HomeDirectory.file("ray_planar.wmt"), planarHistogram.compile());
   }
 }

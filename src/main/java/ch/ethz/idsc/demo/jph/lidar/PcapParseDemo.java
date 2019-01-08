@@ -13,7 +13,7 @@ enum PcapParseDemo {
     ByteArrayConsumer byteArrayConsumer = new ByteArrayConsumer() {
       @Override
       public void accept(byte[] packet_data, int length) {
-        System.out.println("" + length);
+        System.out.println(Integer.toString(length));
       }
     };
     VelodynePcapPacketListener velodynePcapPacketListener = VelodynePcapPacketListener.vlp16();

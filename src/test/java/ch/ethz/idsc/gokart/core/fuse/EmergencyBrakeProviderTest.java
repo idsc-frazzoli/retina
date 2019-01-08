@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import junit.framework.TestCase;

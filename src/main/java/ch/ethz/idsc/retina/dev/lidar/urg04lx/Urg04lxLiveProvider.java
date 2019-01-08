@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /** Hint: the sensor requires a warm-up time of half a minute or so.
  * attempts to connect immediately after power up will fail.
@@ -44,7 +44,7 @@ public enum Urg04lxLiveProvider implements StartAndStoppable {
   INSTANCE;
   // TODO possibly do not make this a singleton instance?
   // ---
-  /* package */ static final File DIRECTORY = UserHome.file("Public");
+  /* package */ static final File DIRECTORY = HomeDirectory.file("Public");
   /* package */ static final File EXECUTABLE = new File(DIRECTORY, "urg_binaryprovider");
   // ---
   private OutputStream outputStream;

@@ -19,7 +19,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.ObstacleClusterTrackingRender;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
@@ -27,10 +26,11 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ class ClusterAreaEvaluationListener {
-  static final File DIRECTORY_CLUSTERS = UserHome.Pictures("clusters");
-  private static final File DIRECTORY_PF = UserHome.Pictures("pf");
+  static final File DIRECTORY_CLUSTERS = HomeDirectory.Pictures("clusters");
+  private static final File DIRECTORY_PF = HomeDirectory.Pictures("pf");
   private static final Tensor MODEL2PIXEL = Tensors.matrix(new Number[][] { //
       { 15, 0, -320 }, //
       { 0, -15, 960 }, //

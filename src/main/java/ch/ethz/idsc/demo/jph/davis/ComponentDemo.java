@@ -9,7 +9,6 @@ import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.io.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventComponents;
@@ -22,6 +21,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.Hue;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.opt.ConvexHull;
 
 /** visualization of log files from Robotics and Perception Group
@@ -43,7 +43,7 @@ import ch.ethz.idsc.tensor.opt.ConvexHull;
     File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
         "events.txt");
     final int rate_us = 30_000;
-    try (AnimationWriter gsw = AnimationWriter.of(UserHome.Pictures("components2.gif"), rate_us / 1000)) {
+    try (AnimationWriter gsw = AnimationWriter.of(HomeDirectory.Pictures("components2.gif"), rate_us / 1000)) {
       try (DavisTxtFileSupplier sup = new DavisTxtFileSupplier(file, dimension)) {
         // File file = new
         // File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //

@@ -277,7 +277,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       int nCount = 0;
       for (Cell n : currentCell.neighBors) {
         if (!n.processed) {
-          // TODO: maybe use neighborcost (not that important)
+          // TODO maybe use neighborcost (not that important)
           Scalar alternativ = currentCell.cost.add(currentCell.neighBorCost.get(nCount));
           nCount++;
           if (Scalars.lessThan(alternativ, n.cost)) {

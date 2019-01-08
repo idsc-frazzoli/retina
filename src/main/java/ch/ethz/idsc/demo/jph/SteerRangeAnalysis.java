@@ -9,7 +9,6 @@ import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -18,6 +17,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.StringScalar;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
@@ -51,6 +51,6 @@ class SteerRangeAnalysis implements OfflineLogListener {
           exception.printStackTrace();
         }
       }
-    Export.of(UserHome.file("steercolumntracker.csv"), tableBuilder.toTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file("steercolumntracker.csv"), tableBuilder.toTable().map(CsvFormat.strict()));
   }
 }

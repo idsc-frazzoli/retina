@@ -5,13 +5,13 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum MhLogTableExport {
   ;
   public static void main(String[] args) {
     //
-    File outputFolder = UserHome.file("retina_out"); // MH modify if necessary
+    File outputFolder = HomeDirectory.file("retina_out"); // MH modify if necessary
     ComprehensiveLogTableExport systemAnalysis = new ComprehensiveLogTableExport(outputFolder);
     //
     List<File> files = new LinkedList<>();
@@ -55,7 +55,7 @@ import ch.ethz.idsc.owl.bot.util.UserHome;
      * files.add(UserHome.file("Racing/0w/20180705T1019442.lcm"));
      * files.add(UserHome.file("Racing/0w/20180705T1019443.lcm"));
      * files.add(UserHome.file("forthandback/fab.lcm")); */
-    files.add(UserHome.file("brakingtest.lcm"));
+    files.add(HomeDirectory.file("brakingtest.lcm"));
     for (File inputFile : files)
       try {
         systemAnalysis.process(inputFile);

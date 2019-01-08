@@ -6,7 +6,7 @@ import ch.ethz.idsc.gokart.core.GetListener;
 import ch.ethz.idsc.gokart.core.PutListener;
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.DataEvent;
 

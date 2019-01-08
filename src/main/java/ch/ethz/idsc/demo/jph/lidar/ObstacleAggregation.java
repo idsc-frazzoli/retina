@@ -19,7 +19,6 @@ import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
@@ -34,6 +33,7 @@ import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 /* package */ class ObstacleAggregation implements OfflineLogListener, LidarSpacialListener {
@@ -87,7 +87,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
   public static void main(String[] args) throws IOException {
     ObstacleAggregation obstacleAggergation = new ObstacleAggregation();
-    OfflineLogPlayer.process(UserHome.file("gokart/pedestrian/20180604T150508/log.lcm"), obstacleAggergation);
-    ImageIO.write(obstacleAggergation.bufferedImage, "png", UserHome.Pictures("obstacles.png"));
+    OfflineLogPlayer.process(HomeDirectory.file("gokart/pedestrian/20180604T150508/log.lcm"), obstacleAggergation);
+    ImageIO.write(obstacleAggergation.bufferedImage, "png", HomeDirectory.Pictures("obstacles.png"));
   }
 }

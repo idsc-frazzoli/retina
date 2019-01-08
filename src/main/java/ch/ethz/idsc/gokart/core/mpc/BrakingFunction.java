@@ -23,7 +23,7 @@ public enum BrakingFunction {
   private static final Scalar LINMOT_RANGE = LINMOT_END.subtract(LINMOT_START);
   private static final Scalar ACCELERATION_ZERO = Quantity.of(0, SI.ACCELERATION);
 
-  // Note: this is highly inaccurate. TODO: do it more precisely
+  // Note: this is highly inaccurate. TODO do it more precisely
   /** get the induced braking deceleration (added to motor acceleration)
    * 
    * @param brakingPosition braking position (directly from linmot) [m]

@@ -36,7 +36,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   public void updateText(RimoGetTire rimoGetTire) {
     jTF_status_word.setText(String.format("%04X", rimoGetTire.status_word));
     jTF_actual_speed.setText(rimoGetTire.getAngularRate_Y().map(Round._3).toString());
-    jTF_rms_motor_current.setText("" + rimoGetTire.rms_motor_current);
+    jTF_rms_motor_current.setText(Short.toString(rimoGetTire.rms_motor_current));
     jTF_dc_bus_voltage.setText(rimoGetTire.getBusVoltage().map(Round._1).toString());
     jTF_error_code.setText(String.format("%08X", rimoGetTire.error_code));
     {

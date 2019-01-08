@@ -23,7 +23,7 @@ public class SliderExt implements ChangeListener {
 
   @Override
   public void stateChanged(ChangeEvent changeEvent) {
-    jLabel.setText("" + jSlider.getValue());
+    jLabel.setText(Integer.toString(jSlider.getValue()));
   }
 
   public void addToComponent(JToolBar jToolBar) {

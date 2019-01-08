@@ -9,7 +9,6 @@ import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -17,6 +16,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
 /* package */ class LabjackU3Analysis implements OfflineTableSupplier {
@@ -42,6 +42,6 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     File file = DatahakiLogFileLocator.file(GokartLogFile._20181213T154338_6728a721);
     OfflineLogPlayer.process(file, labjackU3Analysis);
     Tensor tensor = labjackU3Analysis.getTable();
-    Export.of(UserHome.file("labjackadc.csv"), tensor.map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file("labjackadc.csv"), tensor.map(CsvFormat.strict()));
   }
 }

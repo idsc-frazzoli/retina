@@ -3,13 +3,13 @@ package ch.ethz.idsc.demo.jph.davis;
 
 import java.io.File;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.io.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dev.dvs.io.dat.DatFileSupplier;
 import ch.ethz.idsc.retina.dev.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.retina.dev.dvs.supply.ImagesDvsEventSupplier;
 import ch.ethz.idsc.retina.dev.dvs.supply.ProceduralDvsEventSupplier;
 import ch.ethz.idsc.retina.dev.dvs.supply.Waves;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /** visualization of events in data sets as animated gif's */
 enum AccumulateToGifTest {
@@ -20,7 +20,7 @@ enum AccumulateToGifTest {
     final int WINDOW_US = 50000;
     AccumulateToGif.of( //
         new DatFileSupplier(file, ImageDimensions.IMPERIAL_COLLEGE), //
-        UserHome.Pictures(name + ".gif"), WINDOW_US);
+        HomeDirectory.Pictures(name + ".gif"), WINDOW_US);
   }
 
   static void _txt(String name) throws Exception {
@@ -28,12 +28,12 @@ enum AccumulateToGifTest {
     final int WINDOW_US = 50000;
     AccumulateToGif.of( //
         new DavisTxtFileSupplier(new File(file, "events.txt"), ImageDimensions.UZ), //
-        UserHome.Pictures(name + ".gif"), WINDOW_US);
+        HomeDirectory.Pictures(name + ".gif"), WINDOW_US);
   }
 
   static void _procedural(DvsEventSupplier dvsEventSupplier, String name) throws Exception {
     final int WINDOW_US = 50_000;
-    AccumulateToGif.of(dvsEventSupplier, UserHome.Pictures(name + ".gif"), WINDOW_US, 20_000);
+    AccumulateToGif.of(dvsEventSupplier, HomeDirectory.Pictures(name + ".gif"), WINDOW_US, 20_000);
   }
 
   static void demo() throws Exception {

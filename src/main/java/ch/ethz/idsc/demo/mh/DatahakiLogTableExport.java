@@ -6,12 +6,12 @@ import java.io.IOException;
 
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum DatahakiLogTableExport {
   ;
   public static void main(String[] args) throws IOException {
-    ComprehensiveLogTableExport systemAnalysis = new ComprehensiveLogTableExport(UserHome.file("testout"));
+    ComprehensiveLogTableExport systemAnalysis = new ComprehensiveLogTableExport(HomeDirectory.file("testout"));
     // File file = DatahakiLogFileLocator.file(GokartLogFile._20180814T175821_2c569ed8);
     File file = DatahakiLogFileLocator.file(GokartLogFile._20180430T104113_a5291af9);
     systemAnalysis.process(file);

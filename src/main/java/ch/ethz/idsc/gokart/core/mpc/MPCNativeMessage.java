@@ -13,7 +13,7 @@ public abstract class MPCNativeMessage implements MPCNativeInsertable {
   /** it is the responsibility of the extender to initiate the payload! */
   public MPCNativeMessage(ByteBuffer byteBuffer) {
     if (getMessagePrefix() != byteBuffer.getInt()) {
-      // TODO: do something!
+      // TODO do something!
     }
     messageSequence = byteBuffer.getInt();
   }

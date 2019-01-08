@@ -26,7 +26,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
@@ -39,6 +38,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -111,8 +111,8 @@ import ch.ethz.idsc.tensor.sca.Round;
             state.set(Round._6, 2);
             poseList.append(state);
             try {
-              Put.of(UserHome.file("track.mathematica"), poseList);
-              Export.of(UserHome.file("track.csv"), poseList);
+              Put.of(HomeDirectory.file("track.mathematica"), poseList);
+              Export.of(HomeDirectory.file("track.csv"), poseList);
             } catch (Exception exception) {
               exception.printStackTrace();
             }
@@ -152,7 +152,7 @@ import ch.ethz.idsc.tensor.sca.Round;
             Scalar temperatureMax = linmotGetEvent.getWindingTemperatureMax();
             Scalar rescaled = CLIP_DEG_C.rescale(temperatureMax);
             Color color = ColorFormat.toColor(ColorDataGradients.TEMPERATURE.apply(rescaled));
-            jTF_linmotTemp.setText("" + temperatureMax.map(Round._1));
+            jTF_linmotTemp.setText(temperatureMax.map(Round._1).toString());
             jTF_linmotTemp.setBackground(color);
           }
         }

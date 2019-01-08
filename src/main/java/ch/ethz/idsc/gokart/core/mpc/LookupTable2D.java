@@ -16,8 +16,8 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
@@ -37,8 +37,8 @@ public class LookupTable2D implements Serializable {
       int firstDimN, int secondDimN, //
       Clip clip0, Clip clip1) {
     Scalar[][] table = new Scalar[firstDimN][secondDimN];
-    Tensor s0 = Subdivide.of(clip0.min(), clip0.max(), firstDimN - 1);
-    Tensor s1 = Subdivide.of(clip1.min(), clip1.max(), secondDimN - 1);
+    Tensor s0 = Subdivide.of(clip0, firstDimN - 1);
+    Tensor s1 = Subdivide.of(clip1, secondDimN - 1);
     for (int i0 = 0; i0 < firstDimN; ++i0)
       for (int i1 = 0; i1 < secondDimN; ++i1)
         table[i0][i1] = function.apply(s0.Get(i0), s1.Get(i1));
@@ -60,7 +60,7 @@ public class LookupTable2D implements Serializable {
     this.clip1 = clip1;
     interpolation = LinearInterpolation.of(Tensors.matrix(table).map(LookupTable2D::dropUnit));
     scale = Tensors.vector(table.length - 1, table[0].length - 1);
-    unit = Units.of(table[0][0]);
+    unit = QuantityUnit.of(table[0][0]);
   }
 
   /** get inverted lookup table target specifies which of
@@ -81,8 +81,8 @@ public class LookupTable2D implements Serializable {
     Clip clipNT = target == 0 ? clip0 : clip1;
     // switch x and out
     Scalar[][] table = new Scalar[dimN0][dimN1];
-    Tensor s0 = Subdivide.of(clipN0.min(), clipN0.max(), dimN0 - 1);
-    Tensor s1 = Subdivide.of(clipN1.min(), clipN1.max(), dimN1 - 1);
+    Tensor s0 = Subdivide.of(clipN0, dimN0 - 1);
+    Tensor s1 = Subdivide.of(clipN1, dimN1 - 1);
     for (int i0 = 0; i0 < dimN0; ++i0) {
       Scalar value0 = s0.Get(i0);
       for (int i1 = 0; i1 < dimN1; ++i1) {
@@ -145,8 +145,8 @@ public class LookupTable2D implements Serializable {
     bufferedWriter.write(clip0.min().number().floatValue() + "," + clip0.max().number().floatValue() + "\n");
     bufferedWriter.write(clip1.min().number().floatValue() + "," + clip1.max().number().floatValue() + "\n");
     // write units
-    bufferedWriter.write(Units.of(clip0.min()) + "\n");
-    bufferedWriter.write(Units.of(clip1.min()) + "\n");
+    bufferedWriter.write(QuantityUnit.of(clip0.min()) + "\n");
+    bufferedWriter.write(QuantityUnit.of(clip1.min()) + "\n");
     bufferedWriter.write(unit + "\n");
     for (int i0 = 0; i0 < dimN0; ++i0) {
       String[] linevals = new String[dimN1];

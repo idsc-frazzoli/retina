@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.retina.util.time;
 
 import junit.framework.TestCase;

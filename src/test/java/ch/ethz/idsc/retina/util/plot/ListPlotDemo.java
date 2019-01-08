@@ -4,10 +4,10 @@ package ch.ethz.idsc.retina.util.plot;
 import java.awt.Dimension;
 import java.io.IOException;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
@@ -28,6 +28,6 @@ enum ListPlotDemo {
     ListPlot.of( //
         seriesCollection, //
         new Dimension(400, 300), //
-        UserHome.Pictures("listplot.png"));
+        HomeDirectory.Pictures("listplot.png"));
   }
 }

@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.dev.davis.app.AbstractAccumulatedImage;
@@ -17,6 +16,7 @@ import ch.ethz.idsc.retina.lcm.davis.DavisDvsBlockPublisher;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 class AccumulateToListener implements OfflineLogListener, TimedImageListener {
   private final String CHANNEL = DavisDvsBlockPublisher.channel("overview");
@@ -45,7 +45,7 @@ class AccumulateToListener implements OfflineLogListener, TimedImageListener {
   }
 
   public static void main(String[] args) throws IOException {
-    File file = UserHome.file("gokart/twist/20180108T165210_1/log.lcm");
+    File file = HomeDirectory.file("gokart/twist/20180108T165210_1/log.lcm");
     AccumulateToListener oll = new AccumulateToListener(100);
     OfflineLogPlayer.process(file, oll);
     System.out.println(oll.count);

@@ -7,16 +7,16 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.subare.util.UserHome;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import junit.framework.TestCase;
 
 public class InititialGuessTest extends TestCase {
   public void testSimple() throws IOException {
     System.out.println("test");
-    File file = UserHome.file("Documents/bigOccupancyGrid.png");
+    File file = HomeDirectory.file("Documents/bigOccupancyGrid.png");
     if (file.isFile()) {
       BufferedImage img = ImageIO.read(file);
       TestOccupancyGrid testOccupancyGrid = new TestOccupancyGrid(img);

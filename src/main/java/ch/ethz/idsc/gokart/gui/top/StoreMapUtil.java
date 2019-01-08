@@ -9,16 +9,16 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 
 public enum StoreMapUtil {
   ;
   private static final int SIZE = 640;
-  private static final File FILE = UserHome.Pictures("duebendorf.png");
+  private static final File FILE = HomeDirectory.Pictures("duebendorf.png");
 
   /** creates map and stores image at default location
    * 
@@ -44,7 +44,7 @@ public enum StoreMapUtil {
   public static void updateMap(GeometricLayer geometricLayer, List<Tensor> list, BufferedImage bufferedImage) {
     try {
       updateImage(geometricLayer, list, bufferedImage);
-      File file = UserHome.Pictures("map_" + System.nanoTime() + ".png");
+      File file = HomeDirectory.Pictures("map_" + System.nanoTime() + ".png");
       ImageIO.write(bufferedImage, "png", file);
       System.out.println("map exported to:\n" + file);
     } catch (Exception exception) {

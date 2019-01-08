@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.dev.linmot;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.data.PenaltyCards;
 import ch.ethz.idsc.tensor.Scalar;
 
