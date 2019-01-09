@@ -6,8 +6,8 @@ import java.awt.Dimension;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
-import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
-import ch.ethz.idsc.retina.util.gui.SpinnerListener;
+import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
+import ch.ethz.idsc.sophus.app.util.SpinnerListener;
 
 /* package */ class SysidSignalsComponent extends ToolbarsComponent implements SpinnerListener<SysidSignals> {
   private static final SysidSignals DEFAULT = SysidSignals.CHIRP_SLOW;
