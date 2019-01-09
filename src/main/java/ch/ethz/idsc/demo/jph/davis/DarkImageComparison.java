@@ -1,11 +1,12 @@
 // code by jph
-package ch.ethz.idsc.demo;
+package ch.ethz.idsc.demo.jph.davis;
 
+import ch.ethz.idsc.demo.DavisSerial;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Pretty;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
-enum DarkImageComparison {
+/* package */ enum DarkImageComparison {
   ;
   private static Tensor image(String name) throws Exception {
     return ResourceData.of("/davis/" + DavisSerial.FX2_02460045.name() + "/" + name + ".png");

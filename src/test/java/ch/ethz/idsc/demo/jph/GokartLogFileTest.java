@@ -11,8 +11,7 @@ import junit.framework.TestCase;
 
 public class GokartLogFileTest extends TestCase {
   public void test_datahaki() {
-    String username = UserName.get();
-    if (username.equals("datahaki"))
+    if (UserName.is("datahaki"))
       for (GokartLogFile gokartLogFile : GokartLogFile.values())
         try {
           File file = DatahakiLogFileLocator.file(gokartLogFile);
@@ -30,7 +29,7 @@ public class GokartLogFileTest extends TestCase {
           // exception.printStackTrace();
           String string = exception.getMessage();
           if (Objects.nonNull(string))
-            System.out.println(exception.getMessage());
+            System.err.println(exception.getMessage());
         }
   }
 

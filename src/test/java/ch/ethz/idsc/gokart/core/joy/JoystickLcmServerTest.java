@@ -17,7 +17,7 @@ public class JoystickLcmServerTest extends TestCase {
     for (int index = GLFW.GLFW_JOYSTICK_1; index < GLFW.GLFW_JOYSTICK_LAST; ++index) {
       final String string = GLFW.glfwGetJoystickName(index);
       if (Objects.nonNull(string)) {
-        System.out.println(string);
+        System.err.println(string);
       }
     }
   }
