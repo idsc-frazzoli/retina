@@ -29,8 +29,8 @@ import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.lcm.LcmLogFileCutter;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 /** GUI to inspect a log, and select and extract parts into new log files */
 public class GokartLcmLogCutter {

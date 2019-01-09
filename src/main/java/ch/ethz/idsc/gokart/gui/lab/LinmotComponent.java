@@ -19,7 +19,6 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotStatusWordBit;
 import ch.ethz.idsc.retina.util.data.Word;
-import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

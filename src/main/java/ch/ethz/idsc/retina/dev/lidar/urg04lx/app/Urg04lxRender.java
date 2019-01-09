@@ -14,6 +14,7 @@ import java.awt.geom.Rectangle2D;
 import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
@@ -21,7 +22,6 @@ import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxDevice;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeEvent;
 import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeListener;
-import ch.ethz.idsc.retina.util.gui.TensorGraphics;
 import ch.ethz.idsc.retina.util.math.ParametricResample;
 import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -76,6 +76,19 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
         ofs_y - dir.Get(1).number().doubleValue());
   }
 
+  private static Path2D polygonToPath(Tensor tensor, Function<Tensor, Point2D> function) {
+    Path2D path2D = new Path2D.Double();
+    {
+      Point2D point2D = function.apply(tensor.get(0));
+      path2D.moveTo(point2D.getX(), point2D.getY());
+    }
+    tensor.stream().skip(1).forEach(dir -> {
+      Point2D point2D = function.apply(dir);
+      path2D.lineTo(point2D.getX(), point2D.getY());
+    });
+    return path2D;
+  }
+
   public void render(Graphics2D graphics, Dimension dimension) {
     Tensor range = _range.copy();
     {
@@ -87,7 +100,7 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
       ofs_y = dimension.height / 2;
     }
     { // show blind spot to the rear
-      Path2D path2d = TensorGraphics.polygonToPath( //
+      Path2D path2d = polygonToPath( //
           Tensors.of(Tensors.vector(0, 0), direction.get(0), direction.get(INDEX_LAST)) //
           , this::toPoint);
       graphics.setColor(new Color(64, 64, 64, 64));
@@ -98,7 +111,7 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
       Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 5 }, 0);
       graphics.setStroke(dashed);
       for (Tensor swipe : gridlines)
-        graphics.draw(TensorGraphics.polygonToPath(swipe, this::toPoint));
+        graphics.draw(polygonToPath(swipe, this::toPoint));
       graphics.setStroke(new BasicStroke());
     }
     if (range.length() != 0) {
@@ -111,14 +124,14 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
         graphics.setColor(new Color(0, 128 + 64, 128, 64));
         try {
           Tensor path = RamerDouglasPeucker.of(RAMERDOUGLASPEUKER).apply(contour);
-          graphics.draw(TensorGraphics.polygonToPath(path, this::toPoint));
+          graphics.draw(polygonToPath(path, this::toPoint));
         } catch (Exception exception) {
           System.err.println("nono");
           // ---
         }
         contour.append(Array.zeros(2));
         graphics.setColor(new Color(128, 128 + 64, 128, 32));
-        graphics.fill(TensorGraphics.polygonToPath(contour, this::toPoint));
+        graphics.fill(polygonToPath(contour, this::toPoint));
       }
       for (int index = 0; index < range.length(); ++index) {
         final Tensor rotation = direction.get(index);

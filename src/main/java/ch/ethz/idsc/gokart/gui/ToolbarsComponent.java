@@ -14,8 +14,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.util.gui.RowPanel;
-
 public class ToolbarsComponent {
   public static final int WEST_WIDTH = 140;
   public static final int HEIGHT = 30;

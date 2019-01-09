@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util.gui;
+package ch.ethz.idsc.gokart.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -7,7 +7,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-public final class RowPanel {
+final class RowPanel {
   private final GridBagLayout gridBagLayout = new GridBagLayout();
   public final JPanel jPanel = new JPanel(gridBagLayout);
   private final GridBagConstraints gridBagConstraints = new GridBagConstraints();

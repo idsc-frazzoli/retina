@@ -13,9 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 /** linmot press test enables the driver to apply the brake
  * at a constant value for a certain period of time

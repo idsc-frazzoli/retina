@@ -22,7 +22,6 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.ControllerInfoPublish;
 import ch.ethz.idsc.retina.util.data.Word;
-import ch.ethz.idsc.retina.util.gui.SliderExt;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
