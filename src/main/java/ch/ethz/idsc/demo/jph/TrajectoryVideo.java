@@ -88,13 +88,13 @@ abstract class TrajectoryVideo implements OfflineLogListener {
         Tensor dt = Differences.of(times).map(Magnitude.SECOND).map(InvertUnlessZero.FUNCTION);
         final Scalar mean = Mean.of(speeds.get(Tensor.ALL, 0).pmul(dt)).Get();
         // TODO make more elegant
-        Stream<Tensor> a = filtered.stream().map(Extract2D::of);
-        Stream<Tensor> b = planned.stream().map(Extract2D::of);
+        Stream<Tensor> a = filtered.stream().map(Extract2D.FUNCTION);
+        Stream<Tensor> b = planned.stream().map(Extract2D.FUNCTION);
         Tensor reduceMin = Stream.concat(a, b).reduce(Entrywise.min()).get();
         // System.out.println(reduceMin);
         reduceMin = Tensors.vector(30, 34);
-        a = filtered.stream().map(Extract2D::of);
-        b = planned.stream().map(Extract2D::of);
+        a = filtered.stream().map(Extract2D.FUNCTION);
+        b = planned.stream().map(Extract2D.FUNCTION);
         Tensor reduceMax = Stream.concat(a, b).reduce(Entrywise.max()).get();
         reduceMax = Tensors.vector(60, 62);
         Tensor extensions = reduceMax.subtract(reduceMin);

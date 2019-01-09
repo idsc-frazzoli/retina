@@ -1,4 +1,4 @@
-# ch.ethz.idsc.retina+gokart <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
+# ch.ethz.idsc.gokart <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
 Sensor and actuator interfaces, Gokart software
 
@@ -11,9 +11,6 @@ The results are documented in [reports](doc/reports.md).
 
 ## Features
 
-* interfaces to lidars Velodyne VLP-16, HDL-32E, Quanergy Mark8, HOKUYO URG-04LX-UG01
-* interfaces to event based camera Davis240C with lossless compression by 4x
-* lidar based localization enhanced with odometry and gyro
 * simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
 * bayesian occupancy grid
 * offline processing of log data
@@ -119,6 +116,20 @@ The byte order of the binary data is `little-endian` since the encoding is nativ
   <tr><td>Fallback<td>LinmotPutFallback<td>maintain operation in home position<th><th><th>X<th></tr>
   <tr><td>Fallback<td>MiscPutFallback<td>normal operation, all LEDs off<th><th><th><th>X</tr>
 </table>
+
+---
+
+![ethz300](https://user-images.githubusercontent.com/4012178/45925071-bf9d3b00-bf0e-11e8-9d92-e30650fd6bf6.png)
+
+# ch.ethz.idsc.retina <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
+
+Sensor interfaces
+
+## Features
+
+* interfaces to lidars Velodyne VLP-16, HDL-32E, Quanergy Mark8, HOKUYO URG-04LX-UG01
+* interfaces to event based camera Davis240C with lossless compression by 4x
+* lidar based localization enhanced with odometry and gyro
 
 ## LIDAR
 
