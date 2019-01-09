@@ -1,7 +1,6 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.davis;
+package ch.ethz.idsc.demo;
 
-import ch.ethz.idsc.demo.DavisSerial;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Pretty;
 import ch.ethz.idsc.tensor.io.ResourceData;
