@@ -1,11 +1,11 @@
 // code by jph
-package ch.ethz.idsc.retina.util.math;
+package ch.ethz.idsc.demo.jph;
 
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 // TODO JPH OWL V027
-public enum Extract2D implements TensorUnaryOperator {
+/* package */ enum Extract2D implements TensorUnaryOperator {
   FUNCTION;
   // ---
   /** @param tensor
