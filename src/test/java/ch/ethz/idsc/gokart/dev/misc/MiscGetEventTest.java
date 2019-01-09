@@ -15,7 +15,6 @@ public class MiscGetEventTest extends TestCase {
 
   public void testCommTimeout() {
     MiscGetEvent miscGetEvent = MiscGetEventSimulator.create((byte) 1, 0.5f);
-    // System.out.println(miscGetEvent.getSteerBatteryVoltage());
     assertEquals(miscGetEvent.getSteerBatteryVoltage(), Quantity.of(7, "V"));
     assertTrue(miscGetEvent.isEmergency());
     assertTrue(miscGetEvent.isCommTimeout());

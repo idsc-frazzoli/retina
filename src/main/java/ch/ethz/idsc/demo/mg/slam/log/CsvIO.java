@@ -17,11 +17,10 @@ import ch.ethz.idsc.tensor.io.Export;
    * the list elements are separated by NEW_LINE
    * 
    * @param file list is saved to that file
-   * @param doubleList length of list and double array are arbitrary */
-  public static void saveToCSV(File file, List<double[]> doubleList) {
-    // TODO MG try the code below
+   * @param list length of list and double array are arbitrary */
+  public static void saveToCSV(File file, List<double[]> list) {
     try {
-      Export.of(file, Tensor.of(doubleList.stream().map(Tensors::vectorDouble)));
+      Export.of(file, Tensor.of(list.stream().map(Tensors::vectorDouble)));
     } catch (Exception exception) {
       exception.printStackTrace();
     }

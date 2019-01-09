@@ -38,7 +38,6 @@ public class VelodynePosEventTest extends TestCase {
       @Override
       public void velodynePos(VelodynePosEvent velodynePosEvent) {
         assertTrue(velodynePosEvent.nmea().startsWith("$GPRMC"));
-        // System.out.println(velodynePosEvent.nmea());
         Scalar degX = velodynePosEvent.gpsX();
         assertTrue(clipX.isInside(degX));
         Scalar degY = velodynePosEvent.gpsY();
@@ -52,7 +51,6 @@ public class VelodynePosEventTest extends TestCase {
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
       public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-        // System.out.println(time.number().doubleValue() + " " + event.channel);
         if (channel.equals("vlp16.center.pos")) {
           velodyneDecoder.positioning(byteBuffer);
         }
@@ -66,7 +64,6 @@ public class VelodynePosEventTest extends TestCase {
     VelodynePosEvent vpe = new VelodynePosEvent(123, nmea);
     assertTrue(vpe.isValid());
     assertEquals(vpe.timeStamp(), "142802");
-    // System.out.println(vpe.dateStamp());
     assertEquals(vpe.dateStamp(), "080118");
   }
 

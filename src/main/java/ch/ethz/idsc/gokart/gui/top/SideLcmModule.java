@@ -9,9 +9,9 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 public class SideLcmModule extends AbstractModule {
   protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();

@@ -18,7 +18,7 @@ import ch.ethz.idsc.gokart.dev.misc.MiscPutEvent;
 import ch.ethz.idsc.gokart.dev.misc.MiscSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.data.Word;
-import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
 
 /* package */ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> {

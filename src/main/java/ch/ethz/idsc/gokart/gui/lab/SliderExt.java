@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util.gui;
+package ch.ethz.idsc.gokart.gui.lab;
 
 import javax.swing.JLabel;
 import javax.swing.JSlider;
@@ -7,7 +7,7 @@ import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class SliderExt implements ChangeListener {
+/* package */ class SliderExt implements ChangeListener {
   public static SliderExt wrap(JSlider jSlider) {
     return new SliderExt(jSlider);
   }

@@ -15,9 +15,9 @@ import ch.ethz.idsc.retina.dev.davis.app.DavisQuickFrame;
 import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 /** contains hard-coded channel names and magic constants */
 public class DavisOverviewModule extends AbstractModule {

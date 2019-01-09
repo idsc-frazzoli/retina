@@ -5,19 +5,27 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Series;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.sca.Ramp;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
+// TODO JPH use java conventions
 public enum BrakingFunction {
   ;
   // point after which the brake is effective
-  private static final Scalar brakeStart = Quantity.of(2.5 / 100.0, SI.METER);
+  private static final Scalar BRAKE_START = Quantity.of(2.5 / 100.0, SI.METER);
   private static final Scalar ZEROROOTOF = Quantity.of(0, "s^-4");
   // private static Scalar maxBrake = Quantity.of(2.5, SI.ACCELERATION);
-  private static final Scalar linearFactor = Quantity.of(4.3996 * 100.0, SI.ACCELERATION.add(SI.METER.negate()));
-  private static final Scalar quadraticFactor = Quantity.of(-1.3735 * 10000.0, SI.ACCELERATION.add(SI.METER.add(SI.METER).negate()));
-  // TODO use Clip
+  private static final Scalar LINEAR_FACTOR = Quantity.of(4.3996 * 100.0, SI.ACCELERATION.add(SI.METER.negate()));
+  private static final Scalar QUADRATIC_FACTOR = Quantity.of(-1.3735 * 10000.0, SI.ACCELERATION.add(SI.METER.add(SI.METER).negate()));
+  private static final Tensor COEFFS = Tensors.of(RealScalar.ZERO, LINEAR_FACTOR, QUADRATIC_FACTOR);
+  private static final ScalarUnaryOperator BRAKING_ACCELERATION = Series.of(COEFFS);
+  // TODO JPH use Clip
   private static final Scalar LINMOT_START = Quantity.of(0.005, SI.METER);
   private static final Scalar LINMOT_END = Quantity.of(0.05, SI.METER);
   private static final Scalar LINMOT_RANGE = LINMOT_END.subtract(LINMOT_START);
@@ -29,31 +37,30 @@ public enum BrakingFunction {
    * @param brakingPosition braking position (directly from linmot) [m]
    * @return braking deceleration */
   public static Scalar getBrakingAcceleration(Scalar brakingPosition) {
-    if (Scalars.lessThan(brakingPosition, brakeStart))
-      return ACCELERATION_ZERO;
-    Scalar relBrake = brakingPosition.subtract(brakeStart);
-    return relBrake.multiply(linearFactor).add(relBrake.multiply(relBrake).multiply(quadraticFactor));
+    // FIXME JPH/MH cap result at some max value
+    return BRAKING_ACCELERATION.apply(Ramp.FUNCTION.apply(brakingPosition.subtract(BRAKE_START)));
   }
 
   /** get the wanted actuation position
    * 
    * @param wantedAcceleration wanted additional braking deceleration [m/s^2]
    * @return needed braking position [m] */
-  // TODO return Optional
+  // TODO JPH/MH return Optional
   public static Scalar getNeededBrakeActuation(Scalar wantedAcceleration) {
     if (Scalars.lessEquals(wantedAcceleration, ACCELERATION_ZERO))
       return null;
-    Scalar rootOf = linearFactor.multiply(linearFactor)
+    // TODO JPH/MH use Roots.of(coeffs)
+    Scalar rootOf = LINEAR_FACTOR.multiply(LINEAR_FACTOR)
         // Power.of(linearFactor, RealScalar.of(2)) //
-        .add(RealScalar.of(4)//
-            .multiply(quadraticFactor)//
+        .add(RealScalar.of(4) //
+            .multiply(QUADRATIC_FACTOR) //
             .multiply(wantedAcceleration));
     // this can happen in some rare cases
     Scalar D = Sqrt.of(Max.of(rootOf, ZEROROOTOF));
-    Scalar top = linearFactor.negate().add(D);
-    Scalar bottom = quadraticFactor.add(quadraticFactor);
+    Scalar top = LINEAR_FACTOR.negate().add(D);
+    Scalar bottom = QUADRATIC_FACTOR.add(QUADRATIC_FACTOR);
     // RealScalar.of(2).multiply(quadraticFactor);
-    return top.divide(bottom).add(brakeStart);
+    return top.divide(bottom).add(BRAKE_START);
   }
 
   public static Scalar getRelativePosition(Scalar absolutePosition) {

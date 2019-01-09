@@ -16,8 +16,14 @@ enum TorqueVectoringHelper {
   /** @param powerLeft unitless
    * @param powerRight unitless
    * @return vector of length 2 with scalars in interval [-1, 1] */
+  // TOOD JPH/MH simplify function (see tests)
   static Tensor clip(Scalar powerLeft, Scalar powerRight) {
-    // powerRight = powerRight.add(Clip.absoluteOne().apply(powerLeft).subtract(powerLeft));
+    // proposed solution:
+    // Tensor v = Tensors.of(powerLeft, powerRight);
+    // Tensor c = v.map(Clip.absoluteOne());
+    // Tensor d = Reverse.of(v.subtract(c));
+    // return v.add(d).map(Clip.absoluteOne());
+    // ---
     if (Scalars.lessThan(MAX, powerRight)) {
       Scalar overpower = powerRight.subtract(MAX);
       powerRight = MAX;

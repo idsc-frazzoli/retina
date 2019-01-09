@@ -13,9 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 public class TrackIdentificationButtons extends AbstractModule {
   private final JFrame jFrame = new JFrame();

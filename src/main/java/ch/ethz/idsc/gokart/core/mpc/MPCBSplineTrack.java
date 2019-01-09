@@ -49,7 +49,7 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
       currentIndex += numPoints;
     }
     for (int i = 0; i < previewSize; i++) {
-      // TODO find out: is this efficient?
+      // TODO JPH/MH find out: is this efficient?
       ctrX.append(controlPoints.Get(currentIndex, 0));
       ctrY.append(controlPoints.Get(currentIndex, 1));
       ctrR.append(Max.of(controlPointsR.Get(currentIndex).subtract(padding), ZEROMETERS));

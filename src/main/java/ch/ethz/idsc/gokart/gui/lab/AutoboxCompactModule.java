@@ -7,9 +7,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 /** AutoboxCompactModule facilitates the initialization of the actuators
  * and the monitoring of the joystick and Davis240C sensor

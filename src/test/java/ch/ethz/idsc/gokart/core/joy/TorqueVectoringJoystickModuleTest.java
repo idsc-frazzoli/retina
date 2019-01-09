@@ -17,6 +17,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class TorqueVectoringJoystickModuleTest extends TestCase {
@@ -36,12 +38,9 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent1 = control.get();
-    System.out.println(rimoPutEvent1.putTireL.getTorque());
-    System.out.println(rimoPutEvent1.putTireR.getTorque());
     assertEquals(rimoPutEvent1.putTireL.getTorque(), Quantity.of(0, NonSI.ARMS));
     assertEquals(rimoPutEvent1.putTireR.getTorque(), Quantity.of(0, NonSI.ARMS));
     // full forward
-    System.out.println("full forward");
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
@@ -49,11 +48,6 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 1), false, false);
     control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent2 = control.get();
-    System.out.println(rimoPutEvent2.putTireL.getTorque());
-    System.out.println(rimoPutEvent2.putTireR.getTorque());
-    // JoystickConfig.GLOBAL;
-    // assertEquals(rimoPutEvent2.putTireL.getTorque(), JoystickConfig.GLOBAL.torqueLimit);
-    // assertEquals(rimoPutEvent2.putTireR.getTorque(), JoystickConfig.GLOBAL.torqueLimit);
     assertEquals(rimoPutEvent2.putTireL.getTorque(), ManualConfig.GLOBAL.torqueLimit.negate());
     assertEquals(rimoPutEvent2.putTireR.getTorque(), ManualConfig.GLOBAL.torqueLimit);
     // half forward slip right
@@ -63,8 +57,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
   public void testControl2() throws Exception {
     TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
     tvjm.first();
-    Scalar slip = RationalScalar.of(1, 2); // 1/2 forward slip right
-    System.out.println(slip + " forward/slip right");
+    Scalar slip = RationalScalar.HALF; // 1/2 forward slip right
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.2, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
@@ -72,10 +65,10 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.5), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent3 = control.get();
-    System.out.println(rimoPutEvent3.putTireL.getTorque());
-    System.out.println(rimoPutEvent3.putTireR.getTorque());
+    Clip.function(Quantity.of(-400, "ARMS"), Quantity.of(-350, "ARMS")).requireInside(rimoPutEvent3.putTireL.getTorque());
+    Clip.function(Quantity.of(1900, "ARMS"), Quantity.of(1950, "ARMS")).requireInside(rimoPutEvent3.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent3.putTireL.getTorque().negate(), rimoPutEvent3.putTireR.getTorque()));
-    assertTrue(Scalars.lessThan(Quantity.of(0, NonSI.ARMS), rimoPutEvent3.putTireR.getTorque()));
+    Sign.requirePositive(rimoPutEvent3.putTireR.getTorque());
     Scalar meanPower = rimoPutEvent3.putTireL.getTorque().negate().add(rimoPutEvent3.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
     Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
@@ -86,7 +79,6 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
     tvjm.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip right
-    System.out.println(slip + " slip right");
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.3, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
@@ -94,8 +86,8 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, joystick);
     RimoPutEvent rimoPutEvent4 = control.get();
-    System.out.println(rimoPutEvent4.putTireL.getTorque());
-    System.out.println(rimoPutEvent4.putTireR.getTorque());
+    Clip.function(Quantity.of(-1200, "ARMS"), Quantity.of(-1100, "ARMS")).requireInside(rimoPutEvent4.putTireL.getTorque());
+    Clip.function(Quantity.of(+2300, "ARMS"), Quantity.of(+2315, "ARMS")).requireInside(rimoPutEvent4.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent4.putTireL.getTorque().negate(), rimoPutEvent4.putTireR.getTorque()));
     assertTrue(Scalars.lessThan(Quantity.of(0, NonSI.ARMS), rimoPutEvent4.putTireR.getTorque()));
     Scalar meanPower = rimoPutEvent4.putTireL.getTorque().negate().add(rimoPutEvent4.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
