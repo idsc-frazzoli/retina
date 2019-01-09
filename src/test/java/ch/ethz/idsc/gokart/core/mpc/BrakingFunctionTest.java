@@ -34,20 +34,14 @@ public class BrakingFunctionTest extends TestCase {
     // only important that it does not crash here
     Scalar brakepos1 = BrakingFunction.getNeededBrakeActuation(Quantity.of(1, SI.ACCELERATION));
     Clip.function(Quantity.of(0.025, "m"), Quantity.of(0.030, "m")).requireInside(brakepos1);
-    // System.out.println("braking position: " + brakepos1);
     Scalar brakepos2 = BrakingFunction.getNeededBrakeActuation(Quantity.of(2, SI.ACCELERATION));
     Clip.function(Quantity.of(0.030, "m"), Quantity.of(0.035, "m")).requireInside(brakepos2);
-    // System.out.println("braking position: " + brakepos2);
     Scalar brakepos3 = BrakingFunction.getNeededBrakeActuation(Quantity.of(3, SI.ACCELERATION));
     Clip.function(Quantity.of(0.030, "m"), Quantity.of(0.035, "m")).requireInside(brakepos3);
-    // System.out.println("braking position: " + brakepos3);
     Scalar brakepos4 = BrakingFunction.getNeededBrakeActuation(Quantity.of(30, SI.ACCELERATION));
     Clip.function(Quantity.of(0.040, "m"), Quantity.of(0.045, "m")).requireInside(brakepos4);
-    // System.out.println("braking position: " + brakepos4);
     Scalar brakepos5 = BrakingFunction.getNeededBrakeActuation(Quantity.of(50, SI.ACCELERATION));
     Clip.function(Quantity.of(0.040, "m"), Quantity.of(0.045, "m")).requireInside(brakepos5);
     assertEquals(brakepos4, brakepos5);
-    // System.out.println("braking position: " + brakepos5);
-    // System.out.println("---");
   }
 }

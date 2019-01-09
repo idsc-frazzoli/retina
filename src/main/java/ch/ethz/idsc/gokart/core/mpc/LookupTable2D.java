@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Chop;
@@ -25,12 +26,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
 /** implementation is not a strict lookup but uses {@link LinearInterpolation} */
 public class LookupTable2D implements Serializable {
   private static final Scalar HALF = RealScalar.of(0.5);
-
-  private static Scalar dropUnit(Scalar scalar) {
-    return scalar instanceof Quantity //
-        ? ((Quantity) scalar).value()
-        : scalar;
-  }
 
   public static LookupTable2D build( //
       BinaryOperator<Scalar> function, //
@@ -58,9 +53,9 @@ public class LookupTable2D implements Serializable {
   /* package */ LookupTable2D(Scalar[][] table, Clip clip0, Clip clip1) {
     this.clip0 = clip0;
     this.clip1 = clip1;
-    interpolation = LinearInterpolation.of(Tensors.matrix(table).map(LookupTable2D::dropUnit));
-    scale = Tensors.vector(table.length - 1, table[0].length - 1);
     unit = QuantityUnit.of(table[0][0]);
+    interpolation = LinearInterpolation.of(Tensors.matrix(table).map(QuantityMagnitude.singleton(unit)));
+    scale = Tensors.vector(table.length - 1, table[0].length - 1);
   }
 
   /** get inverted lookup table target specifies which of

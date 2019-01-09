@@ -32,8 +32,6 @@ public class LinmotConfigTest extends TestCase {
     Scalar maxDeceleration = Quantity.of(-4, "m*s^-2");
     EmergencyBrakeManeuver emergencyBrakeManeuver = //
         new EmergencyBrakeManeuver(responseTime, maxDeceleration, velocity);
-    // System.out.println(emergencyBrakeManeuver.distance);
-    // System.out.println(emergencyBrakeManeuver.duration);
     requireClose(emergencyBrakeManeuver.distance, distance);
     requireClose(emergencyBrakeManeuver.duration, duration);
   }

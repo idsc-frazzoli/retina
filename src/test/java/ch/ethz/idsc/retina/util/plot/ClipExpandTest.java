@@ -11,6 +11,5 @@ public class ClipExpandTest extends TestCase {
     ClipExpand ce = new ClipExpand(Clip.function(1.2, 1.8), 8);
     assertEquals(ce.clip.min(), RealScalar.ONE);
     assertEquals(ce.clip.max(), RationalScalar.of(9, 5));
-    // System.out.println(ce.clip.min() + " " + ce.clip.max());
   }
 }

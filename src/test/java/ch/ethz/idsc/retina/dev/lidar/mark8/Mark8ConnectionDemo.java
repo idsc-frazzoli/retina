@@ -11,7 +11,7 @@ enum Mark8ConnectionDemo {
   ;
   @SuppressWarnings("unused")
   public static void main(String[] args) throws Exception {
-    try (Socket socket = new Socket("192.168.1.3", 4141)) {
+    try (Socket socket = new Socket("192.168.1.3", Mark8Device.TCP_PORT)) {
       InputStream inputStream = socket.getInputStream();
       byte[] data = new byte[32768];
       byte[] msg = new byte[Mark8Device.LENGTH];

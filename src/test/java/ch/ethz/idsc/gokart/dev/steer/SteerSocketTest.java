@@ -12,8 +12,6 @@ public class SteerSocketTest extends TestCase {
   }
 
   public void testSimple() {
-    // SteerSocket.INSTANCE.removePutProvider(SteerPutFallback.INSTANCE);
-    // SteerSocket.INSTANCE.addPutProvider(SteerPutFallback.INSTANCE);
     SteerPutProvider spp1 = new SteerPutProvider() {
       @Override
       public Optional<SteerPutEvent> putEvent() {
@@ -31,11 +29,6 @@ public class SteerSocketTest extends TestCase {
       }
     };
     SteerSocket.INSTANCE.addPutProvider(spp1);
-    // try {
-    // SteerSocket.INSTANCE.addPutProvider(spp1);
-    // } catch (Exception exception) {
-    // // ---
-    // }
     SteerPutProvider spp2 = new SteerPutProvider() {
       @Override
       public Optional<SteerPutEvent> putEvent() {
@@ -53,6 +46,5 @@ public class SteerSocketTest extends TestCase {
       }
     };
     SteerSocket.INSTANCE.addPutProvider(spp2);
-    // System.out.println(SteerSocket.INSTANCE.providers);
   }
 }
