@@ -17,7 +17,6 @@ public class BufferedImageResizeTest extends TestCase {
     BufferedImage image = BufferedImageResize.of(bufferedImage, .5);
     Tensor tensor = ImageFormat.from(image);
     List<Integer> list = Dimensions.of(tensor);
-    // System.out.println(list);
     assertEquals(list, Arrays.asList(50, 10, 4));
   }
 }

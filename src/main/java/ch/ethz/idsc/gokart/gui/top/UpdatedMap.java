@@ -12,13 +12,13 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.planar.Polygons;
+import ch.ethz.idsc.owl.math.region.Polygons;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 public class UpdatedMap {
@@ -54,7 +54,7 @@ public class UpdatedMap {
   }
 
   public void store() {
-    File file = UserHome.Pictures(String.format("map%04d.png", count));
+    File file = HomeDirectory.Pictures(String.format("map%04d.png", count));
     System.out.println(file);
     try {
       ImageIO.write(bufferedImage, "png", file);

@@ -3,10 +3,7 @@ package ch.ethz.idsc.retina.lcm;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
@@ -56,9 +53,5 @@ public class ArrayFloatBlobTest extends TestCase {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     Tensor result = ArrayFloatBlob.decode(byteBuffer);
     assertTrue(Chop._06.close(tensor, result));
-  }
-
-  public void testEmpty() {
-    PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }
 }

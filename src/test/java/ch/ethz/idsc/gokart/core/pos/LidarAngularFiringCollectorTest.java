@@ -1,10 +1,16 @@
 // code by jph
-package ch.ethz.idsc.retina.dev.lidar;
+package ch.ethz.idsc.gokart.core.pos;
 
 import java.io.File;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
+import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
+import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;

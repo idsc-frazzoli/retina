@@ -6,7 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutProvider;
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.tensor.Scalar;
 
 /* package */ class LinmotPressTestLinmot implements LinmotPutProvider {

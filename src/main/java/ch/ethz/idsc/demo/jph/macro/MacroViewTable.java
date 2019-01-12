@@ -12,7 +12,6 @@ import ch.ethz.idsc.gokart.lcm.autobox.MiscLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
@@ -28,6 +27,7 @@ import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
@@ -37,7 +37,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** export log files to tables for display in macro view image */
 /* package */ class MacroViewTable implements OfflineTableSupplier {
-  static final File ROOT = UserHome.file("gokartproc");
+  static final File ROOT = HomeDirectory.file("gokartproc");
   private static final String JOYSTICK = "joystick.generic_xbox_pad";
   private static final int START_8AM = 480;
   static final int LENGTH = 660;

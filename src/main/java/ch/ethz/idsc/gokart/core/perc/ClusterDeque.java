@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.stream.Stream;
 
-import ch.ethz.idsc.owl.math.planar.Polygons;
+import ch.ethz.idsc.owl.math.region.Polygons;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Mean;

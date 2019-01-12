@@ -27,22 +27,22 @@ import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.PathRender;
 import ch.ethz.idsc.gokart.gui.top.TrigonometryRender;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.region.ImageRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
 import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -141,7 +141,7 @@ public class OfflineHud implements OfflineLogListener {
         String string = String.format("%+3.1f[m/s]", vel.map(Round._1).Get().number().doubleValue());
         // System.out.println(string);
         graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
-        graphics.drawString("" + time.map(Round._6), 0, 10);
+        graphics.drawString(time.map(Round._6).toString(), 0, 10);
         graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 50));
         graphics.drawString(string, 0, 60);
         callback(bufferedImage);
@@ -152,7 +152,7 @@ public class OfflineHud implements OfflineLogListener {
 
   public void callback(BufferedImage bufferedImage) {
     try {
-      ImageIO.write(bufferedImage, "png", UserHome.file("asd.png"));
+      ImageIO.write(bufferedImage, "png", HomeDirectory.file("asd.png"));
     } catch (Exception exception) {
       exception.printStackTrace();
     }
@@ -161,6 +161,6 @@ public class OfflineHud implements OfflineLogListener {
 
   public static void main(String[] args) throws IOException {
     OfflineHud offlineHud = new OfflineHud(Quantity.of(RationalScalar.of(1, 30), SI.SECOND));
-    OfflineLogPlayer.process(UserHome.file("20180522T111414.lcm"), offlineHud);
+    OfflineLogPlayer.process(HomeDirectory.file("20180522T111414.lcm"), offlineHud);
   }
 }

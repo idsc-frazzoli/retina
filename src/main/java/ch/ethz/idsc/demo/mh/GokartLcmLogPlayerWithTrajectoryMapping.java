@@ -9,8 +9,8 @@ import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.offline.slam.GyroOfflineLocalize;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
@@ -22,7 +22,7 @@ import lcm.logging.LogPlayerConfig;
     // file = DatahakiLogFileLocator.file(GokartLogFile._20181018T140542_1a649e65);
     // file = new File("/media/datahaki/media/ethz/gokart/topic/track_orange/20181008T183011_10/log.lcm");
     // file = UserHome.file("20181203T142514_70097ce1.lcm.00");
-    File file = UserHome.file("TireTrackDriving.lcm");
+    File file = HomeDirectory.file("TireTrackDriving.lcm");
     cfg.logFile = file.toString();
     cfg.speed_numerator = 1;
     cfg.speed_denominator = 1;

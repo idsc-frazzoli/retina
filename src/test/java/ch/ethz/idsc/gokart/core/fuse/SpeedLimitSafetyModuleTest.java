@@ -8,7 +8,6 @@ public class SpeedLimitSafetyModuleTest extends TestCase {
   public void testSimple() throws Exception {
     SpeedLimitSafetyModule speedLimitSafetyModule = new SpeedLimitSafetyModule();
     String name = speedLimitSafetyModule.getClass().getSimpleName();
-    // System.out.println(name);
     assertEquals(name, "SpeedLimitSafetyModule");
     speedLimitSafetyModule.first();
     assertFalse(speedLimitSafetyModule.putEvent().isPresent());

@@ -12,7 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 
 public class LidarPanoramaFrame implements LidarPanoramaListener, AutoCloseable {
   public static final int SCALE_Y = 3;

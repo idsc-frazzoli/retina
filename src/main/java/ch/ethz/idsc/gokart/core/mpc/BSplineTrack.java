@@ -39,7 +39,7 @@ public class BSplineTrack implements TrackInterface {
   final float[] posY;
 
   public BSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints, Boolean closed) {
-    // TODO: ensure control points are of same size and [m]
+    // TODO ensure control points are of same size and [m]
     this.closed = closed;
     int toAdd = Max.of(SPLINE_ORDER_TRACK, SPLINE_ORDER_RADIUS) + 2;
     numPoints = controlPointsX.length();
@@ -50,7 +50,7 @@ public class BSplineTrack implements TrackInterface {
       length = RealScalar.of(pathLength);
     else
       // length = RealScalar.of(pathLength-SPLINE_ORDER_TRACK/2);
-      // TODO: find out exactly how the formula is
+      // TODO find out exactly how the formula is
       length = RealScalar.of(pathLength - 1);
     // add points at the end in order to close the loop
     int next = 0;
@@ -99,7 +99,7 @@ public class BSplineTrack implements TrackInterface {
   }
 
   private Scalar wrap(Scalar pathProgress) {
-    // TODO: check if there any specialized functions in the tensor library
+    // TODO check if there any specialized functions in the tensor library
     if (closed) {
       Scalar offset = Quantity.of(Max.of(SPLINE_ORDER_TRACK, SPLINE_ORDER_RADIUS) / 2.0 - 0.5, SI.ONE);
       Scalar startPoint = Floor.of(pathProgress.subtract(offset).divide(length)).multiply(length);

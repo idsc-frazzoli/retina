@@ -37,7 +37,7 @@ import java.awt.geom.Rectangle2D;
     double y = bounds2d.getY();
     double width = bounds2d.getWidth();
     double height = bounds2d.getHeight();
-    // TODO adapt resolution depending on width and height
+    // TODO VC adapt resolution depending on width and height
     double dx = bounds2d.getWidth() / RES;
     double dy = bounds2d.getHeight() / RES;
     double mx = x + width;

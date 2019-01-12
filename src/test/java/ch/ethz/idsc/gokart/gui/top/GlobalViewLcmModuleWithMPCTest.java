@@ -68,7 +68,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
         Scalar rampupVale = lcmMPCControlClient.lastcns.steps[0].state.getS()//
             .add(changeRate.multiply(Quantity.of(0.1, SI.SECOND)));
         Scalar betaDiff = lcmMPCControlClient.lastcns.steps[1].state.getS().subtract(rampupVale);
-        // TODO: do this with the correct unit
+        // TODO do this with the correct unit
         // assertTrue(Chop._07.close(betaDiff, "zero");
         mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER));
         lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);

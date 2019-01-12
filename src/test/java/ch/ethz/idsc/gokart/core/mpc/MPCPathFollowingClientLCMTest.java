@@ -76,7 +76,7 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
       assertTrue(mpcControlUpdateListener.cns != null);
       lcmMPCControlClient.stop();
     } catch (Exception e) {
-      // TODO: handle exception
+      // TODO handle exception
     }
   }
 }

@@ -42,7 +42,7 @@ public class Mark8Decoder implements LidarRayDataProvider {
       lasersMark8(byteBuffer);
       break;
     default:
-      throw new RuntimeException("" + byteBuffer.remaining());
+      throw new RuntimeException(Integer.toString(byteBuffer.remaining()));
     }
   }
 

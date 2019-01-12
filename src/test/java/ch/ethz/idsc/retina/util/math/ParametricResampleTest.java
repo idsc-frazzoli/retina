@@ -58,7 +58,6 @@ public class ParametricResampleTest extends TestCase {
       assertTrue(Chop._10.close(list.get(index), pnts.get(index)));
     assertEquals(pnts.size(), 1);
     Tensor seq = pnts.get(0);
-    // System.out.println(seq);
     Tensor ys = Tensor.of(seq.stream().map(r -> r.Get(1)));
     Tensor cs = Range.of(0, seq.length()).multiply(ds);
     assertTrue(Chop._10.close(ys, cs));

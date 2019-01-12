@@ -28,14 +28,11 @@ public class WGS84toCH1903LV03PlusTest extends TestCase {
     final Scalar coord_getX = Quantity.of(2678402.0, "m");
     final Scalar coord_getY = Quantity.of(1254426.0, "m");
     Tensor gps = CH1903LV03PlustoWGS84.transform(coord_getX, coord_getY);
-    // System.out.println(gps);
     Scalar coord_getX1 = gps.Get(0);
     Scalar coord_getY1 = gps.Get(1);
     Tensor metric = WGS84toCH1903LV03Plus.transform(coord_getX1, coord_getY1);
-    // System.out.println(metric);
     Tensor ori = Tensors.of(coord_getX, coord_getY);
     Scalar diff = Norm._2.between(ori, metric);
-    // System.out.println(diff);
     assertTrue(Scalars.lessThan(diff, Quantity.of(1, "m")));
   }
 
@@ -43,14 +40,11 @@ public class WGS84toCH1903LV03PlusTest extends TestCase {
     final Scalar coord_getX = Quantity.of(2678.402, "km");
     final Scalar coord_getY = Quantity.of(1254.426, "km");
     Tensor gps = CH1903LV03PlustoWGS84.transform(coord_getX, coord_getY);
-    // System.out.println(gps);
     Scalar coord_getX1 = gps.Get(0);
     Scalar coord_getY1 = gps.Get(1);
     Tensor metric = WGS84toCH1903LV03Plus.transform(coord_getX1, coord_getY1);
-    // System.out.println(metric);
     Tensor ori = Tensors.of(coord_getX, coord_getY).map(UnitSystem.SI());
     Scalar diff = Norm._2.between(ori, metric);
-    // System.out.println(diff);
     assertTrue(Scalars.lessThan(diff, Quantity.of(1, "m")));
   }
 }

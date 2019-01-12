@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Units;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
@@ -60,8 +60,6 @@ public class LookupTable2DTest extends TestCase {
       Scalar out = lookupTable2D.lookup(x, y);
       Scalar refOut = function.apply(x, y);
       Scalar diff = out.subtract(refOut).abs();
-      // System.out.println("For X="+ x + " and Y="+y+": "+diff);
-      // System.out.println("out="+out+ " /ref="+refOut);
       assertTrue(Scalars.lessThan(diff, fidelityLimit));
     }
   }
@@ -90,8 +88,6 @@ public class LookupTable2DTest extends TestCase {
       Scalar out = lookupTable2D.lookup(x, y);
       Scalar xb = inverseLookupTable.lookup(out, y);
       Scalar diff = x.subtract(xb).abs();
-      // System.out.println("For X="+ x + " and Y="+y+": "+diff);
-      // System.out.println("x="+x+ " /xb="+xb);
       assertTrue(Scalars.lessThan(diff, inversionLimit));
     }
     // check if values outside limits of the original lookup table are enforced:
@@ -126,8 +122,6 @@ public class LookupTable2DTest extends TestCase {
       Scalar out = lookUpTable2D.lookup(x, y);
       Scalar yb = inverseLookupTable.lookup(x, out);
       Scalar diff = y.subtract(yb).abs();
-      // System.out.println("For X="+ x + " and Y="+y+": "+diff);
-      // System.out.println("y="+y+ " /yb="+yb);
       assertTrue(Scalars.lessThan(diff, inversionLimit));
     }
     // check if values outside limits of the original lookup table are enforced:
@@ -168,7 +162,7 @@ public class LookupTable2DTest extends TestCase {
       Scalar x = Quantity.of(rand.nextFloat() * 1000, NonSI.ARMS);
       Scalar y = Quantity.of(rand.nextFloat(), SI.VELOCITY);
       Scalar out = forward.lookup(x, y);
-      assertEquals(Units.of(out), SI.ACCELERATION);
+      assertEquals(QuantityUnit.of(out), SI.ACCELERATION);
       Scalar xb = inverse.lookup(out, y);
       Scalar diff = x.subtract(xb).abs();
       if (Scalars.lessThan(inversionLimit, diff)) {

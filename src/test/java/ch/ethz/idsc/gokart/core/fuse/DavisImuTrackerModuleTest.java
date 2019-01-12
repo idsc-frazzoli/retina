@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import junit.framework.TestCase;
 
 public class DavisImuTrackerModuleTest extends TestCase {

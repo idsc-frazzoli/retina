@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.owl.math.planar.ArcTan2D;
+import ch.ethz.idsc.sophus.planar.ArcTan2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;

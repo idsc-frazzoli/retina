@@ -15,10 +15,10 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
@@ -46,7 +46,7 @@ public class LinmotPressTestModule extends AbstractModule {
       List<JButton> list = new ArrayList<>();
       for (int index = 0; index < n; ++index) {
         Scalar scalar = tensor.Get(index);
-        JButton jButton = new JButton("" + scalar.map(Round._2));
+        JButton jButton = new JButton(scalar.map(Round._2).toString());
         list.add(jButton);
         jButton.addActionListener(new ActionListener() {
           @Override

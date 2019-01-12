@@ -3,9 +3,10 @@ package ch.ethz.idsc.demo.mg;
 
 import java.io.File;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.io.UserName;
 
 public enum LogFileLocations {
   /** extracted part of DUBI4 log file */
@@ -204,12 +205,12 @@ public enum LogFileLocations {
 
   public File getFile() {
     final File root;
-    switch (UserHome.file("").getName()) {
+    switch (UserName.get()) {
     case "datahaki":
       root = new File("/media/datahaki/media/ethz/gokart/topic/davis_extracted_logs");
       break;
     default:
-      root = UserHome.file("logs");
+      root = HomeDirectory.file("logs");
       break;
     }
     File file = new File(root, filename);

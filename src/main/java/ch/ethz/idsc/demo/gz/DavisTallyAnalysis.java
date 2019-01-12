@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.GokartLogFile;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ enum DavisTallyAnalysis {
@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         new DavisEventTable(Quantity.of(RationalScalar.of(1, 50), "s"));
     OfflineLogPlayer.process(file, davisEventTable);
     Export.of( //
-        UserHome.file(gokartLogFile.getTitle() + "one.csv"), //
+        HomeDirectory.file(gokartLogFile.getTitle() + "one.csv"), //
         davisEventTable.getTable().map(CsvFormat.strict()));
   }
 }

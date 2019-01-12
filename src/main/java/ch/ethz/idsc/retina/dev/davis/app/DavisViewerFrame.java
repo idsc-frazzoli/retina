@@ -23,18 +23,18 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.dev.davis.DavisDevice;
 import ch.ethz.idsc.retina.dev.davis._240c.DavisEventStatistics;
-import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
+import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 // TODO redraw thread is independent of sync signal of images...!
 public class DavisViewerFrame implements TimedImageListener {
-  private static final File EXPORT_DIRECTORY = UserHome.Pictures("dvs");
+  private static final File EXPORT_DIRECTORY = HomeDirectory.Pictures("dvs");
   // ---
   public final JFrame jFrame = new JFrame();
   @SuppressWarnings("unused")
@@ -55,7 +55,7 @@ public class DavisViewerFrame implements TimedImageListener {
       });
   boolean recording = false;
   private int counter = 0;
-  private final File directory = UserHome.Pictures(SystemTimestamp.asString());
+  private final File directory = HomeDirectory.Pictures(SystemTimestamp.asString());
 
   public DavisViewerFrame(DavisDevice davisDevice, AbstractAccumulatedImage abstractAccumulatedImage) {
     Component component = jFrame.getContentPane();

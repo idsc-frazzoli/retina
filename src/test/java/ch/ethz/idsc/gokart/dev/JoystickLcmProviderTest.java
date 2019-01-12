@@ -60,7 +60,6 @@ public class JoystickLcmProviderTest extends TestCase {
     assertTrue(optional.isPresent());
     ManualControlInterface gokartJoystickInterface = optional.get();
     assertTrue(gokartJoystickInterface.isAutonomousPressed());
-    // System.out.println(gokartJoystickInterface.getAheadAverage());
     joystickLcmClient.stop();
   }
 }

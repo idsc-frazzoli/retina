@@ -6,13 +6,12 @@ import java.util.Objects;
 
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.UserName;
 import junit.framework.TestCase;
 
 public class GokartLogFileTest extends TestCase {
   public void test_datahaki() {
-    String username = UserHome.file("").getName();
-    if (username.equals("datahaki"))
+    if (UserName.is("datahaki"))
       for (GokartLogFile gokartLogFile : GokartLogFile.values())
         try {
           File file = DatahakiLogFileLocator.file(gokartLogFile);
@@ -30,7 +29,7 @@ public class GokartLogFileTest extends TestCase {
           // exception.printStackTrace();
           String string = exception.getMessage();
           if (Objects.nonNull(string))
-            System.out.println(exception.getMessage());
+            System.err.println(exception.getMessage());
         }
   }
 

@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.util.EnumMap;
 import java.util.Map;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 
 public enum ProviderRanks {
   ;

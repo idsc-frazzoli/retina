@@ -20,7 +20,6 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** to ensure that the maximum motor torque is actually applied */
-// TODO JPH TENSOR V065
 public class PowerLookupTable {
   private static final File DIRECTORY = new File("resources/lookup");
   private static final File FILE_FORWARD = new File(DIRECTORY, "powerlookuptable_forward.object");
@@ -53,7 +52,7 @@ public class PowerLookupTable {
   private static LookupTable2D forward() {
     // FILE_FORWARD.delete();
     try {
-      return Objects.requireNonNull(Import.object(FILE_FORWARD)); // load forward table
+      return Import.object(FILE_FORWARD); // load forward table
     } catch (Exception exception) {
       // ---
     }
@@ -65,7 +64,7 @@ public class PowerLookupTable {
         ManualConfig.GLOBAL.torqueLimitClip(), //
         CLIP_VEL);
     try {
-      Export.object(FILE_FORWARD, Objects.requireNonNull(lookupTable2D));
+      Export.object(FILE_FORWARD, lookupTable2D);
     } catch (Exception exception) {
       // ---
     }
@@ -76,7 +75,7 @@ public class PowerLookupTable {
   private static LookupTable2D inverse(LookupTable2D forward) {
     // FILE_INVERSE.delete();
     try {
-      return Objects.requireNonNull(Import.object(FILE_INVERSE)); // load inverse table
+      return Import.object(FILE_INVERSE); // load inverse table
     } catch (Exception exception) {
       // ---
     }

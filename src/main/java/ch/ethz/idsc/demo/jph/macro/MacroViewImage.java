@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.NumberQ;
@@ -28,6 +27,7 @@ import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 import ch.ethz.idsc.tensor.img.ImageResize;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.ResourceData;
@@ -93,7 +93,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
       graphics.setFont(FONT);
       graphics.setColor(Color.DARK_GRAY);
       graphics.fillRect(0, 0, width(), 1);
-      graphics.drawString("" + dayname, 0, FONT_SIZE - 1);
+      graphics.drawString(dayname, 0, FONT_SIZE - 1);
       minutes = (int) table.get(Tensor.ALL, 0).stream().filter(NumberQ::of).count();
       FontMetrics fontMetrics = graphics.getFontMetrics();
       String string = String.format("%3d", minutes);
@@ -155,6 +155,6 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
       }
       image = ImageFormat.from(bufferedImage);
     }
-    Export.of(UserHome.Pictures("gokart_operation.png"), image);
+    Export.of(HomeDirectory.Pictures("gokart_operation.png"), image);
   }
 }

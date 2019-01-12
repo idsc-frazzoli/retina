@@ -17,26 +17,20 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
-  static {
-    System.out.println("building power lookup table");
-  }
   private static final PowerLookupTable POWER_LOOKUP_TABLE = PowerLookupTable.getInstance();
-  static {
-    System.out.println("done");
-  }
 
   public void testZeros() {
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedNormalizedTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    ImprovedNormalizedTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     Tensor powers = improvedNormalizedSimpleTorqueVectoring.powers( //
         Quantity.of(0, "m^-1"), //
         Quantity.of(0, "m*s^-1"), //
         Quantity.of(0, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
-    assertTrue(Chop._08.close(Total.of(powers), power));
+    Chop._08.requireClose(Total.of(powers), power);
     assertEquals(powers, Tensors.vector(0, 0));
   }
 
@@ -58,7 +52,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
     Scalar noPowerAcceleration = POWER_LOOKUP_TABLE.getAcceleration(Quantity.of(0, NonSI.ARMS), Quantity.of(1, "m*s^-1"));
     Scalar leftAcc = POWER_LOOKUP_TABLE.getAcceleration(powers.Get(0).multiply(maxcurr), velocity);
     Scalar rightAcc = POWER_LOOKUP_TABLE.getAcceleration(powers.Get(1).multiply(maxcurr), velocity);
-    assertTrue(Chop._04.close(Mean.of(Tensors.of(leftAcc, rightAcc)), noPowerAcceleration));
+    Chop._04.requireClose(Mean.of(Tensors.of(leftAcc, rightAcc)), noPowerAcceleration);
     // assertEquals(powers, Tensors.vector(-0.4, 0.4));
   }
 
@@ -74,7 +68,6 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
         Quantity.of(3, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
     // it's 0.9999999...
-    // System.out.println(powers);
     Scalar between = Norm._2.between(powers, Tensors.vector(1, 1));
     assertTrue(Scalars.lessThan(between, RealScalar.of(0.02)));
     // assertTrue(Chop._04.close(powers, Tensors.vector(1, 1)));
@@ -91,10 +84,8 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
-    // System.out.println(powers);
     Scalar between = Norm._2.between(powers, Tensors.vector(-1, -1));
     assertTrue(Scalars.lessThan(between, RealScalar.of(0.02)));
-    // assertTrue(Chop._04.close(powers, Tensors.vector(-1, -1)));
   }
 
   /* Scalar expectedRotationPerMeterDriven

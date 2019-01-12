@@ -10,6 +10,7 @@ import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 
+@SuppressWarnings("unused")
 /* package */ class SlamLogSave {
   private final SlamEventCounter slamEventCounter;
   private final SlamCoreContainer slamCoreContainer;
