@@ -27,7 +27,6 @@ public class MPCOptimizationParameter implements MPCNativeInsertable {
     this.xAccLimit = Quantity.of(5, SI.ACCELERATION);
     this.yAccLimit = Quantity.of(5, SI.ACCELERATION);
   }
-  
 
   public MPCOptimizationParameter(Scalar speedLimit, Scalar xAccLimit, Scalar yAccLimit) {
     this.speedLimit = speedLimit;
@@ -44,6 +43,6 @@ public class MPCOptimizationParameter implements MPCNativeInsertable {
 
   @Override
   public int length() {
-    return 3*4;
+    return 3 * 4;
   }
 }

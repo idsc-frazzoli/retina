@@ -17,9 +17,7 @@ import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -105,19 +103,19 @@ public class MappingAnalysisOfflineHighResMH implements OfflineLogListener, Lida
       time_next = time.add(delta);
       BufferedImage image = new BufferedImage(2000, 2000, BufferedImage.TYPE_3BYTE_BGR);
       double s = 50;
-      int ox =-1200;
+      int ox = -1200;
       int oy = 3300;
       final Tensor model2pixel = Tensors.matrix(new Number[][] { //
-        { s, 0, ox }, //
-        { 0, -s, oy }, //
-        { 0, 0, 1 }, //
-    }).unmodifiable();
+          { s, 0, ox }, //
+          { 0, -s, oy }, //
+          { 0, 0, 1 }, //
+      }).unmodifiable();
       GeometricLayer gl = new GeometricLayer(model2pixel, Tensors.vector(0, 0, 0));
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
       bayesianOccupancyGrid.render(gl, graphics);
-      //bayesianOccupancyGridThin.render(gl, graphics);
+      // bayesianOccupancyGridThin.render(gl, graphics);
       gr.render(gl, graphics);
       trackIdentificationManagement.renderHR(gl, graphics);
       // if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)) && flag == false) {

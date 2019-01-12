@@ -14,13 +14,13 @@ import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class GokartVoiceOutputs extends AbstractClockedModule {
@@ -53,23 +53,23 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
 
   void sayCalibrated() {
     // TODO: put it in resources
-    File file = UserHome.file("Documents/CalibrationSignal.wav");
+    File file = HomeDirectory.file("Documents/CalibrationSignal.wav");
     playFile(file);
   }
 
   void sayEmergenyBraking() {
     // TODO: put it in resources
-    File file = UserHome.file("Documents/ObstacleDetectedWarning.wav");
+    File file = HomeDirectory.file("Documents/ObstacleDetectedWarning.wav");
     playFile(file);
   }
 
   void sayHumanDriving() {
-    File file = UserHome.file("Documents/humanSignal.wav");
+    File file = HomeDirectory.file("Documents/humanSignal.wav");
     playFile(file);
   }
 
   void sayAIDriving() {
-    File file = UserHome.file("Documents/AISignal.wav");
+    File file = HomeDirectory.file("Documents/AISignal.wav");
     playFile(file);
   }
 

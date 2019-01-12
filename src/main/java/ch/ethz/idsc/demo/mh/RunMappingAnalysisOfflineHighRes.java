@@ -8,21 +8,20 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
-import ch.ethz.idsc.gokart.offline.slam.MappingAnalysisOfflineMH;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 enum RunMappingAnalysisOfflineHighRes {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     // File file = YnLogFileLocator.file(GokartLogFile._20180503T160522_16144bb6);
-    //File file = UserHome.file("changingtrack.lcm");
-    File file = UserHome.file("TireTrackDriving.lcm");
+    // File file = UserHome.file("changingtrack.lcm");
+    File file = HomeDirectory.file("TireTrackDriving.lcm");
     // File file = UserHome.file("20181203T135247_70097ce1.lcm.00");
-    File folder = UserHome.Pictures("log/mapperHR");
+    File folder = HomeDirectory.Pictures("log/mapperHR");
     folder.mkdirs();
     if (!folder.isDirectory())
       throw new RuntimeException();

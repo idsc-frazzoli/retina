@@ -47,7 +47,7 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
   // TODO invert colors: black should be empty space
   private static final byte MASK_OCCUPIED = 0;
   private static final Color COLOR_OCCUPIED = Color.BLACK;
-  //private static final Color COLOR_UNKNOWN = new Color(0xdd, 0xdd, 0xdd);
+  // private static final Color COLOR_UNKNOWN = new Color(0xdd, 0xdd, 0xdd);
   private static final Color COLOR_UNKNOWN = Color.WHITE;
 
   /** @param lbounds vector of length 2

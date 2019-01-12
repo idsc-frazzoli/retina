@@ -161,14 +161,14 @@ public class TrackIdentificationManagement implements RenderInterface {
       initialGuess.render(geometricLayer, graphics);
     }
   }
-  
+
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (lastTrack != null) {
       if (trackRender == null)
         trackRender = new TrackRender(lastTrack);
-      //trackRender.renderHR(geometricLayer, graphics);
-    }// else {
-      initialGuess.renderHR(geometricLayer, graphics);
-    //}
+      // trackRender.renderHR(geometricLayer, graphics);
+    } // else {
+    initialGuess.renderHR(geometricLayer, graphics);
+    // }
   }
 }

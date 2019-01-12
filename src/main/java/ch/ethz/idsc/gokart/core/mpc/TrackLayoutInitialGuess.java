@@ -418,8 +418,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       // TODO MH you are doing SVD of the same matrix twice !
       Tensor controlpointsX = LeastSquares.usingSvd(splineMatrix, wantedPositionsX);
       Tensor controlpointsY = LeastSquares.usingSvd(splineMatrix, wantedPositionsY);
-      if(true) {
-        controlPoints = Transpose.of(Tensors.of(controlpointsX,controlpointsY));
+      if (true) {
+        controlPoints = Transpose.of(Tensors.of(controlpointsX, controlpointsY));
       }
       return Tensors.of(controlpointsX, controlpointsY);
     }
@@ -439,28 +439,28 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   }
 
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
-    float width = geometricLayer.getMatrix().get(0).Get(0).number().floatValue()/7.5f;
+    float width = geometricLayer.getMatrix().get(0).Get(0).number().floatValue() / 7.5f;
     Stroke defaultStroke;
     BasicStroke thick = new BasicStroke(width);
     graphics.setColor(Color.RED);
     defaultStroke = graphics.getStroke();
     graphics.setStroke(thick);
-    if(true) {
+    if (true) {
       Tensor routePolygon = getRoutePolygon();
       Path2D path2d = geometricLayer.toPath2D(routePolygon);
       graphics.draw(path2d);
     }
-    if(true) {
+    if (true) {
       graphics.setColor(Color.ORANGE);
-      for(Tensor t: positionalSupports) {
+      for (Tensor t : positionalSupports) {
         Tensor pos = geometricLayer.toVector(t);
-        int r = (int) (width*2.5f);
+        int r = (int) (width * 2.5f);
         int X = pos.Get(0).number().intValue();
         int Y = pos.Get(1).number().intValue();
-        graphics.drawOval(X - r, Y - r, 2*r, 2*r);
+        graphics.drawOval(X - r, Y - r, 2 * r, 2 * r);
       }
     }
-    if(false) {
+    if (false) {
       graphics.setColor(Color.BLUE);
       Path2D path2d = geometricLayer.toPath2D(controlPoints);
       graphics.draw(path2d);
