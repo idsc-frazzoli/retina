@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.davis;
+package ch.ethz.idsc.demo.jph.dvs;
 
 import java.io.File;
 
@@ -24,7 +24,7 @@ enum AccumulateToGif {
   @SuppressWarnings("deprecation")
   public static void of(DvsEventSupplier dvsEventSupplier, File gifFile, int window_us, int rate_us) throws Exception {
     DvsEventStatistics dvsEventStatistics = new DvsEventStatistics();
-    try (AnimationWriter gsw = AnimationWriter.of(gifFile, rate_us / 1000)) {
+    try (AnimationWriter animationWriter = AnimationWriter.of(gifFile, rate_us / 1000)) {
       try {
         DvsEventBuffer dvsEventBuffer = new DvsEventBuffer(window_us);
         long next = rate_us;
@@ -33,7 +33,7 @@ enum AccumulateToGif {
           dvsEventStatistics.digest(dvsEvent);
           long time = dvsEvent.time_us;
           while (next <= time) {
-            gsw.append(DvsAccumulate.of(dvsEventBuffer, dvsEventSupplier.dimension(), next));
+            animationWriter.append(DvsAccumulate.of(dvsEventBuffer, dvsEventSupplier.dimension(), next));
             next += rate_us;
           }
           dvsEventBuffer.digest(dvsEvent);

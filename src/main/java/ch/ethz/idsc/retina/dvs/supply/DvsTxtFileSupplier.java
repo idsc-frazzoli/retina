@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.io;
+package ch.ethz.idsc.retina.dvs.supply;
 
 import java.awt.Dimension;
 import java.io.BufferedReader;
@@ -8,13 +8,12 @@ import java.io.FileReader;
 import java.util.StringTokenizer;
 
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
-import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 
-public class DavisTxtFileSupplier implements DvsEventSupplier, AutoCloseable {
+public class DvsTxtFileSupplier implements DvsEventSupplier, AutoCloseable {
   private final BufferedReader bufferedReader;
   private final Dimension dimension;
 
-  public DavisTxtFileSupplier(File file, Dimension dimension) throws Exception {
+  public DvsTxtFileSupplier(File file, Dimension dimension) throws Exception {
     bufferedReader = new BufferedReader(new FileReader(file));
     this.dimension = dimension;
   }

@@ -1,11 +1,11 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.davis;
+package ch.ethz.idsc.demo.jph.dvs;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.davis.io.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.io.dat.DatFileSupplier;
 import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
+import ch.ethz.idsc.retina.dvs.supply.DvsTxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.supply.ImagesDvsEventSupplier;
 import ch.ethz.idsc.retina.dvs.supply.ProceduralDvsEventSupplier;
 import ch.ethz.idsc.retina.dvs.supply.Waves;
@@ -27,7 +27,7 @@ enum AccumulateToGifTest {
     File file = new File("/media/datahaki/media/ethz/davis", name);
     final int WINDOW_US = 50000;
     AccumulateToGif.of( //
-        new DavisTxtFileSupplier(new File(file, "events.txt"), ImageDimensions.UZ), //
+        new DvsTxtFileSupplier(new File(file, "events.txt"), ImageDimensions.UZ), //
         HomeDirectory.Pictures(name + ".gif"), WINDOW_US);
   }
 

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.davis;
+package ch.ethz.idsc.demo.jph.dvs;
 
 import java.awt.Dimension;
 
