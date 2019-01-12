@@ -54,7 +54,7 @@ import ch.ethz.idsc.tensor.red.Nest;
 import ch.ethz.idsc.tensor.sca.InvertUnlessZero;
 import ch.ethz.idsc.tensor.sca.Round;
 
-abstract class TrajectoryVideo implements OfflineLogListener {
+/* package */ abstract class TrajectoryVideo implements OfflineLogListener {
   private static final TensorUnaryOperator GEODESIC_CENTER_FILTER = //
       GeodesicCenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, SmoothingKernel.GAUSSIAN), 5);
   private static final Scalar METER2PIXEL = RealScalar.of(30);

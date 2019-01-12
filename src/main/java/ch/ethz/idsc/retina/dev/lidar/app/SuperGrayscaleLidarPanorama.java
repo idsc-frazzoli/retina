@@ -53,8 +53,7 @@ public class SuperGrayscaleLidarPanorama implements LidarPanorama {
   @Override // from LidarPanorama
   public void setRotational(int rotational) {
     if (rotational < rotational_last) {
-      Iterator<Col> iterator = queue.iterator();
-      while (iterator.hasNext()) {
+      for (Iterator<Col> iterator = queue.iterator(); iterator.hasNext();) {
         Col next = iterator.next();
         if (next.batch < batch - history)
           iterator.remove();

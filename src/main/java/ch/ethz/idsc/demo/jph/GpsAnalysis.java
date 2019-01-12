@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** export to determine characteristics and accuracy of gps sensor
  * 
  * https://github.com/idsc-frazzoli/retina/issues/147 */
-enum GpsAnalysis {
+/* package */ enum GpsAnalysis {
   ;
   public static void main(String[] args) throws IOException {
     for (File folder : OfflineIndex.folders(HomeDirectory.file("gokart/GpsAnalysis"))) {

@@ -6,7 +6,7 @@ import java.io.IOException;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
-enum DavisLcmLogViewer {
+/* package */ enum DavisLcmLogViewer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();

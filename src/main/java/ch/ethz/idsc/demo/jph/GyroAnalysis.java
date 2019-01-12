@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * localization algorithm.
  * 
  * https://github.com/idsc-frazzoli/retina/files/1801712/20180131_davis_imu.pdf */
-enum GyroAnalysis {
+/* package */ enum GyroAnalysis {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     for (File folder : OfflineIndex.folders(HomeDirectory.file("gokart", "LocalQuick"))) {

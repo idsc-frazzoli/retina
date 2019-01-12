@@ -13,13 +13,11 @@ import java.util.StringTokenizer;
 
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-enum CanProcess {
+/* package */ enum CanProcess {
   ;
   private static final String CAN_RX_EVENT = "CAN Rx Event";
 
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    // File file = UserHome.file("Documents/steering/calibration.txt");
-    // File file = UserHome.file("Documents/steering/passive_operations.txt");
     File file = HomeDirectory.file("Documents", "steering", "active_operations.txt");
     try (PrintWriter printWriter = new PrintWriter(HomeDirectory.file("log_" + file.getName()))) {
       try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {

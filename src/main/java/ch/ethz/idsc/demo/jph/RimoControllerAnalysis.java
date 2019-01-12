@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-class RimoControllerAnalysis implements OfflineTableSupplier {
+/* package */ class RimoControllerAnalysis implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private final ByteOrder byteOrder;
 

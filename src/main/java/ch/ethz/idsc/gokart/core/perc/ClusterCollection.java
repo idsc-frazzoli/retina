@@ -33,9 +33,8 @@ public class ClusterCollection {
   }
 
   public void decompose() {
-    Iterator<ClusterDeque> iterator = collection.iterator();
     List<ClusterDeque> newDeques = new ArrayList<>();
-    while (iterator.hasNext()) {
+    for (Iterator<ClusterDeque> iterator = collection.iterator(); iterator.hasNext();) {
       ClusterDeque x = iterator.next();
       Tensor vertices = Tensor.of(x.vertexStream());
       Tensor elkiDBSCAN = Dbscan.of(vertices, 0.03, 6);
@@ -59,9 +58,8 @@ public class ClusterCollection {
   }
 
   public void removeDeques(Set<Integer> removeIndex) {
-    Iterator<ClusterDeque> iterator = collection.iterator();
     int i = 0;
-    while (iterator.hasNext()) {
+    for (Iterator<ClusterDeque> iterator = collection.iterator(); iterator.hasNext();) {
       iterator.next();
       if (removeIndex.contains(i)) {
         iterator.remove();

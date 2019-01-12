@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-enum RimoRateAnalysis {
+/* package */ enum RimoRateAnalysis {
   ;
   public static void main(String[] args) throws IOException {
     // _20180307T150715_28f09b86 ok but needs extraction

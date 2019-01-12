@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.dev.davis.Aedat31Imu6Listener;
 import ch.ethz.idsc.retina.dev.davis.io.Aedat31Imu6Event;
 import ch.ethz.idsc.retina.dev.davis.io.SeyeAeImuLcmClient;
 
-enum SeyeAeImuDemo {
+/* package */ enum SeyeAeImuDemo {
   ;
   public static void main(String[] args) throws InterruptedException {
     SeyeAeImuLcmClient seyeAeImuLcmHandler = new SeyeAeImuLcmClient(GokartLcmChannel.SEYE_OVERVIEW);

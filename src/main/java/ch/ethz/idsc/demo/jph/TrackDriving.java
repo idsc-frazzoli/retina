@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
-public class TrackDriving implements RenderInterface {
+/* package */ class TrackDriving implements RenderInterface {
   private static final ColorDataIndexed COLOR_DATA_INDEXED1 = ColorDataLists._063.cyclic().deriveWithAlpha(128);
   private static final ColorDataIndexed COLOR_DATA_INDEXED2 = COLOR_DATA_INDEXED1.deriveWithAlpha(32);
   private static final Tensor FOOTPRINT = RimoSinusIonModel.standard().footprint();

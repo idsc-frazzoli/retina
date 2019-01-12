@@ -8,10 +8,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
-enum GokartLcmLogPlayer {
+/* package */ enum GokartLcmLogPlayer {
   ;
-  public static final File LOG_ROOT = new File("/home/ale/datasets/gokart_logs");
-
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;

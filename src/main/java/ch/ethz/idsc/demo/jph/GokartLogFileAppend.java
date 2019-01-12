@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.offline.api.LogFile;
 
 /** print out is template code to append in
  * {@link GokartLogFile} */
-enum GokartLogFileAppend {
+/* package */ enum GokartLogFileAppend {
   ;
   public static void main(String[] args) {
     GokartLogFile[] values = GokartLogFile.values();

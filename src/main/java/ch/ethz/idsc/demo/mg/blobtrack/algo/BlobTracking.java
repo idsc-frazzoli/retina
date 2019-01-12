@@ -179,8 +179,7 @@ public class BlobTracking {
 
   // delete active blobs when activity is lower than aDown
   private void deleteBlobs() {
-    Iterator<BlobTrackObj> iterator = blobs.iterator();
-    while (iterator.hasNext()) {
+    for (Iterator<BlobTrackObj> iterator = blobs.iterator(); iterator.hasNext();) {
       BlobTrackObj davisSingleBlob = iterator.next();
       if (davisSingleBlob.getLayerID())
         if (davisSingleBlob.getActivity() < aDown)

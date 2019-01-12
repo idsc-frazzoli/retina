@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /** export all io between actuators and computer as separate tables */
-enum ProduceReport {
+/* package */ enum ProduceReport {
   ;
   public static void of(LogFile logFile) throws IOException {
     File file = DatahakiLogFileLocator.file(logFile);

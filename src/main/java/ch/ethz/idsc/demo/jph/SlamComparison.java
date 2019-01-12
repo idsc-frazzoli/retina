@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
  * 
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf
  * https://github.com/idsc-frazzoli/retina/files/2299868/20180818_datasets_track_w.pdf */
-enum SlamComparison {
+/* package */ enum SlamComparison {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();

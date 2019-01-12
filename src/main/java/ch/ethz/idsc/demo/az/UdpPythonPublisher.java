@@ -25,7 +25,7 @@ import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-class UdpPythonPublisher implements TimedImageListener {
+/* package */ class UdpPythonPublisher implements TimedImageListener {
   /** port to send data to */
   private static final int S2_PORT = 6785;
   // ---

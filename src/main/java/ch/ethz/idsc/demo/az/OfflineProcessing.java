@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-enum OfflineProcessing {
+/* package */ enum OfflineProcessing {
   ;
   public static void single(File file, OfflineTableSupplier offlineTableSupplier, String title) throws IOException {
     OfflineLogPlayer.process(file, offlineTableSupplier);
