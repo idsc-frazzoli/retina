@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.jph.davis.Aedat31PolarityImage;
-import ch.ethz.idsc.retina.dev.davis.io.SeyeAeDvsLcmClient;
+import ch.ethz.idsc.gokart.lcm.seye.SeyeAeDvsLcmClient;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;

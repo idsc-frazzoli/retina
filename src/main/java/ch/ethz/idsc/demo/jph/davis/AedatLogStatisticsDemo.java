@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.davis;
 
-import ch.ethz.idsc.retina.dev.davis.app.AedatLogStatistics;
+import ch.ethz.idsc.retina.davis.app.AedatLogStatistics;
 
 enum AedatLogStatisticsDemo {
   ;

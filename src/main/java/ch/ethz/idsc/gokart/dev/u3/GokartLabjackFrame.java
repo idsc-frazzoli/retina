@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.dev.u3;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.u3.LabjackAdcFrame;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

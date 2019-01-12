@@ -6,7 +6,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
 import ch.ethz.idsc.demo.mg.slam.core.SlamAlgoConfiguration;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.davis.DavisDvsListener;
 
 /* package */ enum SlamWrapUtil {
   ;

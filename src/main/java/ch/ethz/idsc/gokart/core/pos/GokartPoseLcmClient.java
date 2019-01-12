@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.pos;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
+import ch.ethz.idsc.gokart.lcm.SimpleLcmClient;
 
 public class GokartPoseLcmClient extends SimpleLcmClient<GokartPoseListener> {
   public GokartPoseLcmClient() {

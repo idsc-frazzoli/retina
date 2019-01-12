@@ -9,12 +9,12 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEncoder;
-import ch.ethz.idsc.retina.dev.joystick.JoystickType;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
-import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.retina.joystick.JoystickEncoder;
+import ch.ethz.idsc.retina.joystick.JoystickType;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.joystick.ManualControlProvider;
+import ch.ethz.idsc.retina.u3.LabjackAdcFrame;
 import junit.framework.TestCase;
 
 public class JoystickLcmProviderTest extends TestCase {

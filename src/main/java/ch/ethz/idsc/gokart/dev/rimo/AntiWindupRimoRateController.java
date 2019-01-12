@@ -2,8 +2,8 @@
 package ch.ethz.idsc.gokart.dev.rimo;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
-import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;

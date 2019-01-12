@@ -3,12 +3,12 @@ package ch.ethz.idsc.demo.jph.davis;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.dev.davis.io.DavisTxtFileSupplier;
-import ch.ethz.idsc.retina.dev.dvs.io.dat.DatFileSupplier;
-import ch.ethz.idsc.retina.dev.dvs.supply.DvsEventSupplier;
-import ch.ethz.idsc.retina.dev.dvs.supply.ImagesDvsEventSupplier;
-import ch.ethz.idsc.retina.dev.dvs.supply.ProceduralDvsEventSupplier;
-import ch.ethz.idsc.retina.dev.dvs.supply.Waves;
+import ch.ethz.idsc.retina.davis.io.DavisTxtFileSupplier;
+import ch.ethz.idsc.retina.dvs.io.dat.DatFileSupplier;
+import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
+import ch.ethz.idsc.retina.dvs.supply.ImagesDvsEventSupplier;
+import ch.ethz.idsc.retina.dvs.supply.ProceduralDvsEventSupplier;
+import ch.ethz.idsc.retina.dvs.supply.Waves;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /** visualization of events in data sets as animated gif's */

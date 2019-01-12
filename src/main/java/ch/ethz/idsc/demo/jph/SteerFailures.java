@@ -19,7 +19,7 @@ import ch.ethz.idsc.gokart.offline.api.LogFile;
  * 20180614T092944 \--> 0.00161[s]
  * 20180614T122925 \--> 28.178607[s]
  * 20180614T142228 \--> 57.514723[s] */
-enum SteerFailures {
+/* package */ enum SteerFailures {
   ;
   public static void main(String[] args) {
     List<LogFile> list = Arrays.asList( //

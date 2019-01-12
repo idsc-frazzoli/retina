@@ -66,7 +66,7 @@ Navigation
 
 Source file size distribution
 
-![retina](https://user-images.githubusercontent.com/4012178/49820755-09145e00-fd79-11e8-9df2-def72917f8e0.png)
+![gokart](https://user-images.githubusercontent.com/4012178/51076483-3fefd380-1699-11e9-9937-f7ea6b55f1dd.png)
 
 We use `LCM` for message interchange, logging, and post-processing.
 All messages are encoded using a single type `BinaryBlob`.
@@ -124,6 +124,8 @@ The byte order of the binary data is `little-endian` since the encoding is nativ
 # ch.ethz.idsc.retina <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
 Sensor interfaces
+
+![retina](https://user-images.githubusercontent.com/4012178/51076481-3d8d7980-1699-11e9-8917-0c1a9d2044a0.png)
 
 ## Features
 

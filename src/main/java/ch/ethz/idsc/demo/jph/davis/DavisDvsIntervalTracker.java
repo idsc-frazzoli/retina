@@ -3,8 +3,8 @@ package ch.ethz.idsc.demo.jph.davis;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 /** experiments show that the dvs event stream has frequent gaps of 5-25 ms. it
  * seems that davis camera is event-blind during aps images read out. */

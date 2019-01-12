@@ -8,9 +8,9 @@ import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.io.StringScalar;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
 /** https://github.com/idsc-frazzoli/retina/files/1958519/20180428_steering_unit_range.pdf */
-class SteerRangeAnalysis implements OfflineLogListener {
+/* package */ class SteerRangeAnalysis implements OfflineLogListener {
   private final SteerColumnTracker steerColumnTracker = new SteerColumnTracker();
 
   @Override // from OfflineLogListener

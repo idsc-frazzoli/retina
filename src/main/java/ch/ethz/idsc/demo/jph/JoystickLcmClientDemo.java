@@ -4,11 +4,11 @@ package ch.ethz.idsc.demo.jph;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 
 /** display joystick status in console */
-enum JoystickLcmClientDemo {
+/* package */ enum JoystickLcmClientDemo {
   ;
   public static void main(String[] args) throws Exception {
     ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();

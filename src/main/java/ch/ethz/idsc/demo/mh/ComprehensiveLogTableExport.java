@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.mh;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.tab.DavisImuTable;
 import ch.ethz.idsc.gokart.offline.tab.GokartPoseTable;
 import ch.ethz.idsc.gokart.offline.tab.LinmotPassiveStatusTable;
@@ -12,7 +13,6 @@ import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoOdometryTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
 import ch.ethz.idsc.gokart.offline.tab.VelodyneLocalizationTable;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.CsvFormat;

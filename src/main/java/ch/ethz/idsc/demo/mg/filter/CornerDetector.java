@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.filter;
 
 import ch.ethz.idsc.demo.mg.slam.config.DvsConfig;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Scalars;
 
 /** based on paper "Fast event-based corner detection"

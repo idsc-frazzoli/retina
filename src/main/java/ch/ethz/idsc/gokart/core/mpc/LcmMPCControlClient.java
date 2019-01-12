@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
-import ch.ethz.idsc.retina.lcm.BinaryBlobs;
-import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
+import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
 import idsc.BinaryBlob;
 
 public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {

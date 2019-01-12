@@ -3,9 +3,9 @@ package ch.ethz.idsc.gokart.lcm.mod;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
-import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmServer;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmServer;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 abstract class VelodyneLcmServerModule extends AbstractModule {
