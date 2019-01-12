@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.io;
+package ch.ethz.idsc.gokart.lcm.davis;
 
 import java.nio.ByteBuffer;
 

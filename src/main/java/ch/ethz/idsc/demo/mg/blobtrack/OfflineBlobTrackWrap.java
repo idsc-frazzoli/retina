@@ -7,7 +7,7 @@ import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
 import ch.ethz.idsc.demo.mg.blobtrack.vis.BlobTrackViewer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.davis.io.DvsLcmClient;
+import ch.ethz.idsc.gokart.lcm.davis.DvsLcmClient;
 import ch.ethz.idsc.tensor.Scalar;
 
 /** wrapper to run the blob tracking algorithm offline */

@@ -1,5 +1,5 @@
 // code by az and jph
-package ch.ethz.idsc.retina.davis.io;
+package ch.ethz.idsc.gokart.lcm.seye;
 
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;

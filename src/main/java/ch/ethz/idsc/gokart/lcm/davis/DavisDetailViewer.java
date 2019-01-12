@@ -1,10 +1,13 @@
 // code by jph
-package ch.ethz.idsc.retina.davis.app;
+package ch.ethz.idsc.gokart.lcm.davis;
 
-import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
-import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.davis.app.AbstractAccumulatedImage;
+import ch.ethz.idsc.retina.davis.app.AccumulatedEventsGrayImage;
+import ch.ethz.idsc.retina.davis.app.DavisImageBuffer;
+import ch.ethz.idsc.retina.davis.app.DavisViewerFrame;
+import ch.ethz.idsc.retina.davis.app.SignalResetDifference;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 public class DavisDetailViewer implements StartAndStoppable {

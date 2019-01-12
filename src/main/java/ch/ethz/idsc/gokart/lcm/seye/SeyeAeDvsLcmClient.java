@@ -1,11 +1,13 @@
 // code by az and jph
-package ch.ethz.idsc.retina.davis.io;
+package ch.ethz.idsc.gokart.lcm.seye;
 
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import ch.ethz.idsc.gokart.lcm.davis.DvsLcmClient;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.davis.io.Aedat31PolarityEvent;
 
 public class SeyeAeDvsLcmClient extends SeyeAbstractLcmClient implements DvsLcmClient {
   private static final int AEDAT31POLARITYEVENT_BYTES = 8;

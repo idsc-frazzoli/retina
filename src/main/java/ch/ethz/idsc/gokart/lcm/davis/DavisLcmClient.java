@@ -11,7 +11,6 @@ import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.davis.DavisStatics;
 import ch.ethz.idsc.retina.davis.data.DavisApsDatagramDecoder;
 import ch.ethz.idsc.retina.davis.data.DavisDvsDatagramDecoder;
-import ch.ethz.idsc.retina.davis.io.DvsLcmClient;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 import lcm.lcm.LCMDataInputStream;

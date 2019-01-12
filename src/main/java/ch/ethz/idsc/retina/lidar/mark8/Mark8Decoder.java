@@ -6,12 +6,8 @@ import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.lcm.lidar.Mark8LcmClient;
 import ch.ethz.idsc.retina.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.lidar.LidarRayDataProvider;
-import ch.ethz.idsc.retina.lidar.LidarRotationEvent;
-import ch.ethz.idsc.retina.lidar.LidarRotationListener;
-import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 
 /** Packet description taken from M8 Sensor User Guide, QPN 96-00001 Rev H p.32 */
 public class Mark8Decoder implements LidarRayDataProvider {
@@ -107,21 +103,5 @@ public class Mark8Decoder implements LidarRayDataProvider {
     }
     if (byteBuffer.remaining() != 0)
       throw new RuntimeException();
-  }
-
-  public static void main(String[] args) throws Exception {
-    LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-    lidarRotationProvider.addListener(new LidarRotationListener() {
-      @Override
-      public void lidarRotation(LidarRotationEvent lidarRotationEvent) {
-        System.out.println("rotation " + lidarRotationEvent.usec + " " + lidarRotationEvent.rotation);
-        // System.out.println(lidarRotationEvent);
-      }
-    });
-    Mark8LcmClient mark8LcmClient = new Mark8LcmClient("center");
-    mark8LcmClient.mark8Decoder.addRayListener(lidarRotationProvider);
-    mark8LcmClient.mark8Decoder.addRayListener(new Mark8SpacialProvider());
-    mark8LcmClient.startSubscriptions();
-    Thread.sleep(10000);
   }
 }
