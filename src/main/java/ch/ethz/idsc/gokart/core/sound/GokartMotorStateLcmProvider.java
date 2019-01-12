@@ -12,6 +12,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.red.Mean;
 
 /* package */ class GokartMotorStateLcmProvider implements StartAndStoppable, MotorStateProvider, RimoGetListener, RimoPutListener {
+  private static final float MULTI = (float) (1.0 / (2 * 2315));
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   // ---
@@ -42,8 +43,9 @@ import ch.ethz.idsc.tensor.red.Mean;
     short sR = rimoPutEvent.putTireR.getTorqueRaw();
     sL = (short) (sL < 0 ? -sL : sL);
     sR = (short) (sR < 0 ? -sR : sR);
-    float power = (sL + sR) * 1e-4f;
-    return new GokartSoundState(speed, power, .2f);
+    float power = (sL + sR) * MULTI;
+    float tv = (sR - sL) * MULTI;
+    return new GokartSoundState(speed, power, tv);
   }
 
   @Override // from RimoGetListener

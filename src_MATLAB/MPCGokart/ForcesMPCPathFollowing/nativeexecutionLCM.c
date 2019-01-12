@@ -134,17 +134,19 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}
 
 	//gather parameter data
-	int pl = 3*POINTSN+1;
+	int pl = 3*POINTSN+3;
 	
 	printf("parameters\n");
 	for(int i = 0; i<N;i++){
 		params.all_parameters[i*pl] = lastParaMsg.para.speedLimit;
+		params.all_parameters[i*pl+1] = lastParaMsg.para.maxxacc;
+		params.all_parameters[i*pl+2] = lastParaMsg.para.maxyacc;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+1+ip]=lastCRMsg.path.controlPointsX[ip];
+			params.all_parameters[i*pl+3+ip]=lastCRMsg.path.controlPointsX[ip];
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+1+POINTSN+ip]=lastCRMsg.path.controlPointsY[ip];
+			params.all_parameters[i*pl+3+POINTSN+ip]=lastCRMsg.path.controlPointsY[ip];
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+1+2*POINTSN+ip]=lastCRMsg.path.controlPointsR[ip];
+			params.all_parameters[i*pl+3+2*POINTSN+ip]=lastCRMsg.path.controlPointsR[ip];
 	}
 	
 	//assume that this works

@@ -29,7 +29,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   int heigth = 0;
   int count = 0;
   double startOrientation = 0;
-  Scalar radiusOffset = Quantity.of(0.8, SI.METER);
+  Scalar radiusOffset = Quantity.of(0.4, SI.METER);
   Scalar spacing = RealScalar.of(1.5);// TODO should be meters
   Scalar controlPointResolution = RealScalar.of(0.5);
   MPCBSplineTrack lastTrack;
@@ -98,6 +98,7 @@ public class TrackIdentificationManagement implements RenderInterface {
         initialGuess.update(startX, startY, startOrientation, pose);
         closedTrack = initialGuess.isClosed();
       }
+      trackData = null;
       if (trackData == null && closedTrack) {
         // current track is not available or no longer valid
         Tensor ctrpoints = initialGuess.getControlPointGuess(spacing, controlPointResolution);
@@ -116,7 +117,7 @@ public class TrackIdentificationManagement implements RenderInterface {
             trackData = refinenement.getRefinedTrack(//
                 ctrpoints.get(0), //
                 ctrpoints.get(1), //
-                radiusCtrPoints, RealScalar.of(8), 100, closedTrack, constraints);
+                radiusCtrPoints, RealScalar.of(8), 0, closedTrack, constraints);
           /* else
            * trackData = refinenement.getRefinedTrack(//
            * ctrpoints.get(0), //
@@ -131,6 +132,7 @@ public class TrackIdentificationManagement implements RenderInterface {
             trackRender = null;
           } else {
             System.out.println("no solution found!");
+            lastTrack = null;
           }
         }
       } else if (closedTrack) {
@@ -158,5 +160,15 @@ public class TrackIdentificationManagement implements RenderInterface {
     } else {
       initialGuess.render(geometricLayer, graphics);
     }
+  }
+
+  public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
+    if (lastTrack != null) {
+      if (trackRender == null)
+        trackRender = new TrackRender(lastTrack);
+      // trackRender.renderHR(geometricLayer, graphics);
+    } // else {
+    initialGuess.renderHR(geometricLayer, graphics);
+    // }
   }
 }

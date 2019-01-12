@@ -23,48 +23,64 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * TODO interpolate PID constants depending on speed */
 public class SteerPositionControl {
   static final Scalar DT = SteerSocket.INSTANCE.getPutPeriod();
+  private final SteerConfig steerConfig;
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastPos_error = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
   private Scalar lastTor_value = Quantity.of(0, SteerPutEvent.UNIT_RTORQUE); // unit "N*m"
   private Scalar lastIPt_value = Quantity.of(0, SteerPutEvent.UNIT_RTORQUE); // unit "N*m"
 
-  /** @param pos_error in "SCE"
-   * @return "N*m" */
-  public Scalar iterate(Scalar pos_error) {
-    final Scalar pPart = pos_error.multiply(SteerConfig.GLOBAL.Kp); // (e[k]-e[k-1])*Kp
-    // ---
-    final Scalar dPart = pos_error.subtract(lastPos_error).multiply(SteerConfig.GLOBAL.Kd).divide(DT);
-    // ---
-    final Scalar iPart = lastIPt_value.add(pos_error.multiply(SteerConfig.GLOBAL.Ki).multiply(DT)); // e*Ki*dt
-    // ---
-    lastPos_error = pos_error; // update for next iteration
-    // ---
-    Scalar testValue = pPart.add(dPart).add(iPart);
-    Clip clip = SteerConfig.GLOBAL.torqueLimitClip();
-    if (clip.isInside(testValue))
-      lastIPt_value = iPart;
-    lastTor_value = SteerConfig.GLOBAL.torqueLimitClip().apply(testValue); // anti-windup and update for next iteration
-    return lastTor_value;
+  public SteerPositionControl() {
+    steerConfig = SteerConfig.GLOBAL;
+  }
+
+  public SteerPositionControl(SteerConfig steerConfig) {
+    this.steerConfig = steerConfig;
   }
 
   /** @param pos_error in "SCE"
-   * @param spd_error in "SCE s^-1"
    * @return "N*m" */
-  public Scalar iterate(Scalar pos_error, Scalar spd_error) {
-    final Scalar pPart = pos_error.multiply(SteerConfig.GLOBAL.Kp); // (e[k]-e[k-1])*Kp
+  public Scalar iterate(Scalar pos_error) {
+    final Scalar pPart = pos_error.multiply(steerConfig.Kp); // (e[k]-e[k-1])*Kp
     // ---
-    final Scalar dPart = spd_error.multiply(SteerConfig.GLOBAL.Kd);
+    final Scalar dPart = pos_error.subtract(lastPos_error).multiply(steerConfig.Kd).divide(DT);
     // ---
-    final Scalar iPart = lastIPt_value.add(pos_error.multiply(SteerConfig.GLOBAL.Ki).multiply(DT)); // e*Ki*dt
+    final Scalar iPart = lastIPt_value.add(pos_error.multiply(steerConfig.Ki).multiply(DT)); // e*Ki*dt
     // ---
     lastPos_error = pos_error; // update for next iteration
     // ---
     Scalar testValue = pPart.add(dPart).add(iPart);
-    Clip clip = SteerConfig.GLOBAL.torqueLimitClip();
+    Clip clip = steerConfig.torqueLimitClip();
     if (clip.isInside(testValue))
       lastIPt_value = iPart;
-    lastTor_value = SteerConfig.GLOBAL.torqueLimitClip().apply(testValue); // anti-windup and update for next iteration
+    lastTor_value = steerConfig.torqueLimitClip().apply(testValue); // anti-windup and update for next iteration
+    return lastTor_value;
+  }
+
+  /** estimate steering speed */
+  private Scalar lastPos_value = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
+
+  /** @param currentPos E"
+   * @param wantedPos in "SCE"
+   * @param wantedSpeed in "SCE s^-1"
+   * @return "N*m" */
+  public Scalar iterate(Scalar currentPos, Scalar wantedPos, Scalar wantedSpeed) {
+    final Scalar pos_error = wantedPos.subtract(currentPos);
+    final Scalar pPart = pos_error.multiply(steerConfig.Kp); // (e[k]-e[k-1])*Kp
+    // ---
+    final Scalar currentSpd = currentPos.subtract(lastPos_value).divide(DT);
+    final Scalar vel_error = wantedSpeed.subtract(currentSpd);
+    final Scalar dPart = vel_error.multiply(steerConfig.Kd);
+    // ---
+    final Scalar iPart = lastIPt_value.add(pos_error.multiply(steerConfig.Ki).multiply(DT)); // e*Ki*dt
+    // ---
+    lastPos_value = currentPos;
+    // ---
+    Scalar testValue = pPart.add(dPart).add(iPart);
+    Clip clip = steerConfig.torqueLimitClip();
+    if (clip.isInside(testValue))
+      lastIPt_value = iPart;
+    lastTor_value = steerConfig.torqueLimitClip().apply(testValue); // anti-windup and update for next iteration
     return lastTor_value;
   }
 }

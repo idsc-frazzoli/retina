@@ -16,6 +16,7 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
+import ch.ethz.idsc.gokart.dev.steer.HighPowerSteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
@@ -42,7 +43,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final MPCBraking mpcBraking = new MPCSimpleBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
-  private final SteerPositionControl steerPositionController = new SteerPositionControl();
+  private final SteerPositionControl steerPositionController//
+      = new SteerPositionControl(HighPowerSteerConfig.GLOBAL);
   private final Stopwatch started;
   private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
@@ -126,22 +128,21 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     public Optional<SteerPutEvent> putEvent() {
       Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
       Scalar steering = mpcSteering.getSteering(time);
-      if (true) {
+      Scalar dSteering = mpcSteering.getDotSteering(time);
+      if (false) {
         if (Objects.nonNull(steering)) {
           Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
           Scalar difference = steering.subtract(currAngle);
           Scalar torqueCmd = steerPositionController.iterate(difference);
           return Optional.of(SteerPutEvent.createOn(torqueCmd));
         }
-      } /* else {
-         * if (Objects.nonNull(steering)) {
-         * Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-         * Scalar currAngularSpeed = steerColumnInterface.getSteerColumnEncoderCentered();
-         * Scalar difference = steering.subtract(currAngle);
-         * Scalar torqueCmd = steerPositionController.iterate(difference);
-         * return Optional.of(SteerPutEvent.createOn(torqueCmd));
-         * }
-         * } */
+      } else {
+        if (Objects.nonNull(steering)) {
+          Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+          Scalar torqueCmd = steerPositionController.iterate(currAngle, steering, dSteering);
+          return Optional.of(SteerPutEvent.createOn(torqueCmd));
+        }
+      }
       return Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_0);
     }
 
@@ -172,10 +173,12 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     // use joystick for speed limit
     // get joystick
     Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
-    Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
-    if (optional.isPresent()) { // is joystick button "autonomous" pressed?
-      ManualControlInterface manualControlInterface = optional.get();
-      Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
+    Scalar maxXacc = MPCOptimizationConfig.GLOBAL.maxLonAcc;
+    Scalar maxYacc = MPCOptimizationConfig.GLOBAL.maxLatAcc;
+    Optional<ManualControlInterface> optionalJoystick = joystickLcmProvider.getManualControl();
+    if (optionalJoystick.isPresent()) { // is joystick button "autonomoRus" pressed?
+      ManualControlInterface actualJoystick = optionalJoystick.get();
+      Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
       maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
       maxSpeed = Max.of(Quantity.of(1, SI.VELOCITY), maxSpeed);
       // maxSpeed = Quantity.of(1, SI.VELOCITY);
@@ -183,7 +186,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     }
     // send message with max speed
     // optimization parameters will have more values in the future
-    MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed);
+    MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
     lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
     GokartState state = mpcStateEstimationProvider.getState();

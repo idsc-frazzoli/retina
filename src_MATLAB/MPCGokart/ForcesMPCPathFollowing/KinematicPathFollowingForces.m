@@ -9,11 +9,13 @@ clear all
 close all
 
 maxSpeed = 10;
-pointsO = 1;
+maxxacc = 5;
+maxyacc = 10;
+pointsO = 3;
 pointsN = 10;
 splinestart = 1;
 nextsplinepoints = 0;
-%parameters: p = [maxspeed, pointsx, pointsy]
+%parameters: p = [maxspeed, xmaxacc,ymaxacc, pointsx, pointsy]
 
 % variables z = [dotab,dotbeta,ds,x,y,theta,v,ab,beta,s,braketemp]
 global index
@@ -33,6 +35,8 @@ index.nu = 3;
 index.nv = index.ns+index.nu;
 index.sb = index.nu+1;
 index.ps = 1;
+index.pax = 2;
+index.pay = 3;
 
 integrator_stepsize = 0.1;
 
@@ -80,7 +84,9 @@ for i=1:model.N
    model.objective{i} = @(z,p)objective(z,...
        getPointsFromParameters(p, pointsO, pointsN),...
        getRadiiFromParameters(p, pointsO, pointsN),...
-       p(index.ps));
+       p(index.ps),...
+       p(index.pax),...
+       p(index.pay));
 end
 %model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
 
@@ -105,7 +111,7 @@ model.lb(index.s)=0;
 %model.lb = [-inf, -5, -0.1, -inf, -inf,  -inf, 0,-0.45,0,-inf];  % simple lower bounds 
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
-codeoptions.printlevel = 0; % Use printlevel = 2 to print progress (but not for timings)
+codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
@@ -171,7 +177,7 @@ for i =1:tend
     
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-    problem.all_parameters = repmat (getParameters(maxSpeed,nextSplinePoints) , model.N ,1);
+    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,maxyacc,nextSplinePoints) , model.N ,1);
     %problem.all_parameters = zeros(22,1);
     problem.x0 = x0(:);
     %problem.x0 = zeros(310,1);

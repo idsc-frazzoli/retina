@@ -7,12 +7,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
-import ch.ethz.idsc.gokart.core.map.GokartTrackMappingModule;
+import ch.ethz.idsc.gokart.core.mpc.LiveTrackRenderProvider;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
@@ -119,10 +117,8 @@ abstract class ViewLcmModule extends AbstractModule {
     }
     {
       // test simple track
-      if (Objects.nonNull(GokartTrackMappingModule.GRID_RENDER))
-        viewLcmFrame.geometricComponent.addRenderInterface(GokartTrackMappingModule.GRID_RENDER);
-      if (Objects.nonNull(GokartTrackIdentificationModule.TRACKIDENTIFICATION))
-        viewLcmFrame.geometricComponent.addRenderInterface(GokartTrackIdentificationModule.TRACKIDENTIFICATION);
+      LiveTrackRenderProvider liveTrackRenderProvider = new LiveTrackRenderProvider();
+      viewLcmFrame.geometricComponent.addRenderInterface(liveTrackRenderProvider);
       MPCPredictionRender predictionRender = new MPCPredictionRender();
       viewLcmFrame.geometricComponent.addRenderInterface(predictionRender);
     }

@@ -80,6 +80,10 @@ public class BSplineTrackTest extends TestCase {
           .divide(dx);
       // System.out.println(cDev.subtract(nDev));
       // TODO MH test fail perhaps due to new BSplineFunction implementation?
+      // FIXME JPH/MH
+      Scalar scalar = Norm._2.between(cDev, nDev);
+      // System.out.println(scalar);
+      // System.out.println(cDev.subtract(nDev));
       // assertTrue(Chop._04.close(cDev, nDev));
     }
   }

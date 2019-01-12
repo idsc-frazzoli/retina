@@ -18,6 +18,7 @@ import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
+import ch.ethz.idsc.gokart.dev.steer.HighPowerSteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -29,6 +30,7 @@ enum ParametersHelper {
       SensorsConfig.GLOBAL, //
       LinmotConfig.GLOBAL, //
       SteerConfig.GLOBAL, //
+      HighPowerSteerConfig.GLOBAL, //
       RimoConfig.GLOBAL, //
       SafetyConfig.GLOBAL, //
       LocalizationConfig.GLOBAL, //
