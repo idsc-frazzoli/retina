@@ -21,6 +21,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.mat.LeastSquares;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -124,6 +125,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   Tensor routePolygon;
   boolean closed = false;
   List<Tensor> positionalSupports = new LinkedList<>();
+  Tensor controlPoints = Tensors.empty();
 
   // this is potentially slow
   Cell getFarthestCell() {
@@ -378,6 +380,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     Tensor wantedPositionsX = Tensors.empty();
     Tensor wantedPositionsY = Tensors.empty();
     Tensor lastPosition = route.getFirst().getPos();
+    positionalSupports = new LinkedList<>();
     for (Cell c : route) {
       Tensor pos = c.getPos();
       Tensor dist = pos.subtract(lastPosition);
@@ -415,6 +418,9 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       // TODO MH you are doing SVD of the same matrix twice !
       Tensor controlpointsX = LeastSquares.usingSvd(splineMatrix, wantedPositionsX);
       Tensor controlpointsY = LeastSquares.usingSvd(splineMatrix, wantedPositionsY);
+      if(true) {
+        controlPoints = Transpose.of(Tensors.of(controlpointsX,controlpointsY));
+      }
       return Tensors.of(controlpointsX, controlpointsY);
     }
     System.out.println("no usable track!");
@@ -439,11 +445,13 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     graphics.setColor(Color.RED);
     defaultStroke = graphics.getStroke();
     graphics.setStroke(thick);
-    Tensor routePolygon = getRoutePolygon();
-    Path2D path2d = geometricLayer.toPath2D(routePolygon);
-    graphics.draw(path2d);
     if(true) {
-      graphics.setColor(Color.YELLOW);
+      Tensor routePolygon = getRoutePolygon();
+      Path2D path2d = geometricLayer.toPath2D(routePolygon);
+      graphics.draw(path2d);
+    }
+    if(true) {
+      graphics.setColor(Color.ORANGE);
       for(Tensor t: positionalSupports) {
         Tensor pos = geometricLayer.toVector(t);
         int r = (int) (width*2.5f);
@@ -451,6 +459,11 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         int Y = pos.Get(1).number().intValue();
         graphics.drawOval(X - r, Y - r, 2*r, 2*r);
       }
+    }
+    if(false) {
+      graphics.setColor(Color.BLUE);
+      Path2D path2d = geometricLayer.toPath2D(controlPoints);
+      graphics.draw(path2d);
     }
     graphics.setStroke(defaultStroke);
     graphics.setColor(Color.WHITE);

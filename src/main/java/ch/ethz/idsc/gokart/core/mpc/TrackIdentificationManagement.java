@@ -97,6 +97,7 @@ public class TrackIdentificationManagement implements RenderInterface {
         initialGuess.update(startX, startY, startOrientation, pose);
         closedTrack = initialGuess.isClosed();
       }
+      trackData = null;
       if (trackData == null && closedTrack) {
         // current track is not available or no longer valid
         Tensor ctrpoints = initialGuess.getControlPointGuess(spacing, controlPointResolution);
@@ -115,7 +116,7 @@ public class TrackIdentificationManagement implements RenderInterface {
             trackData = refinenement.getRefinedTrack(//
                 ctrpoints.get(0), //
                 ctrpoints.get(1), //
-                radiusCtrPoints, RealScalar.of(8), 100, closedTrack, constraints);
+                radiusCtrPoints, RealScalar.of(8), 0, closedTrack, constraints);
           /* else
            * trackData = refinenement.getRefinedTrack(//
            * ctrpoints.get(0), //
@@ -164,9 +165,9 @@ public class TrackIdentificationManagement implements RenderInterface {
     if (lastTrack != null) {
       if (trackRender == null)
         trackRender = new TrackRender(lastTrack);
-      trackRender.renderHR(geometricLayer, graphics);
-    } else {
+      //trackRender.renderHR(geometricLayer, graphics);
+    }// else {
       initialGuess.renderHR(geometricLayer, graphics);
-    }
+    //}
   }
 }
