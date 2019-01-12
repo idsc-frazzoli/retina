@@ -40,14 +40,14 @@ public class SafetyConfig {
 
   /***************************************************/
   /** @return */
-  public Clip vlp16_ZClip() {
+  /* package */ Clip vlp16_ZClip() {
     return Clip.function( //
         Magnitude.METER.apply(vlp16_ZLo), //
         Magnitude.METER.apply(vlp16_ZHi));
   }
 
   /** @return */
-  public Clip getClearanceClip() {
+  /* package */ Clip getClearanceClip() {
     return Clip.function( //
         Magnitude.METER.apply(clearance_XLo), //
         Magnitude.METER.apply(clearance_XHi));

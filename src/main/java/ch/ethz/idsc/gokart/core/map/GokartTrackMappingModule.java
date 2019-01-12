@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 import java.nio.FloatBuffer;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.fuse.TrackDetectionLidarConfig;
 import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -45,7 +44,7 @@ public class GokartTrackMappingModule implements //
   private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid();
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private final SpacialXZObstaclePredicate predicate = TrackDetectionLidarConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private final SpacialXZObstaclePredicate predicate = TrackDetectionConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent;
   /** tear down flag to stop thread */
