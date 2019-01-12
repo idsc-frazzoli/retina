@@ -2,9 +2,9 @@
 package ch.ethz.idsc.demo.jph.lidar;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxRangeProvider;
-import ch.ethz.idsc.retina.dev.lidar.urg04lx.app.Urg04lxFrame;
-import ch.ethz.idsc.retina.lcm.lidar.Urg04lxLcmHandler;
+import ch.ethz.idsc.gokart.lcm.lidar.Urg04lxLcmHandler;
+import ch.ethz.idsc.retina.lidar.urg04lx.Urg04lxRangeProvider;
+import ch.ethz.idsc.retina.lidar.urg04lx.app.Urg04lxFrame;
 
 enum Urg04lxViewerLcmClient {
   ;

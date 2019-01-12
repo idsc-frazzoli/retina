@@ -8,7 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackObj;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 /** This class implements an algorithm for Gaussian blob tracking which is inspired by the paper:
  * "asynchronous event-based multikernel algorithm for high-speed visual features tracking".

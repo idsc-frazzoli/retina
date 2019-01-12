@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
-import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
+import ch.ethz.idsc.gokart.lcm.SimpleLcmClient;
 
 public class SteerGetLcmClient extends SimpleLcmClient<SteerGetListener> {
   public SteerGetLcmClient() {

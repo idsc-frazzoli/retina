@@ -3,9 +3,9 @@ package ch.ethz.idsc.demo.jph;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
+import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 
 /** used in {@link SensorRackVibration} */
 /* package */ class Vlp16SingleProvider extends VelodyneSpacialProvider {

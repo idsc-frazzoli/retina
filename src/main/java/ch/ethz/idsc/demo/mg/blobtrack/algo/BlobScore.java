@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.blobtrack.algo;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackObj;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 /* package */ interface BlobScore {
   /** computes a score value for the blobTrackObj depending on the DavisDvsEvent

@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.lidar.LidarRayDataListener;
+import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

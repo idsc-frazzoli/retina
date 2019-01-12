@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.jph.lidar;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.lidar.urg04lx.Urg04lxLiveProvider;
+import ch.ethz.idsc.retina.lidar.urg04lx.Urg04lxLiveProvider;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 
 /** for the demo, the sensor has to be connected to the pc */

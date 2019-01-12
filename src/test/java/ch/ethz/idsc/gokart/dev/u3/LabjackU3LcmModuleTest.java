@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.dev.u3;
 
-import ch.ethz.idsc.retina.dev.u3.LabjackAdcFrame;
+import ch.ethz.idsc.retina.u3.LabjackAdcFrame;
 import junit.framework.TestCase;
 
 public class LabjackU3LcmModuleTest extends TestCase {

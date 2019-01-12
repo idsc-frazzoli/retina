@@ -11,8 +11,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;

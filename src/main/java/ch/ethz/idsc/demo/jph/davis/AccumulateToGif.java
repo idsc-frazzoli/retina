@@ -3,11 +3,11 @@ package ch.ethz.idsc.demo.jph.davis;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.dev.dvs.core.DvsAccumulate;
-import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
-import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventBuffer;
-import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventStatistics;
-import ch.ethz.idsc.retina.dev.dvs.supply.DvsEventSupplier;
+import ch.ethz.idsc.retina.dvs.core.DvsAccumulate;
+import ch.ethz.idsc.retina.dvs.core.DvsEvent;
+import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
+import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
+import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 
 enum AccumulateToGif {

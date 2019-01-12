@@ -3,9 +3,9 @@ package ch.ethz.idsc.gokart.lcm.mod;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8DeflateDigest;
-import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8Digest;
-import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmServer;
+import ch.ethz.idsc.gokart.lcm.lidar.Mark8LcmServer;
+import ch.ethz.idsc.retina.lidar.mark8.Mark8DeflateDigest;
+import ch.ethz.idsc.retina.lidar.mark8.Mark8Digest;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 public class Mark8LcmServerModule extends AbstractModule {

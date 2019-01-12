@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mg.slam.log;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.core.AbstractSlamStep;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 // counts how many events are processed. By running it both offline and online, we get ratio of 
 // processed events

@@ -13,7 +13,7 @@ import ch.ethz.idsc.demo.mg.slam.log.SlamEventCounter;
 import ch.ethz.idsc.demo.mg.slam.log.TimerLogCollection;
 import ch.ethz.idsc.demo.mg.slam.prc.SlamMapProcessing;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
 /** SLAM algorithm module configuration.

@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.jph.davis;
 
 import java.awt.Color;
 
-import ch.ethz.idsc.retina.dev.davis.io.Aedat31FileSupplier;
+import ch.ethz.idsc.retina.davis.io.Aedat31FileSupplier;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.tensor.io.AnimatedGifWriter;

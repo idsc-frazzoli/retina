@@ -3,10 +3,10 @@ package ch.ethz.idsc.demo.jph.davis;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.dev.davis.io.DavisTxtFileSupplier;
-import ch.ethz.idsc.retina.dev.dvs.core.DvsEvent;
-import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventBuffer;
-import ch.ethz.idsc.retina.dev.dvs.digest.DvsEventStatistics;
+import ch.ethz.idsc.retina.davis.io.DavisTxtFileSupplier;
+import ch.ethz.idsc.retina.dvs.core.DvsEvent;
+import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
+import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 
 /** demo events.txt file read
  * file format used by Robotics and Perception Group

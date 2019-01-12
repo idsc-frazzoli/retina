@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.gui;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.davis.app.DavisDetailViewer;
+import ch.ethz.idsc.retina.davis.app.DavisDetailViewer;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;

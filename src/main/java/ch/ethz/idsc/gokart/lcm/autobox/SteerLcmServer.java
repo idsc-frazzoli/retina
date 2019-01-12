@@ -5,7 +5,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutListener;
-import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 
 public enum SteerLcmServer implements SteerGetListener, SteerPutListener {
   INSTANCE;

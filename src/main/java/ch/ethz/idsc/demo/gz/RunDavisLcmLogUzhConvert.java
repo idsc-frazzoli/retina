@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.gz;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.lcm.davis.DavisLcmLogUzhConvert;
+import ch.ethz.idsc.gokart.lcm.davis.DavisLcmLogUzhConvert;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum RunDavisLcmLogUzhConvert {

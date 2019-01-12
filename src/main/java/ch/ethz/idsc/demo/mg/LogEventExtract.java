@@ -3,8 +3,8 @@ package ch.ethz.idsc.demo.mg;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.lcm.MessageConsistency;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.MessageConsistency;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import idsc.BinaryBlob;
 import lcm.logging.Log;

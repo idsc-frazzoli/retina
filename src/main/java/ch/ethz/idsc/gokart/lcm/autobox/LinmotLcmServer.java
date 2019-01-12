@@ -5,7 +5,7 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutListener;
-import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 
 public enum LinmotLcmServer implements LinmotGetListener, LinmotPutListener {
   INSTANCE;

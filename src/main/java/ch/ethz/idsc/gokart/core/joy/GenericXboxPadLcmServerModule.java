@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.joy;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.dev.joystick.JoystickType;
+import ch.ethz.idsc.retina.joystick.JoystickType;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 public class GenericXboxPadLcmServerModule extends AbstractModule {

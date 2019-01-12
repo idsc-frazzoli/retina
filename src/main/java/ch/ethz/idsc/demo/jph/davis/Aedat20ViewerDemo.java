@@ -1,10 +1,10 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.davis;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDecoder;
-import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis.app.DavisEventViewer;
-import ch.ethz.idsc.retina.dev.davis.io.Aedat20FileSupplier;
+import ch.ethz.idsc.retina.davis.DavisDecoder;
+import ch.ethz.idsc.retina.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.davis.app.DavisEventViewer;
+import ch.ethz.idsc.retina.davis.io.Aedat20FileSupplier;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** playback of aedat log file and visualization of content. data processing is
