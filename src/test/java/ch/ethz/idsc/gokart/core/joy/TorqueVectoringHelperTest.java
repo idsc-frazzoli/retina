@@ -15,6 +15,9 @@ public class TorqueVectoringHelperTest extends TestCase {
   private static void _checkSym(Scalar s1, Scalar s2, Tensor vector) {
     assertEquals(TorqueVectoringHelper.clip(s1, s2), vector);
     assertEquals(TorqueVectoringHelper.clip(s2, s1), Reverse.of(vector));
+    // FIXME JPH/MH the following two identities should hold
+    // assertEquals(TorqueVectoringHelper.clip(s1.negate(), s2.negate()), vector.negate());
+    // assertEquals(TorqueVectoringHelper.clip(s2.negate(), s1.negate()), Reverse.of(vector.negate()));
   }
 
   public void testClip1() {

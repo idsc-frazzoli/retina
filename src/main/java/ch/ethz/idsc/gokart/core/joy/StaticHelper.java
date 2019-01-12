@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.alg.UnitVector;
 
-enum StaticHelper {
+/* package */ enum StaticHelper {
   ;
   public static Tensor incrSteps(int n) {
     Tensor tensor = Tensors.empty();
@@ -17,10 +17,5 @@ enum StaticHelper {
       tensor.append(UnitVector.of(3, 0).multiply(s.negate()));
     }
     return Tensor.of(tensor.flatten(-1));
-  }
-
-  public static void main(String[] args) {
-    Tensor vector = incrSteps(5);
-    System.out.println(vector);
   }
 }
