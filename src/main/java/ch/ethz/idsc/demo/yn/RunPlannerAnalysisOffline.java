@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /* package */ enum RunPlannerAnalysisOffline {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    File file = HomeDirectory.file("gokart/logs");
+    File file = HomeDirectory.file("gokart", "logs");
     System.out.println(file.getName());
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(file);
     OfflineLogListener oll = new PlannerAnalysisOffline();
