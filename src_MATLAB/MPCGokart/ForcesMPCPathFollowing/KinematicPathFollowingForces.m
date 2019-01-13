@@ -10,7 +10,7 @@ close all
 
 maxSpeed = 10;
 maxxacc = 5;
-maxyacc = 10;
+maxyacc = 5;
 pointsO = 3;
 pointsN = 10;
 splinestart = 1;
