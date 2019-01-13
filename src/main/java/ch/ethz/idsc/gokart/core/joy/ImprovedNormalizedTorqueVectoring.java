@@ -52,7 +52,7 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
    * @param wantedZTorque [ONE] TODO currently dimensionless. Should we change that?
    * @param velocity [m/s]
    * @return the required motor currents [Arms] */
-  private Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
+  protected Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
     Tensor minMax = powerLookupTable.getMinMaxAcceleration(velocity);
     Scalar min = minMax.Get(0);
     Scalar max = minMax.Get(1);
