@@ -14,13 +14,12 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 public class TrajectoryTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
-  private Tensor trj;
 
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     System.out.print("Processing: " + time + "\n");
     if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME)) {
-      trj = ArrayFloatBlob.decode(byteBuffer);
+      Tensor trj = ArrayFloatBlob.decode(byteBuffer);
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
           trj.map(Round._6));
