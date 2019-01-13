@@ -2,9 +2,9 @@
 package ch.ethz.idsc.demo.jph;
 
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.tab.SteerRelRckWatchdog;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 
 /** starting on 20180607 the steering system exhibited behavior out of the nominal range */
 /* package */ enum SteerRelRckCheck {

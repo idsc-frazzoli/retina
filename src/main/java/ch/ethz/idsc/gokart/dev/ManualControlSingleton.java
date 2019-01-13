@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlListener;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
+import ch.ethz.idsc.retina.joystick.ManualControlListener;
+import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 

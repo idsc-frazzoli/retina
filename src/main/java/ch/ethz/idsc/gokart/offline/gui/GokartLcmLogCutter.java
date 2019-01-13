@@ -28,7 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.lcm.LcmLogFileCutter;
+import ch.ethz.idsc.gokart.lcm.LcmLogFileCutter;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 

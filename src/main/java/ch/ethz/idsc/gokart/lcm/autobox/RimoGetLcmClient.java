@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
+import ch.ethz.idsc.gokart.lcm.SimpleLcmClient;
 
 public class RimoGetLcmClient extends SimpleLcmClient<RimoGetListener> {
   private static boolean notify_flag = true;

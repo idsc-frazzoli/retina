@@ -4,8 +4,8 @@ package ch.ethz.idsc.gokart.offline.tab;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.retina.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

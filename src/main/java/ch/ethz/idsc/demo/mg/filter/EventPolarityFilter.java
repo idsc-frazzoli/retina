@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.filter;
 
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 public enum EventPolarityFilter implements DavisDvsEventFilter {
   BOTH() {

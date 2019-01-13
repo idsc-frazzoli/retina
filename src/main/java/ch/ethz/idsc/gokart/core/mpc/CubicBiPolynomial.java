@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 /** the polynomial depends on two variables: x and y
  * the polynomial is defined by 10 coeffients
  * and evaluates all terms up to degree 3. */
-public class CubicBiPolynomial {
+/* package */ class CubicBiPolynomial {
   private final float p00;
   private final float p10;
   private final float p01;

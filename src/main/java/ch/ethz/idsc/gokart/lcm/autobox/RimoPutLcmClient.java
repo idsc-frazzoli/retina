@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutListener;
-import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
+import ch.ethz.idsc.gokart.lcm.SimpleLcmClient;
 
 public class RimoPutLcmClient extends SimpleLcmClient<RimoPutListener> {
   public RimoPutLcmClient() {

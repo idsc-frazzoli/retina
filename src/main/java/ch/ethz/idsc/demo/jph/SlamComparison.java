@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineIndex;
@@ -19,7 +20,6 @@ import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeWrap;
 import ch.ethz.idsc.gokart.offline.slam.PoseScatterImage;
 import ch.ethz.idsc.gokart.offline.slam.ScatterImage;
 import ch.ethz.idsc.gokart.offline.slam.WallScatterImage;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
  * 
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf
  * https://github.com/idsc-frazzoli/retina/files/2299868/20180818_datasets_track_w.pdf */
-enum SlamComparison {
+/* package */ enum SlamComparison {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();

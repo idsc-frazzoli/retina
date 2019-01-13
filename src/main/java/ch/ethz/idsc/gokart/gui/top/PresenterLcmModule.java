@@ -28,14 +28,14 @@ import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
+import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
+import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
-import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
-import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
@@ -190,7 +190,7 @@ public class PresenterLcmModule extends AbstractModule {
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.configCoordinateOffset(400, 500);
-    final File file = AppCustomization.file(PresenterLcmModule.class.getSimpleName() + "_model2pixel.tensor");
+    final File file = AppCustomization.file(getClass(), "model2pixel.tensor");
     try {
       timerFrame.geometricComponent.setModel2Pixel(Get.of(file));
     } catch (Exception exception) {

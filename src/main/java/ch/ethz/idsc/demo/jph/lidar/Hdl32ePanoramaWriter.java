@@ -4,8 +4,8 @@ package ch.ethz.idsc.demo.jph.lidar;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import ch.ethz.idsc.retina.dev.lidar.app.LidarPanorama;
-import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaListener;
+import ch.ethz.idsc.retina.lidar.app.LidarPanorama;
+import ch.ethz.idsc.retina.lidar.app.LidarPanoramaListener;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 
 /** export of panorama to animated gif */

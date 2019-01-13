@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.slam.MappingAnalysisOfflineMH;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.HomeDirectory;

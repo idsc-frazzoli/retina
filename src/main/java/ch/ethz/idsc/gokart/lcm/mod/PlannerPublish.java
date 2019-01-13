@@ -4,9 +4,9 @@ package ch.ethz.idsc.gokart.lcm.mod;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
-import ch.ethz.idsc.retina.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.tensor.Tensor;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;

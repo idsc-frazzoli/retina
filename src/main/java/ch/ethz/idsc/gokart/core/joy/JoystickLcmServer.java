@@ -11,9 +11,9 @@ import java.util.TimerTask;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
-import ch.ethz.idsc.retina.dev.joystick.JoystickEncoder;
-import ch.ethz.idsc.retina.dev.joystick.JoystickType;
-import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.retina.joystick.JoystickEncoder;
+import ch.ethz.idsc.retina.joystick.JoystickType;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 public class JoystickLcmServer implements StartAndStoppable {

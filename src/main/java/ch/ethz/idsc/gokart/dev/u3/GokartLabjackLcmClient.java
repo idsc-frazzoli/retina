@@ -4,9 +4,9 @@ package ch.ethz.idsc.gokart.dev.u3;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
+import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.data.TimedFuse;
 
 public final class GokartLabjackLcmClient extends BinaryLcmClient implements ManualControlProvider {

@@ -11,9 +11,9 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.joystick.JoystickListener;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.joystick.JoystickListener;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Round;
 

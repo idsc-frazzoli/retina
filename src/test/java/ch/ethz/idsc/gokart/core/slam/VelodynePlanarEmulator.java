@@ -5,11 +5,11 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
+import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
+import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 /** CLASS IS NOT IN USE ANYMORE, INSTEAD USE TiltedVelodynePlanarEmulator

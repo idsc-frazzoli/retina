@@ -8,7 +8,7 @@ import ch.ethz.idsc.gokart.dev.GokartJoystickAdapter;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;

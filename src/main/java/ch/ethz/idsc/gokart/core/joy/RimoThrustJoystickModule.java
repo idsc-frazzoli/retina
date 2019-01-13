@@ -7,7 +7,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.alg.Differences;

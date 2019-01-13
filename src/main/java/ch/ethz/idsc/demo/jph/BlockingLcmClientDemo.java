@@ -7,9 +7,9 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
-import ch.ethz.idsc.retina.lcm.davis.DavisImuLcmClient;
+import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
 

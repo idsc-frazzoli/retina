@@ -3,9 +3,9 @@ package ch.ethz.idsc.demo.az;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.dev.davis.app.AedatLogConverter;
+import ch.ethz.idsc.retina.davis.app.AedatLogConverter;
 
-enum AedatLogConverterDemo {
+/* package */ enum AedatLogConverterDemo {
   ;
   @SuppressWarnings("unused")
   public static void main(String[] args) throws Exception {

@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.lidar;
 
-import ch.ethz.idsc.retina.dev.lidar.app.VelodynePcapPacketListener;
-import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
+import ch.ethz.idsc.retina.lidar.app.VelodynePcapPacketListener;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 

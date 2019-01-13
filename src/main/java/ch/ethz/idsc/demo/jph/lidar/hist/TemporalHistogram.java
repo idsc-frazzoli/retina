@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.jph.lidar.hist;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
+import ch.ethz.idsc.retina.lidar.LidarRayDataListener;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.sca.Increment;

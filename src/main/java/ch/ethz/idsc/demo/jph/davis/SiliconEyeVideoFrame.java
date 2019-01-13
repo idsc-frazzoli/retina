@@ -7,8 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
-import ch.ethz.idsc.retina.dev.davis.Aedat31FrameListener;
-import ch.ethz.idsc.retina.dev.davis.io.Aedat31FrameEvent;
+import ch.ethz.idsc.retina.davis.Aedat31FrameListener;
+import ch.ethz.idsc.retina.davis.io.Aedat31FrameEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
 

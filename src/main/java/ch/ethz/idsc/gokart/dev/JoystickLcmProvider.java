@@ -4,10 +4,10 @@ package ch.ethz.idsc.gokart.dev;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.dev.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
+import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
+import ch.ethz.idsc.retina.joystick.JoystickDecoder;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.data.TimedFuse;
 
 /** client to lcm channel with joystick information */

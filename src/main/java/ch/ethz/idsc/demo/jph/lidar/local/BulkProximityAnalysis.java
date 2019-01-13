@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.jph.lidar.local;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.io.Export;
 
 enum BulkProximityAnalysis {

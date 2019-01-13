@@ -9,8 +9,8 @@ import java.awt.image.WritableRaster;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
 

@@ -13,10 +13,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.DavisSerial;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
+import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
+import ch.ethz.idsc.retina.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;

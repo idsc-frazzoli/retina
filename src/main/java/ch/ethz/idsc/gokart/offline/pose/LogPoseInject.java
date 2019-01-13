@@ -11,9 +11,9 @@ import java.util.Set;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.lcm.BinaryBlobs;
-import ch.ethz.idsc.retina.lcm.MessageConsistency;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
+import ch.ethz.idsc.gokart.lcm.MessageConsistency;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;

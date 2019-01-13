@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
-import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
+import ch.ethz.idsc.gokart.lcm.SimpleLcmClient;
 
 public class LinmotGetLcmClient extends SimpleLcmClient<LinmotGetListener> {
   public LinmotGetLcmClient() {

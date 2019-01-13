@@ -4,10 +4,10 @@ package ch.ethz.idsc.gokart.offline.tab;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.VelodynePosEvent;
-import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.lidar.VelodynePosEvent;
 import ch.ethz.idsc.retina.util.gps.WGS84toCH1903LV03Plus;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;

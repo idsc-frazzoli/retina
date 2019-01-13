@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

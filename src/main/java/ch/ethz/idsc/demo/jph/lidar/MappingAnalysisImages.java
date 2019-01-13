@@ -6,8 +6,8 @@ import java.io.File;
 import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.slam.MappingAnalysisOffline;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 

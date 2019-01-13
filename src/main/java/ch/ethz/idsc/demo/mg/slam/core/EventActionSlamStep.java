@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam.core;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 /** for SLAM algorithm modules that execute action for each incoming event */
 /* package */ abstract class EventActionSlamStep extends AbstractSlamStep {

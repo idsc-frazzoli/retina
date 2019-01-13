@@ -4,11 +4,11 @@ package ch.ethz.idsc.demo.jph;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineIndex;
 import ch.ethz.idsc.gokart.offline.tab.LocalizationTable;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** export to determine characteristics and accuracy of gps sensor
  * 
  * https://github.com/idsc-frazzoli/retina/issues/147 */
-enum GpsAnalysis {
+/* package */ enum GpsAnalysis {
   ;
   public static void main(String[] args) throws IOException {
     for (File folder : OfflineIndex.folders(HomeDirectory.file("gokart/GpsAnalysis"))) {

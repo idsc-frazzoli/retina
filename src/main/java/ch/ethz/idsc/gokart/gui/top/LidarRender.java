@@ -6,8 +6,8 @@ import java.nio.FloatBuffer;
 import java.util.function.Supplier;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
-import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
+import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
+import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

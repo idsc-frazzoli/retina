@@ -8,10 +8,10 @@ import java.nio.ByteOrder;
 
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

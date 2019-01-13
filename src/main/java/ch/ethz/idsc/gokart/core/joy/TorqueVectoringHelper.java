@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-enum TorqueVectoringHelper {
+/* package */ enum TorqueVectoringHelper {
   ;
   private static final Scalar MAX = RealScalar.of(+1.0);
   private static final Scalar MIN = RealScalar.of(-1.0);

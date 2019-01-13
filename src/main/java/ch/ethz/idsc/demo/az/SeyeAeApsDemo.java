@@ -2,9 +2,9 @@
 package ch.ethz.idsc.demo.az;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.dev.davis.Aedat31FrameListener;
-import ch.ethz.idsc.retina.dev.davis.io.Aedat31FrameEvent;
-import ch.ethz.idsc.retina.dev.davis.io.SeyeAeApsLcmClient;
+import ch.ethz.idsc.gokart.lcm.seye.SeyeAeApsLcmClient;
+import ch.ethz.idsc.retina.davis.Aedat31FrameListener;
+import ch.ethz.idsc.retina.davis.io.Aedat31FrameEvent;
 
 enum SeyeAeApsDemo {
   ;

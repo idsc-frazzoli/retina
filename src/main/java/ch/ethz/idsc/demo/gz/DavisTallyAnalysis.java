@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.GokartLogFile;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;

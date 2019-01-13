@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.lidar;
 
-import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
-import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmServer;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmServer;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 
 enum Vlp16LcmServer {
   ;

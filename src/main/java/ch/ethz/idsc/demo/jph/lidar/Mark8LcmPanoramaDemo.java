@@ -1,10 +1,10 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.lidar;
 
-import ch.ethz.idsc.retina.dev.lidar.app.LidarPanoramaProvider;
-import ch.ethz.idsc.retina.dev.lidar.app.VelodyneUtils;
-import ch.ethz.idsc.retina.dev.lidar.mark8.Mark8PanoramaProvider;
-import ch.ethz.idsc.retina.lcm.lidar.Mark8LcmClient;
+import ch.ethz.idsc.gokart.lcm.lidar.Mark8LcmClient;
+import ch.ethz.idsc.retina.lidar.app.LidarPanoramaProvider;
+import ch.ethz.idsc.retina.lidar.app.VelodyneUtils;
+import ch.ethz.idsc.retina.lidar.mark8.Mark8PanoramaProvider;
 
 /** displays hdl32e live data stream as depth and intensity panorama */
 enum Mark8LcmPanoramaDemo {

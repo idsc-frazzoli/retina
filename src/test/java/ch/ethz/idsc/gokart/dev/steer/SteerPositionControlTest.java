@@ -47,8 +47,10 @@ public class SteerPositionControlTest extends TestCase {
       SteerPutEvent.RTORQUE.apply(Torque);
       currentSpd = currentSpd.add(Torque.multiply(torque2Acc).multiply(SteerPositionControl.DT));
       currentPos = currentSpd.multiply(SteerPositionControl.DT);
-      System.out.println("current Speed: " + currentSpd);
-      System.out.println("current Position " + currentPos);
+      if (i % 1000 == 0) {
+        System.out.println("current Speed: " + currentSpd);
+        System.out.println("current Position " + currentPos);
+      }
     }
   }
 

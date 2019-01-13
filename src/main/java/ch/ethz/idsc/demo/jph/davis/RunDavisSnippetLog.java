@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.jph.davis;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.lcm.davis.DavisSnippetLog;
+import ch.ethz.idsc.gokart.lcm.davis.DavisSnippetLog;
 
 enum RunDavisSnippetLog {
   ;
