@@ -45,7 +45,9 @@ public class ParametersModule extends AbstractModule {
     if (0 < TensorProperties.wrap(object).fields().count()) {
       ParametersComponent propertiesComponent = new ParametersComponent(object);
       String title = object.getClass().getSimpleName();
-      title = title.endsWith("Config") ? title.substring(0, title.length() - 6) : title;
+      title = title.endsWith("Config") //
+          ? title.substring(0, title.length() - 6)
+          : title;
       jTabbedPane.addTab(title, propertiesComponent.getScrollPane());
       {
         // change tab component to modify display size

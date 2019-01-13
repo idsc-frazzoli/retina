@@ -8,32 +8,25 @@ import java.io.InputStreamReader;
 import java.util.Objects;
 
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /** Labjack U3
  * readout ADC */
 public final class LabjackU3LiveProvider implements StartAndStoppable, Runnable {
-  // TODO retrieve executable from properties file resources/custom/...
-  private static final File DIRECTORY = HomeDirectory.file("Public", "exodriver", "examples", "U3");
-  private static final File EXECUTABLE = new File(DIRECTORY, "u3adctxt");
-
-  public static boolean isFeasible() {
-    return EXECUTABLE.isFile();
-  }
-
-  // ---
+  private final LabjackU3Config labjackU3Config;
   /** 2 bytes header, 8 bytes timestamp, each point as short */
   private final LabjackAdcListener labjackAdcListener;
   private Process process;
 
-  /* package */ LabjackU3LiveProvider(LabjackAdcListener labjackAdcListener) {
+  /* package */ LabjackU3LiveProvider(LabjackU3Config labjackU3Config, LabjackAdcListener labjackAdcListener) {
+    this.labjackU3Config = labjackU3Config;
     this.labjackAdcListener = Objects.requireNonNull(labjackAdcListener);
   }
 
   @Override // from StartAndStoppable
   public void start() { // non-blocking
-    ProcessBuilder processBuilder = new ProcessBuilder(EXECUTABLE.toString());
-    processBuilder.directory(DIRECTORY); // <- not required
+    File executable = labjackU3Config.getExecutable();
+    ProcessBuilder processBuilder = new ProcessBuilder(executable.toString());
+    processBuilder.directory(executable.getParentFile()); // <- not required
     try {
       process = processBuilder.start();
       Thread thread = new Thread(this);

@@ -1,12 +1,12 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.davis;
+package ch.ethz.idsc.demo.jph.dvs;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.davis.io.DavisTxtFileSupplier;
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
+import ch.ethz.idsc.retina.dvs.supply.DvsTxtFileSupplier;
 
 /** demo events.txt file read
  * file format used by Robotics and Perception Group
@@ -20,7 +20,7 @@ enum TxtSupplierTest {
     File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
         "events.txt");
     System.out.println(file.exists());
-    try (DavisTxtFileSupplier sup = new DavisTxtFileSupplier(file, ImageDimensions.UZ)) {
+    try (DvsTxtFileSupplier sup = new DvsTxtFileSupplier(file, ImageDimensions.UZ)) {
       DvsEventBuffer buf = new DvsEventBuffer(10000);
       while (true) {
         DvsEvent dvsEvent = sup.next();

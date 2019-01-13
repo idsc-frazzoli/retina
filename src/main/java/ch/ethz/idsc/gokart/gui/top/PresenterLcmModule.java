@@ -190,7 +190,7 @@ public class PresenterLcmModule extends AbstractModule {
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.configCoordinateOffset(400, 500);
-    final File file = AppCustomization.file(PresenterLcmModule.class.getSimpleName() + "_model2pixel.tensor");
+    final File file = AppCustomization.file(getClass(), "model2pixel.tensor");
     try {
       timerFrame.geometricComponent.setModel2Pixel(Get.of(file));
     } catch (Exception exception) {

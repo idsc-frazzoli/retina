@@ -1220,6 +1220,46 @@ public enum GokartLogFile implements LogFile {
   _20181218T150139_b554b6a9,
   /** manual driving */
   _20181218T172046_7d7bfcfb, //
+  /***************************************************/
+  /* 2018-12-20 */
+  /** manual driving; localization failure at end */
+  _20181220T113627_6ad0d1f8,
+  /** manual driving */
+  _20181220T115137_6ad0d1f8,
+  /** manual driving */
+  _20181220T134721_2a2cab5b,
+  /** manual driving; mpc */
+  _20181220T135558_2a2cab5b,
+  /** manual driving; mpc */
+  _20181220T144124_2a2cab5b,
+  /** manual driving; mpc */
+  _20181220T151446_6d16b8f5,
+  /** manual driving; mpc */
+  _20181220T152212_6d16b8f5,
+  /** manual driving; mpc */
+  _20181220T152848_2287c884,
+  /***************************************************/
+  /* 2018-12-28 */
+  /** manual driving */
+  _20181228T084736_8f8316ab,
+  /** manual driving; mpc */
+  _20181228T085118_8f8316ab,
+  /** manual driving */
+  _20181228T155256_41aeb417,
+  /** manual driving; mpc */
+  _20181228T160225_41aeb417,
+  /***************************************************/
+  /* 2018-01-10 */
+  /** manual driving */
+  _20190110T143855_41aeb417,
+  /** manual driving; autobox failure? */
+  _20190110T145219_41aeb417,
+  /** autobox failure? */
+  _20190110T150234_41aeb417,
+  /** manual driving; localization not initialized */
+  _20190110T150643_41aeb417,
+  /** manual driving; localization not initialized */
+  _20190110T173502_41aeb417, //
   ;
   // ---
   @Override // from LogFile
