@@ -24,9 +24,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 
 /** linmot press test enables the driver to apply the brake
- * at a constant value for a certain period of time
- * 
- * TODO generate a report from the log files about the brake effect */
+ * at a constant value for a certain period of time */
 public class LinmotSuccessivPressTestModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //

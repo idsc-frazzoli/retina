@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.Norm;
 
-public enum CurveUtils {
+/* package */ enum CurveUtils {
   ;
   public static final int NO_MATCH = -1;
   /** 28 is half of 42 therefore this is the answer (joke) */

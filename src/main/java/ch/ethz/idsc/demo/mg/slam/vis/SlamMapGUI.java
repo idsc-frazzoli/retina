@@ -1,7 +1,9 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.vis;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
@@ -9,7 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
-import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
 import ch.ethz.idsc.retina.util.img.BufferedImageResize;
 
 /** GUI to display SLAM algorithm */
@@ -35,8 +36,8 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     scaling = frameWidth / (double) mapWidth;
     bufferedImage[0] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
     bufferedImage[1] = new BufferedImage(mapWidth, mapHeight, BufferedImage.TYPE_BYTE_INDEXED);
-    VisGeneralUtil.clearFrame(bufferedImage[0]);
-    VisGeneralUtil.clearFrame(bufferedImage[1]);
+    clearFrame(bufferedImage[0]);
+    clearFrame(bufferedImage[1]);
     jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     jFrame.setContentPane(jComponent);
     jFrame.setBounds(100, 100, 1320, 670);
@@ -53,5 +54,12 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   public void dispose() {
     jFrame.setVisible(false);
     jFrame.dispose();
+  }
+
+  // clears the bufferedImage to visualize a blank white rectangle
+  private static void clearFrame(BufferedImage bufferedImage) {
+    Graphics2D graphics2D = bufferedImage.createGraphics();
+    graphics2D.setColor(Color.WHITE);
+    graphics2D.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
   }
 }

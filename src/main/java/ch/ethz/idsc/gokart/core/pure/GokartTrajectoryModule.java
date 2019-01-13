@@ -198,9 +198,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         costs.add(new Se2MinTimeGoalManager(se2ComboRegion, controls));
         GoalInterface multiCostGoalInterface = new VectorCostGoalAdapter(costs, se2ComboRegion);
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
-            STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, plannerConstraint, multiCostGoalInterface);
-        ((StandardTrajectoryPlanner) trajectoryPlanner).relabelDecision = //
-            new LexicographicRelabelDecision(Lexicographic.COMPARATOR);
+            STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, //
+            plannerConstraint, multiCostGoalInterface, //
+            new LexicographicRelabelDecision(Lexicographic.COMPARATOR));
         // Do Planning
         StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
         trajectoryPlanner.insertRoot(root);

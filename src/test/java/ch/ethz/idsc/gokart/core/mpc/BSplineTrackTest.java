@@ -40,21 +40,18 @@ public class BSplineTrackTest extends TestCase {
      * try {
      * Export.of(file, out.divide(meter));
      * } catch (IOException e) {
-     * // TODO Auto-generated catch block
      * e.printStackTrace();
      * }
      * File dfile = new File("bsplinedOut.csv");
      * try {
      * Export.of(dfile, devout.divide(meter));
      * } catch (IOException e) {
-     * // TODO Auto-generated catch block
      * e.printStackTrace();
      * }
      * File ddfile = new File("bsplineddOut.csv");
      * try {
      * Export.of(ddfile, devdevout.divide(meter));
      * } catch (IOException e) {
-     * // TODO Auto-generated catch block
      * e.printStackTrace();
      * } */
   }

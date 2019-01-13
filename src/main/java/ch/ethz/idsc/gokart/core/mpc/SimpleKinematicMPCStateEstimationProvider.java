@@ -17,12 +17,12 @@ import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimationProvider {
@@ -80,8 +80,8 @@ public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimatio
     }
   };
 
-  protected SimpleKinematicMPCStateEstimationProvider(Stopwatch stopwatch) {
-    super(stopwatch);
+  protected SimpleKinematicMPCStateEstimationProvider(Timing timing) {
+    super(timing);
   }
 
   @Override

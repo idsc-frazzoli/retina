@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.offline.gui;
 
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Flatten;
@@ -11,6 +10,7 @@ import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ImageResize;
 import ch.ethz.idsc.tensor.io.ImageFormat;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public enum GokartLcmImage {
@@ -20,7 +20,7 @@ public enum GokartLcmImage {
   /** @param gokartLogFileIndexer
    * @return image indicating */
   public static BufferedImage of(GokartLogFileIndexer gokartLogFileIndexer) {
-    Stopwatch stopwatch = Stopwatch.started();
+    Timing timing = Timing.started();
     Tensor tensor = Tensors.empty();
     {
       Tensor auton = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2auton()));
@@ -47,7 +47,7 @@ public enum GokartLcmImage {
       tensor.append(ImageResize.nearest(speed.map(ColorDataGradients.CLASSIC), FX, 1));
     }
     BufferedImage bufferedImage = ImageFormat.of(Flatten.of(tensor, 1));
-    System.out.println("image gen: " + stopwatch.display_seconds());
+    System.out.println("image gen: " + timing.seconds());
     return bufferedImage;
   }
 }
