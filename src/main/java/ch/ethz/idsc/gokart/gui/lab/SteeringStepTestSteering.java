@@ -9,7 +9,6 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
@@ -18,7 +17,7 @@ public class SteeringStepTestSteering implements SteerPutProvider {
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private Scalar scalar;
-  private final Stopwatch started = Stopwatch.started();
+  // private final Timing timing = Timing.started();
   private Boolean turnOff = false;
 
   @Override

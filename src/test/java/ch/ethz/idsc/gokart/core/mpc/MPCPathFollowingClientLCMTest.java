@@ -13,7 +13,6 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
     // uncomment if you are able to compile the binary
     /* LcmMPCPathFollowingClient lcmMPCPathFollowingClient = new LcmMPCPathFollowingClient();
      * try {
-     * // TODO jan had to add try here
      * lcmMPCPathFollowingClient.start();
      * for (int i = 0; i < 4; i++) {
      * System.out.println("i=" + i);
@@ -76,7 +75,7 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
       assertTrue(mpcControlUpdateListener.cns != null);
       lcmMPCControlClient.stop();
     } catch (Exception e) {
-      // TODO handle exception
+      e.printStackTrace();
     }
   }
 }

@@ -175,7 +175,7 @@ public class BSplineTrack implements TrackInterface {
   public Scalar getCurvature(Scalar pathProgress) {
     Tensor firstDer = getDerivation(pathProgress);
     Tensor secondDer = get2ndDerivation(pathProgress);
-    // TODO use Det2D
+    // TODO JPH/MH use Det2D
     Scalar upper = firstDer.Get(0).multiply(secondDer.Get(1)) //
         .subtract(firstDer.Get(1).multiply(secondDer.Get(0)));
     Scalar under = Power.of(Norm._2.of(firstDer), 3.0);

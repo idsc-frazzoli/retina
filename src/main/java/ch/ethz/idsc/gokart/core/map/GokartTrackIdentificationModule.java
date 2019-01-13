@@ -9,19 +9,19 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class GokartTrackIdentificationModule extends AbstractClockedModule implements GokartPoseListener, RenderInterface {
   TrackIdentificationManagement trackIDManagement;
   GokartTrackMappingModule trackMappingModule;
   GokartPoseEvent gpe = null;
-  Stopwatch lastExecution = Stopwatch.started();
+  Timing lastExecution = Timing.started();
   public static MPCBSplineTrack TRACK = null;
   public static GokartTrackIdentificationModule TRACKIDENTIFICATION = null;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -47,9 +47,9 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
     }
     if (TrackIdentificationButtons.RECORDING) {
       trackMappingModule.prepareMap();
-      TRACK = trackIDManagement.update(gpe, Quantity.of(lastExecution.display_seconds(), SI.SECOND));
+      TRACK = trackIDManagement.update(gpe, Quantity.of(lastExecution.seconds(), SI.SECOND));
     }
-    lastExecution = Stopwatch.started();
+    lastExecution = Timing.started();
   }
 
   @Override

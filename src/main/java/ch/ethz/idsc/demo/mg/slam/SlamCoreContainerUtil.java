@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.Tensor;
   ;
   private static final double TURN_RATE_PER_METER = //
       Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax);
-  // TODO
+  // TODO MG
   private static final double linVelAvg = Magnitude.VELOCITY.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.linVelAvg);
   private static final double linVelStd = Magnitude.VELOCITY.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.linVelStd);
   private static final double angVelStd = Magnitude.PER_SECOND.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.angVelStd);

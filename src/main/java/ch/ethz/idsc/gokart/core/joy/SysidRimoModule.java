@@ -8,7 +8,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -16,6 +15,7 @@ import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   private static final Scalar MAGNITUDE = Quantity.of(1500, NonSI.ARMS);
   // ---
   private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
-  private final Stopwatch stopwatch = Stopwatch.started();
+  private final Timing timing = Timing.started();
   private ScalarUnaryOperator signal = SysidSignals.CHIRP_SLOW.get();
 
   @Override // from AbstractModule
@@ -60,7 +60,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   /* package */ Optional<RimoPutEvent> fromJoystick(ManualControlInterface manualControlInterface) {
     if (manualControlInterface.isAutonomousPressed()) {
       Scalar aheadAverage = manualControlInterface.getAheadAverage();
-      Scalar timestamp = DoubleScalar.of(stopwatch.display_seconds());
+      Scalar timestamp = DoubleScalar.of(timing.seconds());
       return Optional.of(create(aheadAverage, timestamp));
     }
     return Optional.empty();

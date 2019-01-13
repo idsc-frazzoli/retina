@@ -11,7 +11,6 @@ import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -23,6 +22,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.N;
@@ -71,9 +71,9 @@ public class GyroOfflineLocalize extends OfflineLocalize {
       model = model.dot(rotate);
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);
-      Stopwatch stopwatch = Stopwatch.started();
+      Timing timing = Timing.started();
       SlamResult slamResult = SlamDunk.of(SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
-      double duration = stopwatch.display_seconds(); // typical is 0.03
+      double duration = timing.seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = lidar.dot(pre_delta).dot(Inverse.of(lidar));
       // Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);

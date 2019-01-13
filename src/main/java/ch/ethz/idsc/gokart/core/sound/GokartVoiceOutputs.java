@@ -14,13 +14,13 @@ import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class GokartVoiceOutputs extends AbstractClockedModule {
@@ -28,9 +28,9 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
   boolean calibrationSaid = false;
   SteerColumnTracker columnTracker;
   boolean emergencyBrakingSaid = false;
-  Stopwatch timeSinceEmergenyCallout = Stopwatch.started();
+  Timing timeSinceEmergenyCallout = Timing.started();
   double durationBetweenEmergenyCallouts = 3;
-  Stopwatch timeSinceDriverCallout = Stopwatch.started();
+  Timing timeSinceDriverCallout = Timing.started();
   double durationBetweenDriverCallouts = 3;
   boolean HumanDrivingSaid = true;
 
@@ -102,24 +102,24 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
     }
     if (!emergencyBrakingSaid && LinmotSocket.INSTANCE.getClass().equals(EmergencyBrakeProvider.class)) {
       sayEmergenyBraking();
-      timeSinceEmergenyCallout = Stopwatch.started();
+      timeSinceEmergenyCallout = Timing.started();
     }
     if (emergencyBrakingSaid && //
-        timeSinceEmergenyCallout.display_seconds() > durationBetweenEmergenyCallouts && //
+        timeSinceEmergenyCallout.seconds() > durationBetweenEmergenyCallouts && //
         !LinmotSocket.INSTANCE.getClass().equals(EmergencyBrakeProvider.class))
       emergencyBrakingSaid = false;
     boolean humanDriving = !isAutonomousPressed();
     if (humanDriving && !HumanDrivingSaid) {
       HumanDrivingSaid = humanDriving;
-      if (timeSinceDriverCallout.display_seconds() > durationBetweenDriverCallouts) {
+      if (timeSinceDriverCallout.seconds() > durationBetweenDriverCallouts) {
         sayHumanDriving();
-        timeSinceDriverCallout = Stopwatch.started();
+        timeSinceDriverCallout = Timing.started();
       }
     } else if (!humanDriving && HumanDrivingSaid) {
       HumanDrivingSaid = humanDriving;
-      if (timeSinceDriverCallout.display_seconds() > durationBetweenDriverCallouts) {
+      if (timeSinceDriverCallout.seconds() > durationBetweenDriverCallouts) {
         sayAIDriving();
-        timeSinceDriverCallout = Stopwatch.started();
+        timeSinceDriverCallout = Timing.started();
       }
     }
   }

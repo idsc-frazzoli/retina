@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 public class MPCPathFollowingClientTest extends TestCase {
   public void testSimple() throws Exception {
-    /* // TODO
+    /* // TODO JPH/MH
      * LcmMPCPathFollowingClient lcmMPCPathFollowingClient =
      * new LcmMPCPathFollowingClient();
      * lcmMPCPathFollowingClient.start();

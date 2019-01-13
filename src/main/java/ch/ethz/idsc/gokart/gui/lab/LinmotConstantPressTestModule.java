@@ -20,7 +20,7 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 /** linmot press test enables the driver to apply the brake
  * at a constant value for a certain period of time
  * 
- * TODO generate a report from the log files about the brake effect */
+ * TODO JPH/MH generate a report from the log files about the brake effect */
 public class LinmotConstantPressTestModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
