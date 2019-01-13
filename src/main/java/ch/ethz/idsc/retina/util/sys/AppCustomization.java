@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.util.sys;
 import java.io.File;
 
 import ch.ethz.idsc.tensor.io.TensorProperties;
+import ch.ethz.idsc.tensor.io.UserName;
 
 /** user specific customization encoded in ASCII files
  * managed by {@link TensorProperties}.
@@ -20,7 +21,7 @@ public enum AppCustomization {
   public static File file(String filename) {
     File dir1 = new File("resources", "custom");
     dir1.mkdir();
-    File dir2 = new File(dir1, System.getProperty("user.name"));
+    File dir2 = new File(dir1, UserName.get());
     dir2.mkdir();
     return new File(dir2, filename);
   }

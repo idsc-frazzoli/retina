@@ -5,6 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
+import ch.ethz.idsc.tensor.io.UserName;
 
 public class GokartTimestampModule extends AbstractModule {
   private static final String GOKART = "gokart";
@@ -29,6 +30,6 @@ public class GokartTimestampModule extends AbstractModule {
   }
 
   private static boolean isHardware() {
-    return GOKART.equals(System.getProperty("user.name"));
+    return UserName.is(GOKART);
   }
 }
