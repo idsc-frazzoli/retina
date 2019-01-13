@@ -55,7 +55,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
       Scalar wantedAcceleration, Scalar realRotation) {
     Scalar expectedRotationPerMeterDrivenChange//
         = estimateRotationPerMeterChange(expectedRotationPerMeterDriven);
-    Scalar expectedRotationAcceleration = expectedRotationPerMeterDrivenChange*meanTangentSpeed;
+    Scalar expectedRotationAcceleration = expectedRotationPerMeterDrivenChange.multiply(meanTangentSpeed);
     return getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //
         meanTangentSpeed, //
