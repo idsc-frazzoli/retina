@@ -9,8 +9,9 @@ public enum LabjackU3LiveProviders {
   /** @param labjackAdcListener
    * @return new instance of LabjackU3LiveProvider if labjack device is feasible or VoidStartAndStoppable */
   public static StartAndStoppable create(LabjackAdcListener labjackAdcListener) {
-    return LabjackU3LiveProvider.isFeasible() //
-        ? new LabjackU3LiveProvider(labjackAdcListener)
+    LabjackU3Config labjackU3Config = LabjackU3Config.INSTANCE;
+    return labjackU3Config.isFeasible() //
+        ? new LabjackU3LiveProvider(labjackU3Config, labjackAdcListener)
         : EmptyStartAndStoppable.INSTANCE;
   }
 }

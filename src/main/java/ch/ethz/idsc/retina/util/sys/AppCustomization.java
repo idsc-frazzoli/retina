@@ -4,38 +4,42 @@ package ch.ethz.idsc.retina.util.sys;
 import java.io.File;
 
 import ch.ethz.idsc.tensor.io.TensorProperties;
-import ch.ethz.idsc.tensor.io.UserName;
 
 /** user specific customization encoded in ASCII files
- * managed by {@link TensorProperties}.
+ * managed by {@link TensorProperties}
  * 
- * Example: store location of windows */
+ * Example: store bounds of a window */
 public enum AppCustomization {
   ;
-  private static File file(Class<?> cls) {
-    return file(cls.getSimpleName() + ".properties");
+  private static final File RESOURCES_CUSTOM = new File("resources", "custom");
+  static {
+    RESOURCES_CUSTOM.mkdir();
   }
 
   /** @param filename
-   * @return file of the form "resources/custom/username/filename" */
-  public static File file(String filename) {
-    File dir1 = new File("resources", "custom");
-    dir1.mkdir();
-    File dir2 = new File(dir1, UserName.get());
-    dir2.mkdir();
-    return new File(dir2, filename);
+   * @return file of the form "resources/custom/application/filename" */
+  public static File file(Class<?> application, String filename) {
+    File directory = new File(RESOURCES_CUSTOM, application.getSimpleName());
+    directory.mkdir();
+    return new File(directory, filename);
   }
 
-  /** @param cls
-   * @param object
+  /***************************************************/
+  /** @param application
+   * @param object with custom data, e.g. WindowConfiguration
    * @return */
-  public static <T> T load(Class<?> cls, T object) {
-    return TensorProperties.wrap(object).tryLoad(file(cls));
+  public static <T> T load(Class<?> application, T object) {
+    return TensorProperties.wrap(object).tryLoad(file(application, object.getClass()));
   }
 
-  /** @param cls
-   * @param object */
-  public static void save(Class<?> cls, Object object) {
-    TensorProperties.wrap(object).trySave(file(cls));
+  /** @param application
+   * @param object with custom data, e.g. WindowConfiguration */
+  public static void save(Class<?> application, Object object) {
+    TensorProperties.wrap(object).trySave(file(application, object.getClass()));
+  }
+
+  // helper function
+  private static File file(Class<?> application, Class<?> cls) {
+    return file(application, cls.getSimpleName() + ".properties");
   }
 }
