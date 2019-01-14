@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.retina.util.math;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.sca.Mod;
 
 /** @author Marc Heim
  * some mathematical utility function for working with splines */
-public enum MPCBSpline {
+public enum UniformBSpline2 {
   ;
   // based on matlab code:
   /* function [xx,yy] = casadiDynamicBSPLINE(x,points)
@@ -113,7 +113,7 @@ public enum MPCBSpline {
       return getBasisFunction1Der(value);
     if (der == 2)
       return getBasisFunction2Der(value);
-    return RealScalar.ZERO;// this is true and not a hack!
+    return RealScalar.ZERO; // this is true and not a hack!
   }
 
   public static Tensor getBasisVector(int n, Scalar x, int der, boolean circle) {

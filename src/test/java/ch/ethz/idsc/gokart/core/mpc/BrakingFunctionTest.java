@@ -21,7 +21,7 @@ public class BrakingFunctionTest extends TestCase {
 
   public void testInversion() {
     Scalar wa = Quantity.of(2, SI.ACCELERATION);
-    Scalar brakepos = BrakingFunction.getNeededBrakeActuation(wa);
+    Scalar brakepos = BrakingFunction.getNeededBrakeActuation(wa).get();
     Scalar wa2 = BrakingFunction.getBrakingAcceleration(brakepos);
     System.out.println("braking position: " + brakepos);
     System.out.println("wa: " + wa);
@@ -32,15 +32,15 @@ public class BrakingFunctionTest extends TestCase {
 
   public void testBigValues() {
     // only important that it does not crash here
-    Scalar brakepos1 = BrakingFunction.getNeededBrakeActuation(Quantity.of(1, SI.ACCELERATION));
+    Scalar brakepos1 = BrakingFunction.getNeededBrakeActuation(Quantity.of(1, SI.ACCELERATION)).get();
     Clip.function(Quantity.of(0.025, "m"), Quantity.of(0.030, "m")).requireInside(brakepos1);
-    Scalar brakepos2 = BrakingFunction.getNeededBrakeActuation(Quantity.of(2, SI.ACCELERATION));
+    Scalar brakepos2 = BrakingFunction.getNeededBrakeActuation(Quantity.of(2, SI.ACCELERATION)).get();
     Clip.function(Quantity.of(0.030, "m"), Quantity.of(0.035, "m")).requireInside(brakepos2);
-    Scalar brakepos3 = BrakingFunction.getNeededBrakeActuation(Quantity.of(3, SI.ACCELERATION));
+    Scalar brakepos3 = BrakingFunction.getNeededBrakeActuation(Quantity.of(3, SI.ACCELERATION)).get();
     Clip.function(Quantity.of(0.030, "m"), Quantity.of(0.035, "m")).requireInside(brakepos3);
-    Scalar brakepos4 = BrakingFunction.getNeededBrakeActuation(Quantity.of(30, SI.ACCELERATION));
+    Scalar brakepos4 = BrakingFunction.getNeededBrakeActuation(Quantity.of(30, SI.ACCELERATION)).get();
     Clip.function(Quantity.of(0.040, "m"), Quantity.of(0.045, "m")).requireInside(brakepos4);
-    Scalar brakepos5 = BrakingFunction.getNeededBrakeActuation(Quantity.of(50, SI.ACCELERATION));
+    Scalar brakepos5 = BrakingFunction.getNeededBrakeActuation(Quantity.of(50, SI.ACCELERATION)).get();
     Clip.function(Quantity.of(0.040, "m"), Quantity.of(0.045, "m")).requireInside(brakepos5);
     assertEquals(brakepos4, brakepos5);
   }

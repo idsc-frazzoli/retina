@@ -2,20 +2,19 @@
 package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.gokart.core.mpc.PowerLookupTable;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Times;
 
 public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormalizedTorqueVectoring {
   private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
   private Scalar lastRotationPerMeterDriven = null;
   private Scalar rotationAccRollingAverage = Quantity.of(0, SI.ANGULAR_ACCELERATION.add(SI.METER.negate()));
   private Scalar rollinAverageFactor = RealScalar.of(0.5); // good data expected
-  private Stopwatch lastMeasure = Stopwatch.started();
+  private Timing lastMeasure = Timing.started();
 
   public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
@@ -37,8 +36,8 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
   public Scalar estimateRotationPerMeterChange(Scalar rotationPerMeter) {
     if (lastRotationPerMeterDriven == null)
       lastRotationPerMeterDriven = rotationPerMeter;
-    double timeSinceLastStep = lastMeasure.display_seconds();
-    lastMeasure = Stopwatch.started();
+    double timeSinceLastStep = lastMeasure.seconds();
+    lastMeasure = Timing.started();
     if (timeSinceLastStep >= 0.000001) {
       Scalar instantRotPerMetChange = rotationPerMeter.subtract(lastRotationPerMeterDriven).divide(Quantity.of(timeSinceLastStep, SI.SECOND));
       rotationAccRollingAverage = rotationAccRollingAverage.multiply(RealScalar.ONE.subtract(rollinAverageFactor))//

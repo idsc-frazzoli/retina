@@ -33,19 +33,17 @@ public class MPCOptimizationParameter implements MPCNativeInsertable {
   }
 
   public MPCOptimizationParameter(Scalar speedLimit) {
-    this(speedLimit, Quantity.of(5, SI.ACCELERATION),Quantity.of(5, SI.ACCELERATION));
+    this(speedLimit, Quantity.of(5, SI.ACCELERATION), Quantity.of(5, SI.ACCELERATION));
   }
 
   public MPCOptimizationParameter(Scalar speedLimit, Scalar xAccLimit, Scalar yAccLimit) {
-    this(speedLimit,xAccLimit,yAccLimit,//
-        Quantity.of(10, SI.ACCELERATION),
-        Quantity.of(0, SI.ACCELERATION.add(SI.ANGULAR_ACCELERATION.negate())),
-        Quantity.of(0, SI.ACCELERATION),
+    this(speedLimit, xAccLimit, yAccLimit, //
+        Quantity.of(10, SI.ACCELERATION), Quantity.of(0, SI.ACCELERATION.add(SI.ANGULAR_ACCELERATION.negate())), Quantity.of(0, SI.ACCELERATION),
         Quantity.of(0, SI.ONE));
   }
-  
-  public MPCOptimizationParameter(Scalar speedLimit, Scalar xAccLimit, Scalar yAccLimit,//
-      Scalar pureXAccLimit,Scalar pureRotAccEffect, Scalar torqueVecEffect, Scalar brakeEffect) {
+
+  public MPCOptimizationParameter(Scalar speedLimit, Scalar xAccLimit, Scalar yAccLimit, //
+      Scalar pureXAccLimit, Scalar pureRotAccEffect, Scalar torqueVecEffect, Scalar brakeEffect) {
     this.speedLimit = speedLimit;
     this.xAccLimit = xAccLimit;
     this.yAccLimit = yAccLimit;

@@ -39,9 +39,10 @@ public class BSplineTrack implements TrackInterface {
   final float[] posX;
   final float[] posY;
 
-  // TODO JPH/MH implementation is not good
+  // TODO jph/MH implementation is not good
   public BSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints, boolean closed) {
     // TODO ensure control points are of same size and [m]
+    // controlPointsX.get();
     this.closed = closed;
     int toAdd = Math.max(SPLINE_ORDER_TRACK, SPLINE_ORDER_RADIUS) + 2;
     numPoints = controlPointsX.length();
@@ -59,6 +60,7 @@ public class BSplineTrack implements TrackInterface {
     while (toAdd > 0) {
       if (next >= pathLength)
         next = 0;
+      // TODO MH check if still issue
       this.controlPoints.append(Tensors.of(controlPointsX.get(next), controlPointsY.get(next)));
       this.controlPointsR.append(radiusControlPoints.get(next));
       ++next;
@@ -134,7 +136,7 @@ public class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return change rate of position unit [m/1] */
   public Tensor getDerivation(Scalar pathProgress) {
-    Scalar devPathProgress = pathProgress.add(Quantity.of(-0.5, SI.ONE));
+    Scalar devPathProgress = pathProgress.add(RealScalar.of(-0.5));
     return trackSplineDerivation.apply(wrap(devPathProgress));
   }
 
@@ -175,7 +177,8 @@ public class BSplineTrack implements TrackInterface {
   public Scalar getCurvature(Scalar pathProgress) {
     Tensor firstDer = getDerivation(pathProgress);
     Tensor secondDer = get2ndDerivation(pathProgress);
-    // TODO JPH/MH use Det2D
+    // TODO MH use Det2D+
+    // Scalar upper1 = Det2D.of(firstDer, secondDer);
     Scalar upper = firstDer.Get(0).multiply(secondDer.Get(1)) //
         .subtract(firstDer.Get(1).multiply(secondDer.Get(0)));
     Scalar under = Power.of(Norm._2.of(firstDer), 3.0);

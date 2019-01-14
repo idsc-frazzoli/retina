@@ -23,7 +23,8 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(torqueVectoringConfig);
+    ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(
+        torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     Tensor powers = improvedNormalizedSimpleTorqueVectoring.powers( //
         Quantity.of(0, "m^-1"), //
