@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
 
-public class ClustersTest extends TestCase {
+public class DbscanTest extends TestCase {
   public void testSimple() {
     double[][] data = new double[4][2];
     data[0][0] = 0.99;

@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import junit.framework.TestCase;
 
-public class LinmotGetTableTest extends TestCase {
+public class OfflineVectorTablesTest extends TestCase {
   public void testSimple() throws IOException {
     GokartLogInterface gokartLogInterface = GokartLogAdapterTest.FULL;
     // ---
