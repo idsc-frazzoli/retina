@@ -33,15 +33,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     this.rimoConfig = rimoConfig;
   }
 
-  // Public because of testing
-  public Scalar integral = Quantity.of(0, SI.METER);
-  Scalar velocity = Quantity.of(0, SI.VELOCITY);
-
-  @Override
-  public void setWheelRate(Scalar abs_vel) {
-    // System.out.println("setWheelRate=" + abs_vel);
-    velocity = abs_vel.multiply(ChassisGeometry.GLOBAL.tireRadiusRear);
-  }
+  // public because of testing
+  private Scalar integral = Quantity.of(0, SI.METER);
+  /** gokart velocity */
+  private Scalar velocity = Quantity.of(0, SI.VELOCITY);
 
   @Override // from RimoRateController
   public Scalar iterate(final Scalar vel_error) {
@@ -50,7 +45,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     final Scalar iPart = integral.multiply(rimoConfig.lKi);
     final Scalar acc_value = pPart.add(iPart);
     final Scalar currentValue = lookupTable.getNeededCurrent(acc_value, velocity);
-    // get min and max aviable
+    // get min and max available
     // System.out.println("currentValue=" + currentValue);
     Tensor minmax = lookupTable.getMinMaxAcceleration(velocity);
     // anti windup
@@ -61,5 +56,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     binaryBlobPublisher.accept(VectorFloatBlob.encode(Tensors.of( //
         vel_error, pPart, iPart, integral, velocity)));
     return currentValue;
+  }
+
+  @Override // from RimoRateController
+  public void setWheelRate(Scalar vel_avg) {
+    velocity = vel_avg.multiply(ChassisGeometry.GLOBAL.tireRadiusRear);
   }
 }

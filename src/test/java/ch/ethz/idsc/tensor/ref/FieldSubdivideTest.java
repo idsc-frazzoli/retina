@@ -20,9 +20,6 @@ public class FieldSubdivideTest extends TestCase {
     for (Field field : tensorProperties.fields().collect(Collectors.toList())) {
       FieldSubdivide fieldSubdivide = field.getAnnotation(FieldSubdivide.class);
       Optional<Tensor> optional = TensorReflection.of(fieldSubdivide);
-      if (optional.isPresent())
-        System.out.println(optional.get());
-      // ---
       switch (field.getName()) {
       case "scalar":
         assertEquals(optional.get(), Reverse.of(Range.of(0, 11)));
@@ -38,6 +35,6 @@ public class FieldSubdivideTest extends TestCase {
         break;
       }
     }
-    assertEquals(ignored, 3);
+    assertEquals(ignored, 4);
   }
 }

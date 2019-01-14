@@ -16,8 +16,6 @@ public class SimpleResonator implements SoundResonator {
 
   @Override
   public float getNextValue(float excitementValue, GokartSoundState state, float dt) {
-    // if(excitementValue>0)
-    // System.out.println("ping");
     float ddx = excitementValue * excitability - dx * damping - x * spring;
     dx += ddx * dt;
     x += dx * dt;

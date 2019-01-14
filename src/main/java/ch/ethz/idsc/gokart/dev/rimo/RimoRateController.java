@@ -10,8 +10,6 @@ interface RimoRateController {
 
   /** set the current wheel rate
    * 
-   * @param abs_vel current absolute wheel rate unit "rad*s^-1" */
-  default void setWheelRate(Scalar abs_vel) {
-    // ---
-  }
+   * @param vel_avg current wheel rate unit "rad*s^-1" */
+  void setWheelRate(Scalar vel_avg);
 }

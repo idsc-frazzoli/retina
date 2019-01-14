@@ -18,9 +18,6 @@ public class FieldClipTest extends TestCase {
     for (Field field : tensorProperties.fields().collect(Collectors.toList())) {
       FieldClip fieldClip = field.getAnnotation(FieldClip.class);
       Optional<Clip> optional = TensorReflection.of(fieldClip);
-      if (optional.isPresent())
-        System.out.println(optional.get());
-      // ---
       switch (field.getName()) {
       case "clipped":
         Clip clip = optional.get();

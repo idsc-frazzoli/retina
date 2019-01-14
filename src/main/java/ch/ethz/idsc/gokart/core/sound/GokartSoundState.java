@@ -9,7 +9,6 @@ public class GokartSoundState {
   public GokartSoundState(float speed, float power, float torquevectoring) {
     this.speed = speed;
     this.power = power;
-    // System.out.println("sp: "+speed+"power: "+power);
     this.torquevectoring = torquevectoring;
   }
 }
