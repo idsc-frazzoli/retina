@@ -39,7 +39,6 @@ struct ControlAndState {
 struct PathParameter {
 	float pointsN;
 	float startingProgress;
-
 	float controlPointsX [POINTSN];
 	float controlPointsY [POINTSN];
 	float controlPointsR [POINTSN];
@@ -49,6 +48,10 @@ struct OptimizationParameter {
 	float speedLimit;
 	float maxxacc;
 	float maxyacc;
+	float latacclim;
+	float rotacceffect;
+	float torqueveceffect;
+	float brakeeffect;
 };
 
 struct ControlAndStateMsg{
