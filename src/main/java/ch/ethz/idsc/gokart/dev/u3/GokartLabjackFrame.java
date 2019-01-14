@@ -84,11 +84,6 @@ public final class GokartLabjackFrame implements ManualControlInterface {
   }
 
   @Override
-  public boolean isPassive() {
-    return false;
-  }
-
-  @Override
   public String toString() {
     String b = isResetPressed() ? " B" : ""; // B for boost
     String r = isReversePressed() ? " R" : ""; // B for boost

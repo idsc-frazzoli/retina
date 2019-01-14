@@ -31,10 +31,9 @@ import ch.ethz.idsc.retina.davis.data.DavisImuFrameCollector;
 public class DavisLcmServer {
   private final DavisDecoder davisDecoder;
 
-  /** @param serial for instance "FX2_02460045"
-   * @param cameraId determines the channel name "davis240c.cameraId.aps", "davis240c.cameraId.imu"
+  /** @param cameraId determines the channel name "davis240c.cameraId.aps", "davis240c.cameraId.imu"
    * @param davisApsTypes */
-  public DavisLcmServer(String serial, String cameraId, DavisApsType... davisApsTypes) {
+  public DavisLcmServer(String cameraId, DavisApsType... davisApsTypes) {
     davisDecoder = Davis240c.INSTANCE.createDecoder();
     // ---
     davisDecoder.addDvsListener(new DavisDvsBlockCollector(new DavisDvsBlockPublisher(cameraId)));
