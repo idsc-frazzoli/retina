@@ -15,9 +15,7 @@ public class GokartLogFileTest extends TestCase {
       for (GokartLogFile gokartLogFile : GokartLogFile.values())
         try {
           File file = DatahakiLogFileLocator.file(gokartLogFile);
-          // dhl.file(directory);
-          boolean isFile = file.isFile();
-          if (!isFile) {
+          if (Objects.nonNull(file)) {
             File host = file.getParentFile();
             File marker = new File(host.getParentFile(), host.getName() + "_");
             if (!marker.isDirectory()) {

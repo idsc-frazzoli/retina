@@ -13,7 +13,7 @@ import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 /** this class saves the estimatedFeatures at timestamps when hand-labeled ground truth is available and saves
  * finally to a CSV file for further analysis with TrackingEvaluator */
-// TODO if no features are hand-labeled at a certain instant, we do not collect the estimatedFeatures at that instant.
+// TODO MG if no features are hand-labeled at a certain instant, we do not collect the estimatedFeatures at that instant.
 public class TrackingCollector implements DavisDvsListener {
   private final ImageBlobSelector imageBlobSelector;
   private final String imagePrefix;

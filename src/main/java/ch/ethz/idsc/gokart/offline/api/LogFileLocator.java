@@ -5,7 +5,7 @@ import java.io.File;
 
 public interface LogFileLocator {
   /** @param logFile
-   * @return
+   * @return file or null if no valid file could be located
    * @throws Exception */
   File getAbsoluteFile(LogFile logFile);
 }

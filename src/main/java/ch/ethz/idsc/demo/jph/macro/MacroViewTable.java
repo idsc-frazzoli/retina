@@ -98,27 +98,25 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       File dirday = new File(ROOT, date);
       dirday.mkdir();
       File file = DatahakiLogFileLocator.file(logFile);
-      if (file.isFile()) {
-        final File csv = new File(dirday, logFile.getTitle() + ".csv");
-        if (csv.exists()) {
-          Tensor table = Import.of(csv);
-          if (table.length() < LENGTH) {
-            table = Join.of(table, Array.zeros(LENGTH - table.length(), 4));
-            Export.of(csv, table);
-            System.out.println(csv + " " + Dimensions.of(table));
-          }
-        } else {
-          System.out.println(logFile.getTitle());
-          String hhmmss = logFile.getTitle().substring(9);
-          Tensor timestamp = Tensors.fromString(String.format("{%s[h],%s[min],%s[s]}", //
-              hhmmss.substring(0, 2), //
-              hhmmss.substring(2, 4), //
-              hhmmss.substring(4, 6))).map(Magnitude.SECOND);
-          Scalar offset = Quantity.of(Total.of(timestamp).Get(), SI.SECOND);
-          OfflineTableSupplier offlineTableSupplier = new MacroViewTable(offset);
-          OfflineLogPlayer.process(file, offlineTableSupplier);
-          Export.of(csv, offlineTableSupplier.getTable().map(CsvFormat.strict()));
+      final File csv = new File(dirday, logFile.getTitle() + ".csv");
+      if (csv.exists()) {
+        Tensor table = Import.of(csv);
+        if (table.length() < LENGTH) {
+          table = Join.of(table, Array.zeros(LENGTH - table.length(), 4));
+          Export.of(csv, table);
+          System.out.println(csv + " " + Dimensions.of(table));
         }
+      } else {
+        System.out.println(logFile.getTitle());
+        String hhmmss = logFile.getTitle().substring(9);
+        Tensor timestamp = Tensors.fromString(String.format("{%s[h],%s[min],%s[s]}", //
+            hhmmss.substring(0, 2), //
+            hhmmss.substring(2, 4), //
+            hhmmss.substring(4, 6))).map(Magnitude.SECOND);
+        Scalar offset = Quantity.of(Total.of(timestamp).Get(), SI.SECOND);
+        OfflineTableSupplier offlineTableSupplier = new MacroViewTable(offset);
+        OfflineLogPlayer.process(file, offlineTableSupplier);
+        Export.of(csv, offlineTableSupplier.getTable().map(CsvFormat.strict()));
       }
     }
   }

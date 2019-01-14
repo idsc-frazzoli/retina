@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.mat.Eigensystem;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 /** immutable */
+// TODO JPH refactor so that class does not use primitive double[][]
 public class Covariance2D {
   public static Covariance2D of(double firstAxis, double secondAxis, double rotAngle) {
     Tensor rotMatrix = RotationMatrix.of(RealScalar.of(rotAngle));

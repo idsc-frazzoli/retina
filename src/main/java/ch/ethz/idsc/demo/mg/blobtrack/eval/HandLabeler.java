@@ -41,7 +41,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
  * Features can be rotated with scrolling while holding alt key.
  * Labels can be loaded/saved to a file
  * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension
- * TODO would be more convenient if slider can be moved with left hand, e.g. y and x keys */
+ * TODO MG would be more convenient if slider can be moved with left hand, e.g. y and x keys */
 /* package */ class HandLabeler {
   /** draw ellipses for image based on list of blobs for the image.
    *

@@ -25,7 +25,6 @@ public class ImageBlob implements Serializable {
     this.timeStamp = timeStamp;
     this.blobID = blobID;
     this.isHidden = isHidden;
-    // TODO constructor of Covariance2D is ineffective, i.e. doesn't do anything with the data
     covariance2D = new Covariance2D(covariance);
   }
 
