@@ -8,35 +8,35 @@ import junit.framework.TestCase;
 public class FloatBufferTest extends TestCase {
   public void testSimple() {
     float[] array = new float[10];
-    FloatBuffer fb = FloatBuffer.wrap(array);
-    assertEquals(fb.limit(), 10);
+    FloatBuffer floatBuffer = FloatBuffer.wrap(array);
+    assertEquals(floatBuffer.limit(), 10);
     float enter = 3.14f;
-    fb.put(enter);
-    assertEquals(fb.limit(), 10);
-    assertEquals(fb.position(), 1);
-    assertEquals(fb.remaining(), 9);
-    float[] ref = fb.array();
+    floatBuffer.put(enter);
+    assertEquals(floatBuffer.limit(), 10);
+    assertEquals(floatBuffer.position(), 1);
+    assertEquals(floatBuffer.remaining(), 9);
+    float[] ref = floatBuffer.array();
     assertEquals(ref, array);
-    fb.position(9);
-    fb.position(0);
-    float value = fb.get();
+    floatBuffer.position(9);
+    floatBuffer.position(0);
+    float value = floatBuffer.get();
     assertEquals(enter, value);
-    assertEquals(fb.capacity(), 10);
+    assertEquals(floatBuffer.capacity(), 10);
   }
 
   public void testFlip() {
     float[] array = new float[10];
-    FloatBuffer fb = FloatBuffer.wrap(array);
-    assertEquals(fb.limit(), 10);
+    FloatBuffer floatBuffer = FloatBuffer.wrap(array);
+    assertEquals(floatBuffer.limit(), 10);
     float enter = 3.14f;
-    fb.put(enter);
-    fb.flip();
-    assertEquals(fb.limit(), 1);
-    assertEquals(fb.position(), 0);
-    fb.limit(10);
-    assertEquals(fb.position(), 0);
-    fb.put(1.3f);
-    fb.put(3.3f);
-    fb.flip();
+    floatBuffer.put(enter);
+    floatBuffer.flip();
+    assertEquals(floatBuffer.limit(), 1);
+    assertEquals(floatBuffer.position(), 0);
+    floatBuffer.limit(10);
+    assertEquals(floatBuffer.position(), 0);
+    floatBuffer.put(1.3f);
+    floatBuffer.put(3.3f);
+    floatBuffer.flip();
   }
 }
