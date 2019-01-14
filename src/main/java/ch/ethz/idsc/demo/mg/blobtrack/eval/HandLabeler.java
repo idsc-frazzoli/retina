@@ -2,7 +2,9 @@
 package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,8 +41,16 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
  * Features can be rotated with scrolling while holding alt key.
  * Labels can be loaded/saved to a file
  * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension
- * TODO would be more convenient if slider can be moved with left hand, e.g. y and x keys */
+ * TODO MG would be more convenient if slider can be moved with left hand, e.g. y and x keys */
 /* package */ class HandLabeler {
+  /** draw ellipses for image based on list of blobs for the image.
+   *
+   * @param graphics
+   * @param list */
+  static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> list) {
+    list.forEach(imageBlob -> VisBlobTrackUtil.drawImageBlob(graphics, imageBlob, Color.WHITE));
+  }
+
   private final float scaling = 2; // original images are tiny
   private final int initXAxis; // initial feature shape
   private final int initYAxis;
@@ -66,7 +76,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     @Override
     protected void paintComponent(Graphics graphics) {
       setBufferedImage();
-      VisBlobTrackUtil.drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
+      drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
       graphics.drawImage(BufferedImageResize.of(bufferedImage, scaling), 0, 0, null);
       graphics.drawString("Image number: " + currentImgNumber, 10, 380);
     }

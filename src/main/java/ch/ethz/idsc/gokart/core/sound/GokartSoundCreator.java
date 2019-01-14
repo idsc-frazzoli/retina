@@ -10,8 +10,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.tensor.io.Timing;
 
 public class GokartSoundCreator implements StartAndStoppable, Runnable {
   private static final int SAMPLING_RATE = 44100;
@@ -23,7 +23,7 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
   private SourceDataLine sourceDataLine;
   private DataLine.Info info;
   private ByteBuffer byteBuffer;
-  private Stopwatch stopwatch = Stopwatch.stopped();
+  private Timing timing = Timing.stopped();
   private GokartSoundState gokartSoundState = new GokartSoundState(0, 0, 0);
   private final List<SoundExciter> exciters;
   private final List<SoundResonator> resonators;
@@ -59,7 +59,7 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
       exception.printStackTrace();
     }
     byteBuffer = ByteBuffer.allocate(sourceDataLine.getBufferSize());
-    stopwatch.start();
+    timing.start();
     Thread thread = new Thread(this);
     thread.start();
   }
@@ -67,7 +67,7 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
   @Override // from Runnable
   public void run() {
     while (isLaunched) {
-      gokartSoundState = motorStateProvider.getMotorState((float) stopwatch.display_seconds());
+      gokartSoundState = motorStateProvider.getMotorState((float) timing.seconds());
       fillBuffer((int) (0.97f * sourceDataLine.available() / SAMPLE_SIZE));
       while (sourceDataLine.getBufferSize() * 0.98 < sourceDataLine.available())
         try {

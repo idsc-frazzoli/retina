@@ -9,8 +9,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 public class LabjackU3Config {
   public static final LabjackU3Config INSTANCE = //
       AppCustomization.load(LabjackU3Config.class, new LabjackU3Config());
-  // TODO TENSOR V067
-  public String directory = HomeDirectory.file("Public", "exodriver", "examples", "U3").toString();
+  // ---
+  public File directory = HomeDirectory.file("Public", "exodriver", "examples", "U3");
 
   public File getExecutable() {
     return new File(directory, "u3adctxt");

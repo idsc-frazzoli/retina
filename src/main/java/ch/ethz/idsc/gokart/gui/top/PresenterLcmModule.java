@@ -24,6 +24,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.ManualControlLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
@@ -55,7 +56,7 @@ public class PresenterLcmModule extends AbstractModule {
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
-  // private final JoystickLcmClient joystickLcmClient = new JoystickLcmClient(GokartLcmChannel.JOYSTICK);
+  private final ManualControlLcmClient manualControlLcmClient = new ManualControlLcmClient();
   private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
       TrajectoryLcmClient.xyat(), TrajectoryLcmClient.xyavt());
   private final WindowConfiguration windowConfiguration = //
@@ -172,8 +173,7 @@ public class PresenterLcmModule extends AbstractModule {
     }
     {
       GokartHudRender gokartHudRender = new GokartHudRender(gokartPoseInterface);
-      // TODO access manual control
-      // joystickLcmClient.addListener(gokartHudRender);
+      manualControlLcmClient.addListener(gokartHudRender);
       timerFrame.geometricComponent.addRenderInterface(gokartHudRender);
       rimoGetLcmClient.addListener(gokartHudRender);
     }
@@ -183,7 +183,7 @@ public class PresenterLcmModule extends AbstractModule {
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
-    // joystickLcmClient.startSubscriptions();
+    manualControlLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
     davisLcmClient.startSubscriptions();
@@ -222,7 +222,7 @@ public class PresenterLcmModule extends AbstractModule {
     linmotGetLcmClient.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
     gokartPoseInterface.gokartPoseLcmClient.stopSubscriptions();
-    // joystickLcmClient.stopSubscriptions();
+    manualControlLcmClient.stopSubscriptions();
     vlp16LcmHandler.stopSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
     davisLcmClient.stopSubscriptions();

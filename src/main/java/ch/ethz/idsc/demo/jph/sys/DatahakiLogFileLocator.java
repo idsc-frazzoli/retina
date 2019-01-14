@@ -33,9 +33,7 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
   }
 
   /** @param logFile
-   * @return
-   * @throws Exception if file cannot be located */
-  // TODO comment not in sync with implementation
+   * @return valid log file, or null if file could not be found */
   public static File file(LogFile logFile) {
     return INSTANCE.getAbsoluteFile(logFile);
   }

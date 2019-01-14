@@ -95,7 +95,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       reference = davisDvsEvent.time;
     ++total[davisDvsEvent.i];
     Scalar now = Quantity.of((davisDvsEvent.time - reference) * 1e-6, SI.SECOND);
-    if (Scalars.lessEquals(time_next, now)) { // TODO not as precise as could be
+    if (Scalars.lessEquals(time_next, now)) { // TODO JPH not as precise as could be
       tableBuilder4.appendRow( //
           Magnitude.SECOND.apply(time_next.subtract(DVS_PERIOD)), //
           Tensors.vectorInt(total));

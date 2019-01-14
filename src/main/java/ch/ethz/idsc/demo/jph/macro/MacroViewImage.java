@@ -46,7 +46,6 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   private static final int MARGIN_R = 40;
   private static final ColorDataIndexed COLOR_DATA_INDEXED = ColorDataLists._003.cyclic();
   private static final ScalarTensorFunction GRADIENT = ColorDataGradients.AVOCADO;
-  // private static final File BACKGROUND = UserHome.Pictures("keyvisual.png");
   private static final TensorUnaryOperator BLACK_TO_YELLOW = rgba -> {
     if (Scalars.isZero(rgba.Get(0)))
       return Tensors.vector(255, 248, 198, 255);

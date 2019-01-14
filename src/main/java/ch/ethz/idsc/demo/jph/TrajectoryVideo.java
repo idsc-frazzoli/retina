@@ -25,6 +25,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
@@ -78,7 +79,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       times.append(time);
     } else //
     if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME)) {
-      // TODO render image
+      // TODO JPH render image
       if (Tensors.nonEmpty(trail) && Objects.nonNull(trajectory) && !trajectory.isEmpty()) {
         Tensor filtered = GEODESIC_CENTER_FILTER.apply(trail);
         Tensor planned = Tensor.of(trajectory.stream().map(TrajectorySample::stateTime).map(StateTime::state));
@@ -86,7 +87,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         Tensor speeds = LIE_DIFFERENCES.apply(filtered);
         Tensor dt = Differences.of(times).map(Magnitude.SECOND).map(InvertUnlessZero.FUNCTION);
         final Scalar mean = Mean.of(speeds.get(Tensor.ALL, 0).pmul(dt)).Get();
-        // TODO make more elegant
+        // TODO JPH make more elegant
         Stream<Tensor> a = filtered.stream().map(Extract2D.FUNCTION);
         Stream<Tensor> b = planned.stream().map(Extract2D.FUNCTION);
         Tensor reduceMin = Stream.concat(a, b).reduce(Entrywise.min()).get();

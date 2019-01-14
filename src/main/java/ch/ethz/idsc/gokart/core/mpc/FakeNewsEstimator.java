@@ -1,11 +1,11 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.owl.data.Stopwatch;
+import ch.ethz.idsc.tensor.io.Timing;
 
 class FakeNewsEstimator extends MPCStateEstimationProvider {
-  protected FakeNewsEstimator(Stopwatch stopwatch) {
-    super(stopwatch);
+  protected FakeNewsEstimator(Timing timing) {
+    super(timing);
   }
 
   @Override

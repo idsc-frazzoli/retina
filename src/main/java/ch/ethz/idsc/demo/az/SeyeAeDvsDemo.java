@@ -35,7 +35,6 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
         try {
           ImageIO.write(timedImageEvent.bufferedImage, "png", img);
         } catch (IOException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
         count++;

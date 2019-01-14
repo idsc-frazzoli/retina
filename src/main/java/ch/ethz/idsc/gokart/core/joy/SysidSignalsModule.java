@@ -41,9 +41,9 @@ public class SysidSignalsModule extends AbstractModule {
   }
 
   public static void standalone() throws Exception {
-    SysidSignalsModule autoboxCompactModule = new SysidSignalsModule();
-    autoboxCompactModule.first();
-    autoboxCompactModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    SysidSignalsModule sysidSignalsModule = new SysidSignalsModule();
+    sysidSignalsModule.first();
+    sysidSignalsModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 
   public static void main(String[] args) throws Exception {

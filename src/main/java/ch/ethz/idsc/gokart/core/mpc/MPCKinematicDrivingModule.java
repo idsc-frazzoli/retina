@@ -22,7 +22,6 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -31,6 +30,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
@@ -45,7 +45,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final SteerPositionControl steerPositionController//
       = new SteerPositionControl(HighPowerSteerConfig.GLOBAL);
-  private final Stopwatch started;
+  private final Timing timing;
   private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
@@ -60,11 +60,11 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   /** create Module with custom estimator
    * 
    * @param estimator the custom estimator
-   * @param started stopwatch that shows the same time that also was used for the custom estimator */
-  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Stopwatch started, MPCPreviewableTrack track) {
+   * @param timing that shows the same time that also was used for the custom estimator */
+  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing, MPCPreviewableTrack track) {
     this.track = track;
     mpcStateEstimationProvider = estimator;
-    this.started = started;
+    this.timing = timing;
     // link mpc steering
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
     initModules();
@@ -73,11 +73,11 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   /** create Module with custom estimator and with life track
    * 
    * @param estimator the custom estimator
-   * @param started stopwatch that shows the same time that also was used for the custom estimator */
-  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Stopwatch started) {
+   * @param timing that shows the same time that also was used for the custom estimator */
+  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing) {
     this.track = null;
     mpcStateEstimationProvider = estimator;
-    this.started = started;
+    this.timing = timing;
     // link mpc steering
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
     initModules();
@@ -87,8 +87,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   public MPCKinematicDrivingModule() {
     // track = DubendorfTrack.CHICANE;
     track = null;
-    started = Stopwatch.started();
-    mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(started);
+    timing = Timing.started();
+    mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(timing);
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
     initModules();
   }
@@ -108,7 +108,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   public final PutProvider<RimoPutEvent> rimoProvider = new PutProvider<RimoPutEvent>() {
     @Override
     public Optional<RimoPutEvent> putEvent() {
-      Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
+      Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
       Tensor currents = mpcPower.getPower(time);
       if (Objects.nonNull(currents))
         return Optional.of(RimoPutHelper.operationTorque( //
@@ -126,7 +126,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   public final PutProvider<SteerPutEvent> steerProvider = new PutProvider<SteerPutEvent>() {
     @Override
     public Optional<SteerPutEvent> putEvent() {
-      Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
+      Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
       Scalar steering = mpcSteering.getSteering(time);
       Scalar dSteering = mpcSteering.getDotSteering(time);
       if (false) {
@@ -154,7 +154,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   public final PutProvider<LinmotPutEvent> linmotProvider = new PutProvider<LinmotPutEvent>() {
     @Override
     public Optional<LinmotPutEvent> putEvent() {
-      Scalar time = Quantity.of(started.display_seconds(), SI.SECOND);
+      Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
       Scalar braking = mpcBraking.getBraking(time);
       if (Objects.nonNull(braking)) {
         return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(braking));

@@ -3,8 +3,10 @@ package ch.ethz.idsc.demo.jph.macro;
 
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.util.Optional;
 
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
+import ch.ethz.idsc.gokart.core.joy.ManualControlParser;
 import ch.ethz.idsc.gokart.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -13,8 +15,6 @@ import ch.ethz.idsc.gokart.lcm.autobox.MiscLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.retina.joystick.JoystickDecoder;
-import ch.ethz.idsc.retina.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -38,7 +38,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 /** export log files to tables for display in macro view image */
 /* package */ class MacroViewTable implements OfflineTableSupplier {
   static final File ROOT = HomeDirectory.file("gokartproc");
-  private static final String JOYSTICK = "joystick.generic_xbox_pad";
   private static final int START_8AM = 480;
   static final int LENGTH = 660;
   private static final ScalarUnaryOperator MAX = Max.function(RealScalar.ONE);
@@ -66,18 +65,16 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
         Scalar rate = Magnitude.VELOCITY.apply(speed).abs();
         table.set(Max.function(rate), index, INDEX_RATE);
       } else //
-      // TODO not universally valid anymore!
-      if (channel.equals(JOYSTICK)) {
-        JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
-        ManualControlInterface manualControlInterface = (ManualControlInterface) joystickEvent;
-        if (manualControlInterface.isAutonomousPressed())
-          table.set(MAX, index, INDEX_AUTO);
-      } else //
       if (channel.equals(MiscLcmServer.CHANNEL_GET)) {
         MiscGetEvent miscGetEvent = new MiscGetEvent(byteBuffer);
         Scalar volt = Magnitude.VOLT.apply(miscGetEvent.getSteerBatteryVoltage());
         // TODO it does not make sense to track the maximum steering voltage but rather the minimum
         table.set(Max.function(volt), index, INDEX_VOLT);
+      } else //
+      {
+        Optional<ManualControlInterface> optional = ManualControlParser.event(channel, byteBuffer);
+        if (optional.isPresent() && optional.get().isAutonomousPressed())
+          table.set(MAX, index, INDEX_AUTO);
       }
     }
   }
@@ -98,27 +95,25 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       File dirday = new File(ROOT, date);
       dirday.mkdir();
       File file = DatahakiLogFileLocator.file(logFile);
-      if (file.isFile()) {
-        final File csv = new File(dirday, logFile.getTitle() + ".csv");
-        if (csv.exists()) {
-          Tensor table = Import.of(csv);
-          if (table.length() < LENGTH) {
-            table = Join.of(table, Array.zeros(LENGTH - table.length(), 4));
-            Export.of(csv, table);
-            System.out.println(csv + " " + Dimensions.of(table));
-          }
-        } else {
-          System.out.println(logFile.getTitle());
-          String hhmmss = logFile.getTitle().substring(9);
-          Tensor timestamp = Tensors.fromString(String.format("{%s[h],%s[min],%s[s]}", //
-              hhmmss.substring(0, 2), //
-              hhmmss.substring(2, 4), //
-              hhmmss.substring(4, 6))).map(Magnitude.SECOND);
-          Scalar offset = Quantity.of(Total.of(timestamp).Get(), SI.SECOND);
-          OfflineTableSupplier offlineTableSupplier = new MacroViewTable(offset);
-          OfflineLogPlayer.process(file, offlineTableSupplier);
-          Export.of(csv, offlineTableSupplier.getTable().map(CsvFormat.strict()));
+      final File csv = new File(dirday, logFile.getTitle() + ".csv");
+      if (csv.exists()) {
+        Tensor table = Import.of(csv);
+        if (table.length() < LENGTH) {
+          table = Join.of(table, Array.zeros(LENGTH - table.length(), 4));
+          Export.of(csv, table);
+          System.out.println(csv + " " + Dimensions.of(table));
         }
+      } else {
+        System.out.println(logFile.getTitle());
+        String hhmmss = logFile.getTitle().substring(9);
+        Tensor timestamp = Tensors.fromString(String.format("{%s[h],%s[min],%s[s]}", //
+            hhmmss.substring(0, 2), //
+            hhmmss.substring(2, 4), //
+            hhmmss.substring(4, 6))).map(Magnitude.SECOND);
+        Scalar offset = Quantity.of(Total.of(timestamp).Get(), SI.SECOND);
+        OfflineTableSupplier offlineTableSupplier = new MacroViewTable(offset);
+        OfflineLogPlayer.process(file, offlineTableSupplier);
+        Export.of(csv, offlineTableSupplier.getTable().map(CsvFormat.strict()));
       }
     }
   }

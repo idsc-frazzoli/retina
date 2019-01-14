@@ -13,9 +13,9 @@ import java.util.Objects;
 
 import javax.swing.JFrame;
 
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Timing;
 
 public class WindowConfiguration implements Serializable {
   public Tensor bounds = Tensors.vector(100, 100, 800, 800);
@@ -49,7 +49,7 @@ public class WindowConfiguration implements Serializable {
       }
     });
     jFrame.addComponentListener(new ComponentAdapter() {
-      final Stopwatch stopwatch = Stopwatch.stopped();
+      final Timing timing = Timing.stopped();
       Point shown = null;
 
       @Override
@@ -59,12 +59,12 @@ public class WindowConfiguration implements Serializable {
         } catch (IllegalComponentStateException illegalComponentStateException) {
           illegalComponentStateException.printStackTrace();
         }
-        stopwatch.start();
+        timing.start();
       }
 
       @Override
       public void componentMoved(ComponentEvent componentEvent) {
-        long nanos = stopwatch.display_nanoSeconds(); // 45846090
+        long nanos = timing.nanoSeconds(); // 45846090
         // System.out.println("ns=" + nanos);
         if (nanos < 300_000_000 && Objects.nonNull(shown)) {
           Point moved = jFrame.getLocationOnScreen();

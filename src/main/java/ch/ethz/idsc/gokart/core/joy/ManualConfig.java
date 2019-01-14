@@ -25,7 +25,7 @@ public class ManualConfig {
   }
 
   /** .
-   * ante 20181211: the generic gamepad joystick was used
+   * ante 20181211: the GenericXboxPad joystick was used
    * post 20181211: throttle pedal and boost button
    * 
    * @return manual control as configured on the gokart */

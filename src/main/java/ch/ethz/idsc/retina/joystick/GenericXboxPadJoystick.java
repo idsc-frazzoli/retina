@@ -4,16 +4,11 @@ package ch.ethz.idsc.retina.joystick;
 import ch.ethz.idsc.retina.util.math.Clipzone;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /* package */ final class GenericXboxPadJoystick extends JoystickEvent implements ManualControlInterface {
-  /** experimentally determined threshold for knobs when in passive configuration */
-  private static final Clip KNOB_PASSIVE_CLIP = Clip.function(-0.05, 0.05);
-
   // function for testing
   static GenericXboxPadJoystick createDefault() {
     return new GenericXboxPadJoystick(9.5);
@@ -174,13 +169,5 @@ import ch.ethz.idsc.tensor.sca.Clip;
   @Override // from GokartJoystickInterface
   public boolean isResetPressed() {
     return isButtonPressedY();
-  }
-
-  @Override // from GokartJoystickInterface
-  public boolean isPassive() {
-    return KNOB_PASSIVE_CLIP.isInside(getSteerLeft()) //
-        && KNOB_PASSIVE_CLIP.isInside(DoubleScalar.of(getRightKnobDirectionDown())) //
-        && Scalars.isZero(getAheadAverage()) //
-        && Chop.NONE.allZero(getAheadPair_Unit());
   }
 }

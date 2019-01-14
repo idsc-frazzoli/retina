@@ -7,7 +7,6 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.top.TrackRender;
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -15,6 +14,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -36,7 +36,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   TrackRender trackRender;
   Boolean closedTrack = false;
   Boolean oldWasClosed = false;
-  Stopwatch lastTrackReset = Stopwatch.started();
+  Timing lastTrackReset = Timing.started();
   List<TrackRefinenement.TrackConstraint> constraints = new LinkedList<>();
   Scalar openTrackValid = Quantity.of(1, SI.SECOND);
   Scalar timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);

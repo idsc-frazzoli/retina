@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     // File file = YnLogFileLocator.file(GokartLogFile._20180503T160522_16144bb6);
-    File file = new File("/home/ynager/gokart/logs/20180503/20180503T160522_short.lcm");
+    File file = HomeDirectory.file("gokart/logs/20180503/20180503T160522_short.lcm");
     File folder = HomeDirectory.Pictures("log/mapper");
     folder.mkdirs();
     if (!folder.isDirectory())
