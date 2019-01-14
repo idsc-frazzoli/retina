@@ -67,17 +67,17 @@ public class BSplineTrackTest extends TestCase {
     BSplineTrack bSplineTrack = new BSplineTrack(xtensor, ytensor, rtensor, true);
     Random rand = new Random();
     for (int i = 0; i < 100; i++) {
-      Scalar prog = Quantity.of(rand.nextFloat() * 200 - 100, SI.ONE);
+      Scalar prog = RealScalar.of(rand.nextFloat() * 200 - 100);
       // get from bspline track
       Tensor cDev = bSplineTrack.getDerivation(prog);
       // compute numerically
-      Scalar dx = Quantity.of(0.00001, SI.ONE);
+      Scalar dx = RealScalar.of(0.00001);
       Tensor nDev = bSplineTrack.getPosition(prog.add(dx))//
           .subtract(bSplineTrack.getPosition(prog))//
           .divide(dx);
       // System.out.println(cDev.subtract(nDev));
       // TODO MH test fail perhaps due to new BSplineFunction implementation?
-      // FIXME JPH/MH
+      // FIXME MH
       Scalar scalar = Norm._2.between(cDev, nDev);
       // System.out.println(scalar);
       // System.out.println(cDev.subtract(nDev));

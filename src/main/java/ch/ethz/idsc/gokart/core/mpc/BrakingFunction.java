@@ -1,10 +1,11 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import java.util.Optional;
+
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Series;
@@ -12,6 +13,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Ramp;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
+import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO JPH use java conventions
@@ -29,7 +31,6 @@ public enum BrakingFunction {
   private static final Scalar LINMOT_START = Quantity.of(0.005, SI.METER);
   private static final Scalar LINMOT_END = Quantity.of(0.05, SI.METER);
   private static final Scalar LINMOT_RANGE = LINMOT_END.subtract(LINMOT_START);
-  private static final Scalar ACCELERATION_ZERO = Quantity.of(0, SI.ACCELERATION);
 
   // Note: this is highly inaccurate. TODO do it more precisely
   /** get the induced braking deceleration (added to motor acceleration)
@@ -45,11 +46,10 @@ public enum BrakingFunction {
    * 
    * @param wantedAcceleration wanted additional braking deceleration [m/s^2]
    * @return needed braking position [m] */
-  // TODO JPH/MH return Optional
-  public static Scalar getNeededBrakeActuation(Scalar wantedAcceleration) {
-    if (Scalars.lessEquals(wantedAcceleration, ACCELERATION_ZERO))
-      return null;
-    // TODO JPH/MH use Roots.of(coeffs)
+  public static Optional<Scalar> getNeededBrakeActuation(Scalar wantedAcceleration) {
+    if (Sign.isNegativeOrZero(wantedAcceleration))
+      return Optional.empty();
+    // TODO MH use Roots.of(COEFFS);
     Scalar rootOf = LINEAR_FACTOR.multiply(LINEAR_FACTOR)
         // Power.of(linearFactor, RealScalar.of(2)) //
         .add(RealScalar.of(4) //
@@ -60,7 +60,7 @@ public enum BrakingFunction {
     Scalar top = LINEAR_FACTOR.negate().add(D);
     Scalar bottom = QUADRATIC_FACTOR.add(QUADRATIC_FACTOR);
     // RealScalar.of(2).multiply(quadraticFactor);
-    return top.divide(bottom).add(BRAKE_START);
+    return Optional.of(top.divide(bottom).add(BRAKE_START));
   }
 
   public static Scalar getRelativePosition(Scalar absolutePosition) {

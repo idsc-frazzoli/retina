@@ -8,21 +8,21 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.sca.Floor;
+import ch.ethz.idsc.tensor.sca.Round;
 
 public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack {
   private static final Scalar ZEROMETERS = Quantity.of(0, SI.METER);
 
-  public MPCBSplineTrack(Tensor trackData, Scalar radiusOffset, Boolean closed) {
+  public MPCBSplineTrack(Tensor trackData, Scalar radiusOffset, boolean closed) {
     super(trackData.get(0), trackData.get(1), //
         trackData.get(2).map(radius -> radius.add(radiusOffset)), closed);
   }
 
-  public MPCBSplineTrack(Tensor trackData, Boolean closed) {
+  public MPCBSplineTrack(Tensor trackData, boolean closed) {
     super(trackData.get(0), trackData.get(1), trackData.get(2), closed);
   }
 
-  public MPCBSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints, Boolean closed) {
+  public MPCBSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints, boolean closed) {
     super(controlPointsX, controlPointsY, radiusControlPoints, closed);
   }
 
@@ -39,7 +39,8 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
     // System.out.println(" path progress timing: "+(endTime-startTime)/1000+"[micros]");
     // System.out.println(" fast path progress timing: "+(endTimef-startTimef)/1000+"[micros]");
     // round down
-    int currentIndex = Floor.of(pathProgress.subtract(RealScalar.of(0.5))).number().intValue();
+    // int currentIndex = Floor.of(pathProgress.subtract(RealScalar.of(0.5))).number().intValue();
+    int currentIndex = Round.of(pathProgress).number().intValue() - 1;
     // progress=1 at middle point between first 2 control points
     Scalar progressStart = pathProgress.subtract(RealScalar.of(currentIndex)).subtract(RealScalar.of(0.5));
     Tensor ctrX = Tensors.empty();
@@ -49,9 +50,9 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
       currentIndex += numPoints;
     }
     for (int i = 0; i < previewSize; i++) {
-      // TODO JPH/MH find out: is this efficient?
-      ctrX.append(controlPoints.Get(currentIndex, 0));
-      ctrY.append(controlPoints.Get(currentIndex, 1));
+      Tensor vector = controlPoints.get(currentIndex);
+      ctrX.append(vector.Get(0));
+      ctrY.append(vector.Get(1));
       ctrR.append(Max.of(controlPointsR.Get(currentIndex).subtract(padding), ZEROMETERS));
       currentIndex++;
       if (currentIndex >= numPoints)

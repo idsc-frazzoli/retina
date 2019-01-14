@@ -78,6 +78,12 @@ static void para_handler(const lcm_recv_buf_t *rbuf,
 	printf("received path message\n");
 	memcpy((int8_t*)&lastParaMsg, msg->data, msg->data_length);
 	printf("max speed: %f\n",lastParaMsg.para.speedLimit);
+	printf("max X-acc: %f\n",lastParaMsg.para.maxxacc);
+	printf("max Y-acc: %f\n",lastParaMsg.para.maxyacc);
+	printf("max front lat acc: %f\n",lastParaMsg.para.latacclim);
+	printf("max rot acc: %f\n",lastParaMsg.para.rotacceffect);
+	printf("torque vec effect: %f\n",lastParaMsg.para.torqueveceffect);
+	printf("brake effect: %f\n",lastParaMsg.para.brakeeffect);
 }
 
 static void state_handler(const lcm_recv_buf_t *rbuf,
@@ -134,19 +140,23 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}
 
 	//gather parameter data
-	int pl = 3*POINTSN+3;
+	int pl = 3*POINTSN+7;
 	
 	printf("parameters\n");
 	for(int i = 0; i<N;i++){
 		params.all_parameters[i*pl] = lastParaMsg.para.speedLimit;
 		params.all_parameters[i*pl+1] = lastParaMsg.para.maxxacc;
 		params.all_parameters[i*pl+2] = lastParaMsg.para.maxyacc;
+		params.all_parameters[i*pl+3] = lastParaMsg.para.latacclim;
+		params.all_parameters[i*pl+4] = lastParaMsg.para.rotacceffect;
+		params.all_parameters[i*pl+5] = lastParaMsg.para.torqueveceffect;
+		params.all_parameters[i*pl+6] = lastParaMsg.para.brakeeffect;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+3+ip]=lastCRMsg.path.controlPointsX[ip];
+			params.all_parameters[i*pl+7+ip]=lastCRMsg.path.controlPointsX[ip];
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+3+POINTSN+ip]=lastCRMsg.path.controlPointsY[ip];
+			params.all_parameters[i*pl+7+POINTSN+ip]=lastCRMsg.path.controlPointsY[ip];
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+3+2*POINTSN+ip]=lastCRMsg.path.controlPointsR[ip];
+			params.all_parameters[i*pl+7+2*POINTSN+ip]=lastCRMsg.path.controlPointsR[ip];
 	}
 	
 	//assume that this works

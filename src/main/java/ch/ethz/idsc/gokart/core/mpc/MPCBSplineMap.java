@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import ch.ethz.idsc.retina.util.math.UniformBSpline2;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -11,7 +12,7 @@ import ch.ethz.idsc.tensor.red.Norm;
 public enum MPCBSplineMap {
   ;
   public static Tensor getPositions(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle) {
-    Tensor bm = MPCBSpline.getBasisMatrix(controlpointsX.length(), queryPositions, 0, circle);
+    Tensor bm = UniformBSpline2.getBasisMatrix(controlpointsX.length(), queryPositions, 0, circle);
     return MPCBSplineMap.getPositions(controlpointsX, controlpointsY, queryPositions, circle, bm);
   }
 
@@ -22,7 +23,7 @@ public enum MPCBSplineMap {
   }
 
   public static Tensor getSidewardsUnitVectors(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle) {
-    Tensor matrix = MPCBSpline.getBasisMatrix(controlpointsY.length(), queryPositions, 1, circle);
+    Tensor matrix = UniformBSpline2.getBasisMatrix(controlpointsY.length(), queryPositions, 1, circle);
     return MPCBSplineMap.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, circle, matrix);
   }
 

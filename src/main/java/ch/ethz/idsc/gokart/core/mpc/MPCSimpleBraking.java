@@ -26,10 +26,10 @@ public class MPCSimpleBraking extends MPCBraking {
     Scalar min = minmax.Get(0);
     Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
     // System.out.println(braking);
-    Scalar brakePos = BrakingFunction.getNeededBrakeActuation(braking);
-    if (Objects.isNull(brakePos))
-      return RealScalar.ZERO;
-    return BrakingFunction.getRelativePosition(brakePos);
+    // TODO MH move functionality to BrakingFunction
+    return BrakingFunction.getNeededBrakeActuation(braking) //
+        .map(BrakingFunction::getRelativePosition) //
+        .orElse(RealScalar.ZERO);
   }
 
   @Override

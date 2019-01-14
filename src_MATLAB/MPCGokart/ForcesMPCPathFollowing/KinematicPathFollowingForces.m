@@ -9,14 +9,17 @@ clear all
 close all
 
 maxSpeed = 10;
-maxxacc = 5;
-maxyacc = 10;
-pointsO = 3;
+maxxacc = 4;
+maxyacc = 8;
+latacclim = 3;
+rotacceffect  = 1;
+torqueveceffect = 9;
+brakeeffect = 0;
+pointsO = 7;
 pointsN = 10;
 splinestart = 1;
 nextsplinepoints = 0;
-%parameters: p = [maxspeed, xmaxacc,ymaxacc, pointsx, pointsy]
-
+%parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
 % variables z = [dotab,dotbeta,ds,x,y,theta,v,ab,beta,s,braketemp]
 global index
 index.dotab = 1;
@@ -37,7 +40,10 @@ index.sb = index.nu+1;
 index.ps = 1;
 index.pax = 2;
 index.pay = 3;
-
+index.pll = 4;
+index.prae = 5;
+index.ptve = 6;
+index.pbre = 7;
 integrator_stepsize = 0.1;
 
 model.N = 31;
@@ -78,7 +84,6 @@ points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8
 %points = [0,40,40,5,0;0,0,10,9,10]';
 trajectorytimestep = integrator_stepsize;
 [p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
-
 model.npar = pointsO + 3*pointsN;
 for i=1:model.N
    model.objective{i} = @(z,p)objective(z,...
@@ -86,7 +91,11 @@ for i=1:model.N
        getRadiiFromParameters(p, pointsO, pointsN),...
        p(index.ps),...
        p(index.pax),...
-       p(index.pay));
+       p(index.pay),...
+       p(index.pll),...
+       p(index.prae),...
+       p(index.ptve),...
+       p(index.pbre));
 end
 %model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
 
@@ -112,7 +121,7 @@ model.lb(index.s)=0;
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
@@ -177,7 +186,7 @@ for i =1:tend
     
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,maxyacc,nextSplinePoints) , model.N ,1);
+    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,maxyacc,latacclim,rotacceffect,torqueveceffect, brakeeffect,nextSplinePoints) , model.N ,1);
     %problem.all_parameters = zeros(22,1);
     problem.x0 = x0(:);
     %problem.x0 = zeros(310,1);

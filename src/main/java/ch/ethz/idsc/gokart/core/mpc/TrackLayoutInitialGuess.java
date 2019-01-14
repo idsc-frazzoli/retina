@@ -15,6 +15,7 @@ import java.util.PriorityQueue;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.math.UniformBSpline2;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -408,11 +409,11 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         // we found closed solution
         Tensor queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
         // query points
-        splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, true);
+        splineMatrix = UniformBSpline2.getBasisMatrix(n, queryPositions, 0, true);
       } else {
         Tensor queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
         // query points
-        splineMatrix = MPCBSpline.getBasisMatrix(n, queryPositions, 0, false);
+        splineMatrix = UniformBSpline2.getBasisMatrix(n, queryPositions, 0, false);
       }
       // solve for control points: x
       // TODO MH you are doing SVD of the same matrix twice !
