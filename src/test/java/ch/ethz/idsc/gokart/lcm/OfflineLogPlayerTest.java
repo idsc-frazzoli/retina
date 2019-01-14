@@ -1,12 +1,10 @@
 // code by jph
-package ch.ethz.idsc.gokart.lcm.lidar;
+package ch.ethz.idsc.gokart.lcm;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
-import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodynePosEvent;
 import ch.ethz.idsc.retina.lidar.VelodynePosListener;
@@ -18,7 +16,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
-public class VelodyneDecoderTest extends TestCase {
+public class OfflineLogPlayerTest extends TestCase {
   public void testFromFile() throws IOException {
     Clip clipX = Clip.function(Quantity.of(8.3, "deg"), Quantity.of(8.4, "deg"));
     Clip clipY = Clip.function(Quantity.of(47.2, "deg"), Quantity.of(47.3, "deg"));

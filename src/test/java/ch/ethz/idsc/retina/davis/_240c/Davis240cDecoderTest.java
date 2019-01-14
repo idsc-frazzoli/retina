@@ -1,7 +1,6 @@
 // code by jph
-package ch.ethz.idsc.retina.davis._240;
+package ch.ethz.idsc.retina.davis._240c;
 
-import ch.ethz.idsc.retina.davis._240c.Davis240cDecoder;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;

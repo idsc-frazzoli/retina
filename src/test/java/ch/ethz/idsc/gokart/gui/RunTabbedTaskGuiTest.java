@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.joy.ManualResetModule;
+import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
@@ -27,12 +28,22 @@ public class RunTabbedTaskGuiTest extends TestCase {
     assertTrue(RunTabbedTaskGui.MODULES_DEV.contains(MiscEmergencyWatchdog.class));
   }
 
-  public void testAutStartStop() throws Exception {
-    for (Class<?> module : RunTabbedTaskGui.MODULES_AUT) {
-      ModuleAuto.INSTANCE.runOne(module);
-      Thread.sleep(100);
-      ModuleAuto.INSTANCE.endOne(module);
+  public void testAutonomous() throws InterruptedException {
+    for (Class<?> cls : RunTabbedTaskGui.MODULES_AUT) {
+      ModuleAuto.INSTANCE.runOne(cls);
+      Thread.sleep(150); // needs time to start thread that invokes first()
+      ModuleAuto.INSTANCE.endOne(cls);
     }
+  }
+
+  public void testJoystick() throws InterruptedException {
+    for (Class<?> cls : RunTabbedTaskGui.MODULES_JOY)
+      if (!cls.equals(SysidSignalsModule.class)) {
+        ModuleAuto.INSTANCE.runOne(cls);
+        Thread.sleep(50); // needs time to start thread that invokes first()
+        ModuleAuto.INSTANCE.endOne(cls);
+      } else
+        System.out.println("skip " + cls);
   }
 
   public void testAutonomousSafety() {
