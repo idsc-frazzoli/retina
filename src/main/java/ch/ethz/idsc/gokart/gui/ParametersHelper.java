@@ -23,7 +23,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 
-enum ParametersHelper {
+/* package */ enum ParametersHelper {
   ;
   public static final List<Object> OBJECTS = Arrays.asList(//
       ChassisGeometry.GLOBAL, //
