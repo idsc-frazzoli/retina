@@ -27,10 +27,10 @@ import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
   private void multiRun() {
     for (int i = 0; i < iterationLength; i++) {
       // to initialize singleRun, only the estimatedLabelFileName needs to be changed
-      // TODO this needs to be similar to the fileNames defined in PipelineSetup::iterate() maybe there is a more elegant option
+      // TODO MG this needs to be similar to the fileNames defined in PipelineSetup::iterate() maybe there is a more elegant option
       int newTau = 1000 + 1000 * i;
       String newEstimatedLabelFileName = pipelineConfig.davisConfig.logFilename() + "_tau_" + newTau;
-      // TODO filename not generic. perhaps pass in "Dubi15a_tau" as argument?
+      // TODO MG filename not generic. perhaps pass in "Dubi15a_tau" as argument?
       pipelineConfig.estimatedLabelFileName = "Dubi15a_tau/" + newEstimatedLabelFileName;
       // initialize singleRun object and run evaluation
       EvaluatorSingleRun singleRun = new EvaluatorSingleRun(pipelineConfig);
@@ -39,7 +39,7 @@ import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
       double[] results = new double[] { newTau, singleRun.getResults()[0], singleRun.getResults()[1] };
       collectedResults.add(results);
     }
-    // TODO probably also save pipelineConfig that was used?
+    // TODO MG probably also save pipelineConfig that was used?
     EvalUtil.saveToCSV(evaluationResultFile, collectedResults);
     System.out.println("Successfully saved evaluation results to " + evaluationResultFileName);
   }

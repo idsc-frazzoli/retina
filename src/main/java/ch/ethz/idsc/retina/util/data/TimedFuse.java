@@ -13,12 +13,12 @@ public final class TimedFuse implements WatchdogInterface {
     tolerance_ns = (long) (tolerance_seconds * 1E9);
   }
 
-  @Override
+  @Override // from WatchdogInterface
   public void pacify() {
     lastPacify = System.nanoTime();
   }
 
-  @Override
+  @Override // from WatchdogInterface
   public boolean isBlown() {
     return tolerance_ns < System.nanoTime() - lastPacify;
   }

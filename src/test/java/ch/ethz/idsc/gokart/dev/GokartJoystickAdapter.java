@@ -4,12 +4,10 @@ package ch.ethz.idsc.gokart.dev;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Boole;
-import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -71,14 +69,6 @@ public final class GokartJoystickAdapter implements ManualControlInterface {
   @Override // from GokartJoystickInterface
   public Tensor getAheadPair_Unit() {
     return pair;
-  }
-
-  @Override // from GokartJoystickInterface
-  public boolean isPassive() {
-    return Scalars.isZero(steerLeft) //
-        && Scalars.isZero(breakStrength) //
-        && Scalars.isZero(aheadAverage) //
-        && Chop.NONE.allZero(pair);
   }
 
   @Override

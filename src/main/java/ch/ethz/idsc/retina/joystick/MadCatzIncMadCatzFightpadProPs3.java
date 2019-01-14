@@ -32,11 +32,6 @@ final class MadCatzIncMadCatzFightpadProPs3 extends JoystickEvent implements Man
     return Array.zeros(2);
   }
 
-  @Override // from GokartJoystickInterface
-  public boolean isPassive() {
-    throw new RuntimeException();
-  }
-
   @Override
   public boolean isAutonomousPressed() {
     throw new RuntimeException();

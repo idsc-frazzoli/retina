@@ -31,8 +31,4 @@ public interface ManualControlInterface {
 
   /** @return true when operator authorizes calibration, or reset */
   boolean isResetPressed();
-
-  /** @return true if none of the manipulators on the joystick are pressed by user */
-  @Deprecated
-  boolean isPassive();
 }

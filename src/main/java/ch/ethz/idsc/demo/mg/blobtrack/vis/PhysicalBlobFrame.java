@@ -44,7 +44,7 @@ import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
     originPos = new int[] { pipelineConfig.originPosX.number().intValue(), pipelineConfig.originPosY.number().intValue() };
     objectSize = pipelineConfig.objectSize.number().doubleValue();
     gokartSize = pipelineConfig.gokartSize.number().intValue();
-    // TODO physical boarder points could be loaded from .csv
+    // TODO MG physical boarder points could be loaded from .csv
     fieldOfView = new double[4][2];
     // upper corners
     fieldOfView[0] = worldToImgPlane(transformUtil.imageToGokart(10, 10));
@@ -118,7 +118,6 @@ import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartUtil;
     // unit conversion from [m] to [pixel]
     double[] physicalPosPixel = new double[] { physicalPos[0] * scaleFactor, physicalPos[1] * scaleFactor };
     // shift origin from gokart to upper left corner and transform coordinate axes: x --> -y and y --> -x
-    // TODO the coordinate transformation is hardcoded
     return new double[] { //
         originPos[0] - physicalPosPixel[1], //
         originPos[1] - physicalPosPixel[0] };
