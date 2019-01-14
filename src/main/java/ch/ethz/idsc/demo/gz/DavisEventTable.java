@@ -53,7 +53,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       reference = davisDvsEvent.time;
     ++events[davisDvsEvent.i];
     Scalar now = Quantity.of((davisDvsEvent.time - reference) * 1e-6, SI.SECOND);
-    if (Scalars.lessEquals(time_next, now)) { // TODO not as precise as could be
+    if (Scalars.lessEquals(time_next, now)) { // GZ not as precise as could be
       Scalar speed = Objects.isNull(rge) ? Quantity.of(0, SI.VELOCITY) : ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
       Scalar rate = Objects.isNull(rge) ? Quantity.of(0, SI.PER_SECOND) : ChassisGeometry.GLOBAL.odometryTurningRate(rge);
       tableBuilder.appendRow( //
@@ -75,7 +75,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (channel.equals(RimoLcmServer.CHANNEL_PUT)) {
       // rpe = RimoPutHelper.from(byteBuffer);
     } else //
-    if (channel.equals("davis240c.overview.dvs")) { // TODO get channel name from code
+    if (channel.equals("davis240c.overview.dvs")) { // GZ get channel name from code
       // this is where the decoder obtains a single message and
       // invokes the function davisDvs as often as necessary
       davisDvsDatagramDecoder.decode(byteBuffer);

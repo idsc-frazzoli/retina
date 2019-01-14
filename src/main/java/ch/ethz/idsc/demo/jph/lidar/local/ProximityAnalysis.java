@@ -35,8 +35,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final Map<Tensor, Integer> map = new HashMap<>();
 
   public ProximityAnalysis() {
-    // TODO setLimitLo
-    // lidarSpacialProvider.setLimitLo(0.0);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     lidarSpacialProvider.addListener(this);
   }
