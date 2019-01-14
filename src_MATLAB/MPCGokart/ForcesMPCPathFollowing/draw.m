@@ -78,7 +78,13 @@ subplot(m,n,4)
 hold on
 %compute lateral acceleration
 l = 1;
-la = tan(lhistory(:,index.beta+1)).*lhistory(:,index.v+1).^2/l;
+beta = lhistory(:,index.beta+1);
+dotbeta = lhistory(:,index.dotbeta+1);
+tangentspeed = lhistory(:,index.v+1);
+ackermannAngle = -0.58.*beta.*beta.*beta+0.93*beta;
+dAckermannAngle = -0.58.*3.*beta.*beta.*dotbeta+0.93.*dotbeta;
+la = tan(ackermannAngle).*lhistory(:,index.v+1).^2/l;
+lra =1./(cos(ackermannAngle).^2).*dAckermannAngle.*tangentspeed./l;
 fa = lhistory(:,index.ab+1);
 na = (fa.^2+la.^2).^0.5;
 title('accelerations')
@@ -88,7 +94,8 @@ xlabel('[s]')
 plot(lhistory(:,1),la);
 %plot(history(:,1),fa);
 plot(lhistory(:,1),na);
-legend('lateral acceleration','norm of acceleration');
+plot(lhistory(:,1),lra);
+legend('lateral acceleration','norm of acceleration','rotational acceleration [1/s^2]');
 
 subplot(m,n,5)
 hold on

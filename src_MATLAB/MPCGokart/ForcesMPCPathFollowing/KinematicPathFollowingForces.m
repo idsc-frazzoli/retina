@@ -9,11 +9,11 @@ clear all
 close all
 
 maxSpeed = 10;
-maxxacc = 5;
-maxyacc = 5;
-latacclim = 4;
+maxxacc = 4;
+maxyacc = 8;
+latacclim = 3;
 rotacceffect  = 1;
-torqueveceffect = 0;
+torqueveceffect = 9;
 brakeeffect = 0;
 pointsO = 7;
 pointsN = 10;
@@ -84,7 +84,6 @@ points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8
 %points = [0,40,40,5,0;0,0,10,9,10]';
 trajectorytimestep = integrator_stepsize;
 [p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
-
 model.npar = pointsO + 3*pointsN;
 for i=1:model.N
    model.objective{i} = @(z,p)objective(z,...
@@ -92,7 +91,11 @@ for i=1:model.N
        getRadiiFromParameters(p, pointsO, pointsN),...
        p(index.ps),...
        p(index.pax),...
-       p(index.pay));
+       p(index.pay),...
+       p(index.pll),...
+       p(index.prae),...
+       p(index.ptve),...
+       p(index.pbre));
 end
 %model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
 

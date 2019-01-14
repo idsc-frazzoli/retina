@@ -1,4 +1,4 @@
-function f = objective(z,points,radii,vmax, maxxacc, maxyacc)
+function f = objective(z,points,radii,vmax, maxxacc,maxyacc,latacclim,rotacceffect,torqueveceffect, brakeeffect)
     global index
 %[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline
@@ -22,15 +22,25 @@ function f = objective(z,points,radii,vmax, maxxacc, maxyacc)
     outsideTrack = max(0,latdist-r);
     trackViolation = outsideTrack^2;
     speedcost = speedPunisher(z(index.v),vmax)*0.1;
-    latacc = (tan(z(index.beta))*z(index.v)^2)/l;
+    beta = z(index.beta);
+    tangentspeed = z(index.v);
+    forwardacc = z(index.ab);
+    dotbeta = z(index.dotbeta);
+    ackermannAngle = -0.58*beta*beta*beta+0.93*beta;
+    dAckermannAngle = -0.58*3*beta*beta*dotbeta+0.93*dotbeta;
+    latacc = (tan(ackermannAngle)*tangentspeed^2)/l;
+    rotacc = dAckermannAngle*tangentspeed/l;
+    frontaxlelatacc = abs(latacc+rotacc*rotacceffect);
+    torquevectoringcapability = torqueveccapsmooth(forwardacc)*torqueveceffect;
+    understeer = max(0,frontaxlelatacc - latacclim-torquevectoringcapability)^2;
     accnorm = ((latacc/maxyacc)^2+(z(index.ab)/maxxacc)^2);
     accviolation = max(0,accnorm-1)^2;
     lagcost = lagerror^2;
     latcost = laterror^2;
     prog = -0.2*z(index.ds);
-    reg = z(index.dotab).^2*0.0004+z(index.dotbeta).^2*0.001;
+    reg = z(index.dotab).^2*0.0004+z(index.dotbeta).^2*0.01;
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
     %f = lagcost+latcost+reg+prog+over75d*over75d*0.001+speedcost+accviolation+trackViolation;
-    f = lagcost+latcost*0.01+reg+prog+over75d*over75d*0.001+speedcost+accviolation+trackViolation;
+    f = lagcost+latcost*0.01+reg+prog+over75d*over75d*0.001+speedcost+accviolation+trackViolation+understeer;
 end
