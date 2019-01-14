@@ -12,6 +12,9 @@ import ch.ethz.idsc.retina.joystick.JoystickEncoder;
 import ch.ethz.idsc.retina.joystick.JoystickType;
 import ch.ethz.idsc.retina.u3.LabjackAdcFrame;
 
+/** functionality for testing only !
+ * 
+ * AllGunsBlazing publishes manual control messages via lcm */
 public enum AllGunsBlazing {
   ;
   /** joystick with all zeros except autonomous button pressed */
