@@ -12,7 +12,7 @@ public class MPCOptimizationConfig {
   /***************************************************/
   /** The limit for the norm of the acceleration */
   @FieldSubdivide(start = "1[m*s^-2]", end = "4[m*s^-2]", intervals = 3)
-  public Scalar maxAcceleration = Quantity.of(1.2, SI.ACCELERATION);
+  public Scalar maxAcceleration = Quantity.of(1, SI.ACCELERATION);
   /** The limit for the Go-kart speed */
   @FieldSubdivide(start = "4[m*s^-1]", end = "10[m*s^-1]", intervals = 6)
   public Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);

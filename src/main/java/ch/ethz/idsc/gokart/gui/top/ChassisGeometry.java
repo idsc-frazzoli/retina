@@ -43,9 +43,9 @@ public class ChassisGeometry {
   /** approximation of ground clearance measured on 20180507 */
   public final Scalar groundClearance = Quantity.of(0.03, SI.METER);
   /** approx. radius of front tire when on gokart is on ground [m/rad] */
-  public Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, SIDerived.METER_PER_RADIAN);
+  public final Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, SIDerived.METER_PER_RADIAN);
   /** approx. radius of rear tire when on gokart is on ground [m/rad] */
-  public Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, SIDerived.METER_PER_RADIAN);
+  public final Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, SIDerived.METER_PER_RADIAN);
 
   /***************************************************/
   public Scalar yHalfWidthMeter() {

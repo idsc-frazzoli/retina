@@ -102,7 +102,7 @@ import ch.ethz.idsc.tensor.ref.TensorReflection;
           Tensor tensor = optional.get();
           JToolBar jToolBar = createRow(field.getName(), BUTTON + 2);
           jTextField = new JTextField();
-          jTextField.setPreferredSize(new Dimension(200, BUTTON));
+          jTextField.setPreferredSize(new Dimension(250, BUTTON));
           jToolBar.add(create("<", jTextField, tensor, field, -1));
           jTextField.setEditable(false);
           jToolBar.add(jTextField);
