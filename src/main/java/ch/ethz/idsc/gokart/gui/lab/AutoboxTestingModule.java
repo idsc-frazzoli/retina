@@ -44,7 +44,6 @@ public class AutoboxTestingModule extends AbstractModule {
 
   private void private_windowClosed() {
     list.forEach(AutoboxTestingComponent::stop);
-    System.out.println("removed listeners and providers");
   }
 
   @Override

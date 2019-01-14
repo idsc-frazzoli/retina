@@ -5,13 +5,16 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 
 public class MPCOptimizationConfig {
   public static final MPCOptimizationConfig GLOBAL = AppResources.load(new MPCOptimizationConfig());
   /***************************************************/
   /** The limit for the norm of the acceleration */
+  @FieldSubdivide(start = "1[m*s^-2]", end = "4[m*s^-2]", intervals = 3)
   public Scalar maxAcceleration = Quantity.of(1, SI.ACCELERATION);
   /** The limit for the Go-kart speed */
+  @FieldSubdivide(start = "4[m*s^-1]", end = "10[m*s^-1]", intervals = 6)
   public Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
   /** The limit for the Go-kart longitudonal acceleration */
   public Scalar maxLatAcc = Quantity.of(8, SI.ACCELERATION);

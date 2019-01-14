@@ -4,7 +4,9 @@ package ch.ethz.idsc.gokart.core.joy;
 import ch.ethz.idsc.gokart.dev.u3.GokartLabjackLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -16,7 +18,8 @@ public class ManualConfig {
   /***************************************************/
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in {@link RimoTorqueJoystickModule} */
-  public Scalar torqueLimit = Quantity.of(2315, NonSI.ARMS);
+  public final Scalar torqueLimit = Quantity.of(2315, NonSI.ARMS);
+  public final Scalar timeout = Quantity.of(0.2, SI.SECOND);
 
   /***************************************************/
   /** @return clip interval for permitted torque */
@@ -30,6 +33,6 @@ public class ManualConfig {
    * 
    * @return manual control as configured on the gokart */
   public ManualControlProvider createProvider() {
-    return new GokartLabjackLcmClient(GokartLcmChannel.LABJACK_U3_ADC, 0.2);
+    return new GokartLabjackLcmClient(GokartLcmChannel.LABJACK_U3_ADC, Magnitude.SECOND.toDouble(timeout));
   }
 }

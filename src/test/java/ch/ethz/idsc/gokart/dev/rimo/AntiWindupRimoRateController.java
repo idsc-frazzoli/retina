@@ -50,4 +50,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         vel_error, pPart, iPart, windupPart, tor_value, satTor_value)));
     return satTor_value;
   }
+
+  @Override // from RimoRateController
+  public void setWheelRate(Scalar vel_avg) {
+    // ---
+  }
 }

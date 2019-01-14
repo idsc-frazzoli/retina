@@ -20,23 +20,23 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class LocalizationConfig {
   public static final LocalizationConfig GLOBAL = AppResources.load(new LocalizationConfig());
   /***************************************************/
-  public Scalar gridShift = Quantity.of(0.5, SI.METER);
-  public Scalar gridAngle = Quantity.of(1.5, NonSI.DEGREE_ANGLE);
-  public Scalar gridFan = RealScalar.of(1);
-  public Scalar gridLevels = RealScalar.of(4);
+  public final Scalar gridShift = Quantity.of(0.5, SI.METER);
+  public final Scalar gridAngle = Quantity.of(1.5, NonSI.DEGREE_ANGLE);
+  public final Scalar gridFan = RealScalar.of(1);
+  public final Scalar gridLevels = RealScalar.of(4);
   /** positive integer 0, 1, 2, 4
    * smaller means better precision but larger memory footprint
    * value 1 is sufficient */
-  public Scalar bitShift = RealScalar.of(0);
+  public final Scalar bitShift = RealScalar.of(1);
   /** inclination of rays to create cross section
    * a positive value means upwards */
-  public Scalar horizon = Quantity.of(1, NonSI.DEGREE_ANGLE);
+  public final Scalar horizon = Quantity.of(1, NonSI.DEGREE_ANGLE);
   /** minimum number of lidar points below which a matching of lidar with
    * static geometry will not be executed and localization will not update */
-  public Scalar min_points = RealScalar.of(220);
-  public Scalar threshold = RealScalar.of(33.0);
+  public final Scalar min_points = RealScalar.of(220);
+  public final Scalar threshold = RealScalar.of(33.0);
   /** distance for equidistant resampling */
-  public Scalar resampleDs = Quantity.of(0.4, SI.METER);
+  public final Scalar resampleDs = Quantity.of(0.4, SI.METER);
 
   /***************************************************/
   /**

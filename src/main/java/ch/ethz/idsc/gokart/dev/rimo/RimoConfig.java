@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
@@ -18,7 +19,9 @@ public class RimoConfig {
   /** parameters for {@link SimpleRimoRateController}
    * rateLimit, Kp, Ki */
   public Scalar rateLimit = Quantity.of(20, "rad*s^-1"); // <- DEPRECATED
+  @FieldSubdivide(start = "20[ARMS*rad^-1*s]", end = "40[ARMS*rad^-1*s]", intervals = 4)
   public Scalar Kp = Quantity.of(35, "ARMS*rad^-1*s"); // 40
+  @FieldSubdivide(start = "0[ARMS*rad^-1]", end = "10[ARMS*rad^-1]", intervals = 2)
   public Scalar Ki = Quantity.of(0, "ARMS*rad^-1"); // 15
   /** used for lookup table */
   public Scalar lKp = Quantity.of(0, SI.ACCELERATION.add(SI.VELOCITY.negate()));

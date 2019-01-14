@@ -31,7 +31,7 @@ public class LinmotConfig {
   public final Scalar responseTime = Quantity.of(0.05 + 0.05 + 0.1 + 0.05, SI.SECOND);
   /** the analysis of log files has yielded a deceleration of -4.5[m*s^-2]
    * to be conservative, we assume a deceleration of -4.3[m*s^-2] */
-  public Scalar maxDeceleration = Quantity.of(-4.3, SI.ACCELERATION);
+  public final Scalar maxDeceleration = Quantity.of(-4.3, SI.ACCELERATION);
   /** steps defines the number of levels at which to test the brake */
   public Scalar pressTestSteps = RealScalar.of(20);
   /** duration used in LinmotPressModule for calibration purpose */

@@ -97,7 +97,6 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
       for (SoundResonator resonator : resonators)
         value += resonator.getNextValue(excitementValue, state, DT);
       value += excitementValue;
-      // maxValue = Math.max(maxValue, value);
       byteBuffer.putShort((short) (MAGIC * value));
     }
     sourceDataLine.write(byteBuffer.array(), 0, byteBuffer.position());

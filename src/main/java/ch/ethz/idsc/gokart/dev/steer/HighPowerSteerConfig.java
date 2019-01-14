@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
  * there are 2 special units related to the manufacturer of the steering column:
  * "SCE" steer-column encoder
  * "SCT" steer-column torque */
+// TODO JPH/MH check together
 public class HighPowerSteerConfig extends SteerConfig {
   public static final HighPowerSteerConfig GLOBAL = AppResources.load(new HighPowerSteerConfig());
 }

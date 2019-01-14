@@ -44,4 +44,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         vel_error, pPart, iPart, TEMP_LVE, TEMP_LTV, lastTor_value)));
     return lastTor_value;
   }
+
+  @Override
+  public void setWheelRate(Scalar vel_avg) {
+    // ---
+  }
 }
