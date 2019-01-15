@@ -33,15 +33,16 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
     return motorCurrents.divide(ManualConfig.GLOBAL.torqueLimit);
   }
 
-  public Scalar estimateRotationPerMeterChange(Scalar rotationPerMeter) {
+  public Scalar estimateRotationAcceleration(Scalar rotationPerMeter) {
     if (lastRotationPerMeterDriven == null)
       lastRotationPerMeterDriven = rotationPerMeter;
     double timeSinceLastStep = lastMeasure.seconds();
     lastMeasure = Timing.started();
     if (timeSinceLastStep >= 0.000001) {
       Scalar instantRotPerMetChange = rotationPerMeter.subtract(lastRotationPerMeterDriven).divide(Quantity.of(timeSinceLastStep, SI.SECOND));
-      rotationAccRollingAverage = rotationAccRollingAverage.multiply(RealScalar.ONE.subtract(rollinAverageFactor))//
-          .add(instantRotPerMetChange.multiply(rollinAverageFactor));
+      Scalar newPart = instantRotPerMetChange.multiply(rollinAverageFactor);
+      Scalar oldPart = rotationAccRollingAverage.multiply(RealScalar.ONE.subtract(rollinAverageFactor));
+      rotationAccRollingAverage = newPart.add(oldPart);
     }
     return rotationAccRollingAverage;
   }
@@ -52,8 +53,9 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
       Scalar meanTangentSpeed, //
       Scalar angularSlip, //
       Scalar wantedAcceleration, Scalar realRotation) {
+    Scalar expectedRotationVelocity = meanTangentSpeed.multiply(RealScalar.ZERO);
     Scalar expectedRotationPerMeterDrivenChange//
-        = estimateRotationPerMeterChange(expectedRotationPerMeterDriven);
+        = estimateRotationAcceleration(expectedRotationPerMeterDriven);
     Scalar expectedRotationAcceleration = expectedRotationPerMeterDrivenChange.multiply(meanTangentSpeed);
     return getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //

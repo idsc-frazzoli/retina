@@ -46,6 +46,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final SteerPositionControl steerPositionController//
       = new SteerPositionControl(HighPowerSteerConfig.GLOBAL);
   private final Timing timing;
+  private boolean useFullInfoSteeringController = true;
+  private boolean useTorqueVectoring;
   private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
@@ -129,7 +131,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
       Scalar steering = mpcSteering.getSteering(time);
       Scalar dSteering = mpcSteering.getDotSteering(time);
-      if (false) {
+      if (!useFullInfoSteeringController) {
         if (Objects.nonNull(steering)) {
           Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
           Scalar difference = steering.subtract(currAngle);
@@ -175,6 +177,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
     Scalar maxXacc = MPCOptimizationConfig.GLOBAL.maxLonAcc;
     Scalar maxYacc = MPCOptimizationConfig.GLOBAL.maxLatAcc;
+    Scalar latAccLim = MPCOptimizationConfig.GLOBAL.latAccLim;
+    Scalar rotAccEffect = MPCOptimizationConfig.GLOBAL.rotAccEffect;
+    Scalar torqueVecEffect = MPCOptimizationConfig.GLOBAL.torqueVecEffect;
+    Scalar brakeEffect = MPCOptimizationConfig.GLOBAL.BrakeEffect;
     Optional<ManualControlInterface> optionalJoystick = joystickLcmProvider.getManualControl();
     if (optionalJoystick.isPresent()) { // is joystick button "autonomoRus" pressed?
       ManualControlInterface actualJoystick = optionalJoystick.get();
@@ -186,7 +192,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     }
     // send message with max speed
     // optimization parameters will have more values in the future
-    MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
+    //MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
+    MPCOptimizationParameter mpcOptimizationParameter//
+    = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc,//
+        latAccLim,rotAccEffect,torqueVecEffect,brakeEffect);
     lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
     GokartState state = mpcStateEstimationProvider.getState();

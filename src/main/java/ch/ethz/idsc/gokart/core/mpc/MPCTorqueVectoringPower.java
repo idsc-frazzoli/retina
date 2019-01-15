@@ -33,7 +33,7 @@ public class MPCTorqueVectoringPower extends MPCPower {
           Quantity.of(0, NonSI.ARMS), //
           Quantity.of(0, NonSI.ARMS));
     }
-    if (true || mpcStateProvider == null) {
+    if (false || mpcStateProvider == null) {
       // return torqueless power
       return torqueVectoring.getMotorCurrentsFromAcceleration(//
           Quantity.of(0, SI.SECOND.negate()), //
