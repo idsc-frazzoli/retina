@@ -192,10 +192,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     }
     // send message with max speed
     // optimization parameters will have more values in the future
-    //MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
+    // MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
     MPCOptimizationParameter mpcOptimizationParameter//
-    = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc,//
-        latAccLim,rotAccEffect,torqueVecEffect,brakeEffect);
+        = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc, //
+            latAccLim, rotAccEffect, torqueVecEffect, brakeEffect);
     lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
     GokartState state = mpcStateEstimationProvider.getState();

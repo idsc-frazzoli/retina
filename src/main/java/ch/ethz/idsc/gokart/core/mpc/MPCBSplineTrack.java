@@ -14,16 +14,12 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
   private static final Scalar ZEROMETERS = Quantity.of(0, SI.METER);
 
   public MPCBSplineTrack(Tensor trackData, Scalar radiusOffset, boolean closed) {
-    super(trackData.get(0), trackData.get(1), //
-        trackData.get(2).map(radius -> radius.add(radiusOffset)), closed);
+    super(Tensors.of(trackData.get(0), trackData.get(1), //
+        trackData.get(2).map(radius -> radius.add(radiusOffset))), closed);
   }
 
   public MPCBSplineTrack(Tensor trackData, boolean closed) {
-    super(trackData.get(0), trackData.get(1), trackData.get(2), closed);
-  }
-
-  public MPCBSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints, boolean closed) {
-    super(controlPointsX, controlPointsY, radiusControlPoints, closed);
+    super(trackData, closed);
   }
 
   @Override

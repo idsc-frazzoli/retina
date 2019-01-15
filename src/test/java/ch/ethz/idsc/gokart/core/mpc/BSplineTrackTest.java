@@ -6,13 +6,16 @@ import java.util.Random;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
+import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class BSplineTrackTest extends TestCase {
@@ -22,14 +25,15 @@ public class BSplineTrackTest extends TestCase {
     Tensor xtensor = Tensors.vector(0, 1, 2, 3, 4, 5).multiply(meter);
     Tensor ytensor = Tensors.vector(0, 1, 0, 1, 0, 1).multiply(meter);
     Tensor rtensor = Tensors.vector(2, 2, 2, 2, 2, 2).multiply(meter);
-    BSplineTrack bSplineTrack = new BSplineTrack(xtensor, ytensor, rtensor, true);
+    Tensor fullTensor = Transpose.of(Tensors.of(xtensor, ytensor, rtensor));
+    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
     Tensor out = Tensors.empty();
     Tensor devout = Tensors.empty();
     Tensor devdevout = Tensors.empty();
     for (int i = 0; i < 100; i++) {
       double x = i / 10.;
-      // System.out.println(x+": "+bSplineTrack.getPosition(Quantity.of(x, SI.ONE)));
-      // System.out.println(x+" dev: "+bSplineTrack.getDerivation(Quantity.of(x, SI.ONE)));
+      System.out.println(x + ": " + bSplineTrack.getPosition(Quantity.of(x, SI.ONE)));
+      System.out.println(x + " dev: " + bSplineTrack.getDerivation(Quantity.of(x, SI.ONE)));
       out.append(bSplineTrack.getPosition(Quantity.of(x, SI.ONE)));
       devout.append(bSplineTrack.getDerivation(Quantity.of(x, SI.ONE)));
       devdevout.append(bSplineTrack.get2ndDerivation(Quantity.of(x, SI.ONE)));
@@ -64,7 +68,8 @@ public class BSplineTrackTest extends TestCase {
     Tensor xtensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor ytensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor rtensor = RandomVariate.of(distribution, N).multiply(meter);
-    BSplineTrack bSplineTrack = new BSplineTrack(xtensor, ytensor, rtensor, true);
+    Tensor fullTensor = Transpose.of(Tensors.of(xtensor, ytensor, rtensor));
+    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
     Random rand = new Random();
     for (int i = 0; i < 100; i++) {
       Scalar prog = RealScalar.of(rand.nextFloat() * 200 - 100);
@@ -76,12 +81,10 @@ public class BSplineTrackTest extends TestCase {
           .subtract(bSplineTrack.getPosition(prog))//
           .divide(dx);
       // System.out.println(cDev.subtract(nDev));
-      // TODO MH test fail perhaps due to new BSplineFunction implementation?
-      // FIXME MH
       Scalar scalar = Norm._2.between(cDev, nDev);
       // System.out.println(scalar);
       // System.out.println(cDev.subtract(nDev));
-      // assertTrue(Chop._04.close(cDev, nDev));
+      assertTrue(Chop._04.close(cDev, nDev));
     }
   }
 
@@ -93,7 +96,8 @@ public class BSplineTrackTest extends TestCase {
     Tensor xtensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor ytensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor rtensor = RandomVariate.of(distribution, N).multiply(meter);
-    BSplineTrack bSplineTrack = new BSplineTrack(xtensor, ytensor, rtensor, true);
+    Tensor fullTensor = Transpose.of(Tensors.of(xtensor, ytensor, rtensor));
+    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
     Random rand = new Random();
     for (int i = 0; i < 100; i++) {
       Scalar prog = Quantity.of(rand.nextFloat() * 200 - 100, SI.ONE);
@@ -109,8 +113,7 @@ public class BSplineTrackTest extends TestCase {
           .divide(dx);
       Tensor nDDev = nDevp.subtract(nDev).divide(dx);
       // System.out.println("2nd der: "+cDDev+" numerically: "+nDDev);
-      // TODO MH test fail perhaps due to new BSplineFunction implementation?
-      // assertTrue(Chop._04.close(cDDev, nDDev));
+      assertTrue(Chop._04.close(cDDev, nDDev));
     }
   }
 
@@ -118,9 +121,10 @@ public class BSplineTrackTest extends TestCase {
     // Tensor tensor = Tensors.of(Quantity.of(0, SI.METER),Quantity.of(1, SI.METER));
     Scalar meter = Quantity.of(1, SI.METER);
     Tensor ctrX = Tensors.vector(0, 0, 1, 1).multiply(meter);
-    Tensor ctrY = Tensors.of(RealScalar.ZERO, RealScalar.ONE, RealScalar.ONE, RealScalar.ZERO).multiply(meter);
-    Tensor ctrR = Tensors.of(RealScalar.ONE, RealScalar.ONE, RealScalar.ONE, RealScalar.ONE).multiply(meter);
-    BSplineTrack bSplineTrack = new BSplineTrack(ctrX, ctrY, ctrR, true);
+    Tensor ctrY = Tensors.vector(0, 1, 1, 0).multiply(meter);
+    Tensor ctrR = Tensors.vector(1, 1, 1, 1).multiply(meter);
+    Tensor fullTensor = Transpose.of(Tensors.of(ctrX, ctrY, ctrR));
+    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
     Random rand = new Random();
     for (int i = 0; i < 10; i++) {
       Tensor queryPos = Tensors.of(Quantity.of(rand.nextFloat() * 3, SI.METER), Quantity.of(rand.nextFloat() * 4, SI.METER));
@@ -132,9 +136,24 @@ public class BSplineTrackTest extends TestCase {
         Scalar testdist = Norm._2.of(bSplineTrack.getPosition(testProg).subtract(queryPos));
         // System.out.println("dist: "+dist+" test: "+testdist);
         // we can make it more precise but it costs time
-        // TODO MH test fail perhaps due to new BSplineFunction implementation?
-        // assertTrue(Scalars.lessThan(dist, testdist.add(Quantity.of(0.01, SI.METER))));
+        assertTrue(Scalars.lessThan(dist, testdist.add(Quantity.of(0.01, SI.METER))));
       }
+    }
+  }
+
+  public void testNoOffset() {
+    // Tensor tensor = Tensors.of(Quantity.of(0, SI.METER),Quantity.of(1, SI.METER));
+    Scalar meter = Quantity.of(1, SI.METER);
+    Tensor ctrX = Tensors.vector(0, 0, 1, 1).multiply(meter);
+    Tensor ctrY = Tensors.vector(0, 1, 1, 0).multiply(meter);
+    Tensor ctrR = Tensors.vector(1, 1, 1, 1).multiply(meter);
+    Tensor fullTensor = Transpose.of(Tensors.of(ctrX, ctrY, ctrR));
+    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
+    Random rand = new Random();
+    for (int i = 0; i < 10; i++) {
+      Tensor queryPos = Tensors.vector(0, 0.5).multiply(meter);
+      Tensor nearestProg = bSplineTrack.getNearestPathProgress(queryPos);
+      assertTrue(Chop._10.close(RealScalar.ZERO, nearestProg));
     }
   }
 }
