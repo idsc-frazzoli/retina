@@ -35,9 +35,9 @@ public class MPCBSplineTrackTest extends TestCase {
   }
 
   public void testQuery1() {
-    Tensor ctrX = QuantityTensor.of(Tensors.vector(0, 1, 2,6,2,10), SI.METER);
-    Tensor ctrY = QuantityTensor.of(Tensors.vector(3, 4, 5,7,8,9), SI.METER);
-    Tensor ctrR = QuantityTensor.of(Tensors.vector(6, 7, 8,1,2,3), SI.METER);
+    Tensor ctrX = QuantityTensor.of(Tensors.vector(0, 1, 2, 6, 2, 10), SI.METER);
+    Tensor ctrY = QuantityTensor.of(Tensors.vector(3, 4, 5, 7, 8, 9), SI.METER);
+    Tensor ctrR = QuantityTensor.of(Tensors.vector(6, 7, 8, 1, 2, 3), SI.METER);
     MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(Transpose.of(Tensors.of(ctrX, ctrY, ctrR)), true);
     MPCPathParameter mpcPathParameter = mpcbSplineTrack.getPathParameterPreview(6, Tensors.vector(1.1, 4.1).multiply(Quantity.of(1, SI.METER)),
         Quantity.of(0, SI.METER));
