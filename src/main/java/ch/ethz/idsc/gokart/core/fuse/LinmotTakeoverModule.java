@@ -41,13 +41,13 @@ public final class LinmotTakeoverModule extends EmergencyModule<LinmotPutEvent> 
   @Override // from LinmotGetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
     if (linmotGetEvent.getPositionDiscrepancyRaw() <= THRESHOLD_POS_DELTA) // abs(int) not used
-      watchdog.pacify(); // <- at nominal rate the watchdog is notified every 4[ms]
+      watchdog.notifyWatchdog(); // <- at nominal rate the watchdog is notified every 4[ms]
   }
 
   /***************************************************/
   @Override // from LinmotPutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    isBlown |= watchdog.isBlown();
+    isBlown |= watchdog.isWatchdogBarking();
     return isBlown //
         ? Optional.of(LinmotPutOperation.INSTANCE.offMode()) // deactivate break
         : Optional.empty();

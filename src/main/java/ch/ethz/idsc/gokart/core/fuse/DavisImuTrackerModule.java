@@ -19,7 +19,7 @@ public class DavisImuTrackerModule extends EmergencyModule<RimoPutEvent> impleme
   private static final double TIMEOUT_S = 0.5;
   // ---
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
-  private final WatchdogInterface watchdogInterface = new TimedFuse(TIMEOUT_S);
+  private final WatchdogInterface watchdogInterface = TimedFuse.barking(TIMEOUT_S);
 
   public DavisImuTrackerModule() {
     davisImuLcmClient.addListener(this);
@@ -41,7 +41,7 @@ public class DavisImuTrackerModule extends EmergencyModule<RimoPutEvent> impleme
   /***************************************************/
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return watchdogInterface.isBlown() //
+    return watchdogInterface.isWatchdogBarking() //
         ? StaticHelper.OPTIONAL_RIMO_PASSIVE
         : Optional.empty();
   }
@@ -49,6 +49,6 @@ public class DavisImuTrackerModule extends EmergencyModule<RimoPutEvent> impleme
   /***************************************************/
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    watchdogInterface.pacify();
+    watchdogInterface.notifyWatchdog();
   }
 }

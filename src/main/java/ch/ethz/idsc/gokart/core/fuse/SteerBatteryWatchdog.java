@@ -38,13 +38,13 @@ public final class SteerBatteryWatchdog extends EmergencyModule<RimoPutEvent> im
   @Override // from MiscGetListener
   public void getEvent(MiscGetEvent miscGetEvent) {
     if (SteerConfig.GLOBAL.operatingVoltageClip().isInside(miscGetEvent.getSteerBatteryVoltage()))
-      watchdog_steerVoltage.pacify(); // <- at nominal rate the watchdog is notified every 4[ms]
+      watchdog_steerVoltage.notifyWatchdog(); // <- at nominal rate the watchdog is notified every 4[ms]
   }
 
   /***************************************************/
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    isBlown |= watchdog_steerVoltage.isBlown();
+    isBlown |= watchdog_steerVoltage.isWatchdogBarking();
     return isBlown //
         ? StaticHelper.OPTIONAL_RIMO_PASSIVE
         : Optional.empty();

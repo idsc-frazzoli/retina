@@ -1,8 +1,10 @@
 // code by jph
 package ch.ethz.idsc.retina.util.data;
 
+// TODO JPH document
 public interface WatchdogInterface {
-  void pacify();
+  void notifyWatchdog();
 
-  boolean isBlown();
+  /** @return */
+  boolean isWatchdogBarking();
 }

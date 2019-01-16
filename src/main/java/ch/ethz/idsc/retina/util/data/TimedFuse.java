@@ -5,21 +5,33 @@ package ch.ethz.idsc.retina.util.data;
  * 
  * it performs the same as {@link PenaltyTimeout} */
 public final class TimedFuse implements WatchdogInterface {
+  public static WatchdogInterface notified(double tolerance_seconds) {
+    TimedFuse timedFuse = new TimedFuse(tolerance_seconds);
+    timedFuse.notifyWatchdog();
+    return timedFuse;
+  }
+
+  public static WatchdogInterface barking(double tolerance_seconds) {
+    return new TimedFuse(tolerance_seconds);
+  }
+
+  // ---
   private final long tolerance_ns;
-  private long lastPacify = System.nanoTime();
+  private long lastNotify_ns;
 
   /** @param tolerance_seconds */
-  public TimedFuse(double tolerance_seconds) {
-    tolerance_ns = (long) (tolerance_seconds * 1E9);
+  private TimedFuse(double tolerance_seconds) {
+    tolerance_ns = Math.round(tolerance_seconds * 1E9);
+    lastNotify_ns = System.nanoTime() - tolerance_ns;
   }
 
   @Override // from WatchdogInterface
-  public void pacify() {
-    lastPacify = System.nanoTime();
+  public void notifyWatchdog() {
+    lastNotify_ns = System.nanoTime();
   }
 
   @Override // from WatchdogInterface
-  public boolean isBlown() {
-    return tolerance_ns < System.nanoTime() - lastPacify;
+  public boolean isWatchdogBarking() {
+    return tolerance_ns < System.nanoTime() - lastNotify_ns;
   }
 }

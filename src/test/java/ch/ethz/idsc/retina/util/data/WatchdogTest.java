@@ -6,24 +6,24 @@ import junit.framework.TestCase;
 public class WatchdogTest extends TestCase {
   public void testSimple() throws Exception {
     Watchdog watchdog = new Watchdog(0.05);
-    assertFalse(watchdog.isBlown());
+    assertFalse(watchdog.isWatchdogBarking());
     Thread.sleep(20);
-    assertFalse(watchdog.isBlown());
-    watchdog.pacify();
-    assertFalse(watchdog.isBlown());
+    assertFalse(watchdog.isWatchdogBarking());
+    watchdog.notifyWatchdog();
+    assertFalse(watchdog.isWatchdogBarking());
     Thread.sleep(20);
-    assertFalse(watchdog.isBlown());
-    watchdog.pacify();
-    assertFalse(watchdog.isBlown());
+    assertFalse(watchdog.isWatchdogBarking());
+    watchdog.notifyWatchdog();
+    assertFalse(watchdog.isWatchdogBarking());
     Thread.sleep(70);
-    assertTrue(watchdog.isBlown());
+    assertTrue(watchdog.isWatchdogBarking());
   }
 
   public void testLazy() throws Exception {
     Watchdog watchdog = new Watchdog(0.05);
-    assertFalse(watchdog.isBlown());
+    assertFalse(watchdog.isWatchdogBarking());
     Thread.sleep(70);
-    watchdog.pacify();
-    assertTrue(watchdog.isBlown());
+    watchdog.notifyWatchdog();
+    assertTrue(watchdog.isWatchdogBarking());
   }
 }

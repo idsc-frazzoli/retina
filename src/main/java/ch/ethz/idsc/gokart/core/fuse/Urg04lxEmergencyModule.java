@@ -39,7 +39,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
   /***************************************************/
   @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
-    watchdog.pacify(); // <- at nominal rate the watchdog is notified every 100[ms]
+    watchdog.notifyWatchdog(); // <- at nominal rate the watchdog is notified every 100[ms]
   }
 
   @Override // from LidarRayDataListener
@@ -50,7 +50,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
   /***************************************************/
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return watchdog.isBlown() //
+    return watchdog.isWatchdogBarking() //
         ? StaticHelper.OPTIONAL_RIMO_PASSIVE
         : Optional.empty();
   }

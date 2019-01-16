@@ -4,18 +4,33 @@ package ch.ethz.idsc.retina.util.data;
 import junit.framework.TestCase;
 
 public class TimedFuseTest extends TestCase {
-  public void testSimple() throws InterruptedException {
-    TimedFuse timedFuse = new TimedFuse(0.1); // 100[ms]
-    assertFalse(timedFuse.isBlown());
+  public void testPacified() throws InterruptedException {
+    WatchdogInterface timedFuse = TimedFuse.notified(0.1); // 100[ms]
+    assertFalse(timedFuse.isWatchdogBarking());
     Thread.sleep(120);
-    assertTrue(timedFuse.isBlown());
-    timedFuse.pacify();
-    assertFalse(timedFuse.isBlown());
+    assertTrue(timedFuse.isWatchdogBarking());
+    timedFuse.notifyWatchdog();
+    assertFalse(timedFuse.isWatchdogBarking());
     Thread.sleep(40);
-    assertFalse(timedFuse.isBlown());
+    assertFalse(timedFuse.isWatchdogBarking());
     Thread.sleep(100);
-    assertTrue(timedFuse.isBlown());
-    timedFuse.pacify();
-    assertFalse(timedFuse.isBlown());
+    assertTrue(timedFuse.isWatchdogBarking());
+    timedFuse.notifyWatchdog();
+    assertFalse(timedFuse.isWatchdogBarking());
+  }
+
+  public void testBlown() throws InterruptedException {
+    WatchdogInterface timedFuse = TimedFuse.barking(0.1); // 100[ms]
+    assertTrue(timedFuse.isWatchdogBarking());
+    Thread.sleep(10);
+    assertTrue(timedFuse.isWatchdogBarking());
+    timedFuse.notifyWatchdog();
+    assertFalse(timedFuse.isWatchdogBarking());
+    Thread.sleep(40);
+    assertFalse(timedFuse.isWatchdogBarking());
+    Thread.sleep(100);
+    assertTrue(timedFuse.isWatchdogBarking());
+    timedFuse.notifyWatchdog();
+    assertFalse(timedFuse.isWatchdogBarking());
   }
 }
