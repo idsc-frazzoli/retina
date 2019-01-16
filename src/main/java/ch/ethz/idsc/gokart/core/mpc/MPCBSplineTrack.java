@@ -1,29 +1,23 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.sca.Ramp;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack {
-  private static final Scalar ZEROMETERS = Quantity.of(0, SI.METER);
-
   public MPCBSplineTrack(Tensor trackData, Scalar radiusOffset, boolean closed) {
-    super(trackData.get(0), trackData.get(1), //
-        trackData.get(2).map(radius -> radius.add(radiusOffset)), closed);
+    super(Tensors.of( //
+        trackData.get(0), //
+        trackData.get(1), //
+        trackData.get(2).map(radius -> radius.add(radiusOffset))), closed);
   }
 
   public MPCBSplineTrack(Tensor trackData, boolean closed) {
-    super(trackData.get(0), trackData.get(1), trackData.get(2), closed);
-  }
-
-  public MPCBSplineTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints, boolean closed) {
-    super(controlPointsX, controlPointsY, radiusControlPoints, closed);
+    super(trackData, closed);
   }
 
   @Override
@@ -46,15 +40,14 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
     Tensor ctrX = Tensors.empty();
     Tensor ctrY = Tensors.empty();
     Tensor ctrR = Tensors.empty();
-    if (currentIndex < 0) {
+    if (currentIndex < 0)
       currentIndex += numPoints;
-    }
-    for (int i = 0; i < previewSize; i++) {
+    for (int i = 0; i < previewSize; ++i) {
       Tensor vector = controlPoints.get(currentIndex);
       ctrX.append(vector.Get(0));
       ctrY.append(vector.Get(1));
-      ctrR.append(Max.of(controlPointsR.Get(currentIndex).subtract(padding), ZEROMETERS));
-      currentIndex++;
+      ctrR.append(Ramp.FUNCTION.apply(controlPointsR.Get(currentIndex).subtract(padding)));
+      ++currentIndex;
       if (currentIndex >= numPoints)
         currentIndex = 0;
     }

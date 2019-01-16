@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
   private static final PowerLookupTable POWER_LOOKUP_TABLE = PowerLookupTable.getInstance();
 
-  static void _ignore() {
+  public void testSimple() {
     // TODO MH fix test
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());

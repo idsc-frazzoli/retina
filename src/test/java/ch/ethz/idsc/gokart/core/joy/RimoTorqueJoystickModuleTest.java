@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.dev.GokartJoystickAdapter;
+import ch.ethz.idsc.gokart.dev.ManualControlAdapter;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
@@ -30,9 +30,9 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoTorqueJoystickModule rtjm = new RimoTorqueJoystickModule();
     SteerColumnInterface steerColumnInterface = //
         new SteerColumnAdapter(true, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
-    ManualControlInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(.3, .3), false, false);
-    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
+    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, manualControlInterface);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
     RimoPutTire rptL = rimoPutEvent.putTireL;
@@ -52,9 +52,9 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoTorqueJoystickModule rtjm = new RimoTorqueJoystickModule();
     SteerColumnInterface steerColumnInterface = //
         new SteerColumnAdapter(true, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
-    ManualControlInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(1), Tensors.vector(1, 1), false, false);
-    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
+    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, manualControlInterface);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
     RimoPutTire rptL = rimoPutEvent.putTireL;
@@ -74,9 +74,9 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoTorqueJoystickModule rtjm = new RimoTorqueJoystickModule();
     SteerColumnInterface steerColumnInterface = //
         new SteerColumnAdapter(true, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
-    ManualControlInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(-1), Tensors.vector(0, 0), false, false);
-    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
+    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, manualControlInterface);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
     RimoPutTire rptL = rimoPutEvent.putTireL;
@@ -96,9 +96,9 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoTorqueJoystickModule rtjm = new RimoTorqueJoystickModule();
     SteerColumnInterface steerColumnInterface = //
         new SteerColumnAdapter(true, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
-    ManualControlInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(-1), Tensors.vector(1, 1), false, false);
-    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, joystick);
+    Optional<RimoPutEvent> optional = rtjm.control(steerColumnInterface, manualControlInterface);
     assertTrue(optional.isPresent());
     RimoPutEvent rimoPutEvent = optional.get();
     RimoPutTire rptL = rimoPutEvent.putTireL;
@@ -116,9 +116,9 @@ public class RimoTorqueJoystickModuleTest extends TestCase {
     RimoTorqueJoystickModule rtjm = new RimoTorqueJoystickModule();
     SteerColumnInterface steerColumnInterface = //
         new SteerColumnAdapter(false, Quantity.of(.3, SteerPutEvent.UNIT_ENCODER));
-    ManualControlInterface joystick = new GokartJoystickAdapter( //
+    ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.3), false, false);
-    Optional<RimoPutEvent> optional = rtjm.private_translate(steerColumnInterface, joystick);
+    Optional<RimoPutEvent> optional = rtjm.private_translate(steerColumnInterface, manualControlInterface);
     assertFalse(optional.isPresent());
   }
 

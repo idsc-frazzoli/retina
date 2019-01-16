@@ -35,17 +35,17 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCKinematicDrivingModule extends AbstractModule {
-  public final LcmMPCControlClient lcmMPCPathFollowingClient//
-      = new LcmMPCControlClient();
+  public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   private final MPCBraking mpcBraking = new MPCSimpleBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
-  private final SteerPositionControl steerPositionController//
-      = new SteerPositionControl(HighPowerSteerConfig.GLOBAL);
+  private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerConfig.GLOBAL);
   private final Timing timing;
+  private boolean useFullInfoSteeringController = true;
+  private boolean useTorqueVectoring;
   private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
@@ -57,11 +57,13 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     lcmMPCPathFollowingClient.switchToTest();
   }
 
-  /** create Module with custom estimator
+  /** Hint: constructor only for testing
+   * create Module with custom estimator
    * 
    * @param estimator the custom estimator
    * @param timing that shows the same time that also was used for the custom estimator */
-  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing, MPCPreviewableTrack track) {
+  //
+  MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing, MPCPreviewableTrack track) {
     this.track = track;
     mpcStateEstimationProvider = estimator;
     this.timing = timing;
@@ -74,18 +76,16 @@ public class MPCKinematicDrivingModule extends AbstractModule {
    * 
    * @param estimator the custom estimator
    * @param timing that shows the same time that also was used for the custom estimator */
-  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing) {
-    this.track = null;
-    mpcStateEstimationProvider = estimator;
-    this.timing = timing;
-    // link mpc steering
-    mpcPower = new MPCTorqueVectoringPower(mpcSteering);
-    initModules();
-  }
-
+  // public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing) {
+  // track = null;
+  // mpcStateEstimationProvider = estimator;
+  // this.timing = timing;
+  // // link mpc steering
+  // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+  // initModules();
+  // }
   /** create Module with standard estimator */
   public MPCKinematicDrivingModule() {
-    // track = DubendorfTrack.CHICANE;
     track = null;
     timing = Timing.started();
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(timing);
@@ -129,7 +129,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
       Scalar steering = mpcSteering.getSteering(time);
       Scalar dSteering = mpcSteering.getDotSteering(time);
-      if (false) {
+      if (!useFullInfoSteeringController) {
         if (Objects.nonNull(steering)) {
           Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
           Scalar difference = steering.subtract(currAngle);
@@ -175,6 +175,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
     Scalar maxXacc = MPCOptimizationConfig.GLOBAL.maxLonAcc;
     Scalar maxYacc = MPCOptimizationConfig.GLOBAL.maxLatAcc;
+    Scalar latAccLim = MPCOptimizationConfig.GLOBAL.latAccLim;
+    Scalar rotAccEffect = MPCOptimizationConfig.GLOBAL.rotAccEffect;
+    Scalar torqueVecEffect = MPCOptimizationConfig.GLOBAL.torqueVecEffect;
+    Scalar brakeEffect = MPCOptimizationConfig.GLOBAL.BrakeEffect;
     Optional<ManualControlInterface> optionalJoystick = joystickLcmProvider.getManualControl();
     if (optionalJoystick.isPresent()) { // is joystick button "autonomoRus" pressed?
       ManualControlInterface actualJoystick = optionalJoystick.get();
@@ -186,7 +190,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     }
     // send message with max speed
     // optimization parameters will have more values in the future
-    MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
+    // MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
+    MPCOptimizationParameter mpcOptimizationParameter//
+        = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc, //
+            latAccLim, rotAccEffect, torqueVecEffect, brakeEffect);
     lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
     GokartState state = mpcStateEstimationProvider.getState();

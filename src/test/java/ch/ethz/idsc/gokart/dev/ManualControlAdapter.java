@@ -7,12 +7,14 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.qty.Boole;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public final class GokartJoystickAdapter implements ManualControlInterface {
-  public static final ManualControlInterface PASSIVE = new GokartJoystickAdapter( //
+/** immutable */
+public class ManualControlAdapter implements ManualControlInterface {
+  public static final ManualControlInterface PASSIVE = new ManualControlAdapter( //
       RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), false, false);
   // ---
   private final Scalar steerLeft;
@@ -29,8 +31,9 @@ public final class GokartJoystickAdapter implements ManualControlInterface {
    * @param aheadAverage real scalar in the interval [-1, 1]
    * @param pair vector of length 2 with entries in the unit interval [0, 1]
    * @param isAutonomousPressed
+   * @param isResetPressed
    * @throws Exception if any argument is not in the valid range */
-  public GokartJoystickAdapter( //
+  public ManualControlAdapter( //
       Scalar steerLeft, //
       Scalar breakStrength, //
       Scalar aheadAverage, //
@@ -46,42 +49,42 @@ public final class GokartJoystickAdapter implements ManualControlInterface {
     this.steerLeft = steerLeft;
     this.breakStrength = breakStrength;
     this.aheadAverage = aheadAverage;
-    this.pair = pair.copy();
+    this.pair = VectorQ.requireLength(pair, 2).unmodifiable();
     this.isAutonomousPressed = isAutonomousPressed;
     this.isResetPressed = isResetPressed;
   }
 
-  @Override // from GokartJoystickInterface
+  @Override // from ManualControlInterface
   public Scalar getSteerLeft() {
     return steerLeft;
   }
 
-  @Override // from GokartJoystickInterface
+  @Override // from ManualControlInterface
   public Scalar getBreakStrength() {
     return breakStrength;
   }
 
-  @Override // from GokartJoystickInterface
+  @Override // from ManualControlInterface
   public Scalar getAheadAverage() {
     return aheadAverage;
   }
 
-  @Override // from GokartJoystickInterface
+  @Override // from ManualControlInterface
   public Tensor getAheadPair_Unit() {
     return pair;
   }
 
-  @Override
+  @Override // from ManualControlInterface
   public boolean isAutonomousPressed() {
     return isAutonomousPressed;
   }
 
-  @Override
+  @Override // from ManualControlInterface
   public boolean isResetPressed() {
     return isResetPressed;
   }
 
-  @Override
+  @Override // from Object
   public String toString() {
     return Tensors.of( //
         steerLeft, //

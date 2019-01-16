@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.dev.GokartJoystickAdapter;
+import ch.ethz.idsc.gokart.dev.ManualControlAdapter;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -35,17 +35,17 @@ public class SysidRimoModuleTest extends TestCase {
 
   public void testJoystickPresent() {
     SysidRimoModule sysidRimoModule = new SysidRimoModule();
-    ManualControlInterface gokartJoystickInterface = //
-        new GokartJoystickAdapter(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), true, false);
-    Optional<RimoPutEvent> optional = sysidRimoModule.fromJoystick(gokartJoystickInterface);
+    ManualControlInterface manualControlInterface = new ManualControlAdapter( //
+        RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), true, false);
+    Optional<RimoPutEvent> optional = sysidRimoModule.fromJoystick(manualControlInterface);
     assertTrue(optional.isPresent());
   }
 
   public void testJoystickNotPresent() {
     SysidRimoModule sysidRimoModule = new SysidRimoModule();
-    ManualControlInterface gokartJoystickInterface = //
-        new GokartJoystickAdapter(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), false, false);
-    Optional<RimoPutEvent> optional = sysidRimoModule.fromJoystick(gokartJoystickInterface);
+    ManualControlInterface manualControlInterface = new ManualControlAdapter( //
+        RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), false, false);
+    Optional<RimoPutEvent> optional = sysidRimoModule.fromJoystick(manualControlInterface);
     assertFalse(optional.isPresent());
   }
 

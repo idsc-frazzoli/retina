@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.dev.GokartJoystickAdapter;
+import ch.ethz.idsc.gokart.dev.ManualControlAdapter;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
@@ -28,7 +28,7 @@ public class SteerJoystickModuleTest extends TestCase {
     SteerJoystickModule steerJoystickModule = new SteerJoystickModule();
     Optional<SteerPutEvent> optional = steerJoystickModule.private_translate( //
         new SteerColumnAdapter(false, Quantity.of(.20, "SCE")), //
-        new GokartJoystickAdapter( //
+        new ManualControlAdapter( //
             RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.7, 0.8), false, false));
     assertFalse(optional.isPresent());
     assertFalse(steerJoystickModule.putEvent().isPresent()); // joystick missing
@@ -38,9 +38,9 @@ public class SteerJoystickModuleTest extends TestCase {
     SteerJoystickModule steerJoystickModule = new SteerJoystickModule();
     SteerColumnInterface steerColumnInterface = new SteerColumnAdapter(true, Quantity.of(.2, "SCE"));
     assertTrue(steerColumnInterface.isSteerColumnCalibrated());
-    ManualControlInterface gokartJoystickInterface = new GokartJoystickAdapter( //
+    ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(0.6, 1.0), false, false);
-    Optional<SteerPutEvent> optional = steerJoystickModule.control(steerColumnInterface, gokartJoystickInterface);
+    Optional<SteerPutEvent> optional = steerJoystickModule.control(steerColumnInterface, manualControlInterface);
     assertTrue(optional.isPresent());
     assertFalse(steerJoystickModule.putEvent().isPresent()); // joystick missing
   }

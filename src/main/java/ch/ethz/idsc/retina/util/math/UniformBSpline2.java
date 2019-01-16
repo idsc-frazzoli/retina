@@ -1,4 +1,4 @@
-// code by mh
+// code by mh, modifs by jph
 package ch.ethz.idsc.retina.util.math;
 
 import ch.ethz.idsc.tensor.RealScalar;
@@ -6,12 +6,12 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.red.Min;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Mod;
 
 /** @author Marc Heim
- * some mathematical utility function for working with splines */
+ * 
+ * quadratic splines */
 public enum UniformBSpline2 {
   ;
   // based on matlab code:
@@ -63,6 +63,9 @@ public enum UniformBSpline2 {
 
   /** quadratic bspline defined over the interval [0, 3]
    * 
+   * the maximum is attained at parameter value 3/2 == 1.5
+   * where the function evaluates to 3/4
+   * 
    * @param value
    * @return */
   public static Scalar getBasisFunction(Scalar value) {
@@ -103,8 +106,19 @@ public enum UniformBSpline2 {
     return _0;
   }
 
-  public static Scalar getBasisElement(int n, int i, Scalar x, int der, boolean circle) {
-    Scalar value = x.subtract(RealScalar.of(i)).add(RealScalar.of(2));
+  public static Tensor getBasisMatrix(int n, Tensor queryPositions, int der, boolean circle) {
+    return Tensors.vector(i -> getBasisVector(n, queryPositions.Get(i), der, circle), queryPositions.length());
+  }
+
+  private static Tensor getBasisVector(int n, final Scalar x, int der, boolean circle) {
+    Scalar xx = circle //
+        ? x
+        : Clip.function(0, n - 2).apply(x);
+    return Tensors.vector(i -> getBasisElement(n, i, xx, der, circle), n);
+  }
+
+  private static Scalar getBasisElement(int n, int i, Scalar x, int der, boolean circle) {
+    Scalar value = x.subtract(RealScalar.of(i)).add(_2);
     if (circle)
       value = Mod.function(n).apply(value);
     if (der == 0)
@@ -113,19 +127,6 @@ public enum UniformBSpline2 {
       return getBasisFunction1Der(value);
     if (der == 2)
       return getBasisFunction2Der(value);
-    return RealScalar.ZERO; // this is true and not a hack!
-  }
-
-  public static Tensor getBasisVector(int n, Scalar x, int der, boolean circle) {
-    if (!circle) {
-      x = Max.of(x, RealScalar.ZERO);
-      x = Min.of(x, RealScalar.of(n - 2));
-    }
-    final Scalar xx = x;
-    return Tensors.vector(i -> getBasisElement(n, i, xx, der, circle), n);
-  }
-
-  public static Tensor getBasisMatrix(int n, Tensor queryPositions, int der, boolean circle) {
-    return Tensors.vector(i -> getBasisVector(n, queryPositions.Get(i), der, circle), queryPositions.length());
+    return _0; // <- true and not a hack
   }
 }

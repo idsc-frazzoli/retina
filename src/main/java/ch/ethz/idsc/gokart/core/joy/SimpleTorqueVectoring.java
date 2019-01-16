@@ -47,9 +47,9 @@ class SimpleTorqueVectoring implements TorqueVectoringInterface {
     return lateralAcceleration.multiply(torqueVectoringConfig.staticCompensation);
   }
 
-  /** @param wantedZTorque
-   * @param realRotation
-   * @return */
+  /** @param wantedZTorque TODO MH state unit
+   * @param realRotation TODO MH state unit
+   * @return quantity with unit same as wantedZTorque */
   Scalar wantedZTorque(Scalar wantedZTorque, Scalar realRotation) {
     return wantedZTorque; // simple implementation
   }
