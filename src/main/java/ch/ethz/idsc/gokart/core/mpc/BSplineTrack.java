@@ -10,7 +10,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.MatrixQ;
 import ch.ethz.idsc.tensor.alg.Normalize;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Norm;
@@ -35,12 +34,11 @@ public class BSplineTrack implements TrackInterface {
   /** @param combinedControlPoints
    * @param closed */
   public BSplineTrack(Tensor combinedControlPoints, boolean closed) {
-    // TODO ensure control points are of same size and [m]
-    MatrixQ.require(combinedControlPoints);
     this.closed = closed;
     numPoints = combinedControlPoints.length();
     List<Integer> from = Arrays.asList(0, 0);
     List<Integer> dims = Arrays.asList(numPoints, 2);
+    // TODO ensure control points is matrix MatrixQ and R is VectorQ
     controlPoints = combinedControlPoints.block(from, dims);
     controlPointsR = combinedControlPoints.get(Tensor.ALL, 2);
     int effPoints = numPoints + (closed ? 0 : -1);
@@ -49,6 +47,7 @@ public class BSplineTrack implements TrackInterface {
     posX = new float[(int) (effPoints / lookupRes)];
     posY = new float[(int) (effPoints / lookupRes)];
     for (int i = 0; i < posX.length; ++i) {
+      // TODO does getPosition ensure that Control Points are in [m]
       Tensor pos = getPosition(RealScalar.of(i * lookupRes));
       posX[i] = pos.Get(0).number().floatValue();
       posY[i] = pos.Get(1).number().floatValue();

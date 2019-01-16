@@ -8,7 +8,11 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.alg.Subdivide;
+import ch.ethz.idsc.tensor.alg.UnitVector;
+import ch.ethz.idsc.tensor.opt.BSplineFunction;
 import ch.ethz.idsc.tensor.sca.Chop;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 import junit.framework.TestCase;
 
 public class UniformBSpline2Test extends TestCase {
@@ -21,17 +25,26 @@ public class UniformBSpline2Test extends TestCase {
 
   public void testBPs1() {
     Scalar scalar = UniformBSpline2.getBasisFunction(RationalScalar.of(1, 3));
-    assertTrue(Chop._12.close(scalar, DoubleScalar.of(0.05555555555555555)));
+    Chop._12.requireClose(scalar, DoubleScalar.of(0.05555555555555555));
+    BSplineFunction bSplineFunction = BSplineFunction.of(2, UnitVector.of(11, 5));
+    ScalarUnaryOperator shift1 = s -> s.add(RationalScalar.of(3, 2));
+    ScalarUnaryOperator shift2 = s -> s.add(RationalScalar.of(5, 1));
+    for (Tensor _x : Subdivide.of(-2, 2, 200)) {
+      Scalar x = _x.Get();
+      Scalar v1 = UniformBSpline2.getBasisFunction(shift1.apply(x));
+      Scalar v2 = (Scalar) bSplineFunction.apply(shift2.apply(x));
+      Chop._10.requireClose(v1, v2);
+    }
   }
 
   public void testBPs2() {
     Scalar scalar = UniformBSpline2.getBasisFunction(RationalScalar.of(4, 3));
-    assertTrue(Chop._12.close(scalar, DoubleScalar.of(0.722222222222222)));
+    Chop._12.requireClose(scalar, DoubleScalar.of(0.722222222222222));
   }
 
   public void testBPs3() {
     Scalar scalar = UniformBSpline2.getBasisFunction(RationalScalar.of(7, 3));
-    assertTrue(Chop._12.close(scalar, DoubleScalar.of(0.2222222222222222)));
+    Chop._12.requireClose(scalar, DoubleScalar.of(0.2222222222222222));
   }
 
   public void testBPD1Outside() {
@@ -70,12 +83,12 @@ public class UniformBSpline2Test extends TestCase {
 
   public void testBPD2s2() {
     Scalar scalar = UniformBSpline2.getBasisFunction2Der(RationalScalar.of(4, 3));
-    assertTrue(Chop._12.close(scalar, RealScalar.of(-2)));
+    Chop._12.requireClose(scalar, RealScalar.of(-2));
   }
 
   public void testBPD2s3() {
     Scalar scalar = UniformBSpline2.getBasisFunction2Der(RationalScalar.of(7, 3));
-    assertTrue(Chop._12.close(scalar, RealScalar.ONE));
+    Chop._12.requireClose(scalar, RealScalar.ONE);
   }
 
   public void testBasisMatrix() {
@@ -84,7 +97,7 @@ public class UniformBSpline2Test extends TestCase {
       Tensor matrix = UniformBSpline2.getBasisMatrix(n, pos, 0, false);
       Tensor vector = Array.of(l -> RealScalar.ONE, n);
       Tensor dot = matrix.dot(vector);
-      assertTrue(Chop._10.close(dot, Array.of(l -> RealScalar.ONE, pos.length())));
+      Chop._12.requireClose(dot, Array.of(l -> RealScalar.ONE, pos.length()));
     }
   }
 }
