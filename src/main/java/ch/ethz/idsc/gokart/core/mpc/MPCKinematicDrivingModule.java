@@ -35,16 +35,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCKinematicDrivingModule extends AbstractModule {
-  public final LcmMPCControlClient lcmMPCPathFollowingClient//
-      = new LcmMPCControlClient();
+  public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   private final MPCBraking mpcBraking = new MPCSimpleBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
-  private final SteerPositionControl steerPositionController//
-      = new SteerPositionControl(HighPowerSteerConfig.GLOBAL);
+  private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerConfig.GLOBAL);
   private final Timing timing;
   private boolean useFullInfoSteeringController = true;
   private boolean useTorqueVectoring;
@@ -59,11 +57,13 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     lcmMPCPathFollowingClient.switchToTest();
   }
 
-  /** create Module with custom estimator
+  /** Hint: constructor only for testing
+   * create Module with custom estimator
    * 
    * @param estimator the custom estimator
    * @param timing that shows the same time that also was used for the custom estimator */
-  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing, MPCPreviewableTrack track) {
+  //
+  MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing, MPCPreviewableTrack track) {
     this.track = track;
     mpcStateEstimationProvider = estimator;
     this.timing = timing;
@@ -76,18 +76,16 @@ public class MPCKinematicDrivingModule extends AbstractModule {
    * 
    * @param estimator the custom estimator
    * @param timing that shows the same time that also was used for the custom estimator */
-  public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing) {
-    this.track = null;
-    mpcStateEstimationProvider = estimator;
-    this.timing = timing;
-    // link mpc steering
-    mpcPower = new MPCTorqueVectoringPower(mpcSteering);
-    initModules();
-  }
-
+  // public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing) {
+  // track = null;
+  // mpcStateEstimationProvider = estimator;
+  // this.timing = timing;
+  // // link mpc steering
+  // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+  // initModules();
+  // }
   /** create Module with standard estimator */
   public MPCKinematicDrivingModule() {
-    // track = DubendorfTrack.CHICANE;
     track = null;
     timing = Timing.started();
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(timing);

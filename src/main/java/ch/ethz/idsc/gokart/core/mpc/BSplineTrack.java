@@ -1,8 +1,8 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.MatrixQ;
 import ch.ethz.idsc.tensor.alg.Normalize;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Norm;
@@ -31,39 +32,26 @@ public class BSplineTrack implements TrackInterface {
   final float[] posX;
   final float[] posY;
 
+  /** @param combinedControlPoints
+   * @param closed */
   public BSplineTrack(Tensor combinedControlPoints, boolean closed) {
     // TODO ensure control points are of same size and [m]
-    // controlPointsX.get();
+    MatrixQ.require(combinedControlPoints);
     this.closed = closed;
     numPoints = combinedControlPoints.length();
-    ArrayList<Integer> from = new ArrayList<Integer>();
-    ArrayList<Integer> dims = new ArrayList<Integer>();
-    Collections.addAll(from, 0, 0);
-    Collections.addAll(dims, numPoints, 2);
-    this.controlPoints = combinedControlPoints.block(from, dims);
-    this.controlPointsR = combinedControlPoints.get(Tensor.ALL, 2);
-    final int pathLength = combinedControlPoints.length();
-    if (closed)
-      length = RealScalar.of(pathLength);
-    else
-      length = RealScalar.of(pathLength - 1);
+    List<Integer> from = Arrays.asList(0, 0);
+    List<Integer> dims = Arrays.asList(numPoints, 2);
+    controlPoints = combinedControlPoints.block(from, dims);
+    controlPointsR = combinedControlPoints.get(Tensor.ALL, 2);
+    int effPoints = numPoints + (closed ? 0 : -1);
+    length = RealScalar.of(effPoints);
     // prepare lookup
-    if (closed) {
-      posX = new float[(int) (numPoints / lookupRes)];
-      posY = new float[(int) (numPoints / lookupRes)];
-      for (int i = 0; i < numPoints / lookupRes; ++i) {
-        Tensor pos = getPosition(RealScalar.of(i * lookupRes));
-        posX[i] = pos.Get(0).number().floatValue();
-        posY[i] = pos.Get(1).number().floatValue();
-      }
-    } else {
-      posX = new float[(int) ((numPoints - 1) / lookupRes)];
-      posY = new float[(int) ((numPoints - 1) / lookupRes)];
-      for (int i = 0; i < (numPoints - 1) / lookupRes; ++i) {
-        Tensor pos = getPosition(RealScalar.of(i * lookupRes));
-        posX[i] = pos.Get(0).number().floatValue();
-        posY[i] = pos.Get(1).number().floatValue();
-      }
+    posX = new float[(int) (effPoints / lookupRes)];
+    posY = new float[(int) (effPoints / lookupRes)];
+    for (int i = 0; i < posX.length; ++i) {
+      Tensor pos = getPosition(RealScalar.of(i * lookupRes));
+      posX[i] = pos.Get(0).number().floatValue();
+      posY[i] = pos.Get(1).number().floatValue();
     }
   }
 
@@ -96,7 +84,6 @@ public class BSplineTrack implements TrackInterface {
     return (Scalar) mat.dot(controlPointsR);
   }
 
-  // public Scalar getCurvature(Scalar pathPro)
   /** get the path derivative with respect to path progress
    * 
    * @param pathProgress progress along path
@@ -153,7 +140,7 @@ public class BSplineTrack implements TrackInterface {
   }
 
   public Scalar getLocalRadius(Scalar pathProgress) {
-    // TODO MH reciprocal
+    // TODO JPH/MH reciprocal
     return RealScalar.ONE.divide(getCurvature(pathProgress).abs());
   }
 
@@ -220,7 +207,7 @@ public class BSplineTrack implements TrackInterface {
     float bestDist = 10000f;
     int bestGuess = 0;
     // initial guesses
-    for (int i = 0; i < numPoints - SPLINE_ORDER; i++) {
+    for (int i = 0; i < numPoints - SPLINE_ORDER; ++i) {
       int index = i * lookupSkip;
       // quadratic distances
       float dist = getFastQuadraticDistance(index, gPosX, gPosY);
@@ -286,7 +273,7 @@ public class BSplineTrack implements TrackInterface {
   public Tensor getMiddleLine(int resolution) {
     Tensor line = Tensors.empty();
     Scalar step = length.divide(RealScalar.of(resolution));
-    for (int i = 0; i < resolution; i++) {
+    for (int i = 0; i < resolution; ++i) {
       Scalar prog = RealScalar.of(i).multiply(step);
       line.append(getPosition(prog));
     }
@@ -298,7 +285,7 @@ public class BSplineTrack implements TrackInterface {
     // this is not accurate for large changes in radius
     Tensor line = Tensors.empty();
     Scalar step = length.divide(RealScalar.of(resolution));
-    for (int i = 0; i < resolution; i++) {
+    for (int i = 0; i < resolution; ++i) {
       Scalar prog = RealScalar.of(i).multiply(step);
       Tensor linepos = //
           getPosition(prog) //
@@ -315,7 +302,7 @@ public class BSplineTrack implements TrackInterface {
     // this is not accurate for large changes in radius
     Tensor line = Tensors.empty();
     Scalar step = length.divide(RealScalar.of(resolution));
-    for (int i = 0; i < resolution; i++) {
+    for (int i = 0; i < resolution; ++i) {
       Scalar prog = RealScalar.of(i).multiply(step);
       Tensor linepos = //
           getPosition(prog).//
