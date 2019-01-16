@@ -3,11 +3,12 @@ package ch.ethz.idsc.gokart.core.joy;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.dev.GokartJoystickAdapter;
+import ch.ethz.idsc.gokart.dev.ManualControlAdapter;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
@@ -32,9 +33,9 @@ public class LinmotJoystickModuleTest extends TestCase {
 
   public void testValue() {
     LinmotJoystickModule linmotJoystickModule = new LinmotJoystickModule();
-    GokartJoystickAdapter joystick = new GokartJoystickAdapter( //
+    ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.8), false, false);
-    Optional<LinmotPutEvent> optional = linmotJoystickModule.translate(joystick);
+    Optional<LinmotPutEvent> optional = linmotJoystickModule.translate(manualControlInterface);
     assertTrue(optional.isPresent());
     LinmotPutEvent linmotPutEvent = optional.get();
     assertEquals(linmotPutEvent.control_word, LinmotPutHelper.CMD_OPERATION.getShort());
