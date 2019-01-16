@@ -9,17 +9,23 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Mean;
 
 public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
-  private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
+  private static final PowerLookupTable POWER_LOOKUP_TABLE = PowerLookupTable.getInstance();
 
+  // ---
   public ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
   }
 
   @Override // from TorqueVectoringInterface
-  public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation) {
+  public final Tensor powers( //
+      Scalar expectedRotationPerMeterDriven, //
+      Scalar meanTangentSpeed, //
+      Scalar angularSlip, //
+      Scalar power, //
+      Scalar realRotation) {
     // wrapper for torque vectoring method
-    Scalar wantedAcceleration = powerLookupTable.getNormalizedAccelerationTorqueCentered(power, meanTangentSpeed);
-    Tensor motorCurrents = getMotorCurrentsFromAcceleration(//
+    Scalar wantedAcceleration = POWER_LOOKUP_TABLE.getNormalizedAccelerationTorqueCentered(power, meanTangentSpeed);
+    Tensor motorCurrents = getMotorCurrentsFromAcceleration( //
         expectedRotationPerMeterDriven, //
         meanTangentSpeed, //
         angularSlip, //
@@ -36,7 +42,11 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
    * @param wantedAcceleration [m/s^2]
    * @param realRotation [1/s]
    * @return the motor currents [Arms] */
-  public Tensor getMotorCurrentsFromAcceleration(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar wantedAcceleration,
+  public Tensor getMotorCurrentsFromAcceleration( //
+      Scalar expectedRotationPerMeterDriven, //
+      Scalar meanTangentSpeed, //
+      Scalar angularSlip, //
+      Scalar wantedAcceleration, //
       Scalar realRotation) {
     Scalar dynamicComponent = getDynamicComponent(angularSlip);
     Scalar staticComponent = getStaticComponent(expectedRotationPerMeterDriven, meanTangentSpeed);
@@ -49,16 +59,18 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
   }
 
   /** @param wantedAcceleration [m(s^2]
-   * @param wantedZTorque [ONE] TODO currently dimensionless. Should we change that?
+   * @param wantedZTorque [ONE] TODO MH currently dimensionless. Should we change that?
    * @param velocity [m/s]
    * @return the required motor currents [Arms] */
-  protected Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
-    Tensor minMax = powerLookupTable.getMinMaxAcceleration(velocity);
+  // TODO JPH/MH write tests specifically for method getAdvancedMotorCurrents
+  public static Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
+    Tensor minMax = POWER_LOOKUP_TABLE.getMinMaxAcceleration(velocity);
     Scalar min = minMax.Get(0);
     Scalar max = minMax.Get(1);
-    Scalar halfRange = max.subtract(min).divide(RealScalar.of(2));
+    Scalar halfRange = max.subtract(min).divide(RealScalar.of(2.0));
     Scalar mid = (Scalar) Mean.of(minMax);
-    // get acceleration remapped to [-1,1] TODO find handy Tensor function
+    // get acceleration remapped to [-1,1]
+    // TODO JPH/MH find handy Tensor function
     Scalar remappedMeanAcceleration = //
         wantedAcceleration.subtract(mid).divide(halfRange);//
     // get clipped individual accelerations
@@ -66,9 +78,9 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
         remappedMeanAcceleration.subtract(wantedZTorque), //
         remappedMeanAcceleration.add(wantedZTorque));
     // remap again to acceleration space
-    Tensor wantedAccelerations = remappedAccelerations.multiply(halfRange).map(s -> s.add(mid));
+    Tensor wantedAccelerations = remappedAccelerations.multiply(halfRange).map(mid::add);
     return Tensors.of( //
-        powerLookupTable.getNeededCurrent(wantedAccelerations.Get(0), velocity), //
-        powerLookupTable.getNeededCurrent(wantedAccelerations.Get(1), velocity));
+        POWER_LOOKUP_TABLE.getNeededCurrent(wantedAccelerations.Get(0), velocity), //
+        POWER_LOOKUP_TABLE.getNeededCurrent(wantedAccelerations.Get(1), velocity));
   }
 }

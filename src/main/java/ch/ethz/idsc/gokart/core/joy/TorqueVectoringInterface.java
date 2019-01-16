@@ -9,7 +9,7 @@ interface TorqueVectoringInterface {
    * @param meanTangentSpeed with unit m*s^-1
    * @param angularSlip with unit s^-1
    * @param power unitless in the interval [-1, 1]
-   * @param real rotation taken from gyro with unit s^-1
+   * @param realRotation taken from gyro with unit s^-1
    * @return vector of the form {powerLeft, powerRight} where both
    * powerLeft and powerRight are guaranteed to be in the interval [-1, 1] */
   Tensor powers( //

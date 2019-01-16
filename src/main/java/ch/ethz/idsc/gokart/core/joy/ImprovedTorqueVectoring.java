@@ -16,7 +16,7 @@ class ImprovedTorqueVectoring extends SimpleTorqueVectoring {
     if (Sign.isNegative(realRotation.multiply(wantedZTorque))) {
       Scalar scalar = Clip.unit().apply(realRotation.abs().multiply(torqueVectoringConfig.ks));
       Scalar stabilizerFactor = RealScalar.ONE.subtract(scalar);
-      wantedZTorque = wantedZTorque.multiply(stabilizerFactor);
+      return wantedZTorque.multiply(stabilizerFactor);
     }
     return wantedZTorque;
   }
