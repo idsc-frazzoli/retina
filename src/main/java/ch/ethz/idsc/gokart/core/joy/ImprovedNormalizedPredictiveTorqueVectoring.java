@@ -2,21 +2,20 @@
 package ch.ethz.idsc.gokart.core.joy;
 
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormalizedTorqueVectoring {
   private static final double MIN_DT = 0.000001;
   private static final Scalar ROLLING_AVERAGE_FACTOR = RealScalar.of(0.5); // good data expected
   // ---
+  private final IntervalClock intervalClock = new IntervalClock();
   private Scalar lastRotation = null;
   // TODO JPH/MH extact functionality to separate class "IIR filter"
   private Scalar rotationAccRollingAverage = Quantity.of(0, SI.ANGULAR_ACCELERATION);
-  // TODO JPH/MH use IntervalClock
-  private Timing lastMeasure = Timing.started();
 
   public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
@@ -43,8 +42,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
   private Scalar estimateRotationAcceleration(Scalar rotation) {
     if (lastRotation == null)
       lastRotation = rotation;
-    double timeSinceLastStep = lastMeasure.seconds();
-    lastMeasure = Timing.started();
+    double timeSinceLastStep = intervalClock.seconds();
     if (timeSinceLastStep >= MIN_DT) {
       Scalar instantRotChange = rotation.subtract(lastRotation).divide(Quantity.of(timeSinceLastStep, SI.SECOND));
       Scalar newPart = instantRotChange.multiply(ROLLING_AVERAGE_FACTOR);

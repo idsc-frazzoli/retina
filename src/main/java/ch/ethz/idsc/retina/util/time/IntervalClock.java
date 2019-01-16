@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.time;
 
+// TODO JPH document
 public class IntervalClock {
   private long tic = System.nanoTime(); // started upon construction
 
