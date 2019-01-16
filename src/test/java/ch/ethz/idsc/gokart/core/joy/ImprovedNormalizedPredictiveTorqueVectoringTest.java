@@ -63,7 +63,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0, SI.ACCELERATION.negate());
     tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    tvc.staticPrediction = Quantity.of(1.5, SI.ANGULAR_ACCELERATION.negate());
+    tvc.staticPrediction = Quantity.of(0.1, SI.ANGULAR_ACCELERATION.negate());
     ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(tvc);
     Scalar power = RealScalar.ZERO;
     Scalar velocity = Quantity.of(1, SI.VELOCITY);
@@ -105,9 +105,15 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
         velocity, //
         Quantity.of(1, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
-    System.out.println("1: " + powers1);
-    System.out.println("2: " + powers2);
-    System.out.println("3: " + powers3);
+    Scalar power1l = PowerLookupTable.getInstance().getAcceleration(powers1.Get(0).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    Scalar power1r = PowerLookupTable.getInstance().getAcceleration(powers1.Get(1).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    Scalar power2l = PowerLookupTable.getInstance().getAcceleration(powers2.Get(0).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    Scalar power2r = PowerLookupTable.getInstance().getAcceleration(powers2.Get(1).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    Scalar power3l = PowerLookupTable.getInstance().getAcceleration(powers3.Get(0).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    Scalar power3r = PowerLookupTable.getInstance().getAcceleration(powers3.Get(1).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    System.out.println("1: " + power1l + "/" + power1r);
+    System.out.println("1: " + power2l + "/" + power2r);
+    System.out.println("1: " + power3l + "/" + power3r);
   }
 
   public void testSaturatedPositive() {

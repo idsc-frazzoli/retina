@@ -6,6 +6,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
 /* package */ enum TorqueVectoringHelper {
@@ -22,6 +23,6 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     Scalar d1 = Max.of(oL, uR).negate();
     Scalar d2 = Max.of(oR, uL);
     Scalar d = d1.add(d2);
-    return Tensors.of(powerLeft.add(d), powerRight.subtract(d));
+    return Tensors.of(powerLeft.add(d), powerRight.subtract(d)).map(Clip.absoluteOne());
   }
 }

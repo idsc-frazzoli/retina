@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -127,7 +128,7 @@ public class TrackIdentificationManagement implements RenderInterface {
             // valid refinement
             // create Track
             // To consider: high startup cost -> maybe don't do this in every step
-            lastTrack = new MPCBSplineTrack(trackData, radiusOffset, closedTrack);
+            lastTrack = new MPCBSplineTrack(Transpose.of(trackData), radiusOffset, closedTrack);
             timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
             trackRender = null;
           } else {
@@ -142,7 +143,7 @@ public class TrackIdentificationManagement implements RenderInterface {
         trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 10, closedTrack, constraints);
         // consider: slower track update
         if (trackData != null) {
-          lastTrack = new MPCBSplineTrack(trackData, radiusOffset, closedTrack);
+          lastTrack = new MPCBSplineTrack(Transpose.of(trackData), radiusOffset, closedTrack);
           trackRender = null;
         }
       }

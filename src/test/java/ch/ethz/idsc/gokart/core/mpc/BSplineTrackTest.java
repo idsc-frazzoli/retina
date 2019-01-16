@@ -141,6 +141,18 @@ public class BSplineTrackTest extends TestCase {
     }
   }
 
+  public void testRadius() {
+    // Tensor tensor = Tensors.of(Quantity.of(0, SI.METER),Quantity.of(1, SI.METER));
+    Scalar meter = Quantity.of(1, SI.METER);
+    Tensor ctrX = Tensors.vector(0, 0, 1, 1).multiply(meter);
+    Tensor ctrY = Tensors.vector(0, 1, 1, 0).multiply(meter);
+    Tensor ctrR = Tensors.vector(1, 1, 1, 1).multiply(meter);
+    Tensor fullTensor = Transpose.of(Tensors.of(ctrX, ctrY, ctrR));
+    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
+    Random rand = new Random();
+    bSplineTrack.getRadius(RealScalar.of(rand.nextDouble() * 100));
+  }
+
   public void testNoOffset() {
     // Tensor tensor = Tensors.of(Quantity.of(0, SI.METER),Quantity.of(1, SI.METER));
     Scalar meter = Quantity.of(1, SI.METER);

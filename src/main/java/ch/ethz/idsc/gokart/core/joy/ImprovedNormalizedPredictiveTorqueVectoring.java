@@ -49,7 +49,6 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
       Scalar oldPart = rotationAccRollingAverage.multiply(RealScalar.ONE.subtract(ROLLING_AVERAGE_FACTOR));
       rotationAccRollingAverage = newPart.add(oldPart);
     }
-    System.out.println(rotationAccRollingAverage);
     lastRotation = rotation;
     return rotationAccRollingAverage;
   }

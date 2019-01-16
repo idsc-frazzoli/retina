@@ -80,7 +80,7 @@ public class BSplineTrack implements TrackInterface {
    * @return radius [m] */
   public Scalar getRadius(Scalar pathProgress) {
     Tensor mat = UniformBSpline2.getBasisMatrix(numPoints, Tensors.of(pathProgress), 0, closed);
-    return (Scalar) mat.dot(controlPointsR);
+    return mat.dot(controlPointsR).Get(0);
   }
 
   /** get the path derivative with respect to path progress
