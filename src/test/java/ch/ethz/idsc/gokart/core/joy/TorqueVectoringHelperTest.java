@@ -15,28 +15,28 @@ public class TorqueVectoringHelperTest extends TestCase {
   private static void _checkSym(Scalar s1, Scalar s2, Tensor vector) {
     assertEquals(TorqueVectoringHelper.clip(s1, s2), vector);
     assertEquals(TorqueVectoringHelper.clip(s2, s1), Reverse.of(vector));
-    // FIXME JPH/MH the following two identities should hold
-    // assertEquals(TorqueVectoringHelper.clip(s1.negate(), s2.negate()), vector.negate());
-    // assertEquals(TorqueVectoringHelper.clip(s2.negate(), s1.negate()), Reverse.of(vector.negate()));
+    assertEquals(TorqueVectoringHelper.clip(s1.negate(), s2.negate()), vector.negate());
+    assertEquals(TorqueVectoringHelper.clip(s2.negate(), s1.negate()), Reverse.of(vector.negate()));
   }
 
   public void testClip1() {
+    _checkSym(RealScalar.of(+0.25), RealScalar.ZERO, Tensors.vector(0.25, 0));
+    _checkSym(RealScalar.of(+0.25), RealScalar.of(1), Tensors.vector(0.25, 1));
+    _checkSym(RealScalar.of(+0.25), RealScalar.of(-0.5), Tensors.vector(0.25, -0.5));
     _checkSym(RealScalar.of(+1.25), RealScalar.ZERO, Tensors.vector(1, 0.25));
-    _checkSym(RealScalar.of(+1.25), RealScalar.of(1.5), Tensors.vector(1, 1));
     _checkSym(RealScalar.of(-1.25), RealScalar.ZERO, Tensors.vector(-1, -0.25));
     _checkSym(RealScalar.of(-1.25), RealScalar.of(1.5), Tensors.vector(-0.75, 1));
-    _checkSym(RealScalar.of(-1.50), RealScalar.of(-1.25), Tensors.vector(-1, -1));
     _checkSym(RealScalar.of(-0.00), RealScalar.of(-0.00), Tensors.vector(0, 0));
   }
 
   public void testClip2a() {
     Tensor tensor = TorqueVectoringHelper.clip(RealScalar.of(-1.5), RealScalar.of(1.25));
-    assertEquals(tensor, Tensors.vector(-1, 1));
+    assertEquals(tensor, Tensors.vector(-1, 0.75));
   }
 
   public void testClip2b() {
     Tensor tensor = TorqueVectoringHelper.clip(RealScalar.of(1.25), RealScalar.of(-1.5));
-    assertEquals(tensor, Tensors.vector(1, -1));
+    assertEquals(tensor, Tensors.vector(0.75, -1));
   }
 
   public void testClip3() {

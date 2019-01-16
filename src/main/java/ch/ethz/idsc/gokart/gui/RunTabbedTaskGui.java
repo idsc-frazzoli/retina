@@ -22,7 +22,7 @@ import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
-import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedPredictiveTorqueVectoring;
+import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedPredictiveTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoringJoystickModule;
 import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
 import ch.ethz.idsc.gokart.core.joy.LookupTableRimoThrustJoystickModule;
@@ -100,7 +100,7 @@ enum RunTabbedTaskGui {
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       RimoThrustJoystickModule.class, //
       ImprovedNormalizedTorqueVectoringJoystickModule.class, //
-      ImprovedNormalizedPredictiveTorqueVectoring.class, //
+      ImprovedNormalizedPredictiveTorqueVectoringJoystickModule.class, //
       LookupTableRimoThrustJoystickModule.class, //
       JoystickGroupModule.class, //
       SysidSignalsModule.class //
