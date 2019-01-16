@@ -11,8 +11,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormalizedTorqueVectoring {
   private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
-  private Scalar lastRotationPerMeterDriven = null;
-  private Scalar rotationAccRollingAverage = Quantity.of(0, SI.ANGULAR_ACCELERATION.add(SI.METER.negate()));
+  private Scalar lastRotation = null;
+  private Scalar rotationAccRollingAverage = Quantity.of(0, SI.ANGULAR_ACCELERATION);
   private Scalar rollinAverageFactor = RealScalar.of(0.5); // good data expected
   private Timing lastMeasure = Timing.started();
 
@@ -33,14 +33,14 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
     return motorCurrents.divide(ManualConfig.GLOBAL.torqueLimit);
   }
 
-  public Scalar estimateRotationAcceleration(Scalar rotationPerMeter) {
-    if (lastRotationPerMeterDriven == null)
-      lastRotationPerMeterDriven = rotationPerMeter;
+  public Scalar estimateRotationAcceleration(Scalar rotation) {
+    if (lastRotation == null)
+      lastRotation = rotation;
     double timeSinceLastStep = lastMeasure.seconds();
     lastMeasure = Timing.started();
     if (timeSinceLastStep >= 0.000001) {
-      Scalar instantRotPerMetChange = rotationPerMeter.subtract(lastRotationPerMeterDriven).divide(Quantity.of(timeSinceLastStep, SI.SECOND));
-      Scalar newPart = instantRotPerMetChange.multiply(rollinAverageFactor);
+      Scalar instantRotChange = rotation.subtract(lastRotation).divide(Quantity.of(timeSinceLastStep, SI.SECOND));
+      Scalar newPart = instantRotChange.multiply(rollinAverageFactor);
       Scalar oldPart = rotationAccRollingAverage.multiply(RealScalar.ONE.subtract(rollinAverageFactor));
       rotationAccRollingAverage = newPart.add(oldPart);
     }
@@ -53,17 +53,16 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
       Scalar meanTangentSpeed, //
       Scalar angularSlip, //
       Scalar wantedAcceleration, Scalar realRotation) {
-    Scalar expectedRotationVelocity = meanTangentSpeed.multiply(RealScalar.ZERO);
-    Scalar expectedRotationPerMeterDrivenChange//
-        = estimateRotationAcceleration(expectedRotationPerMeterDriven);
-    Scalar expectedRotationAcceleration = expectedRotationPerMeterDrivenChange.multiply(meanTangentSpeed);
+    Scalar expectedRotationVelocity = meanTangentSpeed.multiply(expectedRotationPerMeterDriven);
+    Scalar expectedRoationAcceleration//
+        = estimateRotationAcceleration(expectedRotationVelocity);
     return getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //
         meanTangentSpeed, //
         angularSlip, //
         wantedAcceleration, //
         realRotation, //
-        expectedRotationAcceleration);
+        expectedRoationAcceleration);
   }
 
   final Scalar getPredictiveComponent(Scalar expectedRotationAcceleration) {

@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedPredictiveTorqueVectoring;
 import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
@@ -22,7 +23,7 @@ public class MPCTorqueVectoringPower extends MPCPower {
 
   public MPCTorqueVectoringPower(MPCSteering mpcSteering) {
     this.mpcSteering = mpcSteering;
-    torqueVectoring = new ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig.GLOBAL);
+    torqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   }
 
   @Override
