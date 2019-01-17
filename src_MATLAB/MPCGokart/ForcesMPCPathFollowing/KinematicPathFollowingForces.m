@@ -1,5 +1,6 @@
 %add force path (change that for yourself)
-addpath('/home/marc/Forces')
+userDir = getuserdir;
+addpath([userDir '/Forces']);
 addpath('..');
 addpath('casadi');
     
