@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Transpose;
+import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityTensor;
 import junit.framework.TestCase;
@@ -72,7 +73,9 @@ public class MPCBSplineTrackTest extends TestCase {
     // MPCPathParameter mpcPathParameter =
     mpcbSplineTrack.getPathParameterPreview(5, Tensors.vector(0, 3).multiply(Quantity.of(1, SI.METER)), Quantity.of(0, SI.METER));
     long endTime = System.nanoTime();
-    assertTrue(endTime - startTime < 500_000); // TODO JPH optimize
     // System.out.println(endTime - startTime);
+    long limit = UserName.is("travis") ? 1_500_000 : 400_000;
+    System.out.println(endTime - startTime);
+    assertTrue(endTime - startTime < limit);
   }
 }
