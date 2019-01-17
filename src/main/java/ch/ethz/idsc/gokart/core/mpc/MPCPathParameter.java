@@ -49,15 +49,15 @@ public class MPCPathParameter implements MPCNativeInsertable {
         .forEach(number -> byteBuffer.putFloat(number.floatValue()));
   }
 
-  public Tensor getControlPointsX() {
+  Tensor getControlPointsX() {
     return combinedControlPoints.get(Tensor.ALL, 0);
   }
 
-  public Tensor getControlPointsY() {
+  Tensor getControlPointsY() {
     return combinedControlPoints.get(Tensor.ALL, 1);
   }
 
-  public Tensor getControlPointsR() {
+  Tensor getControlPointsR() {
     return combinedControlPoints.get(Tensor.ALL, 2);
   }
 

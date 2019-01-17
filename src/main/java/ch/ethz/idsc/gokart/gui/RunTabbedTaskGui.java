@@ -109,12 +109,13 @@ enum RunTabbedTaskGui {
       SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
+      MPCKinematicDrivingModule.class, //
+      GokartTrajectoryModule.class, //
       FigureTiresAModule.class, //
       FigureTiresBModule.class, //
       FigureEightModule.class, //
       FigureEightReverseModule.class, //
       FigureOvalModule.class, //
-      GokartTrajectoryModule.class, //
       GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //
@@ -122,8 +123,8 @@ enum RunTabbedTaskGui {
       SEyeSlamLidarModule.class, //
       SEyeSlamOdometryModule.class, //
       SEyeSlamVisualModule.class, //
-      FigureDucttapeModule.class, //
-      MPCKinematicDrivingModule.class);
+      FigureDucttapeModule.class //
+  );
   static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
