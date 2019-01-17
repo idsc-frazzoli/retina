@@ -24,6 +24,7 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
     super(trackData, closed);
   }
 
+  // TODO JPH optimize
   @Override
   public MPCPathParameter getPathParameterPreview(int previewSize, Tensor position, Scalar padding) {
     // test if this function is fast enough to be called many times (it should be)
