@@ -1219,7 +1219,7 @@ public enum GokartLogFile implements LogFile {
   /** manual driving, trajectory planning */
   _20181218T150139_b554b6a9,
   /** manual driving */
-  _20181218T172046_7d7bfcfb, //
+  _20181218T172046_7d7bfcfb,
   /***************************************************/
   /* 2018-12-20 */
   /** manual driving; localization failure at end */
@@ -1259,7 +1259,14 @@ public enum GokartLogFile implements LogFile {
   /** manual driving; localization not initialized */
   _20190110T150643_41aeb417,
   /** manual driving; localization not initialized */
-  _20190110T173502_41aeb417, //
+  _20190110T173502_41aeb417,
+  /***************************************************/
+  /* 2018-01-14 */
+  /** manual driving */
+  _20190114T110212_9f0070a9,
+  /** manual driving */
+  _20190114T142213_83a9d595,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

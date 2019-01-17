@@ -13,18 +13,19 @@ public class DavisImuTrackerModuleTest extends TestCase {
     davisImuWatchdog.first();
     {
       Optional<RimoPutEvent> optional = davisImuWatchdog.putEvent();
-      assertFalse(optional.isPresent()); // no control is issued
+      assertTrue(optional.isPresent()); // no control is issued
     }
     Thread.sleep(100); // sleep for 200[ms]
     {
       Optional<RimoPutEvent> optional = davisImuWatchdog.putEvent();
-      assertFalse(optional.isPresent()); // no control is issued
+      assertTrue(optional.isPresent()); // no control is issued
     }
-    Thread.sleep(500); // sleep for 200[ms]
+    Thread.sleep(100); // sleep for 200[ms]
     {
       Optional<RimoPutEvent> optional = davisImuWatchdog.putEvent();
       assertTrue(optional.isPresent()); // no control is issued
     }
+    // TODO JPH feed with imu and then check
     davisImuWatchdog.last();
   }
 

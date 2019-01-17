@@ -8,11 +8,12 @@ import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
 import ch.ethz.idsc.retina.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.util.data.TimedFuse;
+import ch.ethz.idsc.retina.util.data.SoftWatchdog;
+import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** client to lcm channel with joystick information */
 /* package */ final class JoystickLcmProvider extends BinaryLcmClient implements ManualControlProvider {
-  private final TimedFuse timedFuse;
+  private final Watchdog watchdog;
   // ---
   private ManualControlInterface manualControlInterface = null;
 
@@ -20,12 +21,12 @@ import ch.ethz.idsc.retina.util.data.TimedFuse;
    * @param timeout_ms maximum age of joystick information relayed to application layer */
   public JoystickLcmProvider(String channel, double timeout) {
     super(channel);
-    timedFuse = new TimedFuse(timeout);
+    watchdog = SoftWatchdog.notified(timeout);
   }
 
   @Override // from LcmClientAdapter
   protected void messageReceived(ByteBuffer byteBuffer) {
-    timedFuse.pacify();
+    watchdog.notifyWatchdog();
     manualControlInterface = (ManualControlInterface) JoystickDecoder.decode(byteBuffer);
   }
 
@@ -42,7 +43,7 @@ import ch.ethz.idsc.retina.util.data.TimedFuse;
   /** @return recent joystick readout, or empty */
   @Override
   public Optional<ManualControlInterface> getManualControl() {
-    return Optional.ofNullable(timedFuse.isBlown() //
+    return Optional.ofNullable(watchdog.isBarking() //
         ? null
         : manualControlInterface);
   }

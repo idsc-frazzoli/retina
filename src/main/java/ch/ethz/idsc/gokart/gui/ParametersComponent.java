@@ -16,6 +16,7 @@ import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.retina.util.sys.AppResources;
@@ -29,6 +30,7 @@ import ch.ethz.idsc.tensor.ref.TensorReflection;
 /** component that generically inspects a given object for fields of type
  * {@link Tensor} and {@link Scalar}. For each such field, a text field
  * is provided that allows the modification of the value. */
+// TODO JPH file is getting too long
 /* package */ class ParametersComponent extends ToolbarsComponent {
   private static final Font FONT = new Font(Font.DIALOG_INPUT, Font.BOLD, 20);
   private static final Color FAIL = new Color(255, 192, 192);
@@ -107,6 +109,22 @@ import ch.ethz.idsc.tensor.ref.TensorReflection;
           jTextField.setEditable(false);
           jToolBar.add(jTextField);
           jToolBar.add(create(">", jTextField, tensor, field, +1));
+        } else //
+        if (value instanceof Boolean) {
+          // TODO JPH indicate if value is different from default value
+          jTextField = new JTextField();
+          JToolBar jToolBar = createRow(field.getName(), BUTTON + 2);
+          JToggleButton jToggleButton = new JToggleButton(value.toString());
+          jToggleButton.setPreferredSize(new Dimension(250, BUTTON));
+          jToggleButton.setSelected((Boolean) value);
+          jToggleButton.addActionListener(actionEvent -> {
+            String text = "" + jToggleButton.isSelected();
+            jTextField.setText(text);
+            jToggleButton.setText(text);
+            if (checkFields())
+              updateInstance();
+          });
+          jToolBar.add(jToggleButton);
         } else {
           jTextField = createEditing(field.getName());
           jTextField.addKeyListener(new KeyAdapter() {

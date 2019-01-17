@@ -5,17 +5,17 @@ import junit.framework.TestCase;
 
 public class PenaltyCardsTest extends TestCase {
   public void testSimple() {
-    PenaltyCards pc = new PenaltyCards();
-    assertFalse(pc.isPenalty());
-    pc.evaluate(true, false);
-    assertFalse(pc.isPenalty());
-    pc.evaluate(false, false);
-    assertFalse(pc.isPenalty());
-    pc.evaluate(true, true);
-    assertTrue(pc.isPenalty());
-    pc.evaluate(true, false);
-    assertTrue(pc.isPenalty());
-    pc.evaluate(false, false);
-    assertFalse(pc.isPenalty());
+    PenaltyCards penaltyCards = new PenaltyCards();
+    assertFalse(penaltyCards.isPenalty());
+    penaltyCards.evaluate(true, false);
+    assertFalse(penaltyCards.isPenalty());
+    penaltyCards.evaluate(false, false);
+    assertFalse(penaltyCards.isPenalty());
+    penaltyCards.evaluate(true, true);
+    assertTrue(penaltyCards.isPenalty());
+    penaltyCards.evaluate(true, false);
+    assertTrue(penaltyCards.isPenalty());
+    penaltyCards.evaluate(false, false);
+    assertFalse(penaltyCards.isPenalty());
   }
 }
