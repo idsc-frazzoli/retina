@@ -15,59 +15,50 @@ public class MPCPathParameter implements MPCNativeInsertable {
   // starting Progress designates the current position on the path. (0->middle point between first 2 control points)
   // starting Progress is in [0,N-2] where N is the number of control points.
   final Scalar startingProgress;
-  final Tensor controlPointsX;
-  final Tensor controlPointsY;
-  final Tensor controlPointsR;
+  final Tensor combinedControlPoints;
 
   public MPCPathParameter(ByteBuffer byteBuffer) {
     int n = byteBuffer.getInt();
     startingProgress = RealScalar.of(byteBuffer.getFloat());
-    controlPointsX = Tensors.empty();
-    controlPointsY = Tensors.empty();
-    controlPointsR = Tensors.empty();
-    // controlPointsX = Tensor.of(IntStream.range(0, n).mapToObj(i->Quantity.of(byteBuffer.getFloat(), SI.METER)));
+    combinedControlPoints = Tensors.empty();
     for (int i = 0; i < n; ++i)
-      controlPointsX.append(Quantity.of(byteBuffer.getFloat(), SI.METER));
-    for (int i = 0; i < n; ++i)
-      controlPointsY.append(Quantity.of(byteBuffer.getFloat(), SI.METER));
-    for (int i = 0; i < n; ++i)
-      controlPointsR.append(Quantity.of(byteBuffer.getFloat(), SI.METER));
+      combinedControlPoints.append(Tensors.of( //
+          Quantity.of(byteBuffer.getFloat(), SI.METER), //
+          Quantity.of(byteBuffer.getFloat(), SI.METER), //
+          Quantity.of(byteBuffer.getFloat(), SI.METER) //
+      ));
   }
 
   /** @param startingProgress progress on the spline where 0 -> position between the first 2 control points
    * @param controlPointsX control points for x
    * @param controlPointsY control points for y
    * @param controlPointsR control points for radius */
-  public MPCPathParameter(Scalar startingProgress, Tensor controlPointsX, Tensor controlPointsY, Tensor controlPointsR) {
+  public MPCPathParameter(Scalar startingProgress, Tensor combinedControlPoints) {
     this.startingProgress = startingProgress;
-    this.controlPointsX = controlPointsX;
-    this.controlPointsY = controlPointsY;
-    this.controlPointsR = controlPointsR;
+    this.combinedControlPoints = combinedControlPoints;
   }
 
   @Override
   public void insert(ByteBuffer byteBuffer) {
-    int n = controlPointsX.length();
+    int n = combinedControlPoints.length();
     byteBuffer.putInt(n);
     byteBuffer.putFloat(startingProgress.number().floatValue());
-    for (int i = 0; i < n; ++i)
-      byteBuffer.putFloat(controlPointsX.Get(i).number().floatValue());
-    for (int i = 0; i < n; ++i)
-      byteBuffer.putFloat(controlPointsY.Get(i).number().floatValue());
-    for (int i = 0; i < n; ++i)
-      byteBuffer.putFloat(controlPointsR.Get(i).number().floatValue());
+    combinedControlPoints.flatten(-1) //
+        .map(Scalar.class::cast) //
+        .map(Scalar::number) //
+        .forEach(number -> byteBuffer.putFloat(number.floatValue()));
   }
 
   public Tensor getControlPointsX() {
-    return controlPointsX.copy();
+    return combinedControlPoints.get(Tensor.ALL, 0);
   }
 
   public Tensor getControlPointsY() {
-    return controlPointsY.copy();
+    return combinedControlPoints.get(Tensor.ALL, 1);
   }
 
   public Tensor getControlPointsR() {
-    return controlPointsR.copy();
+    return combinedControlPoints.get(Tensor.ALL, 2);
   }
 
   public Scalar getProgressOnPath() {
@@ -75,7 +66,7 @@ public class MPCPathParameter implements MPCNativeInsertable {
   }
 
   public int getN() {
-    return controlPointsR.length();
+    return combinedControlPoints.length();
   }
 
   @Override
