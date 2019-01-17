@@ -20,7 +20,8 @@ public class BSplineTrack implements TrackInterface {
   private static final int SPLINE_ORDER = 2;
   private static final TensorUnaryOperator NORMALIZE = Normalize.with(Norm._2);
   // ---
-  protected final Tensor controlPoints;
+  private final Tensor combinedControlPoints;
+  private final Tensor controlPoints;
   protected final Tensor controlPointsR;
   protected final boolean closed;
   final Scalar length;
@@ -35,6 +36,7 @@ public class BSplineTrack implements TrackInterface {
   /** @param combinedControlPoints matrix with dimension n x 3
    * * @param closed */
   public BSplineTrack(Tensor combinedControlPoints, boolean closed) {
+    this.combinedControlPoints = combinedControlPoints;
     this.closed = closed;
     numPoints = combinedControlPoints.length();
     List<Integer> from = Arrays.asList(0, 0);
@@ -62,6 +64,10 @@ public class BSplineTrack implements TrackInterface {
 
   public Tensor getControlPoints() {
     return controlPoints.copy();
+  }
+
+  public Tensor combinedControlPoints() {
+    return combinedControlPoints;
   }
 
   /** get position at a certain path value
@@ -147,7 +153,8 @@ public class BSplineTrack implements TrackInterface {
   }
 
   /** problem: using normal BSpline implementation takes more time than full MPC optimization
-   * solution: fast position lookup: from 45000 micro s -> 15 micro s */
+   * solution: fast position lookup: from 45000 micro s -> 15 micro s
+   * @param position vector */
   private Scalar getFastNearestPathProgress(Tensor position) {
     float gPosX = position.Get(0).number().floatValue();
     float gPosY = position.Get(1).number().floatValue();
@@ -187,7 +194,7 @@ public class BSplineTrack implements TrackInterface {
         bestGuess = upper;
         bestDist = upperDist;
       } else
-        precision = precision / 2;
+        precision /= 2;
       // System.out.println("pos: "+bestGuess*lookupRes);
       // System.out.println(Math.sqrt(getFastQuadraticDistance(bestGuess, gPosX, gPosY)));
     }
@@ -235,7 +242,7 @@ public class BSplineTrack implements TrackInterface {
         bestGuess = upper;
         bestDist = upperDist;
       } else
-        precision = precision / 2;
+        precision /= 2;
       // System.out.println("pos: "+bestGuess*lookupRes);
       // System.out.println(Math.sqrt(getFastQuadraticDistance(bestGuess, gPosX, gPosY)));
     }

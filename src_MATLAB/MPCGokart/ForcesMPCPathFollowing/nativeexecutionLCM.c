@@ -90,12 +90,12 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
 	printf("received control message\n");
 	memcpy((int8_t*)&lastCRMsg, msg->data, msg->data_length);
-
-	for (int i = 0; i<POINTSN; i++)
+  for (int i = 0; i<POINTSN; i++)
 	{
-		printf("i=%d: pointX:%f\n",i,lastCRMsg.path.controlPointsX[i]);
-		printf("i=%d: pointY:%f\n",i,lastCRMsg.path.controlPointsY[i]);
-		printf("i=%d: pointR:%f\n",i,lastCRMsg.path.controlPointsR[i]);
+    PathEntry pe = lastCRMsg.path.controlPoints[i];
+		printf("i=%d: pointX:%f\n",i,pe.pex);
+		printf("i=%d: pointY:%f\n",i,pe.pey);
+		printf("i=%d: pointR:%f\n",i,pe.per);
 	}
 
 	struct MPCPathFollowing_params params;
@@ -152,11 +152,11 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		params.all_parameters[i*pl+5] = lastParaMsg.para.torqueveceffect;
 		params.all_parameters[i*pl+6] = lastParaMsg.para.brakeeffect;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+7+ip]=lastCRMsg.path.controlPointsX[ip];
+			params.all_parameters[i*pl+7+ip]=lastCRMsg.path.controlPoints[ip].pex;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+7+POINTSN+ip]=lastCRMsg.path.controlPointsY[ip];
+			params.all_parameters[i*pl+7+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+7+2*POINTSN+ip]=lastCRMsg.path.controlPointsR[ip];
+			params.all_parameters[i*pl+7+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
 	}
 	
 	//assume that this works
