@@ -109,11 +109,11 @@ abstract class ViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
-    { // TODO not generic
-      Tensor curve = DubendorfCurve.HYPERLOOP_EIGHT_REVERSE;
+    { // TODO JPH not generic
+      Tensor curve = DubendorfCurve.TIRES_TRACK_A;
       // curve = CROP_REGION;
       CurveRender curveRender = new CurveRender(curve);
-      // viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
+      viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
     }
     {
       // test simple track

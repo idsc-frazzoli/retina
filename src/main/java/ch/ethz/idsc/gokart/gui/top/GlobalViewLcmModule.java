@@ -12,8 +12,7 @@ import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 
 public class GlobalViewLcmModule extends ViewLcmModule {
-  private final GokartPoseOdometry gokartPoseOdometry = //
-      GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
+  private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
 
   public GlobalViewLcmModule() {
     setGokartPoseInterface(gokartPoseOdometry);
