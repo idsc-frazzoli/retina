@@ -99,7 +99,6 @@ public class TrackIdentificationManagement implements RenderInterface {
         initialGuess.update(startX, startY, startOrientation, pose);
         closedTrack = initialGuess.isClosed();
       }
-      trackData = null;
       if (trackData == null && closedTrack) {
         // current track is not available or no longer valid
         Tensor ctrpoints = initialGuess.getControlPointGuess(spacing, controlPointResolution);
@@ -130,7 +129,7 @@ public class TrackIdentificationManagement implements RenderInterface {
             // To consider: high startup cost -> maybe don't do this in every step
             // TODO JPH/MH
             lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), radiusOffset, closedTrack);
-            timeSinceLastTrackUpdate = Quantity.of(10, SI.SECOND);
+            timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
             trackRender = null;
           } else {
             System.out.println("no solution found!");

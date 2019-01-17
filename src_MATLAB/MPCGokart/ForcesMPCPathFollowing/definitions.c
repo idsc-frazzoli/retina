@@ -45,7 +45,7 @@ struct PathEntry {
 struct PathParameter {
 	float pointsN;
 	float startingProgress;
-	PathEntry controlPoints[POINTSN];
+	struct PathEntry controlPoints[POINTSN];
 };
 
 struct OptimizationParameter {
