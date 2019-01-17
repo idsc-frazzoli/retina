@@ -34,13 +34,12 @@ abstract class TorqueVectoringJoystickModule extends GuideJoystickModule<RimoPut
     implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final TorqueVectoringInterface torqueVectoringInterface;
-  private final Vlp16PassiveSlowing vlp16PassiveSlowing;
+  private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   // ---
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
   TorqueVectoringJoystickModule(TorqueVectoringInterface torqueVectoring) {
     this.torqueVectoringInterface = torqueVectoring;
-    vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   }
 
   @Override // from AbstractModule

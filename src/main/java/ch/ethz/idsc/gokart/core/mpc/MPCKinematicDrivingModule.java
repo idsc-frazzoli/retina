@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
+import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.joy.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
@@ -27,6 +28,7 @@ import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -45,12 +47,13 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerConfig.GLOBAL);
   private final Timing timing;
   private boolean useFullInfoSteeringController = true;
-  private boolean useTorqueVectoring;
+  // private boolean useTorqueVectoring;
   private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
-  private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   private TimerTask controlRequestTask;
+  private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
 
   /** switch to testing binary that send back test data has to be called before first */
   public void switchToTest() {
@@ -64,9 +67,9 @@ public class MPCKinematicDrivingModule extends AbstractModule {
    * @param timing that shows the same time that also was used for the custom estimator */
   //
   MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing, MPCPreviewableTrack track) {
-    this.track = track;
     mpcStateEstimationProvider = estimator;
     this.timing = timing;
+    this.track = track;
     // link mpc steering
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
     initModules();
@@ -126,6 +129,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   public final PutProvider<SteerPutEvent> steerProvider = new PutProvider<SteerPutEvent>() {
     @Override
     public Optional<SteerPutEvent> putEvent() {
+      // this safety bypass can be somewhere in a hi-frequency loop that is not related to rimo
+      if (Objects.nonNull(vlp16PassiveSlowing))
+        vlp16PassiveSlowing.bypassSafety();
+      // ---
       Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
       Scalar steering = mpcSteering.getSteering(time);
       Scalar dSteering = mpcSteering.getDotSteering(time);
@@ -156,10 +163,9 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     public Optional<LinmotPutEvent> putEvent() {
       Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
       Scalar braking = mpcBraking.getBraking(time);
-      if (Objects.nonNull(braking)) {
+      if (Objects.nonNull(braking))
         return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(braking));
-      }
-      // this should not happen
+      // this case should not happen
       return Optional.of(LinmotPutOperation.INSTANCE.fallback());
     }
 
@@ -180,7 +186,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     Scalar torqueVecEffect = MPCOptimizationConfig.GLOBAL.torqueVecEffect;
     Scalar brakeEffect = MPCOptimizationConfig.GLOBAL.BrakeEffect;
     Scalar padding = MPCOptimizationConfig.GLOBAL.padding;
-    Optional<ManualControlInterface> optionalJoystick = joystickLcmProvider.getManualControl();
+    Optional<ManualControlInterface> optionalJoystick = manualControlProvider.getManualControl();
     if (optionalJoystick.isPresent()) { // is joystick button "autonomoRus" pressed?
       ManualControlInterface actualJoystick = optionalJoystick.get();
       Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
@@ -215,7 +221,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   protected void first() throws Exception {
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
-    joystickLcmProvider.start();
+    manualControlProvider.start();
     SteerSocket.INSTANCE.addPutProvider(steerProvider);
     RimoSocket.INSTANCE.addPutProvider(rimoProvider);
     System.out.println("add linmot provider");
@@ -236,7 +242,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       @Override
       void doAction() {
         // we got an update
-        // System.out.println("resheduling timer");
+        // System.out.println("re-scheduling timer");
         timer.cancel();
         timer = new Timer();
         controlRequestTask = new TimerTask() {
@@ -248,8 +254,6 @@ public class MPCKinematicDrivingModule extends AbstractModule {
         long delay_ms = Magnitude.MILLI_SECOND.toLong(mpcPathFollowingConfig.updateDelay);
         long cycle_ms = Magnitude.MILLI_SECOND.toLong(mpcPathFollowingConfig.updateCycle);
         timer.schedule(controlRequestTask, delay_ms, cycle_ms);
-        // (long) (mpcPathFollowingConfig.updateDelay.number().floatValue() * 1000), //
-        // (long) (mpcPathFollowingConfig.updateCycle.number().floatValue() * 1000));
       }
     });
   }
@@ -263,7 +267,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     SteerSocket.INSTANCE.removePutProvider(steerProvider);
     RimoSocket.INSTANCE.removePutProvider(rimoProvider);
     LinmotSocket.INSTANCE.removePutProvider(linmotProvider);
-    joystickLcmProvider.stop();
+    manualControlProvider.stop();
     // ModuleAuto.INSTANCE.terminateOne(SpeedLimitSafetyModule.class);
   }
 }

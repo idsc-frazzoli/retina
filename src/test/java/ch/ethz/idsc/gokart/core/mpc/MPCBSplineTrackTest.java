@@ -74,7 +74,7 @@ public class MPCBSplineTrackTest extends TestCase {
     mpcbSplineTrack.getPathParameterPreview(5, Tensors.vector(0, 3).multiply(Quantity.of(1, SI.METER)), Quantity.of(0, SI.METER));
     long endTime = System.nanoTime();
     // System.out.println(endTime - startTime);
-    long limit = UserName.is("travis") ? 1_500_000 : 400_000;
+    long limit = UserName.is("travis") ? 8_500_000 : 400_000;
     System.out.println(endTime - startTime);
     assertTrue(endTime - startTime < limit);
   }
