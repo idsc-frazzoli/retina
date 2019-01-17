@@ -18,22 +18,22 @@ public class EmergencyBrakeProviderTest extends TestCase {
   }
 
   public void testTrigger() throws InterruptedException {
-    EmergencyBrakeProvider ebp = EmergencyBrakeProvider.INSTANCE;
-    assertTrue(ebp.isIdle());
+    EmergencyBrakeProvider emergencyBrakeProvider = EmergencyBrakeProvider.INSTANCE;
+    assertTrue(emergencyBrakeProvider.isIdle());
     RimoGetEvent rimoGetEvent = RimoGetEvents.create(400, 400);
-    ebp.getEvent(rimoGetEvent);
-    ebp.consider(RealScalar.of(1.9));
-    assertFalse(ebp.isIdle());
+    emergencyBrakeProvider.getEvent(rimoGetEvent);
+    emergencyBrakeProvider.consider(RealScalar.of(1.9));
+    assertFalse(emergencyBrakeProvider.isIdle());
     Thread.sleep(450);
-    assertTrue(ebp.isIdle());
+    assertTrue(emergencyBrakeProvider.isIdle());
   }
 
   public void testDontTrigger() {
-    EmergencyBrakeProvider ebp = EmergencyBrakeProvider.INSTANCE;
-    assertTrue(ebp.isIdle());
+    EmergencyBrakeProvider emergencyBrakeProvider = EmergencyBrakeProvider.INSTANCE;
+    assertTrue(emergencyBrakeProvider.isIdle());
     RimoGetEvent rimoGetEvent = RimoGetEvents.create(400, 400);
-    ebp.getEvent(rimoGetEvent);
-    ebp.consider(RealScalar.of(2.5));
-    assertTrue(ebp.isIdle());
+    emergencyBrakeProvider.getEvent(rimoGetEvent);
+    emergencyBrakeProvider.consider(RealScalar.of(2.5));
+    assertTrue(emergencyBrakeProvider.isIdle());
   }
 }

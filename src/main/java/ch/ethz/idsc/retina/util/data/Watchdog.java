@@ -1,35 +1,23 @@
 // code by jph
 package ch.ethz.idsc.retina.util.data;
 
-import ch.ethz.idsc.tensor.io.Timing;
+/** watchdog as on a microcontroller
+ * 
+ * a watchdog has a timeout period, for instance 0.1[s]
+ * unless the watchdog is notified during this period
+ * the watchdog will be "barking" after this period.
+ * The timing resets as soon as the watchdog is notified.
+ * 
+ * There are 2 types of watchdog:
+ * 1) recoverable, meaning, that even when the watchdog
+ * is already "barking", it's notification will reset the
+ * timing and the watchdog goes back to the non-barking state.
+ * 2) un-recoverable, means, that a watchdog never leaves
+ * the "barking" state even after notification. */
+public interface Watchdog {
+  /** notify watchdog */
+  void notifyWatchdog();
 
-/** functionality like on a micro controller
- * except that this watchdog does not notify an interrupt
- * but simply sets a flag to true. The flag cannot be reset. */
-public final class Watchdog implements WatchdogInterface {
-  private final double timeout_seconds;
-  // ---
-  private final Timing timing = Timing.started();
-  private boolean isBlown = false;
-
-  /** @param timeout_seconds */
-  public Watchdog(double timeout_seconds) {
-    this.timeout_seconds = timeout_seconds;
-  }
-
-  /** resets timeout counter to zero */
-  @Override
-  public void pacify() {
-    isBlown();
-    timing.stop();
-    timing.resetToZero();
-    timing.start();
-  }
-
-  /** @return true if timeout counter has ever elapsed the allowed period */
-  @Override
-  public boolean isBlown() {
-    isBlown |= timeout_seconds < timing.seconds();
-    return isBlown;
-  }
+  /** @return whether this watchdog is in "barking" state */
+  boolean isBarking();
 }

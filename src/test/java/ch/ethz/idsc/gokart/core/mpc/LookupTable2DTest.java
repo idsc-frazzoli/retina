@@ -32,9 +32,11 @@ public class LookupTable2DTest extends TestCase {
         table[i0][i1] = RealScalar.of(random.nextFloat());
     LookupTable2D lookupTable = new LookupTable2D(table, Clip.absoluteOne(), Clip.absoluteOne());
     final File file = new File("testLookupTable.object");
+    assertFalse(file.exists());
     Export.object(file, lookupTable);
     LookupTable2D lookupTable2 = Import.object(file);
     file.delete();
+    assertFalse(file.exists());
     for (int i0 = 0; i0 < n2; ++i0)
       for (int i1 = 0; i1 < n2; ++i1)
         assertEquals(table[i0][i1], lookupTable2.lookup( //
