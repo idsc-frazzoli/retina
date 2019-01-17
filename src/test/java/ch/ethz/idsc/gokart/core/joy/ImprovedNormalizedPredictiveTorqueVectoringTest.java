@@ -58,6 +58,64 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     // assertEquals(powers, Tensors.vector(-0.4, 0.4));
   }
 
+  public void testAccelerationResponse() {
+    // this is only true when we have no torque vectoring
+    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
+    tvc.staticCompensation = Quantity.of(0, SI.ACCELERATION.negate());
+    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    tvc.staticPrediction = Quantity.of(0.1, SI.ANGULAR_ACCELERATION.negate());
+    ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(tvc);
+    Scalar power = RealScalar.ZERO;
+    Scalar velocity = Quantity.of(1, SI.VELOCITY);
+    Tensor powers0 = improvedNormalizedSimpleTorqueVectoring.powers( //
+        Quantity.of(1, "m^-1"), //
+        velocity, //
+        Quantity.of(1, "s^-1"), //
+        power, Quantity.of(0, "s^-1"));
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    Tensor powers1 = improvedNormalizedSimpleTorqueVectoring.powers( //
+        Quantity.of(1, "m^-1"), //
+        velocity, //
+        Quantity.of(1, "s^-1"), //
+        power, Quantity.of(0, "s^-1"));
+    try {
+      Thread.sleep(200);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    Tensor powers2 = improvedNormalizedSimpleTorqueVectoring.powers( //
+        Quantity.of(1.5, "m^-1"), //
+        velocity, //
+        Quantity.of(1, "s^-1"), //
+        power, Quantity.of(0, "s^-1"));
+    try {
+      Thread.sleep(200);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    Tensor powers3 = improvedNormalizedSimpleTorqueVectoring.powers( //
+        Quantity.of(1.5, "m^-1"), //
+        velocity, //
+        Quantity.of(1, "s^-1"), //
+        power, Quantity.of(0, "s^-1"));
+    Scalar power1l = PowerLookupTable.getInstance().getAcceleration(powers1.Get(0).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    Scalar power1r = PowerLookupTable.getInstance().getAcceleration(powers1.Get(1).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    Scalar power2l = PowerLookupTable.getInstance().getAcceleration(powers2.Get(0).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    Scalar power2r = PowerLookupTable.getInstance().getAcceleration(powers2.Get(1).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    Scalar power3l = PowerLookupTable.getInstance().getAcceleration(powers3.Get(0).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    Scalar power3r = PowerLookupTable.getInstance().getAcceleration(powers3.Get(1).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
+    System.out.println("1: " + power1l + "/" + power1r);
+    System.out.println("1: " + power2l + "/" + power2r);
+    System.out.println("1: " + power3l + "/" + power3r);
+  }
+
   public void testSaturatedPositive() {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());

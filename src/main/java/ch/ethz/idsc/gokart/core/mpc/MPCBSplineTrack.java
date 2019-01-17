@@ -9,6 +9,10 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack {
+  /** @param trackData
+   * @param radiusOffset
+   * @param closed */
+  // TODO JPH/MH document all parameters
   public MPCBSplineTrack(Tensor trackData, Scalar radiusOffset, boolean closed) {
     super(Tensors.of( //
         trackData.get(0), //
@@ -16,6 +20,8 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
         trackData.get(2).map(radius -> radius.add(radiusOffset))), closed);
   }
 
+  /** @param trackData TODO JPH/MH document
+   * @param closed */
   public MPCBSplineTrack(Tensor trackData, boolean closed) {
     super(trackData, closed);
   }
