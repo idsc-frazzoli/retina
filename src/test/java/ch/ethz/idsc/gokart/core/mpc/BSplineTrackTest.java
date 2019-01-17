@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Random;
 
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.sophus.planar.Det2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -16,9 +17,20 @@ import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Chop;
+import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class BSplineTrackTest extends TestCase {
+  public void testDet2D() {
+    Tensor firstDer = Tensors.vector(1, 2);
+    Tensor secondDer = Tensors.vector(0, 5);
+    Scalar upper = firstDer.Get(0).multiply(secondDer.Get(1)) //
+        .subtract(firstDer.Get(1).multiply(secondDer.Get(0)));
+    Scalar det2d = Det2D.of(firstDer, secondDer);
+    Sign.requirePositive(det2d);
+    assertEquals(upper, det2d);
+  }
+
   public void testFunction() {
     // Tensor tensor = Tensors.of(Quantity.of(0, SI.METER),Quantity.of(1, SI.METER));
     Scalar meter = Quantity.of(1, SI.METER);

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
+import ch.ethz.idsc.sophus.planar.Det2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -127,22 +128,18 @@ public class BSplineTrack implements TrackInterface {
    * @param pathProgress progress along path
    * corresponding to control point indices [1]
    * @return curvature unit [1/m] */
-  public Scalar getCurvature(Scalar pathProgress) {
+  public Scalar getSignedCurvature(Scalar pathProgress) {
     Tensor firstDer = getDerivation(pathProgress);
     Tensor secondDer = get2ndDerivation(pathProgress);
-    // TODO MH use Det2D+
-    // Scalar upper1 = Det2D.of(firstDer, secondDer);
-    Scalar upper = firstDer.Get(0).multiply(secondDer.Get(1)) //
-        .subtract(firstDer.Get(1).multiply(secondDer.Get(0)));
     Scalar under = Power.of(Norm._2.of(firstDer), 3.0);
-    return upper.divide(under);
+    return Det2D.of(firstDer, secondDer).divide(under);
   }
 
-  public Scalar getLocalRadius(Scalar pathProgress) {
-    // TODO JPH/MH reciprocal
-    return RealScalar.ONE.divide(getCurvature(pathProgress).abs());
-  }
-
+  // function local radius is not used/tested and numerically unstable
+  // public Scalar getLocalRadius(Scalar pathProgress) {
+  // the application of abs() causes a loss of information
+  // return getCurvature(pathProgress).abs().reciprocal();
+  // }
   Scalar getNearestPathProgress(Tensor position) {
     if (closed)
       return getFastNearestPathProgress(position);

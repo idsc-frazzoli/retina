@@ -128,6 +128,7 @@ public class TrackIdentificationManagement implements RenderInterface {
             // valid refinement
             // create Track
             // To consider: high startup cost -> maybe don't do this in every step
+            // TODO JPH/MH
             lastTrack = new MPCBSplineTrack(Transpose.of(trackData), radiusOffset, closedTrack);
             timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
             trackRender = null;
