@@ -14,7 +14,7 @@ public final class Vlp16PassiveSlowing extends Vlp16ClearanceModule {
 
   @Override // from Vlp16ClearanceModule
   Optional<RimoPutEvent> penaltyAction() {
-    return penaltyTimeout.isPenalty() //
+    return !penaltyTimeout.isBarking() //
         ? Optional.empty()
         : StaticHelper.OPTIONAL_RIMO_PASSIVE;
   }
@@ -22,6 +22,6 @@ public final class Vlp16PassiveSlowing extends Vlp16ClearanceModule {
   /** function may be called during manual operation of the
    * gokart in order to test hi-performance maneuvers */
   public void bypassSafety() {
-    penaltyTimeout.flagPenalty();
+    penaltyTimeout.notifyWatchdog();
   }
 }

@@ -40,7 +40,7 @@ public final class SpeedLimitSafetyModule extends AbstractModule implements Rimo
         rimoGetEvent.getTireL.getAngularRate_Y().abs(), //
         rimoGetEvent.getTireR.getAngularRate_Y().abs());
     if (Scalars.lessThan(SafetyConfig.GLOBAL.rateLimit, maxSpeed))
-      penaltyTimeout.flagPenalty();
+      penaltyTimeout.notifyWatchdog();
   }
 
   @Override // from PutProvider
@@ -50,7 +50,7 @@ public final class SpeedLimitSafetyModule extends AbstractModule implements Rimo
 
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return penaltyTimeout.isPenalty() //
+    return !penaltyTimeout.isBarking() //
         ? StaticHelper.OPTIONAL_RIMO_PASSIVE
         : Optional.empty();
   }

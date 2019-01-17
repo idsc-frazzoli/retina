@@ -6,11 +6,11 @@ import junit.framework.TestCase;
 public class PenaltyTimeoutTest extends TestCase {
   public void testSimple() throws Exception {
     PenaltyTimeout penaltyTimeout = new PenaltyTimeout(0.01);
-    assertFalse(penaltyTimeout.isPenalty());
-    penaltyTimeout.flagPenalty();
-    assertTrue(penaltyTimeout.isPenalty());
+    assertTrue(penaltyTimeout.isBarking());
+    penaltyTimeout.notifyWatchdog();
+    assertFalse(penaltyTimeout.isBarking());
     Thread.sleep(10);
-    assertFalse(penaltyTimeout.isPenalty());
+    assertTrue(penaltyTimeout.isBarking());
   }
 
   public void testFuse() throws Exception {

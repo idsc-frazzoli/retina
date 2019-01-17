@@ -89,7 +89,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
     float z = lidarSpacialEvent.coords[2];
     if (spacialXZObstaclePredicate.isObstacle(x, z) && //
         _clearanceTracker.isObstructed(lidarSpacialEvent.getXY()))
-      penaltyTimeout.flagPenalty();
+      penaltyTimeout.notifyWatchdog();
   }
 
   @Override // from GokartStatusListener
@@ -111,7 +111,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
       EmergencyBrakeProvider.INSTANCE.consider(_contact.get());
       contact = Optional.empty();
     }
-    return penaltyTimeout.isPenalty() //
+    return !penaltyTimeout.isBarking() //
         ? penaltyAction()
         : Optional.empty();
   }
