@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.joy;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.Times;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 class SimpleTorqueVectoring implements TorqueVectoringInterface {
   final TorqueVectoringConfig torqueVectoringConfig;
@@ -13,7 +14,7 @@ class SimpleTorqueVectoring implements TorqueVectoringInterface {
   }
 
   @Override // from TorqueVectoringInterface
-  public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar power, Scalar realRotation) {
+  public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar wantedPower, Scalar realRotation) {
     // compute differential torque (in ARMS as we do not use the power function yet)
     // Scalar dynamicComponent = angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);
     Scalar dynamicComponent = getDynamicComponent(angularSlip);
@@ -25,6 +26,7 @@ class SimpleTorqueVectoring implements TorqueVectoringInterface {
         dynamicComponent.add(staticComponent), // One
         realRotation);
     // left and right power prefer power over Z-torque
+    Scalar power = Clip.absoluteOne().apply(wantedPower);
     return TorqueVectoringHelper.clip( //
         power.subtract(wantedZTorque), // unit one
         power.add(wantedZTorque) // unit one

@@ -11,7 +11,9 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
 /* package */ enum TorqueVectoringHelper {
   ;
-  /** @param powerLeft unitless
+  /** powerLeft and powerRight are require to add up to a value in the interval [-1, 1]
+   * 
+   * @param powerLeft unitless
    * @param powerRight unitless
    * @return vector of length 2 with scalars in interval [-1, 1] */
   static Tensor clip(Scalar powerLeft, Scalar powerRight) {

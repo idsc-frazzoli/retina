@@ -21,10 +21,10 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
       Scalar expectedRotationPerMeterDriven, //
       Scalar meanTangentSpeed, //
       Scalar angularSlip, //
-      Scalar power, //
+      Scalar wantedPower, //
       Scalar realRotation) {
     // wrapper for torque vectoring method
-    Scalar wantedAcceleration = POWER_LOOKUP_TABLE.getNormalizedAccelerationTorqueCentered(power, meanTangentSpeed);
+    Scalar wantedAcceleration = POWER_LOOKUP_TABLE.getNormalizedAccelerationTorqueCentered(wantedPower, meanTangentSpeed);
     Tensor motorCurrents = getMotorCurrentsFromAcceleration( //
         expectedRotationPerMeterDriven, //
         meanTangentSpeed, //
