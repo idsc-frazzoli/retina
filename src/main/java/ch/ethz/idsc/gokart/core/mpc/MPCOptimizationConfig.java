@@ -45,5 +45,6 @@ public class MPCOptimizationConfig {
   /** Braking anti-lag */
   public Scalar brakingAntiLag = Quantity.of(0.1, SI.SECOND);
   /** Padding */
+  @FieldSubdivide(start = "0f[m]", end = "2[m]", intervals = 20)
   public Scalar padding = Quantity.of(1, SI.METER);
 }
