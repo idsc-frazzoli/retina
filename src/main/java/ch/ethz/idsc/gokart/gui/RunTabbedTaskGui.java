@@ -36,6 +36,8 @@ import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightReverseModule;
 import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
+import ch.ethz.idsc.gokart.core.pure.FigureTiresAModule;
+import ch.ethz.idsc.gokart.core.pure.FigureTiresBModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -96,7 +98,8 @@ enum RunTabbedTaskGui {
       ParametersModule.class, // configure parameters
       SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      GokartVoiceOutputs.class);
+      GokartVoiceOutputs.class //
+  );
   static final List<Class<?>> MODULES_JOY = Arrays.asList( //
       RimoThrustJoystickModule.class, //
       ImprovedNormalizedTorqueVectoringJoystickModule.class, //
@@ -106,6 +109,8 @@ enum RunTabbedTaskGui {
       SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
+      FigureTiresAModule.class, //
+      FigureTiresBModule.class, //
       FigureEightModule.class, //
       FigureEightReverseModule.class, //
       FigureOvalModule.class, //

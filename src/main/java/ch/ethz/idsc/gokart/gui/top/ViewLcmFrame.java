@@ -21,12 +21,12 @@ import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class ViewLcmFrame extends TimerFrame {
-  public final JButton jButtonMapCreate = GuiConfig.GLOBAL.createButton("map create");
-  public final JButton jButtonMapUpdate = GuiConfig.GLOBAL.createButton("map update");
   public final JButton jButtonSetLocation1 = GuiConfig.GLOBAL.createButton("1 set");
   public final JButton jButtonSnap = GuiConfig.GLOBAL.createButton("2 snap");
   private final JButton jButtonSetLocation2 = GuiConfig.GLOBAL.createButton("3 set (again)");
   private final JToggleButton jToggleButton = GuiConfig.GLOBAL.createToggleButton("4 track");
+  public final JButton jButtonMapCreate = GuiConfig.GLOBAL.createButton("map create");
+  public final JButton jButtonMapUpdate = GuiConfig.GLOBAL.createButton("map update");
   // TODO obtain matrix from predefined map
   public static final Tensor MODEL2PIXEL_INITIAL = Tensors.matrix(new Number[][] { //
       { 7.5, 0, 0 }, //
@@ -49,8 +49,6 @@ public class ViewLcmFrame extends TimerFrame {
   };
 
   public ViewLcmFrame() {
-    jToolBar.add(jButtonMapCreate);
-    jToolBar.add(jButtonMapUpdate);
     jButtonSetLocation1.addActionListener(actionListener);
     jToolBar.add(jButtonSetLocation1);
     jToolBar.add(jButtonSnap);
@@ -59,6 +57,8 @@ public class ViewLcmFrame extends TimerFrame {
     jToggleButton.setSelected(LidarLocalizationModule.TRACKING);
     jToggleButton.addActionListener(e -> LidarLocalizationModule.TRACKING = jToggleButton.isSelected());
     jToolBar.add(jToggleButton);
+    jToolBar.add(jButtonMapCreate);
+    jToolBar.add(jButtonMapUpdate);
     geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
     // Tensors.fromString("{{7.5,0,300},{0,-7.5,300},{0,0,1}}"));
     Tensor tensor = geometricComponent.getModel2Pixel();
