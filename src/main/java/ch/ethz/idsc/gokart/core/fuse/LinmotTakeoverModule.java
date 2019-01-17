@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.retina.util.data.HardWatchdog;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** module detects when human presses the break while the software
@@ -22,7 +23,7 @@ public final class LinmotTakeoverModule extends EmergencyModule<LinmotPutEvent> 
    * anything below threshold is expected during normal operation */
   private static final double THRESHOLD_POS_DELTA = 20000;
   // ---
-  private final Watchdog watchdog = new Watchdog(DURATION_MS * 1E-3);
+  private final Watchdog watchdog = HardWatchdog.notified(DURATION_MS * 1E-3);
   private boolean isBlown = false;
 
   @Override // from AbstractModule
@@ -47,7 +48,7 @@ public final class LinmotTakeoverModule extends EmergencyModule<LinmotPutEvent> 
   /***************************************************/
   @Override // from LinmotPutProvider
   public Optional<LinmotPutEvent> putEvent() {
-    isBlown |= watchdog.isWatchdogBarking();
+    isBlown |= watchdog.isBarking();
     return isBlown //
         ? Optional.of(LinmotPutOperation.INSTANCE.offMode()) // deactivate break
         : Optional.empty();

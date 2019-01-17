@@ -14,11 +14,11 @@ public class PenaltyTimeoutTest extends TestCase {
   }
 
   public void testFuse() throws Exception {
-    WatchdogInterface timedFuse = TimedFuse.notified(0.01);
-    assertFalse(timedFuse.isWatchdogBarking());
-    timedFuse.notifyWatchdog();
-    assertFalse(timedFuse.isWatchdogBarking());
+    Watchdog watchdog = SoftWatchdog.notified(0.01);
+    assertFalse(watchdog.isBarking());
+    watchdog.notifyWatchdog();
+    assertFalse(watchdog.isBarking());
     Thread.sleep(10);
-    assertTrue(timedFuse.isWatchdogBarking());
+    assertTrue(watchdog.isBarking());
   }
 }

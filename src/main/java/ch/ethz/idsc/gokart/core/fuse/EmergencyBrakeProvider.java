@@ -10,8 +10,8 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.retina.util.data.TimedFuse;
-import ch.ethz.idsc.retina.util.data.WatchdogInterface;
+import ch.ethz.idsc.retina.util.data.SoftWatchdog;
+import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -40,7 +40,7 @@ public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<Linmo
   /** without unit but with interpretation in meter */
   // TODO JPH make function SensorsConfig.GLOBAL.vlp16.Get(0)
   private final Scalar margin = ChassisGeometry.GLOBAL.xTipMeter().subtract(SensorsConfig.GLOBAL.vlp16.Get(0));
-  private final WatchdogInterface watchdogInterface = TimedFuse.barking(0.1);
+  private final Watchdog watchdog = SoftWatchdog.barking(0.1);
   private Scalar velocity = Quantity.of(0.0, SI.VELOCITY);
 
   private EmergencyBrakeProvider() {
@@ -58,13 +58,13 @@ public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<Linmo
   }
 
   public void pacify() {
-    watchdogInterface.notifyWatchdog();
+    watchdog.notifyWatchdog();
   }
 
   /** @param min without unit but with interpretation in meter from lidar */
   // TODO JPH expect unit [m]
   public void consider(Scalar min) {
-    if (watchdogInterface.isWatchdogBarking() && Scalars.lessEquals(minVelocity, velocity) && isIdle()) {
+    if (watchdog.isBarking() && Scalars.lessEquals(minVelocity, velocity) && isIdle()) {
       EmergencyBrakeManeuver emergencyBrakeManeuver = LinmotConfig.GLOBAL.brakeDistance(velocity);
       if (emergencyBrakeManeuver.isRequired(Quantity.of(min.subtract(margin), SI.METER)))
         schedule();

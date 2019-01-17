@@ -9,6 +9,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Urg04lxLcmClient;
 import ch.ethz.idsc.retina.lidar.LidarRayDataListener;
+import ch.ethz.idsc.retina.util.data.HardWatchdog;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** sends stop command if front lidar is not operational
@@ -20,7 +21,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
   // ---
   private final Urg04lxLcmClient urg04lxLcmClient = //
       new Urg04lxLcmClient(GokartLcmChannel.URG04LX_FRONT);
-  private final Watchdog watchdog = new Watchdog(WATCHDOG_MS * 1e-3);
+  private final Watchdog watchdog = HardWatchdog.notified(WATCHDOG_MS * 1e-3);
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -50,7 +51,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
   /***************************************************/
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return watchdog.isWatchdogBarking() //
+    return watchdog.isBarking() //
         ? StaticHelper.OPTIONAL_RIMO_PASSIVE
         : Optional.empty();
   }
