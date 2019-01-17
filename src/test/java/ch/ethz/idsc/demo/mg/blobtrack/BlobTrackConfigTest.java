@@ -15,5 +15,6 @@ public class BlobTrackConfigTest extends TestCase {
     TensorProperties.wrap(test).save(file);
     assertTrue(file.isFile());
     file.delete();
+    assertFalse(file.exists());
   }
 }

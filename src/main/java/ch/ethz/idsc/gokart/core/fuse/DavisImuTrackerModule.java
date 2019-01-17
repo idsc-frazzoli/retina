@@ -9,8 +9,8 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
-import ch.ethz.idsc.retina.util.data.TimedFuse;
-import ch.ethz.idsc.retina.util.data.WatchdogInterface;
+import ch.ethz.idsc.retina.util.data.SoftWatchdog;
+import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** the davis imu watchdog detects the absence of {@link DavisImuFrame}
  * for instance when the connection to the Davis240C camera fails. */
@@ -19,7 +19,7 @@ public class DavisImuTrackerModule extends EmergencyModule<RimoPutEvent> impleme
   private static final double TIMEOUT_S = 0.5;
   // ---
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
-  private final WatchdogInterface watchdogInterface = new TimedFuse(TIMEOUT_S);
+  private final Watchdog watchdog = SoftWatchdog.barking(TIMEOUT_S);
 
   public DavisImuTrackerModule() {
     davisImuLcmClient.addListener(this);
@@ -41,7 +41,7 @@ public class DavisImuTrackerModule extends EmergencyModule<RimoPutEvent> impleme
   /***************************************************/
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return watchdogInterface.isBlown() //
+    return watchdog.isBarking() //
         ? StaticHelper.OPTIONAL_RIMO_PASSIVE
         : Optional.empty();
   }
@@ -49,6 +49,6 @@ public class DavisImuTrackerModule extends EmergencyModule<RimoPutEvent> impleme
   /***************************************************/
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    watchdogInterface.pacify();
+    watchdog.notifyWatchdog();
   }
 }
