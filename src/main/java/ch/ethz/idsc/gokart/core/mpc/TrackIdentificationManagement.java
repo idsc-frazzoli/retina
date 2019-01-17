@@ -118,7 +118,7 @@ public class TrackIdentificationManagement implements RenderInterface {
             trackData = refinenement.getRefinedTrack(//
                 ctrpoints.get(0), //
                 ctrpoints.get(1), //
-                radiusCtrPoints, RealScalar.of(8), 0, closedTrack, constraints);
+                radiusCtrPoints, RealScalar.of(8), 100, closedTrack, constraints);
           /* else
            * trackData = refinenement.getRefinedTrack(//
            * ctrpoints.get(0), //
@@ -129,8 +129,8 @@ public class TrackIdentificationManagement implements RenderInterface {
             // create Track
             // To consider: high startup cost -> maybe don't do this in every step
             // TODO JPH/MH
-            lastTrack = new MPCBSplineTrack(Transpose.of(trackData), radiusOffset, closedTrack);
-            timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
+            lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), radiusOffset, closedTrack);
+            timeSinceLastTrackUpdate = Quantity.of(10, SI.SECOND);
             trackRender = null;
           } else {
             System.out.println("no solution found!");
@@ -144,7 +144,7 @@ public class TrackIdentificationManagement implements RenderInterface {
         trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 10, closedTrack, constraints);
         // consider: slower track update
         if (trackData != null) {
-          lastTrack = new MPCBSplineTrack(Transpose.of(trackData), radiusOffset, closedTrack);
+          lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), radiusOffset, closedTrack);
           trackRender = null;
         }
       }

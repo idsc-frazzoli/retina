@@ -32,8 +32,8 @@ public class BSplineTrack implements TrackInterface {
   final float[] posX;
   final float[] posY;
 
-  /** @param combinedControlPoints
-   * @param closed */
+  /** @param combinedControlPoints matrix with dimension n x 3
+   * * @param closed */
   public BSplineTrack(Tensor combinedControlPoints, boolean closed) {
     this.closed = closed;
     numPoints = combinedControlPoints.length();
