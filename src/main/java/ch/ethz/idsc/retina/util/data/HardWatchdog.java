@@ -5,8 +5,11 @@ package ch.ethz.idsc.retina.util.data;
  * 
  * functionality like on a micro controller
  * except that this watchdog does not notify an interrupt
- * but simply sets a flag to true. The flag cannot be reset. */
+ * but simply sets a flag to true. The flag cannot be reset.
+ * 
+ * @see Watchdog */
 public final class HardWatchdog implements Watchdog {
+  /** @param timeout_seconds */
   public static Watchdog notified(double timeout_seconds) {
     return new HardWatchdog(timeout_seconds);
   }
@@ -16,7 +19,6 @@ public final class HardWatchdog implements Watchdog {
   private long lastNotify_ns;
   private boolean isBlown = false;
 
-  /** @param timeout_seconds */
   private HardWatchdog(double timeout_seconds) {
     tolerance_ns = Math.round(timeout_seconds * 1E9);
     lastNotify_ns = System.nanoTime();

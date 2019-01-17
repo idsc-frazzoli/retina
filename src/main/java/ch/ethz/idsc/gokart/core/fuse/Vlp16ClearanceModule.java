@@ -21,7 +21,8 @@ import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
-import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
+import ch.ethz.idsc.retina.util.data.SoftWatchdog;
+import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.red.Min;
@@ -41,7 +42,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
-  private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
+  private final Watchdog watchdog = SoftWatchdog.barking(PENALTY_DURATION_S);
 
   public Vlp16ClearanceModule() {
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
@@ -89,7 +90,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
     float z = lidarSpacialEvent.coords[2];
     if (spacialXZObstaclePredicate.isObstacle(x, z) && //
         _clearanceTracker.isObstructed(lidarSpacialEvent.getXY()))
-      penaltyTimeout.notifyWatchdog();
+      watchdog.notifyWatchdog();
   }
 
   @Override // from GokartStatusListener
@@ -111,9 +112,9 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
       EmergencyBrakeProvider.INSTANCE.consider(_contact.get());
       contact = Optional.empty();
     }
-    return !penaltyTimeout.isBarking() //
-        ? penaltyAction()
-        : Optional.empty();
+    return watchdog.isBarking() //
+        ? Optional.empty()
+        : penaltyAction();
   }
 
   /** @return non-null */

@@ -33,4 +33,22 @@ public class SoftWatchdogTest extends TestCase {
     watchdog.notifyWatchdog();
     assertFalse(watchdog.isBarking());
   }
+
+  public void testBarking() throws Exception {
+    Watchdog watchdog = SoftWatchdog.barking(0.01);
+    assertTrue(watchdog.isBarking());
+    watchdog.notifyWatchdog();
+    assertFalse(watchdog.isBarking());
+    Thread.sleep(10);
+    assertTrue(watchdog.isBarking());
+  }
+
+  public void testNotified() throws Exception {
+    Watchdog watchdog = SoftWatchdog.notified(0.01);
+    assertFalse(watchdog.isBarking());
+    watchdog.notifyWatchdog();
+    assertFalse(watchdog.isBarking());
+    Thread.sleep(10);
+    assertTrue(watchdog.isBarking());
+  }
 }

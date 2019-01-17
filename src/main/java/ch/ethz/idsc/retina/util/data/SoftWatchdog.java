@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.util.data;
 
 /** the timed fuse is a recoverable watchdog
  * 
- * it performs the same as {@link PenaltyTimeout} */
+ * @see Watchdog */
 public final class SoftWatchdog implements Watchdog {
   public static Watchdog notified(double timeout_seconds) {
     Watchdog watchdog = new SoftWatchdog(timeout_seconds);
