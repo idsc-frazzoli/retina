@@ -92,7 +92,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	memcpy((int8_t*)&lastCRMsg, msg->data, msg->data_length);
   for (int i = 0; i<POINTSN; i++)
 	{
-    PathEntry pe = lastCRMsg.path.controlPoints[i];
+    		struct PathEntry pe = lastCRMsg.path.controlPoints[i];
 		printf("i=%d: pointX:%f\n",i,pe.pex);
 		printf("i=%d: pointY:%f\n",i,pe.pey);
 		printf("i=%d: pointR:%f\n",i,pe.per);
