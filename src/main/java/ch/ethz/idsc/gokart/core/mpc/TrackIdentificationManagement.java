@@ -20,29 +20,30 @@ import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class TrackIdentificationManagement implements RenderInterface {
-  public final PlanableOccupancyGrid occupancyGrid;
-  public final TrackLayoutInitialGuess initialGuess;
-  public final TrackRefinenement refinenement;
-  Tensor trackData = null;
-  int startX = -1;
-  int startY = -1;
-  int width = 0;
-  int heigth = 0;
-  int count = 0;
-  double startOrientation = 0;
-  Scalar radiusOffset = Quantity.of(0.4, SI.METER);
-  Scalar spacing = RealScalar.of(1.5);// TODO should be meters
-  Scalar controlPointResolution = RealScalar.of(0.5);
-  MPCBSplineTrack lastTrack;
-  TrackRender trackRender;
-  Boolean closedTrack = false;
-  Boolean oldWasClosed = false;
-  Timing lastTrackReset = Timing.started();
-  List<TrackRefinenement.TrackConstraint> constraints = new LinkedList<>();
-  Scalar openTrackValid = Quantity.of(1, SI.SECOND);
-  Scalar timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
-  List<TrackRefinenement.TrackConstraint> trackConstraints = null;
-  boolean startSet = false;
+  private static final Scalar RADIUS_OFFSET = Quantity.of(0.4, SI.METER);
+  private static final Scalar SPACING = RealScalar.of(1.5); // TODO should be meters
+  private static final Scalar CP_RESOLUTION = RealScalar.of(0.5);
+  // ---
+  private final PlanableOccupancyGrid occupancyGrid;
+  private final TrackLayoutInitialGuess initialGuess;
+  private final TrackRefinenement refinenement;
+  private Tensor trackData = null;
+  private int startX = -1;
+  private int startY = -1;
+  private int width = 0;
+  private int heigth = 0;
+  private int count = 0;
+  private double startOrientation = 0;
+  private MPCBSplineTrack lastTrack;
+  private TrackRender trackRender;
+  private boolean closedTrack = false;
+  private boolean oldWasClosed = false;
+  private Timing lastTrackReset = Timing.started();
+  private List<TrackRefinenement.TrackConstraint> constraints = new LinkedList<>();
+  private Scalar openTrackValid = Quantity.of(1, SI.SECOND);
+  private Scalar timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
+  private List<TrackRefinenement.TrackConstraint> trackConstraints = null;
+  private boolean startSet = false;
 
   public TrackIdentificationManagement(PlanableOccupancyGrid planableOccupancyGrid) {
     this.occupancyGrid = planableOccupancyGrid;
@@ -101,7 +102,7 @@ public class TrackIdentificationManagement implements RenderInterface {
       }
       if (trackData == null && closedTrack) {
         // current track is not available or no longer valid
-        Tensor ctrpoints = initialGuess.getControlPointGuess(spacing, controlPointResolution);
+        Tensor ctrpoints = initialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
         if (ctrpoints != null) {
           // we have a guess
           // TODO do this more elegantly
@@ -128,7 +129,7 @@ public class TrackIdentificationManagement implements RenderInterface {
             // create Track
             // To consider: high startup cost -> maybe don't do this in every step
             // TODO JPH/MH
-            lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), radiusOffset, closedTrack);
+            lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), RADIUS_OFFSET, closedTrack);
             timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
             trackRender = null;
           } else {
@@ -143,7 +144,7 @@ public class TrackIdentificationManagement implements RenderInterface {
         trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 10, closedTrack, constraints);
         // consider: slower track update
         if (trackData != null) {
-          lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), radiusOffset, closedTrack);
+          lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), RADIUS_OFFSET, closedTrack);
           trackRender = null;
         }
       }

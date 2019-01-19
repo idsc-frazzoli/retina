@@ -4,8 +4,6 @@ package ch.ethz.idsc.gokart.gui.lab;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,17 +13,19 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 public class TrackIdentificationButtons extends AbstractModule {
+  public static boolean RECORDING = true;
+  public static boolean SETTINGSTART = true;
+  // ---
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private JButton recordTrack;
-  private JButton setStart;
-  private JButton resetTrack;
-  public static boolean RECORDING = true;
-  public static boolean SETTINGSTART = true;
+  private final JButton recordTrack = new JButton("not sensing track");
+  private final JButton setStart = new JButton("set Start");
+  private final JButton resetTrack = new JButton("reset track");
 
   @Override
   protected void first() throws Exception {
@@ -33,10 +33,7 @@ public class TrackIdentificationButtons extends AbstractModule {
       // if this is used set it do default == false;
       RECORDING = false;
       JPanel jPanel = new JPanel(new GridLayout(1, 2));
-      List<JButton> list = new ArrayList<>();
       // button for previous test
-      recordTrack = new JButton("not sensing track");
-      list.add(recordTrack);
       recordTrack.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -48,19 +45,17 @@ public class TrackIdentificationButtons extends AbstractModule {
         }
       });
       jPanel.add(recordTrack);
-      resetTrack = new JButton("reset track");
-      list.add(resetTrack);
       resetTrack.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          if (GokartTrackIdentificationModule.TRACKIDENTIFICATION != null)
-            GokartTrackIdentificationModule.TRACKIDENTIFICATION.resetTrack();
+          GokartTrackIdentificationModule gokartTrackIdentificationModule = //
+              ModuleAuto.INSTANCE.getInstance(GokartTrackIdentificationModule.class);
+          if (gokartTrackIdentificationModule != null)
+            gokartTrackIdentificationModule.resetTrack();
         }
       });
       jPanel.add(resetTrack);
       // button for test
-      setStart = new JButton("set Start");
-      list.add(setStart);
       setStart.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
