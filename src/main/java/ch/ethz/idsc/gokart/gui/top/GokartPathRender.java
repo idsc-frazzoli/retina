@@ -28,13 +28,13 @@ import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 /** draw blue lines of prediction of traces of gokart */
-public class PathRender extends AbstractGokartRender {
+public class GokartPathRender extends AbstractGokartRender {
   public Color color = new Color(0, 0, 255, 128);
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 
-  public PathRender(GokartPoseInterface gokartPoseInterface) {
+  public GokartPathRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
   }
 
