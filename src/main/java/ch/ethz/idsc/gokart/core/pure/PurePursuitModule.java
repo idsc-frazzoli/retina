@@ -63,8 +63,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
       Scalar pair = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
       // post 20180619: allow reverse driving
       Scalar speed = Clip.absoluteOne().apply(ratio.add(pair));
-      purePursuitRimo.setSpeed(Times.of( //
-          pursuitConfig.rateFollower, speed, getSpeedMultiplier()));
+      purePursuitRimo.setSpeed(Times.of(pursuitConfig.rateFollower, speed, getSpeedMultiplier()));
     }
     purePursuitRimo.setOperational(status);
   }
