@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.map;
 import java.awt.Graphics2D;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -56,7 +57,8 @@ public class TrackIdentificationManagement implements RenderInterface {
   }
 
   public boolean setStart(GokartPoseEvent gokartPoseEvent) {
-    return gokartPoseEvent != null && setStart(gokartPoseEvent.getPose());
+    return Objects.nonNull(gokartPoseEvent) //
+        && setStart(gokartPoseEvent.getPose());
   }
 
   public void resetStart() {

@@ -106,10 +106,9 @@ public class GokartTrackMappingModule implements //
   public void run() {
     while (isLaunched) {
       Tensor points = points3d_ferry;
-      if (//
-      TrackIdentificationButtons.RECORDING//
-          && Objects.nonNull(points)//
-          && Objects.nonNull(gokartPoseEvent)) {
+      if (TrackIdentificationButtons.RECORDING && //
+          Objects.nonNull(points) && //
+          Objects.nonNull(gokartPoseEvent)) {
         points3d_ferry = null;
         // TODO pose quality is not considered yet
         bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());

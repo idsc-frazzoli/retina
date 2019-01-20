@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.PriorityQueue;
 
 import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
@@ -358,7 +359,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   }
 
   boolean reachable(Cell target) {
-    return target != null && target.processed;
+    return Objects.nonNull(target) //
+        && target.processed;
   }
 
   public Tensor getRoutePolygon() {
