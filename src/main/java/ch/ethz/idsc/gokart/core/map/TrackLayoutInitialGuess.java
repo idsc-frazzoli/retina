@@ -73,7 +73,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         neighBorCost = new ArrayList<>();
         for (Neighbor neighbor : possibleNeighbors) {
           Cell newNeighBor = neighbor.getFrom(this);
-          if (newNeighBor != null) {
+          if (Objects.nonNull(newNeighBor)) {
             neighBors.add(newNeighBor);
             neighBorCost.add(neighbor.cost);
           }
@@ -136,8 +136,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     Cell farthest = dijkstraStart;
     for (int i = 0; i < m; ++i)
       for (int ii = 0; ii < n; ++ii)
-        if (cellGrid[i][ii] != null && //
-            cellGrid[i][ii].lastCell != null && //
+        if (Objects.nonNull(cellGrid[i][ii]) && //
+            Objects.nonNull(cellGrid[i][ii].lastCell) && //
             Scalars.lessThan(farthest.cost, cellGrid[i][ii].cost)) {
           farthest = cellGrid[i][ii];
         }
@@ -186,7 +186,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
      * }
      * } */
     // gokart immediate target
-    if (currPos != null)
+    if (Objects.nonNull(currPos))
       dijkstraGokartBack = cellGrid[currPos.Get(0).number().intValue()][currPos.Get(1).number().intValue()];
     // add start to Q
     if (!searchFromGokart)
@@ -219,7 +219,9 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     // find right end
     double currentx = startx;
     double currenty = starty;
-    while (currentx >= 0 && currentx < m && currenty >= 0 && currenty < n && cellGrid[(int) currentx][(int) currenty] != null) {
+    while (currentx >= 0 && currentx < m //
+        && currenty >= 0 && currenty < n //
+        && Objects.nonNull(cellGrid[(int) currentx][(int) currenty])) {
       currentx += xsideward;
       currenty += ysideward;
     }
@@ -228,7 +230,9 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     // find left end
     currentx = startx;
     currenty = starty;
-    while (currentx >= 0 && currentx < m && currenty >= 0 && currenty < n && cellGrid[(int) currentx][(int) currenty] != null) {
+    while (currentx >= 0 && currentx < m //
+        && currenty >= 0 && currenty < n //
+        && Objects.nonNull(cellGrid[(int) currentx][(int) currenty])) {
       currentx -= xsideward;
       currenty -= ysideward;
     }
@@ -316,7 +320,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   public void update(int startX, int startY, double startorientation, Tensor gokartPosition) {
     // position if map
     Tensor curPos = null;
-    if (gokartPosition != null)
+    if (Objects.nonNull(gokartPosition))
       curPos = getPixelPosition(gokartPosition);
     if (initialise(startX, startY, startorientation, curPos, false)) {
       processDijkstra();
@@ -366,7 +370,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   public Tensor getRoutePolygon() {
     if (routePolygon == null) {
       routePolygon = Tensors.empty();
-      if (route != null) {
+      if (Objects.nonNull(route)) {
         Tensor grid2model = occupancyGrid.getTransform();
         for (Cell cell : route)
           routePolygon.append(grid2model.dot(Tensors.vector(cell.x, cell.y, 1)));

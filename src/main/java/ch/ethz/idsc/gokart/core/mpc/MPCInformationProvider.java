@@ -1,6 +1,8 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import java.util.Objects;
+
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -22,7 +24,7 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
    * @return predicted X- and Y-position in tensor */
   public Tensor getPositions() {
     // avoid race conditions
-    if (cns != null) {
+    if (Objects.nonNull(cns)) {
       ControlAndPredictionSteps localCNS = cns;
       // TODO use stream notation
       Tensor positions = Tensors.empty();
@@ -39,7 +41,7 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
 
   /** get the acceleration at prediction steps */
   public Tensor getAccelerations() {
-    if (cns != null) {
+    if (Objects.nonNull(cns)) {
       ControlAndPredictionSteps localCNS = cns;
       Tensor accelerations = Tensors.empty();
       for (int i = 0; i < localCNS.steps.length; i++)
@@ -51,7 +53,7 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
 
   /** get the poses at steps in {x,y,a} */
   public Tensor getXYA() {
-    if (cns != null) {
+    if (Objects.nonNull(cns)) {
       ControlAndPredictionSteps localCNS = cns;
       Tensor orientations = Tensors.empty();
       for (int i = 0; i < localCNS.steps.length; i++) {

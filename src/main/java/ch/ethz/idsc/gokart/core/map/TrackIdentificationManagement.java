@@ -106,7 +106,7 @@ public class TrackIdentificationManagement implements RenderInterface {
       if (trackData == null && closedTrack) {
         // current track is not available or no longer valid
         Tensor ctrpoints = initialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
-        if (ctrpoints != null) {
+        if (Objects.nonNull(ctrpoints)) {
           // we have a guess
           // TODO do this more elegantly
           Tensor radiusCtrPoints = Tensors.vector(i -> Quantity.of(1, SI.METER), ctrpoints.get(0).length());
@@ -127,7 +127,7 @@ public class TrackIdentificationManagement implements RenderInterface {
            * ctrpoints.get(0), //
            * ctrpoints.get(1), //
            * radiusCtrPoints, RealScalar.of(8), 10, closedTrack, constraints); */
-          if (trackData != null) {
+          if (Objects.nonNull(trackData)) {
             // valid refinement
             // create Track
             // To consider: high startup cost -> maybe don't do this in every step
@@ -147,7 +147,7 @@ public class TrackIdentificationManagement implements RenderInterface {
         System.out.println("refine");
         trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 10, closedTrack, constraints);
         // consider: slower track update
-        if (trackData != null) {
+        if (Objects.nonNull(trackData)) {
           lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), RADIUS_OFFSET, closedTrack);
           trackRender = null;
         }
@@ -159,7 +159,7 @@ public class TrackIdentificationManagement implements RenderInterface {
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (lastTrack != null) {
+    if (Objects.nonNull(lastTrack)) {
       if (trackRender == null)
         trackRender = new TrackRender(lastTrack);
       trackRender.render(geometricLayer, graphics);
@@ -169,7 +169,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   }
 
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (lastTrack != null) {
+    if (Objects.nonNull(lastTrack)) {
       if (trackRender == null)
         trackRender = new TrackRender(lastTrack);
       // trackRender.renderHR(geometricLayer, graphics);

@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.map;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineMap;
 import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
@@ -174,7 +175,7 @@ public class TrackRefinement {
       controlpointsX = controlpointsX.add(getRegularization(controlpointsX, gdRegularizer, closed));
       controlpointsY = controlpointsY.add(getRegularization(controlpointsY, gdRegularizer, closed));
       radiusCtrPoints = radiusCtrPoints.add(getRegularization(radiusCtrPoints, gdRegularizer, closed));
-      if (constraints != null) {
+      if (Objects.nonNull(constraints)) {
         for (TrackConstraint constraint : constraints) {
           constraint.compute(controlpointsX, controlpointsY, radiusCtrPoints);
           controlpointsX = constraint.getControlPointsX();

@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.lab;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -50,7 +51,7 @@ public class TrackIdentificationButtons extends AbstractModule {
         public void actionPerformed(ActionEvent e) {
           GokartTrackIdentificationModule gokartTrackIdentificationModule = //
               ModuleAuto.INSTANCE.getInstance(GokartTrackIdentificationModule.class);
-          if (gokartTrackIdentificationModule != null)
+          if (Objects.nonNull(gokartTrackIdentificationModule))
             gokartTrackIdentificationModule.resetTrack();
         }
       });
