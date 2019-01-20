@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.time.IntervalClock;
+import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -12,12 +14,16 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormalizedTorqueVectoring {
   private static final double MIN_DT = 0.000001;
-  private static final Scalar ROLLING_AVERAGE_FACTOR = RealScalar.of(0.5); // good data expected
+  /** ratio:
+   * 0 means 100% old value
+   * 1 means 100% new value
+   * 0.5 means average */
+  private static final Scalar ROLLING_AVERAGE_RATIO = RealScalar.of(0.5); // good data expected
+  private static final Scalar ROLLING_AVERAGE_VALUE = Quantity.of(0.0, SI.ANGULAR_ACCELERATION);
   // ---
   private final IntervalClock intervalClock = new IntervalClock();
-  private Scalar lastRotation = null;
-  // TODO JPH/MH extract functionality to separate class "IIR filter"
-  private Scalar rotationAccRollingAverage = Quantity.of(0, SI.ANGULAR_ACCELERATION);
+  private final GeodesicIIR1Filter geodesicIIR1Filter = //
+      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, ROLLING_AVERAGE_RATIO, ROLLING_AVERAGE_VALUE);
 
   public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
@@ -31,7 +37,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
       Scalar wantedAcceleration, //
       Scalar realRotation) {
     Scalar expectedRotationVelocity = meanTangentSpeed.multiply(expectedRotationPerMeterDriven);
-    Scalar expectedRoationAcceleration = estimateRotationAcceleration(expectedRotationVelocity);
+    Scalar expectedRoationAcceleration = estimateRotationAcceleration(expectedRotationVelocity, intervalClock.seconds());
     return getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //
         meanTangentSpeed, //
@@ -41,23 +47,21 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
         expectedRoationAcceleration);
   }
 
-  private Scalar estimateRotationAcceleration(Scalar rotation) {
+  private Scalar lastRotation = null;
+  private Scalar rotationAcc_fallback = ROLLING_AVERAGE_VALUE;
+
+  /** @param rotation [s^-1]
+   * @param timeSinceLastStep
+   * @return estimation of rotational acceleration with unit [s^-2] */
+  /* package */ Scalar estimateRotationAcceleration(Scalar rotation, double timeSinceLastStep) {
     if (Objects.isNull(lastRotation))
       lastRotation = rotation;
-    double timeSinceLastStep = intervalClock.seconds();
     if (timeSinceLastStep >= MIN_DT) {
       Scalar instantRotChange = rotation.subtract(lastRotation).divide(Quantity.of(timeSinceLastStep, SI.SECOND));
-      Scalar newPart = instantRotChange.multiply(ROLLING_AVERAGE_FACTOR);
-      Scalar oldPart = rotationAccRollingAverage.multiply(RealScalar.ONE.subtract(ROLLING_AVERAGE_FACTOR));
-      rotationAccRollingAverage = newPart.add(oldPart);
+      rotationAcc_fallback = geodesicIIR1Filter.apply(instantRotChange).Get();
     }
     lastRotation = rotation;
-    return rotationAccRollingAverage;
-  }
-
-  private Scalar getPredictiveComponent(Scalar expectedRotationAcceleration) {
-    Scalar rotationalAcceleration = expectedRotationAcceleration;
-    return rotationalAcceleration.multiply(torqueVectoringConfig.staticPrediction);
+    return rotationAcc_fallback;
   }
 
   private Tensor getMotorCurrentsFromAcceleration( //
@@ -76,5 +80,9 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
         realRotation);
     // left and right power prefer power over Z-torque
     return getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, meanTangentSpeed);
+  }
+
+  private Scalar getPredictiveComponent(Scalar expectedRotationAcceleration) {
+    return expectedRotationAcceleration.multiply(torqueVectoringConfig.staticPrediction);
   }
 }
