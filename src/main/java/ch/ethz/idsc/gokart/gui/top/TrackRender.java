@@ -55,6 +55,7 @@ public class TrackRender implements RenderInterface {
     graphics.draw(path2d);
   }
 
+  // TODO JPH/MH function not used
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
     // middle line
     float width = geometricLayer.getMatrix().get(0).Get(0).number().floatValue() / 7.5f;

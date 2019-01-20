@@ -11,8 +11,8 @@ import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
-import ch.ethz.idsc.gokart.core.joy.ManualResetModule;
-import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
+import ch.ethz.idsc.gokart.core.man.ManualResetModule;
+import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
@@ -37,7 +37,7 @@ public class RunTabbedTaskGuiTest extends TestCase {
   }
 
   public void testJoystick() throws InterruptedException {
-    for (Class<?> cls : RunTabbedTaskGui.MODULES_JOY)
+    for (Class<?> cls : RunTabbedTaskGui.MODULES_MAN)
       if (!cls.equals(SysidSignalsModule.class)) {
         ModuleAuto.INSTANCE.runOne(cls);
         Thread.sleep(50); // needs time to start thread that invokes first()

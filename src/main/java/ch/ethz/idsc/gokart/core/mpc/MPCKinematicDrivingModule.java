@@ -9,7 +9,7 @@ import java.util.TimerTask;
 
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
-import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;

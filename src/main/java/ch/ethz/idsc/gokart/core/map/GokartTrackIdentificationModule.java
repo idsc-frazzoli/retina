@@ -17,14 +17,18 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class GokartTrackIdentificationModule extends AbstractClockedModule implements GokartPoseListener, RenderInterface {
-  TrackIdentificationManagement trackIDManagement;
-  GokartTrackMappingModule trackMappingModule;
-  GokartPoseEvent gpe = null;
-  Timing lastExecution = Timing.started();
+public class GokartTrackIdentificationModule extends AbstractClockedModule //
+    implements GokartPoseListener, RenderInterface {
   public static MPCBSplineTrack TRACK = null;
+  // TODO JPH/MH
   public static GokartTrackIdentificationModule TRACKIDENTIFICATION = null;
+  // ---
+  private final TrackIdentificationManagement trackIDManagement;
+  private final GokartTrackMappingModule trackMappingModule;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  // ---
+  private GokartPoseEvent gpe = null;
+  private Timing lastExecution = Timing.started();
 
   public GokartTrackIdentificationModule() {
     trackMappingModule = new GokartTrackMappingModule();

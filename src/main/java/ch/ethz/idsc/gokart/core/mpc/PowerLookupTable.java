@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.io.File;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;

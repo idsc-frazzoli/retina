@@ -13,11 +13,11 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.mpc.LiveTrackRenderProvider;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
-import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.PathRender;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
@@ -58,11 +58,16 @@ abstract class ViewLcmModule extends AbstractModule {
       TrajectoryLcmClient.xyat(), TrajectoryLcmClient.xyavt());
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
+  private final PathRender pathRender = new PathRender(Color.YELLOW);
   private MappedPoseInterface mappedPoseInterface;
 
   protected void setGokartPoseInterface(MappedPoseInterface mappedPoseInterface) {
     this.mappedPoseInterface = mappedPoseInterface;
     viewLcmFrame.setGokartPoseInterface(mappedPoseInterface);
+  }
+
+  public void setCurve(Tensor curve) {
+    pathRender.setCurve(curve, true);
   }
 
   @Override // from AbstractModule
@@ -80,9 +85,9 @@ abstract class ViewLcmModule extends AbstractModule {
       // viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
-      PathRender pathRender = new PathRender(mappedPoseInterface);
-      gokartStatusLcmClient.addListener(pathRender.gokartStatusListener);
-      viewLcmFrame.geometricComponent.addRenderInterface(pathRender);
+      GokartPathRender gokartPathRender = new GokartPathRender(mappedPoseInterface);
+      gokartStatusLcmClient.addListener(gokartPathRender.gokartStatusListener);
+      viewLcmFrame.geometricComponent.addRenderInterface(gokartPathRender);
     }
     // ---
     {
@@ -109,11 +114,8 @@ abstract class ViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
-    { // TODO JPH not generic
-      Tensor curve = DubendorfCurve.TIRES_TRACK_A;
-      // curve = CROP_REGION;
-      CurveRender curveRender = new CurveRender(curve);
-      viewLcmFrame.geometricComponent.addRenderInterface(curveRender);
+    {
+      viewLcmFrame.geometricComponent.addRenderInterface(pathRender);
     }
     {
       // test simple track

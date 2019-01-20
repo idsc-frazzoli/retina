@@ -18,7 +18,7 @@ enum QuickStartGui {
     TabbedTaskGui taskTabGui = new TabbedTaskGui(RunTabbedTaskGui.PROPERTIES);
     // ---
     taskTabGui.tab("cfg", RunTabbedTaskGui.MODULES_CFG);
-    taskTabGui.tab("joy", RunTabbedTaskGui.MODULES_JOY);
+    taskTabGui.tab("joy", RunTabbedTaskGui.MODULES_MAN);
     taskTabGui.tab("aut", RunTabbedTaskGui.MODULES_AUT);
     taskTabGui.tab("fuse", RunTabbedTaskGui.MODULES_FUSE);
     taskTabGui.tab("lab", RunTabbedTaskGui.MODULES_LAB);
