@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.mpc.LiveTrackRenderProvider;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
@@ -54,11 +55,14 @@ abstract class ViewLcmModule extends AbstractModule {
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
-      TrajectoryLcmClient.xyat(), TrajectoryLcmClient.xyavt());
+      TrajectoryLcmClient.xyat(), //
+      TrajectoryLcmClient.xyavt());
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final PathRender pathRender = new PathRender(Color.YELLOW);
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
+  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   // ---
   private MappedPoseInterface mappedPoseInterface;
 
@@ -140,6 +144,10 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     viewLcmFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
+    {
+      gokartPoseLcmClient.addListener(poseTrailRender);
+      viewLcmFrame.geometricComponent.addRenderInterface(poseTrailRender);
+    }
     // ---
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();
@@ -148,6 +156,7 @@ abstract class ViewLcmModule extends AbstractModule {
     vlp16LcmHandler.startSubscriptions();
     davisImuLcmClient.startSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
+    gokartPoseLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), viewLcmFrame.jFrame);
     viewLcmFrame.configCoordinateOffset(400, 500);
@@ -175,6 +184,7 @@ abstract class ViewLcmModule extends AbstractModule {
     vlp16LcmHandler.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
+    gokartPoseLcmClient.stopSubscriptions();
     // ---
     viewLcmFrame.close();
   }

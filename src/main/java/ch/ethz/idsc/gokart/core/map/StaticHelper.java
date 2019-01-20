@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.map;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
 
-enum StaticHelper {
+/* package */ enum StaticHelper {
   ;
   /** @param p from the open interval (0, 1)
    * @return */
