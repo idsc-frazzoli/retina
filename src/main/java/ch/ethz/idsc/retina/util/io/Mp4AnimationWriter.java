@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
@@ -86,7 +87,7 @@ public class Mp4AnimationWriter implements AnimationWriter {
   @Override // from AnimationWriter
   public void append(BufferedImage bufferedImage) {
     /** This is LIKELY not in YUV420P format, so we're going to convert it using some handy utilities. */
-    if (converter == null)
+    if (Objects.isNull(converter))
       converter = MediaPictureConverterFactory.createConverter(bufferedImage, picture);
     converter.toPicture(picture, bufferedImage, count);
     ++count;

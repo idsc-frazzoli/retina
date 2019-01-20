@@ -59,7 +59,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
 
     public LinkedList<Cell> getRoute() {
       LinkedList<Cell> result;
-      if (lastCell == null)
+      if (Objects.isNull(lastCell))
         result = new LinkedList<>();
       else
         result = lastCell.getRoute();
@@ -68,7 +68,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
 
     public void findNeighbors() {
-      if (neighBors == null) {
+      if (Objects.isNull(neighBors)) {
         neighBors = new ArrayList<>();
         neighBorCost = new ArrayList<>();
         for (Neighbor neighbor : possibleNeighbors) {
@@ -193,7 +193,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       dijkstraStart = cellGrid[sfx][sfy];
     else
       dijkstraStart = dijkstraGokartBack;
-    if (dijkstraStart == null)
+    if (Objects.isNull(dijkstraStart))
       return false;
     dijkstraStart.cost = RealScalar.ZERO;
     dijkstraStart.inQ = true;
@@ -368,7 +368,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   }
 
   public Tensor getRoutePolygon() {
-    if (routePolygon == null) {
+    if (Objects.isNull(routePolygon)) {
       routePolygon = Tensors.empty();
       if (Objects.nonNull(route)) {
         Tensor grid2model = occupancyGrid.getTransform();

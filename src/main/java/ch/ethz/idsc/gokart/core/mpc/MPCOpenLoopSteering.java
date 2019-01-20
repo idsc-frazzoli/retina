@@ -1,6 +1,8 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import java.util.Objects;
+
 import ch.ethz.idsc.tensor.Scalar;
 
 public class MPCOpenLoopSteering extends MPCSteering {
@@ -11,7 +13,7 @@ public class MPCOpenLoopSteering extends MPCSteering {
   public Scalar getSteering(Scalar time) {
     Scalar controlTime = time.add(config.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
-    if (cnpStep == null)
+    if (Objects.isNull(cnpStep))
       return null;
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
@@ -22,7 +24,7 @@ public class MPCOpenLoopSteering extends MPCSteering {
   public Scalar getDotSteering(Scalar time) {
     Scalar controlTime = time.add(config.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
-    if (cnpStep == null)
+    if (Objects.isNull(cnpStep))
       return null;
     return cnpStep.control.getudotS();
   }

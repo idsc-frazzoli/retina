@@ -99,11 +99,11 @@ public class TrackIdentificationManagement implements RenderInterface {
     System.out.println("update called: " + timeSinceLastTrackUpdate);
     timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
     if (startSet) {
-      if (trackData == null) {
+      if (Objects.isNull(trackData)) {
         initialGuess.update(startX, startY, startOrientation, pose);
         closedTrack = initialGuess.isClosed();
       }
-      if (trackData == null && closedTrack) {
+      if (Objects.isNull(trackData) && closedTrack) {
         // current track is not available or no longer valid
         Tensor ctrpoints = initialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
         if (Objects.nonNull(ctrpoints)) {
@@ -160,7 +160,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(lastTrack)) {
-      if (trackRender == null)
+      if (Objects.isNull(trackRender))
         trackRender = new TrackRender(lastTrack);
       trackRender.render(geometricLayer, graphics);
     } else {
@@ -170,7 +170,7 @@ public class TrackIdentificationManagement implements RenderInterface {
 
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(lastTrack)) {
-      if (trackRender == null)
+      if (Objects.isNull(trackRender))
         trackRender = new TrackRender(lastTrack);
       // trackRender.renderHR(geometricLayer, graphics);
     } // else {
