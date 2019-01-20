@@ -3,9 +3,9 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.dev.steer.SteerMapping;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;

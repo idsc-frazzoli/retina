@@ -11,7 +11,7 @@ public class ManualGroupModule extends GroupModule {
   @Override
   protected List<Class<?>> modules() {
     return Arrays.asList( //
-        LinmotJoystickModule.class, //
+        LinmotManualModule.class, //
         SteerManualModule.class, //
         RimoTorqueManualModule.class);
   }

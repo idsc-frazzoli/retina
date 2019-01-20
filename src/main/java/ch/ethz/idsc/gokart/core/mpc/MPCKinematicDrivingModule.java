@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerConfig;
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
@@ -17,7 +18,6 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
-import ch.ethz.idsc.gokart.dev.steer.HighPowerSteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;

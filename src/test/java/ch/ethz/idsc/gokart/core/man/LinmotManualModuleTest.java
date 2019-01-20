@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 public class LinmotManualModuleTest extends TestCase {
   public void testFirstLast() throws Exception {
     int size = LinmotSocket.INSTANCE.getPutProviderSize();
-    LinmotJoystickModule linmotJoystickModule = new LinmotJoystickModule();
+    LinmotManualModule linmotJoystickModule = new LinmotManualModule();
     linmotJoystickModule.first();
     assertEquals(LinmotSocket.INSTANCE.getPutProviderSize(), size + 1);
     linmotJoystickModule.last();
@@ -24,7 +24,7 @@ public class LinmotManualModuleTest extends TestCase {
   }
 
   public void testSimple() {
-    LinmotJoystickModule linmotJoystickModule = new LinmotJoystickModule();
+    LinmotManualModule linmotJoystickModule = new LinmotManualModule();
     Optional<LinmotPutEvent> optional = linmotJoystickModule.putEvent();
     assertFalse(optional.isPresent());
     assertFalse(linmotJoystickModule.putEvent().isPresent());
@@ -32,7 +32,7 @@ public class LinmotManualModuleTest extends TestCase {
   }
 
   public void testValue() {
-    LinmotJoystickModule linmotJoystickModule = new LinmotJoystickModule();
+    LinmotManualModule linmotJoystickModule = new LinmotManualModule();
     ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(.2), Tensors.vector(1, 0.8), false, false);
     Optional<LinmotPutEvent> optional = linmotJoystickModule.translate(manualControlInterface);
@@ -47,7 +47,7 @@ public class LinmotManualModuleTest extends TestCase {
   }
 
   public void testPublic() {
-    int modifs = LinmotJoystickModule.class.getModifiers();
+    int modifs = LinmotManualModule.class.getModifiers();
     assertEquals(modifs & 1, 1);
   }
 }

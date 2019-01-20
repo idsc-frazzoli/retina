@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.Path2D;
 
-import ch.ethz.idsc.gokart.core.mpc.TrackInterface;
+import ch.ethz.idsc.gokart.core.map.TrackInterface;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
