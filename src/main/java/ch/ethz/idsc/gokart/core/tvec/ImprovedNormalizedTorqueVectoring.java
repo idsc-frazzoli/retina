@@ -37,12 +37,12 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
 
   /** get torque vectoring motor currents corresponding to the wanted rotation speed
    * (this can also be used externally!)
-   * @param expectedRotationPerMeterDriven [1/s]
+   * @param expectedRotationPerMeterDriven [1/s] TODO JPH/MH unit
    * @param meanTangentSpeed [m/s]
    * @param angularSlip [1/s]
    * @param wantedAcceleration [m/s^2]
    * @param realRotation [1/s]
-   * @return the motor currents [Arms] */
+   * @return the motor currents [ARMS] */
   public Tensor getMotorCurrentsFromAcceleration( //
       Scalar expectedRotationPerMeterDriven, //
       Scalar meanTangentSpeed, //
@@ -59,10 +59,10 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
     return getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, meanTangentSpeed);
   }
 
-  /** @param wantedAcceleration [m(s^2]
+  /** @param wantedAcceleration [m*s^-2]
    * @param wantedZTorque [ONE] TODO MH currently dimensionless. Should we change that?
    * @param velocity [m/s]
-   * @return the required motor currents [Arms] */
+   * @return the required motor currents [ARMS] */
   // TODO JPH/MH write tests specifically for method getAdvancedMotorCurrents
   public static Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
     Tensor minMax = POWER_LOOKUP_TABLE.getMinMaxAcceleration(velocity);

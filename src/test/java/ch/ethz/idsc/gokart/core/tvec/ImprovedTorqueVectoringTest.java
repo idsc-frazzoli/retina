@@ -14,12 +14,12 @@ import junit.framework.TestCase;
 
 public class ImprovedTorqueVectoringTest extends TestCase {
   public void testZeros() {
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedTorqueVectoring improveSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
-    Tensor powers = improveSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(0, "m^-1"), //
         Quantity.of(0, "m*s^-1"), //
         Quantity.of(0, "s^-1"), //
@@ -29,12 +29,12 @@ public class ImprovedTorqueVectoringTest extends TestCase {
   }
 
   public void testZeroMean() {
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
-    Tensor powers = improvedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         Quantity.of(1, "m*s^-1"), //
         Quantity.of(1, "s^-1"), //
@@ -44,12 +44,12 @@ public class ImprovedTorqueVectoringTest extends TestCase {
   }
 
   public void testSaturatedPositive() {
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ONE;
-    Tensor powers = improvedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
@@ -58,12 +58,12 @@ public class ImprovedTorqueVectoringTest extends TestCase {
   }
 
   public void testSaturatedNegative() {
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ONE.negate();
-    Tensor powers = improvedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
@@ -77,12 +77,12 @@ public class ImprovedTorqueVectoringTest extends TestCase {
    * Scalar power
    * Scalar realRotation */
   public void testTorqueWhenUndersteering() {
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0.2, SI.SECOND);
-    ImprovedTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0.2, SI.SECOND);
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
-    Tensor powers = improvedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         Quantity.of(3, "m*s^-1"), //
         Quantity.of(1, "s^-1"), //
@@ -93,12 +93,12 @@ public class ImprovedTorqueVectoringTest extends TestCase {
   }
 
   public void testNoTorqueWhenOversteering() {
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0.2, SI.SECOND);
-    ImprovedTorqueVectoring improvedSimpleTorqueVectoring = new ImprovedTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0.2, SI.SECOND);
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
-    Tensor powers = improvedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(-1, "m^-1"), //
         Quantity.of(3, "m*s^-1"), //
         Quantity.of(1, "s^-1"), //

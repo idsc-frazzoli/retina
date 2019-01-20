@@ -12,7 +12,7 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotCalibrationProvider;
  * 2) LinmotGetEvent was received with status not operational */
 /* package */ class LinmotInitButton extends AutoboxInitButton {
   public LinmotInitButton() {
-    super("Init");
+    super("Init", "calibrate linmot");
   }
 
   @Override // from ActionListener
