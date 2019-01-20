@@ -1,5 +1,5 @@
 // code by mh and jph
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.calib.power;
 
 /** the polynomial depends on two variables: x and y
  * the polynomial is defined by 10 coeffients

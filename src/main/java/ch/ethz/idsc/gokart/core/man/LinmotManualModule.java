@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 
 /** conversion of joystick event to brake command */
-public class LinmotJoystickModule extends ManualModule<LinmotPutEvent> {
+public class LinmotManualModule extends ManualModule<LinmotPutEvent> {
   @Override // from AbstractModule
   void protected_first() {
     LinmotSocket.INSTANCE.addPutProvider(this);

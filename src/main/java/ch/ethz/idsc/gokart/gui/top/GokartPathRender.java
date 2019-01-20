@@ -5,9 +5,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.dev.steer.SteerMapping;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;

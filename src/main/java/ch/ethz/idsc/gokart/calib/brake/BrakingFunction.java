@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.calib.brake;
 
 import java.util.Optional;
 

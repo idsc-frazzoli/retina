@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.calib.power;
 
 import java.io.IOException;
 import java.util.function.BiFunction;

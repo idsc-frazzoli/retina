@@ -1,6 +1,7 @@
 // code by jph
-package ch.ethz.idsc.gokart.dev.steer;
+package ch.ethz.idsc.gokart.calib.steer;
 
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 
 /** parameters for PID controller of steering

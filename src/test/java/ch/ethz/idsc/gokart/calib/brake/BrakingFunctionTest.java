@@ -1,5 +1,5 @@
 // code by mh and jph
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.calib.brake;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;

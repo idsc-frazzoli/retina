@@ -77,14 +77,4 @@ public enum ModuleAuto {
   public <T extends AbstractModule> T getInstance(Class<?> module) {
     return (T) moduleMap.get(module);
   }
-  // public AbstractModule getInstanceAlways(Class<?> module) {
-  // synchronized (moduleMap) {
-  // AbstractModule abstractModule = moduleMap.get(module);
-  // if (Objects.isNull(abstractModule)) {
-  // runOne(module);
-  // return moduleMap.get(module);
-  // }
-  // return abstractModule;
-  // }
-  // }
 }

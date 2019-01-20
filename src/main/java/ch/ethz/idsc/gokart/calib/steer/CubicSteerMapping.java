@@ -1,6 +1,7 @@
 // code by mh, jph
-package ch.ethz.idsc.gokart.dev.steer;
+package ch.ethz.idsc.gokart.calib.steer;
 
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;

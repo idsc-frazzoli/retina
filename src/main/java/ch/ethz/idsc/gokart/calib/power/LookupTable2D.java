@@ -1,5 +1,5 @@
 // code by mheim
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.calib.power;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

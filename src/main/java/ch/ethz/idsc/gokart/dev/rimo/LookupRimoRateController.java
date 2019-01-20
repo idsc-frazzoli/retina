@@ -2,7 +2,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.dev.rimo;
 
-import ch.ethz.idsc.gokart.core.mpc.PowerLookupTable;
+import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;

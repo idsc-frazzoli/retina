@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.man;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.mpc.PowerLookupTable;
+import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class LookupTableRimoThrustJoystickModule extends GuideManualModule<RimoPutEvent> implements RimoGetListener {
+public class LookupTableRimoThrustManualModule extends GuideManualModule<RimoPutEvent> implements RimoGetListener {
   private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 

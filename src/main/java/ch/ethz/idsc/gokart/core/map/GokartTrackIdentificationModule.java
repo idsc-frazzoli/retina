@@ -20,20 +20,17 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class GokartTrackIdentificationModule extends AbstractClockedModule //
     implements GokartPoseListener, RenderInterface {
   public static MPCBSplineTrack TRACK = null;
-  // TODO JPH/MH
-  public static GokartTrackIdentificationModule TRACKIDENTIFICATION = null;
   // ---
   private final TrackIdentificationManagement trackIDManagement;
   private final GokartTrackMappingModule trackMappingModule;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   // ---
-  private GokartPoseEvent gpe = null;
+  private GokartPoseEvent gokartPoseEvent = null;
   private Timing lastExecution = Timing.started();
 
   public GokartTrackIdentificationModule() {
     trackMappingModule = new GokartTrackMappingModule();
     trackIDManagement = new TrackIdentificationManagement(trackMappingModule);
-    TRACKIDENTIFICATION = this;
   }
 
   public void resetTrack() {
@@ -43,7 +40,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule //
   @Override
   protected void runAlgo() {
     if (!trackIDManagement.isStartSet() || TrackIdentificationButtons.SETTINGSTART) {
-      trackIDManagement.setStart(gpe);
+      trackIDManagement.setStart(gokartPoseEvent);
       if (trackIDManagement.isStartSet()) {
         System.out.println("start set!");
         TrackIdentificationButtons.SETTINGSTART = false;
@@ -51,7 +48,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule //
     }
     if (TrackIdentificationButtons.RECORDING) {
       trackMappingModule.prepareMap();
-      TRACK = trackIDManagement.update(gpe, Quantity.of(lastExecution.seconds(), SI.SECOND));
+      TRACK = trackIDManagement.update(gokartPoseEvent, Quantity.of(lastExecution.seconds(), SI.SECOND));
     }
     lastExecution = Timing.started();
   }
@@ -76,7 +73,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule //
 
   @Override
   public void getEvent(GokartPoseEvent gpe) {
-    this.gpe = gpe;
+    this.gokartPoseEvent = gpe;
   }
 
   @Override

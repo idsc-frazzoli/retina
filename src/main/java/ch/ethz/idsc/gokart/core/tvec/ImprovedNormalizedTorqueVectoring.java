@@ -1,8 +1,8 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.tvec;
 
+import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.core.mpc.PowerLookupTable;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

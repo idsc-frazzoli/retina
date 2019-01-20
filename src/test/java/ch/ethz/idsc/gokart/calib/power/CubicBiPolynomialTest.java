@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.calib.power;
 
 import junit.framework.TestCase;
 

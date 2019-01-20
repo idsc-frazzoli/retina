@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.calib.power;
 
 import java.io.File;
 import java.util.Objects;
@@ -13,7 +13,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Import;
-import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
@@ -50,7 +49,6 @@ public class PowerLookupTable {
 
   /** create or load power lookup table */
   private static LookupTable2D forward() {
-    // FILE_FORWARD.delete();
     try {
       return Import.object(FILE_FORWARD); // load forward table
     } catch (Exception exception) {
@@ -73,7 +71,6 @@ public class PowerLookupTable {
 
   /** create or load power lookup table */
   private static LookupTable2D inverse(LookupTable2D forward) {
-    // FILE_INVERSE.delete();
     try {
       return Import.object(FILE_INVERSE); // load inverse table
     } catch (Exception exception) {
@@ -140,8 +137,7 @@ public class PowerLookupTable {
     Tensor minMaxAcc = getMinMaxAcceleration(velocity);
     Scalar clippedPower = Clip.absoluteOne().apply(power);
     Tensor keypoints = Tensors.of(minMaxAcc.Get(0), Quantity.of(0, SI.ACCELERATION), minMaxAcc.Get(1));
-    Interpolation powerInterpolation = LinearInterpolation.of(keypoints);
-    return powerInterpolation.At(clippedPower.add(RealScalar.ONE));
+    return LinearInterpolation.of(keypoints).At(clippedPower.add(RealScalar.ONE));
   }
 
   /** get the acceleration characterized by the relative power value
@@ -156,7 +152,6 @@ public class PowerLookupTable {
     Scalar torqueFreeAcc = getAcceleration(Quantity.of(0, NonSI.ARMS), velocity);
     Scalar clippedPower = Clip.absoluteOne().apply(power);
     Tensor keypoints = Tensors.of(minMaxAcc.Get(0), torqueFreeAcc, minMaxAcc.Get(1));
-    Interpolation powerInterpolation = LinearInterpolation.of(keypoints);
-    return powerInterpolation.At(clippedPower.add(RealScalar.ONE));
+    return LinearInterpolation.of(keypoints).At(clippedPower.add(RealScalar.ONE));
   }
 }

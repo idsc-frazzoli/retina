@@ -1,9 +1,11 @@
 // code by jph
-package ch.ethz.idsc.gokart.dev.steer;
+package ch.ethz.idsc.gokart.calib.steer;
 
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;

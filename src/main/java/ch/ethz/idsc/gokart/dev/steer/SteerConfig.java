@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.dev.steer;
 
+import ch.ethz.idsc.gokart.calib.steer.CubicSteerMapping;
+import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.retina.util.sys.AppResources;
