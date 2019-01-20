@@ -41,7 +41,6 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     private List<Cell> neighBors = null;
     private List<Scalar> neighBorCost = null;
 
-    // ArrayList<Scalar> neighBorCost;
     public Cell(int x, int y) {
       this.x = x;
       this.y = y;

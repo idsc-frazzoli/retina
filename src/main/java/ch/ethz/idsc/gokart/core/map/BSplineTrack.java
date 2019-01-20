@@ -57,16 +57,16 @@ public class BSplineTrack implements TrackInterface {
     }
   }
 
-  @Override
-  public boolean isClosed() {
+  @Override // from TrackInterface
+  public final boolean isClosed() {
     return closed;
   }
 
-  public Tensor getControlPoints() {
+  public final Tensor getControlPoints() {
     return controlPoints.copy();
   }
 
-  public Tensor combinedControlPoints() {
+  public final Tensor combinedControlPoints() {
     return combinedControlPoints;
   }
 
@@ -75,7 +75,7 @@ public class BSplineTrack implements TrackInterface {
    * @param pathProgress progress along path
    * corresponding to control point indices [1]
    * @return position [m] */
-  public Tensor getPosition(Scalar pathProgress) {
+  public final Tensor getPosition(Scalar pathProgress) {
     Tensor mat = UniformBSpline2.getBasisMatrix(numPoints, Tensors.of(pathProgress), 0, closed);
     return mat.dot(controlPoints).get(0);
   }
@@ -85,7 +85,7 @@ public class BSplineTrack implements TrackInterface {
    * @param pathProgress progress along path
    * corresponding to control point indices [1]
    * @return radius [m] */
-  public Scalar getRadius(Scalar pathProgress) {
+  public final Scalar getRadius(Scalar pathProgress) {
     Tensor mat = UniformBSpline2.getBasisMatrix(numPoints, Tensors.of(pathProgress), 0, closed);
     return mat.dot(controlPointsR).Get(0);
   }
@@ -95,7 +95,7 @@ public class BSplineTrack implements TrackInterface {
    * @param pathProgress progress along path
    * corresponding to control point indices [1]
    * @return change rate of position unit [m/1] */
-  public Tensor getDerivation(Scalar pathProgress) {
+  public final Tensor getDerivation(Scalar pathProgress) {
     Tensor mat = UniformBSpline2.getBasisMatrix(numPoints, Tensors.of(pathProgress), 1, closed);
     return mat.dot(controlPoints).get(0);
   }
@@ -105,7 +105,7 @@ public class BSplineTrack implements TrackInterface {
    * @param pathProgress progress along path
    * corresponding to control point indices [1]
    * @return direction of the path [1] */
-  public Tensor getDirection(Scalar pathProgress) {
+  public final Tensor getDirection(Scalar pathProgress) {
     return NORMALIZE.apply(getDerivation(pathProgress));
   }
 
@@ -114,7 +114,7 @@ public class BSplineTrack implements TrackInterface {
    * @param pathProgress progress along path
    * corresponding to control point indices [1]
    * @return direction of the path [1] */
-  public Tensor getRightDirection(Scalar pathProgress) {
+  public final Tensor getRightDirection(Scalar pathProgress) {
     Tensor direction = getDerivation(pathProgress);
     return NORMALIZE.apply(Tensors.of(direction.Get(1), direction.Get(0).negate()));
   }
@@ -124,7 +124,7 @@ public class BSplineTrack implements TrackInterface {
    * @param pathProgress progress along path
    * corresponding to control point indices [1]
    * @return change rate of position unit [m/1^2] */
-  public Tensor get2ndDerivation(Scalar pathProgress) {
+  public final Tensor get2ndDerivation(Scalar pathProgress) {
     Tensor mat = UniformBSpline2.getBasisMatrix(numPoints, Tensors.of(pathProgress), 2, closed);
     return mat.dot(controlPoints).get(0);
   }
@@ -134,7 +134,7 @@ public class BSplineTrack implements TrackInterface {
    * @param pathProgress progress along path
    * corresponding to control point indices [1]
    * @return curvature unit [1/m] */
-  public Scalar getSignedCurvature(Scalar pathProgress) {
+  public final Scalar getSignedCurvature(Scalar pathProgress) {
     Tensor firstDer = getDerivation(pathProgress);
     Tensor secondDer = get2ndDerivation(pathProgress);
     Scalar under = Power.of(Norm._2.of(firstDer), 3.0);
@@ -146,7 +146,7 @@ public class BSplineTrack implements TrackInterface {
   // the application of abs() causes a loss of information
   // return getCurvature(pathProgress).abs().reciprocal();
   // }
-  Scalar getNearestPathProgress(Tensor position) {
+  final Scalar getNearestPathProgress(Tensor position) {
     if (closed)
       return getFastNearestPathProgress(position);
     return getFastNearestPathProgressOpen(position);
@@ -249,7 +249,7 @@ public class BSplineTrack implements TrackInterface {
     return RealScalar.of(bestGuess * lookupRes);
   }
 
-  float getFastQuadraticDistance(int index, float gPosX, float gPosY) {
+  final float getFastQuadraticDistance(int index, float gPosX, float gPosY) {
     float dx = gPosX - posX[index];
     float dy = gPosY - posY[index];
     // quadratic distances
@@ -260,20 +260,20 @@ public class BSplineTrack implements TrackInterface {
     return Norm._2.of(getPosition(pathProgress).subtract(from));
   }
 
-  @Override
-  public boolean isInTrack(Tensor position) {
+  @Override // from TrackInterface
+  public final boolean isInTrack(Tensor position) {
     Scalar prog = getNearestPathProgress(position);
     Scalar dist = getDist(position, prog);
     return Scalars.lessThan(dist, getRadius(prog));
   }
 
-  @Override
-  public Tensor getNearestPosition(Tensor position) {
+  @Override // from TrackInterface
+  public final Tensor getNearestPosition(Tensor position) {
     return getPosition(getNearestPathProgress(position));
   }
 
-  @Override
-  public Tensor getMiddleLine(int resolution) {
+  @Override // from TrackInterface
+  public final Tensor getMiddleLine(int resolution) {
     Tensor line = Tensors.empty();
     Scalar step = length.divide(RealScalar.of(resolution));
     for (int i = 0; i < resolution; ++i) {
@@ -283,8 +283,8 @@ public class BSplineTrack implements TrackInterface {
     return line;
   }
 
-  @Override
-  public Tensor getLeftLine(int resolution) {
+  @Override // from TrackInterface
+  public final Tensor getLeftLine(int resolution) {
     // this is not accurate for large changes in radius
     Tensor line = Tensors.empty();
     Scalar step = length.divide(RealScalar.of(resolution));
@@ -300,8 +300,8 @@ public class BSplineTrack implements TrackInterface {
   }
 
   // TODO refactor so that left and right reuse code
-  @Override
-  public Tensor getRightLine(int resolution) {
+  @Override // from TrackInterface
+  public final Tensor getRightLine(int resolution) {
     // this is not accurate for large changes in radius
     Tensor line = Tensors.empty();
     Scalar step = length.divide(RealScalar.of(resolution));

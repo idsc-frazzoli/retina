@@ -46,9 +46,9 @@ public class TrackRefinement {
 
   public class TrackSplitConstraint extends TrackConstraint {
     private final BSplineTrack track;
-    Scalar trackProg = null;
-    Tensor trackPos = null;
-    Tensor trackDirection = null;
+    private Scalar trackProg = null;
+    private Tensor trackPos = null;
+    private Tensor trackDirection = null;
 
     public TrackSplitConstraint(BSplineTrack track) {
       this.track = track;
@@ -144,6 +144,9 @@ public class TrackRefinement {
     return getRefinedTrack(trackData.get(0), trackData.get(1), trackData.get(2), resolution, iterations, closed, constraints);
   }
 
+  private static final Scalar gdRadiusGrowth = Quantity.of(0.07, SI.METER);
+  private static final Scalar gdRegularizer = RealScalar.of(0.01);
+
   public Tensor getRefinedTrack(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusCtrPoints, Scalar resolution, int iterations, boolean closed,
       List<TrackConstraint> constraints) {
     int m = (int) (controlpointsX.length() * resolution.number().doubleValue());
@@ -172,9 +175,9 @@ public class TrackRefinement {
       controlpointsY = controlpointsY.add(splineMatrixTransp.dot(corr.get(1)));
       final Tensor fControl = radiusCtrPoints;
       radiusCtrPoints = Tensors.vector((ii) -> fControl.get(ii).add(gdRadiusGrowth), radiusCtrPoints.length());
-      controlpointsX = controlpointsX.add(getRegularization(controlpointsX, gdRegularizer, closed));
-      controlpointsY = controlpointsY.add(getRegularization(controlpointsY, gdRegularizer, closed));
-      radiusCtrPoints = radiusCtrPoints.add(getRegularization(radiusCtrPoints, gdRegularizer, closed));
+      controlpointsX = controlpointsX.add(Regularization.of(controlpointsX, gdRegularizer, closed));
+      controlpointsY = controlpointsY.add(Regularization.of(controlpointsY, gdRegularizer, closed));
+      radiusCtrPoints = radiusCtrPoints.add(Regularization.of(radiusCtrPoints, gdRegularizer, closed));
       if (Objects.nonNull(constraints)) {
         for (TrackConstraint constraint : constraints) {
           constraint.compute(controlpointsX, controlpointsY, radiusCtrPoints);
@@ -189,12 +192,11 @@ public class TrackRefinement {
   }
 
   // for debugging
-  ArrayList<Tensor> freeLines = new ArrayList<>();
-  final Scalar gdLimits = RealScalar.of(0.4);
-  final Scalar gdRadius = RealScalar.of(0.8);
-  final Scalar gdRadiusGrowth = Quantity.of(0.07, SI.METER);
-  final Scalar gdRegularizer = RealScalar.of(0.01);
-  final Scalar defaultRadius = Quantity.of(1, SI.METER);
+  // TODO JPH/MH not used
+  private static final Scalar defaultRadius = Quantity.of(1, SI.METER);
+  private static final Scalar gdLimits = RealScalar.of(0.4);
+  private static final Scalar gdRadius = RealScalar.of(0.8);
+  private List<Tensor> freeLines = new ArrayList<>();
 
   private Tensor getCorrectionVectors(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints, Tensor queryPositions, Tensor basisMatrix,
       Tensor basisMatrix1Der, Scalar resolution, boolean closed) {
@@ -215,32 +217,6 @@ public class TrackRefinement {
     Tensor radiusCorr = highClipping.add(lowClipping).multiply(gdRadius.divide(resolution)).negate();
     // Tensor upwardsforce = Tensors.vector(list)
     return Tensors.of(posCorr.get(0), posCorr.get(1), radiusCorr);
-  }
-
-  private static Tensor getRegularization(Tensor controlpoints, Scalar reg, boolean closed) {
-    Tensor regVec = Tensors.empty();
-    if (!closed) {
-      // do we have convolution?
-      // TODO MH yes: ListConvolve or ListCorrelate
-      regVec.append(Quantity.of(0, SI.METER));
-      for (int i = 1; i < controlpoints.length() - 1; i++) {
-        regVec.append(Mean.of(//
-            Tensors.of(controlpoints.Get(i - 1), controlpoints.Get(i + 1))));
-      }
-      regVec.append(Quantity.of(0, SI.METER));
-    } else {
-      // do we have convolution?
-      // TODO MH yes: ListConvolve or ListCorrelate
-      regVec.append(Mean.of(//
-          Tensors.of(controlpoints.Get(controlpoints.length() - 1), controlpoints.Get(1))));
-      for (int i = 1; i < controlpoints.length() - 1; i++) {
-        regVec.append(Mean.of(//
-            Tensors.of(controlpoints.Get(i - 1), controlpoints.Get(i + 1))));
-      }
-      regVec.append(Mean.of(//
-          Tensors.of(controlpoints.Get(controlpoints.length() - 2), controlpoints.Get(0))));
-    }
-    return regVec.subtract(controlpoints).multiply(reg);
   }
 
   public Tensor getSideLimits(Tensor pos, Tensor sidedir, Scalar stepsSize, Scalar maxSearch) {
