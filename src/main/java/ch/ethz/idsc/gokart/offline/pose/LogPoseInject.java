@@ -51,7 +51,7 @@ public enum LogPoseInject {
             if (set.add(event.channel))
               System.err.println("not a binary blob: " + event.channel);
           }
-          if (binaryBlob != null) {
+          if (Objects.nonNull(binaryBlob)) {
             Scalar time = UnitSystem.SI().apply(Quantity.of(event.utime - tic, NonSI.MICRO_SECOND));
             offlinePoseEstimator.event(time, event.channel, ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
             // System.out.println("bin blob");

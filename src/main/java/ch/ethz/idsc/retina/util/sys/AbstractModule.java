@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.util.sys;
 
 import java.util.Date;
+import java.util.Objects;
 
 /** Abstract Module is the thread starter module. It tries to launch the
  * algorithm implemented in {@link AbstractEventModule} or
@@ -39,7 +40,7 @@ public abstract class AbstractModule {
   /** Used by task manager to terminate the modules. */
   protected void terminate() {
     // order of launch() reversed
-    if (thread != null)
+    if (Objects.nonNull(thread))
       thread.interrupt();
     last();
   }

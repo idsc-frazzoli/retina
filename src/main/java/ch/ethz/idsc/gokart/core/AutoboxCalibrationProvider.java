@@ -18,7 +18,8 @@ public abstract class AutoboxCalibrationProvider<PE extends DataEvent> extends A
    * 
    * @return true if calibration is known to be required */
   public final boolean isScheduleSuggested() {
-    return isIdle() && hintScheduleRequired();
+    return isIdle() //
+        && hintScheduleRequired();
   }
 
   /** function should return false if no information is present

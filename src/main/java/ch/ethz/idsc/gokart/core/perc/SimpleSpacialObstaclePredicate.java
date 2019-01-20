@@ -33,6 +33,7 @@ public class SimpleSpacialObstaclePredicate implements SpacialXZObstaclePredicat
   @Override // from SpacialXZObstaclePredicate
   public boolean isObstacle(float x, float z) {
     double z_corrected = z - x * incline; // negative sign
-    return min < z_corrected && z_corrected < max;
+    return min < z_corrected //
+        && z_corrected < max;
   }
 }

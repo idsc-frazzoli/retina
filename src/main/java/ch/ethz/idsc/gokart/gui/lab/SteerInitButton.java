@@ -19,7 +19,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 
   @Override // from AutoboxInitButton
   boolean isEnabled() {
-    boolean nonCalibrated = !SteerSocket.INSTANCE.getSteerColumnTracker().isSteerColumnCalibrated();
-    return nonCalibrated && SteerCalibrationProvider.INSTANCE.isIdle();
+    return !SteerSocket.INSTANCE.getSteerColumnTracker().isSteerColumnCalibrated() //
+        && SteerCalibrationProvider.INSTANCE.isIdle();
   }
 }

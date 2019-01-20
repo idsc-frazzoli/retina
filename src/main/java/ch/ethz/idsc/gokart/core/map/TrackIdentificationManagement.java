@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.map;
 import java.awt.Graphics2D;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -56,7 +57,8 @@ public class TrackIdentificationManagement implements RenderInterface {
   }
 
   public boolean setStart(GokartPoseEvent gokartPoseEvent) {
-    return gokartPoseEvent != null && setStart(gokartPoseEvent.getPose());
+    return Objects.nonNull(gokartPoseEvent) //
+        && setStart(gokartPoseEvent.getPose());
   }
 
   public void resetStart() {
@@ -97,14 +99,14 @@ public class TrackIdentificationManagement implements RenderInterface {
     System.out.println("update called: " + timeSinceLastTrackUpdate);
     timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
     if (startSet) {
-      if (trackData == null) {
+      if (Objects.isNull(trackData)) {
         initialGuess.update(startX, startY, startOrientation, pose);
         closedTrack = initialGuess.isClosed();
       }
-      if (trackData == null && closedTrack) {
+      if (Objects.isNull(trackData) && closedTrack) {
         // current track is not available or no longer valid
         Tensor ctrpoints = initialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
-        if (ctrpoints != null) {
+        if (Objects.nonNull(ctrpoints)) {
           // we have a guess
           // TODO do this more elegantly
           Tensor radiusCtrPoints = Tensors.vector(i -> Quantity.of(1, SI.METER), ctrpoints.get(0).length());
@@ -125,7 +127,7 @@ public class TrackIdentificationManagement implements RenderInterface {
            * ctrpoints.get(0), //
            * ctrpoints.get(1), //
            * radiusCtrPoints, RealScalar.of(8), 10, closedTrack, constraints); */
-          if (trackData != null) {
+          if (Objects.nonNull(trackData)) {
             // valid refinement
             // create Track
             // To consider: high startup cost -> maybe don't do this in every step
@@ -145,7 +147,7 @@ public class TrackIdentificationManagement implements RenderInterface {
         System.out.println("refine");
         trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 10, closedTrack, constraints);
         // consider: slower track update
-        if (trackData != null) {
+        if (Objects.nonNull(trackData)) {
           lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), RADIUS_OFFSET, closedTrack);
           trackRender = null;
         }
@@ -157,8 +159,8 @@ public class TrackIdentificationManagement implements RenderInterface {
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (lastTrack != null) {
-      if (trackRender == null)
+    if (Objects.nonNull(lastTrack)) {
+      if (Objects.isNull(trackRender))
         trackRender = new TrackRender(lastTrack);
       trackRender.render(geometricLayer, graphics);
     } else {
@@ -167,8 +169,8 @@ public class TrackIdentificationManagement implements RenderInterface {
   }
 
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (lastTrack != null) {
-      if (trackRender == null)
+    if (Objects.nonNull(lastTrack)) {
+      if (Objects.isNull(trackRender))
         trackRender = new TrackRender(lastTrack);
       // trackRender.renderHR(geometricLayer, graphics);
     } // else {

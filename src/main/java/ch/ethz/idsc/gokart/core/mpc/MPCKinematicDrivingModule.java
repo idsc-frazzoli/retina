@@ -207,11 +207,12 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     Tensor position = Tensors.of(state.getX(), state.getY());
     MPCPathParameter mpcPathParameter = null;
     MPCPreviewableTrack liveTrack = GokartTrackIdentificationModule.TRACK;
-    if (track != null)
+    if (Objects.nonNull(track))
       mpcPathParameter = track.getPathParameterPreview(previewSize, position, padding);
-    else if (liveTrack != null)
+    else //
+    if (Objects.nonNull(liveTrack))
       mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, position, padding);
-    if (mpcPathParameter != null)
+    if (Objects.nonNull(mpcPathParameter))
       lcmMPCPathFollowingClient.publishControlRequest(state, mpcPathParameter);
     else
       System.out.println("no Track to drive on! :O");

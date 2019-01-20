@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.map;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineMap;
 import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
@@ -58,7 +59,7 @@ public class TrackRefinement {
       Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsY.Get(0));
       Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsY.Get(1));
       Tensor startPos = Mean.of(Tensors.of(first, second));
-      if (trackProg == null || trackPos == null || trackDirection == null) {
+      if (Objects.isNull(trackProg) || Objects.isNull(trackPos) || Objects.isNull(trackDirection)) {
         trackProg = track.getNearestPathProgress(startPos);
         trackPos = track.getPosition(trackProg);
         trackDirection = track.getDirection(trackProg);
@@ -86,7 +87,7 @@ public class TrackRefinement {
       Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsY.Get(0));
       Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsY.Get(1));
       Tensor startPos = Mean.of(Tensors.of(first, second));
-      if (wantedPosition == null) {
+      if (Objects.isNull(wantedPosition)) {
         wantedPosition = startPos;
         wantedDirection = Normalize.with(Norm._2).apply(second.subtract(first));
       }
@@ -115,7 +116,7 @@ public class TrackRefinement {
       Tensor first = Tensors.of(controlpointsX.Get(secondLastIndex), controlpointsY.Get(secondLastIndex));
       Tensor second = Tensors.of(controlpointsX.Get(lastIndex), controlpointsY.Get(lastIndex));
       Tensor startPos = Mean.of(Tensors.of(first, second));
-      if (wantedPosition == null) {
+      if (Objects.isNull(wantedPosition)) {
         wantedPosition = startPos;
         wantedDirection = Normalize.with(Norm._2).apply(second.subtract(first));
       }
@@ -164,7 +165,7 @@ public class TrackRefinement {
     System.out.println("Iterate " + iterations + " times!");
     for (int i = 0; i < iterations; i++) {
       Tensor corr = getCorrectionVectors(controlpointsX, controlpointsY, radiusCtrPoints, queryPositions, splineMatrix, splineMatrix1Der, resolution, closed);
-      if (corr == null)
+      if (Objects.isNull(corr))
         return null;
       radiusCtrPoints = radiusCtrPoints.add(splineMatrixTransp.dot(corr.get(2)));
       controlpointsX = controlpointsX.add(splineMatrixTransp.dot(corr.get(0)));
@@ -174,7 +175,7 @@ public class TrackRefinement {
       controlpointsX = controlpointsX.add(getRegularization(controlpointsX, gdRegularizer, closed));
       controlpointsY = controlpointsY.add(getRegularization(controlpointsY, gdRegularizer, closed));
       radiusCtrPoints = radiusCtrPoints.add(getRegularization(radiusCtrPoints, gdRegularizer, closed));
-      if (constraints != null) {
+      if (Objects.nonNull(constraints)) {
         for (TrackConstraint constraint : constraints) {
           constraint.compute(controlpointsX, controlpointsY, radiusCtrPoints);
           controlpointsX = constraint.getControlPointsX();

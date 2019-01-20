@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.dvs.supply;
 
 import java.awt.Dimension;
+import java.util.Objects;
 import java.util.PriorityQueue;
 
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
@@ -26,7 +27,7 @@ public class SimpleFrameDvsEventSupplier implements FrameDvsEventSupplier {
   @Override
   public void handle(TimedFrame timedFrame) {
     Tensor ins = timedFrame.frame.map(scalar -> Log.of(Increment.ONE.apply(scalar)));
-    if (sbuf == null)
+    if (Objects.isNull(sbuf))
       sbuf = ins.copy();
     for (int x = 0; x < dimension.width; ++x)
       for (int y = 0; y < dimension.height; ++y) {

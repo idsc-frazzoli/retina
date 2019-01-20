@@ -69,9 +69,8 @@ public class MPCNativeSession {
   int getMessageId(MPCNativeMessage message) {
     int prefix = message.getMessagePrefix();
     Integer current = messageCounter.get(prefix);
-    if (current == null) {
+    if (Objects.isNull(current))
       current = 0;
-    }
     messageCounter.put(prefix, current + 1);
     return current;
   }

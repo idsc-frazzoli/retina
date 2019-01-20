@@ -18,8 +18,7 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 public class AutoboxCompactModule extends AbstractModule {
   private final AutoboxCompactComponent autoboxCompactComponent = new AutoboxCompactComponent();
   private final JFrame jFrame = new JFrame("Autobox Compact");
-  private final WindowConfiguration windowConfiguration = //
-      AppCustomization.load(getClass(), new WindowConfiguration());
+  private final WindowConfiguration windowConfiguration = AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override // from AbstractModule
   protected void first() throws Exception {

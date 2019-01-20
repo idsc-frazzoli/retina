@@ -1,6 +1,8 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.tvec;
 
+import java.util.Objects;
+
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -40,7 +42,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
   }
 
   private Scalar estimateRotationAcceleration(Scalar rotation) {
-    if (lastRotation == null)
+    if (Objects.isNull(lastRotation))
       lastRotation = rotation;
     double timeSinceLastStep = intervalClock.seconds();
     if (timeSinceLastStep >= MIN_DT) {
