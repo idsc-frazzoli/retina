@@ -10,7 +10,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 
 import ch.ethz.idsc.gokart.core.fuse.EmergencyBrakeProvider;
-import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;

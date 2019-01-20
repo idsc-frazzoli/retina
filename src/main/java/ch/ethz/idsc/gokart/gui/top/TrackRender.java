@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.Path2D;
 
-import ch.ethz.idsc.gokart.core.mpc.TrackInterface;
+import ch.ethz.idsc.gokart.core.map.TrackInterface;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
@@ -55,6 +55,7 @@ public class TrackRender implements RenderInterface {
     graphics.draw(path2d);
   }
 
+  // TODO JPH/MH function not used
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
     // middle line
     float width = geometricLayer.getMatrix().get(0).Get(0).number().floatValue() / 7.5f;

@@ -3,8 +3,6 @@ package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
 
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
-import ch.ethz.idsc.gokart.core.mpc.TrackIdentificationManagement;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
@@ -17,19 +15,20 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class GokartTrackIdentificationModule extends AbstractClockedModule implements GokartPoseListener, RenderInterface {
-  TrackIdentificationManagement trackIDManagement;
-  GokartTrackMappingModule trackMappingModule;
-  GokartPoseEvent gpe = null;
-  Timing lastExecution = Timing.started();
+public class GokartTrackIdentificationModule extends AbstractClockedModule //
+    implements GokartPoseListener, RenderInterface {
   public static MPCBSplineTrack TRACK = null;
-  public static GokartTrackIdentificationModule TRACKIDENTIFICATION = null;
+  // ---
+  private final TrackIdentificationManagement trackIDManagement;
+  private final GokartTrackMappingModule trackMappingModule;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  // ---
+  private GokartPoseEvent gokartPoseEvent = null;
+  private Timing lastExecution = Timing.started();
 
   public GokartTrackIdentificationModule() {
     trackMappingModule = new GokartTrackMappingModule();
     trackIDManagement = new TrackIdentificationManagement(trackMappingModule);
-    TRACKIDENTIFICATION = this;
   }
 
   public void resetTrack() {
@@ -39,7 +38,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
   @Override
   protected void runAlgo() {
     if (!trackIDManagement.isStartSet() || TrackIdentificationButtons.SETTINGSTART) {
-      trackIDManagement.setStart(gpe);
+      trackIDManagement.setStart(gokartPoseEvent);
       if (trackIDManagement.isStartSet()) {
         System.out.println("start set!");
         TrackIdentificationButtons.SETTINGSTART = false;
@@ -47,7 +46,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
     }
     if (TrackIdentificationButtons.RECORDING) {
       trackMappingModule.prepareMap();
-      TRACK = trackIDManagement.update(gpe, Quantity.of(lastExecution.seconds(), SI.SECOND));
+      TRACK = trackIDManagement.update(gokartPoseEvent, Quantity.of(lastExecution.seconds(), SI.SECOND));
     }
     lastExecution = Timing.started();
   }
@@ -72,7 +71,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
 
   @Override
   public void getEvent(GokartPoseEvent gpe) {
-    this.gpe = gpe;
+    this.gokartPoseEvent = gpe;
   }
 
   @Override

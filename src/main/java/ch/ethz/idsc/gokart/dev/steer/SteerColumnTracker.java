@@ -39,7 +39,8 @@ public final class SteerColumnTracker implements SteerGetListener, SteerColumnIn
 
   @Override // from SteerColumnInterface
   public boolean isSteerColumnCalibrated() {
-    return isRelRckQual && SOFT < getIntervalWidth();
+    return isRelRckQual //
+        && SOFT < getIntervalWidth();
   }
 
   /** if {@link #isSteerColumnCalibrated()} returns true but {@link #isCalibratedAndHealthy()}
@@ -49,7 +50,8 @@ public final class SteerColumnTracker implements SteerGetListener, SteerColumnIn
    * @return false if the interval tracker returns a value outside the nominal range
    * @see SteerCalibrationWatchdog */
   public boolean isCalibratedAndHealthy() {
-    return isSteerColumnCalibrated() && getIntervalWidth() < HARD;
+    return isSteerColumnCalibrated() //
+        && getIntervalWidth() < HARD;
   }
 
   /** @return */

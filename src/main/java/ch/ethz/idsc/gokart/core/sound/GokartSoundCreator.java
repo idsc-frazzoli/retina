@@ -105,7 +105,7 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
   @Override // from StartAndStoppable
   public void stop() {
     isLaunched = false;
-    if (thread != null)
+    if (Objects.nonNull(thread))
       thread.interrupt();
     sourceDataLine.drain();
     sourceDataLine.close();

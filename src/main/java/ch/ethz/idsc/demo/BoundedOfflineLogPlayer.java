@@ -54,7 +54,7 @@ public enum BoundedOfflineLogPlayer {
             if (set.add(event.channel))
               System.err.println("not a binary blob: " + event.channel);
           }
-          if (binaryBlob != null)
+          if (Objects.nonNull(binaryBlob))
             for (OfflineLogListener offlineLogListener : offlineLogListeners) {
               Scalar time = UnitSystem.SI().apply(Quantity.of(event.utime - tic, NonSI.MICRO_SECOND)).map(Round._6).Get();
               ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN);

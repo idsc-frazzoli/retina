@@ -1249,7 +1249,7 @@ public enum GokartLogFile implements LogFile {
   /** manual driving; mpc */
   _20181228T160225_41aeb417,
   /***************************************************/
-  /* 2018-01-10 */
+  /* 2019-01-10 */
   /** manual driving */
   _20190110T143855_41aeb417,
   /** manual driving; autobox failure? */
@@ -1261,11 +1261,32 @@ public enum GokartLogFile implements LogFile {
   /** manual driving; localization not initialized */
   _20190110T173502_41aeb417,
   /***************************************************/
-  /* 2018-01-14 */
+  /* 2019-01-14 */
   /** manual driving */
   _20190114T110212_9f0070a9,
   /** manual driving */
   _20190114T142213_83a9d595,
+  /***************************************************/
+  /* 2019-01-16 */
+  /** manual driving */
+  _20190116T095357_1df9eb42,
+  /** manual driving */
+  _20190116T095915_1df9eb42,
+  /** manual driving */
+  _20190116T100232_1df9eb42,
+  /** manual driving */
+  _20190116T113307_e6cad884,
+  /** manual driving */
+  _20190116T114807_e6cad884,
+  /***************************************************/
+  /* 2019-01-17 power conserving torque vectoring */
+  /** manual driving */
+  _20190117T144922_f882e5e2,
+  /** manual driving */
+  _20190117T153934_e746c6d4,
+  /** manual driving, mpc */
+  _20190117T154746_58bbb64d,
+  /***************************************************/
   /***************************************************/
   ;
   // ---

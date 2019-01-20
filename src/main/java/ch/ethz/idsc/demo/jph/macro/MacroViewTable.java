@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
-import ch.ethz.idsc.gokart.core.joy.ManualControlParser;
+import ch.ethz.idsc.gokart.core.man.ManualControlParser;
 import ch.ethz.idsc.gokart.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;

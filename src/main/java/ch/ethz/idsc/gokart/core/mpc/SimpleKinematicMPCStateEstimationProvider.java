@@ -1,6 +1,8 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import java.util.Objects;
+
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -87,7 +89,7 @@ public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimatio
   @Override
   public GokartState getState() {
     // check if there was an update since the creation of the last gokart state
-    if (lastGokartState == null || !lastGokartState.getTime().equals(lastUpdate))
+    if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate))
       lastGokartState = new GokartState( //
           getTime(), //
           Ux, //

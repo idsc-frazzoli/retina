@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -21,6 +21,7 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.r2.WaypointDistanceCost;
@@ -62,6 +63,7 @@ import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.curve.BSpline1CurveSubdivision;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -91,7 +93,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private static final StateTimeRaster STATE_TIME_RASTER = //
       new EtaRaster(PARTITIONSCALE, StateTimeTensorFunction.state(SE2WRAP::represent));
   // ---
-  final FlowsInterface flowsInterface = Se2CarFlows.forward( //
+  private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
+  private final FlowsInterface flowsInterface = Se2CarFlows.forward( //
       SPEED, Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
@@ -100,7 +103,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final GokartMappingModule gokartMappingModule = new GokartMappingModule();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
-  final Tensor waypoints = TrajectoryConfig.getWaypoints();
+  private final Tensor waypoints = TrajectoryConfig.getWaypoints();
   private PlannerConstraint plannerConstraint;
   private final Tensor goalRadius;
   private Region<Tensor> unionRegion;
@@ -129,6 +132,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
     final Scalar goalRadius_theta = SQRT2.divide(PARTITIONSCALE.Get(2));
     goalRadius = Tensors.of(goalRadius_xy, goalRadius_xy, goalRadius_theta);
+    if (Objects.nonNull(globalViewLcmModule))
+      globalViewLcmModule.setWaypoints(waypoints);
   }
 
   @Override // from AbstractClockedModule
@@ -152,6 +157,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     joystickLcmProvider.stop();
     // ---
     gokartMappingModule.stop();
+    if (Objects.nonNull(globalViewLcmModule))
+      globalViewLcmModule.setWaypoints(null);
   }
 
   @Override // from AbstractClockedModule
@@ -254,5 +261,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       // post 20181025: keep old trajectory
       System.err.println("use old trajectory");
     }
+  }
+
+  Collection<Flow> getFlows(int resolution) {
+    return flowsInterface.getFlows(resolution);
   }
 }

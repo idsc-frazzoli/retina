@@ -2,8 +2,6 @@
 package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Timer;
@@ -14,7 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
-import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -61,9 +59,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private final LinmotGetListener linmotGetListener = getEvent -> linmotGetEvent = getEvent;
   private final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
-  private GokartPoseEvent gokartPoseEvent;
-  private RimoGetEvent rimoGetEvent;
-  private LinmotGetEvent linmotGetEvent;
   private final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final MiscResetButton miscResetButton = new MiscResetButton();
   private final SteerInitButton steerInitButton = new SteerInitButton();
@@ -73,21 +68,19 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final JTextField jTF_ahead;
   private final JTextField jTF_davis240c;
   private final JTextField jTF_localPose;
-  private final JButton jButtonAppend;
+  private final JButton jButtonAppend = new JButton("pose append");
   private final JTextField jTF_localQual;
   private final Tensor poseList = Tensors.empty();
+  // ---
+  private GokartPoseEvent gokartPoseEvent;
+  private RimoGetEvent rimoGetEvent;
+  private LinmotGetEvent linmotGetEvent;
 
   public AutoboxCompactComponent() {
     {
-      JToolBar jToolBar = createRow("Linmot");
+      JToolBar jToolBar = createRow("Actuation");
       jToolBar.add(linmotInitButton.getComponent());
-    }
-    {
-      JToolBar jToolBar = createRow("Misc");
       jToolBar.add(miscResetButton.getComponent());
-    }
-    {
-      JToolBar jToolBar = createRow("Steer");
       jToolBar.add(steerInitButton.getComponent());
     }
     jTF_rimoRatePair = createReading("Rimo");
@@ -99,23 +92,19 @@ import ch.ethz.idsc.tensor.sca.Round;
     jTF_localQual = createReading("Pose quality");
     {
       JToolBar jToolBar = createRow("store");
-      jButtonAppend = new JButton("pose append");
-      jButtonAppend.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          if (Objects.nonNull(gokartPoseEvent)) {
-            Tensor state = gokartPoseEvent.getPose();
-            state = GokartPoseHelper.toUnitless(state);
-            state.set(Round._2, 0);
-            state.set(Round._2, 1);
-            state.set(Round._6, 2);
-            poseList.append(state);
-            try {
-              Put.of(HomeDirectory.file("track.mathematica"), poseList);
-              Export.of(HomeDirectory.file("track.csv"), poseList);
-            } catch (Exception exception) {
-              exception.printStackTrace();
-            }
+      jButtonAppend.addActionListener(actionEvent -> {
+        if (Objects.nonNull(gokartPoseEvent)) {
+          Tensor state = gokartPoseEvent.getPose();
+          state = GokartPoseHelper.toUnitless(state);
+          state.set(Round._2, 0);
+          state.set(Round._2, 1);
+          state.set(Round._6, 2);
+          poseList.append(state);
+          try {
+            Put.of(HomeDirectory.file("track.mathematica"), poseList);
+            Export.of(HomeDirectory.file("track.csv"), poseList);
+          } catch (Exception exception) {
+            exception.printStackTrace();
           }
         }
       });

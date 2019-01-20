@@ -39,6 +39,7 @@ import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Get;
@@ -77,13 +78,15 @@ public class PresenterLcmModule extends AbstractModule {
     {
       if (Objects.nonNull(GokartTrackMappingModule.GRID_RENDER))
         timerFrame.geometricComponent.addRenderInterface(GokartTrackMappingModule.GRID_RENDER);
-      if (Objects.nonNull(GokartTrackIdentificationModule.TRACKIDENTIFICATION))
-        timerFrame.geometricComponent.addRenderInterface(GokartTrackIdentificationModule.TRACKIDENTIFICATION);
+      GokartTrackIdentificationModule gokartTrackIdentificationModule = //
+          ModuleAuto.INSTANCE.getInstance(GokartTrackIdentificationModule.class);
+      if (Objects.nonNull(gokartTrackIdentificationModule))
+        timerFrame.geometricComponent.addRenderInterface(gokartTrackIdentificationModule);
       MPCPredictionRender predictionRender = new MPCPredictionRender();
       timerFrame.geometricComponent.addRenderInterface(predictionRender);
     }
     {
-      PathRender pathRender = new PathRender(gokartPoseInterface);
+      GokartPathRender pathRender = new GokartPathRender(gokartPoseInterface);
       gokartStatusLcmClient.addListener(pathRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(pathRender);
     }

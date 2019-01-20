@@ -15,16 +15,14 @@ import javax.imageio.ImageIO;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AccumulatedEventRender;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.gokart.gui.top.CurveRender;
+import ch.ethz.idsc.gokart.gui.top.GokartPathRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
-import ch.ethz.idsc.gokart.gui.top.PathRender;
 import ch.ethz.idsc.gokart.gui.top.TrigonometryRender;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
@@ -70,7 +68,7 @@ public class OfflineHud implements OfflineLogListener {
   final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   final AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
   final TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
-  final PathRender pathRender = new PathRender(gokartPoseInterface);
+  final GokartPathRender pathRender = new GokartPathRender(gokartPoseInterface);
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rimoGetEvent;
@@ -125,7 +123,6 @@ public class OfflineHud implements OfflineLogListener {
           renderInterface.render(geometricLayer, graphics);
           geometricLayer.popMatrix();
         }
-        new CurveRender(DubendorfCurve.HYPERLOOP_EIGHT).render(geometricLayer, graphics);
         trigonometryRender.gokartStatusListener.getEvent(gokartStatusEvent);
         trigonometryRender.render(geometricLayer, graphics);
         pathRender.gokartStatusListener.getEvent(gokartStatusEvent);

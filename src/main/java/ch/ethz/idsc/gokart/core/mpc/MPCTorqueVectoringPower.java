@@ -1,11 +1,13 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedPredictiveTorqueVectoring;
-import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoring;
-import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
+import java.util.Objects;
+
+import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
+import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedPredictiveTorqueVectoring;
+import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
+import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.dev.steer.SteerMapping;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -16,25 +18,27 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Tan;
 
 public class MPCTorqueVectoringPower extends MPCPower {
-  ImprovedNormalizedTorqueVectoring torqueVectoring;
-  MPCStateEstimationProvider mpcStateProvider;
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  MPCSteering mpcSteering;
+  private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
+      new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
+  private final MPCSteering mpcSteering;
+  // ---
+  private MPCStateEstimationProvider mpcStateProvider;
 
   public MPCTorqueVectoringPower(MPCSteering mpcSteering) {
     this.mpcSteering = mpcSteering;
-    torqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   }
 
   @Override
   public Tensor getPower(Scalar time) {
     ControlAndPredictionStep cnsStep = getStep(time);
-    if (cnsStep == null) {
+    if (Objects.isNull(cnsStep)) {
       return Tensors.of(//
           Quantity.of(0, NonSI.ARMS), //
           Quantity.of(0, NonSI.ARMS));
     }
-    if (false || mpcStateProvider == null) {
+    // TODO JPH/MH
+    if (false || Objects.isNull(mpcStateProvider)) {
       // return torqueless power
       return torqueVectoring.getMotorCurrentsFromAcceleration(//
           Quantity.of(0, SI.SECOND.negate()), //

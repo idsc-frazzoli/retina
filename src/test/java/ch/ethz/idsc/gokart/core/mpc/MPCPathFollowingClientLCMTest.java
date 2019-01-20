@@ -72,7 +72,7 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
       lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
       Thread.sleep(100);// should even work with 30ms
       System.out.println(mpcControlUpdateListener.cns);
-      assertTrue(mpcControlUpdateListener.cns != null);
+      assertNotNull(mpcControlUpdateListener.cns);
       lcmMPCControlClient.stop();
     } catch (Exception e) {
       e.printStackTrace();
