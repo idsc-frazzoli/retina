@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

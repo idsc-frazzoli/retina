@@ -1,9 +1,11 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.core.map;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.core.mpc.MPCBSplineMap;
+import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
 import ch.ethz.idsc.tensor.RealScalar;

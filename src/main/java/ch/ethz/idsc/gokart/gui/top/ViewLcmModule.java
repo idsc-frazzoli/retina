@@ -66,6 +66,7 @@ abstract class ViewLcmModule extends AbstractModule {
     viewLcmFrame.setGokartPoseInterface(mappedPoseInterface);
   }
 
+  /** @param curve may be null */
   public void setCurve(Tensor curve) {
     pathRender.setCurve(curve, true);
   }
@@ -80,6 +81,7 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(renderInterface);
     }
     {
+      // TODO JPH show waypoints once planner is started!
       final Tensor waypoints = TrajectoryConfig.getWaypoints();
       RenderInterface waypointRender = new Se2WaypointRender(waypoints, Arrowhead.of(0.9), new Color(64, 192, 64, 255));
       // viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);

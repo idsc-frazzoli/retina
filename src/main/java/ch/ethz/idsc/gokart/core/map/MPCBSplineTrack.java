@@ -1,6 +1,8 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.core.map;
 
+import ch.ethz.idsc.gokart.core.mpc.MPCPathParameter;
+import ch.ethz.idsc.gokart.core.mpc.MPCPreviewableTrack;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

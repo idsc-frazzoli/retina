@@ -8,11 +8,11 @@ import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import ch.ethz.idsc.gokart.core.map.BSplineTrack;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.map.TrackDetectionConfig;
-import ch.ethz.idsc.gokart.core.mpc.BSplineTrack;
-import ch.ethz.idsc.gokart.core.mpc.TrackIdentificationManagement;
+import ch.ethz.idsc.gokart.core.map.TrackIdentificationManagement;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;

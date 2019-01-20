@@ -3,8 +3,6 @@ package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
 
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
-import ch.ethz.idsc.gokart.core.mpc.TrackIdentificationManagement;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;

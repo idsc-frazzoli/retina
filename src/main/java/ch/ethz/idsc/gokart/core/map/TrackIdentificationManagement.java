@@ -1,10 +1,11 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.top.TrackRender;
 import ch.ethz.idsc.owl.gui.RenderInterface;
