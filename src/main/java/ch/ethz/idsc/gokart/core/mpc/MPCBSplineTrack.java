@@ -5,10 +5,15 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Ramp;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack {
+  final static Scalar ONE = RealScalar.ONE;
+  final static Scalar ZERO = RealScalar.ZERO;
+  final static Clip ONEZEROCLIP = Clip.function(ZERO, ONE);
+  
   /** @param trackData matrix with dimension n x 3
    * @param radiusOffset
    * @param closed */
@@ -17,7 +22,7 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
     tensor.set(radiusOffset::add, Tensor.ALL, 2);
     return new MPCBSplineTrack(tensor, closed);
   }
-
+  
   /** @param trackData matrix with dimension n x 3
    * @param closed */
   public MPCBSplineTrack(Tensor trackData, boolean closed) {

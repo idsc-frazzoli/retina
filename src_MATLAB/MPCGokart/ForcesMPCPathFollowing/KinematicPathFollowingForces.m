@@ -121,7 +121,7 @@ model.lb(index.s)=0;
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
@@ -129,14 +129,17 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 300;
+tend = 150;
 eulersteps = 10;
 %[...,x,y,theta,v,ab,beta,s,braketemp]
-xs(index.x-index.nu)=20;
-xs(index.x-index.nu)=37;
-xs(index.y-index.nu)=0;
-xs(index.y-index.nu)=44;
-xs(index.theta-index.nu)=0.3;
+%[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
+fpoints = points(1:2,1:2);
+pdir = diff(fpoints);
+pstart = mean(fpoints);
+pangle = atan2(pdir(2),pdir(1));
+xs(index.x-index.nu)=pstart(1);
+xs(index.y-index.nu)=pstart(2);
+xs(index.theta-index.nu)=pangle;
 xs(index.v-index.nu)=1;
 xs(index.ab-index.nu)=0;
 xs(index.beta-index.nu)=0;

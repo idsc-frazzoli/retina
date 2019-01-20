@@ -37,8 +37,8 @@ function f = objective(z,points,radii,vmax, maxxacc,maxyacc,latacclim,rotacceffe
     accviolation = max(0,accnorm-1)^2;
     lagcost = lagerror^2;
     latcost = laterror^2;
-    prog = -0.2*z(index.ds);
-    reg = z(index.dotab).^2*0.0004+z(index.dotbeta).^2*0.01;
+    prog = -0.1*z(index.ds);
+    reg = z(index.dotab).^2*0.0008+z(index.dotbeta).^2*0.01;
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
     %f = lagcost+latcost+reg+prog+over75d*over75d*0.001+speedcost+accviolation+trackViolation;
