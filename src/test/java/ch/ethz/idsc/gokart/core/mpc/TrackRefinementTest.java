@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import junit.framework.TestCase;
 
-public class TrackRefinenementTest extends TestCase {
+public class TrackRefinementTest extends TestCase {
   public void testSimple() {
     int n = 10;
     int m = 5;

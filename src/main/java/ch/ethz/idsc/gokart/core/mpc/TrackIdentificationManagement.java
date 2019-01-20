@@ -26,7 +26,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   // ---
   private final PlanableOccupancyGrid occupancyGrid;
   private final TrackLayoutInitialGuess initialGuess;
-  private final TrackRefinenement refinenement;
+  private final TrackRefinement refinenement;
   private Tensor trackData = null;
   private int startX = -1;
   private int startY = -1;
@@ -39,16 +39,16 @@ public class TrackIdentificationManagement implements RenderInterface {
   private boolean closedTrack = false;
   private boolean oldWasClosed = false;
   private Timing lastTrackReset = Timing.started();
-  private List<TrackRefinenement.TrackConstraint> constraints = new LinkedList<>();
+  private List<TrackRefinement.TrackConstraint> constraints = new LinkedList<>();
   private Scalar openTrackValid = Quantity.of(1, SI.SECOND);
   private Scalar timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
-  private List<TrackRefinenement.TrackConstraint> trackConstraints = null;
+  private List<TrackRefinement.TrackConstraint> trackConstraints = null;
   private boolean startSet = false;
 
   public TrackIdentificationManagement(PlanableOccupancyGrid planableOccupancyGrid) {
     this.occupancyGrid = planableOccupancyGrid;
     this.initialGuess = new TrackLayoutInitialGuess(occupancyGrid);
-    this.refinenement = new TrackRefinenement(occupancyGrid);
+    this.refinenement = new TrackRefinement(occupancyGrid);
     Tensor gridSize = occupancyGrid.getGridSize();
     width = gridSize.Get(0).number().intValue();
     heigth = gridSize.Get(1).number().intValue();
@@ -88,8 +88,8 @@ public class TrackIdentificationManagement implements RenderInterface {
     return false;
   }
 
-  public MPCBSplineTrack update(GokartPoseEvent gpe, Scalar dTime) {
-    return update(gpe.getPose(), dTime);
+  public MPCBSplineTrack update(GokartPoseEvent gokartPoseEvent, Scalar dTime) {
+    return update(gokartPoseEvent.getPose(), dTime);
   }
 
   public MPCBSplineTrack update(Tensor pose, Scalar dTime) {
@@ -137,8 +137,9 @@ public class TrackIdentificationManagement implements RenderInterface {
             lastTrack = null;
           }
         }
-      } else if (closedTrack) {
-        System.out.println(count++);
+      } else //
+      if (closedTrack) {
+        System.out.println(++count);
         // refine
         System.out.println("refine");
         trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 10, closedTrack, constraints);

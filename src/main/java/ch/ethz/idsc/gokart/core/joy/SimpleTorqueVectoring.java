@@ -27,7 +27,7 @@ class SimpleTorqueVectoring implements TorqueVectoringInterface {
         realRotation);
     // left and right power prefer power over Z-torque
     Scalar power = Clip.absoluteOne().apply(wantedPower);
-    return TorqueVectoringHelper.clip( //
+    return TorqueVectoringClip.of( //
         power.subtract(wantedZTorque), // unit one
         power.add(wantedZTorque) // unit one
     );

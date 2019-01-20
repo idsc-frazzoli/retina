@@ -74,7 +74,7 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
     Scalar remappedMeanAcceleration = //
         wantedAcceleration.subtract(mid).divide(halfRange);//
     // get clipped individual accelerations
-    Tensor remappedAccelerations = TorqueVectoringHelper.clip( //
+    Tensor remappedAccelerations = TorqueVectoringClip.of( //
         remappedMeanAcceleration.subtract(wantedZTorque), //
         remappedMeanAcceleration.add(wantedZTorque));
     // remap again to acceleration space

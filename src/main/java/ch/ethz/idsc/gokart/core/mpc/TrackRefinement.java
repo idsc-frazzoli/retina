@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Abs;
 
-public class TrackRefinenement {
+public class TrackRefinement {
   public abstract class TrackConstraint {
     Tensor controlPointsX = null;
     Tensor controlPointsY = null;
@@ -42,7 +42,7 @@ public class TrackRefinenement {
   }
 
   public class TrackSplitConstraint extends TrackConstraint {
-    final BSplineTrack track;
+    private final BSplineTrack track;
     Scalar trackProg = null;
     Tensor trackPos = null;
     Tensor trackDirection = null;
@@ -51,7 +51,7 @@ public class TrackRefinenement {
       this.track = track;
     }
 
-    @Override
+    @Override // from TrackConstraint
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
       Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsY.Get(0));
       Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsY.Get(1));
@@ -79,7 +79,7 @@ public class TrackRefinenement {
     Tensor wantedPosition = null;
     Tensor wantedDirection = null;
 
-    @Override
+    @Override // from TrackConstraint
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
       Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsY.Get(0));
       Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsY.Get(1));
@@ -106,7 +106,7 @@ public class TrackRefinenement {
     Tensor wantedPosition = null;
     Tensor wantedDirection = null;
 
-    @Override
+    @Override // from TrackConstraint
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
       int lastIndex = controlpointsX.length() - 1;
       int secondLastIndex = lastIndex - 1;
@@ -131,7 +131,7 @@ public class TrackRefinenement {
     }
   }
 
-  public TrackRefinenement(PlanableOccupancyGrid occupancyGrid) {
+  public TrackRefinement(PlanableOccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
   }
 
