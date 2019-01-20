@@ -1,10 +1,10 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.joy;
+package ch.ethz.idsc.gokart.core.tvec;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-interface TorqueVectoringInterface {
+public interface TorqueVectoringInterface {
   /** @param expectedRotationPerMeterDriven with unit m^-1
    * @param meanTangentSpeed with unit m*s^-1
    * @param angularSlip with unit s^-1

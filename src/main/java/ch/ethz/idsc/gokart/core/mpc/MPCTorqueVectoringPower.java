@@ -1,9 +1,9 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedPredictiveTorqueVectoring;
-import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoring;
-import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
+import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedPredictiveTorqueVectoring;
+import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
+import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerMapping;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;

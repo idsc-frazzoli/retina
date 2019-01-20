@@ -1,5 +1,5 @@
 // code by mh, jph
-package ch.ethz.idsc.gokart.core.joy;
+package ch.ethz.idsc.gokart.core.tvec;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -17,7 +17,6 @@ import ch.ethz.idsc.tensor.sca.Ramp;
    * @param powerR power right unitless
    * @return vector of length 2 with scalars in interval [-1, 1] */
   static Tensor of(Scalar powerL, Scalar powerR) {
-    // proposed solution:
     Scalar l_hi = Ramp.FUNCTION.apply(powerL.subtract(RealScalar.ONE));
     Scalar l_lo = Ramp.FUNCTION.apply(powerL.negate().subtract(RealScalar.ONE));
     Scalar r_hi = Ramp.FUNCTION.apply(powerR.subtract(RealScalar.ONE));

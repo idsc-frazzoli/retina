@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.joy;
+package ch.ethz.idsc.gokart.core.tvec;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;

@@ -1,15 +1,15 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.joy;
+package ch.ethz.idsc.gokart.core.tvec;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-class SimpleTorqueVectoring implements TorqueVectoringInterface {
+public class SimpleTorqueVectoring implements TorqueVectoringInterface {
   final TorqueVectoringConfig torqueVectoringConfig;
 
-  SimpleTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
+  public SimpleTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     this.torqueVectoringConfig = torqueVectoringConfig;
   }
 

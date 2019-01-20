@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.joy;
+package ch.ethz.idsc.gokart.core.tvec;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.time.IntervalClock;
@@ -14,7 +14,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
   // ---
   private final IntervalClock intervalClock = new IntervalClock();
   private Scalar lastRotation = null;
-  // TODO JPH/MH extact functionality to separate class "IIR filter"
+  // TODO JPH/MH extract functionality to separate class "IIR filter"
   private Scalar rotationAccRollingAverage = Quantity.of(0, SI.ANGULAR_ACCELERATION);
 
   public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {

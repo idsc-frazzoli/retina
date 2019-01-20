@@ -1,13 +1,13 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.joy;
+package ch.ethz.idsc.gokart.core.tvec;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-class ImprovedTorqueVectoring extends SimpleTorqueVectoring {
-  ImprovedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
+public class ImprovedTorqueVectoring extends SimpleTorqueVectoring {
+  public ImprovedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
   }
 

@@ -23,47 +23,47 @@ import junit.framework.TestCase;
 
 public class TorqueVectoringJoystickModuleTest extends TestCase {
   public void testSimple() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
-    tvjm.first();
-    tvjm.last();
+    TorqueVectoringJoystickModule torqueVectoringJoystickModule = new SimpleTorqueVectoringJoystickModule();
+    torqueVectoringJoystickModule.first();
+    torqueVectoringJoystickModule.last();
   }
 
   public void testControl() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
-    tvjm.first();
+    TorqueVectoringJoystickModule torqueVectoringJoystickModule = new SimpleTorqueVectoringJoystickModule();
+    torqueVectoringJoystickModule.first();
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
-    tvjm.getEvent(RimoGetEvents.create(100, 200));
+    torqueVectoringJoystickModule.getEvent(RimoGetEvents.create(100, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
     ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0), false, false);
-    Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, manualControlInterface);
+    Optional<RimoPutEvent> control = torqueVectoringJoystickModule.control(steerColumnAdapter, manualControlInterface);
     RimoPutEvent rimoPutEvent1 = control.get();
     assertEquals(rimoPutEvent1.putTireL.getTorque(), Quantity.of(0, NonSI.ARMS));
     assertEquals(rimoPutEvent1.putTireR.getTorque(), Quantity.of(0, NonSI.ARMS));
     // full forward
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0, SI.PER_SECOND));
-    tvjm.getEvent(RimoGetEvents.create(200, 200));
+    torqueVectoringJoystickModule.getEvent(RimoGetEvents.create(200, 200));
     steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
     manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 1), false, false);
-    control = tvjm.control(steerColumnAdapter, manualControlInterface);
+    control = torqueVectoringJoystickModule.control(steerColumnAdapter, manualControlInterface);
     RimoPutEvent rimoPutEvent2 = control.get();
     assertEquals(rimoPutEvent2.putTireL.getTorque(), ManualConfig.GLOBAL.torqueLimit.negate());
     assertEquals(rimoPutEvent2.putTireR.getTorque(), ManualConfig.GLOBAL.torqueLimit);
     // half forward slip right
-    tvjm.last();
+    torqueVectoringJoystickModule.last();
   }
 
   public void testControl2() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
-    tvjm.first();
+    TorqueVectoringJoystickModule torqueVectoringJoystickModule = new SimpleTorqueVectoringJoystickModule();
+    torqueVectoringJoystickModule.first();
     Scalar slip = RationalScalar.HALF; // 1/2 forward slip right
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.2, SI.PER_SECOND));
-    tvjm.getEvent(RimoGetEvents.create(200, 200));
+    torqueVectoringJoystickModule.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.5), false, false);
-    Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, manualControlInterface);
+    Optional<RimoPutEvent> control = torqueVectoringJoystickModule.control(steerColumnAdapter, manualControlInterface);
     RimoPutEvent rimoPutEvent3 = control.get();
     // FIXME: why did I have to change that value
     Clip.function(Quantity.of(-400, "ARMS"), Quantity.of(-300, "ARMS")).requireInside(rimoPutEvent3.putTireL.getTorque());
@@ -73,19 +73,19 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     Scalar meanPower = rimoPutEvent3.putTireL.getTorque().negate().add(rimoPutEvent3.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
     Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
-    tvjm.last();
+    torqueVectoringJoystickModule.last();
   }
 
   public void testControl3() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
-    tvjm.first();
+    TorqueVectoringJoystickModule torqueVectoringJoystickModule = new SimpleTorqueVectoringJoystickModule();
+    torqueVectoringJoystickModule.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip right
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.3, SI.PER_SECOND));
-    tvjm.getEvent(RimoGetEvents.create(200, 200));
+    torqueVectoringJoystickModule.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
     ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false, false);
-    Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, manualControlInterface);
+    Optional<RimoPutEvent> control = torqueVectoringJoystickModule.control(steerColumnAdapter, manualControlInterface);
     RimoPutEvent rimoPutEvent4 = control.get();
     Clip.function(Quantity.of(-1200, "ARMS"), Quantity.of(-1100, "ARMS")).requireInside(rimoPutEvent4.putTireL.getTorque());
     Clip.function(Quantity.of(+2300, "ARMS"), Quantity.of(+2315, "ARMS")).requireInside(rimoPutEvent4.putTireR.getTorque());
@@ -94,20 +94,20 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     Scalar meanPower = rimoPutEvent4.putTireL.getTorque().negate().add(rimoPutEvent4.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
     Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
-    tvjm.last();
+    torqueVectoringJoystickModule.last();
   }
 
   public void testControl4() throws Exception {
-    TorqueVectoringJoystickModule tvjm = new SimpleTorqueVectoringJoystickModule();
-    tvjm.first();
+    TorqueVectoringJoystickModule torqueVectoringJoystickModule = new SimpleTorqueVectoringJoystickModule();
+    torqueVectoringJoystickModule.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip left
     System.out.println(slip + " slip left");
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.3, SI.PER_SECOND));
-    tvjm.getEvent(RimoGetEvents.create(200, 200));
+    torqueVectoringJoystickModule.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
     ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false, false);
-    Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, manualControlInterface);
+    Optional<RimoPutEvent> control = torqueVectoringJoystickModule.control(steerColumnAdapter, manualControlInterface);
     RimoPutEvent rimoPutEvent5 = control.get();
     System.out.println(rimoPutEvent5.putTireL.getTorque());
     System.out.println(rimoPutEvent5.putTireR.getTorque());
@@ -116,7 +116,7 @@ public class TorqueVectoringJoystickModuleTest extends TestCase {
     Scalar meanPower = rimoPutEvent5.putTireL.getTorque().negate().add(rimoPutEvent5.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
     Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);
     assertTrue(Scalars.lessThan(meanPower.subtract(wantedPower).abs(), Quantity.of(1, NonSI.ARMS)));
-    tvjm.last();
+    torqueVectoringJoystickModule.last();
   }
 
   public void testControl5() throws Exception {
