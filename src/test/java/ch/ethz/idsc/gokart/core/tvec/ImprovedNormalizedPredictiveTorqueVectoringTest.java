@@ -1,7 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.tvec;
 
-import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.mpc.PowerLookupTable;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;

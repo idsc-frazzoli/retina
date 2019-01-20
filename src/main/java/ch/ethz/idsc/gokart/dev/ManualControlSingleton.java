@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.dev;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.retina.joystick.ManualControlListener;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.Refactor;

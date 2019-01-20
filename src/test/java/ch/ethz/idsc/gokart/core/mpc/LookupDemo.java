@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.io.IOException;
 import java.util.function.BiFunction;
 
-import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

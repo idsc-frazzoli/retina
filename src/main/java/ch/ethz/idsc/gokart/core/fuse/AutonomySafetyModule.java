@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;

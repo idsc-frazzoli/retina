@@ -22,13 +22,13 @@ import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
-import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedPredictiveTorqueVectoringJoystickModule;
-import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoringJoystickModule;
-import ch.ethz.idsc.gokart.core.joy.JoystickGroupModule;
-import ch.ethz.idsc.gokart.core.joy.LookupTableRimoThrustJoystickModule;
-import ch.ethz.idsc.gokart.core.joy.ManualResetModule;
-import ch.ethz.idsc.gokart.core.joy.RimoThrustJoystickModule;
-import ch.ethz.idsc.gokart.core.joy.SysidSignalsModule;
+import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedPredictiveTorqueVectoringManualModule;
+import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
+import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustJoystickModule;
+import ch.ethz.idsc.gokart.core.man.ManualGroupModule;
+import ch.ethz.idsc.gokart.core.man.ManualResetModule;
+import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
+import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
@@ -100,12 +100,12 @@ enum RunTabbedTaskGui {
       GokartSoundLcmModule.class, //
       GokartVoiceOutputs.class //
   );
-  static final List<Class<?>> MODULES_JOY = Arrays.asList( //
-      RimoThrustJoystickModule.class, //
-      ImprovedNormalizedTorqueVectoringJoystickModule.class, //
-      ImprovedNormalizedPredictiveTorqueVectoringJoystickModule.class, //
+  static final List<Class<?>> MODULES_MAN = Arrays.asList( //
+      RimoThrustManualModule.class, //
+      ImprovedNormalizedTorqueVectoringManualModule.class, //
+      ImprovedNormalizedPredictiveTorqueVectoringManualModule.class, //
       LookupTableRimoThrustJoystickModule.class, //
-      JoystickGroupModule.class, //
+      ManualGroupModule.class, //
       SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
@@ -153,7 +153,7 @@ enum RunTabbedTaskGui {
     TabbedTaskGui tabbedTaskGui = new TabbedTaskGui(PROPERTIES);
     tabbedTaskGui.tab("dev", MODULES_DEV);
     tabbedTaskGui.tab("cfg", MODULES_CFG);
-    tabbedTaskGui.tab("joy", MODULES_JOY);
+    tabbedTaskGui.tab("man", MODULES_MAN);
     tabbedTaskGui.tab("aut", MODULES_AUT);
     tabbedTaskGui.tab("fuse", MODULES_FUSE);
     tabbedTaskGui.tab("lab", MODULES_LAB);

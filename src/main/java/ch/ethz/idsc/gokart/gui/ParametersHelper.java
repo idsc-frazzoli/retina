@@ -7,7 +7,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.slam.config.DavisSlamCoreConfig;
 import ch.ethz.idsc.demo.mg.slam.config.DavisSlamPrcConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
-import ch.ethz.idsc.gokart.core.joy.ManualConfig;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
