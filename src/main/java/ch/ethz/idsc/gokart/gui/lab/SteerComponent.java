@@ -3,8 +3,6 @@ package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Optional;
 
 import javax.swing.JButton;
@@ -71,28 +69,17 @@ import ch.ethz.idsc.tensor.Scalar;
     {
       JToolBar jToolBar = createRow("Step");
       jToolBar.add(stepLeft);
-      stepLeft.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent event) {
-          double stepOfLimit = SteerConfig.GLOBAL.stepOfLimit.number().doubleValue();
-          sliderPosition.jSlider.setValue((int) (-RESOLUTION * stepOfLimit));
-        }
+      stepLeft.addActionListener(actionEvent -> {
+        double stepOfLimit = SteerConfig.GLOBAL.stepOfLimit.number().doubleValue();
+        sliderPosition.jSlider.setValue((int) (-RESOLUTION * stepOfLimit));
       });
       jToolBar.add(stepRight);
-      stepRight.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent event) {
-          double stepOfLimit = SteerConfig.GLOBAL.stepOfLimit.number().doubleValue();
-          sliderPosition.jSlider.setValue((int) (+RESOLUTION * stepOfLimit));
-        }
+      stepRight.addActionListener(actionEvent -> {
+        double stepOfLimit = SteerConfig.GLOBAL.stepOfLimit.number().doubleValue();
+        sliderPosition.jSlider.setValue((int) (+RESOLUTION * stepOfLimit));
       });
       jToolBar.add(stepReset);
-      stepReset.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent event) {
-          sliderPosition.jSlider.setValue(0);
-        }
-      });
+      stepReset.addActionListener(actionEvent -> sliderPosition.jSlider.setValue(0));
     }
     addSeparator();
     { // reception

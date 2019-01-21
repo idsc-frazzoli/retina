@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.util.data;
 
 import ch.ethz.idsc.tensor.Tensor;
 
+@FunctionalInterface
 public interface OfflineVectorInterface {
   /** Careful: function for offline use only
    * 

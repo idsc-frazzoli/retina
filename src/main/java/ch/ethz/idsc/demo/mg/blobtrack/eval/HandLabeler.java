@@ -126,17 +126,17 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   };
   private final MouseAdapter mouseAdapter = new MouseAdapter() {
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent mouseEvent) {
       // add labels with left click
-      if (e.getButton() == MouseEvent.BUTTON1) {
-        Point p = e.getPoint();
+      if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
+        Point p = mouseEvent.getPoint();
         // point coordinates need to be scaled back since we click on a scaled image
         ImageBlob blob = new ImageBlob(new float[] { p.x / scaling, p.y / scaling }, new double[][] { { initXAxis, 0 }, { 0, initYAxis } },
             timeStamps[currentImgNumber - 1], true, defaultBlobID);
         labeledFeatures.get(currentImgNumber - 1).add(blob);
       }
       // remove last added label with right click
-      if (e.getButton() == MouseEvent.BUTTON3) {
+      if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
         labeledFeatures.get(currentImgNumber - 1).remove(labeledFeatures.get(currentImgNumber - 1).size() - 1);
       }
       jComponent.repaint();
@@ -144,7 +144,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   };
   private final ActionListener loadListener = new ActionListener() {
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent actionEvent) {
       labeledFeatures = EvalUtil.loadFromCSV(EvaluationFileLocations.HANDLABEL_CSV.subfolder(fileName), timeStamps);
       System.out.println("Successfully loaded from file " + fileName + ".csv");
       // repaint such that saved blobs of current image are displayed
@@ -153,7 +153,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   };
   private final ActionListener saveListener = new ActionListener() {
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent actionEvent) {
       // avoid overwriting the original labeledFeatures csv
       String currentFileName = fileName + saveCount;
       EvalUtil.saveToCSV(EvaluationFileLocations.HANDLABEL_CSV.subfolder(currentFileName), labeledFeatures, timeStamps);

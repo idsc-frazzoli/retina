@@ -2,8 +2,6 @@
 package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,36 +44,30 @@ public class LinmotPressTestModule extends AbstractModule {
         Scalar scalar = tensor.Get(index);
         JButton jButton = new JButton(scalar.map(Round._2).toString());
         list.add(jButton);
-        jButton.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            list.forEach(button -> button.setEnabled(false));
-            new Thread(new Runnable() {
-              @Override
-              public void run() {
-                pressAt(scalar);
-                list.forEach(button -> button.setEnabled(true));
-              }
-            }).start();
-          }
+        jButton.addActionListener(actionEvent -> {
+          list.forEach(button -> button.setEnabled(false));
+          new Thread(new Runnable() {
+            @Override
+            public void run() {
+              pressAt(scalar);
+              list.forEach(button -> button.setEnabled(true));
+            }
+          }).start();
         });
         jPanel.add(jButton);
       }
       // also add turn of button
       JButton jButton = new JButton("turn off");
       list.add(jButton);
-      jButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          list.forEach(button -> button.setEnabled(false));
-          new Thread(new Runnable() {
-            @Override
-            public void run() {
-              turnOff();
-              list.forEach(button -> button.setEnabled(true));
-            }
-          }).start();
-        }
+      jButton.addActionListener(actionEvent -> {
+        list.forEach(button -> button.setEnabled(false));
+        new Thread(new Runnable() {
+          @Override
+          public void run() {
+            turnOff();
+            list.forEach(button -> button.setEnabled(true));
+          }
+        }).start();
       });
       jPanel.add(jButton);
       jFrame.setContentPane(jPanel);

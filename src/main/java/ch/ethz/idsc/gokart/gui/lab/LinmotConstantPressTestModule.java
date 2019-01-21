@@ -2,8 +2,6 @@
 package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,42 +39,22 @@ public class LinmotConstantPressTestModule extends AbstractModule {
       // button for previous test
       prev = new JButton("previous");
       list.add(prev);
-      prev.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          previous();
-        }
-      });
+      prev.addActionListener(actionEvent -> previous());
       jPanel.add(prev);
       // button for next test
       next = new JButton("next");
       list.add(next);
-      next.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          next();
-        }
-      });
+      next.addActionListener(actionEvent -> next());
       jPanel.add(next);
       // button for test
       test = new JButton("set Active");
       list.add(test);
-      test.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          switchActive();
-        }
-      });
+      test.addActionListener(actionEvent -> switchActive());
       jPanel.add(test);
       // button for test
       setoff = new JButton("set off");
       list.add(setoff);
-      setoff.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          switchOff();
-        }
-      });
+      setoff.addActionListener(actionEvent -> switchOff());
       jPanel.add(setoff);
       updateButtons();
       jFrame.setContentPane(jPanel);

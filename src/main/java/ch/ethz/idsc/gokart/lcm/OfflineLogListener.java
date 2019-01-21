@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.tensor.Scalar;
 
+@FunctionalInterface
 public interface OfflineLogListener {
   /** function processes message from log file
    * 

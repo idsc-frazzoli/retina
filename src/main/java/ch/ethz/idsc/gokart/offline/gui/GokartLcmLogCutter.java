@@ -109,7 +109,7 @@ public class GokartLcmLogCutter {
   };
   private final ActionListener actionListener = new ActionListener() {
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent actionEvent) {
       synchronized (map) {
         NavigableMap<Integer, Integer> navigableMap = new TreeMap<>();
         for (Entry<Integer, Integer> entry : map.entrySet()) {

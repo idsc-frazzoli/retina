@@ -2,8 +2,6 @@
 package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,39 +47,26 @@ public class LinmotSuccessivPressTestModule extends AbstractModule {
       // button for previous test
       prev = new JButton("previous");
       list.add(prev);
-      prev.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          previous();
-        }
-      });
+      prev.addActionListener(actionEvent -> previous());
       jPanel.add(prev);
       // button for test
       test = new JButton("test: 0");
       list.add(test);
-      test.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          list.forEach(button -> button.setEnabled(false));
-          new Thread(new Runnable() {
-            @Override
-            public void run() {
-              test();
-              list.forEach(button -> button.setEnabled(true));
-            }
-          }).start();
-        }
+      test.addActionListener(actionEvent -> {
+        list.forEach(button -> button.setEnabled(false));
+        new Thread(new Runnable() {
+          @Override
+          public void run() {
+            test();
+            list.forEach(button -> button.setEnabled(true));
+          }
+        }).start();
       });
       jPanel.add(test);
       // button for next test
       next = new JButton("next");
       list.add(next);
-      next.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          next();
-        }
-      });
+      next.addActionListener(actionEvent -> next());
       jPanel.add(next);
       updateButtons();
       jFrame.setContentPane(jPanel);
