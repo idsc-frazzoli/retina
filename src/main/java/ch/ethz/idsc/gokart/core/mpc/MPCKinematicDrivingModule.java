@@ -7,22 +7,11 @@ import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerConfig;
-import ch.ethz.idsc.gokart.core.PutProvider;
-import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
-import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
-import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
-import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
-import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -39,21 +28,20 @@ import ch.ethz.idsc.tensor.red.Max;
 public class MPCKinematicDrivingModule extends AbstractModule {
   public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
-  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   private final MPCBraking mpcBraking = new MPCSimpleBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
-  private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerConfig.GLOBAL);
   private final Timing timing;
-  private boolean useFullInfoSteeringController = true;
   // private boolean useTorqueVectoring;
   private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   private TimerTask controlRequestTask;
-  private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
+  final MPCRimoProvider mpcRimoProvider;
+  private final MPCSteerProvider mpcSteerProvider;
+  final MPCLinmotProvider mpcLinmotProvider;
 
   /** switch to testing binary that send back test data has to be called before first */
   public void switchToTest() {
@@ -65,34 +53,27 @@ public class MPCKinematicDrivingModule extends AbstractModule {
    * 
    * @param estimator the custom estimator
    * @param timing that shows the same time that also was used for the custom estimator */
-  //
   MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing, MPCPreviewableTrack track) {
     mpcStateEstimationProvider = estimator;
     this.timing = timing;
     this.track = track;
     // link mpc steering
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
+    mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
+    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
     initModules();
   }
 
-  /** create Module with custom estimator and with life track
-   * 
-   * @param estimator the custom estimator
-   * @param timing that shows the same time that also was used for the custom estimator */
-  // public MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing) {
-  // track = null;
-  // mpcStateEstimationProvider = estimator;
-  // this.timing = timing;
-  // // link mpc steering
-  // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
-  // initModules();
-  // }
   /** create Module with standard estimator */
   public MPCKinematicDrivingModule() {
     track = null;
     timing = Timing.started();
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(timing);
     mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
+    mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
+    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
     initModules();
   }
 
@@ -107,73 +88,6 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     mpcPower.setStateProvider(mpcStateEstimationProvider);
     mpcSteering.setStateProvider(mpcStateEstimationProvider);
   }
-
-  public final PutProvider<RimoPutEvent> rimoProvider = new PutProvider<RimoPutEvent>() {
-    @Override
-    public Optional<RimoPutEvent> putEvent() {
-      Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
-      Tensor currents = mpcPower.getPower(time);
-      if (Objects.nonNull(currents))
-        return Optional.of(RimoPutHelper.operationTorque( //
-            (short) -Magnitude.ARMS.toFloat(currents.Get(0)), // sign left invert
-            (short) Magnitude.ARMS.toFloat(currents.Get(1)) // sign right id
-        ));
-      return Optional.empty();
-    }
-
-    @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.AUTONOMOUS;
-    }
-  };
-  public final PutProvider<SteerPutEvent> steerProvider = new PutProvider<SteerPutEvent>() {
-    @Override
-    public Optional<SteerPutEvent> putEvent() {
-      // this safety bypass can be somewhere in a hi-frequency loop that is not related to rimo
-      if (Objects.nonNull(vlp16PassiveSlowing))
-        vlp16PassiveSlowing.bypassSafety();
-      // ---
-      Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
-      Scalar steering = mpcSteering.getSteering(time);
-      Scalar dSteering = mpcSteering.getDotSteering(time);
-      if (!useFullInfoSteeringController) {
-        if (Objects.nonNull(steering)) {
-          Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-          Scalar difference = steering.subtract(currAngle);
-          Scalar torqueCmd = steerPositionController.iterate(difference);
-          return Optional.of(SteerPutEvent.createOn(torqueCmd));
-        }
-      } else {
-        if (Objects.nonNull(steering)) {
-          Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-          Scalar torqueCmd = steerPositionController.iterate(currAngle, steering, dSteering);
-          return Optional.of(SteerPutEvent.createOn(torqueCmd));
-        }
-      }
-      return Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_0);
-    }
-
-    @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.AUTONOMOUS;
-    }
-  };
-  public final PutProvider<LinmotPutEvent> linmotProvider = new PutProvider<LinmotPutEvent>() {
-    @Override
-    public Optional<LinmotPutEvent> putEvent() {
-      Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
-      Scalar braking = mpcBraking.getBraking(time);
-      if (Objects.nonNull(braking))
-        return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(braking));
-      // this case should not happen
-      return Optional.of(LinmotPutOperation.INSTANCE.fallback());
-    }
-
-    @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.AUTONOMOUS;
-    }
-  };
 
   private void requestControl() {
     // use joystick for speed limit
@@ -192,7 +106,8 @@ public class MPCKinematicDrivingModule extends AbstractModule {
       ManualControlInterface actualJoystick = optionalJoystick.get();
       Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
       maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
-      maxSpeed = Max.of(Quantity.of(1, SI.VELOCITY), maxSpeed);
+      // TODO MH move min speed to config
+      maxSpeed = Max.of(Quantity.of(0.2, SI.VELOCITY), maxSpeed);
       // maxSpeed = Quantity.of(1, SI.VELOCITY);
       // System.out.println("got joystick speed value: " + maxSpeed);
     }
@@ -207,7 +122,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     GokartState state = mpcStateEstimationProvider.getState();
     Tensor position = Tensors.of(state.getX(), state.getY());
     MPCPathParameter mpcPathParameter = null;
-    MPCPreviewableTrack liveTrack = GokartTrackIdentificationModule.TRACK;
+    GokartTrackIdentificationModule gokartTrackIdentificationModule = ModuleAuto.INSTANCE.getInstance(GokartTrackIdentificationModule.class);
+    MPCPreviewableTrack liveTrack = Objects.isNull(gokartTrackIdentificationModule) //
+        ? null
+        : gokartTrackIdentificationModule.getTrack();
     if (Objects.nonNull(track))
       mpcPathParameter = track.getPathParameterPreview(previewSize, position, padding, QPFactor);
     else //
@@ -224,13 +142,13 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
     manualControlProvider.start();
-    SteerSocket.INSTANCE.addPutProvider(steerProvider);
-    RimoSocket.INSTANCE.addPutProvider(rimoProvider);
-    System.out.println("add linmot provider");
-    System.out.println(LinmotSocket.INSTANCE.getPutListenersSize());
-    LinmotSocket.INSTANCE.addPutProvider(linmotProvider);
-    System.out.println(LinmotSocket.INSTANCE.getPutListenersSize());
-    // ModuleAuto.INSTANCE.runOne(SpeedLimitSafetyModule.class);
+    // ---
+    SteerSocket.INSTANCE.addPutProvider(mpcSteerProvider);
+    // ---
+    RimoSocket.INSTANCE.addPutProvider(mpcRimoProvider);
+    // ---
+    LinmotSocket.INSTANCE.addPutProvider(mpcLinmotProvider);
+    // ---
     controlRequestTask = new TimerTask() {
       @Override
       public void run() {
@@ -264,12 +182,14 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   protected void last() {
     System.out.println("cancel timer: ending");
     timer.cancel();
+    LinmotSocket.INSTANCE.removePutProvider(mpcLinmotProvider);
+    // ---
+    SteerSocket.INSTANCE.removePutProvider(mpcSteerProvider);
+    // ---
+    RimoSocket.INSTANCE.removePutProvider(mpcRimoProvider);
+    // ---
     lcmMPCPathFollowingClient.stop();
     mpcStateEstimationProvider.last();
-    SteerSocket.INSTANCE.removePutProvider(steerProvider);
-    RimoSocket.INSTANCE.removePutProvider(rimoProvider);
-    LinmotSocket.INSTANCE.removePutProvider(linmotProvider);
     manualControlProvider.stop();
-    // ModuleAuto.INSTANCE.terminateOne(SpeedLimitSafetyModule.class);
   }
 }

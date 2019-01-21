@@ -37,8 +37,7 @@ public class MPCTorqueVectoringPower extends MPCPower {
           Quantity.of(0, NonSI.ARMS), //
           Quantity.of(0, NonSI.ARMS));
     }
-    // TODO JPH/MH
-    if (false || Objects.isNull(mpcStateProvider)) {
+    if (Objects.isNull(mpcStateProvider)) {
       // return torqueless power
       return torqueVectoring.getMotorCurrentsFromAcceleration(//
           Quantity.of(0, SI.SECOND.negate()), //

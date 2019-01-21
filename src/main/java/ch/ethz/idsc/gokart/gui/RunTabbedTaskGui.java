@@ -12,7 +12,6 @@ import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
-import ch.ethz.idsc.gokart.core.fuse.AutonomySafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
@@ -88,7 +87,8 @@ enum RunTabbedTaskGui {
       LinmotSafetyModule.class, //
       ManualResetModule.class, //
       DavisImuTrackerModule.class, //
-      AutonomySafetyModule.class //
+      GokartTrackIdentificationModule.class //
+  // AutonomySafetyModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
       AutoboxIntrospectionModule.class, // actuation monitoring
@@ -109,6 +109,7 @@ enum RunTabbedTaskGui {
       SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
+      TrackIdentificationButtons.class, //
       MPCKinematicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       FigureTiresAModule.class, //
@@ -141,9 +142,7 @@ enum RunTabbedTaskGui {
       SeyeDetailModule.class, //
       PanoramaViewModule.class, // , //
       SideLcmModule.class, //
-      PresenterLcmModule.class, //
-      TrackIdentificationButtons.class, //
-      GokartTrackIdentificationModule.class
+      PresenterLcmModule.class //
   // DavisOverviewModule.class //
   );
 

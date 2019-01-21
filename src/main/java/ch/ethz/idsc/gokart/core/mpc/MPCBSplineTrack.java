@@ -1,23 +1,17 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.gokart.core.mpc.MPCPathParameter;
-import ch.ethz.idsc.gokart.core.mpc.MPCPreviewableTrack;
+import ch.ethz.idsc.gokart.core.map.BSplineTrack;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Ramp;
 import ch.ethz.idsc.tensor.sca.Round;
 
-// TODO JPH/MH class should not extend from BSplineTrack because it doesn't override/implement anything
-public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack {
-  // TODO JPH/MH not used
-  final static Scalar ONE = RealScalar.ONE;
-  final static Scalar HALF = RealScalar.of(0.5);
-  final static Scalar ZERO = RealScalar.ZERO;
-  final static Clip ONEZEROCLIP = Clip.function(ZERO, ONE);
+public class MPCBSplineTrack implements MPCPreviewableTrack {
+  private static final Scalar ONE = RealScalar.ONE;
+  private static final Scalar HALF = RealScalar.of(0.5);
 
   /** @param trackData matrix with dimension n x 3
    * @param radiusOffset
@@ -28,10 +22,12 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
     return new MPCBSplineTrack(tensor, closed);
   }
 
+  public final BSplineTrack bSplineTrack;
+
   /** @param trackData matrix with dimension n x 3
    * @param closed */
   public MPCBSplineTrack(Tensor trackData, boolean closed) {
-    super(trackData, closed);
+    bSplineTrack = new BSplineTrack(trackData, closed);
   }
 
   // TODO JPH optimize
@@ -43,7 +39,7 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
   @Override
   public MPCPathParameter getPathParameterPreview(int previewSize, Tensor position, Scalar padding, Scalar QPFactor) {
     // test if this function is fast enough to be called many times (it should be)
-    Scalar pathProgress = getNearestPathProgress(position);
+    Scalar pathProgress = bSplineTrack.getNearestPathProgress(position);
     // round down
     // int currentIndex = Floor.of(pathProgress.subtract(RealScalar.of(0.5))).number().intValue();
     int currentIndex = Round.of(pathProgress).number().intValue() - 1;
@@ -53,9 +49,9 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
     Scalar QPOffset = pathProgress.subtract(HALF);
     Tensor matrix = Tensors.empty();
     if (currentIndex < 0)
-      currentIndex += numPoints;
+      currentIndex += bSplineTrack.numPoints;
     for (int i = 0; i < previewSize; ++i) {
-      Tensor vector = combinedControlPoints().get(currentIndex);
+      Tensor vector = bSplineTrack.combinedControlPoints().get(currentIndex);
       Scalar localProgress = RealScalar.of(i).subtract(QPOffset).divide(RealScalar.of(previewSize));
       Scalar localQPFactor;
       if (!QPFactor.equals(ONE))
@@ -65,7 +61,7 @@ public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack
       vector.set(scalar -> Ramp.FUNCTION.apply(((Scalar) scalar).subtract(padding).multiply(localQPFactor)), 2);
       matrix.append(vector);
       ++currentIndex;
-      if (currentIndex >= numPoints)
+      if (currentIndex >= bSplineTrack.numPoints)
         currentIndex = 0;
     }
     return new MPCPathParameter(progressStart, matrix);

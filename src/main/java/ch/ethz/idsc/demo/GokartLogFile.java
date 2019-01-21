@@ -1286,7 +1286,28 @@ public enum GokartLogFile implements LogFile {
   _20190117T153934_e746c6d4,
   /** manual driving, mpc */
   _20190117T154746_58bbb64d,
+  /** manual driving, mpc */
+  _20190117T162143_5412c078,
+  /** manual driving, mpc */
+  _20190117T162719_5412c078,
+  /** manual driving, mpc */
+  _20190117T163814_5412c078,
+  /** manual driving, mpc */
+  _20190117T164057_5412c078,
   /***************************************************/
+  /* 2019-01-21 autonomous driving without holding pressing the dead-man switch */
+  /** manual driving */
+  _20190121T115509_3e45ef97,
+  /** manual driving, mpc */
+  _20190121T121032_3e45ef97,
+  /** manual driving, mpc */
+  _20190121T132318_4c60fa65,
+  /** manual driving, mpc */
+  _20190121T140815_49bf477f,
+  /** manual driving, mpc */
+  _20190121T141848_49bf477f,
+  /** manual driving, mpc */
+  _20190121T142535_49bf477f,
   /***************************************************/
   ;
   // ---
