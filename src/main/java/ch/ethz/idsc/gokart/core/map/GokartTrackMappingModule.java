@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -47,6 +46,7 @@ public class GokartTrackMappingModule implements //
   private final SpacialXZObstaclePredicate predicate = TrackDetectionConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent;
+  private boolean recording = false;
   /** tear down flag to stop thread */
   private boolean isLaunched = true;
   private final Thread thread = new Thread(this);
@@ -106,7 +106,7 @@ public class GokartTrackMappingModule implements //
   public void run() {
     while (isLaunched) {
       Tensor points = points3d_ferry;
-      if (TrackIdentificationButtons.RECORDING && //
+      if (recording && //
           Objects.nonNull(points) && //
           Objects.nonNull(gokartPoseEvent)) {
         points3d_ferry = null;
@@ -155,5 +155,9 @@ public class GokartTrackMappingModule implements //
   @Override
   public Tensor getTransform() {
     return bayesianOccupancyGrid.getTransform();
+  }
+
+  public void setRecording(boolean selected) {
+    recording = selected;
   }
 }

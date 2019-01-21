@@ -9,6 +9,7 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
@@ -18,33 +19,27 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 public class TrackIdentificationButtons extends AbstractModule {
-  public static boolean RECORDING = true;
-  public static boolean SETTINGSTART = true;
-  // ---
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final JButton recordTrack = new JButton("not sensing track");
-  private final JButton setStart = new JButton("set Start");
+  private final JToggleButton recordTrack = new JToggleButton("sense track");
+  private final JButton setStart = new JButton("set start");
   private final JButton resetTrack = new JButton("reset track");
+  private final GokartTrackIdentificationModule gokartTrackIdentificationModule = //
+      ModuleAuto.INSTANCE.getInstance(GokartTrackIdentificationModule.class);
 
   @Override
   protected void first() throws Exception {
     {
       // if this is used set it do default == false;
-      RECORDING = false;
       JPanel jPanel = new JPanel(new GridLayout(1, 2));
       // button for previous test
-      recordTrack.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          RECORDING = !RECORDING;
-          if (!RECORDING)
-            recordTrack.setText("not sensing track");
-          else
-            recordTrack.setText("sensing track");
-        }
-      });
+      boolean isAvailable = Objects.nonNull(gokartTrackIdentificationModule);
+      recordTrack.setEnabled(isAvailable);
+      if (isAvailable) {
+        recordTrack.addActionListener(actionEvent -> gokartTrackIdentificationModule.setRecording(recordTrack.isSelected()));
+        recordTrack.setSelected(gokartTrackIdentificationModule.isRecording());
+      }
       jPanel.add(recordTrack);
       resetTrack.addActionListener(new ActionListener() {
         @Override
@@ -57,12 +52,7 @@ public class TrackIdentificationButtons extends AbstractModule {
       });
       jPanel.add(resetTrack);
       // button for test
-      setStart.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          SETTINGSTART = true;
-        }
-      });
+      setStart.addActionListener(actionEvent -> gokartTrackIdentificationModule.findStart());
       jPanel.add(setStart);
       jFrame.setContentPane(jPanel);
     }

@@ -86,7 +86,8 @@ enum RunTabbedTaskGui {
       LidarLocalizationModule.class, //
       LinmotSafetyModule.class, //
       ManualResetModule.class, //
-      DavisImuTrackerModule.class //
+      DavisImuTrackerModule.class, //
+      GokartTrackIdentificationModule.class //
   // AutonomySafetyModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
@@ -108,6 +109,7 @@ enum RunTabbedTaskGui {
       SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
+      TrackIdentificationButtons.class, //
       MPCKinematicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       FigureTiresAModule.class, //
@@ -140,9 +142,7 @@ enum RunTabbedTaskGui {
       SeyeDetailModule.class, //
       PanoramaViewModule.class, // , //
       SideLcmModule.class, //
-      PresenterLcmModule.class, //
-      TrackIdentificationButtons.class, //
-      GokartTrackIdentificationModule.class
+      PresenterLcmModule.class //
   // DavisOverviewModule.class //
   );
 
