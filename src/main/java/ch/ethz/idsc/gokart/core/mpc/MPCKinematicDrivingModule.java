@@ -122,7 +122,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     }
 
     @Override
-    public ProviderRank getProviderRank() {
+    public final ProviderRank getProviderRank() {
       return ProviderRank.AUTONOMOUS;
     }
   };

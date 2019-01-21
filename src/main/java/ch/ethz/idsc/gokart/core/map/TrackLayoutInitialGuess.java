@@ -123,7 +123,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   private List<Neighbor> possibleNeighbors;
   /** has to be linked list to invoke specific member functions */
   private LinkedList<Cell> route;
-  // TODO JPH/MH not used
+  // TODO MH not used
   private LinkedList<Cell> forwardRoute;
   private Tensor routePolygon;
   private boolean closed = false;
@@ -163,7 +163,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     int sfx = (int) Math.round(startx + 2 * dirx);
     int sfy = (int) Math.round(starty + 2 * diry);
     priorityQueue = new PriorityQueue<>(COMPARATOR);
-    // prepare grid
+    // prepare gridif (true)
     for (int i = 0; i < gridsize.Get(0).number().intValue(); i++) {
       for (int ii = 0; ii < gridsize.Get(1).number().intValue(); ii++) {
         Cell newCell = new Cell(i, ii);

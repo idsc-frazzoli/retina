@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.map.TrackRefinement.TrackConstraint;
+import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.top.TrackRender;
@@ -163,7 +164,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(lastTrack)) {
       if (Objects.isNull(trackRender))
-        trackRender = new TrackRender(lastTrack);
+        trackRender = new TrackRender(lastTrack.bSplineTrack);
       trackRender.render(geometricLayer, graphics);
     } else {
       initialGuess.render(geometricLayer, graphics);
@@ -173,7 +174,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.nonNull(lastTrack)) {
       if (Objects.isNull(trackRender))
-        trackRender = new TrackRender(lastTrack);
+        trackRender = new TrackRender(lastTrack.bSplineTrack);
       // trackRender.renderHR(geometricLayer, graphics);
     } // else {
     initialGuess.renderHR(geometricLayer, graphics);

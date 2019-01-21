@@ -25,7 +25,7 @@ public class BSplineTrack implements TrackInterface {
   protected final Tensor controlPointsR;
   protected final boolean closed;
   final Scalar length;
-  final int numPoints;
+  public final int numPoints;
   // for fast lookup
   // using floats
   final float lookupRes = 0.005f;
@@ -146,7 +146,7 @@ public class BSplineTrack implements TrackInterface {
   // the application of abs() causes a loss of information
   // return getCurvature(pathProgress).abs().reciprocal();
   // }
-  final Scalar getNearestPathProgress(Tensor position) {
+  public final Scalar getNearestPathProgress(Tensor position) {
     if (closed)
       return getFastNearestPathProgress(position);
     return getFastNearestPathProgressOpen(position);
