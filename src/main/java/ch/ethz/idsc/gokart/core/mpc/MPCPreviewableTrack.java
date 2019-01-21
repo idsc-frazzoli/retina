@@ -6,4 +6,6 @@ import ch.ethz.idsc.tensor.Tensor;
 
 public interface MPCPreviewableTrack {
   MPCPathParameter getPathParameterPreview(int previewSize, Tensor PositionW, Scalar padding);
+
+  MPCPathParameter getPathParameterPreview(int previewSize, Tensor PositionW, Scalar padding, Scalar QPFactor);
 }

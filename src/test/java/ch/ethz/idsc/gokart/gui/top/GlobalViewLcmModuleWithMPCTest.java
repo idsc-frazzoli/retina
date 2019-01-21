@@ -14,6 +14,7 @@ import ch.ethz.idsc.gokart.core.mpc.MPCPathParameter;
 import ch.ethz.idsc.gokart.core.mpc.MPCSimpleBraking;
 import ch.ethz.idsc.gokart.core.mpc.MPCTorqueVectoringPower;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -34,9 +35,9 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
         1f, //
         0, //
         0, //
-        37f, //
-        44f, //
-        0.3f, //
+        44.1f, //
+        55.6f, //
+        0.6f, //
         0, //
         0, //
         0, 60);
@@ -58,7 +59,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     lcmMPCControlClient.registerControlUpdateLister(mpcOpenLoopSteering);
     lcmMPCControlClient.registerControlUpdateLister(mpcTorqueVectoringPower);
     Tensor position = Tensors.of(gokartState.getX(), gokartState.getY());
-    MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER));
+    MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER), RealScalar.ZERO);
     lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
     Thread.sleep(1000);
     for (int i = 0; i < 200; i++) {
