@@ -48,5 +48,5 @@ public class MPCOptimizationConfig {
   @FieldSubdivide(start = "0f[m]", end = "2[m]", intervals = 20)
   public Scalar padding = Quantity.of(1, SI.METER);
   @FieldSubdivide(start = "0f", end = "1", intervals = 10)
-  public Scalar QPFactor = Quantity.of(1, SI.METER);
+  public Scalar QPFactor = Quantity.of(1, SI.ONE);
 }

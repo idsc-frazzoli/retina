@@ -1,7 +1,7 @@
 %add force path (change that for yourself)
+addpath('..');
 userDir = getuserdir;
 addpath([userDir '/Forces']);
-addpath('..');
 addpath('casadi');
     
 clear model
