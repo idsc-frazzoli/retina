@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
-import ch.ethz.idsc.gokart.core.fuse.AutonomySafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
@@ -62,8 +61,8 @@ public class RunTabbedTaskGuiTest extends TestCase {
         LidarLocalizationModule.class, //
         LinmotSafetyModule.class, //
         ManualResetModule.class, //
-        DavisImuTrackerModule.class, //
-        AutonomySafetyModule.class //
+        DavisImuTrackerModule.class// , //
+    // AutonomySafetyModule.class //
     );
     for (Class<?> cls : list)
       assertTrue(RunTabbedTaskGui.MODULES_DEV.contains(cls));
