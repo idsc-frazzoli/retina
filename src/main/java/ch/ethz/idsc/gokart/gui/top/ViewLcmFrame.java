@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -34,18 +33,15 @@ public class ViewLcmFrame extends TimerFrame {
       { 0, 0, 1 }, //
   }).unmodifiable();
   private MappedPoseInterface mappedPoseInterface;
-  private final ActionListener actionListener = new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-      Tensor model2pixel = geometricComponent.getModel2Pixel();
-      Tensor state = mappedPoseInterface.getPose(); // {x[m], y[m], angle}
-      Tensor pose = GokartPoseHelper.toSE2Matrix(state);
-      Tensor newPose = LinearSolve.of(MODEL2PIXEL_INITIAL, model2pixel.dot(pose));
-      Tensor newState = GokartPoseHelper.attachUnits(Se2Utils.fromSE2Matrix(newPose));
-      System.out.println("pose=" + newState.map(Round._5));
-      mappedPoseInterface.setPose(newState, RealScalar.ONE);
-      geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
-    }
+  private final ActionListener actionListener = actionEvent -> {
+    Tensor model2pixel = geometricComponent.getModel2Pixel();
+    Tensor state = mappedPoseInterface.getPose(); // {x[m], y[m], angle}
+    Tensor pose = GokartPoseHelper.toSE2Matrix(state);
+    Tensor newPose = LinearSolve.of(MODEL2PIXEL_INITIAL, model2pixel.dot(pose));
+    Tensor newState = GokartPoseHelper.attachUnits(Se2Utils.fromSE2Matrix(newPose));
+    System.out.println("pose=" + newState.map(Round._5));
+    mappedPoseInterface.setPose(newState, RealScalar.ONE);
+    geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
   };
 
   public ViewLcmFrame() {

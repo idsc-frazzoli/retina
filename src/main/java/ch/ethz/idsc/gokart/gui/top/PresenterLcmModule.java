@@ -2,8 +2,6 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -151,12 +149,9 @@ public class PresenterLcmModule extends AbstractModule {
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     {
       JButton jButton = new JButton("show matrix");
-      jButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          Tensor model2Pixel = timerFrame.geometricComponent.getModel2Pixel();
-          System.out.println("model2Pixel=\n" + model2Pixel);
-        }
+      jButton.addActionListener(actionEvent -> {
+        Tensor model2Pixel = timerFrame.geometricComponent.getModel2Pixel();
+        System.out.println("model2Pixel=\n" + model2Pixel);
       });
       timerFrame.jToolBar.add(jButton);
     }

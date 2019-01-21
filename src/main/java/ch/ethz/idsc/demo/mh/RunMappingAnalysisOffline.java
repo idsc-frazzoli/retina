@@ -22,7 +22,7 @@ enum RunMappingAnalysisOffline {
     File file = HomeDirectory.file("changingtrack.lcm");
     // File file = UserHome.file("TireTrackDriving.lcm");
     // File file = UserHome.file("20181203T135247_70097ce1.lcm.00");
-    File folder = HomeDirectory.Pictures("log/mapper");
+    File folder = HomeDirectory.Pictures("log", "mapper");
     folder.mkdirs();
     if (!folder.isDirectory())
       throw new RuntimeException();

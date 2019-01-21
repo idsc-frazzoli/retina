@@ -7,6 +7,7 @@ package ch.ethz.idsc.retina.util.img;
  * 
  * For the Davis240c the total duration of an image transmission both reset, or
  * signal is 18952[us]. */
+@FunctionalInterface
 public interface ColumnTimedImageListener {
   /** the instance bufferedImage of the provided image is altered in between calls
    * to image(). Therefore the implementation of {@link ColumnTimedImageListener}
