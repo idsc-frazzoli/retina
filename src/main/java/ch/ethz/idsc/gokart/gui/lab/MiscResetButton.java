@@ -10,7 +10,7 @@ import ch.ethz.idsc.gokart.dev.misc.MiscIgnitionProvider;
  * to query status of micro-autobox ignition */
 /* package */ class MiscResetButton extends AutoboxInitButton {
   public MiscResetButton() {
-    super("Reset");
+    super("Reset", "reset signal to micro-autobox");
   }
 
   @Override // from ActionListener

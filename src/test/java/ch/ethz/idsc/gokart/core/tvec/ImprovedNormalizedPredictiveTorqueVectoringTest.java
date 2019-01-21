@@ -25,10 +25,9 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(
-        torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedPredictiveTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
-    Tensor powers = improvedNormalizedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(0, "m^-1"), //
         Quantity.of(0, "m*s^-1"), //
         Quantity.of(0, "s^-1"), //
@@ -39,13 +38,13 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
 
   public void testZeroMean() {
     // this is only true when we have no torque vectoring
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedPredictiveTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     Scalar velocity = Quantity.of(1, SI.VELOCITY);
-    Tensor powers = improvedNormalizedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         velocity, //
         Quantity.of(0, "s^-1"), //
@@ -61,14 +60,14 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
 
   public void testAccelerationResponse() {
     // this is only true when we have no torque vectoring
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    tvc.staticPrediction = Quantity.of(0.1, SI.ANGULAR_ACCELERATION.negate());
-    ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    torqueVectoringConfig.staticPrediction = Quantity.of(0.1, SI.ANGULAR_ACCELERATION.negate());
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedPredictiveTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     Scalar velocity = Quantity.of(1, SI.VELOCITY);
-    Tensor powers0 = improvedNormalizedSimpleTorqueVectoring.powers( //
+    Tensor powers0 = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         velocity, //
         Quantity.of(1, "s^-1"), //
@@ -79,7 +78,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    Tensor powers1 = improvedNormalizedSimpleTorqueVectoring.powers( //
+    Tensor powers1 = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         velocity, //
         Quantity.of(1, "s^-1"), //
@@ -90,7 +89,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    Tensor powers2 = improvedNormalizedSimpleTorqueVectoring.powers( //
+    Tensor powers2 = torqueVectoringInterface.powers( //
         Quantity.of(1.5, "m^-1"), //
         velocity, //
         Quantity.of(1, "s^-1"), //
@@ -101,7 +100,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    Tensor powers3 = improvedNormalizedSimpleTorqueVectoring.powers( //
+    Tensor powers3 = torqueVectoringInterface.powers( //
         Quantity.of(1.5, "m^-1"), //
         velocity, //
         Quantity.of(1, "s^-1"), //
@@ -118,12 +117,13 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
   }
 
   public void testSaturatedPositive() {
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    TorqueVectoringInterface torqueVectoringInterface = //
+        new ImprovedNormalizedPredictiveTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ONE;
-    Tensor powers = improvedNormalizedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
@@ -135,12 +135,13 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
   }
 
   public void testSaturatedNegative() {
-    TorqueVectoringConfig tvc = new TorqueVectoringConfig();
-    tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
-    tvc.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(tvc);
+    TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
+    torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
+    torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
+    TorqueVectoringInterface torqueVectoringInterface = //
+        new ImprovedNormalizedPredictiveTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ONE.negate();
-    Tensor powers = improvedNormalizedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         Quantity.of(-2, "m*s^-1"), //
         Quantity.of(3, "s^-1"), //
@@ -158,9 +159,9 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     tvc.dynamicCorrection = Quantity.of(0.2, SI.SECOND);
-    ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(tvc);
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedPredictiveTorqueVectoring(tvc);
     Scalar power = RealScalar.ZERO;
-    Tensor powers = improvedNormalizedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         Quantity.of(3, "m*s^-1"), //
         Quantity.of(1, "s^-1"), //
@@ -174,9 +175,9 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig tvc = new TorqueVectoringConfig();
     tvc.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     tvc.dynamicCorrection = Quantity.of(0.2, SI.SECOND);
-    ImprovedNormalizedPredictiveTorqueVectoring improvedNormalizedSimpleTorqueVectoring = new ImprovedNormalizedPredictiveTorqueVectoring(tvc);
+    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedPredictiveTorqueVectoring(tvc);
     Scalar power = RealScalar.ZERO;
-    Tensor powers = improvedNormalizedSimpleTorqueVectoring.powers( //
+    Tensor powers = torqueVectoringInterface.powers( //
         Quantity.of(-1, "m^-1"), //
         Quantity.of(3, "m*s^-1"), //
         Quantity.of(1, "s^-1"), //

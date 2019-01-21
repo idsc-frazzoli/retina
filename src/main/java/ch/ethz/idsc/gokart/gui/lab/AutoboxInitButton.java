@@ -9,8 +9,9 @@ import javax.swing.JComponent;
 abstract class AutoboxInitButton implements ActionListener {
   private final JButton jButton;
 
-  AutoboxInitButton(String string) {
+  AutoboxInitButton(String string, String toolTipText) {
     jButton = new JButton(string);
+    jButton.setToolTipText(toolTipText);
     jButton.setEnabled(false);
     jButton.addActionListener(this);
   }

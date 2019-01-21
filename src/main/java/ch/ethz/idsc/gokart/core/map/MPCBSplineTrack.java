@@ -11,7 +11,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Ramp;
 import ch.ethz.idsc.tensor.sca.Round;
 
+// TODO JPH/MH class should not extend from BSplineTrack because it doesn't override/implement anything
 public class MPCBSplineTrack extends BSplineTrack implements MPCPreviewableTrack {
+  // TODO JPH/MH not used
   final static Scalar ONE = RealScalar.ONE;
   final static Scalar HALF = RealScalar.of(0.5);
   final static Scalar ZERO = RealScalar.ZERO;

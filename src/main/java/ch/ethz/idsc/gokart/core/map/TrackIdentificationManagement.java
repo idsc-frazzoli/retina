@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.core.map.TrackRefinement.TrackConstraint;
 import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.top.TrackRender;
@@ -21,6 +22,7 @@ import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+// TODO JPH/MH manage unused variables
 public class TrackIdentificationManagement implements RenderInterface {
   private static final Scalar RADIUS_OFFSET = Quantity.of(0.4, SI.METER);
   private static final Scalar SPACING = RealScalar.of(1.5); // TODO should be meters
@@ -41,10 +43,10 @@ public class TrackIdentificationManagement implements RenderInterface {
   private boolean closedTrack = false;
   private boolean oldWasClosed = false;
   private Timing lastTrackReset = Timing.started();
-  private List<TrackRefinement.TrackConstraint> constraints = new LinkedList<>();
+  private List<TrackConstraint> constraints = new LinkedList<>();
   private Scalar openTrackValid = Quantity.of(1, SI.SECOND);
   private Scalar timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
-  private List<TrackRefinement.TrackConstraint> trackConstraints = null;
+  private List<TrackConstraint> trackConstraints = null;
   private boolean startSet = false;
 
   public TrackIdentificationManagement(PlanableOccupancyGrid planableOccupancyGrid) {

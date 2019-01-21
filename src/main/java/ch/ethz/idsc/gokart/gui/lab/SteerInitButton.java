@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 /** GUI element to initiate calibration procedure of steering wheel */
 /* package */ class SteerInitButton extends AutoboxInitButton {
   public SteerInitButton() {
-    super("Calibration");
+    super("Calibration", "calibration of power steering");
   }
 
   @Override // from ActionListener

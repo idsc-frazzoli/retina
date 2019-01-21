@@ -28,6 +28,7 @@ import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 /** draw blue lines of prediction of traces of gokart */
+// TODO JPH/MH need better class name
 public class GokartPathRender extends AbstractGokartRender {
   public Color color = new Color(0, 0, 255, 128);
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();

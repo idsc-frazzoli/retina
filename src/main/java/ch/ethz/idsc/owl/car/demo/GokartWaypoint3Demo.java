@@ -7,7 +7,6 @@ import java.awt.event.WindowEvent;
 import java.util.Arrays;
 
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
-import ch.ethz.idsc.gokart.gui.WaypointRender;
 import ch.ethz.idsc.owl.ani.api.GlcPlannerCallback;
 import ch.ethz.idsc.owl.bot.se2.glc.GlcWaypointFollowing;
 import ch.ethz.idsc.owl.bot.se2.glc.GokartVecEntity;
@@ -17,6 +16,7 @@ import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
 import ch.ethz.idsc.owl.glc.adapter.SimpleGlcPlannerCallback;
 import ch.ethz.idsc.owl.glc.core.PlannerConstraint;
+import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
 import ch.ethz.idsc.owl.math.region.ConeRegion;
 import ch.ethz.idsc.owl.math.region.RegionWithDistance;

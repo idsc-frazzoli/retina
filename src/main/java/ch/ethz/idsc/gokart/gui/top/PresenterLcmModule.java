@@ -62,7 +62,8 @@ public class PresenterLcmModule extends AbstractModule {
       TrajectoryLcmClient.xyat(), TrajectoryLcmClient.xyavt());
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final GokartPoseLcmLidar gokartPoseInterface = new GokartPoseLcmLidar();
+  private final GokartPoseLcmLidar gokartPoseLcmLidar = new GokartPoseLcmLidar();
+  private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
 
   @Override // from AbstractModule
@@ -86,13 +87,17 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(predictionRender);
     }
     {
-      GokartPathRender pathRender = new GokartPathRender(gokartPoseInterface);
-      gokartStatusLcmClient.addListener(pathRender.gokartStatusListener);
-      timerFrame.geometricComponent.addRenderInterface(pathRender);
+      GokartPathRender gokartPathRender = new GokartPathRender(gokartPoseLcmLidar);
+      gokartStatusLcmClient.addListener(gokartPathRender.gokartStatusListener);
+      timerFrame.geometricComponent.addRenderInterface(gokartPathRender);
+    }
+    {
+      gokartPoseLcmLidar.gokartPoseLcmClient.addListener(poseTrailRender);
+      timerFrame.geometricComponent.addRenderInterface(poseTrailRender);
     }
     // ---
     {
-      ParallelLidarRender lidarRender = new ParallelLidarRender(gokartPoseInterface);
+      ParallelLidarRender lidarRender = new ParallelLidarRender(gokartPoseLcmLidar);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(0, 0, 128, 128));
       lidarRender.pointSize = 1;
@@ -101,7 +106,7 @@ public class PresenterLcmModule extends AbstractModule {
     }
     {
       ClusterCollection collection = new ClusterCollection();
-      LidarClustering lidarClustering = new LidarClustering(ClusterConfig.GLOBAL, collection, gokartPoseInterface);
+      LidarClustering lidarClustering = new LidarClustering(ClusterConfig.GLOBAL, collection, gokartPoseLcmLidar);
       ObstacleClusterTrackingRender obstacleClusterTrackingRender = //
           new ObstacleClusterTrackingRender(lidarClustering);
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarClustering);
@@ -118,12 +123,12 @@ public class PresenterLcmModule extends AbstractModule {
       // timerFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
-      TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
+      TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseLcmLidar);
       gokartStatusLcmClient.addListener(trigonometryRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(trigonometryRender);
     }
     {
-      Vlp16ClearanceRender vlp16ClearanceRender = new Vlp16ClearanceRender(gokartPoseInterface);
+      Vlp16ClearanceRender vlp16ClearanceRender = new Vlp16ClearanceRender(gokartPoseLcmLidar);
       gokartStatusLcmClient.addListener(vlp16ClearanceRender.gokartStatusListener);
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(vlp16ClearanceRender);
       timerFrame.geometricComponent.addRenderInterface(vlp16ClearanceRender);
@@ -135,7 +140,7 @@ public class PresenterLcmModule extends AbstractModule {
     // timerFrame.geometricComponent.addRenderInterface(lidarRender);
     // }
     {
-      GokartRender gokartRender = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
+      GokartRender gokartRender = new GokartRender(gokartPoseLcmLidar, VEHICLE_MODEL);
       // joystickLcmClient.addListener(gokartRender.joystickListener);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
@@ -157,13 +162,13 @@ public class PresenterLcmModule extends AbstractModule {
     }
     if (SHOW_DAVIS) {
       {
-        AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
+        AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseLcmLidar);
         davisLcmClient.addDvsListener(accumulatedEventRender.abstractAccumulatedImage);
         timerFrame.geometricComponent.addRenderInterface(accumulatedEventRender);
         timerFrame.jToolBar.add(accumulatedEventRender.jToggleButton);
       }
       {
-        DavisPipelineRender davisPipelineRenderRender = new DavisPipelineRender(gokartPoseInterface);
+        DavisPipelineRender davisPipelineRenderRender = new DavisPipelineRender(gokartPoseLcmLidar);
         davisLcmClient.addDvsListener(davisPipelineRenderRender.pipelineProvider);
         timerFrame.geometricComponent.addRenderInterface(davisPipelineRenderRender);
         timerFrame.jToolBar.add(davisPipelineRenderRender.jToggleButton);
@@ -175,13 +180,13 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     {
-      GokartHudRender gokartHudRender = new GokartHudRender(gokartPoseInterface);
+      GokartHudRender gokartHudRender = new GokartHudRender(gokartPoseLcmLidar);
       manualControlLcmClient.addListener(gokartHudRender);
       timerFrame.geometricComponent.addRenderInterface(gokartHudRender);
       rimoGetLcmClient.addListener(gokartHudRender);
     }
     // ---
-    gokartPoseInterface.gokartPoseLcmClient.startSubscriptions();
+    gokartPoseLcmLidar.gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
@@ -224,7 +229,7 @@ public class PresenterLcmModule extends AbstractModule {
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
-    gokartPoseInterface.gokartPoseLcmClient.stopSubscriptions();
+    gokartPoseLcmLidar.gokartPoseLcmClient.stopSubscriptions();
     manualControlLcmClient.stopSubscriptions();
     vlp16LcmHandler.stopSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
