@@ -2,6 +2,6 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 @FunctionalInterface
-public interface MPCStateProviderClient {
+/* package */ interface MPCStateProviderClient {
   void setStateProvider(MPCStateEstimationProvider mpcstateProvider);
 }

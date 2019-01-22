@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.mpc;
+package ch.ethz.idsc.gokart.core.map;
 
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -9,11 +9,11 @@ import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.red.Norm;
 
 /** MPCBSplineMap uses MPCBSpline to map control points */
-public enum MPCBSplineMap {
+/* package */ enum MPCBSplineMap {
   ;
   public static Tensor getPositions(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle) {
     Tensor bm = UniformBSpline2.getBasisMatrix(controlpointsX.length(), queryPositions, 0, circle);
-    return MPCBSplineMap.getPositions(controlpointsX, controlpointsY, queryPositions, circle, bm);
+    return getPositions(controlpointsX, controlpointsY, queryPositions, circle, bm);
   }
 
   public static Tensor getPositions(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle, Tensor basisMatrix) {
@@ -24,7 +24,7 @@ public enum MPCBSplineMap {
 
   public static Tensor getSidewardsUnitVectors(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle) {
     Tensor matrix = UniformBSpline2.getBasisMatrix(controlpointsY.length(), queryPositions, 1, circle);
-    return MPCBSplineMap.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, circle, matrix);
+    return getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, circle, matrix);
   }
 
   public static Tensor getSidewardsUnitVectors(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle, Tensor basisMatrix1Der) {

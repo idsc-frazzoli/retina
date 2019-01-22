@@ -10,12 +10,13 @@ import ch.ethz.idsc.tensor.Tensors;
 
 public class MPCInformationProvider extends MPCControlUpdateListener {
   private final static MPCInformationProvider INSTANCE = new MPCInformationProvider();
-  // TODO why should this class be a singleton?
-  // if really needs to be singleton then try to directly assign INSTANCE and make it final
-  // = new MPCInformationProvider();
 
   public static MPCInformationProvider getInstance() {
     return INSTANCE;
+  }
+
+  private MPCInformationProvider() {
+    // ---
   }
 
   /** get the predicted positions

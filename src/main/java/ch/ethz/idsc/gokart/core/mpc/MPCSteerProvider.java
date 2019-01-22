@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
+/* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
   // TODO JPH not too good location for vlp16 slowing
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();

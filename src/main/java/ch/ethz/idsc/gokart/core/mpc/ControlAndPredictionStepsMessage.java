@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-public class ControlAndPredictionStepsMessage extends MPCNativeMessage {
+/* package*/ class ControlAndPredictionStepsMessage extends MPCNativeMessage {
   public final ControlAndPredictionSteps controlAndPredictionSteps;
 
   public ControlAndPredictionStepsMessage(ControlAndPredictionSteps controlAndPredictionSteps, MPCNativeSession mpcNativeSession) {
