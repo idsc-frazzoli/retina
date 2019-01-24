@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.imu.vmu931;
 
-public enum Vmu931Statics {
+/* package */ enum Vmu931Statics {
   ;
   /** accelerometer */
   static final byte ID_ACCELEROMETER = 'a';
@@ -16,16 +16,28 @@ public enum Vmu931Statics {
   /** heading */
   static final byte ID_HEADING = 'h';
   /** self test */
-  private static final byte ID_SELFTEST = 't';
+  static final byte ID_SELFTEST = 't';
+  /**
+   * 
+   */
+  static final byte ID_CALIBRATION = 'l';
   /** status of sensor
    * results in a reply of size == 11 */
   static final byte ID_STATUS = 's';
 
-  private static byte[] command(byte type) {
-    return new byte[] { 'v', 'a', 'r', type };
-  }
-
   public static byte[] requestStatus() {
     return command(ID_STATUS);
+  }
+
+  public static byte[] requestSelftest() {
+    return command(ID_SELFTEST);
+  }
+
+  public static byte[] requestCalibration() {
+    return command(ID_CALIBRATION);
+  }
+
+  private static byte[] command(byte type) {
+    return new byte[] { 'v', 'a', 'r', type };
   }
 }

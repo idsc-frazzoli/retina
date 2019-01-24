@@ -19,20 +19,28 @@ public class Vmu931 implements Runnable {
   private static final int MESSAGE_DATA_END = 4;
   private static final int MESSAGE_TEXT_BEG = 2;
   private static final int MESSAGE_TEXT_END = 3;
+  private static final int SIZE_MIN = 4;
+  private static final String SELFTEST_PASSED = "Test passed. Your device works fine.";
   /***************************************************/
   private final Set<Vmu931Channel> set = EnumSet.noneOf(Vmu931Channel.class);
   private final byte[] data = new byte[256];
-  // private final
+  // ---
+  private final Vmu931_DPS dps;
+  private final Vmu931_G resolution_g;
   private final SerialPortWrap serialPortWrap;
   private final Thread thread;
 
-  /** @param serialPort open */
-  public Vmu931(String port, Set<Vmu931Channel> set) {
+  /** @param serialPort open
+   * @param set
+   * @param vmu931_DPS */
+  public Vmu931(String port, Set<Vmu931Channel> set, Vmu931_DPS vmu931_DPS, Vmu931_G vmu931_G) {
     this.set.addAll(set);
+    this.dps = vmu931_DPS;
+    this.resolution_g = vmu931_G;
     SerialPort serialPort = SerialPorts.create(port);
     serialPortWrap = new SerialPortWrap(serialPort);
-    serialPortWrap.write(Vmu931Channel.ACCELEROMETER.toggle());
-    serialPortWrap.write(Vmu931Channel.HEADING.toggle());
+    // serialPortWrap.write(Vmu931Channel.ACCELEROMETER.toggle());
+    // serialPortWrap.write(Vmu931Channel.HEADING.toggle());
     serialPortWrap.write(Vmu931Statics.requestStatus());
     thread = new Thread(this);
     thread.start();
@@ -74,7 +82,7 @@ public class Vmu931 implements Runnable {
       byte resolution = byteBuffer.get();
       byte rate = byteBuffer.get();
       int current = byteBuffer.getInt();
-      statusCallback(status & 0xff, resolution & 0xff, rate == 1, current & 0xff);
+      statusCallback(status, resolution, rate == 1, current & 0xff);
       break;
     }
     default:
@@ -82,22 +90,40 @@ public class Vmu931 implements Runnable {
     }
   }
 
-  private void statusCallback(int status, int resolution, boolean lowRate, int current) {
-    System.out.println("STATUS= " + status + " " + resolution + " low=" + lowRate + " " + current);
+  private void statusCallback(byte status, byte resolution, boolean lowRate, int current) {
     boolean isDirty = false;
+    // System.out.println("STATUS= " + status + " " + resolution + " low=" + lowRate + " " + current);
+    // for (Vmu931_DPS vmu931_DPS : Vmu931_DPS.values())
+    // System.out.println(vmu931_DPS.name() + " " + vmu931_DPS.isActive(resolution));
+    if (!dps.isActive(resolution)) {
+      System.out.println("vmu931 config dps=" + dps);
+      serialPortWrap.write(dps.set());
+      isDirty = true;
+    }
+    // ---
+    // for (Vmu931_G vmu931_G : Vmu931_G.values())
+    // System.out.println(vmu931_G.name() + " " + vmu931_G.isActive(resolution));
+    if (!resolution_g.isActive(resolution)) {
+      System.out.println("vmu931 config g=" + resolution_g);
+      serialPortWrap.write(resolution_g.set());
+      isDirty = true;
+    }
+    // ---
     for (Vmu931Channel vmu931Channel : Vmu931Channel.values()) {
       boolean isActive = vmu931Channel.isActive(current);
-      System.out.println(vmu931Channel.name() + "=" + isActive);
-      if (isActive ^ set.contains(vmu931Channel)) {
+      boolean rqActive = set.contains(vmu931Channel);
+      if (isActive ^ rqActive) {
+        System.out.println("vmu931 config " + vmu931Channel.name() + ": " + isActive + "->" + rqActive);
         serialPortWrap.write(vmu931Channel.toggle());
         isDirty = true;
       }
     }
     if (isDirty) {
-      System.out.println("req status");
+      System.out.println("vmu931 request status");
       serialPortWrap.write(Vmu931Statics.requestStatus());
     } else {
-      System.out.println("device config ok");
+      System.out.println("vmu931 configured");
+      // serialPortWrap.write(Vmu931Statics.requestSelftest());
     }
   }
 
@@ -109,45 +135,38 @@ public class Vmu931 implements Runnable {
           int head = data[0] & 0xff;
           switch (head) {
           case MESSAGE_DATA_BEG:
-            if (serialPortWrap.peek(data, 3)) {
-              int size = data[1] & 0xff;
-              byte type = data[2];
+            if (serialPortWrap.peek(data, SIZE_MIN)) {
+              final int size = Math.max(SIZE_MIN, data[1] & 0xff);
               if (serialPortWrap.peek(data, size)) {
                 int term = data[size - 1];
                 if (term == MESSAGE_DATA_END) {
-                  if (size != 12 && size != 20 && size != 24)
-                    System.out.println("SIZE=" + size + " " + (char) type);
                   serialPortWrap.advance(size);
                   handle_data(data);
-                } else {
+                } else
                   serialPortWrap.advance(1);
-                  System.err.println("discard because term");
-                }
               } else
                 Thread.sleep(1);
             }
             break;
           case MESSAGE_TEXT_BEG:
-            if (serialPortWrap.peek(data, 3)) {
-              System.out.println("TEXT");
-              int size = data[1] & 0xff;
-              char type = (char) (data[2] & 0xff);
+            if (serialPortWrap.peek(data, SIZE_MIN)) {
+              final int size = Math.max(SIZE_MIN, data[1] & 0xff);
               if (serialPortWrap.peek(data, size)) {
                 int term = data[size - 1];
                 if (term == MESSAGE_TEXT_END) {
-                  System.out.println("SIZE=" + size + " " + type + " " + term);
+                  String string = new String(data, 3, size - 4); //
+                  // Self-test started.
+                  // Test passed. Your device works fine.
+                  System.out.println("vmu931:[" + string + "]");
                   serialPortWrap.advance(size);
-                } else {
+                } else
                   serialPortWrap.advance(1);
-                  System.err.println("discard");
-                }
               } else
                 Thread.sleep(1);
             }
             break;
           default:
             serialPortWrap.advance(1);
-            System.err.println("discard because head");
             break;
           }
         } else
@@ -155,11 +174,16 @@ public class Vmu931 implements Runnable {
       }
     } catch (Exception exception) {
       exception.printStackTrace();
+      System.out.println("VMU931 readout terminated");
     }
   }
 
   // ---
   public static void main(String[] args) {
-    new Vmu931("/dev/ttyACM0", EnumSet.of(Vmu931Channel.ACCELEROMETER, Vmu931Channel.GYROSCOPE));
+    new Vmu931( //
+        "/dev/ttyACM0", //
+        EnumSet.of(Vmu931Channel.ACCELEROMETER, Vmu931Channel.GYROSCOPE), //
+        Vmu931_DPS._500, //
+        Vmu931_G._4);
   }
 }
