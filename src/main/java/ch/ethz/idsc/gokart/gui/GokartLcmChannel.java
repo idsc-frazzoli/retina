@@ -13,6 +13,8 @@ public enum GokartLcmChannel {
   public static final String STATUS = "gokart.status.get";
   /** {x, y, heading, quality} */
   public static final String POSE_LIDAR = "gokart.pose.lidar";
+  /** {dotX, dotY, angularVelocity} */
+  public static final String VELOCITY_FUSION = "gokart.pose.vel";
   /** current trajectory infos from GokartTrajectoryModule
    * message is self contained: state, time, flow */
   public static final String TRAJECTORY_XYAT_STATETIME = "gokart.trajectory.xyat";
