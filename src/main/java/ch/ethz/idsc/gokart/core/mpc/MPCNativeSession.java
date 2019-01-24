@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class MPCNativeSession {
+/* package */ class MPCNativeSession {
   private Process process;
   private final Map<Integer, Integer> messageCounter = new HashMap<>();
   public BufferedReader is;

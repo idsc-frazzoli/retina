@@ -6,8 +6,7 @@ import java.util.Objects;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 
-// TODO design: class not yet abstract
-public abstract class MPCControlUpdateListener {
+/* package */ class MPCControlUpdateListener {
   protected ControlAndPredictionSteps cns = null;
   int istep = 0;
 

@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-public class ControlRequestMessage extends MPCNativeMessage {
+/* package*/ class ControlRequestMessage extends MPCNativeMessage {
   public final StateAndPath stateAndPath;
 
   public ControlRequestMessage(GokartState gokartState, MPCPathParameter mpcPathParameter, MPCNativeSession mpcNativeSession) {

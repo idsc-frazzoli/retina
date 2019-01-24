@@ -10,7 +10,7 @@ import java.util.List;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.mpc.LiveTrackRenderProvider;
+import ch.ethz.idsc.gokart.core.map.LiveTrackRenderProvider;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
