@@ -76,6 +76,7 @@ The byte order of the binary data is `little-endian` since the encoding is nativ
 
 * [`lcm`](https://github.com/idsc-frazzoli/lcm-java) for message interchange and logging
 * [`io.humble`](http://www.humble.io/) for video generation
+* [`jSerialComm`](http://fazecast.github.io/jSerialComm/) platform-independent serial port access
 * [`ELKI`](https://elki-project.github.io/) for DBSCAN
 * [`lwjgl`](https://www.lwjgl.org/) for joystick readout
 
