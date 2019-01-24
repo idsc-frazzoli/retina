@@ -16,6 +16,6 @@ public enum Vmu931_DPS {
   }
 
   public byte[] set() {
-    return new byte[] { 'v', 'a', 'r', command };
+    return Vmu931Statics.command(command);
   }
 }

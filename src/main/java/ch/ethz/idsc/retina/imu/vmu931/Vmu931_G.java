@@ -15,6 +15,6 @@ public enum Vmu931_G {
   }
 
   public byte[] set() {
-    return new byte[] { 'v', 'a', 'r', command };
+    return Vmu931Statics.command(command);
   }
 }

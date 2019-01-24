@@ -10,6 +10,7 @@ import com.fazecast.jSerialComm.SerialPort;
 
 public class SerialPortWrap implements Runnable, SerialPortInterface, AutoCloseable {
   private static final int BUFFER_SIZE = 4096;
+  private static final int SLEEP_MS = 1;
   // ---
   private final SerialPort serialPort;
   private final InputStream inputStream;
@@ -48,12 +49,12 @@ public class SerialPortWrap implements Runnable, SerialPortInterface, AutoClosea
             rxHead += rxRead;
             rxHead %= BUFFER_SIZE;
             nBytesInBuffer += rxRead;
-            // System.out.println(nBytesInBuffer);
+            // System.out.println("rx size=" + nBytesInBuffer);
           }
         else
           try {
-            Thread.sleep(2);
-          } catch (InterruptedException e) {
+            Thread.sleep(SLEEP_MS);
+          } catch (Exception exception) {
             // ---
           }
       }
@@ -76,6 +77,7 @@ public class SerialPortWrap implements Runnable, SerialPortInterface, AutoClosea
 
   @Override // from RingBufferExchange
   public void advance(int length) {
+    // System.out.println("advance "+length);
     synchronized (byteBuffer) {
       rxTail += length;
       rxTail %= BUFFER_SIZE;

@@ -37,7 +37,7 @@ package ch.ethz.idsc.retina.imu.vmu931;
     return command(ID_CALIBRATION);
   }
 
-  private static byte[] command(byte type) {
+  static byte[] command(byte type) {
     return new byte[] { 'v', 'a', 'r', type };
   }
 }
