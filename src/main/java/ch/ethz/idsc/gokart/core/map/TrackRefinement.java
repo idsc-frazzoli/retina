@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineMap;
-import ch.ethz.idsc.gokart.core.mpc.PlanableOccupancyGrid;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -200,12 +198,12 @@ public class TrackRefinement {
 
   private Tensor getCorrectionVectors(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints, Tensor queryPositions, Tensor basisMatrix,
       Tensor basisMatrix1Der, Scalar resolution, boolean closed) {
-    Tensor positions = MPCBSplineMap.getPositions(controlpointsX, controlpointsY, queryPositions, closed, basisMatrix);
-    Tensor sideVectors = MPCBSplineMap.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, basisMatrix1Der);
+    Tensor positions = BSplineUtil.getPositions(controlpointsX, controlpointsY, basisMatrix);
+    Tensor sideVectors = BSplineUtil.getSidewardsUnitVectors(controlpointsX, controlpointsY, basisMatrix1Der);
     Tensor radii = basisMatrix.dot(radiusControlPoints);
     Scalar stepsSize = Quantity.of(0.1, SI.METER);
     freeLines = new ArrayList<>();
-    Tensor sideLimits = Tensors.vector((i) -> getSideLimits(positions.get(i), sideVectors.get(i), stepsSize, Quantity.of(1, SI.METER)), positions.length());
+    Tensor sideLimits = Tensors.vector(i -> getSideLimits(positions.get(i), sideVectors.get(i), stepsSize, Quantity.of(1, SI.METER)), positions.length());
     boolean hasNoSolution = sideLimits.stream().anyMatch(row -> row.get(0).equals(row.get(1)));
     if (hasNoSolution)
       return null;

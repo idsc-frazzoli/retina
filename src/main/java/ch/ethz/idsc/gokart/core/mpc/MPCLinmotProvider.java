@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public final class MPCLinmotProvider extends MPCBaseProvider<LinmotPutEvent> {
+/* package */ final class MPCLinmotProvider extends MPCBaseProvider<LinmotPutEvent> {
   private final MPCBraking mpcBraking;
 
   public MPCLinmotProvider(Timing timing, MPCBraking mpcBraking) {
