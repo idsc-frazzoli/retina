@@ -30,6 +30,7 @@ public class Vmu931 implements Runnable {
   private final Vmu931Listener vmu931Listener;
   private final SerialPortWrap serialPortWrap;
   private final Thread thread;
+  private boolean isLaunched = true;
   private boolean isConfigured = false;
 
   /** @param serialPort open
@@ -52,7 +53,7 @@ public class Vmu931 implements Runnable {
   @Override // from Runnable
   public void run() {
     try {
-      while (true) {
+      while (isLaunched) {
         if (serialPortWrap.peek(data, 1)) {
           switch (data[0]) {
           case MESSAGE_DATA_BEG:
@@ -101,7 +102,7 @@ public class Vmu931 implements Runnable {
         }
       }
     } catch (Exception exception) {
-      exception.printStackTrace();
+      // exception.printStackTrace();
       System.out.println("VMU931 readout terminated");
     }
   }
@@ -187,5 +188,11 @@ public class Vmu931 implements Runnable {
       serialPortWrap.write(Vmu931Statics.requestStatus());
     } else
       isConfigured = true;
+  }
+
+  public void close() {
+    isLaunched = false;
+    serialPortWrap.close();
+    thread.interrupt();
   }
 }

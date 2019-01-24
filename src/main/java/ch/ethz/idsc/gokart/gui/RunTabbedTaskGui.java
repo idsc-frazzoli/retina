@@ -56,6 +56,7 @@ import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.gui.top.SideLcmModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
@@ -74,6 +75,7 @@ enum RunTabbedTaskGui {
   static final List<Class<?>> MODULES_DEV = Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
       Vlp16LcmServerModule.class, // sensing
+      Vmu931LcmServerModule.class, // vmu931 imu
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
       GokartPoseLcmModule.class, // publishes pose
