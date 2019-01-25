@@ -20,7 +20,7 @@ public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Liste
   private static final String PORT = "/dev/ttyACM0";
   // ---
   private final ByteArrayConsumer byteArrayConsumer = new BinaryBlobPublisher(GokartLcmChannel.VMU931_AG);
-  private final byte[] data = new byte[4 + 6 * 4];
+  private final byte[] data = new byte[4 + 12 + 12];
   private final ByteBuffer send = ByteBuffer.wrap(data);
   private Vmu931 vmu931;
 
@@ -51,7 +51,7 @@ public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Liste
 
   @Override // from Vmu931Listener
   public void gyroscope(ByteBuffer recvBuffer) {
-    recvBuffer.position(4);
+    recvBuffer.getInt(); // drop timestamp
     send.position(16);
     send.putFloat(recvBuffer.getFloat()); // x
     send.putFloat(recvBuffer.getFloat()); // y

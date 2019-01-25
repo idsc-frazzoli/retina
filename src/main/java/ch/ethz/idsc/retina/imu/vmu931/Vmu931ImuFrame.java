@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class Vmu931Frame {
+public class Vmu931ImuFrame {
   private static final double DPS_TO_RPS = Magnitude.PER_SECOND.toDouble(Quantity.of(1, "deg*s^-1"));
   // TODO redundant DavisImuFrame
   private static final double G_TO_M_S2 = 9.81;
@@ -25,7 +25,7 @@ public class Vmu931Frame {
   private final float gyro_y;
   private final float gyro_z;
 
-  public Vmu931Frame(ByteBuffer byteBuffer) {
+  public Vmu931ImuFrame(ByteBuffer byteBuffer) {
     timestamp_ms = byteBuffer.getInt();
     acc_x = byteBuffer.getFloat();
     acc_y = byteBuffer.getFloat();
