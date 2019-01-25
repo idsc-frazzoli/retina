@@ -45,16 +45,20 @@ public class Vmu931 implements Runnable {
     thread = new Thread(this);
     thread.start();
     // ---
-    serialPortWrap.write(Vmu931Statics.requestStatus());
+    requestStatus();
     System.out.println("requested status");
+  }
+
+  public void requestSelftest() {
+    serialPortWrap.write(Vmu931Statics.requestSelftest());
   }
 
   public void requestCalibration() {
     serialPortWrap.write(Vmu931Statics.requestCalibration());
   }
 
-  public void requestSelftest() {
-    serialPortWrap.write(Vmu931Statics.requestSelftest());
+  public void requestStatus() {
+    serialPortWrap.write(Vmu931Statics.requestStatus());
   }
 
   @Override // from Runnable
@@ -192,7 +196,7 @@ public class Vmu931 implements Runnable {
     }
     if (isDirty) {
       System.out.println("vmu931 request status");
-      serialPortWrap.write(Vmu931Statics.requestStatus());
+      requestStatus();
     } else
       isConfigured = true;
   }

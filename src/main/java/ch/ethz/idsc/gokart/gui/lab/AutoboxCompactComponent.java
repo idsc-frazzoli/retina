@@ -98,6 +98,11 @@ import ch.ethz.idsc.tensor.sca.Round;
         jToolBar.add(new JLabel("not connected."));
       } else {
         {
+          JButton jButton = new JButton("status");
+          jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestStatus());
+          jToolBar.add(jButton);
+        }
+        {
           JButton jButton = new JButton("self-test");
           jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestSelftest());
           jToolBar.add(jButton);

@@ -51,11 +51,16 @@ public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Liste
 
   @Override // from Vmu931Listener
   public void gyroscope(ByteBuffer recvBuffer) {
+    recvBuffer.position(4);
     send.position(16);
     send.putFloat(recvBuffer.getFloat()); // x
     send.putFloat(recvBuffer.getFloat()); // y
     send.putFloat(recvBuffer.getFloat()); // z
     byteArrayConsumer.accept(data);
+  }
+
+  public void requestStatus() {
+    vmu931.requestStatus();
   }
 
   public void requestCalibration() {
