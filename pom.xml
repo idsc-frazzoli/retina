@@ -102,6 +102,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.fazecast</groupId>
+			<artifactId>jSerialComm</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+		<dependency>
 			<groupId>de.lmu.ifi.dbs.elki</groupId>
 			<artifactId>elki-bundle</artifactId>
 			<version>0.7.1</version>
