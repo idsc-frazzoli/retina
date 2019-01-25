@@ -7,10 +7,13 @@ import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
@@ -26,24 +29,35 @@ public class LocalViewLcmModule extends AbstractModule {
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
-  private TimerFrame timerFrame;
-  private GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
+  private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
+  private final TimerFrame timerFrame = new TimerFrame();
+  private final AccelerationRender accelerationRender = //
+      new AccelerationRender(Tensors.vector(0, -2.5, 0), 100);
+  private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
-    timerFrame = new TimerFrame();
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
     rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
     linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
     gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
     rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
+    {
+      vmu931ImuLcmClient.addListener(new Vmu931ImuFrameListener() {
+        @Override
+        public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
+          accelerationRender.setAccelerationXY(vmu931ImuFrame.accXY());
+        }
+      });
+    }
     // ---
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
+    timerFrame.geometricComponent.addRenderInterface(accelerationRender);
     TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(Tensors.vector(1, -2.5, 0));
     rimoGetLcmClient.addListener(tachometerMustangDash);
     timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);
@@ -54,6 +68,7 @@ public class LocalViewLcmModule extends AbstractModule {
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
+    vmu931ImuLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -66,6 +81,7 @@ public class LocalViewLcmModule extends AbstractModule {
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
+    vmu931ImuLcmClient.stopSubscriptions();
     // ---
     timerFrame.close();
   }
