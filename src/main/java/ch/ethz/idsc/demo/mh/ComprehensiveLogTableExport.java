@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
 import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoOdometryTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
+import ch.ethz.idsc.gokart.offline.tab.Vmu931ImuTable;
 import ch.ethz.idsc.gokart.offline.tab.VelodyneLocalizationTable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -40,6 +41,7 @@ public class ComprehensiveLogTableExport {
    * @throws IOException for instance, if given file does not exist */
   public void process(File file) throws IOException {
     DavisImuTable davisImuTable = new DavisImuTable(PERIOD);
+    Vmu931ImuTable vmu931ImuTable = new Vmu931ImuTable(PERIOD);
     LinmotPassiveStatusTable linmotStatusTable = new LinmotPassiveStatusTable();
     PowerSteerTable powerSteerTable = new PowerSteerTable(STEERINGPERIOD);
     RimoOdometryTable rimoOdometryTable = new RimoOdometryTable();
@@ -56,6 +58,7 @@ public class ComprehensiveLogTableExport {
         // rimoOdometryTable, //
         powerRimoAnalysis, //
         rimoRateTable, //
+        vmu931ImuTable,//
         // rimoSlipTable);
         // localizationTable);
         // velodyneLocalizationTable);
@@ -64,6 +67,7 @@ public class ComprehensiveLogTableExport {
     File folder = createTableFolder(file);
     // ---
     Export.of(new File(folder, "davisIMU.csv"), davisImuTable.getTable().map(CsvFormat.strict()));
+    Export.of(new File(folder, "vmu931IMU.csv"), vmu931ImuTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "powersteer.csv"), powerSteerTable.getTable().map(CsvFormat.strict()));
     // Export.of(new File(folder, "rimoodom.csv"), rimoOdometryTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "powerrimo.csv"), powerRimoAnalysis.getTable().map(CsvFormat.strict()));
