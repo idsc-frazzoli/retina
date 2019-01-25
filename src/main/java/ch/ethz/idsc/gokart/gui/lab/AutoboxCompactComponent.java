@@ -8,6 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
@@ -24,11 +25,13 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -88,6 +91,24 @@ import ch.ethz.idsc.tensor.sca.Round;
     jTF_davis240c = createReading("Davis240C");
     jTF_manualControl = createReading("Manual");
     jTF_ahead = createReading("Ahead");
+    {
+      JToolBar jToolBar = createRow("vmu931");
+      Vmu931LcmServerModule vmu931LcmServerModule = ModuleAuto.INSTANCE.getInstance(Vmu931LcmServerModule.class);
+      if (Objects.isNull(vmu931LcmServerModule)) {
+        jToolBar.add(new JLabel("not connected."));
+      } else {
+        {
+          JButton jButton = new JButton("self-test");
+          jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestSelftest());
+          jToolBar.add(jButton);
+        }
+        {
+          JButton jButton = new JButton("calibration");
+          jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestCalibration());
+          jToolBar.add(jButton);
+        }
+      }
+    }
     jTF_localPose = createReading("Pose");
     jTF_localQual = createReading("Pose quality");
     {
