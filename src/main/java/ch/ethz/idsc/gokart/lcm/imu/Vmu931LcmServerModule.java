@@ -29,7 +29,7 @@ public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Liste
     send.order(ByteOrder.LITTLE_ENDIAN);
     vmu931 = new Vmu931(PORT, //
         EnumSet.of(Vmu931Channel.ACCELEROMETER, Vmu931Channel.GYROSCOPE), //
-        Vmu931_DPS._250, Vmu931_G._2, this);
+        Vmu931_DPS._250, Vmu931_G._8, this);
     System.out.println("first() leave");
   }
 
