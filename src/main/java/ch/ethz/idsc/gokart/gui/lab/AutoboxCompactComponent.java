@@ -24,11 +24,16 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -55,10 +60,12 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final Timer timer = new Timer();
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private final LinmotGetListener linmotGetListener = getEvent -> linmotGetEvent = getEvent;
   private final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
+  private final Vmu931ImuFrameListener vmu931ImuFrameListener = getEvent -> vmu931ImuFrame = getEvent;
   private final LinmotInitButton linmotInitButton = new LinmotInitButton();
   private final MiscResetButton miscResetButton = new MiscResetButton();
   private final SteerInitButton steerInitButton = new SteerInitButton();
@@ -67,6 +74,8 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final JTextField jTF_manualControl;
   private final JTextField jTF_ahead;
   private final JTextField jTF_davis240c;
+  private final JTextField jTF_vmu931_acc;
+  private final JTextField jTF_vmu931_gyr;
   private final JTextField jTF_localPose;
   private final JButton jButtonAppend = new JButton("pose append");
   private final JTextField jTF_localQual;
@@ -75,6 +84,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private GokartPoseEvent gokartPoseEvent;
   private RimoGetEvent rimoGetEvent;
   private LinmotGetEvent linmotGetEvent;
+  private Vmu931ImuFrame vmu931ImuFrame;
 
   public AutoboxCompactComponent() {
     {
@@ -88,6 +98,27 @@ import ch.ethz.idsc.tensor.sca.Round;
     jTF_davis240c = createReading("Davis240C");
     jTF_manualControl = createReading("Manual");
     jTF_ahead = createReading("Ahead");
+    jTF_vmu931_acc = createReading("Vmu931 acc");
+    jTF_vmu931_gyr = createReading("Vmu931 gyr");
+    Vmu931LcmServerModule vmu931LcmServerModule = ModuleAuto.INSTANCE.getInstance(Vmu931LcmServerModule.class);
+    if (Objects.nonNull(vmu931LcmServerModule)) {
+      JToolBar jToolBar = createRow("vmu931 ctrl");
+      {
+        JButton jButton = new JButton("status");
+        jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestStatus());
+        jToolBar.add(jButton);
+      }
+      {
+        JButton jButton = new JButton("self-test");
+        jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestSelftest());
+        jToolBar.add(jButton);
+      }
+      {
+        JButton jButton = new JButton("calibration");
+        jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestCalibration());
+        jToolBar.add(jButton);
+      }
+    }
     jTF_localPose = createReading("Pose");
     jTF_localQual = createReading("Pose quality");
     {
@@ -123,6 +154,9 @@ import ch.ethz.idsc.tensor.sca.Round;
     // ---
     gokartPoseLcmClient.addListener(gokartPoseListener);
     gokartPoseLcmClient.startSubscriptions();
+    // ---
+    vmu931ImuLcmClient.addListener(vmu931ImuFrameListener);
+    vmu931ImuLcmClient.startSubscriptions();
     // ---
     timer.schedule(new TimerTask() {
       @Override
@@ -180,6 +214,12 @@ import ch.ethz.idsc.tensor.sca.Round;
               : ToolbarsComponent.UNKNOWN;
           jTF_localPose.setText(string);
         }
+        {
+          if (Objects.nonNull(vmu931ImuFrame)) {
+            jTF_vmu931_acc.setText(vmu931ImuFrame.acceleration().map(Round._3).toString());
+            jTF_vmu931_gyr.setText(vmu931ImuFrame.gyroscope().map(Round._3).toString());
+          }
+        }
         if (Objects.isNull(gokartPoseEvent)) { // pose quality
           jTF_localQual.setText(ToolbarsComponent.UNKNOWN);
           jTF_localQual.setBackground(null);
@@ -200,5 +240,6 @@ import ch.ethz.idsc.tensor.sca.Round;
     linmotGetLcmClient.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
     gokartPoseLcmClient.stopSubscriptions();
+    vmu931ImuLcmClient.stopSubscriptions();
   }
 }

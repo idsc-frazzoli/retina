@@ -20,7 +20,6 @@ public class Vmu931 implements Runnable {
   private static final byte MESSAGE_TEXT_BEG = 2;
   private static final byte MESSAGE_TEXT_END = 3;
   private static final int SIZE_MIN = 4;
-  private static final String SELFTEST_PASSED = "Test passed. Your device works fine.";
   /***************************************************/
   private final Set<Vmu931Channel> set = EnumSet.noneOf(Vmu931Channel.class);
   private final byte[] data = new byte[256];
@@ -46,7 +45,19 @@ public class Vmu931 implements Runnable {
     thread = new Thread(this);
     thread.start();
     // ---
-    System.out.println("write status");
+    requestStatus();
+    System.out.println("requested status");
+  }
+
+  public void requestSelftest() {
+    serialPortWrap.write(Vmu931Statics.requestSelftest());
+  }
+
+  public void requestCalibration() {
+    serialPortWrap.write(Vmu931Statics.requestCalibration());
+  }
+
+  public void requestStatus() {
     serialPortWrap.write(Vmu931Statics.requestStatus());
   }
 
@@ -81,7 +92,7 @@ public class Vmu931 implements Runnable {
                   String string = new String(data, 3, size - 4); //
                   // Self-test started.
                   // Test passed. Your device works fine.
-                  System.out.println("vmu931:[" + string + "]");
+                  System.out.println("vmu931:[" + string.trim() + "]");
                   serialPortWrap.advance(size);
                 } else
                   serialPortWrap.advance(1);
@@ -185,9 +196,13 @@ public class Vmu931 implements Runnable {
     }
     if (isDirty) {
       System.out.println("vmu931 request status");
-      serialPortWrap.write(Vmu931Statics.requestStatus());
+      requestStatus();
     } else
       isConfigured = true;
+  }
+
+  public boolean isConfigured() {
+    return isConfigured;
   }
 
   public void close() {
