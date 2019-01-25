@@ -15,8 +15,8 @@ import lcm.logging.LogPlayerConfig;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
     File file;
-    file = DatahakiLogFileLocator.file(GokartLogFile._20181018T140542_1a649e65);
-    file = new File("/media/datahaki/media/ethz/gokart/topic/localization/20181211T153939_3/log.lcm");
+    file = DatahakiLogFileLocator.file(GokartLogFile._20190125T105720_ecbd24e3);
+    // file = new File("/media/datahaki/media/ethz/gokart/topic/localization/20181211T153939_3/log.lcm");
     // file = UserHome.file("20180927T145943_44599876Extracted1_Pose.lcm");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
