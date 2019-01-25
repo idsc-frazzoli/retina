@@ -50,6 +50,9 @@ public class TrajectoryConfig {
   /** @return matrix with dimensions N x 3
    * @throws Exception if waypoints cannot be retrieved from resources */
   public static Tensor getWaypoints() {
-    return ResourceData.of("/dubilab/waypoints/20181126.csv").unmodifiable();
+    // oval shape
+    // return ResourceData.of("/dubilab/waypoints/20181126.csv").unmodifiable();
+    // around tires
+    return ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").unmodifiable();
   }
 }
