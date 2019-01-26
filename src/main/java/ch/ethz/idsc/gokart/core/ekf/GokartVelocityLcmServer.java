@@ -14,8 +14,8 @@ public enum GokartVelocityLcmServer {
 
   public void publish() {
     // TODO: maybe move that to other place
-    //GokartVelocityEvent gokartVelocityEvent = GokartVelocityEvents.getPoseEvent(velocity)
-    //publish(odometryRimoGetLcmClient.gokartPoseOdometry.getPoseEvent());
+    // GokartVelocityEvent gokartVelocityEvent = GokartVelocityEvents.getPoseEvent(velocity)
+    // publish(odometryRimoGetLcmClient.gokartPoseOdometry.getPoseEvent());
   }
 
   public void publish(GokartVelocityEvent gokartVelocityEvent) {

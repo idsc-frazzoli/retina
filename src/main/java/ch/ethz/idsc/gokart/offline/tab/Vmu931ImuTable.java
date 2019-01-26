@@ -5,9 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -49,9 +47,7 @@ public class Vmu931ImuTable implements OfflineTableSupplier {
           time_zero = vmu931ImuFrame.timestamp_ms();
         tableBuilder.appendRow( //
             RealScalar.of(vmu931ImuFrame.timestamp_ms()), // m1
-            vmu931ImuFrame.acceleration().map(Magnitude.ACCELERATION),
-            vmu931ImuFrame.gyroscope().map(Magnitude.PER_SECOND)
-        );
+            vmu931ImuFrame.acceleration().map(Magnitude.ACCELERATION), vmu931ImuFrame.gyroscope().map(Magnitude.PER_SECOND));
       }
     }
   }

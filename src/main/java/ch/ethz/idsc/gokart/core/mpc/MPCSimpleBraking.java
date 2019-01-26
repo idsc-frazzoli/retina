@@ -13,10 +13,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCSimpleBraking extends MPCBraking {
-  MPCStateEstimationProvider mpcStateProvider;
   private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
-  MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
-  int inext = 0;
+  private final MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
 
   @Override
   public Scalar getBraking(Scalar time) {
@@ -28,14 +26,11 @@ public class MPCSimpleBraking extends MPCBraking {
     Scalar min = minmax.Get(0);
     Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
     // System.out.println(braking);
-    // TODO MH move functionality to BrakingFunction
-    return BrakingFunction.getNeededBrakeActuation(braking) //
-        .map(BrakingFunction::getRelativePosition) //
-        .orElse(RealScalar.ZERO);
+    return BrakingFunction.getRelativeBrakeActuation(braking);
   }
 
   @Override
-  public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
-    this.mpcStateProvider = mpcstateProvider;
+  public void setStateProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
+    // ---
   }
 }

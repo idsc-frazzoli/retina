@@ -23,8 +23,10 @@ public enum LinmotPutHelper {
   public static final List<Word> HEADER = Arrays.asList( //
       MC_POSITION, MC_ZEROS); //
   // ---
-  /** all magic numbers are justified through experimentation */
+  /** all magic numbers are justified through experimentation
+   * the number -500 corresponds to an elogation of 50[mm] to the front */
   public static final int TARGETPOS_MIN = -500;
+  /** the number -48 corresponds to an elogation of 4.8[mm] to the front */
   public static final int TARGETPOS_MAX = -48;
   public static final short TARGETPOS_INIT = -50;
   // ---

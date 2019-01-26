@@ -12,8 +12,8 @@ import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
 import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoOdometryTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
-import ch.ethz.idsc.gokart.offline.tab.Vmu931ImuTable;
 import ch.ethz.idsc.gokart.offline.tab.VelodyneLocalizationTable;
+import ch.ethz.idsc.gokart.offline.tab.Vmu931ImuTable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.CsvFormat;
@@ -58,7 +58,7 @@ public class ComprehensiveLogTableExport {
         // rimoOdometryTable, //
         powerRimoAnalysis, //
         rimoRateTable, //
-        vmu931ImuTable,//
+        vmu931ImuTable, //
         // rimoSlipTable);
         // localizationTable);
         // velodyneLocalizationTable);
