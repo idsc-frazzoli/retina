@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import ch.ethz.idsc.tensor.Scalar;
 
 /* package */ abstract class MPCBraking extends MPCControlUpdateListener implements MPCStateProviderClient {
-  // TODO MH document function input and output definition
+  /** @param time
+   * @return relative brake position in the interval [0, 1] */
   public abstract Scalar getBraking(Scalar time);
 }
