@@ -1,43 +1,43 @@
-// code by mh
+// code by mh, jph
 package ch.ethz.idsc.gokart.core.map;
 
-import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.sophus.math.GeodesicInterface;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Mean;
+import ch.ethz.idsc.tensor.alg.Last;
 
-// TODO JPH/MH make this into a 'library' function
-/* package */ enum Regularization {
-  ;
-  /** @param vector
+/* package */ class Regularization {
+  private final GeodesicInterface geodesicInterface;
+  private final Scalar factor;
+
+  public Regularization(GeodesicInterface geodesicInterface, Scalar factor) {
+    this.geodesicInterface = geodesicInterface;
+    this.factor = factor;
+  }
+
+  /** @param tensor
    * @param factor for instance 0.01
-   * @param closed
+   * @param cyclic
    * @return */
-  static Tensor of(Tensor vector, Scalar factor, boolean closed) {
-    Tensor regVec = Tensors.empty();
-    if (!closed) {
-      // do we have convolution?
-      // TODO MH yes: ListConvolve or ListCorrelate
-      regVec.append(Quantity.of(0, SI.METER));
-      for (int i = 1; i < vector.length() - 1; i++) {
-        regVec.append(Mean.of( //
-            Tensors.of(vector.Get(i - 1), vector.Get(i + 1))));
-      }
-      regVec.append(Quantity.of(0, SI.METER));
+  public Tensor apply(Tensor tensor, boolean cyclic) {
+    Tensor center = Tensors.empty();
+    int length = tensor.length();
+    if (length < 2)
+      return tensor.copy();
+    if (!cyclic) {
+      center.append(tensor.get(0));
+      for (int i = 1; i < length - 1; ++i)
+        center.append(geodesicInterface.split(tensor.get(i - 1), tensor.get(i + 1), RationalScalar.HALF));
+      center.append(Last.of(tensor));
     } else {
-      // do we have convolution?
-      // TODO MH yes: ListConvolve or ListCorrelate
-      regVec.append(Mean.of( //
-          Tensors.of(vector.Get(vector.length() - 1), vector.Get(1))));
-      for (int i = 1; i < vector.length() - 1; i++) {
-        regVec.append(Mean.of( //
-            Tensors.of(vector.Get(i - 1), vector.Get(i + 1))));
-      }
-      regVec.append(Mean.of( //
-          Tensors.of(vector.Get(vector.length() - 2), vector.Get(0))));
+      center.append(geodesicInterface.split(tensor.get(length - 1), tensor.get(1), RationalScalar.HALF));
+      for (int i = 1; i < length - 1; ++i)
+        center.append(geodesicInterface.split(tensor.get(i - 1), tensor.get(i + 1), RationalScalar.HALF));
+      center.append(geodesicInterface.split(tensor.get(length - 2), tensor.get(0), RationalScalar.HALF));
     }
-    return regVec.subtract(vector).multiply(factor);
+    // TODO JPH the following is illegal for anything other than RnGeodesic
+    return geodesicInterface.split(tensor, center, factor);
   }
 }

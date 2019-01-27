@@ -21,9 +21,9 @@ public class TrackRender implements RenderInterface {
   private final boolean closed;
 
   public TrackRender(TrackInterface track) {
-    this.leftBoundary = track.getLeftLine(RESOLUTION);
-    this.rightBoundary = track.getRightLine(RESOLUTION);
-    this.middleLine = track.getMiddleLine(RESOLUTION);
+    this.leftBoundary = track.getLineLeft(RESOLUTION);
+    this.rightBoundary = track.getLineRight(RESOLUTION);
+    this.middleLine = track.getLineMiddle(RESOLUTION);
     this.closed = track.isClosed();
   }
 
