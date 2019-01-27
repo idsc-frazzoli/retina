@@ -30,10 +30,10 @@ import lcm.logging.LogPlayerConfig;
     windowConfiguration.attach(GokartLcmLogPlayer.class, logPlayer.jFrame);
     logPlayer.jFrame.setLocation(100, 100);
     logPlayer.standalone();
-    //GokartMappingModule gokartMappingModule = new GokartMappingModule();
-    //gokartMappingModule.start();
-    //ModuleAuto.INSTANCE.runOne(GyroOfflineLocalize.class);
-    //ModuleAuto.INSTANCE.runOne(GlobalViewLcmModule.class);
+    // GokartMappingModule gokartMappingModule = new GokartMappingModule();
+    // gokartMappingModule.start();
+    // ModuleAuto.INSTANCE.runOne(GyroOfflineLocalize.class);
+    // ModuleAuto.INSTANCE.runOne(GlobalViewLcmModule.class);
     ModuleAuto.INSTANCE.runOne(PresenterLcmModule.class);
     ModuleAuto.INSTANCE.runOne(LocalViewLcmModule.class);
   }
