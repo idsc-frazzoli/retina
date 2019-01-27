@@ -409,7 +409,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
       else
         queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
-      final Tensor splineMatrix = UniformBSpline2.getBasisMatrix(n, queryPositions, 0, closed);
+      final Tensor splineMatrix = UniformBSpline2.getBasisMatrix(n, 0, closed, queryPositions);
       // solve for control points: x
       Tensor pinv = PseudoInverse.of(splineMatrix);
       // TODO JPH/MH can this be done smarter:

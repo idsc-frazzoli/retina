@@ -4,11 +4,17 @@ package ch.ethz.idsc.gokart.core.map;
 import ch.ethz.idsc.tensor.Tensor;
 
 public interface TrackInterface {
-  Tensor getMiddleLine(int resolution);
+  /** @param resolution
+   * @return matrix of dimensions n x 2 */
+  Tensor getLineMiddle(int resolution);
 
-  Tensor getLeftLine(int resolution);
+  /** @param resolution
+   * @return matrix of dimensions n x 2 */
+  Tensor getLineLeft(int resolution);
 
-  Tensor getRightLine(int resolution);
+  /** @param resolution
+   * @return matrix of dimensions n x 2 */
+  Tensor getLineRight(int resolution);
 
   Tensor getNearestPosition(Tensor position);
 

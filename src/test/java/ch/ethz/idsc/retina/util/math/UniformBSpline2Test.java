@@ -94,7 +94,7 @@ public class UniformBSpline2Test extends TestCase {
   public void testBasisMatrix() {
     for (int n = 2; n < 6; ++n) {
       Tensor pos = Tensors.vector(0.2, 0.4, 1.3);
-      Tensor matrix = UniformBSpline2.getBasisMatrix(n, pos, 0, false);
+      Tensor matrix = UniformBSpline2.getBasisMatrix(n, 0, false, pos);
       Tensor vector = Array.of(l -> RealScalar.ONE, n);
       Tensor dot = matrix.dot(vector);
       Chop._12.requireClose(dot, Array.of(l -> RealScalar.ONE, pos.length()));

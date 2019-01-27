@@ -155,9 +155,9 @@ public class TrackRefinement {
     else
       // TODO MH try Subdivide.of(0, n-2, m-1) for the below
       queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m - 1);
-    Tensor splineMatrix = UniformBSpline2.getBasisMatrix(n, queryPositions, 0, closed);
+    Tensor splineMatrix = UniformBSpline2.getBasisMatrix(n, 0, closed, queryPositions);
     Tensor splineMatrixTransp = Transpose.of(splineMatrix);
-    Tensor splineMatrix1Der = UniformBSpline2.getBasisMatrix(n, queryPositions, 1, closed);
+    Tensor splineMatrix1Der = UniformBSpline2.getBasisMatrix(n, 1, closed, queryPositions);
     /* for(int it=0;it<iterations;it++) {
      * Tensor positions = MPCBSpline.getPositions(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix);
      * Tensor sideVectors = MPCBSpline.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix1Der);
