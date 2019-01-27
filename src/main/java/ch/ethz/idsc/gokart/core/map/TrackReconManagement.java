@@ -72,8 +72,8 @@ public class TrackReconManagement implements RenderInterface {
     return startSet;
   }
 
+  /** @param gokartPoseEvent non-null */
   public void setStart(GokartPoseEvent gokartPoseEvent) {
-    // if (Objects.nonNull(gokartPoseEvent))
     setStart(gokartPoseEvent.getPose());
   }
 

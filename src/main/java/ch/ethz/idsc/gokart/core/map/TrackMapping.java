@@ -27,7 +27,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** class interprets sensor data from lidar */
-public class GokartTrackMappingModule implements //
+public class TrackMapping implements //
     StartAndStoppable, LidarRayBlockListener, GokartPoseListener, PlanableOccupancyGrid, Runnable, RenderInterface {
   // TODO check rationale behind constant 10000!
   private static final int LIDAR_SAMPLES = 10000;
@@ -54,7 +54,7 @@ public class GokartTrackMappingModule implements //
    * with the horizontal plane at height of the lidar */
   private Tensor points3d_ferry = null;
 
-  public GokartTrackMappingModule() {
+  public TrackMapping() {
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     // ---

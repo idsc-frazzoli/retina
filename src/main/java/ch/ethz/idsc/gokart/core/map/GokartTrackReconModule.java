@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -17,7 +18,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class GokartTrackReconModule extends AbstractClockedModule implements GokartPoseListener, RenderInterface {
   private final TrackReconManagement trackReconManagement;
-  private final GokartTrackMappingModule trackMappingModule;
+  private final TrackMapping trackMappingModule;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
   // ---
@@ -27,7 +28,7 @@ public class GokartTrackReconModule extends AbstractClockedModule implements Gok
   private MPCBSplineTrack mpcbSplineTrack = null;
 
   public GokartTrackReconModule() {
-    trackMappingModule = new GokartTrackMappingModule();
+    trackMappingModule = new TrackMapping();
     trackReconManagement = new TrackReconManagement(trackMappingModule);
   }
 
@@ -37,13 +38,14 @@ public class GokartTrackReconModule extends AbstractClockedModule implements Gok
 
   @Override
   protected void runAlgo() {
-    if (!trackReconManagement.isStartSet() || settingStart) {
-      trackReconManagement.setStart(gokartPoseEvent);
-      if (trackReconManagement.isStartSet()) {
-        System.out.println("start set!");
-        settingStart = false;
+    if (!trackReconManagement.isStartSet() || settingStart)
+      if (Objects.nonNull(gokartPoseEvent)) {
+        trackReconManagement.setStart(gokartPoseEvent);
+        if (trackReconManagement.isStartSet()) {
+          System.out.println("start set!");
+          settingStart = false;
+        }
       }
-    }
     double seconds = intervalClock.seconds(); // reset
     if (recording) {
       trackMappingModule.prepareMap();
@@ -70,8 +72,8 @@ public class GokartTrackReconModule extends AbstractClockedModule implements Gok
   }
 
   @Override
-  public void getEvent(GokartPoseEvent gpe) {
-    this.gokartPoseEvent = gpe;
+  public void getEvent(GokartPoseEvent gokartPoseEvent) {
+    this.gokartPoseEvent = gokartPoseEvent;
   }
 
   @Override
