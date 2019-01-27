@@ -14,10 +14,10 @@ public class SerialPortWrap implements Runnable, SerialPortInterface, AutoClosea
   // ---
   private final SerialPort serialPort;
   private final InputStream inputStream;
+  /** storage of received bytes */
   private final byte[] rxData = new byte[BUFFER_SIZE];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(rxData);
   private final Thread thread;
-  /** storage of received bytes */
   // ---
   private boolean isLaunched = true;
   private int rxHead = 0;
@@ -41,7 +41,6 @@ public class SerialPortWrap implements Runnable, SerialPortInterface, AutoClosea
     try {
       while (isLaunched) {
         int nRead = inputStream.available();
-        // System.out.println(nRead);
         if (0 < nRead)
           synchronized (byteBuffer) {
             int length = Math.min(nRead, rxData.length - rxHead); // max number of bytes to read
@@ -49,7 +48,6 @@ public class SerialPortWrap implements Runnable, SerialPortInterface, AutoClosea
             rxHead += rxRead;
             rxHead %= BUFFER_SIZE;
             nBytesInBuffer += rxRead;
-            // System.out.println("rx size=" + nBytesInBuffer);
           }
         else
           try {
@@ -77,7 +75,6 @@ public class SerialPortWrap implements Runnable, SerialPortInterface, AutoClosea
 
   @Override // from RingBufferExchange
   public void advance(int length) {
-    // System.out.println("advance "+length);
     synchronized (byteBuffer) {
       rxTail += length;
       rxTail %= BUFFER_SIZE;

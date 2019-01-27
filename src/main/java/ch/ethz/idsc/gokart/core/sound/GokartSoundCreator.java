@@ -88,7 +88,7 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
     for (int i = 0; i < samples; ++i) {
       // FIXME not consistent logic
       float newSpeed = speedModifier.getNextSpeedValue(gokartSoundState, DT);
-      state = new GokartSoundState(newSpeed, state.power, state.torquevectoring);
+      state = new GokartSoundState(newSpeed, state.power, state.torqueVectoring);
       float excitementValue = 0;
       for (SoundExciter exciter : exciters)
         excitementValue += exciter.getNextValue(state, DT);
