@@ -3,9 +3,13 @@ package ch.ethz.idsc.gokart.core.ekf;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.time.IntervalClock;
+import ch.ethz.idsc.sophus.planar.Cross2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -13,10 +17,11 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class SimpleVelocityEstimation extends AbstractModule implements GokartVelocityInterface {
+public class SimpleVelocityEstimation extends AbstractModule implements VelocityEstimation {
   Tensor velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
   Tensor lastPosition = null;
-  Scalar AngularVelocity = Quantity.of(0, SI.ANGULAR_ACCELERATION);
+  Scalar angularVelocity = Quantity.of(0, SI.ANGULAR_ACCELERATION);
+  int lastVmuTime = 0;
   private final IntervalClock intervalClockLidar = new IntervalClock();
   private final IntervalClock intervalClockIMU = new IntervalClock();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -24,6 +29,17 @@ public class SimpleVelocityEstimation extends AbstractModule implements GokartVe
     @Override
     public void getEvent(GokartPoseEvent getEvent) {
       measurePose(getEvent.getPose());
+    }
+  };
+  private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
+  private final Vmu931ImuFrameListener vmu931ImuFrameListener = new Vmu931ImuFrameListener() {
+    @Override
+    public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
+      Tensor acc = vmu931ImuFrame.accXY();
+      Scalar gyro = (Scalar) vmu931ImuFrame.gyroZ();
+      int currentTime = vmu931ImuFrame.timestamp_ms();
+      Scalar time = Quantity.of((currentTime - lastVmuTime) / 1000.0, SI.SECOND);
+      measureAcceleration(acc, gyro, time);
     }
   };
 
@@ -67,12 +83,13 @@ public class SimpleVelocityEstimation extends AbstractModule implements GokartVe
    * @param angularVelocity {x[1/s]}
    * @param deltaT [s] */
   public void measureAcceleration(Tensor accelerations, Scalar angularVelocity, Scalar deltaT) {
-    this.AngularVelocity = angularVelocity;
+    this.angularVelocity = angularVelocity;
     Scalar rdt = angularVelocity.multiply(deltaT);
     // transform old system (compensate for rotation)
-    Scalar vx = velocity.Get(0).add(velocity.Get(1).multiply(rdt));
-    Scalar vy = velocity.Get(1).subtract(velocity.Get(0).multiply(rdt));
-    Tensor vel = Tensors.of(vx, vy);
+    // Scalar vx = velocity.Get(0).add(velocity.Get(1).multiply(rdt));
+    // Scalar vy = velocity.Get(1).subtract(velocity.Get(0).multiply(rdt));
+    Tensor vel = velocity.add(Cross2D.of(velocity).multiply(rdt));
+    // Tensors.of(vx, vy);
     this.velocity = vel.add(accelerations.multiply(deltaT));
   }
 
@@ -80,18 +97,24 @@ public class SimpleVelocityEstimation extends AbstractModule implements GokartVe
     return RotationMatrix.of(orientation.negate());
   }
 
+  /**
+   * 
+   */
   public Tensor getVelocity() {
-    return velocity.copy().append(AngularVelocity);
+    return velocity.copy().append(angularVelocity);
   }
 
   @Override
   protected void first() throws Exception {
     gokartPoseLcmClient.addListener(gokartPoseListener);
     gokartPoseLcmClient.startSubscriptions();
+    vmu931ImuLcmClient.addListener(vmu931ImuFrameListener);
+    vmu931ImuLcmClient.startSubscriptions();
   }
 
   @Override
   protected void last() {
     gokartPoseLcmClient.stopSubscriptions();
+    vmu931ImuLcmClient.stopSubscriptions();
   }
 }

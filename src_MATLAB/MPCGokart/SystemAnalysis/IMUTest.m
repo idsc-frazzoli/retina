@@ -4,8 +4,11 @@ userdir = getuserdir
 
 folders = {};
 targetfiles = {};
-if(1)
+if(0)
     folders{end+1} = '/retina_out/20190125T105720/';
+end
+if(1)
+    folders{end+1} = '/retina_out/20190125T134537/';
 end
 N = numel(folders);
 tic;
@@ -28,14 +31,15 @@ dxacc = Davis(:,3);
 dyacc = Davis(:,4);
 dzacc = Davis(:,5);
 
-sxacc = gaussfilter(xacc,100);
-syacc = gaussfilter(yacc,100);
-szacc = gaussfilter(zacc,100);
-dsxacc = gaussfilter(dxacc,100);
-dsyacc = gaussfilter(dyacc,100);
-dszacc = gaussfilter(dzacc,100);
+sxacc = gaussfilter(xacc,500);
+syacc = gaussfilter(yacc,500);
+szacc = gaussfilter(zacc,500);
+dsxacc = gaussfilter(dxacc,500);
+dsyacc = gaussfilter(dyacc,500);
+dszacc = gaussfilter(dzacc,500);
 
 figure
+title('VMU');
 hold on
 plot(tvmu,sxacc)
 plot(tvmu,syacc)
@@ -44,6 +48,7 @@ plot(tvmu,szacc)
 hold off
 
 figure
+title('davis');
 hold on
 plot(tdavis,dsxacc)
 plot(tdavis,dsyacc)
