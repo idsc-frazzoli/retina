@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
+import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -142,6 +143,7 @@ public class TrackRefinement {
 
   private static final Scalar gdRadiusGrowth = Quantity.of(0.07, SI.METER);
   private static final Scalar gdRegularizer = RealScalar.of(0.01);
+  private static final Regularization REGULARIZATION = new Regularization(RnGeodesic.INSTANCE, gdRegularizer);
 
   Tensor getRefinedTrack(Tensor controlpointsXYR, Scalar resolution, int iterations, boolean closed, //
       List<TrackConstraint> constraints) {
@@ -180,9 +182,9 @@ public class TrackRefinement {
       final Tensor fControl = radiusCtrPoints;
       // TODO JPH/MH simpler way to add scalar
       radiusCtrPoints = Tensors.vector(ii -> fControl.get(ii).add(gdRadiusGrowth), radiusCtrPoints.length());
-      controlpointsX = controlpointsX.add(Regularization.of(controlpointsX, gdRegularizer, closed));
-      controlpointsY = controlpointsY.add(Regularization.of(controlpointsY, gdRegularizer, closed));
-      radiusCtrPoints = radiusCtrPoints.add(Regularization.of(radiusCtrPoints, gdRegularizer, closed));
+      controlpointsX = REGULARIZATION.apply(controlpointsX, closed);
+      controlpointsY = REGULARIZATION.apply(controlpointsY, closed);
+      radiusCtrPoints = REGULARIZATION.apply(radiusCtrPoints, closed);
       if (Objects.nonNull(constraints))
         for (TrackConstraint constraint : constraints) {
           constraint.compute(controlpointsX, controlpointsY, radiusCtrPoints);
