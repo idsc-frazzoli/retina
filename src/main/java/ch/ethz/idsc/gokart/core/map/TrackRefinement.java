@@ -59,8 +59,8 @@ public class TrackRefinement {
       Tensor startPos = Mean.of(Tensors.of(first, second));
       if (Objects.isNull(trackProg) || Objects.isNull(trackPos) || Objects.isNull(trackDirection)) {
         trackProg = track.getNearestPathProgress(startPos);
-        trackPos = track.getPosition(trackProg);
-        trackDirection = track.getDirection(trackProg);
+        trackPos = track.getPositionXY(trackProg);
+        trackDirection = track.getDirectionXY(trackProg);
       }
       Tensor realVector = second.subtract(first);
       Scalar projection = (Scalar) Max.of(realVector.dot(trackDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
