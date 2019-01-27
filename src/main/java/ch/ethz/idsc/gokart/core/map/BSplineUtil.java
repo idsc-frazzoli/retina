@@ -14,12 +14,9 @@ import ch.ethz.idsc.tensor.red.Norm;
   // Tensor bm = UniformBSpline2.getBasisMatrix(controlpointsX.length(), queryPositions, 0, circle);
   // return getPositions(controlpointsX, controlpointsY, queryPositions, circle, bm);
   // }
-  public static Tensor getPositions(Tensor controlpointsX, Tensor controlpointsY, Tensor basisMatrix) {
-    Tensor posX = basisMatrix.dot(controlpointsX);
-    Tensor posY = basisMatrix.dot(controlpointsY);
-    return Transpose.of(Tensors.of(posX, posY));
-  }
-
+  // public static Tensor getPositions(Tensor controlpoints, Tensor basisMatrix) {
+  // return basisMatrix.dot(controlpoints);
+  // }
   // private static Tensor getSidewardsUnitVectors(Tensor controlpointsX, Tensor controlpointsY, Tensor queryPositions, boolean circle) {
   // Tensor matrix = UniformBSpline2.getBasisMatrix(controlpointsY.length(), queryPositions, 1, circle);
   // return getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, circle, matrix);

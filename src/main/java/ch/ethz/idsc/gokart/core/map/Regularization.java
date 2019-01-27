@@ -22,22 +22,22 @@ import ch.ethz.idsc.tensor.alg.Last;
    * @param cyclic
    * @return */
   public Tensor apply(Tensor tensor, boolean cyclic) {
-    Tensor diffs = Tensors.empty();
+    Tensor center = Tensors.empty();
     int length = tensor.length();
     if (length < 2)
       return tensor.copy();
     if (!cyclic) {
-      diffs.append(tensor.get(0));
+      center.append(tensor.get(0));
       for (int i = 1; i < length - 1; ++i)
-        diffs.append(geodesicInterface.split(tensor.get(i - 1), tensor.get(i + 1), RationalScalar.HALF));
-      diffs.append(Last.of(tensor));
+        center.append(geodesicInterface.split(tensor.get(i - 1), tensor.get(i + 1), RationalScalar.HALF));
+      center.append(Last.of(tensor));
     } else {
-      diffs.append(geodesicInterface.split(tensor.get(length - 1), tensor.get(1), RationalScalar.HALF));
+      center.append(geodesicInterface.split(tensor.get(length - 1), tensor.get(1), RationalScalar.HALF));
       for (int i = 1; i < length - 1; ++i)
-        diffs.append(geodesicInterface.split(tensor.get(i - 1), tensor.get(i + 1), RationalScalar.HALF));
-      diffs.append(geodesicInterface.split(tensor.get(length - 2), tensor.get(0), RationalScalar.HALF));
+        center.append(geodesicInterface.split(tensor.get(i - 1), tensor.get(i + 1), RationalScalar.HALF));
+      center.append(geodesicInterface.split(tensor.get(length - 2), tensor.get(0), RationalScalar.HALF));
     }
     // TODO JPH the following is illegal for anything other than RnGeodesic
-    return geodesicInterface.split(tensor, diffs, factor);
+    return geodesicInterface.split(tensor, center, factor);
   }
 }

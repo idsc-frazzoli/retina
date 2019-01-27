@@ -122,8 +122,7 @@ public class TrackReconManagement implements RenderInterface {
            * } */
           if (closedTrack) {
             trackDataXYR = refinenement.getRefinedTrack( //
-                Tensor.of(ctrpointsXY.stream().map(r -> r.copy().append(Quantity.of(1, SI.METER)))), //
-                // ctrpoints.get(1), //
+                Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER)))), //
                 RealScalar.of(8), 100, closedTrack, constraints);
           }
           /* else
