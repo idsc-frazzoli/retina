@@ -37,13 +37,13 @@ public class MappingConfig {
    * the safety margin accounts not only for the half-width of the gokart
    * but also the corner cutting behavior of the pure pursuit */
   public Scalar obsRadius = Quantity.of(1.3, SI.METER);
-  public Scalar trackDrivingObsRadius = Quantity.of(1, SI.METER);
+  public final Scalar trackDrivingObsRadius = Quantity.of(1, SI.METER);
   /** Cell dimension of a single grid cell in [m] */
-  public Scalar cellDim = Quantity.of(0.2, SI.METER);
+  public final Scalar cellDim = Quantity.of(0.2, SI.METER);
   public Boolean alongLine = false;
   /** Minimal obstacle height. Used for inverse sensor model
    * only relevant when alongLine == true */
-  public Scalar minObsHeight = Quantity.of(0, SI.METER);
+  public final Scalar minObsHeight = Quantity.of(0, SI.METER);
 
   /***************************************************/
   public double getP_M() {
@@ -68,21 +68,21 @@ public class MappingConfig {
 
   /** @return Dubilab specific BayesianOccupancyGrid */
   public BayesianOccupancyGrid createBayesianOccupancyGrid() {
-    Tensor LOWER_BOUND = Tensors.vector(30, 30);
-    Tensor GRID_RANGE = Tensors.vector(40, 40);
-    return BayesianOccupancyGrid.of(LOWER_BOUND, GRID_RANGE, cellDim, obsRadius);
+    Tensor lbounds = Tensors.vector(30, 30);
+    Tensor range = Tensors.vector(40, 40);
+    return BayesianOccupancyGrid.of(lbounds, range, cellDim, obsRadius);
   }
 
   public BayesianOccupancyGrid createTrackFittingBayesianOccupancyGrid() {
-    Tensor LOWER_BOUND = Tensors.vector(30, 30);
-    Tensor GRID_RANGE = Tensors.vector(40, 40);
-    return BayesianOccupancyGrid.of(LOWER_BOUND, GRID_RANGE, cellDim, trackDrivingObsRadius, true);
+    Tensor lbounds = Tensors.vector(30, 30);
+    Tensor range = Tensors.vector(40, 40);
+    return BayesianOccupancyGrid.of(lbounds, range, cellDim, trackDrivingObsRadius, true);
   }
 
-  /** @return Dubilab specific BayesianOccupancyGrid */
+  /** @return dubilab specific BayesianOccupancyGrid */
   public BayesianOccupancyGrid createThinBayesianOccupancyGrid() {
-    Tensor LOWER_BOUND = Tensors.vector(30, 30);
-    Tensor GRID_RANGE = Tensors.vector(40, 40);
-    return BayesianOccupancyGrid.of(LOWER_BOUND, GRID_RANGE, cellDim, Quantity.of(0, SI.METER), true);
+    Tensor lbounds = Tensors.vector(30, 30);
+    Tensor range = Tensors.vector(40, 40);
+    return BayesianOccupancyGrid.of(lbounds, range, cellDim, Quantity.of(0, SI.METER), true);
   }
 }

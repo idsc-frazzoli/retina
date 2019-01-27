@@ -13,21 +13,21 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
   private static final Scalar ONE = RealScalar.ONE;
   private static final Scalar HALF = RealScalar.of(0.5);
 
-  /** @param trackData matrix with dimension n x 3
+  /** @param points_xyr matrix with dimension n x 3
    * @param radiusOffset
    * @param closed */
-  public static MPCBSplineTrack withOffset(Tensor trackData, Scalar radiusOffset, boolean closed) {
-    Tensor tensor = trackData.copy();
+  public static MPCBSplineTrack withOffset(Tensor points_xyr, Scalar radiusOffset, boolean closed) {
+    Tensor tensor = points_xyr.copy();
     tensor.set(radiusOffset::add, Tensor.ALL, 2);
     return new MPCBSplineTrack(tensor, closed);
   }
 
   public final BSplineTrack bSplineTrack;
 
-  /** @param trackData matrix with dimension n x 3
+  /** @param points_xyr matrix with dimension n x 3
    * @param closed */
-  public MPCBSplineTrack(Tensor trackData, boolean closed) {
-    bSplineTrack = new BSplineTrack(trackData, closed);
+  public MPCBSplineTrack(Tensor points_xyr, boolean closed) {
+    bSplineTrack = new BSplineTrack(points_xyr, closed);
   }
 
   // TODO JPH optimize
@@ -49,7 +49,7 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
     Scalar QPOffset = pathProgress.subtract(HALF);
     Tensor matrix = Tensors.empty();
     if (currentIndex < 0)
-      currentIndex += bSplineTrack.numPoints;
+      currentIndex += bSplineTrack.numPoints();
     for (int i = 0; i < previewSize; ++i) {
       Tensor vector = bSplineTrack.combinedControlPoints().get(currentIndex);
       Scalar localProgress = RealScalar.of(i).subtract(QPOffset).divide(RealScalar.of(previewSize));
@@ -61,7 +61,7 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
       vector.set(scalar -> Ramp.FUNCTION.apply(((Scalar) scalar).subtract(padding).multiply(localQPFactor)), 2);
       matrix.append(vector);
       ++currentIndex;
-      if (currentIndex >= bSplineTrack.numPoints)
+      if (currentIndex >= bSplineTrack.numPoints())
         currentIndex = 0;
     }
     return new MPCPathParameter(progressStart, matrix);

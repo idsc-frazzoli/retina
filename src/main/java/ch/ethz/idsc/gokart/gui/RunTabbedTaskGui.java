@@ -28,7 +28,7 @@ import ch.ethz.idsc.gokart.core.man.ManualGroupModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
-import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
+import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
@@ -49,7 +49,7 @@ import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
-import ch.ethz.idsc.gokart.gui.lab.TrackIdentificationButtons;
+import ch.ethz.idsc.gokart.gui.lab.TrackReconButtons;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -89,7 +89,7 @@ enum RunTabbedTaskGui {
       LinmotSafetyModule.class, //
       ManualResetModule.class, //
       DavisImuTrackerModule.class, //
-      GokartTrackIdentificationModule.class //
+      GokartTrackReconModule.class //
   // AutonomySafetyModule.class //
   );
   static final List<Class<?>> MODULES_CFG = Arrays.asList( //
@@ -111,7 +111,7 @@ enum RunTabbedTaskGui {
       SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
-      TrackIdentificationButtons.class, //
+      TrackReconButtons.class, //
       MPCKinematicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       FigureTiresAModule.class, //
