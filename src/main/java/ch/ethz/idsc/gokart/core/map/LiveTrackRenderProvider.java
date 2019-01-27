@@ -11,9 +11,9 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 public class LiveTrackRenderProvider implements RenderInterface {
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    GokartTrackIdentificationModule gokartTrackIdentificationModule = //
-        ModuleAuto.INSTANCE.getInstance(GokartTrackIdentificationModule.class);
-    if (Objects.nonNull(gokartTrackIdentificationModule))
-      gokartTrackIdentificationModule.render(geometricLayer, graphics);
+    GokartTrackReconModule gokartTrackReconModule = //
+        ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
+    if (Objects.nonNull(gokartTrackReconModule))
+      gokartTrackReconModule.render(geometricLayer, graphics);
   }
 }

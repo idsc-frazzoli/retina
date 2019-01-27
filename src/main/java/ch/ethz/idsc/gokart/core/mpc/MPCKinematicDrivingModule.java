@@ -8,7 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
+import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
@@ -122,10 +122,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     GokartState state = mpcStateEstimationProvider.getState();
     Tensor position = Tensors.of(state.getX(), state.getY());
     MPCPathParameter mpcPathParameter = null;
-    GokartTrackIdentificationModule gokartTrackIdentificationModule = ModuleAuto.INSTANCE.getInstance(GokartTrackIdentificationModule.class);
-    MPCPreviewableTrack liveTrack = Objects.isNull(gokartTrackIdentificationModule) //
+    GokartTrackReconModule gokartTrackReconModule = ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
+    MPCPreviewableTrack liveTrack = Objects.isNull(gokartTrackReconModule) //
         ? null
-        : gokartTrackIdentificationModule.getTrack();
+        : gokartTrackReconModule.getTrack();
     if (Objects.nonNull(track))
       mpcPathParameter = track.getPathParameterPreview(previewSize, position, padding, QPFactor);
     else //

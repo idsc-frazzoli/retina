@@ -13,8 +13,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** @see SafetyConfig */
-public class TrackIdentificationConfig {
-  public static final TrackIdentificationConfig GLOBAL = AppResources.load(new TrackIdentificationConfig());
+public class TrackReconConfig {
+  public static final TrackReconConfig GLOBAL = AppResources.load(new TrackReconConfig());
   /***************************************************/
   /** .
    * 20180226: changed from -1.0[m] to -0.90[m] because the sensor rack was lowered by ~8[cm]

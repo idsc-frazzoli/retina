@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO JPH/MH manage unused variables
-public class TrackIdentificationManagement implements RenderInterface {
+public class TrackReconManagement implements RenderInterface {
   private static final Scalar RADIUS_OFFSET = Quantity.of(0.4, SI.METER);
   private static final Scalar SPACING = RealScalar.of(1.5); // TODO should be meters
   private static final Scalar CP_RESOLUTION = RealScalar.of(0.5);
@@ -49,7 +49,7 @@ public class TrackIdentificationManagement implements RenderInterface {
   private List<TrackConstraint> trackConstraints = null;
   private boolean startSet = false;
 
-  public TrackIdentificationManagement(PlanableOccupancyGrid planableOccupancyGrid) {
+  public TrackReconManagement(PlanableOccupancyGrid planableOccupancyGrid) {
     this.occupancyGrid = planableOccupancyGrid;
     this.initialGuess = new TrackLayoutInitialGuess(occupancyGrid);
     this.refinenement = new TrackRefinement(occupancyGrid);
@@ -72,9 +72,9 @@ public class TrackIdentificationManagement implements RenderInterface {
     return startSet;
   }
 
-  public boolean setStart(GokartPoseEvent gokartPoseEvent) {
-    return Objects.nonNull(gokartPoseEvent) //
-        && setStart(gokartPoseEvent.getPose());
+  public void setStart(GokartPoseEvent gokartPoseEvent) {
+    // if (Objects.nonNull(gokartPoseEvent))
+    setStart(gokartPoseEvent.getPose());
   }
 
   /** set start position

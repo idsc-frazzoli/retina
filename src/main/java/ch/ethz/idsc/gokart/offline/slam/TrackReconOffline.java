@@ -12,8 +12,8 @@ import java.util.function.Consumer;
 import ch.ethz.idsc.gokart.core.map.BSplineTrack;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
-import ch.ethz.idsc.gokart.core.map.TrackIdentificationConfig;
-import ch.ethz.idsc.gokart.core.map.TrackIdentificationManagement;
+import ch.ethz.idsc.gokart.core.map.TrackReconConfig;
+import ch.ethz.idsc.gokart.core.map.TrackReconManagement;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
@@ -46,7 +46,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO contains redundancies with GokartMappingModule 
-public class TrackIdentificationOffline implements OfflineLogListener, LidarRayBlockListener {
+public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListener {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
@@ -54,7 +54,7 @@ public class TrackIdentificationOffline implements OfflineLogListener, LidarRayB
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final BayesianOccupancyGrid bayesianOccupancyGrid;
   private final BayesianOccupancyGrid bayesianOccupancyGridThin;
-  private final TrackIdentificationManagement trackIdentificationManagement;
+  private final TrackReconManagement trackIdentificationManagement;
   private final Consumer<BufferedImage> consumer;
   // ---
   private GokartPoseEvent gokartPoseEvent;
@@ -63,9 +63,9 @@ public class TrackIdentificationOffline implements OfflineLogListener, LidarRayB
   private MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private Scalar delta = Quantity.of(0.1, SI.SECOND);
-  private SpacialXZObstaclePredicate predicate = TrackIdentificationConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private SpacialXZObstaclePredicate predicate = TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
 
-  public TrackIdentificationOffline(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
+  public TrackReconOffline(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
     this.consumer = consumer;
     bayesianOccupancyGrid = mappingConfig.createTrackFittingBayesianOccupancyGrid();
     bayesianOccupancyGridThin = mappingConfig.createThinBayesianOccupancyGrid();
@@ -79,7 +79,7 @@ public class TrackIdentificationOffline implements OfflineLogListener, LidarRayB
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
-    trackIdentificationManagement = new TrackIdentificationManagement(bayesianOccupancyGrid);
+    trackIdentificationManagement = new TrackReconManagement(bayesianOccupancyGrid);
   }
 
   int count = 0;
@@ -99,9 +99,9 @@ public class TrackIdentificationOffline implements OfflineLogListener, LidarRayB
         trackIdentificationManagement.setStart(gokartPoseEvent);
       if (count++ > 5)
         trackIdentificationManagement.update(gokartPoseEvent, Quantity.of(0.05, SI.SECOND));
-    } else if (channel.equals(CHANNEL_LIDAR)) {
+    } else //
+    if (channel.equals(CHANNEL_LIDAR))
       velodyneDecoder.lasers(byteBuffer);
-    }
     // initialGuess.getControlPointGuess(RealScalar.of(40), RealScalar.of(0.5));
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(delta);

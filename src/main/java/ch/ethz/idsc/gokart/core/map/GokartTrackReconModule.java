@@ -15,8 +15,8 @@ import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class GokartTrackIdentificationModule extends AbstractClockedModule implements GokartPoseListener, RenderInterface {
-  private final TrackIdentificationManagement trackIDManagement;
+public class GokartTrackReconModule extends AbstractClockedModule implements GokartPoseListener, RenderInterface {
+  private final TrackReconManagement trackReconManagement;
   private final GokartTrackMappingModule trackMappingModule;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
@@ -26,20 +26,20 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
   private boolean settingStart = true;
   private MPCBSplineTrack mpcbSplineTrack = null;
 
-  public GokartTrackIdentificationModule() {
+  public GokartTrackReconModule() {
     trackMappingModule = new GokartTrackMappingModule();
-    trackIDManagement = new TrackIdentificationManagement(trackMappingModule);
+    trackReconManagement = new TrackReconManagement(trackMappingModule);
   }
 
   public void resetTrack() {
-    trackIDManagement.resetTrack();
+    trackReconManagement.resetTrack();
   }
 
   @Override
   protected void runAlgo() {
-    if (!trackIDManagement.isStartSet() || settingStart) {
-      trackIDManagement.setStart(gokartPoseEvent);
-      if (trackIDManagement.isStartSet()) {
+    if (!trackReconManagement.isStartSet() || settingStart) {
+      trackReconManagement.setStart(gokartPoseEvent);
+      if (trackReconManagement.isStartSet()) {
         System.out.println("start set!");
         settingStart = false;
       }
@@ -47,7 +47,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
     double seconds = intervalClock.seconds(); // reset
     if (recording) {
       trackMappingModule.prepareMap();
-      mpcbSplineTrack = trackIDManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
+      mpcbSplineTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
     }
   }
 
@@ -76,7 +76,7 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    trackIDManagement.render(geometricLayer, graphics);
+    trackReconManagement.render(geometricLayer, graphics);
   }
 
   public void setRecording(boolean selected) {

@@ -12,21 +12,21 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.GokartTrackIdentificationModule;
+import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
-public class TrackIdentificationButtons extends AbstractModule {
+public class TrackReconButtons extends AbstractModule {
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final JToggleButton recordTrack = new JToggleButton("sense track");
   private final JButton setStart = new JButton("set start");
   private final JButton resetTrack = new JButton("reset track");
-  private final GokartTrackIdentificationModule gokartTrackIdentificationModule = //
-      ModuleAuto.INSTANCE.getInstance(GokartTrackIdentificationModule.class);
+  private final GokartTrackReconModule gokartTrackIdentificationModule = //
+      ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
 
   @Override
   protected void first() throws Exception {
@@ -44,8 +44,8 @@ public class TrackIdentificationButtons extends AbstractModule {
       resetTrack.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-          GokartTrackIdentificationModule gokartTrackIdentificationModule = //
-              ModuleAuto.INSTANCE.getInstance(GokartTrackIdentificationModule.class);
+          GokartTrackReconModule gokartTrackIdentificationModule = //
+              ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
           if (Objects.nonNull(gokartTrackIdentificationModule))
             gokartTrackIdentificationModule.resetTrack();
         }
@@ -68,7 +68,7 @@ public class TrackIdentificationButtons extends AbstractModule {
   }
 
   public static void standalone() throws Exception {
-    TrackIdentificationButtons linmotPressModule = new TrackIdentificationButtons();
+    TrackReconButtons linmotPressModule = new TrackReconButtons();
     linmotPressModule.first();
     linmotPressModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }

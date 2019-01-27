@@ -9,14 +9,14 @@ import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.offline.slam.TrackIdentificationOffline;
+import ch.ethz.idsc.gokart.offline.slam.TrackReconOffline;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ enum RunTrackIdentificationOffline {
+/* package */ enum RunTrackReconOffline {
   ;
   private static final File DIRECTORY = HomeDirectory.Pictures("log", "mapper");
 
@@ -39,7 +39,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Consumer<BufferedImage> consumer = new PngImageWriter(DIRECTORY);
     MappingConfig mappingConfig = new MappingConfig();
     mappingConfig.obsRadius = Quantity.of(0.8, SI.METER);
-    OfflineLogPlayer.process(file, new TrackIdentificationOffline(mappingConfig, consumer));
+    OfflineLogPlayer.process(file, new TrackReconOffline(mappingConfig, consumer));
     System.out.print("Done.");
   }
 }
