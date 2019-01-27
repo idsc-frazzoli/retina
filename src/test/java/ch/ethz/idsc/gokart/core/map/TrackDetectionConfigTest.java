@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 public class TrackDetectionConfigTest extends TestCase {
   public void testSimple() {
     SpacialXZObstaclePredicate createSpacialXZObstaclePredicate = //
-        TrackDetectionConfig.GLOBAL.createSpacialXZObstaclePredicate();
+        TrackIdentificationConfig.GLOBAL.createSpacialXZObstaclePredicate();
     assertTrue(createSpacialXZObstaclePredicate.isObstacle(3f, -.6f));
     assertFalse(createSpacialXZObstaclePredicate.isObstacle(3f, .6f));
   }

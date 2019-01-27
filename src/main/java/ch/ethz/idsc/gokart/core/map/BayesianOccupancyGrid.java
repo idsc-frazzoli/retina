@@ -223,9 +223,10 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
           }
         }
       }
-    } else {
-      System.err.println("Observation not processed - no pose received");
     }
+    // else {
+    // System.err.println("Observation not processed - no pose received");
+    // }
   }
 
   /** set vehicle pose w.r.t world frame

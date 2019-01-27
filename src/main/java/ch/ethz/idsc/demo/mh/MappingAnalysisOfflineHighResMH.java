@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import ch.ethz.idsc.gokart.core.map.BSplineTrack;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
-import ch.ethz.idsc.gokart.core.map.TrackDetectionConfig;
+import ch.ethz.idsc.gokart.core.map.TrackIdentificationConfig;
 import ch.ethz.idsc.gokart.core.map.TrackIdentificationManagement;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -59,7 +59,7 @@ public class MappingAnalysisOfflineHighResMH implements OfflineLogListener, Lida
   private MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private Scalar delta = Quantity.of(0.1, SI.SECOND);
-  private SpacialXZObstaclePredicate predicate = TrackDetectionConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private SpacialXZObstaclePredicate predicate = TrackIdentificationConfig.GLOBAL.createSpacialXZObstaclePredicate();
 
   public MappingAnalysisOfflineHighResMH(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
     this.consumer = consumer;

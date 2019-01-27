@@ -42,7 +42,7 @@ public class GokartTrackMappingModule implements //
   private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid();
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private final SpacialXZObstaclePredicate predicate = TrackDetectionConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private final SpacialXZObstaclePredicate predicate = TrackIdentificationConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent;
   private boolean recording = false;
