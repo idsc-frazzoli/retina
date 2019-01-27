@@ -132,11 +132,11 @@ public class TrackRefinement {
     }
   }
 
-  public TrackRefinement(PlanableOccupancyGrid occupancyGrid) {
+  public TrackRefinement(OccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
   }
 
-  private final PlanableOccupancyGrid occupancyGrid;
+  private final OccupancyGrid occupancyGrid;
 
   Tensor getRefinedTrack(Tensor trackData, Scalar resolution, int iterations, boolean closed, List<TrackConstraint> constraints) {
     return getRefinedTrack(trackData.get(0), trackData.get(1), trackData.get(2), resolution, iterations, closed, constraints);

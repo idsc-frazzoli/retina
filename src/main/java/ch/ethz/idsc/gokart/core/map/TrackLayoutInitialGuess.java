@@ -102,9 +102,9 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
   }
 
-  private final PlanableOccupancyGrid occupancyGrid;
+  private final OccupancyGrid occupancyGrid;
 
-  public TrackLayoutInitialGuess(PlanableOccupancyGrid occupancyGrid) {
+  public TrackLayoutInitialGuess(OccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
   }
 

@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** class interprets sensor data from lidar */
 public class TrackMapping implements //
-    StartAndStoppable, LidarRayBlockListener, GokartPoseListener, PlanableOccupancyGrid, Runnable, RenderInterface {
+    StartAndStoppable, LidarRayBlockListener, GokartPoseListener, OccupancyGrid, Runnable, RenderInterface {
   // TODO check rationale behind constant 10000!
   private static final int LIDAR_SAMPLES = 10000;
   /** ferry for visualizing grid in presenter lcm module */

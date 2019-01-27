@@ -28,7 +28,7 @@ public class TrackReconManagement implements RenderInterface {
   private static final Scalar SPACING = RealScalar.of(1.5); // TODO should be meters
   private static final Scalar CP_RESOLUTION = RealScalar.of(0.5);
   // ---
-  private final PlanableOccupancyGrid occupancyGrid;
+  private final OccupancyGrid occupancyGrid;
   private final TrackLayoutInitialGuess initialGuess;
   private final TrackRefinement refinenement;
   private Tensor trackData = null;
@@ -49,8 +49,8 @@ public class TrackReconManagement implements RenderInterface {
   private List<TrackConstraint> trackConstraints = null;
   private boolean startSet = false;
 
-  public TrackReconManagement(PlanableOccupancyGrid planableOccupancyGrid) {
-    this.occupancyGrid = planableOccupancyGrid;
+  public TrackReconManagement(OccupancyGrid occupancyGrid) {
+    this.occupancyGrid = occupancyGrid;
     this.initialGuess = new TrackLayoutInitialGuess(occupancyGrid);
     this.refinenement = new TrackRefinement(occupancyGrid);
     Tensor gridSize = occupancyGrid.getGridSize();
