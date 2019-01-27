@@ -1,7 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.sound;
 
-public class TestExciter implements SoundExciter {
+/* package */ class TestExciter implements SoundExciter {
   private static final float TWO_PI = (float) (2 * Math.PI);
   // ---
   private final float absFrequency;

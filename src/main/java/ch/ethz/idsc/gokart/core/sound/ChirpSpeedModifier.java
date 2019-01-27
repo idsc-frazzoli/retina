@@ -16,8 +16,7 @@ public class ChirpSpeedModifier implements SpeedModifier {
   @Override
   public float getNextSpeedValue(GokartSoundState motorState, float dt) {
     overSpeedFloat += overSpeedRate * dt;
-    if (overSpeedFloat > 1)
-      overSpeedFloat = 0;
-    return motorState.speed + overSpeedFloat * overSpeedFactor * motorState.torquevectoring;
+    overSpeedFloat %= 1;
+    return motorState.speed + overSpeedFloat * overSpeedFactor * motorState.torqueVectoring;
   }
 }

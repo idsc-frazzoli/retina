@@ -58,7 +58,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     // assertEquals(powers, Tensors.vector(-0.4, 0.4));
   }
 
-  public void testAccelerationResponse() {
+  public void testAccelerationResponse() throws InterruptedException {
     // this is only true when we have no torque vectoring
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0, SI.ACCELERATION.negate());
@@ -72,34 +72,19 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
         velocity, //
         Quantity.of(1, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
-    try {
-      Thread.sleep(100);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    Thread.sleep(100);
     Tensor powers1 = torqueVectoringInterface.powers( //
         Quantity.of(1, "m^-1"), //
         velocity, //
         Quantity.of(1, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
-    try {
-      Thread.sleep(200);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    Thread.sleep(200);
     Tensor powers2 = torqueVectoringInterface.powers( //
         Quantity.of(1.5, "m^-1"), //
         velocity, //
         Quantity.of(1, "s^-1"), //
         power, Quantity.of(0, "s^-1"));
-    try {
-      Thread.sleep(200);
-    } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    Thread.sleep(200);
     Tensor powers3 = torqueVectoringInterface.powers( //
         Quantity.of(1.5, "m^-1"), //
         velocity, //

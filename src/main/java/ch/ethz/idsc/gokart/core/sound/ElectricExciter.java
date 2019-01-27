@@ -1,21 +1,24 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.sound;
 
+import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
+
 public class ElectricExciter implements SoundExciter {
-  private static final float TWO_PI = (float) (2 * Math.PI);
+  private static final int SIZE = 1 << 12;
+  private static final int MASK = SIZE - 1;
+  private static final AngleVectorLookupFloat ANGLE_VECTOR_LOOKUP_FLOAT = //
+      new AngleVectorLookupFloat(SIZE, false, 0);
   // ---
   private final float baseAmplitude;
-  private final float amplitudeFactor;
   private final float relAmpFrequency;
   private final float baseAmpFrequency;
   private final float baseFrequency;
   private final float relFrequency;
   private final float powerFactor;
+  private final float baseAmpFactor;
   // ---
-  private float sinePosition = 0;
-  private float ampSinePosition = 0;
-  private float dSinePosition;
-  private float dAmpSinePosition;
+  private int sinePosition = 0;
+  private int ampSinePosition = 0;
 
   public ElectricExciter( //
       float relFrequency, float baseFrequency, float relAmpFrequency, //
@@ -24,26 +27,25 @@ public class ElectricExciter implements SoundExciter {
     this.relFrequency = relFrequency;
     this.relAmpFrequency = relAmpFrequency;
     this.powerFactor = powerFactor;
-    this.amplitudeFactor = amplitudeFactor;
     this.baseAmplitude = baseAmplitude;
     this.baseFrequency = baseFrequency;
     this.baseAmpFrequency = baseAmpFrequency;
+    baseAmpFactor = baseAmplitude * (amplitudeFactor - 1);
   }
 
   @Override
-  public float getNextValue(GokartSoundState state, float dt) {
-    dSinePosition = dt * (state.speed * relFrequency + baseFrequency);
-    dAmpSinePosition = dt * (state.speed * relAmpFrequency + baseAmpFrequency);
-    sinePosition += dSinePosition * TWO_PI;
-    ampSinePosition += dAmpSinePosition * TWO_PI;
-    if (sinePosition > TWO_PI)
-      sinePosition -= TWO_PI;
-    if (ampSinePosition > TWO_PI)
-      ampSinePosition -= TWO_PI;
-    float sineVal = (float) Math.sin(sinePosition);
-    float ampSineVal = (float) Math.sin(ampSinePosition);
-    float ampFac = powerFactor * state.power + (1 - powerFactor);
-    float toAdd = (ampSineVal + 1) / 2.0f * baseAmplitude * ampFac * (amplitudeFactor - 1);
+  public float getNextValue(GokartSoundState gokartSoundState, float dt) {
+    dt *= SIZE;
+    int dSinePosition = (int) (dt * (gokartSoundState.speed * relFrequency + baseFrequency));
+    int dAmpSinePosition = (int) (dt * (gokartSoundState.speed * relAmpFrequency + baseAmpFrequency));
+    sinePosition += dSinePosition;
+    sinePosition &= MASK;
+    float sineVal = ANGLE_VECTOR_LOOKUP_FLOAT.dy(sinePosition);
+    ampSinePosition += dAmpSinePosition;
+    ampSinePosition &= MASK;
+    float ampSineVal = ANGLE_VECTOR_LOOKUP_FLOAT.dy(ampSinePosition);
+    float ampFac = powerFactor * gokartSoundState.power + (1 - powerFactor);
+    float toAdd = (ampSineVal + 1) * 0.5f * ampFac * baseAmpFactor;
     float amplitude = baseAmplitude + toAdd;
     return amplitude * sineVal;
   }

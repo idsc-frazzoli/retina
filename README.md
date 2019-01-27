@@ -1,20 +1,20 @@
 # ch.ethz.idsc.gokart <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
-Sensor and actuator interfaces, Gokart software
-
-The code in the repository operates a heavy and fast robot that may endanger living creatures.
-We follow best practices and coding standards to protect from avoidable errors.
-See [development_guidelines](doc/development_guidelines.md)
-
-The performance of the gokart hardware and software are investigated.
+Software to operate the go-kart in autonomous and manual modes.
+The performance of the go-kart hardware and software are investigated.
 The results are documented in [reports](doc/reports.md).
+
+> The code in the repository operates a heavy and fast robot that may endanger living creatures. We follow best practices and coding standards to protect from avoidable errors. See [development_guidelines](doc/development_guidelines.md)
 
 ## Features
 
 * simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
+* lidar-based localization enhanced with odometry and gyro
 * bayesian occupancy grid
-* offline processing of log data
+* track reconnaissance
 * torque vectoring
+* synthesis of engine sound
+* offline processing of log data
 
 ## Gallery Autonomous Driving
 
@@ -74,16 +74,15 @@ The byte order of the binary data is `little-endian` since the encoding is nativ
 
 ## Dependencies
 
-* [`lcm`](https://github.com/idsc-frazzoli/lcm-java) for message interchange and logging
+* [`tensor`](https://github.com/idsc-frazzoli/tensor) for linear algebra with physical units
+* [`owl`](https://github.com/idsc-frazzoli/retina) for motion planning
+* [`lcm`](https://github.com/idsc-frazzoli/lcm-java) *Lightweight Communications and Marshalling* for message interchange, logging, and playback
 * [`io.humble`](http://www.humble.io/) for video generation
 * [`jSerialComm`](http://fazecast.github.io/jSerialComm/) platform-independent serial port access
 * [`ELKI`](https://elki-project.github.io/) for DBSCAN
 * [`lwjgl`](https://www.lwjgl.org/) for joystick readout
 
-* [`tensor`](https://github.com/idsc-frazzoli/tensor) for linear algebra
-* [`owl`](https://github.com/idsc-frazzoli/retina) for motion planning
-
-## GOKART
+## Go-kart Operation
 
 ![gokart_operation](https://user-images.githubusercontent.com/4012178/50010529-00f73100-ffba-11e8-8ac7-518f99d6ce9c.png)
 
@@ -118,6 +117,15 @@ The byte order of the binary data is `little-endian` since the encoding is nativ
   <tr><td>Fallback<td>MiscPutFallback<td>normal operation, all LEDs off<th><th><th><th>X</tr>
 </table>
 
+## Contributors
+
+Jan Hakenberg, Mario Gini, Yannik Nager, Valentina Cavinato, Marc Heim
+
+## Press Coverage
+
+* [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
+* [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
+
 ---
 
 ![ethz300](https://user-images.githubusercontent.com/4012178/45925071-bf9d3b00-bf0e-11e8-9d92-e30650fd6bf6.png)
@@ -131,8 +139,9 @@ Sensor interfaces
 ## Features
 
 * interfaces to lidars Velodyne VLP-16, HDL-32E, Quanergy Mark8, HOKUYO URG-04LX-UG01
+* interfaces to inertial measurement unit Variense VMU931
 * interfaces to event based camera Davis240C with lossless compression by 4x
-* lidar based localization enhanced with odometry and gyro
+* interfaces to LabJack U3
 
 ## LIDAR
 
@@ -163,7 +172,11 @@ intensity as 360[deg] panorama
 our code builds upon the
 [urg_library-1.2.0](https://sourceforge.net/projects/urgnetwork/files/urg_library/)
 
-## DVS
+## Inertial Measurement Unit
+
+### VMU931
+
+## Event Based Camera
 
 ### IniLabs DAVIS240C
 
@@ -233,8 +246,6 @@ Events only
 </tr>
 </table>
 
-
-
 AEDAT 2.0, and AEDAT 3.1
 
 * parsing and visualization
@@ -250,19 +261,19 @@ Quote from Luca/iniLabs:
 
 We observed that in *global shutter mode*, during signal image capture the stream of events is suppressed. Whereas, in *rolling shutter mode* the events are more evenly distributed.
 
-## streaming DAT files
+### streaming DAT files
 
 ![hdr](https://user-images.githubusercontent.com/4012178/27771907-a3bbcef4-5f58-11e7-8b0e-3dfb0cb0ecaf.gif)
 
-## streaming DAVIS recordings
+### streaming DAVIS recordings
 
 ![shapes_6dof](https://user-images.githubusercontent.com/4012178/27771912-cb58ebb8-5f58-11e7-9566-79f3fbc5d9ba.gif)
 
-## generating DVS from video sequence
+### generating DVS from video sequence
 
 ![cat_final](https://user-images.githubusercontent.com/4012178/27771885-0eadb2aa-5f58-11e7-9f4d-78a57e610f56.gif)
 
-## synthetic signal generation 
+### synthetic signal generation 
 
 <table><tr>
 <td>
@@ -274,23 +285,6 @@ We observed that in *global shutter mode*, during signal image capture the strea
 ![synth1](https://user-images.githubusercontent.com/4012178/27772610-32af593e-5f66-11e7-8c29-64611f6ca3e6.gif)
 
 </tr></table>
-
-## Integration
-
-Due to the rapid development of the code base, `retina` is not yet available as a maven artifact.
-Instead, download the project and run `mvn install` on your machine.
-Subsequently, you can use the project on your machine as
-
-    <dependency>
-      <groupId>ch.ethz.idsc</groupId>
-      <artifactId>retina</artifactId>
-      <version>0.0.1</version>
-    </dependency>
-
-## Press
-
-* [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
-* [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
 
 ## References
 

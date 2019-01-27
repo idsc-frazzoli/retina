@@ -5,6 +5,6 @@ public interface SerialPortInterface extends RingBufferReader {
   /** writes given data via serial port
    * 
    * @param data
-   * @return */
+   * @return number of bytes successfully written, or -1 if there was an error writing to the port */
   int write(byte[] data);
 }
