@@ -2,11 +2,12 @@
 package ch.ethz.idsc.gokart.core.sound;
 
 public class SimpleResonator implements SoundResonator {
-  private float x = 0;
-  private float dx = 0;
   private final float spring;
   private final float damping;
   private final float excitability;
+  // ---
+  private float x = 0;
+  private float dx = 0;
 
   public SimpleResonator(float spring, float damping, float excitability) {
     this.spring = spring;

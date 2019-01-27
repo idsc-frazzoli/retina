@@ -10,12 +10,12 @@ public class ElectricExciter implements SoundExciter {
       new AngleVectorLookupFloat(SIZE, false, 0);
   // ---
   private final float baseAmplitude;
-  private final float amplitudeFactor;
   private final float relAmpFrequency;
   private final float baseAmpFrequency;
   private final float baseFrequency;
   private final float relFrequency;
   private final float powerFactor;
+  private final float baseAmpFactor;
   // ---
   private int sinePosition = 0;
   private int ampSinePosition = 0;
@@ -27,10 +27,10 @@ public class ElectricExciter implements SoundExciter {
     this.relFrequency = relFrequency;
     this.relAmpFrequency = relAmpFrequency;
     this.powerFactor = powerFactor;
-    this.amplitudeFactor = amplitudeFactor;
     this.baseAmplitude = baseAmplitude;
     this.baseFrequency = baseFrequency;
     this.baseAmpFrequency = baseAmpFrequency;
+    baseAmpFactor = baseAmplitude * (amplitudeFactor - 1);
   }
 
   @Override
@@ -45,7 +45,7 @@ public class ElectricExciter implements SoundExciter {
     ampSinePosition &= MASK;
     float ampSineVal = ANGLE_VECTOR_LOOKUP_FLOAT.dy(ampSinePosition);
     float ampFac = powerFactor * gokartSoundState.power + (1 - powerFactor);
-    float toAdd = (ampSineVal + 1) * 0.5f * baseAmplitude * ampFac * (amplitudeFactor - 1);
+    float toAdd = (ampSineVal + 1) * 0.5f * ampFac * baseAmpFactor;
     float amplitude = baseAmplitude + toAdd;
     return amplitude * sineVal;
   }

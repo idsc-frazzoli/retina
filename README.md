@@ -76,9 +76,6 @@ The byte order of the binary data is `little-endian` since the encoding is nativ
 
 * [`tensor`](https://github.com/idsc-frazzoli/tensor) for linear algebra with physical units
 * [`owl`](https://github.com/idsc-frazzoli/retina) for motion planning
-
-### External
-
 * [`lcm`](https://github.com/idsc-frazzoli/lcm-java) *Lightweight Communications and Marshalling* for message interchange, logging, and playback
 * [`io.humble`](http://www.humble.io/) for video generation
 * [`jSerialComm`](http://fazecast.github.io/jSerialComm/) platform-independent serial port access
@@ -122,7 +119,7 @@ The byte order of the binary data is `little-endian` since the encoding is nativ
 
 ## Contributors
 
-Jan Hakenberg, Yannik Nager, Mario Gini, Valentina Cavinato, Marc Heim
+Jan Hakenberg, Mario Gini, Yannik Nager, Valentina Cavinato, Marc Heim
 
 ## Press Coverage
 

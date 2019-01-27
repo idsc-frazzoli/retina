@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.sound;
 
 import java.io.File;
@@ -25,57 +26,54 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class GokartVoiceOutputs extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  boolean calibrationSaid = false;
-  SteerColumnTracker columnTracker;
-  boolean emergencyBrakingSaid = false;
-  Timing timeSinceEmergenyCallout = Timing.started();
-  double durationBetweenEmergenyCallouts = 3;
-  Timing timeSinceDriverCallout = Timing.started();
-  double durationBetweenDriverCallouts = 3;
-  boolean HumanDrivingSaid = true;
+  private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
+  // ---
+  private boolean calibrationSaid = false;
+  private boolean emergencyBrakingSaid = false;
+  private Timing timeSinceEmergenyCallout = Timing.started();
+  private double durationBetweenEmergenyCallouts = 3;
+  private Timing timeSinceDriverCallout = Timing.started();
+  private double durationBetweenDriverCallouts = 3;
+  private boolean humanDrivingSaid = true;
 
-  void playFile(File file) {
+  private static void playFile(File file) {
     try {
-      AudioInputStream stream;
-      AudioFormat format;
-      DataLine.Info info;
-      Clip clip;
-      stream = AudioSystem.getAudioInputStream(file);
-      format = stream.getFormat();
-      info = new DataLine.Info(Clip.class, format);
-      clip = (Clip) AudioSystem.getLine(info);
+      AudioInputStream stream = AudioSystem.getAudioInputStream(file);
+      AudioFormat format = stream.getFormat();
+      DataLine.Info info = new DataLine.Info(Clip.class, format);
+      Clip clip = (Clip) AudioSystem.getLine(info);
       clip.open(stream);
       clip.start();
-    } catch (Exception e) {
+    } catch (Exception exception) {
+      exception.printStackTrace();
       System.err.println("Not possible to play sound!");
     }
   }
 
-  void sayCalibrated() {
-    // TODO: put it in resources
+  private static void sayCalibrated() {
+    // TODO JPH/MH convert to mp3 and put file in ephemeral
     File file = HomeDirectory.file("Documents/CalibrationSignal.wav");
     playFile(file);
   }
 
-  void sayEmergenyBraking() {
+  private static void sayEmergenyBraking() {
     // TODO: put it in resources
     File file = HomeDirectory.file("Documents/ObstacleDetectedWarning.wav");
     playFile(file);
   }
 
-  void sayHumanDriving() {
+  private static void sayHumanDriving() {
     File file = HomeDirectory.file("Documents/humanSignal.wav");
     playFile(file);
   }
 
-  void sayAIDriving() {
+  private static void sayAIDriving() {
     File file = HomeDirectory.file("Documents/AISignal.wav");
     playFile(file);
   }
 
   @Override
   protected void first() throws Exception {
-    columnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
     manualControlProvider.start();
   }
 
@@ -96,7 +94,7 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
 
   @Override
   protected void runAlgo() {
-    if (!calibrationSaid && columnTracker.isCalibratedAndHealthy()) {
+    if (!calibrationSaid && steerColumnTracker.isCalibratedAndHealthy()) {
       sayCalibrated();
       calibrationSaid = true;
     }
@@ -109,14 +107,14 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
         !LinmotSocket.INSTANCE.getClass().equals(EmergencyBrakeProvider.class))
       emergencyBrakingSaid = false;
     boolean humanDriving = !isAutonomousPressed();
-    if (humanDriving && !HumanDrivingSaid) {
-      HumanDrivingSaid = humanDriving;
+    if (humanDriving && !humanDrivingSaid) {
+      humanDrivingSaid = humanDriving;
       if (timeSinceDriverCallout.seconds() > durationBetweenDriverCallouts) {
         sayHumanDriving();
         timeSinceDriverCallout = Timing.started();
       }
-    } else if (!humanDriving && HumanDrivingSaid) {
-      HumanDrivingSaid = humanDriving;
+    } else if (!humanDriving && humanDrivingSaid) {
+      humanDrivingSaid = humanDriving;
       if (timeSinceDriverCallout.seconds() > durationBetweenDriverCallouts) {
         sayAIDriving();
         timeSinceDriverCallout = Timing.started();
@@ -126,6 +124,6 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
 
   @Override
   protected Scalar getPeriod() {
-    return Quantity.of(0.1, SI.SECOND);
+    return Quantity.of(0.2, SI.SECOND);
   }
 }
