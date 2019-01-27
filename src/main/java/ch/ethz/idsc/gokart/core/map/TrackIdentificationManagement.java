@@ -58,12 +58,8 @@ public class TrackIdentificationManagement implements RenderInterface {
     heigth = gridSize.Get(1).number().intValue();
   }
 
-  public boolean setStart(GokartPoseEvent gokartPoseEvent) {
-    return Objects.nonNull(gokartPoseEvent) //
-        && setStart(gokartPoseEvent.getPose());
-  }
-
-  public void resetStart() {
+  // TODO JPH/MH function not used
+  private void resetStart() {
     startSet = false;
   }
 
@@ -76,10 +72,16 @@ public class TrackIdentificationManagement implements RenderInterface {
     return startSet;
   }
 
+  public boolean setStart(GokartPoseEvent gokartPoseEvent) {
+    return Objects.nonNull(gokartPoseEvent) //
+        && setStart(gokartPoseEvent.getPose());
+  }
+
   /** set start position
+   * 
    * @param pose [x[m], y[m], angle]
    * @return true if valid start position */
-  public boolean setStart(Tensor pose) {
+  private boolean setStart(Tensor pose) {
     Tensor transform = occupancyGrid.getTransform();
     Tensor hpos = Tensors.of(pose.Get(0), pose.Get(1), Quantity.of(1, SI.METER));
     Tensor pixelPos = LinearSolve.of(transform, hpos);
@@ -97,7 +99,7 @@ public class TrackIdentificationManagement implements RenderInterface {
     return update(gokartPoseEvent.getPose(), dTime);
   }
 
-  public MPCBSplineTrack update(Tensor pose, Scalar dTime) {
+  private MPCBSplineTrack update(Tensor pose, Scalar dTime) {
     System.out.println("update called: " + timeSinceLastTrackUpdate);
     timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
     if (startSet) {
@@ -165,9 +167,8 @@ public class TrackIdentificationManagement implements RenderInterface {
       if (Objects.isNull(trackRender))
         trackRender = new TrackRender(lastTrack.bSplineTrack);
       trackRender.render(geometricLayer, graphics);
-    } else {
+    } else
       initialGuess.render(geometricLayer, graphics);
-    }
   }
 
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {

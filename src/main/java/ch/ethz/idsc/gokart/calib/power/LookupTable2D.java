@@ -22,7 +22,6 @@ import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 
-// TODO document this properly (to be done after the whole thing works)
 /** implementation is not a strict lookup but uses {@link LinearInterpolation} */
 public class LookupTable2D implements Serializable {
   private static final Scalar HALF = RealScalar.of(0.5);
