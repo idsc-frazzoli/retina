@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.ekf.SimpleVelocityEstimation;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
@@ -16,6 +17,7 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -33,12 +35,15 @@ public class LocalViewLcmModule extends AbstractModule {
   private final TimerFrame timerFrame = new TimerFrame();
   private final AccelerationRender accelerationRender = //
       new AccelerationRender(Tensors.vector(0, -2.5, 0), 100);
+  private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(//
+      Tensors.vector(0, -2.5, 0));
   private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
+    ModuleAuto.INSTANCE.runOne(SimpleVelocityEstimation.class);
     timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
     rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
@@ -58,6 +63,7 @@ public class LocalViewLcmModule extends AbstractModule {
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
     timerFrame.geometricComponent.addRenderInterface(accelerationRender);
+    timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
     TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(Tensors.vector(1, -2.5, 0));
     rimoGetLcmClient.addListener(tachometerMustangDash);
     timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);
@@ -77,6 +83,7 @@ public class LocalViewLcmModule extends AbstractModule {
 
   @Override
   protected void last() {
+    ModuleAuto.INSTANCE.endOne(SimpleVelocityEstimation.class);
     rimoGetLcmClient.stopSubscriptions();
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();

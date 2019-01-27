@@ -9,5 +9,5 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class VelocityEstimationConfig {
   public static final VelocityEstimationConfig GLOBAL = AppResources.load(new VelocityEstimationConfig());
   /** How much does the computed velocity from lidar correct the integrated velocity */
-  public Scalar correctionFactor = Quantity.of(0.1, SI.ONE);
+  public Scalar correctionFactor = Quantity.of(0.01, SI.ONE);
 }
