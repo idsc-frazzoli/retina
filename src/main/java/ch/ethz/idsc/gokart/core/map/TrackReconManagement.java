@@ -17,7 +17,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -31,7 +30,7 @@ public class TrackReconManagement implements RenderInterface {
   private final OccupancyGrid occupancyGrid;
   private final TrackLayoutInitialGuess initialGuess;
   private final TrackRefinement refinenement;
-  private Tensor trackData = null;
+  private Tensor trackDataXYR = null;
   private int startX = -1;
   private int startY = -1;
   private int width = 0;
@@ -103,17 +102,17 @@ public class TrackReconManagement implements RenderInterface {
     System.out.println("update called: " + timeSinceLastTrackUpdate);
     timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
     if (startSet) {
-      if (Objects.isNull(trackData)) {
+      if (Objects.isNull(trackDataXYR)) {
         initialGuess.update(startX, startY, startOrientation, pose);
         closedTrack = initialGuess.isClosed();
       }
-      if (Objects.isNull(trackData) && closedTrack) {
+      if (Objects.isNull(trackDataXYR) && closedTrack) {
         // current track is not available or no longer valid
-        Tensor ctrpoints = initialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
-        if (Objects.nonNull(ctrpoints)) {
+        Tensor ctrpointsXY = initialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
+        if (Objects.nonNull(ctrpointsXY)) {
           // we have a guess
           // TODO do this more elegantly
-          Tensor radiusCtrPoints = Tensors.vector(i -> Quantity.of(1, SI.METER), ctrpoints.get(0).length());
+          // Tensor radiusCtrPoints = Tensors.vector(i -> Quantity.of(1, SI.METER), ctrpointsXY.get(0).length());
           constraints = new LinkedList<>();
           /* if (closedTrack) {
            * // no constraints at the moment
@@ -121,22 +120,23 @@ public class TrackReconManagement implements RenderInterface {
            * constraints.add(refinenement.new PositionalStartConstraint());
            * constraints.add(refinenement.new PositionalEndConstraint());
            * } */
-          if (closedTrack)
-            trackData = refinenement.getRefinedTrack(//
-                ctrpoints.get(0), //
-                ctrpoints.get(1), //
-                radiusCtrPoints, RealScalar.of(8), 100, closedTrack, constraints);
+          if (closedTrack) {
+            trackDataXYR = refinenement.getRefinedTrack( //
+                Tensor.of(ctrpointsXY.stream().map(r -> r.copy().append(Quantity.of(1, SI.METER)))), //
+                // ctrpoints.get(1), //
+                RealScalar.of(8), 100, closedTrack, constraints);
+          }
           /* else
            * trackData = refinenement.getRefinedTrack(//
            * ctrpoints.get(0), //
            * ctrpoints.get(1), //
            * radiusCtrPoints, RealScalar.of(8), 10, closedTrack, constraints); */
-          if (Objects.nonNull(trackData)) {
+          if (Objects.nonNull(trackDataXYR)) {
             // valid refinement
             // create Track
             // To consider: high startup cost -> maybe don't do this in every step
             // TODO JPH/MH
-            lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), RADIUS_OFFSET, closedTrack);
+            lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
             timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
             trackRender = null;
           } else {
@@ -149,10 +149,10 @@ public class TrackReconManagement implements RenderInterface {
         System.out.println(++count);
         // refine
         System.out.println("refine");
-        trackData = refinenement.getRefinedTrack(trackData, RealScalar.of(8), 10, closedTrack, constraints);
+        trackDataXYR = refinenement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 10, closedTrack, constraints);
         // consider: slower track update
-        if (Objects.nonNull(trackData)) {
-          lastTrack = MPCBSplineTrack.withOffset(Transpose.of(trackData), RADIUS_OFFSET, closedTrack);
+        if (Objects.nonNull(trackDataXYR)) {
+          lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
           trackRender = null;
         }
       }

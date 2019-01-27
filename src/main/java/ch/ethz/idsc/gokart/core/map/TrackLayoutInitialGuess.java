@@ -15,6 +15,7 @@ import java.util.PriorityQueue;
 
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -23,7 +24,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.mat.PseudoInverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -377,9 +377,12 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     return routePolygon;
   }
 
+  /** @param spacing
+   * @param controlPointResolution
+   * @return matrix of dimension n x 2 */
   public Tensor getControlPointGuess(Scalar spacing, Scalar controlPointResolution) {
-    Tensor wantedPositionsX = Tensors.empty();
-    Tensor wantedPositionsY = Tensors.empty();
+    Tensor wantedPositionsXY = Tensors.empty();
+    // Tensor wantedPositionsY = Tensors.empty();
     Tensor lastPosition = route.getFirst().getPos();
     positionalSupports = new LinkedList<>();
     for (Cell cell : route) {
@@ -387,21 +390,21 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       Tensor dist = pos.subtract(lastPosition);
       if (Scalars.lessThan(spacing, Norm._2.of(dist))) {
         lastPosition = pos;
-        wantedPositionsX.append(pos.Get(0));
-        wantedPositionsY.append(pos.Get(1));
+        wantedPositionsXY.append(Extract2D.FUNCTION.apply(pos));
+        // wantedPositionsY.append(pos.Get(1));
         positionalSupports.add(pos.copy());
       }
     }
-    if (wantedPositionsX.length() > 3) {
-      wantedPositionsX.append(route.getLast().getPos().Get(0));
-      wantedPositionsY.append(route.getLast().getPos().Get(1));
-      wantedPositionsX = wantedPositionsX.multiply(Quantity.of(1, SI.METER));
-      wantedPositionsY = wantedPositionsY.multiply(Quantity.of(1, SI.METER));
+    if (wantedPositionsXY.length() > 3) {
+      wantedPositionsXY.append(Extract2D.FUNCTION.apply(route.getLast().getPos()));
+      // wantedPositionsY.append(route.getLast().getPos().Get(1));
+      wantedPositionsXY = wantedPositionsXY.multiply(Quantity.of(1, SI.METER));
+      // wantedPositionsY = wantedPositionsY.multiply(Quantity.of(1, SI.METER));
       // solve for bspline points
       // number of bspline query points
-      int m = wantedPositionsX.length();
+      int m = wantedPositionsXY.length();
       // number of control points
-      int n = (int) (wantedPositionsX.length() * controlPointResolution.number().doubleValue());
+      int n = (int) (wantedPositionsXY.length() * controlPointResolution.number().doubleValue());
       // first possible value is 0
       // last possible value is n-2
       final Tensor queryPositions;
@@ -413,11 +416,12 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       // solve for control points: x
       Tensor pinv = PseudoInverse.of(splineMatrix);
       // TODO JPH/MH can this be done smarter:
-      Tensor controlpointsX = pinv.dot(wantedPositionsX);
-      Tensor controlpointsY = pinv.dot(wantedPositionsY);
+      Tensor controlpointsXY = pinv.dot(wantedPositionsXY);
+      // Tensor controlpointsY = pinv.dot(wantedPositionsY);
       if (true) // TODO JPH/MH
-        controlPoints = Transpose.of(Tensors.of(controlpointsX, controlpointsY));
-      return Tensors.of(controlpointsX, controlpointsY);
+        controlPoints = controlpointsXY;
+      // Transpose.of(Tensors.of(controlpointsX, controlpointsY));
+      return controlpointsXY.copy(); // Tensors.of(controlpointsX, controlpointsY);
     }
     System.out.println("no usable track!");
     return null;

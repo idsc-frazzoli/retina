@@ -18,8 +18,8 @@ import ch.ethz.idsc.tensor.sca.Power;
 public final class BSplineTrack implements TrackInterface {
   private static final int SPLINE_ORDER = 2;
   private static final TensorUnaryOperator NORMALIZE = Normalize.with(Norm._2);
-  private static final float LOOKUP_RES = 0.005f;
   private static final int LOOKUP_SKIP = 200;
+  static final float LOOKUP_RES = 1f / LOOKUP_SKIP;
   // ---
   /** matrix of dimension n x 3 */
   private final Tensor points_xyr;
