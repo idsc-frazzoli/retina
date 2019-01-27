@@ -21,15 +21,13 @@ public class SimpleVelocityEstimationTest extends TestCase {
     Distribution distr = NormalDistribution.of(0, 10);
     SimpleVelocityEstimation estimation = new SimpleVelocityEstimation();
     Tensor originPos = Tensors.of(//
-        Quantity.of(0, SI.METER),
-        Quantity.of(0, SI.METER),
-        Quantity.of(0, SI.ONE));
+        Quantity.of(0, SI.METER), Quantity.of(0, SI.METER), Quantity.of(0, SI.ONE));
     Scalar rotVelocity = Quantity.of(0, SI.PER_SECOND);
-    for(int i = 0; i<1000; i++) {
-      for(int ii = 0; ii<10;ii++) {
+    for (int i = 0; i < 1000; i++) {
+      for (int ii = 0; ii < 10; ii++) {
         Scalar accX = RandomVariate.of(distr).multiply(accUnit);
         Scalar accY = RandomVariate.of(distr).multiply(accUnit);
-        estimation.measureAcceleration(Tensors.of(accX,accY), rotVelocity, deltaT);
+        estimation.measureAcceleration(Tensors.of(accX, accY), rotVelocity, deltaT);
       }
       estimation.measurePose(originPos, deltaTl);
     }

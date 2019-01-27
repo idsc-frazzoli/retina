@@ -37,6 +37,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     private boolean inQ = false;
     private boolean processed = false;
     private Cell lastCell = null;
+    // TODO create type Cell+Cost and use only 1 list
     private List<Cell> neighBors = null;
     private List<Scalar> neighBorCost = null;
 
@@ -47,6 +48,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
 
     public Tensor getPos() {
+      // TODO can use AffineFrame2D
       return occupancyGrid.getTransform().dot(Tensors.vector(x, y, 1));
     }
 
@@ -100,9 +102,9 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
   }
 
-  private final PlanableOccupancyGrid occupancyGrid;
+  private final OccupancyGrid occupancyGrid;
 
-  public TrackLayoutInitialGuess(PlanableOccupancyGrid occupancyGrid) {
+  public TrackLayoutInitialGuess(OccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
   }
 
@@ -136,9 +138,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       for (int ii = 0; ii < n; ++ii)
         if (Objects.nonNull(cellGrid[i][ii]) && //
             Objects.nonNull(cellGrid[i][ii].lastCell) && //
-            Scalars.lessThan(farthest.cost, cellGrid[i][ii].cost)) {
+            Scalars.lessThan(farthest.cost, cellGrid[i][ii].cost))
           farthest = cellGrid[i][ii];
-        }
     return farthest;
   }
 
@@ -163,14 +164,13 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     int sfy = (int) Math.round(starty + 2 * diry);
     priorityQueue = new PriorityQueue<>(COMPARATOR);
     // prepare gridif (true)
-    for (int i = 0; i < gridsize.Get(0).number().intValue(); i++) {
-      for (int ii = 0; ii < gridsize.Get(1).number().intValue(); ii++) {
+    for (int i = 0; i < gridsize.Get(0).number().intValue(); ++i)
+      for (int ii = 0; ii < gridsize.Get(1).number().intValue(); ++ii) {
         Cell newCell = new Cell(i, ii);
-        if ((i == sfx && ii == sfy) || !occupancyGrid.isCellOccupied(//
-            newCell.x, newCell.y))
+        if ((i == sfx && ii == sfy) || //
+            !occupancyGrid.isCellOccupied(newCell.x, newCell.y))
           cellGrid[i][ii] = newCell;
       }
-    }
     // add limit at start
     addStartingLine(startx, starty, startorientation);
     // add to Q
@@ -238,7 +238,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     int lefty = (int) currenty;
     // delete all cells on line
     int steps = (int) (Math.sqrt(1.0 * (rightx - leftx) * (rightx - leftx) + 1.0 * (righty - lefty) * (righty - lefty)) + 1.0);
-    for (int i = 0; i < steps; i++) {
+    for (int i = 0; i < steps; ++i) {
       int posx = (int) Math.round(leftx + (rightx - leftx) * (1.0 * i / (steps - 1.0)));
       int posy = (int) Math.round(lefty + (righty - lefty) * (1.0 * i / (steps - 1.0)));
       if (posx > 0 && posx < m - 1 && posy > 0 && posy < n - 1) {
@@ -256,11 +256,11 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
   }
 
-  boolean initialise(int x, int y, double orientation, Tensor currPos, boolean searchFromGokart) {
+  private boolean initialise(int x, int y, double orientation, Tensor currPos, boolean searchFromGokart) {
     Tensor gridSize = occupancyGrid.getGridSize();
     possibleNeighbors = new ArrayList<>();
-    for (int dx = -2; dx <= 2; dx++)
-      for (int dy = -2; dy <= 2; dy++)
+    for (int dx = -2; dx <= 2; ++dx)
+      for (int dy = -2; dy <= 2; ++dy)
         if (dx != 0 || dy != 0)
           possibleNeighbors.add(new Neighbor(dx, dy));
     return prepareCells(gridSize, x, y, orientation, currPos, searchFromGokart);
@@ -360,7 +360,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     routePolygon = null;
   }
 
-  boolean reachable(Cell target) {
+  private static boolean reachable(Cell target) {
     return Objects.nonNull(target) //
         && target.processed;
   }

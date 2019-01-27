@@ -1318,6 +1318,10 @@ public enum GokartLogFile implements LogFile {
   /* 2019-01-25 new sensor VMU931 */
   /** manual driving data collection vmu931 */
   _20190125T105720_ecbd24e3,
+  /** manual driving data collection vmu931 */
+  _20190125T133925_e5eb6f95,
+  /** autonomous driving, vmu931 */
+  _20190125T134537_e5eb6f95,
   /***************************************************/
   ;
   // ---

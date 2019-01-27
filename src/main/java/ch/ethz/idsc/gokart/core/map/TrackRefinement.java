@@ -59,8 +59,8 @@ public class TrackRefinement {
       Tensor startPos = Mean.of(Tensors.of(first, second));
       if (Objects.isNull(trackProg) || Objects.isNull(trackPos) || Objects.isNull(trackDirection)) {
         trackProg = track.getNearestPathProgress(startPos);
-        trackPos = track.getPosition(trackProg);
-        trackDirection = track.getDirection(trackProg);
+        trackPos = track.getPositionXY(trackProg);
+        trackDirection = track.getDirectionXY(trackProg);
       }
       Tensor realVector = second.subtract(first);
       Scalar projection = (Scalar) Max.of(realVector.dot(trackDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
@@ -132,26 +132,26 @@ public class TrackRefinement {
     }
   }
 
-  public TrackRefinement(PlanableOccupancyGrid occupancyGrid) {
+  public TrackRefinement(OccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
   }
 
-  private final PlanableOccupancyGrid occupancyGrid;
+  private final OccupancyGrid occupancyGrid;
 
-  public Tensor getRefinedTrack(Tensor trackData, Scalar resolution, int iterations, boolean closed, List<TrackConstraint> constraints) {
+  Tensor getRefinedTrack(Tensor trackData, Scalar resolution, int iterations, boolean closed, List<TrackConstraint> constraints) {
     return getRefinedTrack(trackData.get(0), trackData.get(1), trackData.get(2), resolution, iterations, closed, constraints);
   }
 
   private static final Scalar gdRadiusGrowth = Quantity.of(0.07, SI.METER);
   private static final Scalar gdRegularizer = RealScalar.of(0.01);
 
-  public Tensor getRefinedTrack(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusCtrPoints, Scalar resolution, int iterations, boolean closed,
+  Tensor getRefinedTrack(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusCtrPoints, Scalar resolution, int iterations, boolean closed,
       List<TrackConstraint> constraints) {
     int m = (int) (controlpointsX.length() * resolution.number().doubleValue());
     int n = controlpointsX.length();
     Tensor queryPositions;
     if (closed)
-      queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
+      queryPositions = Tensors.vector(i -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
     else
       // TODO MH try Subdivide.of(0, n-2, m-1) for the below
       queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m - 1);
@@ -164,7 +164,7 @@ public class TrackRefinement {
      * Tensor sideLimits = Tensors.vector((i)->getSideLimits(positions.get(i), sideVectors.get(i)),positions.length());
      * } */
     System.out.println("Iterate " + iterations + " times!");
-    for (int i = 0; i < iterations; i++) {
+    for (int i = 0; i < iterations; ++i) {
       Tensor corr = getCorrectionVectors(controlpointsX, controlpointsY, radiusCtrPoints, queryPositions, splineMatrix, splineMatrix1Der, resolution, closed);
       if (Objects.isNull(corr))
         return null;
@@ -172,18 +172,18 @@ public class TrackRefinement {
       controlpointsX = controlpointsX.add(splineMatrixTransp.dot(corr.get(0)));
       controlpointsY = controlpointsY.add(splineMatrixTransp.dot(corr.get(1)));
       final Tensor fControl = radiusCtrPoints;
-      radiusCtrPoints = Tensors.vector((ii) -> fControl.get(ii).add(gdRadiusGrowth), radiusCtrPoints.length());
+      // TODO JPH/MH simpler way to add scalar
+      radiusCtrPoints = Tensors.vector(ii -> fControl.get(ii).add(gdRadiusGrowth), radiusCtrPoints.length());
       controlpointsX = controlpointsX.add(Regularization.of(controlpointsX, gdRegularizer, closed));
       controlpointsY = controlpointsY.add(Regularization.of(controlpointsY, gdRegularizer, closed));
       radiusCtrPoints = radiusCtrPoints.add(Regularization.of(radiusCtrPoints, gdRegularizer, closed));
-      if (Objects.nonNull(constraints)) {
+      if (Objects.nonNull(constraints))
         for (TrackConstraint constraint : constraints) {
           constraint.compute(controlpointsX, controlpointsY, radiusCtrPoints);
           controlpointsX = constraint.getControlPointsX();
           controlpointsY = constraint.getControlPointsY();
           radiusCtrPoints = constraint.getRadiusControlPoints();
         }
-      }
     }
     // MPCBSplineTrack track = new MPCBSplineTrack(controlpointsX, controlpointsY, radiusCtrPoints);
     return Tensors.of(controlpointsX, controlpointsY, radiusCtrPoints);
@@ -208,8 +208,8 @@ public class TrackRefinement {
     if (hasNoSolution)
       return null;
     // upwardsforce
-    Tensor lowClipping = Tensors.vector((i) -> Max.of(sideLimits.get(i).Get(0).add(radii.Get(i)), Quantity.of(0, SI.METER)), queryPositions.length());
-    Tensor highClipping = Tensors.vector((i) -> Max.of(radii.Get(i).subtract(sideLimits.get(i).Get(1)), Quantity.of(0, SI.METER)), queryPositions.length());
+    Tensor lowClipping = Tensors.vector(i -> Max.of(sideLimits.get(i).Get(0).add(radii.Get(i)), Quantity.of(0, SI.METER)), queryPositions.length());
+    Tensor highClipping = Tensors.vector(i -> Max.of(radii.Get(i).subtract(sideLimits.get(i).Get(1)), Quantity.of(0, SI.METER)), queryPositions.length());
     Tensor sideCorr = lowClipping.subtract(highClipping).multiply(gdLimits.divide(resolution));
     Tensor posCorr = Transpose.of(sideCorr.pmul(sideVectors));
     Tensor radiusCorr = highClipping.add(lowClipping).multiply(gdRadius.divide(resolution)).negate();
@@ -217,7 +217,7 @@ public class TrackRefinement {
     return Tensors.of(posCorr.get(0), posCorr.get(1), radiusCorr);
   }
 
-  public Tensor getSideLimits(Tensor pos, Tensor sidedir, Scalar stepsSize, Scalar maxSearch) {
+  private Tensor getSideLimits(Tensor pos, Tensor sidedir, Scalar stepsSize, Scalar maxSearch) {
     // find free space
     Scalar sideStep = Quantity.of(-0.001, SI.METER);
     Tensor testPosition = null;

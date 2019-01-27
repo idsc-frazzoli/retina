@@ -35,8 +35,7 @@ public class PowerLookupTable {
   private static final int RES = 1000;
   private static final PowerLookupTable INSTANCE = new PowerLookupTable();
 
-  /** returns global instance of power lookup table
-   * @return instance of PowerLookupTable */
+  /** @return global instance of PowerLookupTable */
   public static PowerLookupTable getInstance() {
     return INSTANCE;
   }

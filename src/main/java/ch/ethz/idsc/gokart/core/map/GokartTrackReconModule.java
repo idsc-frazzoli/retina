@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -15,9 +16,9 @@ import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class GokartTrackIdentificationModule extends AbstractClockedModule implements GokartPoseListener, RenderInterface {
-  private final TrackIdentificationManagement trackIDManagement;
-  private final GokartTrackMappingModule trackMappingModule;
+public class GokartTrackReconModule extends AbstractClockedModule implements GokartPoseListener, RenderInterface {
+  private final TrackReconManagement trackReconManagement;
+  private final TrackMapping trackMappingModule;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
   // ---
@@ -26,28 +27,29 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
   private boolean settingStart = true;
   private MPCBSplineTrack mpcbSplineTrack = null;
 
-  public GokartTrackIdentificationModule() {
-    trackMappingModule = new GokartTrackMappingModule();
-    trackIDManagement = new TrackIdentificationManagement(trackMappingModule);
+  public GokartTrackReconModule() {
+    trackMappingModule = new TrackMapping();
+    trackReconManagement = new TrackReconManagement(trackMappingModule);
   }
 
   public void resetTrack() {
-    trackIDManagement.resetTrack();
+    trackReconManagement.resetTrack();
   }
 
   @Override
   protected void runAlgo() {
-    if (!trackIDManagement.isStartSet() || settingStart) {
-      trackIDManagement.setStart(gokartPoseEvent);
-      if (trackIDManagement.isStartSet()) {
-        System.out.println("start set!");
-        settingStart = false;
+    if (!trackReconManagement.isStartSet() || settingStart)
+      if (Objects.nonNull(gokartPoseEvent)) {
+        trackReconManagement.setStart(gokartPoseEvent);
+        if (trackReconManagement.isStartSet()) {
+          System.out.println("start set!");
+          settingStart = false;
+        }
       }
-    }
     double seconds = intervalClock.seconds(); // reset
     if (recording) {
       trackMappingModule.prepareMap();
-      mpcbSplineTrack = trackIDManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
+      mpcbSplineTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
     }
   }
 
@@ -70,13 +72,13 @@ public class GokartTrackIdentificationModule extends AbstractClockedModule imple
   }
 
   @Override
-  public void getEvent(GokartPoseEvent gpe) {
-    this.gokartPoseEvent = gpe;
+  public void getEvent(GokartPoseEvent gokartPoseEvent) {
+    this.gokartPoseEvent = gokartPoseEvent;
   }
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    trackIDManagement.render(geometricLayer, graphics);
+    trackReconManagement.render(geometricLayer, graphics);
   }
 
   public void setRecording(boolean selected) {

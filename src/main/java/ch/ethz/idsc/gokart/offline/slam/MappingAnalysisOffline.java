@@ -51,7 +51,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
   private final BayesianOccupancyGrid bayesianOccupancyGrid;
   private final Consumer<BufferedImage> consumer;
   // ---
-  private GokartPoseEvent gpe;
+  private GokartPoseEvent gokartPoseEvent;
   private ScatterImage scatterImage;
   private GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
@@ -77,19 +77,19 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gpe = new GokartPoseEvent(byteBuffer);
-      bayesianOccupancyGrid.setPose(gpe.getPose());
+      gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
     } else if (channel.equals(CHANNEL_LIDAR)) {
       velodyneDecoder.lasers(byteBuffer);
     }
-    if (Scalars.lessThan(time_next, time) && Objects.nonNull(gpe)) {
+    if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(delta);
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
       scatterImage = new WallScatterImage(predefinedMap);
       BufferedImage image = scatterImage.getImage();
       GeometricLayer gl = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
       Graphics2D graphics = image.createGraphics();
-      gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
+      gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
       GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
       bayesianOccupancyGrid.render(gl, graphics);
       gr.render(gl, graphics);

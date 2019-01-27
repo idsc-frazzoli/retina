@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
  * 
  * the cascade of affine transformation is
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
-public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancyGrid {
+public class BayesianOccupancyGrid implements RenderInterface, OccupancyGrid {
   // TODO invert colors: black should be empty space
   private static final byte MASK_OCCUPIED = 0;
   private static final Color COLOR_OCCUPIED = Color.BLACK;
@@ -223,9 +223,10 @@ public class BayesianOccupancyGrid implements RenderInterface, PlanableOccupancy
           }
         }
       }
-    } else {
-      System.err.println("Observation not processed - no pose received");
     }
+    // else {
+    // System.err.println("Observation not processed - no pose received");
+    // }
   }
 
   /** set vehicle pose w.r.t world frame

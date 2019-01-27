@@ -32,22 +32,32 @@ public class BSplineTrackTest extends TestCase {
   }
 
   public void testFunction() {
-    // Tensor tensor = Tensors.of(Quantity.of(0, SI.METER),Quantity.of(1, SI.METER));
     Scalar meter = Quantity.of(1, SI.METER);
-    Tensor xtensor = Tensors.vector(0, 1, 2, 3, 4, 5).multiply(meter);
-    Tensor ytensor = Tensors.vector(0, 1, 0, 1, 0, 1).multiply(meter);
-    Tensor rtensor = Tensors.vector(2, 2, 2, 2, 2, 2).multiply(meter);
-    Tensor fullTensor = Transpose.of(Tensors.of(xtensor, ytensor, rtensor));
+    Tensor fullTensor = Tensors.matrix(new Number[][] { //
+        { 0, 0, 2 }, //
+        { 1, 1, 2 }, //
+        { 2, 0, 2 }, //
+        { 3, 1, 2 }, //
+        { 4, 0, 2 }, //
+        { 5, 1, 2 } }).multiply(meter);
     BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
+    assertEquals(bSplineTrack.getPositionXY(RealScalar.of(0)), Tensors.fromString("{0.5[m], 0.5[m]}"));
+    assertEquals(bSplineTrack.getPositionXY(RealScalar.of(1)), Tensors.fromString("{1.5[m], 0.5[m]}"));
+    assertEquals(bSplineTrack.getPositionXY(RealScalar.of(2)), Tensors.fromString("{2.5[m], 0.5[m]}"));
+    {
+      Tensor rightDirection = bSplineTrack.getLeftDirectionXY(RealScalar.of(0.3));
+      Tensor vector = Tensors.vector(-0.37139067635410367, 0.9284766908852594);
+      Chop._12.requireClose(rightDirection, vector);
+    }
     Tensor out = Tensors.empty();
     Tensor devout = Tensors.empty();
     Tensor devdevout = Tensors.empty();
     for (int i = 0; i < 100; i++) {
       double x = i / 10.;
-      System.out.println(x + ": " + bSplineTrack.getPosition(Quantity.of(x, SI.ONE)));
-      System.out.println(x + " dev: " + bSplineTrack.getDerivation(Quantity.of(x, SI.ONE)));
-      out.append(bSplineTrack.getPosition(Quantity.of(x, SI.ONE)));
-      devout.append(bSplineTrack.getDerivation(Quantity.of(x, SI.ONE)));
+      // System.out.println(x + ": " + bSplineTrack.getPosition(Quantity.of(x, SI.ONE)));
+      // System.out.println(x + " dev: " + bSplineTrack.getDerivation(Quantity.of(x, SI.ONE)));
+      out.append(bSplineTrack.getPositionXY(Quantity.of(x, SI.ONE)));
+      devout.append(bSplineTrack.getDerivationXY(Quantity.of(x, SI.ONE)));
       devdevout.append(bSplineTrack.get2ndDerivation(Quantity.of(x, SI.ONE)));
     }
     // System.out.println(out);
@@ -86,11 +96,11 @@ public class BSplineTrackTest extends TestCase {
     for (int i = 0; i < 100; i++) {
       Scalar prog = RealScalar.of(rand.nextFloat() * 200 - 100);
       // get from bspline track
-      Tensor cDev = bSplineTrack.getDerivation(prog);
+      Tensor cDev = bSplineTrack.getDerivationXY(prog);
       // compute numerically
       Scalar dx = RealScalar.of(0.00001);
-      Tensor nDev = bSplineTrack.getPosition(prog.add(dx))//
-          .subtract(bSplineTrack.getPosition(prog))//
+      Tensor nDev = bSplineTrack.getPositionXY(prog.add(dx))//
+          .subtract(bSplineTrack.getPositionXY(prog))//
           .divide(dx);
       // System.out.println(cDev.subtract(nDev));
       Scalar scalar = Norm._2.between(cDev, nDev);
@@ -117,11 +127,11 @@ public class BSplineTrackTest extends TestCase {
       Tensor cDDev = bSplineTrack.get2ndDerivation(prog);
       // compute numerically
       Scalar dx = Quantity.of(0.00001, SI.ONE);
-      Tensor nDevp = bSplineTrack.getPosition(prog.add(dx))//
-          .subtract(bSplineTrack.getPosition(prog))//
+      Tensor nDevp = bSplineTrack.getPositionXY(prog.add(dx))//
+          .subtract(bSplineTrack.getPositionXY(prog))//
           .divide(dx);
-      Tensor nDev = bSplineTrack.getPosition(prog)//
-          .subtract(bSplineTrack.getPosition(prog.subtract(dx)))//
+      Tensor nDev = bSplineTrack.getPositionXY(prog)//
+          .subtract(bSplineTrack.getPositionXY(prog.subtract(dx)))//
           .divide(dx);
       Tensor nDDev = nDevp.subtract(nDev).divide(dx);
       // System.out.println("2nd der: "+cDDev+" numerically: "+nDDev);
@@ -145,7 +155,7 @@ public class BSplineTrackTest extends TestCase {
       // check if we can find any position that is nearer
       for (int itest = 0; itest < 400; itest++) {
         Scalar testProg = Quantity.of(itest / 100.0, SI.ONE);
-        Scalar testdist = Norm._2.of(bSplineTrack.getPosition(testProg).subtract(queryPos));
+        Scalar testdist = Norm._2.of(bSplineTrack.getPositionXY(testProg).subtract(queryPos));
         // System.out.println("dist: "+dist+" test: "+testdist);
         // we can make it more precise but it costs time
         assertTrue(Scalars.lessThan(dist, testdist.add(Quantity.of(0.01, SI.METER))));

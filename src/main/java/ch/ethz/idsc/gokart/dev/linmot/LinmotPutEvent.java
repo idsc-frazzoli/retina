@@ -32,7 +32,7 @@ public class LinmotPutEvent extends DataEvent {
    * 
    * @param control
    * @param motion command header
-   * @param target_position
+   * @param target_position between {@link LinmotPutHelper#TARGETPOS_MIN} and {@link LinmotPutHelper#TARGETPOS_MAX}
    * @param max_velocity
    * @param acceleration
    * @param deceleration */

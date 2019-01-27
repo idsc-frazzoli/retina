@@ -1,4 +1,4 @@
-//code by ynager modified by mheim
+// code by ynager, mheim
 package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
@@ -27,8 +27,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** class interprets sensor data from lidar */
-public class GokartTrackMappingModule implements //
-    StartAndStoppable, LidarRayBlockListener, GokartPoseListener, PlanableOccupancyGrid, Runnable, RenderInterface {
+public class TrackMapping implements //
+    StartAndStoppable, LidarRayBlockListener, GokartPoseListener, OccupancyGrid, Runnable, RenderInterface {
   // TODO check rationale behind constant 10000!
   private static final int LIDAR_SAMPLES = 10000;
   /** ferry for visualizing grid in presenter lcm module */
@@ -42,7 +42,7 @@ public class GokartTrackMappingModule implements //
   private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid();
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private final SpacialXZObstaclePredicate predicate = TrackDetectionConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private final SpacialXZObstaclePredicate predicate = TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent;
   private boolean recording = false;
@@ -54,7 +54,7 @@ public class GokartTrackMappingModule implements //
    * with the horizontal plane at height of the lidar */
   private Tensor points3d_ferry = null;
 
-  public GokartTrackMappingModule() {
+  public TrackMapping() {
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     // ---
