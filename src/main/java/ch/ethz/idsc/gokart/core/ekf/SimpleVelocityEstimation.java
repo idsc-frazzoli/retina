@@ -12,6 +12,7 @@ import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.sophus.planar.Cross2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
@@ -19,9 +20,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class SimpleVelocityEstimation extends AbstractModule implements VelocityEstimation {
   Tensor velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+  Tensor correction = Tensors.of(Quantity.of(0.46, SI.ACCELERATION), Quantity.of(-0.56, SI.ACCELERATION));
   Tensor lastPosition = null;
   Scalar angularVelocity = Quantity.of(0, SI.ANGULAR_ACCELERATION);
   int lastVmuTime = 0;
+  //private long lastReset = 0;
   private final IntervalClock intervalClockLidar = new IntervalClock();
   private final IntervalClock intervalClockIMU = new IntervalClock();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -39,7 +42,9 @@ public class SimpleVelocityEstimation extends AbstractModule implements Velocity
       Scalar gyro = (Scalar) vmu931ImuFrame.gyroZ();
       int currentTime = vmu931ImuFrame.timestamp_ms();
       Scalar time = Quantity.of((currentTime - lastVmuTime) / 1000.0, SI.SECOND);
-      measureAcceleration(acc, gyro, time);
+      lastVmuTime = currentTime;
+      if (Scalars.lessThan(Quantity.of(0, SI.SECOND), time))
+        measureAcceleration(acc, gyro, time);
     }
   };
 
@@ -65,6 +70,8 @@ public class SimpleVelocityEstimation extends AbstractModule implements Velocity
       Scalar newFactor = VelocityEstimationConfig.GLOBAL.correctionFactor;
       Scalar oldFactor = RealScalar.ONE.subtract(newFactor);
       velocity = lidarSpeed.multiply(newFactor).add(velocity.multiply(oldFactor));
+      //System.out.println("new factor: "+newFactor+" delta T: "+deltaT);
+      //System.out.println("pose: "+pose+" Velocity: "+ velocity);
     }
     lastPosition = position;
   }
@@ -86,11 +93,15 @@ public class SimpleVelocityEstimation extends AbstractModule implements Velocity
     this.angularVelocity = angularVelocity;
     Scalar rdt = angularVelocity.multiply(deltaT);
     // transform old system (compensate for rotation)
-    // Scalar vx = velocity.Get(0).add(velocity.Get(1).multiply(rdt));
-    // Scalar vy = velocity.Get(1).subtract(velocity.Get(0).multiply(rdt));
-    Tensor vel = velocity.add(Cross2D.of(velocity).multiply(rdt));
+    Tensor vel = velocity.add(Cross2D.of(velocity).multiply(rdt).negate());
     // Tensors.of(vx, vy);
-    this.velocity = vel.add(accelerations.multiply(deltaT));
+    //System.out.println("Acc: "+accelerations);
+    this.velocity = vel.add(accelerations.add(correction).multiply(deltaT));
+    //if(System.currentTimeMillis()-lastReset>10000)
+    //{
+    //  lastReset = System.currentTimeMillis();
+    //  this.velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+    //}
   }
 
   private Tensor getCompensationRotationMatrix(Scalar orientation) {

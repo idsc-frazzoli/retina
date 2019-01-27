@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
 public class GroundSpeedRender implements RenderInterface {
   private final Tensor origin = Tensors.of(RealScalar.ZERO, RealScalar.ZERO);
-  private final Scalar scale = RealScalar.of(10);
+  private final Scalar scale = RealScalar.of(0.1);
   // ---
   private final GeodesicIIR1Filter geodesicIIR1Filter = //
       new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(.02));
