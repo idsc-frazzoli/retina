@@ -93,6 +93,7 @@ public class TrackReconManagement implements RenderInterface {
   /** @param gokartPoseEvent non null
    * @param dTime
    * @return */
+  // FIXME may return null!!!!!!
   public MPCBSplineTrack update(GokartPoseEvent gokartPoseEvent, Scalar dTime) {
     return update(gokartPoseEvent.getPose(), dTime);
   }
@@ -136,7 +137,7 @@ public class TrackReconManagement implements RenderInterface {
             // TODO JPH/MH
             lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
             timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
-            trackRender.setTrack(lastTrack.bSplineTrack);
+            trackRender.setTrack(lastTrack.bSplineTrack());
           } else {
             System.out.println("no solution found!");
             lastTrack = null;
@@ -152,7 +153,7 @@ public class TrackReconManagement implements RenderInterface {
         // consider: slower track update
         if (Objects.nonNull(trackDataXYR)) {
           lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
-          trackRender.setTrack(lastTrack.bSplineTrack);
+          trackRender.setTrack(lastTrack.bSplineTrack());
         }
       }
       oldWasClosed = closedTrack;

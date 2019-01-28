@@ -25,7 +25,9 @@ import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
-public class MPCKinematicDrivingModule extends AbstractModule {
+public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSplineTrackListener {
+  private final GokartTrackReconModule gokartTrackReconModule = //
+      ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
   public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
   private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
@@ -36,6 +38,7 @@ public class MPCKinematicDrivingModule extends AbstractModule {
   // private boolean useTorqueVectoring;
   private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
+  private MPCBSplineTrack mpcBSplineTrack = null;
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   private TimerTask controlRequestTask;
@@ -122,10 +125,10 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     GokartState state = mpcStateEstimationProvider.getState();
     Tensor position = Tensors.of(state.getX(), state.getY());
     MPCPathParameter mpcPathParameter = null;
-    GokartTrackReconModule gokartTrackReconModule = ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
-    MPCPreviewableTrack liveTrack = Objects.isNull(gokartTrackReconModule) //
-        ? null
-        : gokartTrackReconModule.getMPCBSplineTrack();
+    MPCPreviewableTrack liveTrack = mpcBSplineTrack;
+    // Objects.isNull(gokartTrackReconModule) //
+    // ? null
+    // : gokartTrackReconModule.getMPCBSplineTrack();
     if (Objects.nonNull(track))
       mpcPathParameter = track.getPathParameterPreview(previewSize, position, padding, qpFactor);
     else //
@@ -139,6 +142,9 @@ public class MPCKinematicDrivingModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
+    if (Objects.nonNull(gokartTrackReconModule))
+      gokartTrackReconModule.listenersAdd(this);
+    // ---
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
     manualControlProvider.start();
@@ -191,5 +197,14 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     lcmMPCPathFollowingClient.stop();
     mpcStateEstimationProvider.last();
     manualControlProvider.stop();
+    // ---
+    if (Objects.nonNull(gokartTrackReconModule))
+      gokartTrackReconModule.listenersRemove(this);
+  }
+
+  @Override
+  public void mpcBSplineTrack(MPCBSplineTrack mpcBSplineTrack) {
+    System.out.println("updated mpc bspline track in kinematic mod");
+    this.mpcBSplineTrack = mpcBSplineTrack;
   }
 }

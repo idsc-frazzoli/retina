@@ -22,7 +22,7 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
     return new MPCBSplineTrack(tensor, closed);
   }
 
-  public final BSplineTrack bSplineTrack;
+  private final BSplineTrack bSplineTrack;
 
   /** @param points_xyr matrix with dimension n x 3
    * @param closed */
@@ -65,5 +65,9 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
         currentIndex = 0;
     }
     return new MPCPathParameter(progressStart, matrix);
+  }
+
+  public BSplineTrack bSplineTrack() {
+    return bSplineTrack;
   }
 }

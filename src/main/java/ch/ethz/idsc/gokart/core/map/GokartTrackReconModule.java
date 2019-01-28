@@ -2,9 +2,12 @@
 package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
+import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
@@ -24,7 +27,7 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
   private boolean flagStart = true;
-  private MPCBSplineTrack mpcbSplineTrack = null;
+  private final List<MPCBSplineTrackListener> listeners = new CopyOnWriteArrayList<>();
 
   public GokartTrackReconModule() {
     trackMappingModule = new TrackMapping();
@@ -59,7 +62,8 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
     double seconds = intervalClock.seconds(); // reset
     if (isRecording()) {
       trackMappingModule.prepareMap();
-      mpcbSplineTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
+      MPCBSplineTrack mpcBSplineTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
+      listeners.forEach(listener -> listener.mpcBSplineTrack(mpcBSplineTrack));
     }
   }
 
@@ -94,7 +98,13 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
     flagStart = true;
   }
 
-  public MPCBSplineTrack getMPCBSplineTrack() {
-    return mpcbSplineTrack;
+  public void listenersAdd(MPCBSplineTrackListener mpcBSplineTrackListener) {
+    listeners.add(mpcBSplineTrackListener);
+  }
+
+  public void listenersRemove(MPCBSplineTrackListener mpcBSplineTrackListener) {
+    boolean remove = listeners.remove(mpcBSplineTrackListener);
+    if (!remove)
+      new RuntimeException("not removed").printStackTrace();
   }
 }
