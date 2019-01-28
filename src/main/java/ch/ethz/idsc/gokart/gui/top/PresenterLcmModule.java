@@ -81,8 +81,7 @@ public class PresenterLcmModule extends AbstractModule {
           ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
       if (Objects.nonNull(gokartTrackReconModule))
         timerFrame.geometricComponent.addRenderInterface(gokartTrackReconModule);
-      MPCPredictionRender predictionRender = new MPCPredictionRender();
-      timerFrame.geometricComponent.addRenderInterface(predictionRender);
+      timerFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
     }
     {
       GokartPathRender gokartPathRender = new GokartPathRender(gokartPoseLcmLidar);

@@ -1,14 +1,18 @@
 // code by jph
 package ch.ethz.idsc.retina.util.time;
 
-// TODO JPH document
+/** measure length of intervals between invocations of class methods */
+// TODO OWL 029
 public class IntervalClock {
-  private long tic = System.nanoTime(); // started upon construction
+  /** started upon construction */
+  private long tic = System.nanoTime();
 
+  /** @return */
   public double hertz() {
     return 1.0e9 / elapsed();
   }
 
+  /** @return seconds since last invocation */
   public double seconds() {
     return elapsed() * 1e-9;
   }

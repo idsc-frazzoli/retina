@@ -31,6 +31,10 @@ public class BSplineTrackTest extends TestCase {
     assertEquals(upper, det2d);
   }
 
+  public void testLookupRes() {
+    assertEquals(BSplineTrack.LOOKUP_RES, 0.005f);
+  }
+
   public void testFunction() {
     Scalar meter = Quantity.of(1, SI.METER);
     Tensor fullTensor = Tensors.matrix(new Number[][] { //

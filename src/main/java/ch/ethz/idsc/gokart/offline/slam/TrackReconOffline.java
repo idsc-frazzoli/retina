@@ -48,6 +48,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
+  private static final Scalar DELTA = Quantity.of(0.1, SI.SECOND);
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
@@ -61,7 +62,6 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   // ---
   private GokartPoseEvent gokartPoseEvent;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
-  private Scalar delta = Quantity.of(0.1, SI.SECOND);
 
   public TrackReconOffline(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
     this.consumer = consumer;
@@ -97,7 +97,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       velodyneDecoder.lasers(byteBuffer);
     // ---
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
-      time_next = time.add(delta);
+      time_next = time.add(DELTA);
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
       ScatterImage scatterImage = new WallScatterImage(predefinedMap);
       BufferedImage bufferedImage = scatterImage.getImage();

@@ -106,11 +106,11 @@ public enum UniformBSpline2 {
     return _0;
   }
 
-  public static Tensor getBasisMatrix(int n, Tensor queryPositions, int der, boolean circle) {
-    return Tensors.vector(i -> getBasisVector(n, queryPositions.Get(i), der, circle), queryPositions.length());
+  public static Tensor getBasisMatrix(int n, int der, boolean circle, Tensor queryPositions) {
+    return queryPositions.map(value -> getBasisVector(n, der, circle, value));
   }
 
-  public static Tensor getBasisVector(int n, final Scalar x, int der, boolean circle) {
+  public static Tensor getBasisVector(int n, int der, boolean circle, final Scalar x) {
     Scalar xx = circle //
         ? x
         : Clip.function(0, n - 2).apply(x);

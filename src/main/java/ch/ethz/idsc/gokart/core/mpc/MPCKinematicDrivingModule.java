@@ -98,9 +98,9 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     Scalar latAccLim = MPCOptimizationConfig.GLOBAL.latAccLim;
     Scalar rotAccEffect = MPCOptimizationConfig.GLOBAL.rotAccEffect;
     Scalar torqueVecEffect = MPCOptimizationConfig.GLOBAL.torqueVecEffect;
-    Scalar brakeEffect = MPCOptimizationConfig.GLOBAL.BrakeEffect;
+    Scalar brakeEffect = MPCOptimizationConfig.GLOBAL.brakeEffect;
     Scalar padding = MPCOptimizationConfig.GLOBAL.padding;
-    Scalar QPFactor = MPCOptimizationConfig.GLOBAL.QPFactor;
+    Scalar qpFactor = MPCOptimizationConfig.GLOBAL.qpFactor;
     Optional<ManualControlInterface> optionalJoystick = manualControlProvider.getManualControl();
     if (optionalJoystick.isPresent()) { // is joystick button "autonomoRus" pressed?
       ManualControlInterface actualJoystick = optionalJoystick.get();
@@ -125,12 +125,12 @@ public class MPCKinematicDrivingModule extends AbstractModule {
     GokartTrackReconModule gokartTrackReconModule = ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
     MPCPreviewableTrack liveTrack = Objects.isNull(gokartTrackReconModule) //
         ? null
-        : gokartTrackReconModule.getTrack();
+        : gokartTrackReconModule.getMPCBSplineTrack();
     if (Objects.nonNull(track))
-      mpcPathParameter = track.getPathParameterPreview(previewSize, position, padding, QPFactor);
+      mpcPathParameter = track.getPathParameterPreview(previewSize, position, padding, qpFactor);
     else //
     if (Objects.nonNull(liveTrack))
-      mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, position, padding, QPFactor);
+      mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, position, padding, qpFactor);
     if (Objects.nonNull(mpcPathParameter))
       lcmMPCPathFollowingClient.publishControlRequest(state, mpcPathParameter);
     else

@@ -2,6 +2,10 @@
 package ch.ethz.idsc.gokart.core.sound;
 
 /** implementations are mutable */
+@FunctionalInterface
 public interface SoundExciter {
-  float getNextValue(GokartSoundState motorState, float dt);
+  /** @param gokartSoundState
+   * @param dt
+   * @return */
+  float getNextValue(GokartSoundState gokartSoundState, float dt);
 }
