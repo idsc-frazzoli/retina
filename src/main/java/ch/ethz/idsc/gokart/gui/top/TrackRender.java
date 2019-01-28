@@ -33,20 +33,27 @@ public class TrackRender implements RenderInterface {
   }
 
   private class Render implements RenderInterface {
+    private final Tensor lineMiddle;
     private final Tensor lineLeft;
     private final Tensor lineRight;
-    private final Tensor lineMiddle;
     private final boolean closed;
 
     public Render(TrackInterface trackInterface) {
-      this.lineLeft = trackInterface.getLineLeft(RESOLUTION);
-      this.lineRight = trackInterface.getLineRight(RESOLUTION);
-      this.lineMiddle = trackInterface.getLineMiddle(RESOLUTION);
-      this.closed = trackInterface.isClosed();
+      lineMiddle = trackInterface.getLineMiddle(RESOLUTION);
+      lineLeft = trackInterface.getLineLeft(RESOLUTION);
+      lineRight = trackInterface.getLineRight(RESOLUTION);
+      closed = trackInterface.isClosed();
     }
 
+    // private int count = 0;
     @Override // from RenderInterface
     public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+      // try {
+      // Export.of(HomeDirectory.Pictures(String.format("middle%05d.csv", count)), lineMiddle.map(Magnitude.METER).map(Round._3));
+      // ++count;
+      // } catch (IOException e) {
+      // e.printStackTrace();
+      // }
       // middle line
       float dash1[] = { 10.0f };
       BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
