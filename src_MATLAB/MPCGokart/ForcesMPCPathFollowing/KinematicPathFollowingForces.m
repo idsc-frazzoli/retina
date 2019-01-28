@@ -10,11 +10,11 @@ clear all
 close all
 
 maxSpeed = 10;
-maxxacc = 4;
+maxxacc = 8;
 maxyacc = 8;
-latacclim = 3;
-rotacceffect  = 1;
-torqueveceffect = 9;
+latacclim = 5;
+rotacceffect  = 2;
+torqueveceffect = 0;
 brakeeffect = 0;
 pointsO = 7;
 pointsN = 10;
@@ -26,16 +26,16 @@ global index
 index.dotab = 1;
 index.dotbeta = 2;
 index.ds = 3;
-index.x = 4;
-index.y = 5;
-index.theta = 6;
-index.v = 7;
-index.ab = 8;
-index.beta = 9;
-index.s = 10;
-index.braketemp = 11;
-index.ns = 8;
-index.nu = 3;
+index.slack = 4;
+index.x = 5;
+index.y = 6;
+index.theta = 7;
+index.v = 8;
+index.ab = 9;
+index.beta = 10;
+index.s = 11;
+index.ns = 7;
+index.nu = 4;
 index.nv = index.ns+index.nu;
 index.sb = index.nu+1;
 index.ps = 1;
@@ -57,12 +57,12 @@ model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 l = 1;
 
 %limit lateral acceleration
-model.nh = 1; 
-model.ineq = @(z,p) nlconst(z,p,getPointsFromParameters(p, pointsO, pointsN));
+model.nh = 4; 
+model.ineq = @(z,p) nlconst(z,p);
 %model.hu = [36,0];
 %model.hl = [-inf,-inf];
-model.hu = [0];
-model.hl = [-inf];
+model.hu = [0;1;0;0]%;0;0];
+model.hl = [-inf;-inf;-inf;-inf]%;-inf;-inf];
 
 %points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
   %  controlPointsX.append(Quantity.of(36.2, SI.METER));
@@ -111,6 +111,7 @@ model.lb(index.ds)=0;
 %model.ub(index.ab)=2;
 model.lb(index.ab)=-4.5;
 model.lb(index.ab)=-inf;
+model.lb(index.slack)=0;
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
@@ -122,7 +123,7 @@ model.lb(index.s)=0;
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
@@ -130,7 +131,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 150;
+tend = 200;
 eulersteps = 10;
 %[...,x,y,theta,v,ab,beta,s,braketemp]
 %[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
@@ -145,7 +146,7 @@ xs(index.v-index.nu)=1;
 xs(index.ab-index.nu)=0;
 xs(index.beta-index.nu)=0;
 xs(index.s-index.nu)=0.01;
-xs(index.braketemp-index.nu)=40;
+%xs(index.braketemp-index.nu)=40;
 history = zeros(tend*eulersteps,model.nvar+1);
 plansx = [];
 plansy = [];
