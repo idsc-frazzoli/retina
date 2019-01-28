@@ -27,6 +27,7 @@ public class TrackReconManagement implements RenderInterface {
   private static final Scalar SPACING = RealScalar.of(1.5); // TODO should be meters
   private static final Scalar CP_RESOLUTION = RealScalar.of(0.5);
   // ---
+  private final TrackRender trackRender = new TrackRender();
   private final OccupancyGrid occupancyGrid;
   private final TrackLayoutInitialGuess initialGuess;
   private final TrackRefinement refinenement;
@@ -38,7 +39,6 @@ public class TrackReconManagement implements RenderInterface {
   private int count = 0;
   private double startOrientation = 0;
   private MPCBSplineTrack lastTrack;
-  private TrackRender trackRender;
   private boolean closedTrack = false;
   private boolean oldWasClosed = false;
   private Timing lastTrackReset = Timing.started();
@@ -64,7 +64,7 @@ public class TrackReconManagement implements RenderInterface {
 
   public void resetTrack() {
     lastTrack = null;
-    trackRender = null;
+    trackRender.setTrack(null);
   }
 
   public boolean isStartSet() {
@@ -78,22 +78,21 @@ public class TrackReconManagement implements RenderInterface {
 
   /** set start position
    * 
-   * @param pose [x[m], y[m], angle]
-   * @return true if valid start position */
-  private boolean setStart(Tensor pose) {
+   * @param pose [x[m], y[m], angle] */
+  private void setStart(Tensor pose) {
     Tensor transform = occupancyGrid.getTransform();
     Tensor hpos = Tensors.of(pose.Get(0), pose.Get(1), Quantity.of(1, SI.METER));
     Tensor pixelPos = LinearSolve.of(transform, hpos);
     startX = pixelPos.Get(0).number().intValue();
     startY = pixelPos.Get(1).number().intValue();
     startOrientation = pose.Get(2).number().doubleValue();
-    if (startX >= 0 && startX < width && startY >= 0 && startY < heigth) {
+    if (startX >= 0 && startX < width && startY >= 0 && startY < heigth)
       startSet = true;
-      return true;
-    }
-    return false;
   }
 
+  /** @param gokartPoseEvent non null
+   * @param dTime
+   * @return */
   public MPCBSplineTrack update(GokartPoseEvent gokartPoseEvent, Scalar dTime) {
     return update(gokartPoseEvent.getPose(), dTime);
   }
@@ -137,10 +136,11 @@ public class TrackReconManagement implements RenderInterface {
             // TODO JPH/MH
             lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
             timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
-            trackRender = null;
+            trackRender.setTrack(lastTrack.bSplineTrack);
           } else {
             System.out.println("no solution found!");
             lastTrack = null;
+            trackRender.setTrack(null);
           }
         }
       } else //
@@ -152,7 +152,7 @@ public class TrackReconManagement implements RenderInterface {
         // consider: slower track update
         if (Objects.nonNull(trackDataXYR)) {
           lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
-          trackRender = null;
+          trackRender.setTrack(lastTrack.bSplineTrack);
         }
       }
       oldWasClosed = closedTrack;
@@ -162,21 +162,16 @@ public class TrackReconManagement implements RenderInterface {
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.nonNull(lastTrack)) {
-      if (Objects.isNull(trackRender))
-        trackRender = new TrackRender(lastTrack.bSplineTrack);
+    if (Objects.nonNull(lastTrack))
       trackRender.render(geometricLayer, graphics);
-    } else
+    else
       initialGuess.render(geometricLayer, graphics);
   }
 
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.nonNull(lastTrack)) {
-      if (Objects.isNull(trackRender))
-        trackRender = new TrackRender(lastTrack.bSplineTrack);
-      // trackRender.renderHR(geometricLayer, graphics);
-    } // else {
-    initialGuess.renderHR(geometricLayer, graphics);
-    // }
+    if (Objects.nonNull(lastTrack))
+      trackRender.render(geometricLayer, graphics);
+    else
+      initialGuess.renderHR(geometricLayer, graphics);
   }
 }

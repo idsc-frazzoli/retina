@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+/** singleton instance */
 public class MPCInformationProvider extends MPCControlUpdateListener {
   private final static MPCInformationProvider INSTANCE = new MPCInformationProvider();
 

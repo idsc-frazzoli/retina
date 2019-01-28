@@ -35,7 +35,7 @@ public class MPCOptimizationConfig {
   /** the amount of additional front acceleration capacity strong braking can have
    * suggestion: low priority (braking can be done in a straight line */
   @FieldSubdivide(start = "0f[1]", end = "2[1]", intervals = 20)
-  public Scalar BrakeEffect = Quantity.of(0, SI.ONE);
+  public Scalar brakeEffect = Quantity.of(0, SI.ONE);
   /** The mpc update cycle time when not successful */
   public Scalar updateCycle = Quantity.of(0.2, SI.SECOND);
   /** The wait time after a successful optimization */
@@ -48,5 +48,5 @@ public class MPCOptimizationConfig {
   @FieldSubdivide(start = "0f[m]", end = "2[m]", intervals = 20)
   public Scalar padding = Quantity.of(1, SI.METER);
   @FieldSubdivide(start = "0f", end = "1", intervals = 10)
-  public Scalar QPFactor = Quantity.of(1, SI.ONE);
+  public Scalar qpFactor = Quantity.of(1, SI.ONE);
 }

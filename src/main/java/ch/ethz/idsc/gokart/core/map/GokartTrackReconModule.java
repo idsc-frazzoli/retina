@@ -23,8 +23,7 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
   private final IntervalClock intervalClock = new IntervalClock();
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
-  private boolean recording = false;
-  private boolean settingStart = true;
+  private boolean flagStart = true;
   private MPCBSplineTrack mpcbSplineTrack = null;
 
   public GokartTrackReconModule() {
@@ -47,16 +46,18 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    if (!trackReconManagement.isStartSet() || settingStart)
-      if (Objects.nonNull(gokartPoseEvent)) {
-        trackReconManagement.setStart(gokartPoseEvent);
-        if (trackReconManagement.isStartSet()) {
-          System.out.println("start set!");
-          settingStart = false;
-        }
+    if (Objects.isNull(gokartPoseEvent))
+      return;
+    // ---
+    if (flagStart || !trackReconManagement.isStartSet()) {
+      trackReconManagement.setStart(gokartPoseEvent);
+      if (trackReconManagement.isStartSet()) {
+        System.out.println("start set!");
+        flagStart = false;
       }
+    }
     double seconds = intervalClock.seconds(); // reset
-    if (recording) {
+    if (isRecording()) {
       trackMappingModule.prepareMap();
       mpcbSplineTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
     }
@@ -83,18 +84,17 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
 
   public void setRecording(boolean selected) {
     trackMappingModule.setRecording(selected);
-    recording = selected;
   }
 
   public boolean isRecording() {
-    return recording;
+    return trackMappingModule.isRecording();
   }
 
-  public void findStart() {
-    settingStart = true;
+  public void flagStart() {
+    flagStart = true;
   }
 
-  public MPCBSplineTrack getTrack() {
+  public MPCBSplineTrack getMPCBSplineTrack() {
     return mpcbSplineTrack;
   }
 }

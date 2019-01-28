@@ -7,10 +7,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.LiveTrackRenderProvider;
+import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
@@ -33,6 +34,7 @@ import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.planar.Arrowhead;
@@ -124,11 +126,13 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
     {
-      // test simple track
-      LiveTrackRenderProvider liveTrackRenderProvider = new LiveTrackRenderProvider();
-      viewLcmFrame.geometricComponent.addRenderInterface(liveTrackRenderProvider);
-      MPCPredictionRender predictionRender = new MPCPredictionRender();
-      viewLcmFrame.geometricComponent.addRenderInterface(predictionRender);
+      GokartTrackReconModule gokartTrackReconModule = //
+          ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
+      if (Objects.nonNull(gokartTrackReconModule))
+        viewLcmFrame.geometricComponent.addRenderInterface(gokartTrackReconModule);
+    }
+    {
+      viewLcmFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
     }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
