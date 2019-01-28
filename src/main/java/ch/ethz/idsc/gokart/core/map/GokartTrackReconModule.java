@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class GokartTrackReconModule extends AbstractClockedModule implements GokartPoseListener, RenderInterface {
+public final class GokartTrackReconModule extends AbstractClockedModule implements GokartPoseListener, RenderInterface {
   private final TrackReconManagement trackReconManagement;
   private final TrackMapping trackMappingModule;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -32,11 +32,20 @@ public class GokartTrackReconModule extends AbstractClockedModule implements Gok
     trackReconManagement = new TrackReconManagement(trackMappingModule);
   }
 
-  public void resetTrack() {
-    trackReconManagement.resetTrack();
+  @Override // from AbstractModule
+  protected void first() throws Exception {
+    gokartPoseLcmClient.addListener(this);
+    gokartPoseLcmClient.startSubscriptions();
+    trackMappingModule.start();
   }
 
-  @Override
+  @Override // from AbstractModule
+  protected void last() {
+    trackMappingModule.stop();
+    gokartPoseLcmClient.stopSubscriptions();
+  }
+
+  @Override // from AbstractClockedModule
   protected void runAlgo() {
     if (!trackReconManagement.isStartSet() || settingStart)
       if (Objects.nonNull(gokartPoseEvent)) {
@@ -53,32 +62,23 @@ public class GokartTrackReconModule extends AbstractClockedModule implements Gok
     }
   }
 
-  @Override
-  protected void first() throws Exception {
-    gokartPoseLcmClient.addListener(this);
-    gokartPoseLcmClient.startSubscriptions();
-    trackMappingModule.start();
-  }
-
-  @Override
-  protected void last() {
-    trackMappingModule.stop();
-    gokartPoseLcmClient.stopSubscriptions();
-  }
-
-  @Override
+  @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
     return Quantity.of(1, SI.SECOND);
   }
 
-  @Override
+  @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     this.gokartPoseEvent = gokartPoseEvent;
   }
 
-  @Override
+  @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     trackReconManagement.render(geometricLayer, graphics);
+  }
+
+  public void resetTrack() {
+    trackReconManagement.resetTrack();
   }
 
   public void setRecording(boolean selected) {
