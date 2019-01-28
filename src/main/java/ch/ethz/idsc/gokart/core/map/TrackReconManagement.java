@@ -78,22 +78,21 @@ public class TrackReconManagement implements RenderInterface {
 
   /** set start position
    * 
-   * @param pose [x[m], y[m], angle]
-   * @return true if valid start position */
-  private boolean setStart(Tensor pose) {
+   * @param pose [x[m], y[m], angle] */
+  private void setStart(Tensor pose) {
     Tensor transform = occupancyGrid.getTransform();
     Tensor hpos = Tensors.of(pose.Get(0), pose.Get(1), Quantity.of(1, SI.METER));
     Tensor pixelPos = LinearSolve.of(transform, hpos);
     startX = pixelPos.Get(0).number().intValue();
     startY = pixelPos.Get(1).number().intValue();
     startOrientation = pose.Get(2).number().doubleValue();
-    if (startX >= 0 && startX < width && startY >= 0 && startY < heigth) {
+    if (startX >= 0 && startX < width && startY >= 0 && startY < heigth)
       startSet = true;
-      return true;
-    }
-    return false;
   }
 
+  /** @param gokartPoseEvent non null
+   * @param dTime
+   * @return */
   public MPCBSplineTrack update(GokartPoseEvent gokartPoseEvent, Scalar dTime) {
     return update(gokartPoseEvent.getPose(), dTime);
   }

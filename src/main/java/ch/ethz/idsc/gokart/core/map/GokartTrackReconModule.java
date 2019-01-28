@@ -23,7 +23,7 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
   private final IntervalClock intervalClock = new IntervalClock();
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
-  private boolean settingStart = true;
+  private boolean flagStart = true;
   private MPCBSplineTrack mpcbSplineTrack = null;
 
   public GokartTrackReconModule() {
@@ -46,14 +46,16 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    if (!trackReconManagement.isStartSet() || settingStart)
-      if (Objects.nonNull(gokartPoseEvent)) {
-        trackReconManagement.setStart(gokartPoseEvent);
-        if (trackReconManagement.isStartSet()) {
-          System.out.println("start set!");
-          settingStart = false;
-        }
+    if (Objects.isNull(gokartPoseEvent))
+      return;
+    // ---
+    if (flagStart || !trackReconManagement.isStartSet()) {
+      trackReconManagement.setStart(gokartPoseEvent);
+      if (trackReconManagement.isStartSet()) {
+        System.out.println("start set!");
+        flagStart = false;
       }
+    }
     double seconds = intervalClock.seconds(); // reset
     if (isRecording()) {
       trackMappingModule.prepareMap();
@@ -88,11 +90,11 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
     return trackMappingModule.isRecording();
   }
 
-  public void findStart() {
-    settingStart = true;
+  public void flagStart() {
+    flagStart = true;
   }
 
-  public MPCBSplineTrack getTrack() {
+  public MPCBSplineTrack getMPCBSplineTrack() {
     return mpcbSplineTrack;
   }
 }

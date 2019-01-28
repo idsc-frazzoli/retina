@@ -43,8 +43,8 @@ public class TrackReconPanelModule extends AbstractModule {
       jPanel.add(jButton);
     }
     {
-      JButton jButton = new JButton("find start");
-      jButton.addActionListener(actionEvent -> gokartTrackReconModule.findStart());
+      JButton jButton = new JButton("flag start");
+      jButton.addActionListener(actionEvent -> gokartTrackReconModule.flagStart());
       jButton.setEnabled(isAvailable);
       jPanel.add(jButton);
     }
