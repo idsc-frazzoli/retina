@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
-import ch.ethz.idsc.gokart.gui.lab.TrackReconButtons;
+import ch.ethz.idsc.gokart.gui.lab.TrackReconPanelModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.offline.slam.GyroOfflineLocalize;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -33,7 +33,7 @@ import lcm.logging.LogPlayerConfig;
     // ModuleAuto.INSTANCE.runOne(GlobalViewLcmModule.class);
     ModuleAuto.INSTANCE.runOne(GokartTrackReconModule.class);
     ModuleAuto.INSTANCE.runOne(PresenterLcmModule.class);
-    ModuleAuto.INSTANCE.runOne(TrackReconButtons.class);
+    ModuleAuto.INSTANCE.runOne(TrackReconPanelModule.class);
     ModuleAuto.INSTANCE.runOne(MPCKinematicDrivingModule.class);
   }
 }

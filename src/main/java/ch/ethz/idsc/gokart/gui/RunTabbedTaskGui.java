@@ -49,7 +49,7 @@ import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
-import ch.ethz.idsc.gokart.gui.lab.TrackReconButtons;
+import ch.ethz.idsc.gokart.gui.lab.TrackReconPanelModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -111,7 +111,7 @@ enum RunTabbedTaskGui {
       SysidSignalsModule.class //
   );
   static final List<Class<?>> MODULES_AUT = Arrays.asList( //
-      TrackReconButtons.class, //
+      TrackReconPanelModule.class, //
       MPCKinematicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       FigureTiresAModule.class, //

@@ -159,4 +159,8 @@ public class TrackMapping implements //
   public void setRecording(boolean selected) {
     recording = selected;
   }
+
+  public boolean isRecording() {
+    return recording;
+  }
 }
