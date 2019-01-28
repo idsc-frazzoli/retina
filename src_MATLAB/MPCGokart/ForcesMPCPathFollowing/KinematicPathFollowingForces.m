@@ -21,7 +21,7 @@ pointsN = 10;
 splinestart = 1;
 nextsplinepoints = 0;
 %parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
-% variables z = [dotab,dotbeta,ds,x,y,theta,v,ab,beta,s,braketemp]
+% variables z = [dotab,dotbeta,ds,slack,x,y,theta,v,ab,beta,s]
 global index
 index.dotab = 1;
 index.dotbeta = 2;

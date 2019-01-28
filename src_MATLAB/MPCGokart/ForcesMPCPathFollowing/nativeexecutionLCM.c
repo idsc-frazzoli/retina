@@ -133,7 +133,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[4] = initab;
 	params.xinit[5] = initbeta;
 	params.xinit[6] = lastCRMsg.path.startingProgress;
-	params.xinit[7] = lastCRMsg.state.bTemp;
+	//params.xinit[7] = lastCRMsg.state.bTemp;
 
 	for(int i = 0; i<8;i++){
 		printf("%i: %f\n",i,params.xinit[i]);
@@ -181,19 +181,19 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].control.uR = 0;//not in use
 			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
 			cnsmsg.cns[i].control.uB = 0;//not in use
-			cnsmsg.cns[i].control.aB = myoutput.alldata[i*S+7];
+			cnsmsg.cns[i].control.aB = myoutput.alldata[i*S+8];
 			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
-			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+6];
+			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+7];
 			cnsmsg.cns[i].state.Uy = 0;//assumed = 0
-			printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+3],myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+9],myoutput.alldata[i*S+2]);
+			printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+6],myoutput.alldata[i*S+10],myoutput.alldata[i*S+2]);
 			cnsmsg.cns[i].state.dotPsi = 0; //not in use
-			cnsmsg.cns[i].state.X = myoutput.alldata[i*S+3];
-			cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+4];
-			cnsmsg.cns[i].state.Psi = myoutput.alldata[i*S+5];
+			cnsmsg.cns[i].state.X = myoutput.alldata[i*S+4];
+			cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+5];
+			cnsmsg.cns[i].state.Psi = myoutput.alldata[i*S+6];
 			cnsmsg.cns[i].state.w2L = 0;//not in use
 			cnsmsg.cns[i].state.w2R = 0;//not in use
-			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+8];
-			cnsmsg.cns[i].state.bTemp = myoutput.alldata[i*S+10];
+			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+9];
+			cnsmsg.cns[i].state.bTemp = 60;
 		}
 
 		printf("prepared blob\n");

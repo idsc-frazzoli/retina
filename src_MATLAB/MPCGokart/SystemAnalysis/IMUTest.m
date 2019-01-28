@@ -7,8 +7,11 @@ targetfiles = {};
 if(0)
     folders{end+1} = '/retina_out/20190125T105720/';
 end
-if(1)
+if(0)
     folders{end+1} = '/retina_out/20190125T134537/';
+end
+if(1)
+    folders{end+1} = '/retina_out/20190128T141006/';
 end
 N = numel(folders);
 tic;
@@ -55,3 +58,14 @@ plot(tdavis,dsyacc)
 plot(tdavis,dszacc)
 %plot(tvmu,ygyr)
 hold off
+
+figure
+title('frequency response')
+fx = fft(xacc);
+n = length(xacc);          % number of samples
+fs = 100;
+f = (0:n-1)*(fs/n);     % frequency range
+power = abs(fx).^2/n;  
+plot(f,power)
+xlabel('Frequency')
+ylabel('Power')
