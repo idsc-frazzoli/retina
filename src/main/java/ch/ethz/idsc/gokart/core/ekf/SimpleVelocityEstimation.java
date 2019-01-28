@@ -96,7 +96,7 @@ public class SimpleVelocityEstimation extends AbstractModule implements Velocity
     Tensor vel = velocity.add(Cross2D.of(velocity).multiply(rdt).negate());
     // Tensors.of(vx, vy);
     // System.out.println("Acc: "+accelerations);
-    this.velocity = vel.add(accelerations.add(VelocityEstimationConfig.GLOBAL.correction).multiply(deltaT));
+    this.velocity = vel.add(accelerations.multiply(deltaT));
     // if(System.currentTimeMillis()-lastReset>10000)
     // {
     // lastReset = System.currentTimeMillis();
