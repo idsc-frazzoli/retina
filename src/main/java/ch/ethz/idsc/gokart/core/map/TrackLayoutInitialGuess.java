@@ -37,7 +37,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     private boolean inQ = false;
     private boolean processed = false;
     private Cell lastCell = null;
-    // TODO create type Cell+Cost and use only 1 list
+    // TODO JPH/MH create type Cell+Cost and use only 1 list
     private List<Cell> neighBors = null;
     private List<Scalar> neighBorCost = null;
 
