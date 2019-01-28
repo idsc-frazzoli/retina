@@ -45,15 +45,8 @@ public class TrackRender implements RenderInterface {
       closed = trackInterface.isClosed();
     }
 
-    // private int count = 0;
     @Override // from RenderInterface
     public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-      // try {
-      // Export.of(HomeDirectory.Pictures(String.format("middle%05d.csv", count)), lineMiddle.map(Magnitude.METER).map(Round._3));
-      // ++count;
-      // } catch (IOException e) {
-      // e.printStackTrace();
-      // }
       // middle line
       float dash1[] = { 10.0f };
       BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
@@ -67,7 +60,7 @@ public class TrackRender implements RenderInterface {
       // left line
       // graphics.setStroke(s);
       graphics.setStroke(defaultStroke);
-      graphics.setColor(Color.BLUE);
+      graphics.setColor(Color.RED);
       path2d = geometricLayer.toPath2D(lineLeft);
       if (closed)
         path2d.closePath();

@@ -204,6 +204,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
 
   @Override
   public void mpcBSplineTrack(MPCBSplineTrack mpcBSplineTrack) {
+    System.out.println("updated mpc bspline track in kinematic mod");
     this.mpcBSplineTrack = mpcBSplineTrack;
   }
 }
