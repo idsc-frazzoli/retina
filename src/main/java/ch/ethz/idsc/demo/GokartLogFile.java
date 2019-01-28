@@ -1322,6 +1322,13 @@ public enum GokartLogFile implements LogFile {
   _20190125T133925_e5eb6f95,
   /** autonomous driving, vmu931 */
   _20190125T134537_e5eb6f95,
+  /** mpc */
+  _20190125T150258_c2df0d09,
+  /***************************************************/
+  /** track recon and pure pursuit of center line */
+  _20190128T133144_6f6e3dee,
+  /** manual driving data collection vmu931 */
+  _20190128T134321_6f6e3dee,
   /***************************************************/
   ;
   // ---
