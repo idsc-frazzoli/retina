@@ -27,6 +27,7 @@ public class TrackReconManagement implements RenderInterface {
   private static final Scalar SPACING = RealScalar.of(1.5); // TODO should be meters
   private static final Scalar CP_RESOLUTION = RealScalar.of(0.5);
   // ---
+  private final TrackRender trackRender = new TrackRender();
   private final OccupancyGrid occupancyGrid;
   private final TrackLayoutInitialGuess initialGuess;
   private final TrackRefinement refinenement;
@@ -38,7 +39,6 @@ public class TrackReconManagement implements RenderInterface {
   private int count = 0;
   private double startOrientation = 0;
   private MPCBSplineTrack lastTrack;
-  private TrackRender trackRender;
   private boolean closedTrack = false;
   private boolean oldWasClosed = false;
   private Timing lastTrackReset = Timing.started();
@@ -64,7 +64,7 @@ public class TrackReconManagement implements RenderInterface {
 
   public void resetTrack() {
     lastTrack = null;
-    trackRender = null;
+    trackRender.setTrack(null);
   }
 
   public boolean isStartSet() {
@@ -136,10 +136,11 @@ public class TrackReconManagement implements RenderInterface {
             // TODO JPH/MH
             lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
             timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
-            trackRender = null;
+            trackRender.setTrack(lastTrack.bSplineTrack);
           } else {
             System.out.println("no solution found!");
             lastTrack = null;
+            trackRender.setTrack(null);
           }
         }
       } else //
@@ -151,7 +152,7 @@ public class TrackReconManagement implements RenderInterface {
         // consider: slower track update
         if (Objects.nonNull(trackDataXYR)) {
           lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
-          trackRender = null;
+          trackRender.setTrack(lastTrack.bSplineTrack);
         }
       }
       oldWasClosed = closedTrack;
@@ -161,21 +162,16 @@ public class TrackReconManagement implements RenderInterface {
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.nonNull(lastTrack)) {
-      if (Objects.isNull(trackRender))
-        trackRender = new TrackRender(lastTrack.bSplineTrack);
+    if (Objects.nonNull(lastTrack))
       trackRender.render(geometricLayer, graphics);
-    } else
+    else
       initialGuess.render(geometricLayer, graphics);
   }
 
   public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.nonNull(lastTrack)) {
-      if (Objects.isNull(trackRender))
-        trackRender = new TrackRender(lastTrack.bSplineTrack);
-      // trackRender.renderHR(geometricLayer, graphics);
-    } // else {
-    initialGuess.renderHR(geometricLayer, graphics);
-    // }
+    if (Objects.nonNull(lastTrack))
+      trackRender.render(geometricLayer, graphics);
+    else
+      initialGuess.renderHR(geometricLayer, graphics);
   }
 }
