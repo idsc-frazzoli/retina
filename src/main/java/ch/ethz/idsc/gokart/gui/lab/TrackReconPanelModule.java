@@ -28,13 +28,10 @@ public class TrackReconPanelModule extends AbstractModule {
     final boolean isAvailable = Objects.nonNull(gokartTrackReconModule);
     JPanel jPanel = new JPanel(new GridLayout(1, 3));
     {
-      JToggleButton jToggleButton = new JToggleButton("sense track");
-      jToggleButton.setEnabled(isAvailable);
-      if (isAvailable) {
-        jToggleButton.setSelected(gokartTrackReconModule.isRecording());
-        jToggleButton.addActionListener(actionEvent -> gokartTrackReconModule.setRecording(jToggleButton.isSelected()));
-      }
-      jPanel.add(jToggleButton);
+      JButton jButton = new JButton("flag start & reset");
+      jButton.addActionListener(actionEvent -> gokartTrackReconModule.flagStart());
+      jButton.setEnabled(isAvailable);
+      jPanel.add(jButton);
     }
     {
       JButton jButton = new JButton("reset track");
@@ -43,10 +40,13 @@ public class TrackReconPanelModule extends AbstractModule {
       jPanel.add(jButton);
     }
     {
-      JButton jButton = new JButton("flag start");
-      jButton.addActionListener(actionEvent -> gokartTrackReconModule.flagStart());
-      jButton.setEnabled(isAvailable);
-      jPanel.add(jButton);
+      JToggleButton jToggleButton = new JToggleButton("sense track");
+      jToggleButton.setEnabled(isAvailable);
+      if (isAvailable) {
+        jToggleButton.setSelected(gokartTrackReconModule.isRecording());
+        jToggleButton.addActionListener(actionEvent -> gokartTrackReconModule.setRecording(jToggleButton.isSelected()));
+      }
+      jPanel.add(jToggleButton);
     }
     jFrame.setContentPane(jPanel);
     jFrame.setTitle(isAvailable //
