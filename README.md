@@ -47,6 +47,15 @@ Navigation
 [Event-based SLAM](https://www.youtube.com/watch?v=NKylhRHbnGA), [Fig. 8](https://www.youtube.com/watch?v=NpCwG_32Cr8)
 
 </tr>
+
+<tr>
+<td>
+
+![purepursuit](https://user-images.githubusercontent.com/4012178/51901763-bdfdeb00-23b8-11e9-8132-0c36099ea08e.jpg)
+
+[Pure pursuit, also reverse](https://www.youtube.com/watch?v=H0qwudAnM48)
+
+</tr>
 </table>
 
 ## Gallery Manual Driving

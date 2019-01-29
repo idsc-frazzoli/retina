@@ -2,7 +2,7 @@
 package ch.ethz.idsc.retina.util.time;
 
 /** measure length of intervals between invocations of class methods */
-// TODO OWL 029
+// TODO OWL V030
 public class IntervalClock {
   /** started upon construction */
   private long tic = System.nanoTime();
