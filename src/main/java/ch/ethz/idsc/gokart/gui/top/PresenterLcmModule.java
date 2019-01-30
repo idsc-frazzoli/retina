@@ -40,6 +40,7 @@ import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.io.UserName;
@@ -145,7 +146,7 @@ public class PresenterLcmModule extends AbstractModule {
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
-    timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
+    timerFrame.geometricComponent.addRenderInterface(new GridRender(Subdivide.of(0, 50, 5)));
     {
       JButton jButton = new JButton("show matrix");
       jButton.addActionListener(actionEvent -> {

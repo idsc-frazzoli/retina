@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.map.TrackRefinement.TrackConstraint;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
@@ -93,11 +94,12 @@ public class TrackReconManagement implements RenderInterface {
   /** @param gokartPoseEvent non null
    * @param dTime
    * @return */
-  public MPCBSplineTrack update(GokartPoseEvent gokartPoseEvent, Scalar dTime) {
+  // FIXME may return null!!!!!!
+  public Optional<MPCBSplineTrack> update(GokartPoseEvent gokartPoseEvent, Scalar dTime) {
     return update(gokartPoseEvent.getPose(), dTime);
   }
 
-  private MPCBSplineTrack update(Tensor pose, Scalar dTime) {
+  private Optional<MPCBSplineTrack> update(Tensor pose, Scalar dTime) {
     System.out.println("update called: " + timeSinceLastTrackUpdate);
     timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
     if (startSet) {
@@ -157,7 +159,7 @@ public class TrackReconManagement implements RenderInterface {
       }
       oldWasClosed = closedTrack;
     }
-    return lastTrack;
+    return Optional.ofNullable(lastTrack);
   }
 
   @Override // from RenderInterface

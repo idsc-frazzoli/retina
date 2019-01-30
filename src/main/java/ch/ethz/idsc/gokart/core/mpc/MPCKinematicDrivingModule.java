@@ -38,7 +38,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   // private boolean useTorqueVectoring;
   private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
-  private MPCBSplineTrack mpcBSplineTrack = null;
+  private Optional<MPCBSplineTrack> mpcBSplineTrack = Optional.empty();
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   private TimerTask controlRequestTask;
@@ -125,7 +125,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     GokartState state = mpcStateEstimationProvider.getState();
     Tensor position = Tensors.of(state.getX(), state.getY());
     MPCPathParameter mpcPathParameter = null;
-    MPCPreviewableTrack liveTrack = mpcBSplineTrack;
+    MPCPreviewableTrack liveTrack = mpcBSplineTrack.orElse(null);
     // Objects.isNull(gokartTrackReconModule) //
     // ? null
     // : gokartTrackReconModule.getMPCBSplineTrack();
@@ -202,8 +202,9 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
       gokartTrackReconModule.listenersRemove(this);
   }
 
-  @Override
-  public void mpcBSplineTrack(MPCBSplineTrack mpcBSplineTrack) {
-    this.mpcBSplineTrack = mpcBSplineTrack;
+  @Override // from MPCBSplineTrackListener
+  public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
+    System.out.println("kinematic mpc bspline track, present=" + optional.isPresent());
+    this.mpcBSplineTrack = optional;
   }
 }

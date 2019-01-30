@@ -1,13 +1,15 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.Path2D;
+import java.awt.Stroke;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.owl.data.BoundedLinkedList;
+import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -18,7 +20,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
 public class PoseTrailRender implements GokartPoseListener, RenderInterface {
-  private static final Color COLOR = Color.CYAN;
+  private static final Stroke STROKE_DEFAULT = new BasicStroke();
+  private static final Color COLOR = new Color(0, 192, 192);
+  // ---
   private static final int MAX_SIZE = 100;
   private static final Scalar THRESHOLD_ADD = Quantity.of(0.3, SI.METER);
   private static final Scalar THRESHOLD_CLEAR = Quantity.of(4.0, SI.METER);
@@ -49,8 +53,11 @@ public class PoseTrailRender implements GokartPoseListener, RenderInterface {
     synchronized (boundedLinkedList) {
       tensor = Tensor.of(boundedLinkedList.stream());
     }
-    Path2D path2d = geometricLayer.toPath2D(tensor);
+    GraphicsUtil.setQualityHigh(graphics);
+    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.1)));
     graphics.setColor(COLOR);
-    graphics.draw(path2d);
+    graphics.draw(geometricLayer.toPath2D(tensor));
+    graphics.setStroke(STROKE_DEFAULT);
+    GraphicsUtil.setQualityDefault(graphics);
   }
 }

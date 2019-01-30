@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.map;
 import java.awt.Graphics2D;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
@@ -11,11 +12,11 @@ import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
-import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -62,14 +63,14 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
     double seconds = intervalClock.seconds(); // reset
     if (isRecording()) {
       trackMappingModule.prepareMap();
-      MPCBSplineTrack mpcBSplineTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
-      listeners.forEach(listener -> listener.mpcBSplineTrack(mpcBSplineTrack));
+      Optional<MPCBSplineTrack> optional = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
+      listeners.forEach(listener -> listener.mpcBSplineTrack(optional));
     }
   }
 
   @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
-    return Quantity.of(1, SI.SECOND);
+    return Quantity.of(0.3, SI.SECOND); // TODO JPH magic const
   }
 
   @Override // from GokartPoseListener
@@ -96,6 +97,7 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
 
   public void flagStart() {
     flagStart = true;
+    trackReconManagement.resetTrack();
   }
 
   public void listenersAdd(MPCBSplineTrackListener mpcBSplineTrackListener) {

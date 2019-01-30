@@ -44,10 +44,15 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
   }
 
   @Override // from MPCBSplineTrackListener
-  public void mpcBSplineTrack(MPCBSplineTrack mpcBSplineTrack) {
-    Tensor curve = mpcBSplineTrack.bSplineTrack().getLineMiddle(RESOLUTION).map(Magnitude.METER);
-    System.out.println("updated curve " + Dimensions.of(curve));
-    purePursuitModule.setCurve(Optional.of(curve));
+  public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
+    Tensor curve = null;
+    if (optional.isPresent()) {
+      curve = optional.get().bSplineTrack().getLineMiddle(RESOLUTION).map(Magnitude.METER);
+      System.out.println("updated curve " + Dimensions.of(curve));
+    } else {
+      System.out.println("center line no waypoints");
+    }
+    purePursuitModule.setCurve(Optional.ofNullable(curve));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(curve);
   }

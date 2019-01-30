@@ -1,20 +1,11 @@
 # ch.ethz.idsc.gokart <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
 Software to operate the go-kart in autonomous and manual modes.
-The performance of the go-kart hardware and software are investigated.
-The results are documented in [reports](doc/reports.md).
+The performance of the go-kart hardware and software are documented in [reports](doc/reports.md).
 
 > The code in the repository operates a heavy and fast robot that may endanger living creatures. We follow best practices and coding standards to protect from avoidable errors. See [development_guidelines](doc/development_guidelines.md)
 
-## Features
-
-* simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
-* lidar-based localization enhanced with odometry and gyro
-* bayesian occupancy grid
-* track reconnaissance
-* torque vectoring
-* synthesis of engine sound
-* offline processing of log data
+![gokart](https://user-images.githubusercontent.com/4012178/51981458-64b6ba00-2493-11e9-9e1e-5c5fe602e00b.png)
 
 ## Gallery Autonomous Driving
 
@@ -47,7 +38,26 @@ Navigation
 [Event-based SLAM](https://www.youtube.com/watch?v=NKylhRHbnGA), [Fig. 8](https://www.youtube.com/watch?v=NpCwG_32Cr8)
 
 </tr>
+
+<tr>
+<td>
+
+![purepursuit](https://user-images.githubusercontent.com/4012178/51901763-bdfdeb00-23b8-11e9-8132-0c36099ea08e.jpg)
+
+[Pure pursuit, also reverse](https://www.youtube.com/watch?v=H0qwudAnM48)
+
+</tr>
 </table>
+
+## Features
+
+* simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
+* lidar-based localization enhanced with odometry and gyro
+* bayesian occupancy grid
+* track reconnaissance
+* torque vectoring
+* synthesis of engine sound
+* offline processing of log data
 
 ## Gallery Manual Driving
 
@@ -64,19 +74,9 @@ Navigation
 
 ## Architecture
 
-Source file size distribution
-
-![gokart](https://user-images.githubusercontent.com/4012178/51076483-3fefd380-1699-11e9-9937-f7ea6b55f1dd.png)
-
-We use `LCM` for message interchange, logging, and post-processing.
-All messages are encoded using a single type `BinaryBlob`.
-The byte order of the binary data is `little-endian` since the encoding is native on most architectures.
-
-## Dependencies
-
 * [`tensor`](https://github.com/idsc-frazzoli/tensor) for linear algebra with physical units
 * [`owl`](https://github.com/idsc-frazzoli/retina) for motion planning
-* [`lcm`](https://github.com/idsc-frazzoli/lcm-java) *Lightweight Communications and Marshalling* for message interchange, logging, and playback
+* [`lcm`](https://github.com/idsc-frazzoli/lcm-java) *Lightweight Communications and Marshalling* for message interchange, logging, and playback. All messages are encoded using a single type `BinaryBlob`. The byte order of the binary data is `little-endian` since the encoding is native on most architectures.
 * [`io.humble`](http://www.humble.io/) for video generation
 * [`jSerialComm`](http://fazecast.github.io/jSerialComm/) platform-independent serial port access
 * [`ELKI`](https://elki-project.github.io/) for DBSCAN
@@ -123,6 +123,7 @@ Jan Hakenberg, Mario Gini, Yannik Nager, Valentina Cavinato, Marc Heim
 
 ## Press Coverage
 
+* [2018-06 bitluni's lab](https://www.youtube.com/watch?v=GQVsl4fV3O0)
 * [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
 * [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
 
@@ -134,7 +135,7 @@ Jan Hakenberg, Mario Gini, Yannik Nager, Valentina Cavinato, Marc Heim
 
 Sensor interfaces
 
-![retina](https://user-images.githubusercontent.com/4012178/51076481-3d8d7980-1699-11e9-8917-0c1a9d2044a0.png)
+![retina](https://user-images.githubusercontent.com/4012178/51981593-d7c03080-2493-11e9-92d8-bb2066575f2c.png)
 
 ## Features
 

@@ -43,7 +43,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     GraphicsUtil.setQualityHigh(graphics);
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     graphics.setColor(Color.DARK_GRAY);
-    graphics.setStroke(new BasicStroke(1.5f));
+    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.02)));
     for (Tensor _a : Subdivide.of(-2, 2, 12)) {
       Scalar angle = _a.Get();
       Path2D path2d = geometricLayer.toPath2D(Tensors.of(AngleVector.of(angle), AngleVector.of(angle).multiply(RealScalar.of(1.1))));
@@ -55,7 +55,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     speed = clip.apply(speed);
     final int steps = speed.multiply(RealScalar.of(1)).number().intValue();
     int count = 0;
-    graphics.setStroke(new BasicStroke(2.5f));
+    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.025)));
     for (Tensor _a : Subdivide.of(2, -2, 12 * 6)) {
       Scalar angle = _a.Get();
       Tensor rgba = ColorDataGradients.BONE.apply(Clip.unit().apply(RealScalar.of(0.3 + (steps - count) * 0.01)));
@@ -72,7 +72,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     }
     {
       Point2D point2d = geometricLayer.toPoint2D(0, 0);
-      graphics.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 22));
+      float model2pixelWidth = geometricLayer.model2pixelWidth(0.3);
+      graphics.setFont(new Font(Font.SANS_SERIF, Font.BOLD, (int) model2pixelWidth));
       FontMetrics fontMetrics = graphics.getFontMetrics();
       String string = speed.map(Round.FUNCTION).toString();
       int stringWidth = fontMetrics.stringWidth(string);
@@ -80,6 +81,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     }
     geometricLayer.popMatrix();
     GraphicsUtil.setQualityDefault(graphics);
+    graphics.setStroke(new BasicStroke());
   }
 
   @Override

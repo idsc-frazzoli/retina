@@ -40,6 +40,7 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.planar.Arrowhead;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 abstract class ViewLcmModule extends AbstractModule {
@@ -151,7 +152,7 @@ abstract class ViewLcmModule extends AbstractModule {
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
       viewLcmFrame.geometricComponent.addRenderInterface(gokartRender);
     }
-    viewLcmFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
+    viewLcmFrame.geometricComponent.addRenderInterface(new GridRender(Subdivide.of(0, 50, 5)));
     {
       gokartPoseLcmClient.addListener(poseTrailRender);
       viewLcmFrame.geometricComponent.addRenderInterface(poseTrailRender);
