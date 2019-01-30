@@ -30,7 +30,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     lcmMPCControlClient.switchToExternalStart();
     lcmMPCControlClient.start();
     globalViewLcmModule.first();
-    //44.2575   51.6983
+    // 44.2575 51.6983
     gokartState = new GokartState(//
         11, //
         1f, //
@@ -66,7 +66,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     for (int i = 0; i < 200; i++) {
       System.out.println("send request");
       if (Objects.nonNull(lcmMPCControlClient.lastcns)) {
-        gokartState = lcmMPCControlClient.lastcns.steps[1].state;
+        gokartState = lcmMPCControlClient.lastcns.steps[3].state;
         // System.out.println(gokartState.getS());
         position = Tensors.of(gokartState.getX(), gokartState.getY());
         Scalar changeRate = lcmMPCControlClient.lastcns.steps[0].control.getudotS();
@@ -75,11 +75,11 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
         Scalar betaDiff = lcmMPCControlClient.lastcns.steps[1].state.getS().subtract(rampupVale);
         // TODO do this with the correct unit
         // assertTrue(Chop._07.close(betaDiff, "zero");
-        //mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER));
-        mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position,Quantity.of(0, SI.METER));//, RealScalar.of(0));
-        System.out.println("progressstart: "+mpcPathParameter.getProgressOnPath());
+        // mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER));
+        mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER));// , RealScalar.of(0));
+        System.out.println("progressstart: " + mpcPathParameter.getProgressOnPath());
         lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
-        Thread.sleep(1000);
+        Thread.sleep(100);
         System.out.println("Braking value: " + mpcSimpleBraking.getBraking(lcmMPCControlClient.lastcns.steps[0].state.getTime()));
         System.out.println("steering value: " + mpcOpenLoopSteering.getSteering(lcmMPCControlClient.lastcns.steps[0].state.getTime()));
         System.out.println("power value: " + mpcTorqueVectoringPower.getPower(lcmMPCControlClient.lastcns.steps[0].state.getTime()));

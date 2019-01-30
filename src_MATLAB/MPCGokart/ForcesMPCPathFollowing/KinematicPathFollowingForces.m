@@ -81,11 +81,11 @@ model.hl = [-inf;-inf;-inf;-inf;-inf;-inf];
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));
     
-%points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.1,0.1,0.1,1.8]';
-points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
+points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+%points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
 %points = [0,40,40,5,0;0,0,10,9,10]';
 trajectorytimestep = integrator_stepsize;
-[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
+%[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 model.npar = pointsO + 3*pointsN;
 for i=1:model.N
    model.objective{i} = @(z,p)objective(z,...
@@ -158,7 +158,7 @@ planc = 10;
 x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
 %x0 = zeros(model.N*model.nvar,1); 
 tstart = 1;
-paras = ttpos(tstart:tstart+model.N-1,2:3)';
+%paras = ttpos(tstart:tstart+model.N-1,2:3)';
 for i =1:tend
     tstart = i;
     %model.xinit = [0,5,0,0.1,0,0];
@@ -196,7 +196,7 @@ for i =1:tend
     problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,maxyacc,latacclim,rotacceffect,torqueveceffect, brakeeffect,nextSplinePoints) , model.N ,1);
     %problem.all_parameters = zeros(22,1);
     problem.x0 = x0(:);
-    %problem.x0 = zeros(310,1);
+    %problem.x0 = rand(341,1);
     
     % solve mpc
     [output,exitflag,info] = MPCPathFollowing(problem);

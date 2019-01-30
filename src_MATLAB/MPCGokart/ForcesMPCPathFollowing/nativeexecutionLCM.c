@@ -135,7 +135,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[6] = lastCRMsg.path.startingProgress;
 	//params.xinit[7] = lastCRMsg.state.bTemp;
 
-	for(int i = 0; i<8;i++){
+	for(int i = 0; i<7;i++){
 		printf("%i: %f\n",i,params.xinit[i]);
 	}
 
@@ -164,6 +164,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	//	printf("i=%d: %f\n",i,params.all_parameters[i]);
 
 	memcpy(params.x0, lastSolution,sizeof(MPCPathFollowing_float)*S*N);
+	printf("lastSolution: %f\n", params.x0[341]);
 
 	//do optimization
 	exitflag = MPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
@@ -171,6 +172,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	//optimal or maxit (maxit is ok in most cases)
 	if(exitflag == 1 || exitflag == 0){
 		memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*S*N);
+		printf("lastSolution: %f\n", lastSolution[341]);
 		timeOfLastSolution = lastCRMsg.state.time;
 
 		struct ControlAndStateMsg cnsmsg;

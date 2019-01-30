@@ -8,7 +8,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Ramp;
-import ch.ethz.idsc.tensor.sca.Round;
 
 public class MPCBSplineTrack implements MPCPreviewableTrack {
   private static final Scalar ONE = RealScalar.of(1.0);
@@ -43,7 +42,6 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
     Scalar pathProgress = bSplineTrack.getNearestPathProgress(position);
     // round down
     // int currentIndex = Floor.of(pathProgress.subtract(RealScalar.of(0.5))).number().intValue();
-
     int currentIndex = Floor.of(pathProgress).number().intValue();
     // progress = 0 at middle point between first 2 control points
     Scalar progressStart = pathProgress.subtract(RealScalar.of(currentIndex));

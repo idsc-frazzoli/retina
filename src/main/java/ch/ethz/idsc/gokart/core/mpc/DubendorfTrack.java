@@ -101,7 +101,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
     controlPointsY.append(Quantity.of(44, SI.METER));
     controlPointsY.append(Quantity.of(43, SI.METER));
     controlPointsY.append(Quantity.of(38.333, SI.METER));
-    //R
+    // R
     controlPointsR.append(Quantity.of(1.8, SI.METER));
     controlPointsR.append(Quantity.of(1.8, SI.METER));
     controlPointsR.append(Quantity.of(1.8, SI.METER));
@@ -109,7 +109,6 @@ public class DubendorfTrack extends MPCBSplineTrack {
     controlPointsR.append(Quantity.of(0.8, SI.METER));
     controlPointsR.append(Quantity.of(0.8, SI.METER));
     controlPointsR.append(Quantity.of(1.8, SI.METER));
-    
     return new DubendorfTrack(Transpose.of(Tensors.of(controlPointsX, controlPointsY, controlPointsR)));
   }
 
