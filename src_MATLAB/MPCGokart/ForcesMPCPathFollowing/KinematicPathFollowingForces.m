@@ -10,11 +10,11 @@ clear all
 close all
 
 maxSpeed = 10;
-maxxacc = 8;
+maxxacc = 4;
 maxyacc = 8;
-latacclim = 5;
+latacclim = 6;
 rotacceffect  = 2;
-torqueveceffect = 0;
+torqueveceffect = 3;
 brakeeffect = 0;
 pointsO = 7;
 pointsN = 10;
@@ -57,12 +57,12 @@ model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 l = 1;
 
 %limit lateral acceleration
-model.nh = 4; 
+model.nh = 6; 
 model.ineq = @(z,p) nlconst(z,p);
 %model.hu = [36,0];
 %model.hl = [-inf,-inf];
-model.hu = [0;1;0;0]%;0;0];
-model.hl = [-inf;-inf;-inf;-inf]%;-inf;-inf];
+model.hu = [0;1;0;0;0;0];
+model.hl = [-inf;-inf;-inf;-inf;-inf;-inf];
 
 %points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
   %  controlPointsX.append(Quantity.of(36.2, SI.METER));
@@ -81,7 +81,8 @@ model.hl = [-inf;-inf;-inf;-inf]%;-inf;-inf];
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));
     
-points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.8,0.8,0.8,1.8]';
+%points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.1,0.1,0.1,1.8]';
+points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
 %points = [0,40,40,5,0;0,0,10,9,10]';
 trajectorytimestep = integrator_stepsize;
 [p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
@@ -107,7 +108,7 @@ model.lb = -ones(1,index.nv)*inf;
 %model.ub(index.dotbeta)=5;
 %model.lb(index.dotbeta)=-5;
 model.ub(index.ds)=5;
-model.lb(index.ds)=0;
+model.lb(index.ds)=-1;
 %model.ub(index.ab)=2;
 model.lb(index.ab)=-4.5;
 model.lb(index.ab)=-inf;
@@ -131,13 +132,14 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 200;
+tend = 100;
 eulersteps = 10;
 %[...,x,y,theta,v,ab,beta,s,braketemp]
 %[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
 fpoints = points(1:2,1:2);
 pdir = diff(fpoints);
-pstart = mean(fpoints);
+[pstartx,pstarty] = casadiDynamicBSPLINE(0.01,points);
+pstart = [pstartx,pstarty];
 pangle = atan2(pdir(2),pdir(1));
 xs(index.x-index.nu)=pstart(1);
 xs(index.y-index.nu)=pstart(2);
