@@ -21,6 +21,8 @@ title('reference trajectory vs actual');
 
 %plot acceleration and deceleration in colors
 p = lhistory(:,[index.x+1,index.y+1]);
+offset = 0.4*gokartforward(lhistory(:,index.theta+1));
+p = offset + p;
 acc = lhistory(:,index.ab+1);
 maxacc = max(abs(acc));
 [nu,~]=size(p);

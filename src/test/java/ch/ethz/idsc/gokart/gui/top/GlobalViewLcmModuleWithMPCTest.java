@@ -17,7 +17,6 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -59,7 +58,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     lcmMPCControlClient.registerControlUpdateLister(mpcSimpleBraking);
     lcmMPCControlClient.registerControlUpdateLister(mpcOpenLoopSteering);
     lcmMPCControlClient.registerControlUpdateLister(mpcTorqueVectoringPower);
-    Tensor position = Tensors.of(gokartState.getX(), gokartState.getY());
+    Tensor position = gokartState.getCenterPosition();
     MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER), RealScalar.ZERO);
     lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
     Thread.sleep(1000);
@@ -68,7 +67,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
       if (Objects.nonNull(lcmMPCControlClient.lastcns)) {
         gokartState = lcmMPCControlClient.lastcns.steps[3].state;
         // System.out.println(gokartState.getS());
-        position = Tensors.of(gokartState.getX(), gokartState.getY());
+        position = gokartState.getCenterPosition();
         Scalar changeRate = lcmMPCControlClient.lastcns.steps[0].control.getudotS();
         Scalar rampupVale = lcmMPCControlClient.lastcns.steps[0].state.getS()//
             .add(changeRate.multiply(Quantity.of(0.1, SI.SECOND)));
