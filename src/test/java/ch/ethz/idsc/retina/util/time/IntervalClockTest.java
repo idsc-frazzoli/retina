@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.time;
 
+import ch.ethz.idsc.owl.data.IntervalClock;
 import junit.framework.TestCase;
 
 public class IntervalClockTest extends TestCase {

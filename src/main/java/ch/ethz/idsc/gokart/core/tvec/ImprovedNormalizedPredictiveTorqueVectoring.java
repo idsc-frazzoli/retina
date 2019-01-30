@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.core.tvec;
 
 import java.util.Objects;
 
+import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;

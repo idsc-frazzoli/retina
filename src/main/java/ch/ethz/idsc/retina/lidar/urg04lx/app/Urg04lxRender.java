@@ -17,13 +17,13 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.lidar.urg04lx.Urg04lxDevice;
 import ch.ethz.idsc.retina.lidar.urg04lx.Urg04lxRangeEvent;
 import ch.ethz.idsc.retina.lidar.urg04lx.Urg04lxRangeListener;
 import ch.ethz.idsc.retina.util.math.ParametricResample;
-import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

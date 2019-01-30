@@ -19,6 +19,7 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Subdivide;
 
 public class LocalViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
@@ -41,7 +42,7 @@ public class LocalViewLcmModule extends AbstractModule {
   @Override
   protected void first() throws Exception {
     ModuleAuto.INSTANCE.runOne(SimpleVelocityEstimation.class);
-    timerFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
+    timerFrame.geometricComponent.addRenderInterface(new GridRender(Subdivide.of(0, 5, 5)));
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
     rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
     linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
