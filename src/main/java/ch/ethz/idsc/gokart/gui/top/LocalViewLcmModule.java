@@ -11,7 +11,6 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
-import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
@@ -19,7 +18,6 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Subdivide;
 
 public class LocalViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
@@ -41,8 +39,8 @@ public class LocalViewLcmModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
+    // FIXME JPH/MH module auto requires that there is at most one instance of each module!
     ModuleAuto.INSTANCE.runOne(SimpleVelocityEstimation.class);
-    timerFrame.geometricComponent.addRenderInterface(new GridRender(Subdivide.of(0, 5, 5)));
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
     rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
     linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
