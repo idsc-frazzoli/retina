@@ -76,7 +76,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
         // TODO do this with the correct unit
         // assertTrue(Chop._07.close(betaDiff, "zero");
         // mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER));
-        mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER));// , RealScalar.of(0));
+        mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER), RealScalar.of(0.5));
         System.out.println("progressstart: " + mpcPathParameter.getProgressOnPath());
         lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
         Thread.sleep(100);

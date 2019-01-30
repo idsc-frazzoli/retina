@@ -6,6 +6,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
@@ -46,7 +47,7 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
     // progress = 0 at middle point between first 2 control points
     Scalar progressStart = pathProgress.subtract(RealScalar.of(currentIndex));
     // QP offset
-    Scalar QPOffset = pathProgress.subtract(HALF);
+    Scalar QPOffset = progressStart;
     Tensor matrix = Tensors.empty();
     if (currentIndex < 0)
       currentIndex += bSplineTrack.numPoints();
@@ -55,7 +56,7 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
       Scalar localProgress = RealScalar.of(i).subtract(QPOffset).divide(RealScalar.of(previewSize));
       Scalar localQPFactor;
       if (!QPFactor.equals(ONE))
-        localQPFactor = QPFactor.multiply(localProgress).add(ONE.subtract(localProgress));
+        localQPFactor = Max.of(HALF, QPFactor.multiply(localProgress).add(ONE.subtract(localProgress)));
       else
         localQPFactor = ONE;
       vector.set(scalar -> Ramp.FUNCTION.apply(((Scalar) scalar).subtract(padding).multiply(localQPFactor)), 2);
