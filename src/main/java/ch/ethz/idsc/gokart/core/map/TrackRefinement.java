@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
+import ch.ethz.idsc.sophus.filter.Regularization2Step;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -18,6 +19,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Normalize;
 import ch.ethz.idsc.tensor.alg.Transpose;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Mean;
@@ -144,7 +146,8 @@ public class TrackRefinement {
 
   private static final Scalar gdRadiusGrowth = Quantity.of(0.07, SI.METER);
   private static final Scalar gdRegularizer = RealScalar.of(0.01);
-  private static final Regularization REGULARIZATION = new Regularization(RnGeodesic.INSTANCE, gdRegularizer);
+  private static final TensorUnaryOperator REGULARIZATION_CYCLIC = Regularization2Step.cyclic(RnGeodesic.INSTANCE, gdRegularizer);
+  private static final TensorUnaryOperator REGULARIZATION_STRING = Regularization2Step.string(RnGeodesic.INSTANCE, gdRegularizer);
 
   Tensor getRefinedTrack(Tensor points_xyr, Scalar resolution, int iterations, boolean closed, //
       List<TrackConstraint> constraints) {
@@ -173,7 +176,9 @@ public class TrackRefinement {
       Tensor correct = optional.get();
       points_xyr = points_xyr.add(splineMatrixTransp.dot(correct));
       points_xyr.set(gdRadiusGrowth::add, Tensor.ALL, 2);
-      points_xyr = REGULARIZATION.apply(points_xyr, closed);
+      points_xyr = closed //
+          ? REGULARIZATION_CYCLIC.apply(points_xyr)
+          : REGULARIZATION_STRING.apply(points_xyr);
       // ---
       if (Objects.nonNull(constraints)) {
         // TODO JPH/MH

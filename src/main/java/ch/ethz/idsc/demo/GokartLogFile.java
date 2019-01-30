@@ -1325,10 +1325,33 @@ public enum GokartLogFile implements LogFile {
   /** mpc */
   _20190125T150258_c2df0d09,
   /***************************************************/
+  /* 2019-01-28 */
   /** track recon and pure pursuit of center line */
   _20190128T133144_6f6e3dee,
   /** manual driving data collection vmu931 */
   _20190128T134321_6f6e3dee,
+  /** manual driving, pure pursuit */
+  _20190128T141006_6f6e3dee,
+  /** slow driving */
+  _20190128T145748_0811fd85,
+  /** faster driving */
+  _20190128T150120_6f6e3dee,
+  /** faster driving */
+  _20190128T151045_0811fd85,
+  /** faster driving */
+  _20190128T151537_0811fd85,
+  /** short driving without localization */
+  _20190128T152117_0811fd85,
+  /** slow driving */
+  _20190128T154652_0811fd85,
+  /** slow driving */
+  _20190128T155203_0811fd85,
+  /** slow driving */
+  _20190128T162344_380dac0f,
+  /** slow driving */
+  _20190128T165650_f558b2d4,
+  /** pure pursuit forward and reverse up to 6[m/s] */
+  _20190128T171650_f558b2d4,
   /***************************************************/
   ;
   // ---

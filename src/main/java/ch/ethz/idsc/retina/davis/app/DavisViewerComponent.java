@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import javax.swing.JComponent;
 
+import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.util.IntRange;
@@ -17,7 +18,6 @@ import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.retina.util.img.ImageHistogram;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
-import ch.ethz.idsc.retina.util.time.IntervalClock;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class DavisViewerComponent implements DavisImuFrameListener {
