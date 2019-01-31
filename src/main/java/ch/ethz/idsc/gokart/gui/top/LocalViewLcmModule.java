@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.ekf.SimpleVelocityEstimation;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
@@ -28,20 +29,20 @@ public class LocalViewLcmModule extends AbstractModule {
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final TimerFrame timerFrame = new TimerFrame();
   private final AccelerationRender accelerationRender = new AccelerationRender(MINOR, 100);
-  private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(MINOR);
+  private final SimpleVelocityEstimation simpleVelocityEstimation = new SimpleVelocityEstimation();
+  private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(simpleVelocityEstimation, MINOR);
   private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final SimpleVelocityEstimation simpleVelocityEstimation = new SimpleVelocityEstimation();
 
   @Override
   protected void first() throws Exception {
-    // FIXME JPH/MH module auto requires that there is at most one instance of each module!
-    // ModuleAuto.INSTANCE.runOne(SimpleVelocityEstimation.class);
-    simpleVelocityEstimation.start();
+    gokartPoseLcmClient.addListener(simpleVelocityEstimation);
+    gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
     rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
     linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
@@ -72,7 +73,7 @@ public class LocalViewLcmModule extends AbstractModule {
 
   @Override
   protected void last() {
-    simpleVelocityEstimation.stop();
+    gokartPoseLcmClient.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
