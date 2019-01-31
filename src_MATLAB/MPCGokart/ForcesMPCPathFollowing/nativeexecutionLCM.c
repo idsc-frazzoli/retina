@@ -38,6 +38,7 @@ int i, exitflag;
 MPCPathFollowing_output myoutput;
 MPCPathFollowing_info myinfo;
 MPCPathFollowing_float minusA_times_x0[2];
+MPCPathFollowing_float lastInitialPsi = 0;
 
 int outC = 0;
 
@@ -164,7 +165,15 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	//	printf("i=%d: %f\n",i,params.all_parameters[i]);
 
 	memcpy(params.x0, lastSolution,sizeof(MPCPathFollowing_float)*S*N);
-	printf("lastSolution: %f\n", params.x0[341]);
+	//fix for 2PI wrap around problem: change initial guess according
+	//change amount:
+	MPCPathFollowing_float deltaPsi = lastCRMsg.state.Psi-lastInitialPsi;
+	printf("deltaPsi %f", deltaPsi);
+	for(int i = 0; i<N;i++){
+		params.x0[i*S+6]+=deltaPsi;
+	}
+	lastInitialPsi = lastCRMsg.state.Psi;
+
 
 	//do optimization
 	exitflag = MPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
