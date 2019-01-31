@@ -30,7 +30,7 @@ public class TabbedTaskGui {
     jFrame.setContentPane(jTabbedPane);
   }
 
-  public void tab(String title, List<Class<?>> modules) {
+  public void tab(String title, List<Class<? extends AbstractModule>> modules) {
     jTabbedPane.addTab(title, new TaskComponent(modules, properties).jScrollPane);
     {
       // change tab component to modify display size

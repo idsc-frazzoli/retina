@@ -20,12 +20,12 @@ public enum ModuleAuto {
   INSTANCE;
   /** map for holding the module list */
   // TODO choose a more thread-safe data structure
-  private final Map<Class<?>, AbstractModule> moduleMap = new LinkedHashMap<>();
+  private final Map<Class<? extends AbstractModule>, AbstractModule> moduleMap = new LinkedHashMap<>();
 
   /** Methods for launching the modules */
-  public void runAll(List<Class<?>> modules) {
+  public void runAll(List<Class<? extends AbstractModule>> modules) {
     System.out.println(new Date() + " Module Auto: Launch all");
-    for (Class<?> module : modules)
+    for (Class<? extends AbstractModule> module : modules)
       runOne(module);
     System.out.println(new Date() + " Module Auto: Launch all done");
   }
@@ -40,7 +40,7 @@ public enum ModuleAuto {
     System.out.println(new Date() + " Module Auto: Terminate all done");
   }
 
-  public void runOne(Class<?> module) {
+  public void runOne(Class<? extends AbstractModule> module) {
     synchronized (moduleMap) {
       if (moduleMap.containsKey(module)) {
         System.out.println(new Date() + " Module Auto: Already launched: " + module);
@@ -48,7 +48,7 @@ public enum ModuleAuto {
       }
     }
     try {
-      AbstractModule instance = (AbstractModule) module.newInstance();
+      AbstractModule instance = module.newInstance();
       System.out.println(new Date() + " Module Auto: Launching: " + module);
       instance.launch();
       synchronized (moduleMap) {
@@ -59,7 +59,7 @@ public enum ModuleAuto {
     }
   }
 
-  public void endOne(Class<?> module) {
+  public void endOne(Class<? extends AbstractModule> module) {
     AbstractModule instance = null;
     synchronized (moduleMap) {
       instance = moduleMap.remove(module);
@@ -74,7 +74,7 @@ public enum ModuleAuto {
   /** @param module
    * @return instance of module if module was started before or null */
   @SuppressWarnings("unchecked")
-  public <T extends AbstractModule> T getInstance(Class<?> module) {
+  public <T extends AbstractModule> T getInstance(Class<? extends AbstractModule> module) {
     return (T) moduleMap.get(module);
   }
 }

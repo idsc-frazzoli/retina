@@ -18,6 +18,7 @@ import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import junit.framework.TestCase;
 
@@ -28,7 +29,7 @@ public class RunTabbedTaskGuiTest extends TestCase {
   }
 
   public void testAutonomous() throws InterruptedException {
-    for (Class<?> cls : RunTabbedTaskGui.MODULES_AUT) {
+    for (Class<? extends AbstractModule> cls : RunTabbedTaskGui.MODULES_AUT) {
       ModuleAuto.INSTANCE.runOne(cls);
       Thread.sleep(150); // needs time to start thread that invokes first()
       ModuleAuto.INSTANCE.endOne(cls);
@@ -36,7 +37,7 @@ public class RunTabbedTaskGuiTest extends TestCase {
   }
 
   public void testJoystick() throws InterruptedException {
-    for (Class<?> cls : RunTabbedTaskGui.MODULES_MAN)
+    for (Class<? extends AbstractModule> cls : RunTabbedTaskGui.MODULES_MAN)
       if (!cls.equals(SysidSignalsModule.class)) {
         ModuleAuto.INSTANCE.runOne(cls);
         Thread.sleep(50); // needs time to start thread that invokes first()
