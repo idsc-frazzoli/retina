@@ -117,7 +117,8 @@ public class MappingAnalysisOfflineHighResMH implements OfflineLogListener, Lida
       bayesianOccupancyGrid.render(gl, graphics);
       // bayesianOccupancyGridThin.render(gl, graphics);
       gr.render(gl, graphics);
-      trackReconManagement.renderHR(gl, graphics);
+      // FIXME JPH
+      // trackReconManagement.renderHR(gl, graphics);
       // if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)) && flag == false) {
       // grid.setNewlBound(Tensors.vector(20, 20));
       // flag = true;

@@ -12,6 +12,7 @@ import java.util.Objects;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
+import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
@@ -66,6 +67,9 @@ abstract class ViewLcmModule extends AbstractModule {
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
+  private final TrackReconRender trackReconRender = new TrackReconRender();
+  private final GokartTrackReconModule gokartTrackReconModule = //
+      ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
   // ---
   private MappedPoseInterface mappedPoseInterface;
 
@@ -127,10 +131,9 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
     {
-      GokartTrackReconModule gokartTrackReconModule = //
-          ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
       if (Objects.nonNull(gokartTrackReconModule))
-        viewLcmFrame.geometricComponent.addRenderInterface(gokartTrackReconModule);
+        gokartTrackReconModule.listenersAdd(trackReconRender);
+      viewLcmFrame.geometricComponent.addRenderInterface(trackReconRender);
       // TrackRender trackRender = new TrackRender();
       // trackRender.setTrack(DubendorfTrack.CHICANE.bSplineTrack());
       // viewLcmFrame.geometricComponent.addRenderInterface(trackRender);
@@ -181,6 +184,8 @@ abstract class ViewLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void last() {
     viewLcmFrame.close();
+    if (Objects.nonNull(gokartTrackReconModule))
+      gokartTrackReconModule.listenersRemove(trackReconRender);
   }
 
   private void private_windowClosed() {
