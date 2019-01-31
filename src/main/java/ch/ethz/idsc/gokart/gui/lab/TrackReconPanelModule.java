@@ -1,20 +1,22 @@
 // code by jph and mh
 package ch.ethz.idsc.gokart.gui.lab;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
+import ch.ethz.idsc.gokart.core.map.TrackReconMode;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
+import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 
 public class TrackReconPanelModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
@@ -28,8 +30,8 @@ public class TrackReconPanelModule extends AbstractModule {
     final boolean isAvailable = Objects.nonNull(gokartTrackReconModule);
     JPanel jPanel = new JPanel(new GridLayout(1, 3));
     {
-      JButton jButton = new JButton("flag start & reset");
-      jButton.addActionListener(actionEvent -> gokartTrackReconModule.flagStart());
+      JButton jButton = new JButton("reset & flag start");
+      jButton.addActionListener(actionEvent -> gokartTrackReconModule.resetFlagStart());
       jButton.setEnabled(isAvailable);
       jPanel.add(jButton);
     }
@@ -40,13 +42,12 @@ public class TrackReconPanelModule extends AbstractModule {
       jPanel.add(jButton);
     }
     {
-      JToggleButton jToggleButton = new JToggleButton("sense track");
-      jToggleButton.setEnabled(isAvailable);
-      if (isAvailable) {
-        jToggleButton.setSelected(gokartTrackReconModule.isRecording());
-        jToggleButton.addActionListener(actionEvent -> gokartTrackReconModule.setRecording(jToggleButton.isSelected()));
-      }
-      jPanel.add(jToggleButton);
+      SpinnerLabel<TrackReconMode> spinnerLabel = new SpinnerLabel<>();
+      spinnerLabel.setArray(TrackReconMode.values());
+      spinnerLabel.setIndex(2);
+      if (isAvailable)
+        spinnerLabel.addSpinnerListener(gokartTrackReconModule::setMode);
+      spinnerLabel.addToComponentReduced(jPanel, new Dimension(100, 100), "");
     }
     jFrame.setContentPane(jPanel);
     jFrame.setTitle(isAvailable //

@@ -15,6 +15,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackMapping;
+import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
@@ -64,6 +65,9 @@ public class PresenterLcmModule extends AbstractModule {
   private final GokartPoseLcmLidar gokartPoseLcmLidar = new GokartPoseLcmLidar();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+  private final TrackReconRender trackReconRender = new TrackReconRender();
+  private final GokartTrackReconModule gokartTrackReconModule = //
+      ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -78,10 +82,9 @@ public class PresenterLcmModule extends AbstractModule {
     {
       if (Objects.nonNull(TrackMapping.GRID_RENDER))
         timerFrame.geometricComponent.addRenderInterface(TrackMapping.GRID_RENDER);
-      GokartTrackReconModule gokartTrackReconModule = //
-          ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
       if (Objects.nonNull(gokartTrackReconModule))
-        timerFrame.geometricComponent.addRenderInterface(gokartTrackReconModule);
+        gokartTrackReconModule.listenersAdd(trackReconRender);
+      timerFrame.geometricComponent.addRenderInterface(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
     }
     {
@@ -217,6 +220,8 @@ public class PresenterLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void last() {
     timerFrame.close();
+    if (Objects.nonNull(gokartTrackReconModule))
+      gokartTrackReconModule.listenersRemove(trackReconRender);
   }
 
   private void private_windowClosed() {
