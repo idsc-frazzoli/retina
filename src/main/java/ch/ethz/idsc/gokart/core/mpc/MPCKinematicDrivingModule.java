@@ -31,7 +31,8 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
   private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
-  private final MPCBraking mpcBraking = new MPCSimpleBraking();
+  //private final MPCBraking mpcBraking = new MPCSimpleBraking();
+  private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final Timing timing;
@@ -61,7 +62,8 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     this.timing = timing;
     this.track = track;
     // link mpc steering
-    mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    //mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    mpcPower = new MPCAggressiveTorqueVectoringPower(mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
     mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
