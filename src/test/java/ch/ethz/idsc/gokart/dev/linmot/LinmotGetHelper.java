@@ -22,13 +22,13 @@ public enum LinmotGetHelper {
     return LinmotSocket.INSTANCE.createGetEvent(byteBuffer);
   }
 
-  public static LinmotGetEvent createNonOperational() {
+  public static LinmotGetEvent createNonOperational(int actual_position) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[16]);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     byteBuffer.putShort((short) 0);
     byteBuffer.putShort((short) 0x08c1);
-    byteBuffer.putInt(23546);
-    byteBuffer.putInt(23545);
+    byteBuffer.putInt(actual_position);
+    byteBuffer.putInt(-23545);
     byteBuffer.putShort((short) 123);
     byteBuffer.putShort((short) 124);
     byteBuffer.flip();
