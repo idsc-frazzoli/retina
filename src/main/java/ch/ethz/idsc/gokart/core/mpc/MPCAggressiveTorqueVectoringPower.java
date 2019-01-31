@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedPredictiveTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
@@ -17,11 +16,11 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Tan;
 
 public class MPCAggressiveTorqueVectoringPower extends MPCPower {
-  private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
+  private static final Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
+  //private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
       new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
@@ -59,13 +58,14 @@ public class MPCAggressiveTorqueVectoringPower extends MPCPower {
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
     Scalar wantedAcceleration = cnsStep.control.getaB();// when used in
     // get midpoint of powered acceleration range
-    Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
-    Scalar midpoint = (Scalar) Mean.of(minmax);
+    //Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
+    //Scalar midpoint = (Scalar) Mean.of(minmax);
+    //more tame version
     return torqueVectoring.getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //
         tangentialSpeed, //
         angularSlip, //
-        Max.of(midpoint, wantedAcceleration), //
+        Max.of(NOACCELERATION, wantedAcceleration), //
         gyroZ);
   }
 
