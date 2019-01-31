@@ -232,6 +232,19 @@ import ch.ethz.idsc.tensor.sca.Sin;
     dotPsi = byteBuffer.getFloat();
     X = byteBuffer.getFloat();
     Y = byteBuffer.getFloat();
+    /* //if you want to test the wrap around problem
+     * float PsiVal = byteBuffer.getFloat();
+     * while (PsiVal > Math.PI)
+     * {
+     * System.out.println("wraparound up!");
+     * PsiVal -= Math.PI * 2;
+     * }
+     * while (PsiVal < -Math.PI) {
+     * System.out.println("wraparound down!");
+     * PsiVal += Math.PI * 2;
+     * }
+     * 
+     * Psi = PsiVal; */
     Psi = byteBuffer.getFloat();
     w2L = byteBuffer.getFloat();
     w2R = byteBuffer.getFloat();
