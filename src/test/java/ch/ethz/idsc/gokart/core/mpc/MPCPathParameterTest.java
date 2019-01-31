@@ -72,8 +72,8 @@ public class MPCPathParameterTest extends TestCase {
     System.out.println(R2);
     for (int i = 0; i < 6; i++) {
       // ensure that track widens with progress
-      assertTrue(Scalars.lessThan(R0.Get(i), R1.Get(i)));
-      assertTrue(Scalars.lessThan(R1.Get(i), R2.Get(i)));
+      assertTrue(Scalars.lessEquals(R0.Get(i), R1.Get(i)));
+      assertTrue(Scalars.lessEquals(R1.Get(i), R2.Get(i)));
     }
   }
 
