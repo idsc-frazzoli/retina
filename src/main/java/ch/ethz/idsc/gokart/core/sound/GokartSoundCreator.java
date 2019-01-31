@@ -19,16 +19,15 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
   private static final int SAMPLE_SIZE = 2;
   private static final float MAGIC = 1.0f * Short.MAX_VALUE;
   // ---
-  private AudioFormat audioFormat;
-  private SourceDataLine sourceDataLine;
-  private DataLine.Info info;
-  private ByteBuffer byteBuffer;
-  private Timing timing = Timing.stopped();
-  private GokartSoundState gokartSoundState = new GokartSoundState(0, 0, 0);
+  private final Timing timing = Timing.stopped();
   private final List<SoundExciter> exciters;
   private final List<SoundResonator> resonators;
   private final SpeedModifier speedModifier;
-  private MotorStateProvider motorStateProvider;
+  private final MotorStateProvider motorStateProvider;
+  // ---
+  private SourceDataLine sourceDataLine;
+  private ByteBuffer byteBuffer;
+  private GokartSoundState gokartSoundState = new GokartSoundState(0, 0, 0);
   private boolean isLaunched = true;
   private Thread thread;
 
@@ -39,14 +38,14 @@ public class GokartSoundCreator implements StartAndStoppable, Runnable {
       MotorStateProvider motorStateProvider) {
     this.exciters = Objects.requireNonNull(exciters);
     this.resonators = Objects.requireNonNull(resonators);
-    this.motorStateProvider = Objects.requireNonNull(motorStateProvider);
     this.speedModifier = Objects.requireNonNull(speedModifier);
+    this.motorStateProvider = Objects.requireNonNull(motorStateProvider);
   }
 
   @Override // from StartAndStoppable
   public void start() {
-    audioFormat = new AudioFormat(SAMPLING_RATE, SAMPLE_SIZE * 8, 1, true, true);
-    info = new DataLine.Info(SourceDataLine.class, audioFormat);
+    AudioFormat audioFormat = new AudioFormat(SAMPLING_RATE, SAMPLE_SIZE * 8, 1, true, true);
+    DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
     if (!AudioSystem.isLineSupported(info)) {
       System.out.println("Line matching " + info + " is not supported.");
       throw new RuntimeException();
