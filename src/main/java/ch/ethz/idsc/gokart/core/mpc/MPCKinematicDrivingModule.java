@@ -15,13 +15,11 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSplineTrackListener {
@@ -51,6 +49,15 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     lcmMPCPathFollowingClient.switchToTest();
   }
 
+  /** create Module with standard estimator */
+  public MPCKinematicDrivingModule() {
+    this(Timing.started());
+  }
+
+  MPCKinematicDrivingModule(Timing timing) {
+    this(new SimpleKinematicMPCStateEstimationProvider(timing), timing, null);
+  }
+
   /** Hint: constructor only for testing
    * create Module with custom estimator
    * 
@@ -63,18 +70,6 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     // link mpc steering
     // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
     mpcPower = new MPCAggressiveTorqueVectoringPower(mpcSteering);
-    mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
-    mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
-    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
-    initModules();
-  }
-
-  /** create Module with standard estimator */
-  public MPCKinematicDrivingModule() {
-    track = null;
-    timing = Timing.started();
-    mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(timing);
-    mpcPower = new MPCTorqueVectoringPower(mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
     mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
@@ -96,7 +91,8 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   private void requestControl() {
     // use joystick for speed limit
     // get joystick
-    Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
+    Scalar maxSpeed = MPCOptimizationConfig.GLOBAL.maxSpeed;
+    Scalar minSpeed = MPCOptimizationConfig.GLOBAL.minSpeed;
     Scalar maxXacc = MPCOptimizationConfig.GLOBAL.maxLonAcc;
     Scalar maxYacc = MPCOptimizationConfig.GLOBAL.maxLatAcc;
     Scalar latAccLim = MPCOptimizationConfig.GLOBAL.latAccLim;
@@ -110,8 +106,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
       ManualControlInterface actualJoystick = optionalJoystick.get();
       Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
       maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
-      // TODO MH move min speed to config
-      maxSpeed = Max.of(Quantity.of(0.2, SI.VELOCITY), maxSpeed);
+      maxSpeed = Max.of(minSpeed, maxSpeed);
       // maxSpeed = Quantity.of(1, SI.VELOCITY);
       // System.out.println("got joystick speed value: " + maxSpeed);
     }

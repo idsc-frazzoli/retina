@@ -60,7 +60,7 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
   }
 
   /** @param wantedAcceleration [m*s^-2]
-   * @param wantedZTorque [ONE] TODO MH currently dimensionless. Should we change that?
+   * @param wantedZTorque [ONE]
    * @param velocity [m/s]
    * @return the required motor currents [ARMS] */
   // TODO JPH/MH write tests specifically for method getAdvancedMotorCurrents
