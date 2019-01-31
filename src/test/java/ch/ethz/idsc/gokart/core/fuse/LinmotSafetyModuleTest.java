@@ -30,7 +30,7 @@ public class LinmotSafetyModuleTest extends TestCase {
     assertEquals(linmotSafetyModule.putEvent().get(), RimoPutEvent.PASSIVE);
     linmotSafetyModule.getEvent(LinmotGetHelper.createTemperature(300, 300));
     assertFalse(linmotSafetyModule.putEvent().isPresent()); // timeout
-    linmotSafetyModule.getEvent(LinmotGetHelper.createNonOperational());
+    linmotSafetyModule.getEvent(LinmotGetHelper.createNonOperational(-23545));
     assertEquals(linmotSafetyModule.putEvent().get(), RimoPutEvent.PASSIVE);
     linmotSafetyModule.last();
   }

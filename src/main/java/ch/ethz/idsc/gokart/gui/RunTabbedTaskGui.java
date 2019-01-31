@@ -20,6 +20,7 @@ import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedPredictiveTorqueVectoringManualModule;
 import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
@@ -87,6 +88,7 @@ enum RunTabbedTaskGui {
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
+      SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
       ManualResetModule.class, //
       DavisImuTrackerModule.class, //
