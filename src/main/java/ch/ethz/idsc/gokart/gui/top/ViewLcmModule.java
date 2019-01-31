@@ -12,7 +12,6 @@ import java.util.Objects;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
-import ch.ethz.idsc.gokart.core.mpc.DubendorfTrack;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
@@ -132,9 +131,9 @@ abstract class ViewLcmModule extends AbstractModule {
           ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
       if (Objects.nonNull(gokartTrackReconModule))
         viewLcmFrame.geometricComponent.addRenderInterface(gokartTrackReconModule);
-      //TrackRender trackRender = new TrackRender();
-      //trackRender.setTrack(DubendorfTrack.CHICANE.bSplineTrack());
-      //viewLcmFrame.geometricComponent.addRenderInterface(trackRender);
+      // TrackRender trackRender = new TrackRender();
+      // trackRender.setTrack(DubendorfTrack.CHICANE.bSplineTrack());
+      // viewLcmFrame.geometricComponent.addRenderInterface(trackRender);
     }
     {
       viewLcmFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);

@@ -5,8 +5,6 @@ import ch.ethz.idsc.tensor.Tensor;
 
 @FunctionalInterface
 public interface VelocityEstimation {
-  /**
-   * @return the velocity vector in gokart frame [dotx[m/s], doty[m/s], angular velocity[1/s]]
-   */
+  /** @return the velocity vector in gokart frame [dotx[m/s], doty[m/s], angular velocity[1/s]] */
   Tensor getVelocity();
 }
