@@ -28,7 +28,7 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
   private final List<MPCBSplineTrackListener> listeners = new CopyOnWriteArrayList<>();
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
-  private boolean flagStart = true;
+  private boolean flagStart = false;
   private TrackReconMode trackReconMode = TrackReconMode.PASSIVE_SEND_LAST;
   private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
