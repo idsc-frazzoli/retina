@@ -4,12 +4,11 @@ package ch.ethz.idsc.gokart.core.ekf;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.sophus.planar.Cross2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -20,7 +19,7 @@ import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO JPH possibly does not extend abstract module? but StartAndStoppable
-public class SimpleVelocityEstimation extends AbstractModule implements VelocityEstimation {
+public class SimpleVelocityEstimation implements StartAndStoppable, VelocityEstimation, Vmu931ImuFrameListener {
   private final IntervalClock intervalClockLidar = new IntervalClock();
   private final IntervalClock intervalClockIMU = new IntervalClock();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -28,19 +27,6 @@ public class SimpleVelocityEstimation extends AbstractModule implements Velocity
     @Override
     public void getEvent(GokartPoseEvent getEvent) {
       measurePose(getEvent.getPose());
-    }
-  };
-  private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
-  private final Vmu931ImuFrameListener vmu931ImuFrameListener = new Vmu931ImuFrameListener() {
-    @Override
-    public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-      Tensor acc = vmu931ImuFrame.accXY();
-      Scalar gyro = (Scalar) vmu931ImuFrame.gyroZ();
-      int currentTime = vmu931ImuFrame.timestamp_ms();
-      Scalar time = Quantity.of((currentTime - lastVmuTime) / 1000.0, SI.SECOND);
-      lastVmuTime = currentTime;
-      if (Scalars.lessThan(Quantity.of(0, SI.SECOND), time))
-        measureAcceleration(acc, gyro, time);
     }
   };
   private Tensor lastPosition = null;
@@ -108,25 +94,31 @@ public class SimpleVelocityEstimation extends AbstractModule implements Velocity
     return RotationMatrix.of(orientation.negate());
   }
 
-  /**
-   * 
-   */
-  @Override
+  @Override // from VelocityEstimation
   public Tensor getVelocity() {
     return velocity.copy().append(angularVelocity);
   }
 
-  @Override
-  protected void first() throws Exception {
+  @Override // from StartAndStoppable
+  public void start() {
     gokartPoseLcmClient.addListener(gokartPoseListener);
     gokartPoseLcmClient.startSubscriptions();
-    vmu931ImuLcmClient.addListener(vmu931ImuFrameListener);
-    vmu931ImuLcmClient.startSubscriptions();
   }
 
-  @Override
-  protected void last() {
+  @Override // from StartAndStoppable
+  public void stop() {
     gokartPoseLcmClient.stopSubscriptions();
-    vmu931ImuLcmClient.stopSubscriptions();
+  }
+
+  @Override // from Vmu931ImuFrameListener
+  public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
+    Tensor acc = vmu931ImuFrame.accXY();
+    Scalar gyro = (Scalar) vmu931ImuFrame.gyroZ();
+    int currentTime = vmu931ImuFrame.timestamp_ms();
+    Scalar time = Quantity.of((currentTime - lastVmuTime) * 1e-3, SI.SECOND);
+    lastVmuTime = currentTime;
+    // TODO JPH/MH
+    if (Scalars.lessThan(Quantity.of(0, SI.SECOND), time))
+      measureAcceleration(acc, gyro, time);
   }
 }

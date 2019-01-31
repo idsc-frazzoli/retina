@@ -14,7 +14,6 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -36,17 +35,20 @@ public class LocalViewLcmModule extends AbstractModule {
   private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
+  private final SimpleVelocityEstimation simpleVelocityEstimation = new SimpleVelocityEstimation();
 
   @Override
   protected void first() throws Exception {
     // FIXME JPH/MH module auto requires that there is at most one instance of each module!
-    ModuleAuto.INSTANCE.runOne(SimpleVelocityEstimation.class);
+    // ModuleAuto.INSTANCE.runOne(SimpleVelocityEstimation.class);
+    simpleVelocityEstimation.start();
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
     rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
     linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
     gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
     rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
     vmu931ImuLcmClient.addListener(vmu931ImuFrame -> accelerationRender.setAccelerationXY(vmu931ImuFrame.accXY()));
+    vmu931ImuLcmClient.addListener(simpleVelocityEstimation);
     // ---
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
@@ -70,7 +72,7 @@ public class LocalViewLcmModule extends AbstractModule {
 
   @Override
   protected void last() {
-    ModuleAuto.INSTANCE.endOne(SimpleVelocityEstimation.class);
+    simpleVelocityEstimation.stop();
     rimoGetLcmClient.stopSubscriptions();
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();

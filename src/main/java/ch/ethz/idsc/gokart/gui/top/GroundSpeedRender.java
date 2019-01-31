@@ -11,7 +11,6 @@ import ch.ethz.idsc.gokart.core.ekf.VelocityEstimation;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -32,8 +31,7 @@ import ch.ethz.idsc.tensor.alg.Array;
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    // TODO JPH/MH different solution is needed longterm
-    VelocityEstimation velocityEstimation = ModuleAuto.INSTANCE.getInstance(SimpleVelocityEstimation.class);
+    VelocityEstimation velocityEstimation = new SimpleVelocityEstimation();
     Tensor line = Tensors.of(ORIGIN, velocityEstimation.getVelocity().multiply(SCALE));
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     graphics.setColor(Color.BLUE);

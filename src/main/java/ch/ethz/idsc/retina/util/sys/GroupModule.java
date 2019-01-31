@@ -15,5 +15,5 @@ public abstract class GroupModule extends AbstractModule {
   }
 
   /** @return list of classes that constitute group */
-  protected abstract List<Class<?>> modules();
+  protected abstract List<Class<? extends AbstractModule>> modules();
 }
