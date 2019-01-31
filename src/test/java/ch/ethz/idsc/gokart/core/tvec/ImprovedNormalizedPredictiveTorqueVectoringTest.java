@@ -21,7 +21,6 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
   private static final PowerLookupTable POWER_LOOKUP_TABLE = PowerLookupTable.getInstance();
 
   public void testSimple() {
-    // TODO MH fix test
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);

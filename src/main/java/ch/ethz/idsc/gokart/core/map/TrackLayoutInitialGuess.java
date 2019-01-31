@@ -418,8 +418,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       // TODO JPH/MH can this be done smarter:
       Tensor controlpointsXY = pinv.dot(wantedPositionsXY);
       // Tensor controlpointsY = pinv.dot(wantedPositionsY);
-      if (true) // TODO JPH/MH
-        controlPoints = controlpointsXY;
+      controlPoints = controlpointsXY;
       // Transpose.of(Tensors.of(controlpointsX, controlpointsY));
       return controlpointsXY.copy(); // Tensors.of(controlpointsX, controlpointsY);
     }

@@ -52,7 +52,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     float forwardValue = forwardacc(speedthreshold, fpow);
     float backwardValue = backwardacc(-speedthreshold, fpow);
     float prog = (fspd + speedthreshold) / (2 * speedthreshold);
-    return prog * forwardValue + (1 - prog) * backwardValue;
+    return (prog * forwardValue + (1 - prog) * backwardValue);
   }
 
   /** @param power with unit "ARMS"
