@@ -74,7 +74,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     track = null;
     timing = Timing.started();
     mpcStateEstimationProvider = new SimpleKinematicMPCStateEstimationProvider(timing);
-    mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    mpcPower = new MPCAggressiveTorqueVectoringPower(mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
     mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
