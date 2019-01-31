@@ -20,7 +20,6 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
@@ -31,7 +30,8 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
   private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
-  private final MPCBraking mpcBraking = new MPCSimpleBraking();
+  // private final MPCBraking mpcBraking = new MPCSimpleBraking();
+  private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final Timing timing;
@@ -61,7 +61,8 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     this.timing = timing;
     this.track = track;
     // link mpc steering
-    mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    mpcPower = new MPCAggressiveTorqueVectoringPower(mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
     mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
@@ -123,7 +124,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
     GokartState state = mpcStateEstimationProvider.getState();
-    Tensor position = Tensors.of(state.getX(), state.getY());
+    Tensor position = state.getCenterPosition();
     MPCPathParameter mpcPathParameter = null;
     MPCPreviewableTrack liveTrack = mpcBSplineTrack.orElse(null);
     // Objects.isNull(gokartTrackReconModule) //

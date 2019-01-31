@@ -75,6 +75,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
   private static DubendorfTrack chicane_track() {
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
+    Tensor controlPointsR = Tensors.empty();
     // add them in code
     /* 36.2,44.933
      * 49.867,58.2
@@ -100,7 +101,15 @@ public class DubendorfTrack extends MPCBSplineTrack {
     controlPointsY.append(Quantity.of(44, SI.METER));
     controlPointsY.append(Quantity.of(43, SI.METER));
     controlPointsY.append(Quantity.of(38.333, SI.METER));
-    return new DubendorfTrack(Transpose.of(Tensors.of(controlPointsX, controlPointsY, getConstantRadius(controlPointsX.length(), Quantity.of(2, SI.METER)))));
+    // R
+    controlPointsR.append(Quantity.of(1.8, SI.METER));
+    controlPointsR.append(Quantity.of(1.8, SI.METER));
+    controlPointsR.append(Quantity.of(1.8, SI.METER));
+    controlPointsR.append(Quantity.of(0.8, SI.METER));
+    controlPointsR.append(Quantity.of(0.8, SI.METER));
+    controlPointsR.append(Quantity.of(0.8, SI.METER));
+    controlPointsR.append(Quantity.of(1.8, SI.METER));
+    return new DubendorfTrack(Transpose.of(Tensors.of(controlPointsX, controlPointsY, controlPointsR)));
   }
 
   private static DubendorfTrack waypoint_track() {

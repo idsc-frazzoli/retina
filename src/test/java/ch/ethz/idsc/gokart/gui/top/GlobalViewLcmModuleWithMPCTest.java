@@ -17,7 +17,6 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -30,13 +29,14 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     lcmMPCControlClient.switchToExternalStart();
     lcmMPCControlClient.start();
     globalViewLcmModule.first();
+    // 44.2575 51.6983
     gokartState = new GokartState(//
         11, //
         1f, //
         0, //
         0, //
-        44.1f, //
-        55.6f, //
+        44.3f, //
+        51.8f, //
         0.6f, //
         0, //
         0, //
@@ -58,7 +58,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     lcmMPCControlClient.registerControlUpdateLister(mpcSimpleBraking);
     lcmMPCControlClient.registerControlUpdateLister(mpcOpenLoopSteering);
     lcmMPCControlClient.registerControlUpdateLister(mpcTorqueVectoringPower);
-    Tensor position = Tensors.of(gokartState.getX(), gokartState.getY());
+    Tensor position = gokartState.getCenterPosition();
     MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER), RealScalar.ZERO);
     lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
     Thread.sleep(1000);
@@ -67,16 +67,18 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
       if (Objects.nonNull(lcmMPCControlClient.lastcns)) {
         gokartState = lcmMPCControlClient.lastcns.steps[3].state;
         // System.out.println(gokartState.getS());
-        position = Tensors.of(gokartState.getX(), gokartState.getY());
+        position = gokartState.getCenterPosition();
         Scalar changeRate = lcmMPCControlClient.lastcns.steps[0].control.getudotS();
         Scalar rampupVale = lcmMPCControlClient.lastcns.steps[0].state.getS()//
             .add(changeRate.multiply(Quantity.of(0.1, SI.SECOND)));
         Scalar betaDiff = lcmMPCControlClient.lastcns.steps[1].state.getS().subtract(rampupVale);
         // TODO do this with the correct unit
         // assertTrue(Chop._07.close(betaDiff, "zero");
-        mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER));
+        // mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER));
+        mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER), RealScalar.of(0.5));
+        System.out.println("progressstart: " + mpcPathParameter.getProgressOnPath());
         lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
-        Thread.sleep(1000);
+        Thread.sleep(100);
         System.out.println("Braking value: " + mpcSimpleBraking.getBraking(lcmMPCControlClient.lastcns.steps[0].state.getTime()));
         System.out.println("steering value: " + mpcOpenLoopSteering.getSteering(lcmMPCControlClient.lastcns.steps[0].state.getTime()));
         System.out.println("power value: " + mpcTorqueVectoringPower.getPower(lcmMPCControlClient.lastcns.steps[0].state.getTime()));

@@ -23,7 +23,8 @@ forward = [spldx;spldy];
 sidewards = [splsx;splsy];
 %[splx,sply] = casadiBSPLINE(z(9),points);
 realPos = z([index.x,index.y]);
-centerPos = realPos;%+0.4*forward;
+centerOffset = 0.4*gokartforward(z(index.theta))';
+centerPos = realPos+centerOffset;%+0.4*forward;
 wantedpos = [splx;sply];
 error = centerPos-wantedpos;
 lagerror = forward'*error;
@@ -48,13 +49,16 @@ accnorm = ((latacc/maxyacc)^2+(z(index.ab)/maxxacc)^2);
 %avoid understeer
 rotacc = dAckermannAngle*tangentspeed/l;
 frontaxlelatacc = latacc+rotacc*rotacceffect;
-torquevectoringcapability = torqueveccapsmooth(forwardacc)*torqueveceffect;
+%torquevectoringcapability = torqueveccapsmooth(forwardacc)*torqueveceffect;
+%simplified 
+accbudget = (1.8-forwardacc)/1.6;
+torquevectoringcapability = accbudget*torqueveceffect;
 %understeerright
 %v6 = frontaxlelatacc - latacclim-torquevectoringcapability-slack;
-v6 = frontaxlelatacc - latacclim-slack;
+v6 = frontaxlelatacc -torquevectoringcapability- latacclim-slack;
 %understeerleft
 %v7 = -frontaxlelatacc - latacclim-torquevectoringcapability-slack;
-v7 = -frontaxlelatacc - latacclim-slack;
+v7 = -frontaxlelatacc -torquevectoringcapability - latacclim-slack;
 
 
 wantedpos = [splx;sply];
@@ -66,12 +70,12 @@ l = 1.19;
 %v1=(tan(z(8))*z(7)^2/l);
 v2 = z(index.ab)-casadiGetSmoothMaxAcc(z(index.v));
 v3 = accnorm-slack;
-v4 = laterror-r-slack;
-v5 = -laterror-r-slack;
+v4 = laterror-r-0.5*slack;
+v5 = -laterror-r-0.5*slack;
 
 %v4 = error'*error;
 %v2 = -1;
 %v = [v1;v2;v3];
-v = [v2;v3;v4;v5]%;v6;v7];
+v = [v2;v3;v4;v5;v6;v7];
 end
 

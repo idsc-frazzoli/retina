@@ -6,11 +6,12 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Ramp;
-import ch.ethz.idsc.tensor.sca.Round;
 
 public class MPCBSplineTrack implements MPCPreviewableTrack {
-  private static final Scalar ONE = RealScalar.ONE;
+  private static final Scalar ONE = RealScalar.of(1.0);
   private static final Scalar HALF = RealScalar.of(0.5);
 
   /** @param points_xyr matrix with dimension n x 3
@@ -42,11 +43,11 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
     Scalar pathProgress = bSplineTrack.getNearestPathProgress(position);
     // round down
     // int currentIndex = Floor.of(pathProgress.subtract(RealScalar.of(0.5))).number().intValue();
-    int currentIndex = Round.of(pathProgress).number().intValue() - 1;
+    int currentIndex = Floor.of(pathProgress).number().intValue();
     // progress = 0 at middle point between first 2 control points
-    Scalar progressStart = pathProgress.subtract(RealScalar.of(currentIndex)).subtract(RealScalar.of(0.5));
+    Scalar progressStart = pathProgress.subtract(RealScalar.of(currentIndex));
     // QP offset
-    Scalar QPOffset = pathProgress.subtract(HALF);
+    Scalar QPOffset = progressStart;
     Tensor matrix = Tensors.empty();
     if (currentIndex < 0)
       currentIndex += bSplineTrack.numPoints();
@@ -55,7 +56,7 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
       Scalar localProgress = RealScalar.of(i).subtract(QPOffset).divide(RealScalar.of(previewSize));
       Scalar localQPFactor;
       if (!QPFactor.equals(ONE))
-        localQPFactor = QPFactor.multiply(localProgress).add(ONE.subtract(localProgress));
+        localQPFactor = Max.of(HALF, QPFactor.multiply(localProgress).add(ONE.subtract(localProgress)));
       else
         localQPFactor = ONE;
       vector.set(scalar -> Ramp.FUNCTION.apply(((Scalar) scalar).subtract(padding).multiply(localQPFactor)), 2);

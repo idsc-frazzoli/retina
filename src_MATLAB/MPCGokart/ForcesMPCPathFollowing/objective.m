@@ -11,7 +11,8 @@ function f = objective(z,points,radii,vmax, maxxacc,maxyacc,latacclim,rotacceffe
     sidewards = [splsx;splsy];
     %[splx,sply] = casadiBSPLINE(z(9),points);
     realPos = z([index.x,index.y]);
-    centerPos = realPos;%+0.4*forward;
+    centerOffset = 0.4*gokartforward(z(index.theta))';
+    centerPos = realPos+centerOffset;%+0.4*forward;
     %over75d = max(0,z(index.braketemp)-75);
     %wantedpos = p;
     wantedpos = [splx;sply];
@@ -46,5 +47,5 @@ function f = objective(z,points,radii,vmax, maxxacc,maxyacc,latacclim,rotacceffe
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
     %f = lagcost+latcost+reg+prog+over75d*over75d*0.001+speedcost+accviolation+trackViolation;
-    f = lagcost+latcost*0.01+reg+prog+5*slack+understeer+speedcost;
+    f = lagcost+latcost*0.01+reg+prog+5*slack+speedcost;
 end
