@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
 
 public class MPCAggressiveTorqueVectoringPower extends MPCPower {
   private static final Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
-  //private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
+  // private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
       new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
@@ -58,9 +58,9 @@ public class MPCAggressiveTorqueVectoringPower extends MPCPower {
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
     Scalar wantedAcceleration = cnsStep.control.getaB();// when used in
     // get midpoint of powered acceleration range
-    //Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
-    //Scalar midpoint = (Scalar) Mean.of(minmax);
-    //more tame version
+    // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
+    // Scalar midpoint = (Scalar) Mean.of(minmax);
+    // more tame version
     return torqueVectoring.getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //
         tangentialSpeed, //
