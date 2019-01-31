@@ -45,7 +45,6 @@ public class TrackMapping implements //
   private final SpacialXZObstaclePredicate predicate = TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent;
-  private boolean recording = false;
   /** tear down flag to stop thread */
   private boolean isLaunched = true;
   private final Thread thread = new Thread(this);
@@ -105,8 +104,7 @@ public class TrackMapping implements //
   public void run() {
     while (isLaunched) {
       Tensor points = points3d_ferry;
-      if (recording && //
-          Objects.nonNull(points) && //
+      if (Objects.nonNull(points) && //
           Objects.nonNull(gokartPoseEvent)) {
         points3d_ferry = null;
         // TODO pose quality is not considered yet
@@ -154,13 +152,5 @@ public class TrackMapping implements //
   @Override
   public Tensor getTransform() {
     return bayesianOccupancyGrid.getTransform();
-  }
-
-  public void setRecording(boolean selected) {
-    recording = selected;
-  }
-
-  public boolean isRecording() {
-    return recording;
   }
 }

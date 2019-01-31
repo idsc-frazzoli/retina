@@ -30,8 +30,8 @@ public class TrackReconPanelModule extends AbstractModule {
     final boolean isAvailable = Objects.nonNull(gokartTrackReconModule);
     JPanel jPanel = new JPanel(new GridLayout(1, 3));
     {
-      JButton jButton = new JButton("flag start & reset");
-      jButton.addActionListener(actionEvent -> gokartTrackReconModule.flagStart());
+      JButton jButton = new JButton("reset & flag start");
+      jButton.addActionListener(actionEvent -> gokartTrackReconModule.resetFlagStart());
       jButton.setEnabled(isAvailable);
       jPanel.add(jButton);
     }

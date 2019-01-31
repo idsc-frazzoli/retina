@@ -21,8 +21,8 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
   /** TODO JPH magic const */
   private static final Scalar PERIOD = Quantity.of(0.5, SI.SECOND);
   // ---
-  private final TrackReconManagement trackReconManagement;
   private final TrackMapping trackMapping;
+  private final TrackReconManagement trackReconManagement;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
   private final List<MPCBSplineTrackListener> listeners = new CopyOnWriteArrayList<>();
@@ -30,6 +30,7 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
   private GokartPoseEvent gokartPoseEvent = null;
   private boolean flagStart = true;
   private TrackReconMode trackReconMode = TrackReconMode.PASSIVE_SEND_LAST;
+  private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
   public GokartTrackReconModule() {
     trackMapping = new TrackMapping();
@@ -48,8 +49,6 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
     trackMapping.stop();
     gokartPoseLcmClient.stopSubscriptions();
   }
-
-  private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
@@ -77,23 +76,6 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
     listeners.forEach(listener -> listener.mpcBSplineTrack(sendTrack));
   }
 
-  // public Optional<MPCBSplineTrack> compute() {
-  // if (flagStart && !trackReconManagement.isStartSet()) {
-  // trackReconManagement.setStart(gokartPoseEvent);
-  // if (trackReconManagement.isStartSet()) {
-  // System.out.println("start set!");
-  // flagStart = false;
-  // } else {
-  // System.err.println("start NOT set");
-  // }
-  // }
-  // double seconds = intervalClock.seconds(); // reset
-  // if (trackReconMode.isActive()) {
-  // trackMapping.prepareMap();
-  // lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
-  // }
-  // return lastTrack;
-  // }
   @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
     return PERIOD;
@@ -104,13 +86,19 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
     this.gokartPoseEvent = gokartPoseEvent;
   }
 
-  public void setRecording(boolean selected) {
-    trackMapping.setRecording(selected);
+  /** reset track and flag start at current pose */
+  public void resetFlagStart() {
+    trackReconManagement.resetTrack();
+    flagStart = true;
   }
 
-  public void flagStart() {
-    flagStart = true;
+  /** reset track */
+  public void resetTrack() {
     trackReconManagement.resetTrack();
+  }
+
+  public void setMode(TrackReconMode trackReconMode) {
+    this.trackReconMode = trackReconMode;
   }
 
   public void listenersAdd(MPCBSplineTrackListener mpcBSplineTrackListener) {
@@ -121,13 +109,5 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
     boolean remove = listeners.remove(mpcBSplineTrackListener);
     if (!remove)
       new RuntimeException("not removed").printStackTrace();
-  }
-
-  public void setMode(TrackReconMode type) {
-    trackReconMode = type;
-  }
-
-  public void resetTrack() {
-    trackReconManagement.resetTrack();
   }
 }
