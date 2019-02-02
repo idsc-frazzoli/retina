@@ -38,7 +38,7 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
     if(Objects.nonNull(lastCNS)&&running)
     {
        Scalar wantedAcceleration = lastCNS.steps[0].control.getaB();
-       Scalar currentSteeringAngle 
+       //Scalar currentSteeringAngle 
     }
     lastCNS= cns;
   }
