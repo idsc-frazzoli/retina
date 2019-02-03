@@ -131,7 +131,6 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   private LinkedList<Cell> route;
   // TODO MH not used
   private LinkedList<Cell> forwardRoute;
-  private Tensor routePolygon;
   private boolean closed = false;
   // TODO MH document content of positional support:
   // contains vectors of the form {x,y,1} without units
@@ -364,7 +363,6 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     } else {
       System.out.println("Target not available.");
     }
-    routePolygon = null;
   }
 
   private static boolean reachable(Cell target) {
@@ -372,16 +370,13 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         && target.processed;
   }
 
-  public Tensor getRoutePolygon() {
-    if (Objects.isNull(routePolygon)) {
-      routePolygon = Tensors.empty();
-      if (Objects.nonNull(route)) {
-        Tensor grid2model = occupancyGrid.getTransform();
-        for (Cell cell : route)
-          routePolygon.append(grid2model.dot(Tensors.vector(cell.x, cell.y, 1)));
-      }
+  /** @return matrix with dimension n x 2, or empty */
+  public Optional<Tensor> getRoutePolygon() {
+    if (Objects.nonNull(route)) {
+      GeometricLayer geometricLayer = GeometricLayer.of(occupancyGrid.getTransform());
+      return Optional.of(Tensor.of(route.stream().map(cell -> geometricLayer.toVector(cell.x, cell.y))));
     }
-    return routePolygon;
+    return Optional.empty();
   }
 
   /** @param spacing
@@ -435,9 +430,13 @@ public class TrackLayoutInitialGuess implements RenderInterface {
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    graphics.setColor(new Color(64, 64, 255, 128));
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.2)));
-    graphics.draw(geometricLayer.toPath2D(getRoutePolygon()));
+    // ---
+    Optional<Tensor> optional = getRoutePolygon();
+    if (optional.isPresent()) {
+      graphics.setColor(new Color(64, 64, 255, 128));
+      graphics.draw(geometricLayer.toPath2D(optional.get()));
+    }
     // ---
     graphics.setColor(new Color(255, 200, 0, 128));
     for (Tensor xy : positionalSupports) {

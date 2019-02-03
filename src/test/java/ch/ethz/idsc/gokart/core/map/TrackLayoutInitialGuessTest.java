@@ -24,8 +24,9 @@ public class TrackLayoutInitialGuessTest extends TestCase {
     trackLayoutInitialGuess.update(x, y, so);
     long elapsedTime = timing.nanoSeconds();
     System.out.println(elapsedTime + "[ns]");
-    Tensor routePolygon = trackLayoutInitialGuess.getRoutePolygon();
-    MatrixQ.require(routePolygon);
+    Optional<Tensor> routePolygon = trackLayoutInitialGuess.getRoutePolygon();
+    assertTrue(routePolygon.isPresent());
+    MatrixQ.require(routePolygon.get());
     // System.out.println();
     Scalar spacing = RealScalar.of(1.5);
     Scalar controlPointResolution = RealScalar.of(0.5);// half as many control points
