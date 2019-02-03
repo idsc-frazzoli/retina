@@ -43,7 +43,7 @@ enum BlockingLcmClientDemo implements DavisImuFrameListener, GokartPoseListener,
         System.out.println("ferry == null");
         try {
           Thread.sleep(1000);
-        } catch (InterruptedException e) {
+        } catch (Exception exception) {
           System.err.println("interrupted");
           // e.printStackTrace();
         }

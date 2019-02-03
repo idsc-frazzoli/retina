@@ -31,15 +31,14 @@ public class TrackMapping implements //
     StartAndStoppable, LidarRayBlockListener, GokartPoseListener, OccupancyGrid, Runnable, RenderInterface {
   // TODO check rationale behind constant 10000!
   private static final int LIDAR_SAMPLES = 10000;
-  /** ferry for visualizing grid in presenter lcm module */
-  public static RenderInterface GRID_RENDER;
   // ---
   private final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
   private final double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
   private final Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -6);
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-  private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid();
+  private final BayesianOccupancyGrid bayesianOccupancyGrid = //
+      MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid();
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final SpacialXZObstaclePredicate predicate = TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
@@ -64,8 +63,6 @@ public class TrackMapping implements //
     gokartPoseLcmClient.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
-    // ---
-    GRID_RENDER = this;
   }
 
   @Override // from StartAndStoppable
@@ -109,6 +106,7 @@ public class TrackMapping implements //
         points3d_ferry = null;
         // TODO pose quality is not considered yet
         bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
+        // System.out.println("process "+points.length());
         for (Tensor point : points) {
           boolean isObstacle = predicate.isObstacle(point); // only x and z are used
           bayesianOccupancyGrid.processObservation( //
@@ -118,7 +116,7 @@ public class TrackMapping implements //
       } else
         try {
           Thread.sleep(200);
-        } catch (InterruptedException e) {
+        } catch (Exception exception) {
           // ---
         }
     }
@@ -139,17 +137,17 @@ public class TrackMapping implements //
     bayesianOccupancyGrid.render(geometricLayer, graphics);
   }
 
-  @Override
+  @Override // from OccupancyGrid
   public Tensor getGridSize() {
     return bayesianOccupancyGrid.getGridSize();
   }
 
-  @Override
+  @Override // from OccupancyGrid
   public boolean isCellOccupied(int x, int y) {
     return bayesianOccupancyGrid.isCellOccupied(x, y);
   }
 
-  @Override
+  @Override // from OccupancyGrid
   public Tensor getTransform() {
     return bayesianOccupancyGrid.getTransform();
   }

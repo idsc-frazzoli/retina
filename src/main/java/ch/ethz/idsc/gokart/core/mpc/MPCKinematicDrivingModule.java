@@ -8,7 +8,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
+import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
@@ -23,8 +23,8 @@ import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSplineTrackListener {
-  private final GokartTrackReconModule gokartTrackReconModule = //
-      ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
+  private final TrackReconModule gokartTrackReconModule = //
+      ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
   private final MPCSteering mpcSteering = new MPCOpenLoopSteering();

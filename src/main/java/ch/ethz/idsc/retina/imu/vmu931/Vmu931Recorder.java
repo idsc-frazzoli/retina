@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.retina.imu.vmu931;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.tensor.Tensors;
@@ -35,8 +34,8 @@ public class Vmu931Recorder implements Vmu931Listener {
         flagA = false;
         System.out.println("EXPORTED ACC");
         Export.of(HomeDirectory.file("vmu931acc.csv"), tableBuilderAcc.toTable());
-      } catch (IOException e) {
-        e.printStackTrace();
+      } catch (Exception exception) {
+        exception.printStackTrace();
       }
   }
 
@@ -55,8 +54,8 @@ public class Vmu931Recorder implements Vmu931Listener {
         flagG = false;
         System.out.println("EXPORTED GYRO");
         Export.of(HomeDirectory.file("vmu931gyro.csv"), tableBuilderGyr.toTable());
-      } catch (IOException e) {
-        e.printStackTrace();
+      } catch (Exception exception) {
+        exception.printStackTrace();
       }
   }
 }

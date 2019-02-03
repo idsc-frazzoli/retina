@@ -12,9 +12,8 @@ import ch.ethz.idsc.tensor.io.Timing;
 public class DavisEventStatistics implements //
     DavisDvsListener, DavisApsListener, DavisImuListener {
   private static final double SEC_USEC = 1e-6;
-  private static final double SEC_NSEC = 1e-9;
   // ---
-  private final Timing timing = Timing.started();;
+  private final Timing timing = Timing.started();
   private long time_min = Long.MAX_VALUE;
   private long time_max = 0;
   private long dvs = 0;

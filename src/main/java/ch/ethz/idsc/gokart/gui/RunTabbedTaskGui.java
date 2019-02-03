@@ -29,7 +29,7 @@ import ch.ethz.idsc.gokart.core.man.ManualGroupModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
-import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
+import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
@@ -51,7 +51,6 @@ import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
-import ch.ethz.idsc.gokart.gui.lab.TrackReconPanelModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -92,13 +91,13 @@ enum RunTabbedTaskGui {
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
       ManualResetModule.class, //
-      DavisImuTrackerModule.class, //
-      GokartTrackReconModule.class //
-  // AutonomySafetyModule.class //
+      DavisImuTrackerModule.class //
+  // AutonomySafetyModule.class // <- dead man switch
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
+      TrackReconModule.class, //
       AutoboxCompactModule.class, // initialize actuation
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
@@ -115,7 +114,6 @@ enum RunTabbedTaskGui {
       SysidSignalsModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
-      TrackReconPanelModule.class, //
       MPCKinematicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       CenterLinePursuitModule.class, //

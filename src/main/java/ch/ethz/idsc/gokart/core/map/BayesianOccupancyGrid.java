@@ -244,7 +244,7 @@ public class BayesianOccupancyGrid implements RenderInterface, OccupancyGrid {
   /***************************************************/
   /** clears current obstacle image and redraws all known obstacles */
   // TODO LHF this function should return, or update a region object created here, or provided from the outside!
-  public void genObstacleMap() {
+  public synchronized void genObstacleMap() {
     imageGraphics.setColor(COLOR_UNKNOWN);
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
     synchronized (hset) {
@@ -401,12 +401,17 @@ public class BayesianOccupancyGrid implements RenderInterface, OccupancyGrid {
   }
 
   @Override // from RenderInterface
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  public synchronized void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    // TODO JPH simplify use ImageRender?
     Tensor model2pixel = geometricLayer.getMatrix();
     Tensor translate = IdentityMatrix.of(3);
     translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
     translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
     Tensor matrix = model2pixel.dot(scaling).dot(translate);
+    // Graphics2D graphics2d = obstacleImage.createGraphics();
+    // graphics2d.setColor(Color.BLACK);
+    // graphics2d.drawRect(0, 0, 100, 100);
+    // graphics2d.drawLine(0, 0, 100, 100);
     graphics.drawImage(obstacleImage, AffineTransforms.toAffineTransform(matrix), null);
   }
 

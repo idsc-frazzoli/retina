@@ -1,7 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.util.data;
 
-/** the timed fuse is a recoverable watchdog
+/** a soft watchdog recovers from the barking state
+ * by a notification from the application layer.
  * 
  * @see Watchdog */
 public final class SoftWatchdog implements Watchdog {

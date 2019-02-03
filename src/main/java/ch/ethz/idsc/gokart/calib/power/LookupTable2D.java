@@ -109,21 +109,24 @@ public class LookupTable2D implements Serializable {
         clip1.rescale(y)).pmul(scale)), unit);
   }
 
-  /** delivers the extremal values in the specified direction
+  /** delivers the extremal values along dimension 0
    * 
-   * @param dimension the dimension along which the extremal are to be found
    * @param otherValue the value that is set at the other dimension
    * @return a tensor containing the minimum and maximum value along the dimension */
-  public Tensor getExtremalValues(int dimension, Scalar otherValue) {
-    if (dimension == 0)
-      return Tensors.of( //
-          lookup(clip0.min(), otherValue), //
-          lookup(clip0.max(), otherValue));
-    if (dimension == 1)
-      return Tensors.of( //
-          lookup(otherValue, clip1.min()), //
-          lookup(otherValue, clip1.max()));
-    return null;
+  public Tensor getExtremalValues0(Scalar otherValue) {
+    return Tensors.of( //
+        lookup(clip0.min(), otherValue), //
+        lookup(clip0.max(), otherValue));
+  }
+
+  /** delivers the extremal values along dimension 1
+   * 
+   * @param otherValue the value that is set at the other dimension
+   * @return a tensor containing the minimum and maximum value along the dimension */
+  public Tensor getExtremalValues1(Scalar otherValue) {
+    return Tensors.of( //
+        lookup(otherValue, clip1.min()), //
+        lookup(otherValue, clip1.max()));
   }
 
   /** export lookup table to csv format

@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Date;
@@ -59,8 +58,8 @@ import java.util.Objects;
     try {
       while (is.ready())
         res = res + is.readLine() + "\n";
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
     return res;
   }
