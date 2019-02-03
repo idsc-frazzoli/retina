@@ -10,6 +10,8 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Transpose;
+import ch.ethz.idsc.tensor.io.Timing;
+import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityTensor;
 import junit.framework.TestCase;
@@ -82,11 +84,11 @@ public class MPCPathParameterTest extends TestCase {
     Tensor ctrY = QuantityTensor.of(Tensors.vector(3, 4, 5), SI.METER);
     Tensor ctrR = QuantityTensor.of(Tensors.vector(6, 7, 8), SI.METER);
     MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(Transpose.of(Tensors.of(ctrX, ctrY, ctrR)), true);
-    long startTime = System.nanoTime();
+    Timing timing = Timing.started();
     MPCPathParameter mpcPathParameter = //
         mpcbSplineTrack.getPathParameterPreview(5, Tensors.vector(0, 3).multiply(Quantity.of(1, SI.METER)), Quantity.of(0, SI.METER));
-    long endTime = System.nanoTime();
-    assertTrue(endTime - startTime < 1000_000);
+    long limit = UserName.is("travis") ? 10_000_000 : 1000_000;
+    assertTrue(timing.nanoSeconds() < limit);
     // System.out.println(" path progress timing: " + (endTime - startTime) + "[ns]");
     assertEquals(mpcPathParameter.getControlPointsX(), QuantityTensor.of(Tensors.vector(2, 0, 1, 2, 0), SI.METER));
     assertEquals(mpcPathParameter.getControlPointsY(), QuantityTensor.of(Tensors.vector(5, 3, 4, 5, 3), SI.METER));

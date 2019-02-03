@@ -21,7 +21,7 @@ public class MPCOptimizationConfig {
   public Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
   /** The limit for the Go-kart longitudonal acceleration */
   @FieldSubdivide(start = "3f[m*s^-2]", end = "15[m*s^-2]", intervals = 48)
-  public Scalar maxLatAcc = Quantity.of(8, SI.ACCELERATION);
+  public Scalar maxLatAcc = Quantity.of(6, SI.ACCELERATION);
   /** The limit for the Go-kart lateral acceleration */
   @FieldSubdivide(start = "3f[m*s^-2]", end = "15[m*s^-2]", intervals = 48)
   public Scalar maxLonAcc = Quantity.of(5, SI.ACCELERATION);

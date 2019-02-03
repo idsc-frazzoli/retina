@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.calib.power;
 
 import java.io.File;
-import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -83,7 +82,7 @@ public class PowerLookupTable {
         RES, RES, //
         CLIP_ACC, Chop._03);
     try {
-      Export.object(FILE_INVERSE, Objects.requireNonNull(lookupTable2D));
+      Export.object(FILE_INVERSE, lookupTable2D);
     } catch (Exception exception) {
       // ---
     }
@@ -104,7 +103,7 @@ public class PowerLookupTable {
   public Tensor getMinMaxAcceleration(Scalar velocity) {
     // the min and max values are multiplied by 1.02
     // in order to ensure that the maximum value can be output
-    return lookupTable_forward.getExtremalValues(0, velocity).multiply(RealScalar.of(1.02));
+    return lookupTable_forward.getExtremalValues0(velocity).multiply(RealScalar.of(1.02));
   }
 
   /** get acceleration for a given current and velocity

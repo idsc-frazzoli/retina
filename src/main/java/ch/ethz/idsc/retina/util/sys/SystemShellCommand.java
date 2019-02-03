@@ -20,8 +20,8 @@ import java.util.List;
       final String string = new String(bytes).trim();
       process.destroy();
       return string;
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
     return "";
   }

@@ -14,7 +14,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Objects;
@@ -132,8 +131,8 @@ public class GokartLcmLogCutter {
                 throw new RuntimeException();
               try {
                 new File(folder, GOKART_LOG_CONFIG).createNewFile();
-              } catch (IOException e) {
-                e.printStackTrace();
+              } catch (Exception exception) {
+                exception.printStackTrace();
               }
               return new File(folder, LCM_FILE);
             }

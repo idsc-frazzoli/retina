@@ -14,6 +14,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+@Deprecated
 enum RunMappingAnalysisOfflineHighRes {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {

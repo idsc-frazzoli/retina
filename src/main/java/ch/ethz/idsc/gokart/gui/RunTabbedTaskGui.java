@@ -29,7 +29,7 @@ import ch.ethz.idsc.gokart.core.man.ManualGroupModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
-import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
+import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
@@ -51,7 +51,6 @@ import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
-import ch.ethz.idsc.gokart.gui.lab.TrackReconPanelModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -61,6 +60,7 @@ import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.TabbedTaskGui;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
@@ -74,7 +74,7 @@ enum RunTabbedTaskGui {
   static final Properties PROPERTIES = //
       ResourceData.properties("/gui/properties/modules_description.properties");
   // ---
-  static final List<Class<?>> MODULES_DEV = Arrays.asList( //
+  static final List<Class<? extends AbstractModule>> MODULES_DEV = Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
       Vlp16LcmServerModule.class, // sensing
       Vmu931LcmServerModule.class, // vmu931 imu
@@ -91,13 +91,13 @@ enum RunTabbedTaskGui {
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
       ManualResetModule.class, //
-      DavisImuTrackerModule.class, //
-      GokartTrackReconModule.class //
-  // AutonomySafetyModule.class //
+      DavisImuTrackerModule.class //
+  // AutonomySafetyModule.class // <- dead man switch
   );
-  static final List<Class<?>> MODULES_CFG = Arrays.asList( //
+  static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
+      TrackReconModule.class, //
       AutoboxCompactModule.class, // initialize actuation
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
@@ -105,7 +105,7 @@ enum RunTabbedTaskGui {
       GokartSoundLcmModule.class, //
       GokartVoiceOutputs.class //
   );
-  static final List<Class<?>> MODULES_MAN = Arrays.asList( //
+  static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       RimoThrustManualModule.class, //
       ImprovedNormalizedTorqueVectoringManualModule.class, //
       ImprovedNormalizedPredictiveTorqueVectoringManualModule.class, //
@@ -113,8 +113,7 @@ enum RunTabbedTaskGui {
       ManualGroupModule.class, //
       SysidSignalsModule.class //
   );
-  static final List<Class<?>> MODULES_AUT = Arrays.asList( //
-      TrackReconPanelModule.class, //
+  static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       MPCKinematicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
@@ -132,13 +131,13 @@ enum RunTabbedTaskGui {
       SEyeSlamVisualModule.class, //
       FigureDucttapeModule.class //
   );
-  static final List<Class<?>> MODULES_FUSE = Arrays.asList( //
+  static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, // TODO possibly auto start
       LinmotTakeoverModule.class //
   );
-  static final List<Class<?>> MODULES_LAB = Arrays.asList( //
+  static final List<Class<? extends AbstractModule>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //
       AutoboxTestingModule.class, //
       LinmotPressTestModule.class, //

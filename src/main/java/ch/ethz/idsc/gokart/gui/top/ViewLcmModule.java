@@ -11,7 +11,8 @@ import java.util.Objects;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
+import ch.ethz.idsc.gokart.core.map.TrackReconModule;
+import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
@@ -27,7 +28,6 @@ import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
-import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
@@ -39,7 +39,6 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.planar.Arrowhead;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 abstract class ViewLcmModule extends AbstractModule {
@@ -66,6 +65,9 @@ abstract class ViewLcmModule extends AbstractModule {
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
+  private final TrackReconRender trackReconRender = new TrackReconRender();
+  private final TrackReconModule gokartTrackReconModule = //
+      ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   // ---
   private MappedPoseInterface mappedPoseInterface;
 
@@ -127,10 +129,9 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
     {
-      GokartTrackReconModule gokartTrackReconModule = //
-          ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
       if (Objects.nonNull(gokartTrackReconModule))
-        viewLcmFrame.geometricComponent.addRenderInterface(gokartTrackReconModule);
+        gokartTrackReconModule.listenersAdd(trackReconRender);
+      viewLcmFrame.geometricComponent.addRenderInterface(trackReconRender);
       // TrackRender trackRender = new TrackRender();
       // trackRender.setTrack(DubendorfTrack.CHICANE.bSplineTrack());
       // viewLcmFrame.geometricComponent.addRenderInterface(trackRender);
@@ -151,7 +152,7 @@ abstract class ViewLcmModule extends AbstractModule {
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
       viewLcmFrame.geometricComponent.addRenderInterface(gokartRender);
     }
-    viewLcmFrame.geometricComponent.addRenderInterface(new GridRender(Subdivide.of(0, 50, 5)));
+    viewLcmFrame.geometricComponent.addRenderInterface(Dubilab.GRID_RENDER);
     {
       gokartPoseLcmClient.addListener(poseTrailRender);
       viewLcmFrame.geometricComponent.addRenderInterface(poseTrailRender);
@@ -181,6 +182,8 @@ abstract class ViewLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void last() {
     viewLcmFrame.close();
+    if (Objects.nonNull(gokartTrackReconModule))
+      gokartTrackReconModule.listenersRemove(trackReconRender);
   }
 
   private void private_windowClosed() {

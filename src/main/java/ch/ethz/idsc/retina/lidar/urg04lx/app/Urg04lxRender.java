@@ -114,7 +114,7 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
         graphics.draw(polygonToPath(swipe, this::toPoint));
       graphics.setStroke(new BasicStroke());
     }
-    if (range.length() != 0) {
+    if (Tensors.nonEmpty(range)) {
       {
         Tensor points = range.pmul(direction);
         Tensor contour = Tensor.of(IntStream.range(0, range.length()) //

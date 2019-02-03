@@ -21,8 +21,8 @@ enum GokartLcmLogPlayer {
       // DavisDetailModule.standalone();
       SeyeDetailModule.standalone();
       // DvsSlamBaseModule.standalone();
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
   }
 }

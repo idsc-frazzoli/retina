@@ -3,12 +3,13 @@ package ch.ethz.idsc.retina.dvs.digest;
 
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
 import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class DvsEventStatistics implements DvsEventDigest {
-  private static final int INTERVAL = 1000000;
+  private static final int INTERVAL = 1_000_000;
   // ---
-  private final long first = System.currentTimeMillis();
+  private final Timing timing = Timing.started();
   private int mark_us = INTERVAL;
   private long total_mark = 0;
   private long total = 0;
@@ -29,9 +30,9 @@ public class DvsEventStatistics implements DvsEventDigest {
   }
 
   public void printSummary() {
-    long dif = System.currentTimeMillis() - first;
+    double seconds = timing.seconds();
     System.out.println("total= " + total + " [events]");
-    System.out.println("time = " + DoubleScalar.of(dif * 1e-3).map(Round._4) + " [sec]");
-    System.out.println("perf = " + Math.round(total / (dif)) + "k [events/sec]");
+    System.out.println("time = " + DoubleScalar.of(seconds).map(Round._4) + " [sec]");
+    System.out.println("perf = " + Math.round(total / (seconds)) + " [events/sec]");
   }
 }

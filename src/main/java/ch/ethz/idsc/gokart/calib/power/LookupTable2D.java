@@ -31,8 +31,8 @@ public class LookupTable2D implements Serializable {
       int firstDimN, int secondDimN, //
       Clip clip0, Clip clip1) {
     Scalar[][] table = new Scalar[firstDimN][secondDimN];
-    Tensor s0 = Subdivide.of(clip0, firstDimN - 1);
-    Tensor s1 = Subdivide.of(clip1, secondDimN - 1);
+    Tensor s0 = Subdivide.increasing(clip0, firstDimN - 1);
+    Tensor s1 = Subdivide.increasing(clip1, secondDimN - 1);
     for (int i0 = 0; i0 < firstDimN; ++i0)
       for (int i1 = 0; i1 < secondDimN; ++i1)
         table[i0][i1] = function.apply(s0.Get(i0), s1.Get(i1));
@@ -75,8 +75,8 @@ public class LookupTable2D implements Serializable {
     Clip clipNT = target == 0 ? clip0 : clip1;
     // switch x and out
     Scalar[][] table = new Scalar[dimN0][dimN1];
-    Tensor s0 = Subdivide.of(clipN0, dimN0 - 1);
-    Tensor s1 = Subdivide.of(clipN1, dimN1 - 1);
+    Tensor s0 = Subdivide.increasing(clipN0, dimN0 - 1);
+    Tensor s1 = Subdivide.increasing(clipN1, dimN1 - 1);
     for (int i0 = 0; i0 < dimN0; ++i0) {
       Scalar value0 = s0.Get(i0);
       for (int i1 = 0; i1 < dimN1; ++i1) {
@@ -109,21 +109,24 @@ public class LookupTable2D implements Serializable {
         clip1.rescale(y)).pmul(scale)), unit);
   }
 
-  /** delivers the extremal values in the specified direction
+  /** delivers the extremal values along dimension 0
    * 
-   * @param dimension the dimension along which the extremal are to be found
    * @param otherValue the value that is set at the other dimension
    * @return a tensor containing the minimum and maximum value along the dimension */
-  public Tensor getExtremalValues(int dimension, Scalar otherValue) {
-    if (dimension == 0)
-      return Tensors.of( //
-          lookup(clip0.min(), otherValue), //
-          lookup(clip0.max(), otherValue));
-    if (dimension == 1)
-      return Tensors.of( //
-          lookup(otherValue, clip1.min()), //
-          lookup(otherValue, clip1.max()));
-    return null;
+  public Tensor getExtremalValues0(Scalar otherValue) {
+    return Tensors.of( //
+        lookup(clip0.min(), otherValue), //
+        lookup(clip0.max(), otherValue));
+  }
+
+  /** delivers the extremal values along dimension 1
+   * 
+   * @param otherValue the value that is set at the other dimension
+   * @return a tensor containing the minimum and maximum value along the dimension */
+  public Tensor getExtremalValues1(Scalar otherValue) {
+    return Tensors.of( //
+        lookup(otherValue, clip1.min()), //
+        lookup(otherValue, clip1.max()));
   }
 
   /** export lookup table to csv format

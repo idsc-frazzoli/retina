@@ -12,8 +12,9 @@ public class AutoboxDeviceTest extends TestCase {
   }
 
   public void testNullMessage() {
+    RuntimeException runtimeException = new RuntimeException((String) null);
     try {
-      throw new RuntimeException((String) null);
+      throw runtimeException;
     } catch (RuntimeException e) {
       // ---
     }

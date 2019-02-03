@@ -3,7 +3,6 @@ package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,8 +44,8 @@ import ch.ethz.idsc.tensor.io.Primitives;
           writer.append(NEW_LINE);
         }
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
   }
 
@@ -65,8 +64,8 @@ import ch.ethz.idsc.tensor.io.Primitives;
         writer.append(String.valueOf(singleResult[2]));
         writer.append(NEW_LINE);
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
   }
 
@@ -93,8 +92,8 @@ import ch.ethz.idsc.tensor.io.Primitives;
         extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true, DEFAULT_BLOB_ID));
       }
       return extractedFeatures;
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
     return null;
   }

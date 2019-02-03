@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.map;
 
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
-import ch.ethz.idsc.sophus.planar.Cross2D;
 import ch.ethz.idsc.sophus.planar.Det2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -11,6 +10,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Normalize;
 import ch.ethz.idsc.tensor.alg.Range;
+import ch.ethz.idsc.tensor.lie.Cross;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Power;
@@ -113,7 +113,7 @@ public final class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return direction of the path [1] */
   Tensor getLeftDirectionXY(Scalar pathProgress) {
-    return Cross2D.of(getDirectionXY(pathProgress));
+    return Cross.of(getDirectionXY(pathProgress));
   }
 
   /** get the 2nd path derivative with respect to path progress
@@ -268,23 +268,24 @@ public final class BSplineTrack implements TrackInterface {
     return getPositionXY(getNearestPathProgress(position));
   }
 
+  private Tensor domain(int resolution) {
+    return Range.of(0, resolution).multiply(RealScalar.of(effPoints / (double) resolution));
+  }
+
   @Override // from TrackInterface
   public Tensor getLineMiddle(int resolution) {
-    return Range.of(0, resolution).multiply(RealScalar.of(effPoints / (double) resolution)) //
+    return domain(resolution).map(this::getPositionXY);
+  }
+
+  @Override // from TrackInterface
+  public TrackBoundaries getTrackBoundaries(int resolution) {
+    // this is not accurate for large changes in radius
+    Tensor domain = domain(resolution);
+    Tensor middle = domain //
         .map(this::getPositionXY);
-  }
-
-  @Override // from TrackInterface
-  public Tensor getLineLeft(int resolution) {
-    // this is not accurate for large changes in radius
-    return Range.of(0, resolution).multiply(RealScalar.of(effPoints / (double) resolution)) //
-        .map(prog -> getPositionXY(prog).subtract(getLeftDirectionXY(prog).multiply(getRadius(prog))));
-  }
-
-  @Override // from TrackInterface
-  public Tensor getLineRight(int resolution) {
-    // this is not accurate for large changes in radius
-    return Range.of(0, resolution).multiply(RealScalar.of(effPoints / (double) resolution)) //
-        .map(prog -> getPositionXY(prog).add(getLeftDirectionXY(prog).multiply(getRadius(prog))));
+    Tensor normal = domain.map(prog -> getLeftDirectionXY(prog).multiply(getRadius(prog)));
+    Tensor lineL = middle.add(normal);
+    Tensor lineR = middle.subtract(normal);
+    return new SampledTrackBoundaries(middle, lineL, lineR);
   }
 }

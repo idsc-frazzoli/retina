@@ -12,14 +12,14 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
-import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
-import ch.ethz.idsc.gokart.core.map.TrackMapping;
+import ch.ethz.idsc.gokart.core.map.TrackReconModule;
+import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.ManualControlLcmClient;
@@ -32,7 +32,6 @@ import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
-import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
@@ -40,7 +39,6 @@ import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.io.UserName;
@@ -51,6 +49,8 @@ public class PresenterLcmModule extends AbstractModule {
   private static final boolean SHOW_DAVIS = UserName.is("mario");
   // ---
   protected final TimerFrame timerFrame = new TimerFrame();
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
@@ -59,11 +59,14 @@ public class PresenterLcmModule extends AbstractModule {
   private final ManualControlLcmClient manualControlLcmClient = new ManualControlLcmClient();
   private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
       TrajectoryLcmClient.xyat(), TrajectoryLcmClient.xyavt());
-  private final WindowConfiguration windowConfiguration = //
-      AppCustomization.load(getClass(), new WindowConfiguration());
   private final GokartPoseLcmLidar gokartPoseLcmLidar = new GokartPoseLcmLidar();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+  private final TrackReconRender trackReconRender = new TrackReconRender();
+  private final GokartTrajectoryModule gokartTrajectoryModule = //
+      ModuleAuto.INSTANCE.getInstance(GokartTrajectoryModule.class);
+  private final TrackReconModule gokartTrackReconModule = //
+      ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
 
   @Override // from AbstractModule
   protected void first() throws Exception {
@@ -71,17 +74,14 @@ public class PresenterLcmModule extends AbstractModule {
       ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
     }
+    if (Objects.nonNull(gokartTrajectoryModule))
+      timerFrame.geometricComponent.addRenderInterface(gokartTrajectoryModule.obstacleMapping());
     {
-      if (Objects.nonNull(GokartMappingModule.GRID_RENDER))
-        timerFrame.geometricComponent.addRenderInterface(GokartMappingModule.GRID_RENDER);
-    }
-    {
-      if (Objects.nonNull(TrackMapping.GRID_RENDER))
-        timerFrame.geometricComponent.addRenderInterface(TrackMapping.GRID_RENDER);
-      GokartTrackReconModule gokartTrackReconModule = //
-          ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
-      if (Objects.nonNull(gokartTrackReconModule))
-        timerFrame.geometricComponent.addRenderInterface(gokartTrackReconModule);
+      if (Objects.nonNull(gokartTrackReconModule)) {
+        timerFrame.geometricComponent.addRenderInterface(gokartTrackReconModule.trackMapping());
+        gokartTrackReconModule.listenersAdd(trackReconRender);
+      }
+      timerFrame.geometricComponent.addRenderInterface(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
     }
     {
@@ -146,7 +146,7 @@ public class PresenterLcmModule extends AbstractModule {
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
-    timerFrame.geometricComponent.addRenderInterface(new GridRender(Subdivide.of(0, 50, 5)));
+    timerFrame.geometricComponent.addRenderInterface(Dubilab.GRID_RENDER);
     {
       JButton jButton = new JButton("show matrix");
       jButton.addActionListener(actionEvent -> {
@@ -217,6 +217,8 @@ public class PresenterLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void last() {
     timerFrame.close();
+    if (Objects.nonNull(gokartTrackReconModule))
+      gokartTrackReconModule.listenersRemove(trackReconRender);
   }
 
   private void private_windowClosed() {

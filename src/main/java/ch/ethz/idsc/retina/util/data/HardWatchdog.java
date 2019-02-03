@@ -1,11 +1,12 @@
 // code by jph
 package ch.ethz.idsc.retina.util.data;
 
-/** implementation of un-recoverable watchdog
+/** implementation of an un-recoverable watchdog
  * 
  * functionality like on a micro controller
  * except that this watchdog does not notify an interrupt
- * but simply sets a flag to true. The flag cannot be reset.
+ * but simply sets a flag to true.
+ * Once set to true, the flag cannot be cleared.
  * 
  * @see Watchdog */
 public final class HardWatchdog implements Watchdog {
