@@ -2,63 +2,134 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.data.IntervalClock;
-import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Tan;
 
-public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithAction implements StartAndStoppable, RimoGetListener {
+public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithAction implements RimoGetListener {
   private final static MPCActiveCompensationLearning INSTANCE = new MPCActiveCompensationLearning();
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
+
   public static MPCActiveCompensationLearning getInstance() {
     return INSTANCE;
   }
+
   private boolean running = false;
   private ControlAndPredictionSteps lastCNS = null;
   IntervalClock updateClock = new IntervalClock();
   IntervalClock rimoClock = new IntervalClock();
-  private Scalar lastTangentialSpeed = Quantity.of(0, SI.VELOCITY);
+  private Scalar lastTangentSpeed = Quantity.of(0, SI.VELOCITY);
   private final GeodesicIIR1Filter accelerationFilter = //
       new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(.02));
   private Scalar rimoAcceleration = Quantity.of(0, SI.ACCELERATION);
+  private Scalar realRotationRate = Quantity.of(0, SI.PER_SECOND);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
-  
+  private final Vmu931ImuFrameListener vmu931ImuFrameListener = new Vmu931ImuFrameListener() {
+    @Override
+    public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
+      realRotationRate = (Scalar) vmu931ImuFrame.gyroZ();
+    }
+  };
+  private final static Scalar BRAKINGTHRESHOLD = Quantity.of(0, SI.ACCELERATION);
   Scalar steeringCorrection = RealScalar.ONE;
   Scalar brakingCorrection = RealScalar.ONE;
+
   @Override
   void doAction() {
     double seconds = updateClock.seconds();
-    if(Objects.nonNull(lastCNS)&&running)
-    {
-       Scalar wantedAcceleration = lastCNS.steps[0].control.getaB();
-       //Scalar currentSteeringAngle 
+    Scalar deltaT = Quantity.of(seconds, SI.SECOND);
+    RimoSocket.INSTANCE.getClass();
+    if (Objects.nonNull(lastCNS) && running) {
+      boolean linmotControlled = LinmotSocket.INSTANCE.getPutProviderDesc().equals("mpc");
+      boolean rimoControlled = RimoSocket.INSTANCE.getPutProviderDesc().equals("mpc");
+      Scalar wantedAcceleration = lastCNS.steps[0].control.getaB();
+      if (rimoControlled && linmotControlled && Scalars.lessThan(wantedAcceleration, BRAKINGTHRESHOLD)) {
+        // correct
+        Scalar accelerationError = rimoAcceleration.subtract(wantedAcceleration);
+        correctNegativeAcceleration(accelerationError, rimoAcceleration, deltaT);
+      }
+      // Scalar
+      boolean steeringControlled = SteerSocket.INSTANCE.getPutProviderDesc().equals("mpc");
+      if (steeringControlled) {
+        Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
+        Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
+        Scalar wantedRotationRate = rotationPerMeterDriven.multiply(lastTangentSpeed); // unit s^-1
+        Scalar rotationRateError = realRotationRate.subtract(wantedRotationRate);
+        correctSteering(rotationRateError, rotationPerMeterDriven, deltaT);
+      }
+      //
     }
-    lastCNS= cns;
+    lastCNS = cns;
   }
-  @Override
-  public void start() {
-    // TODO Auto-generated method stub
-    
+
+  /** correct the negative acceleration
+   * @param accelerationError [m*s^-2]
+   * @param absoluteAcceleration [m*s^-2]
+   * @param deltaT [s] */
+  private void correctNegativeAcceleration(Scalar accelerationError, Scalar absoluteAcceleration, Scalar deltaT) {
+    Scalar correctionStep = accelerationError.negate().multiply(absoluteAcceleration).multiply(deltaT);
+    brakingCorrection = brakingCorrection.add(correctionStep);
   }
-  @Override
-  public void stop() {
-    // TODO Auto-generated method stub
-    
+
+  /** correct steering
+   * @param rotationVelocityError [s^-1]
+   * @param absoluteRotationPerMeterDriven [m^-1]
+   * @param deltaT [s] */
+  private void correctSteering(Scalar rotationVelocityError, Scalar absoluteRotationPerMeterDriven, Scalar deltaT) {
+    Scalar correctionStep = rotationVelocityError.negate().multiply(absoluteRotationPerMeterDriven).multiply(deltaT);
+    steeringCorrection = steeringCorrection.add(correctionStep);
   }
+
+  private void start() {
+    vmu931ImuLcmClient.addListener(vmu931ImuFrameListener);
+    vmu931ImuLcmClient.startSubscriptions();
+    RimoSocket.INSTANCE.addGetListener(this);
+    running = true;
+  }
+
+  private void stop() {
+    vmu931ImuLcmClient.stopSubscriptions();
+    RimoSocket.INSTANCE.removeGetListener(this);
+    running = false;
+  }
+
+  // FIXME do this the right way
+  public void setActive(boolean active) {
+    if (!running & active) {
+      System.out.println("Active compensation started");
+      start();
+    }
+    if (running & !active) {
+      System.out.println("Active compensation stopped");
+      stop();
+    }
+  }
+
   @Override
   public void getEvent(RimoGetEvent getEvent) {
     Scalar currentTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
     Scalar acceleration = currentTangentSpeed//
-        .subtract(lastTangentialSpeed)//
+        .subtract(lastTangentSpeed)//
         .divide(Quantity.of(rimoClock.seconds(), SI.SECOND));
     rimoAcceleration = (Scalar) accelerationFilter.apply(acceleration);
   }
-  
 }

@@ -30,6 +30,7 @@ public class LocalViewLcmModule extends AbstractModule {
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
+  private final MPCExpectationRender mpcExpectationRender = new MPCExpectationRender(MINOR);
   private final TimerFrame timerFrame = new TimerFrame();
   private final AccelerationRender accelerationRender = new AccelerationRender(MINOR, 100);
   private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(MINOR);
@@ -53,6 +54,7 @@ public class LocalViewLcmModule extends AbstractModule {
     timerFrame.geometricComponent.addRenderInterface(accelerationRender);
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
     timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
+    timerFrame.geometricComponent.addRenderInterface(mpcExpectationRender);
     TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(Tensors.vector(1, -2.5, 0));
     rimoGetLcmClient.addListener(tachometerMustangDash);
     timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);

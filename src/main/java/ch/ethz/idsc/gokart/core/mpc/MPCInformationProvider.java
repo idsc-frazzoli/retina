@@ -16,7 +16,7 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
   private final static MPCInformationProvider INSTANCE = new MPCInformationProvider();
   private final static Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
   private final static Scalar NOSTEERING = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
-  
+
   public static MPCInformationProvider getInstance() {
     return INSTANCE;
   }
@@ -59,21 +59,21 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
   public Boolean mpcAvailable() {
     return Objects.nonNull(cns);
   }
-  
+
   public Scalar getFirstWantedAcceleration() {
-    if(Objects.nonNull(cns))
+    if (Objects.nonNull(cns))
       return cns.steps[0].control.getaB();
     else
       return NOACCELERATION;
   }
-  
+
   public Scalar getFirstWantedSteering() {
-    if(Objects.nonNull(cns))
+    if (Objects.nonNull(cns))
       return cns.steps[0].state.getS();
-      else
-        return NOSTEERING;
+    else
+      return NOSTEERING;
   }
-  
+
   /** get the poses at steps in {x,y,a} */
   public Tensor getXYA() {
     if (Objects.nonNull(cns)) {
