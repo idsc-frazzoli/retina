@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
+import ch.ethz.idsc.gokart.core.map.TrackLayoutInitialGuess;
 import ch.ethz.idsc.gokart.core.map.TrackReconConfig;
 import ch.ethz.idsc.gokart.core.map.TrackReconManagement;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
@@ -31,6 +32,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
+import ch.ethz.idsc.owl.gui.region.ImageRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
@@ -64,6 +66,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   private final BayesianOccupancyGrid bayesianOccupancyGridThin;
   private final TrackReconManagement trackReconManagement;
   private final TrackReconRender trackReconRender = new TrackReconRender();
+  private final TrackLayoutInitialGuess trackLayoutInitialGuess;
   // ---
   private GokartPoseEvent gokartPoseEvent;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
@@ -83,10 +86,10 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThic);
+    trackLayoutInitialGuess = trackReconManagement.getTrackLayoutInitialGuess();
   }
 
   private int count = 0;
-  // private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
@@ -107,15 +110,22 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(DELTA);
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
-      ScatterImage scatterImage = new WallScatterImage(predefinedMap);
-      BufferedImage bufferedImage = scatterImage.getImage();
-      GeometricLayer geometricLayer = GeometricLayer.of(predefinedMap.getModel2Pixel());
+      BufferedImage bufferedImage = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
+      double zoom = 3;
+      GeometricLayer geometricLayer = GeometricLayer.of(Tensors.matrix(new Number[][] { //
+          { 7.5 * zoom, 0., -640 }, //
+          { 0., -7.5 * zoom, 640 + 640 }, //
+          { 0., 0., 1. }, //
+      }));
       Graphics2D graphics = bufferedImage.createGraphics();
+      ImageRender imageRender = ImageRender.of(predefinedMap.getImage(), predefinedMap.range());
+      imageRender.render(geometricLayer, graphics);
       gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
       // bayesianOccupancyGridThic.render(gl, graphics);
       bayesianOccupancyGridThin.render(geometricLayer, graphics);
       gokartRender.render(geometricLayer, graphics);
       trackReconRender.render(geometricLayer, graphics);
+      trackLayoutInitialGuess.render(geometricLayer, graphics);
       // ---
       bayesianOccupancyGridThin.genObstacleMap();
       bayesianOccupancyGridThic.genObstacleMap();

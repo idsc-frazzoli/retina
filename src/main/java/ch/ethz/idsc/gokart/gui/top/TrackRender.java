@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.Tensor;
 
 public class TrackRender implements RenderInterface {
   private static final int RESOLUTION = 100;
-  private static final Tensor ARROWHEAD = Arrowhead.of(1.5);
+  private static final Tensor ARROWHEAD = Arrowhead.of(0.75);
   private static final int INTERVALS = 10;
   // ---
   private RenderInterface renderInterface = EmptyRender.INSTANCE;
