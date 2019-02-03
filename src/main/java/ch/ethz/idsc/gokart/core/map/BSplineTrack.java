@@ -268,25 +268,24 @@ public final class BSplineTrack implements TrackInterface {
     return getPositionXY(getNearestPathProgress(position));
   }
 
+  private Tensor domain(int resolution) {
+    return Range.of(0, resolution).multiply(RealScalar.of(effPoints / (double) resolution));
+  }
+
   @Override // from TrackInterface
   public Tensor getLineMiddle(int resolution) {
-    return Range.of(0, resolution).multiply(RealScalar.of(effPoints / (double) resolution)) //
+    return domain(resolution).map(this::getPositionXY);
+  }
+
+  @Override // from TrackInterface
+  public TrackBoundaries getTrackBoundaries(int resolution) {
+    // this is not accurate for large changes in radius
+    Tensor domain = domain(resolution);
+    Tensor middle = domain //
         .map(this::getPositionXY);
-  }
-
-  // TODO JPH/MH computation is inefficient: left and right line don't reuse the computation of the middle line
-  // and the computation of the normal vector...
-  @Override // from TrackInterface
-  public Tensor getLineLeft(int resolution) {
-    // this is not accurate for large changes in radius
-    return Range.of(0, resolution).multiply(RealScalar.of(effPoints / (double) resolution)) //
-        .map(prog -> getPositionXY(prog).add(getLeftDirectionXY(prog).multiply(getRadius(prog))));
-  }
-
-  @Override // from TrackInterface
-  public Tensor getLineRight(int resolution) {
-    // this is not accurate for large changes in radius
-    return Range.of(0, resolution).multiply(RealScalar.of(effPoints / (double) resolution)) //
-        .map(prog -> getPositionXY(prog).subtract(getLeftDirectionXY(prog).multiply(getRadius(prog))));
+    Tensor normal = domain.map(prog -> getLeftDirectionXY(prog).multiply(getRadius(prog)));
+    Tensor lineL = middle.add(normal);
+    Tensor lineR = middle.subtract(normal);
+    return new SampledTrackBoundaries(middle, lineL, lineR);
   }
 }

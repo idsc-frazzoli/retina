@@ -8,6 +8,7 @@ import java.awt.Stroke;
 import java.awt.geom.Path2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.core.map.TrackBoundaries;
 import ch.ethz.idsc.gokart.core.map.TrackInterface;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -47,9 +48,10 @@ public class TrackRender implements RenderInterface {
     private final boolean closed;
 
     public Render(TrackInterface trackInterface) {
-      lineMiddle = trackInterface.getLineMiddle(RESOLUTION);
-      lineLeft = trackInterface.getLineLeft(RESOLUTION);
-      lineRight = trackInterface.getLineRight(RESOLUTION);
+      TrackBoundaries trackBoundaries = trackInterface.getTrackBoundaries(RESOLUTION);
+      lineMiddle = trackBoundaries.getLineCenter();
+      lineLeft = trackBoundaries.getLineLeft();
+      lineRight = trackBoundaries.getLineRight();
       closed = trackInterface.isClosed();
     }
 
