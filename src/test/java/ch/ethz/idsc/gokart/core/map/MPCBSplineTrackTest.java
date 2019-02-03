@@ -6,6 +6,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Transpose;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityTensor;
@@ -17,13 +18,11 @@ public class MPCBSplineTrackTest extends TestCase {
     Tensor ctrY = QuantityTensor.of(Tensors.vector(3, 4, 5, 3, 4, 5, 6, 7, 8, 9, 10), SI.METER);
     Tensor ctrR = QuantityTensor.of(Tensors.vector(6, 7, 8, 3, 4, 5, 6, 7, 8, 9, 10), SI.METER);
     MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(Transpose.of(Tensors.of(ctrX, ctrY, ctrR)), true);
-    long startTime = System.nanoTime();
-    // MPCPathParameter mpcPathParameter =
+    Timing timing = Timing.started();
     mpcbSplineTrack.getPathParameterPreview(5, Tensors.vector(0, 3).multiply(Quantity.of(1, SI.METER)), Quantity.of(0, SI.METER));
-    long endTime = System.nanoTime();
-    // System.out.println(endTime - startTime);
+    long duration = timing.nanoSeconds();
+    System.out.println(duration);
     long limit = UserName.is("travis") ? 20_500_000 : 400_000;
-    System.out.println(endTime - startTime);
-    assertTrue(endTime - startTime < limit);
+    assertTrue(duration < limit);
   }
 }

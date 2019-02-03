@@ -4,13 +4,13 @@ package ch.ethz.idsc.gokart.core.map;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.PriorityQueue;
 
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -18,18 +18,23 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
+import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.mat.PseudoInverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
 public class TrackLayoutInitialGuess implements RenderInterface {
+  private static final Tensor CIRCLE_POINTS = CirclePoints.of(13).multiply(RealScalar.of(0.3));
+  // ---
+
   private class Cell {
     private final int x;
     private final int y;
@@ -126,8 +131,9 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   private LinkedList<Cell> route;
   // TODO MH not used
   private LinkedList<Cell> forwardRoute;
-  private Tensor routePolygon;
   private boolean closed = false;
+  // TODO MH document content of positional support:
+  // contains vectors of the form {x,y,1} without units
   private List<Tensor> positionalSupports = new LinkedList<>();
   private Tensor controlPoints = Tensors.empty();
 
@@ -357,7 +363,6 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     } else {
       System.out.println("Target not available.");
     }
-    routePolygon = null;
   }
 
   private static boolean reachable(Cell target) {
@@ -365,22 +370,19 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         && target.processed;
   }
 
-  public Tensor getRoutePolygon() {
-    if (Objects.isNull(routePolygon)) {
-      routePolygon = Tensors.empty();
-      if (Objects.nonNull(route)) {
-        Tensor grid2model = occupancyGrid.getTransform();
-        for (Cell cell : route)
-          routePolygon.append(grid2model.dot(Tensors.vector(cell.x, cell.y, 1)));
-      }
+  /** @return matrix with dimension n x 2, or empty */
+  public Optional<Tensor> getRoutePolygon() {
+    if (Objects.nonNull(route)) {
+      GeometricLayer geometricLayer = GeometricLayer.of(occupancyGrid.getTransform());
+      return Optional.of(Tensor.of(route.stream().map(cell -> geometricLayer.toVector(cell.x, cell.y))));
     }
-    return routePolygon;
+    return Optional.empty();
   }
 
   /** @param spacing
    * @param controlPointResolution
    * @return matrix of dimension n x 2 */
-  public Tensor getControlPointGuess(Scalar spacing, Scalar controlPointResolution) {
+  public Optional<Tensor> getControlPointGuess(Scalar spacing, Scalar controlPointResolution) {
     Tensor wantedPositionsXY = Tensors.empty();
     // Tensor wantedPositionsY = Tensors.empty();
     Tensor lastPosition = route.getFirst().getPos();
@@ -420,51 +422,36 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       // Tensor controlpointsY = pinv.dot(wantedPositionsY);
       controlPoints = controlpointsXY;
       // Transpose.of(Tensors.of(controlpointsX, controlpointsY));
-      return controlpointsXY.copy(); // Tensors.of(controlpointsX, controlpointsY);
+      return Optional.of(controlpointsXY.copy()); // Tensors.of(controlpointsX, controlpointsY);
     }
     System.out.println("no usable track!");
-    return null;
+    return Optional.empty();
   }
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    Tensor routePolygon = getRoutePolygon();
-    Path2D path2d = geometricLayer.toPath2D(routePolygon);
-    graphics.draw(path2d);
-    /* for (Tensor t : freeLines) {
-     * path2d = geometricLayer.toPath2D(t);
-     * graphics.draw(path2d);
-     * } */
-  }
-
-  public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
-    float width = geometricLayer.getMatrix().get(0).Get(0).number().floatValue() / 7.5f;
-    Stroke defaultStroke;
-    BasicStroke thick = new BasicStroke(width);
-    graphics.setColor(Color.RED);
-    defaultStroke = graphics.getStroke();
-    graphics.setStroke(thick);
-    if (true) {
-      Tensor routePolygon = getRoutePolygon();
-      Path2D path2d = geometricLayer.toPath2D(routePolygon);
+    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.2)));
+    // ---
+    Optional<Tensor> optional = getRoutePolygon();
+    if (optional.isPresent()) {
+      graphics.setColor(new Color(64, 64, 255, 128));
+      graphics.draw(geometricLayer.toPath2D(optional.get()));
+    }
+    // ---
+    graphics.setColor(new Color(255, 200, 0, 128));
+    for (Tensor xy : positionalSupports) {
+      geometricLayer.pushMatrix(Se2Utils.toSE2Translation(xy));
+      Path2D path2d = geometricLayer.toPath2D(CIRCLE_POINTS);
+      path2d.closePath();
       graphics.draw(path2d);
+      geometricLayer.popMatrix();
     }
-    if (true) {
-      graphics.setColor(Color.ORANGE);
-      for (Tensor t : positionalSupports) {
-        Tensor pos = geometricLayer.toVector(t);
-        int r = (int) (width * 2.5f);
-        int X = pos.Get(0).number().intValue();
-        int Y = pos.Get(1).number().intValue();
-        graphics.drawOval(X - r, Y - r, 2 * r, 2 * r);
-      }
-    }
-    if (false) { // TODO JPH/MH
-      graphics.setColor(Color.BLUE);
-      Path2D path2d = geometricLayer.toPath2D(controlPoints);
-      graphics.draw(path2d);
-    }
-    graphics.setStroke(defaultStroke);
-    graphics.setColor(Color.WHITE);
+    // TODO JPH/MH render control points !?
+    // {
+    // graphics.setColor(Color.BLUE);
+    // Path2D path2d = geometricLayer.toPath2D(controlPoints);
+    // graphics.draw(path2d);
+    // }
+    graphics.setStroke(new BasicStroke());
   }
 }

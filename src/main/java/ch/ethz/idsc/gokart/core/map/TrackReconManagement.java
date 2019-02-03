@@ -36,11 +36,11 @@ public class TrackReconManagement {
   private double startOrientation = 0;
   private boolean closedTrack = false;
   private boolean oldWasClosed = false;
-  private Timing lastTrackReset = Timing.started();
+  private final Timing lastTrackReset = Timing.started();
   private List<TrackConstraint> constraints = new LinkedList<>();
-  private Scalar openTrackValid = Quantity.of(1, SI.SECOND);
+  private final Scalar openTrackValid = Quantity.of(1, SI.SECOND);
   private Scalar timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
-  private List<TrackConstraint> trackConstraints = null;
+  private final List<TrackConstraint> trackConstraints = null;
 
   public TrackReconManagement(OccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
@@ -93,8 +93,9 @@ public class TrackReconManagement {
       closedTrack = initialGuess.isClosed();
       if (closedTrack) {
         // current track is not available or no longer valid
-        Tensor ctrpointsXY = initialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
-        if (Objects.nonNull(ctrpointsXY)) {
+        Optional<Tensor> optional = initialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
+        if (optional.isPresent()) {
+          Tensor ctrpointsXY = optional.get();
           // we have a guess
           // TODO do this more elegantly
           // Tensor radiusCtrPoints = Tensors.vector(i -> Quantity.of(1, SI.METER), ctrpointsXY.get(0).length());
@@ -140,5 +141,9 @@ public class TrackReconManagement {
     }
     oldWasClosed = closedTrack;
     return Optional.ofNullable(lastTrack);
+  }
+
+  public TrackLayoutInitialGuess getTrackLayoutInitialGuess() {
+    return initialGuess;
   }
 }

@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 public interface WheelInterface {
-  /** @return lever from COG */
+  /** @return lever from COG, vector of length 3 */
   Tensor lever();
 
   /** @return radius of wheel [m] */

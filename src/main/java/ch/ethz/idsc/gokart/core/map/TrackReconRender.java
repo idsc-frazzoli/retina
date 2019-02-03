@@ -12,15 +12,10 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 
 public class TrackReconRender implements RenderInterface, MPCBSplineTrackListener {
   private final TrackRender trackRender = new TrackRender();
-  // private Optional<MPCBSplineTrack> optional = Optional.empty();
 
   @Override
   public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
-    // this.optional = optional;
-    if (optional.isPresent())
-      trackRender.setTrack(optional.get().bSplineTrack());
-    else
-      trackRender.setTrack(null);
+    trackRender.setTrack(optional.map(MPCBSplineTrack::bSplineTrack).orElse(null));
   }
 
   @Override // from RenderInterface
@@ -32,10 +27,4 @@ public class TrackReconRender implements RenderInterface, MPCBSplineTrackListene
     // TODO reenable rendering of initial guess
     // initialGuess.render(geometricLayer, graphics);
   }
-  // public void renderHR(GeometricLayer geometricLayer, Graphics2D graphics) {
-  // if (Objects.nonNull(lastTrack))
-  // trackRender.render(geometricLayer, graphics);
-  // else
-  // initialGuess.renderHR(geometricLayer, graphics);
-  // }
 }

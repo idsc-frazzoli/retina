@@ -77,11 +77,11 @@ public enum PredefinedMap implements LocalizationImage {
     if (bufferedImage.getHeight() != size)
       new RuntimeException("map image not squared").printStackTrace();
     double s = scale.number().doubleValue();
-    int h = bufferedImage.getHeight();
+    double h = bufferedImage.getHeight();
     model2pixel = Tensors.matrix(new Number[][] { //
-        { s, 0, 0 }, //
-        { 0, -s, h }, //
-        { 0, 0, 1 }, //
+        { s, 0., 0. }, //
+        { 0., -s, h }, //
+        { 0., 0., 1. }, //
     }).unmodifiable();
   }
 

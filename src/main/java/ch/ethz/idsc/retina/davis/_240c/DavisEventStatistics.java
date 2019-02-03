@@ -7,13 +7,14 @@ import ch.ethz.idsc.retina.davis.DavisEvent;
 import ch.ethz.idsc.retina.davis.DavisImuListener;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Timing;
 
 public class DavisEventStatistics implements //
     DavisDvsListener, DavisApsListener, DavisImuListener {
   private static final double SEC_USEC = 1e-6;
   private static final double SEC_NSEC = 1e-9;
   // ---
-  private final long tic = System.nanoTime();
+  private final Timing timing = Timing.started();;
   private long time_min = Long.MAX_VALUE;
   private long time_max = 0;
   private long dvs = 0;
@@ -61,7 +62,7 @@ public class DavisEventStatistics implements //
 
   public void print() {
     final double total = (time_max - time_min) * SEC_USEC;
-    final double timer = (System.nanoTime() - tic) * SEC_NSEC;
+    final double timer = timing.seconds();
     System.out.println(DavisEventStatistics.class.getName());
     System.out.println(String.format("beg:%10d", time_min));
     System.out.println(String.format("end:%10d", time_max));

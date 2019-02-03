@@ -15,6 +15,7 @@ import ch.ethz.idsc.gokart.offline.tab.OfflineVectorTables;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.Timing;
 
 /** export all io between actuators and computer as separate tables */
 /* package */ enum ProduceReport {
@@ -32,9 +33,9 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
         OfflineVectorTables.rimoGet(), //
         OfflineVectorTables.rimoPut() //
     );
-    long tic = System.currentTimeMillis();
+    Timing timing = Timing.started();
     OfflineLogPlayer.process(file, list);
-    System.out.println(System.currentTimeMillis() - tic);
+    System.out.println("timing=" + timing.seconds());
     // ---
     File dir = HomeDirectory.file("export", logFile.getTitle());
     dir.mkdirs();
