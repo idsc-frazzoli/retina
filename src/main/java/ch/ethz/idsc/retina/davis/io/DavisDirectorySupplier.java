@@ -51,9 +51,8 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
           System.out.println(dde);
         ++events;
       }
-    } catch (Exception e) {
-      // ---
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
   }
 

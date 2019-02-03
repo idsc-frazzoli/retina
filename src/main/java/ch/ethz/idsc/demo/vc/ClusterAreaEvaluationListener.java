@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
@@ -100,8 +99,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
                           "{Average perf SP, Average perf LP,Average recall SP,Average recall LP,Average precision SP,Average precision LP,Noise ratio}"), //
                       Tensors.vectorDouble(perfAveragedSP, perfAveragedLP, recallAveragedSP, recallAveragedLP, //
                           precisionAveragedSP, precisionAveragedLP, noiseRatio)));
-            } catch (IOException e) {
-              e.printStackTrace();
+            } catch (Exception exception) {
+              exception.printStackTrace();
             }
           }
         }
@@ -117,8 +116,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
         try {
           DIRECTORY_CLUSTERS.mkdir();
           ImageIO.write(bufferedImage, "png", new File(DIRECTORY_CLUSTERS, String.format("clusters%04d.png", count)));
-        } catch (IOException e) {
-          e.printStackTrace();
+        } catch (Exception exception) {
+          exception.printStackTrace();
         }
       }
     };

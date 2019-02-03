@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.offline.slam;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
@@ -81,8 +80,8 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
       try {
         // TODO different filename
         ImageIO.write(image, "png", HomeDirectory.Pictures("log", Magnitude.SECOND.apply(time).toString() + ".png"));
-      } catch (IOException e) {
-        e.printStackTrace();
+      } catch (Exception exception) {
+        exception.printStackTrace();
       }
     }
   }

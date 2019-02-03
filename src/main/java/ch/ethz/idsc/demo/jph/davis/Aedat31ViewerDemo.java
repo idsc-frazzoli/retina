@@ -24,8 +24,8 @@ enum Aedat31ViewerDemo {
             if (60000 < count && count < 61000)
               agw2.append(timedImageEvent.bufferedImage);
             ++count;
-          } catch (Exception e) {
-            e.printStackTrace();
+          } catch (Exception exception) {
+            exception.printStackTrace();
           }
         }
       });

@@ -17,7 +17,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -223,8 +222,8 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     File pathToFile = new File(MgEvaluationFolders.HANDLABEL.subfolder(imagePrefix), fileName);
     try {
       bufferedImage = ImageIO.read(pathToFile);
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
   }
 

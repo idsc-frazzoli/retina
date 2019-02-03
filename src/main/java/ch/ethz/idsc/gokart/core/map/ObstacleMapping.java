@@ -115,7 +115,7 @@ public class ObstacleMapping implements //
       } else
         try {
           Thread.sleep(1000);
-        } catch (InterruptedException e) {
+        } catch (Exception exception) {
           // ---
         }
     }

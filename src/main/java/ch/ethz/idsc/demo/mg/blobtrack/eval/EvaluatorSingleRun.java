@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.mg.blobtrack.eval;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -79,8 +78,8 @@ import ch.ethz.idsc.demo.mg.util.vis.VisGeneralUtil;
     BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_INDEXED);
     try {
       bufferedImage = ImageIO.read(pathToFile);
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
     return bufferedImage;
   }

@@ -18,6 +18,8 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.owl.data.IntervalClock;
+import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
@@ -25,11 +27,13 @@ import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public final class TrackReconModule extends AbstractClockedModule implements GokartPoseListener {
   /** TODO JPH magic const */
   private static final Scalar PERIOD = Quantity.of(0.5, SI.SECOND);
+  private static final RenderInterface GRID_RENDER = new GridRender(Subdivide.of(0, 100, 10));
   // ---
   protected final TimerFrame timerFrame = new TimerFrame();
   private final WindowConfiguration windowConfiguration = //
@@ -39,12 +43,12 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
   private final List<MPCBSplineTrackListener> listeners = new CopyOnWriteArrayList<>();
+  private final TrackReconRender trackReconRender = new TrackReconRender();
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
   private boolean flagStart = false;
   private TrackReconMode trackReconMode = TrackReconMode.PASSIVE_SEND_LAST;
   private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
-  private final TrackReconRender trackReconRender = new TrackReconRender();
 
   public TrackReconModule() {
     trackMapping = new TrackMapping();
@@ -58,6 +62,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   @Override // from AbstractModule
   protected void first() throws Exception {
     {
+      timerFrame.geometricComponent.addRenderInterfaceBackground(GRID_RENDER);
       timerFrame.geometricComponent.addRenderInterface(trackMapping);
       listenersAdd(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(trackReconRender);
@@ -95,15 +100,15 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   }
 
   private void private_windowClosed() {
-    // ---
+    trackMapping.stop();
+    listenersRemove(trackReconRender);
+    gokartPoseLcmClient.stopSubscriptions();
+    terminate();
   }
 
   @Override // from AbstractModule
   protected void last() {
     timerFrame.close();
-    trackMapping.stop();
-    listenersRemove(trackReconRender);
-    gokartPoseLcmClient.stopSubscriptions();
   }
 
   @Override // from AbstractClockedModule

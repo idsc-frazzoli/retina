@@ -115,7 +115,7 @@ public class TrackMapping implements //
       } else
         try {
           Thread.sleep(200);
-        } catch (InterruptedException e) {
+        } catch (Exception exception) {
           // ---
         }
     }
@@ -133,7 +133,6 @@ public class TrackMapping implements //
 
   @Override //  from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    System.out.println("render");
     bayesianOccupancyGrid.render(geometricLayer, graphics);
   }
 
