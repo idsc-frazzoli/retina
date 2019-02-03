@@ -12,7 +12,7 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
+import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
@@ -49,6 +49,8 @@ public class PresenterLcmModule extends AbstractModule {
   private static final boolean SHOW_DAVIS = UserName.is("mario");
   // ---
   protected final TimerFrame timerFrame = new TimerFrame();
+  private final WindowConfiguration windowConfiguration = //
+      AppCustomization.load(getClass(), new WindowConfiguration());
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
@@ -57,16 +59,14 @@ public class PresenterLcmModule extends AbstractModule {
   private final ManualControlLcmClient manualControlLcmClient = new ManualControlLcmClient();
   private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
       TrajectoryLcmClient.xyat(), TrajectoryLcmClient.xyavt());
-  private final WindowConfiguration windowConfiguration = //
-      AppCustomization.load(getClass(), new WindowConfiguration());
   private final GokartPoseLcmLidar gokartPoseLcmLidar = new GokartPoseLcmLidar();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final TrackReconRender trackReconRender = new TrackReconRender();
   private final GokartTrajectoryModule gokartTrajectoryModule = //
       ModuleAuto.INSTANCE.getInstance(GokartTrajectoryModule.class);
-  private final GokartTrackReconModule gokartTrackReconModule = //
-      ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
+  private final TrackReconModule gokartTrackReconModule = //
+      ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
 
   @Override // from AbstractModule
   protected void first() throws Exception {

@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
+import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
@@ -66,8 +66,8 @@ abstract class ViewLcmModule extends AbstractModule {
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final TrackReconRender trackReconRender = new TrackReconRender();
-  private final GokartTrackReconModule gokartTrackReconModule = //
-      ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
+  private final TrackReconModule gokartTrackReconModule = //
+      ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   // ---
   private MappedPoseInterface mappedPoseInterface;
 
