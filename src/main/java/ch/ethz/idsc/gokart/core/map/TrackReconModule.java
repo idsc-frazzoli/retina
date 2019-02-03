@@ -27,6 +27,8 @@ import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -34,6 +36,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   /** TODO JPH magic const */
   private static final Scalar PERIOD = Quantity.of(0.5, SI.SECOND);
   private static final RenderInterface GRID_RENDER = new GridRender(Subdivide.of(0, 100, 10));
+  static final Tensor HANGAR_MODEL2PIXEL = Tensors.fromString("{{7.5*2,0,-400},{0,-7.5*2,1050},{0,0,1}}");
   // ---
   protected final TimerFrame timerFrame = new TimerFrame();
   private final WindowConfiguration windowConfiguration = //
@@ -46,8 +49,9 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final TrackReconRender trackReconRender = new TrackReconRender();
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
-  private boolean flagStart = false;
-  private TrackReconMode trackReconMode = TrackReconMode.PASSIVE_SEND_LAST;
+  // TODO JPH/MH flag start has to be set to true before active mode
+  private boolean flagStart = true;
+  private TrackReconMode trackReconMode = TrackReconMode.ACTIVE_SEND_LATEST;
   private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
   public TrackReconModule() {
@@ -61,11 +65,13 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
 
   @Override // from AbstractModule
   protected void first() throws Exception {
+    timerFrame.geometricComponent.setModel2Pixel(HANGAR_MODEL2PIXEL);
     {
       timerFrame.geometricComponent.addRenderInterfaceBackground(GRID_RENDER);
       timerFrame.geometricComponent.addRenderInterface(trackMapping);
       listenersAdd(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(trackReconRender);
+      timerFrame.geometricComponent.addRenderInterface(trackReconManagement.getTrackLayoutInitialGuess());
     }
     {
       JButton jButton = new JButton("reset & flag start");
@@ -80,7 +86,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     {
       SpinnerLabel<TrackReconMode> spinnerLabel = new SpinnerLabel<>();
       spinnerLabel.setArray(TrackReconMode.values());
-      spinnerLabel.setIndex(2);
+      spinnerLabel.setIndex(trackReconMode.ordinal());
       spinnerLabel.addSpinnerListener(this::setMode);
       spinnerLabel.addToComponentReduced(timerFrame.jToolBar, new Dimension(200, 26), "");
     }
@@ -88,7 +94,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     gokartPoseLcmClient.startSubscriptions();
     trackMapping.start();
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
-    timerFrame.configCoordinateOffset(400, 500);
     timerFrame.jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
@@ -113,8 +118,10 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    if (Objects.isNull(gokartPoseEvent))
+    if (Objects.isNull(gokartPoseEvent)) {
+      System.out.println("no pose");
       return;
+    }
     // ---
     if (flagStart && !trackReconManagement.isStartSet()) {
       trackReconManagement.setStart(gokartPoseEvent);
@@ -174,7 +181,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
 
   public static void main(String[] args) throws Exception {
     TrackReconModule trackReconModule = new TrackReconModule();
-    trackReconModule.first();
+    trackReconModule.launch();
     trackReconModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 }

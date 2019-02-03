@@ -95,9 +95,9 @@ enum RunTabbedTaskGui {
   // AutonomySafetyModule.class // <- dead man switch
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
-      TrackReconModule.class, //
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
+      TrackReconModule.class, //
       AutoboxCompactModule.class, // initialize actuation
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
