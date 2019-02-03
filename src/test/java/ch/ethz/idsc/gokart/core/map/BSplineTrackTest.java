@@ -173,7 +173,7 @@ public class BSplineTrackTest extends TestCase {
     BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
     Random random = new Random();
     Scalar radius = bSplineTrack.getRadius(RealScalar.of(random.nextDouble() * 100));
-    assertEquals(radius, Quantity.of(1, "m"));
+    Chop._10.requireClose(radius, Quantity.of(1, "m"));
   }
 
   public void testNoOffset() {

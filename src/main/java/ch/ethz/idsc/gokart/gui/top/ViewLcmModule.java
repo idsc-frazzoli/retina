@@ -28,7 +28,6 @@ import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
-import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
@@ -40,7 +39,6 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.planar.Arrowhead;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 abstract class ViewLcmModule extends AbstractModule {
@@ -154,7 +152,7 @@ abstract class ViewLcmModule extends AbstractModule {
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
       viewLcmFrame.geometricComponent.addRenderInterface(gokartRender);
     }
-    viewLcmFrame.geometricComponent.addRenderInterface(new GridRender(Subdivide.of(0, 50, 5)));
+    viewLcmFrame.geometricComponent.addRenderInterface(Dubilab.GRID_RENDER);
     {
       gokartPoseLcmClient.addListener(poseTrailRender);
       viewLcmFrame.geometricComponent.addRenderInterface(poseTrailRender);
