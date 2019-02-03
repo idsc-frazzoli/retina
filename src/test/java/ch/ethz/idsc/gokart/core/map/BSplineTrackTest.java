@@ -106,11 +106,7 @@ public class BSplineTrackTest extends TestCase {
       Tensor nDev = bSplineTrack.getPositionXY(prog.add(dx))//
           .subtract(bSplineTrack.getPositionXY(prog))//
           .divide(dx);
-      // System.out.println(cDev.subtract(nDev));
-      Scalar scalar = Norm._2.between(cDev, nDev);
-      // System.out.println(scalar);
-      // System.out.println(cDev.subtract(nDev));
-      assertTrue(Chop._04.close(cDev, nDev));
+      Chop._04.requireClose(cDev, nDev);
     }
   }
 
@@ -175,8 +171,9 @@ public class BSplineTrackTest extends TestCase {
     Tensor ctrR = Tensors.vector(1, 1, 1, 1).multiply(meter);
     Tensor fullTensor = Transpose.of(Tensors.of(ctrX, ctrY, ctrR));
     BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
-    Random rand = new Random();
-    bSplineTrack.getRadius(RealScalar.of(rand.nextDouble() * 100));
+    Random random = new Random();
+    Scalar radius = bSplineTrack.getRadius(RealScalar.of(random.nextDouble() * 100));
+    assertEquals(radius, Quantity.of(1, "m"));
   }
 
   public void testNoOffset() {
@@ -187,11 +184,8 @@ public class BSplineTrackTest extends TestCase {
     Tensor ctrR = Tensors.vector(1, 1, 1, 1).multiply(meter);
     Tensor fullTensor = Transpose.of(Tensors.of(ctrX, ctrY, ctrR));
     BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
-    Random rand = new Random();
-    for (int i = 0; i < 10; i++) {
-      Tensor queryPos = Tensors.vector(0, 0.5).multiply(meter);
-      Tensor nearestProg = bSplineTrack.getNearestPathProgress(queryPos);
-      assertTrue(Chop._10.close(RealScalar.ZERO, nearestProg));
-    }
+    Tensor queryPos = Tensors.vector(0, 0.5).multiply(meter);
+    Tensor nearestProg = bSplineTrack.getNearestPathProgress(queryPos);
+    assertTrue(Chop._10.allZero(nearestProg));
   }
 }

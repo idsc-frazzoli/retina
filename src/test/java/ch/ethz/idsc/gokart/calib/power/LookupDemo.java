@@ -54,8 +54,8 @@ import ch.ethz.idsc.tensor.sca.Clip;
           MotorFunction::getAccelerationEstimation, 0, //
           dimN, dimN, //
           clip_accels, Chop._03);
-      System.out.println("max acc at v=1 :" + lookUpTable2D.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));
-      System.out.println("max arms at v=1 :" + inverseLookupTable.getExtremalValues(0, Quantity.of(1, SI.VELOCITY)));
+      System.out.println("max acc at v=1 :" + lookUpTable2D.getExtremalValues0(Quantity.of(1, SI.VELOCITY)));
+      System.out.println("max arms at v=1 :" + inverseLookupTable.getExtremalValues0(Quantity.of(1, SI.VELOCITY)));
       System.out.println("set up inverse table");
       {
         Tensor matrix = build(lookUpTable2D::lookup, powers.negate(), speeds);
