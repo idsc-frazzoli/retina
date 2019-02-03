@@ -12,15 +12,14 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.GokartMappingModule;
 import ch.ethz.idsc.gokart.core.map.GokartTrackReconModule;
-import ch.ethz.idsc.gokart.core.map.TrackMapping;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.ManualControlLcmClient;
@@ -64,6 +63,8 @@ public class PresenterLcmModule extends AbstractModule {
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final TrackReconRender trackReconRender = new TrackReconRender();
+  private final GokartTrajectoryModule gokartTrajectoryModule = //
+      ModuleAuto.INSTANCE.getInstance(GokartTrajectoryModule.class);
   private final GokartTrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(GokartTrackReconModule.class);
 
@@ -73,15 +74,13 @@ public class PresenterLcmModule extends AbstractModule {
       ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
     }
+    if (Objects.nonNull(gokartTrajectoryModule))
+      timerFrame.geometricComponent.addRenderInterface(gokartTrajectoryModule.obstacleMapping());
     {
-      if (Objects.nonNull(GokartMappingModule.GRID_RENDER))
-        timerFrame.geometricComponent.addRenderInterface(GokartMappingModule.GRID_RENDER);
-    }
-    {
-      if (Objects.nonNull(TrackMapping.GRID_RENDER))
-        timerFrame.geometricComponent.addRenderInterface(TrackMapping.GRID_RENDER);
-      if (Objects.nonNull(gokartTrackReconModule))
+      if (Objects.nonNull(gokartTrackReconModule)) {
+        timerFrame.geometricComponent.addRenderInterface(gokartTrackReconModule.trackMapping());
         gokartTrackReconModule.listenersAdd(trackReconRender);
+      }
       timerFrame.geometricComponent.addRenderInterface(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
     }

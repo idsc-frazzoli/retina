@@ -37,6 +37,10 @@ public final class GokartTrackReconModule extends AbstractClockedModule implemen
     trackReconManagement = new TrackReconManagement(trackMapping);
   }
 
+  public TrackMapping trackMapping() {
+    return trackMapping;
+  }
+
   @Override // from AbstractModule
   protected void first() throws Exception {
     gokartPoseLcmClient.addListener(this);

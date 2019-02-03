@@ -29,13 +29,10 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** class interprets sensor data from lidar */
-// TODO since this class does not (yet) extend from AbstractModule, the class name is not good
-public class GokartMappingModule implements //
+public class ObstacleMapping implements //
     StartAndStoppable, Region<Tensor>, LidarRayBlockListener, GokartPoseListener, Runnable, RenderInterface {
   // TODO check rationale behind constant 10000!
   private static final int LIDAR_SAMPLES = 10000;
-  /** ferry for visualizing grid in presenter lcm module */
-  public static RenderInterface GRID_RENDER;
   // ---
   private final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
@@ -56,7 +53,7 @@ public class GokartMappingModule implements //
    * with the horizontal plane at height of the lidar */
   private Tensor points3d_ferry = null;
 
-  public GokartMappingModule() {
+  public ObstacleMapping() {
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     // ---
@@ -67,8 +64,6 @@ public class GokartMappingModule implements //
     gokartPoseLcmClient.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
-    // ---
-    GRID_RENDER = bayesianOccupancyGrid;
   }
 
   @Override // from StartAndStoppable
