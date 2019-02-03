@@ -6,13 +6,13 @@ import ch.ethz.idsc.owl.car.core.TrackInterface;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.math.Deadzone;
 import ch.ethz.idsc.owl.math.StateSpaceModel;
-import ch.ethz.idsc.sophus.planar.Cross2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
+import ch.ethz.idsc.tensor.lie.Cross;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Chop;
@@ -85,7 +85,7 @@ public class CarStateSpaceModel implements StateSpaceModel {
         vehicleModel.wheels());
     // ---
     // change of coordinates
-    Tensor ucd = Cross2D.of(carState.u_2d()).multiply(carState.r); // [Ux Uy 0] x [0 0 r]
+    Tensor ucd = Cross.of(carState.u_2d()).multiply(carState.r); // [Ux Uy 0] x [0 0 r]
     Tensor fxu = Join.of( //
         Tensors.of(dux, duy).subtract(ucd), // F/m +
         Tensors.of(dr, carState.r, dp.Get(0), dp.Get(1)), dw);

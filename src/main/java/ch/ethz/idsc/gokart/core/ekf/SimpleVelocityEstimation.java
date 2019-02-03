@@ -7,11 +7,11 @@ import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.planar.Cross2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.lie.Cross;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -77,7 +77,8 @@ public class SimpleVelocityEstimation implements VelocityEstimation, Vmu931ImuFr
     this.angularVelocity = angularVelocity;
     Scalar rdt = angularVelocity.multiply(deltaT);
     // transform old system (compensate for rotation)
-    Tensor vel = velocity.add(Cross2D.of(velocity).multiply(rdt).negate());
+    // TODO MH simplify use subtract instead of add and remove negate...
+    Tensor vel = velocity.add(Cross.of(velocity).multiply(rdt).negate());
     // Tensors.of(vx, vy);
     // System.out.println("Acc: "+accelerations);
     this.velocity = vel.add(accelerations.multiply(deltaT));

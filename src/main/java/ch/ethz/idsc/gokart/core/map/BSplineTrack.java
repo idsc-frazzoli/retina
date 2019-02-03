@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.map;
 
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
-import ch.ethz.idsc.sophus.planar.Cross2D;
 import ch.ethz.idsc.sophus.planar.Det2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -11,6 +10,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Normalize;
 import ch.ethz.idsc.tensor.alg.Range;
+import ch.ethz.idsc.tensor.lie.Cross;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Power;
@@ -113,7 +113,7 @@ public final class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return direction of the path [1] */
   Tensor getLeftDirectionXY(Scalar pathProgress) {
-    return Cross2D.of(getDirectionXY(pathProgress));
+    return Cross.of(getDirectionXY(pathProgress));
   }
 
   /** get the 2nd path derivative with respect to path progress
