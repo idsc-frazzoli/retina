@@ -77,8 +77,7 @@ public class SimpleVelocityEstimation implements VelocityEstimation, Vmu931ImuFr
     this.angularVelocity = angularVelocity;
     Scalar rdt = angularVelocity.multiply(deltaT);
     // transform old system (compensate for rotation)
-    // TODO MH simplify use subtract instead of add and remove negate...
-    Tensor vel = velocity.add(Cross.of(velocity).multiply(rdt).negate());
+    Tensor vel = velocity.add(Cross.of(velocity).multiply(rdt.negate()));
     // Tensors.of(vx, vy);
     // System.out.println("Acc: "+accelerations);
     this.velocity = vel.add(accelerations.multiply(deltaT));

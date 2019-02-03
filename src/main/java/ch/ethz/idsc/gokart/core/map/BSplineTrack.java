@@ -274,17 +274,19 @@ public final class BSplineTrack implements TrackInterface {
         .map(this::getPositionXY);
   }
 
+  // TODO JPH/MH computation is inefficient: left and right line don't reuse the computation of the middle line
+  // and the computation of the normal vector...
   @Override // from TrackInterface
   public Tensor getLineLeft(int resolution) {
     // this is not accurate for large changes in radius
     return Range.of(0, resolution).multiply(RealScalar.of(effPoints / (double) resolution)) //
-        .map(prog -> getPositionXY(prog).subtract(getLeftDirectionXY(prog).multiply(getRadius(prog))));
+        .map(prog -> getPositionXY(prog).add(getLeftDirectionXY(prog).multiply(getRadius(prog))));
   }
 
   @Override // from TrackInterface
   public Tensor getLineRight(int resolution) {
     // this is not accurate for large changes in radius
     return Range.of(0, resolution).multiply(RealScalar.of(effPoints / (double) resolution)) //
-        .map(prog -> getPositionXY(prog).add(getLeftDirectionXY(prog).multiply(getRadius(prog))));
+        .map(prog -> getPositionXY(prog).subtract(getLeftDirectionXY(prog).multiply(getRadius(prog))));
   }
 }

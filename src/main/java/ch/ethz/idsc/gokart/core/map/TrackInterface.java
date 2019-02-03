@@ -10,11 +10,11 @@ public interface TrackInterface {
 
   /** @param resolution
    * @return matrix of dimensions n x 2 */
-  Tensor getLineLeft(int resolution);
+  Tensor getLineRight(int resolution);
 
   /** @param resolution
    * @return matrix of dimensions n x 2 */
-  Tensor getLineRight(int resolution);
+  Tensor getLineLeft(int resolution);
 
   Tensor getNearestPosition(Tensor position);
 
