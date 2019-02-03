@@ -65,6 +65,7 @@ public class CarStateSpaceModel implements StateSpaceModel {
       Tensor torque = tire.torque();
       if (!tire.isTorqueConsistent() || !tire.isFzConsistent()) {
         long toc = System.currentTimeMillis();
+        // TODO magic const
         if (tic + 987 <= toc) {
           tic = toc;
           System.out.println("---");
