@@ -33,7 +33,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final Thread thread = new Thread(this);
-  private boolean running = false;
+  private boolean running = true;
   // private final Timing timing;
   // private boolean useTorqueVectoring;
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
@@ -153,10 +153,6 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     // ---
     LinmotSocket.INSTANCE.addPutProvider(mpcLinmotProvider);
     //
-    running = true;
-    thread.start();
-    // ---
-    System.out.println("Scheduling Timer: start");
     lcmMPCPathFollowingClient.registerControlUpdateLister(new MPCControlUpdateListenerWithAction() {
       @Override
       void doAction() {
@@ -165,6 +161,10 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
         thread.interrupt();
       }
     });
+    thread.start();
+    // ---
+    System.out.println("Scheduling Timer: start");
+
   }
 
   @Override
@@ -205,5 +205,6 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
         // sleep is interrupted once data arrives
       }
     }
+    System.out.println("Thread terminated");
   }
 }
