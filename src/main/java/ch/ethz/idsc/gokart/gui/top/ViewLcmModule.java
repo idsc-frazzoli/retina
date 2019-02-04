@@ -7,11 +7,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
@@ -34,7 +32,6 @@ import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.planar.Arrowhead;
@@ -65,9 +62,7 @@ abstract class ViewLcmModule extends AbstractModule {
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
-  private final TrackReconRender trackReconRender = new TrackReconRender();
-  private final TrackReconModule gokartTrackReconModule = //
-      ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
+  public final TrackReconRender trackReconRender = new TrackReconRender();
   // ---
   private MappedPoseInterface mappedPoseInterface;
 
@@ -128,17 +123,8 @@ abstract class ViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
-    {
-      if (Objects.nonNull(gokartTrackReconModule))
-        gokartTrackReconModule.listenersAdd(trackReconRender);
-      viewLcmFrame.geometricComponent.addRenderInterface(trackReconRender);
-      // TrackRender trackRender = new TrackRender();
-      // trackRender.setTrack(DubendorfTrack.CHICANE.bSplineTrack());
-      // viewLcmFrame.geometricComponent.addRenderInterface(trackRender);
-    }
-    {
-      viewLcmFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
-    }
+    viewLcmFrame.geometricComponent.addRenderInterface(trackReconRender);
+    viewLcmFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
       trajectoryLcmClients.forEach(trajectoryLcmClient -> trajectoryLcmClient.addListener(trajectoryRender));
@@ -182,8 +168,8 @@ abstract class ViewLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void last() {
     viewLcmFrame.close();
-    if (Objects.nonNull(gokartTrackReconModule))
-      gokartTrackReconModule.listenersRemove(trackReconRender);
+    // if (Objects.nonNull(trackReconModule))
+    // trackReconModule.listenersRemove(trackReconRender);
   }
 
   private void private_windowClosed() {
