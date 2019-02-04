@@ -45,6 +45,7 @@ public class LocalViewLcmModule extends AbstractModule {
     gokartPoseLcmClient.addListener(simpleVelocityEstimation);
     gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
+    rimoGetLcmClient.addListener(mpcExpectationRender);
     rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
     linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
     gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
