@@ -17,6 +17,7 @@ import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.GridRender;
@@ -24,6 +25,7 @@ import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
@@ -47,11 +49,14 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final IntervalClock intervalClock = new IntervalClock();
   private final List<MPCBSplineTrackListener> listeners = new CopyOnWriteArrayList<>();
   private final TrackReconRender trackReconRender = new TrackReconRender();
+  private final GlobalViewLcmModule globalViewLcmModule = //
+      ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
   // TODO JPH/MH flag start has to be set to true before active mode
   private boolean flagStart = true;
-  private TrackReconMode trackReconMode = TrackReconMode.ACTIVE_SEND_LATEST;
+  // TODO JPH/MH use toggle button instead
+  private TrackReconMode trackReconMode = TrackReconMode.ACTIVE;
   private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
   public TrackReconModule() {
@@ -74,6 +79,10 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       timerFrame.geometricComponent.addRenderInterface(trackReconManagement.getTrackLayoutInitialGuess());
     }
     {
+      if (Objects.nonNull(globalViewLcmModule))
+        listenersAdd(globalViewLcmModule.trackReconRender);
+    }
+    {
       JButton jButton = new JButton("reset & flag start");
       jButton.addActionListener(actionEvent -> resetFlagStart());
       timerFrame.jToolBar.add(jButton);
@@ -88,7 +97,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       spinnerLabel.setArray(TrackReconMode.values());
       spinnerLabel.setIndex(trackReconMode.ordinal());
       spinnerLabel.addSpinnerListener(this::setMode);
-      spinnerLabel.addToComponentReduced(timerFrame.jToolBar, new Dimension(200, 26), "");
+      spinnerLabel.addToComponentReduced(timerFrame.jToolBar, new Dimension(100, 26), "");
     }
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
@@ -107,6 +116,8 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private void private_windowClosed() {
     trackMapping.stop();
     listenersRemove(trackReconRender);
+    if (Objects.nonNull(globalViewLcmModule))
+      listenersRemove(globalViewLcmModule.trackReconRender);
     gokartPoseLcmClient.stopSubscriptions();
     terminate();
   }
@@ -138,10 +149,10 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
     }
     // ---
-    Optional<MPCBSplineTrack> sendTrack = trackReconMode.isSendLast() //
-        ? lastTrack
-        : Optional.empty();
-    listeners.forEach(listener -> listener.mpcBSplineTrack(sendTrack));
+    // Optional<MPCBSplineTrack> sendTrack = trackReconMode.isSendLast() //
+    // ? lastTrack
+    // : Optional.empty();
+    listeners.forEach(listener -> listener.mpcBSplineTrack(lastTrack));
   }
 
   @Override // from AbstractClockedModule

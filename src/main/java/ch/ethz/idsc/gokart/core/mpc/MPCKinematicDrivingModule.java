@@ -164,7 +164,6 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     thread.start();
     // ---
     System.out.println("Scheduling Timer: start");
-
   }
 
   @Override
