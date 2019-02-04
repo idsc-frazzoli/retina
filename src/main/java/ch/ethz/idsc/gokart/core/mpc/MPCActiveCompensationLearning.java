@@ -39,7 +39,7 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
   IntervalClock rimoClock = new IntervalClock();
   private Scalar lastTangentSpeed = Quantity.of(0, SI.VELOCITY);
   private final GeodesicIIR1Filter accelerationFilter = //
-      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(.02));
+      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(.05));
   private Scalar rimoAcceleration = Quantity.of(0, SI.ACCELERATION);
   private Scalar realRotationRate = Quantity.of(0, SI.PER_SECOND);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
@@ -59,13 +59,14 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
     Scalar deltaT = Quantity.of(seconds, SI.SECOND);
     RimoSocket.INSTANCE.getClass();
     if (Objects.nonNull(lastCNS) && running) {
-      boolean linmotControlled = LinmotSocket.INSTANCE.getPutProviderDesc().equals("mpc");
-      boolean rimoControlled = RimoSocket.INSTANCE.getPutProviderDesc().equals("mpc");
+      boolean linmotControlled = LinmotSocket.INSTANCE.getPutProviderDesc().equals(MPCLinmotProvider.class.getSimpleName());
+      boolean rimoControlled = RimoSocket.INSTANCE.getPutProviderDesc().equals(MPCRimoProvider.class.getSimpleName());
       Scalar wantedAcceleration = lastCNS.steps[0].control.getaB();
       if (rimoControlled && linmotControlled && Scalars.lessThan(wantedAcceleration, BRAKINGTHRESHOLD)) {
         // correct
         Scalar accelerationError = rimoAcceleration.subtract(wantedAcceleration);
         correctNegativeAcceleration(accelerationError, rimoAcceleration, deltaT);
+        System.out.println("corrected: "+ brakingCorrection);
       }
       // Scalar
       boolean steeringControlled = SteerSocket.INSTANCE.getPutProviderDesc().equals("mpc");
