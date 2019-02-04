@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.core.ekf.VelocityEstimationConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
+import ch.ethz.idsc.gokart.core.mpc.MPCActiveCompensationLearningConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
@@ -45,5 +46,6 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
       MappingConfig.GLOBAL, //
       VelocityEstimationConfig.GLOBAL, //
       DavisSlamPrcConfig.GLOBAL, //
-      DavisSlamCoreConfig.GLOBAL);
+      DavisSlamCoreConfig.GLOBAL, //
+      MPCActiveCompensationLearningConfig.GLOBAL);
 }
