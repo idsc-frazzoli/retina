@@ -4,8 +4,6 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Objects;
 //Not in use yet
 import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
@@ -22,24 +20,26 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.red.Max;
 
-public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSplineTrackListener {
+public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSplineTrackListener, Runnable {
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
-  private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
+  // private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
+  private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
-  private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
+  // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
+  private final MPCBraking mpcBraking = new MPCAggressiveCorrectedTorqueVectoringBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
-  private final Timing timing;
+  private final Thread thread = new Thread(this);
+  private boolean running = true;
+  // private final Timing timing;
   // private boolean useTorqueVectoring;
-  private Timer timer = new Timer();
   private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
   private Optional<MPCBSplineTrack> mpcBSplineTrack = Optional.empty();
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  private TimerTask controlRequestTask;
   final MPCRimoProvider mpcRimoProvider;
   private final MPCSteerProvider mpcSteerProvider;
   final MPCLinmotProvider mpcLinmotProvider;
@@ -65,8 +65,8 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
    * @param timing that shows the same time that also was used for the custom estimator */
   MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing, MPCPreviewableTrack track) {
     mpcStateEstimationProvider = estimator;
-    this.timing = timing;
     this.track = track;
+    // this.timing = timing;
     // link mpc steering
     // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
     mpcPower = new MPCAggressiveTorqueVectoringPower(mpcSteering);
@@ -82,6 +82,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcPower);
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcBraking);
     lcmMPCPathFollowingClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
+    lcmMPCPathFollowingClient.registerControlUpdateLister(MPCActiveCompensationLearning.getInstance());
     // state estimation provider
     mpcBraking.setStateProvider(mpcStateEstimationProvider);
     mpcPower.setStateProvider(mpcStateEstimationProvider);
@@ -143,6 +144,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     // ---
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
+    MPCActiveCompensationLearning.getInstance().setActive(true);
     manualControlProvider.start();
     // ---
     SteerSocket.INSTANCE.addPutProvider(mpcSteerProvider);
@@ -150,45 +152,34 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     RimoSocket.INSTANCE.addPutProvider(mpcRimoProvider);
     // ---
     LinmotSocket.INSTANCE.addPutProvider(mpcLinmotProvider);
-    // ---
-    controlRequestTask = new TimerTask() {
-      @Override
-      public void run() {
-        requestControl();
-      }
-    };
-    System.out.println("Scheduling Timer: start");
-    long millis = Magnitude.MILLI_SECOND.toLong(mpcPathFollowingConfig.updateCycle);
-    timer.schedule(controlRequestTask, millis, millis); // use update cycle at startup
+    //
     lcmMPCPathFollowingClient.registerControlUpdateLister(new MPCControlUpdateListenerWithAction() {
       @Override
       void doAction() {
         // we got an update
-        // System.out.println("re-scheduling timer");
-        timer.cancel();
-        timer = new Timer();
-        controlRequestTask = new TimerTask() {
-          @Override
-          public void run() {
-            requestControl();
-          }
-        };
-        long delay_ms = Magnitude.MILLI_SECOND.toLong(mpcPathFollowingConfig.updateDelay);
-        long cycle_ms = Magnitude.MILLI_SECOND.toLong(mpcPathFollowingConfig.updateCycle);
-        timer.schedule(controlRequestTask, delay_ms, cycle_ms);
+        // interupt
+        thread.interrupt();
       }
     });
+    thread.start();
+    // ---
+    System.out.println("Scheduling Timer: start");
+
   }
 
   @Override
   protected void last() {
     System.out.println("cancel timer: ending");
-    timer.cancel();
+    running = false;
+    thread.interrupt();
+    // ---
     LinmotSocket.INSTANCE.removePutProvider(mpcLinmotProvider);
     // ---
     SteerSocket.INSTANCE.removePutProvider(mpcSteerProvider);
     // ---
     RimoSocket.INSTANCE.removePutProvider(mpcRimoProvider);
+    //
+    MPCActiveCompensationLearning.getInstance().setActive(false);
     // ---
     lcmMPCPathFollowingClient.stop();
     mpcStateEstimationProvider.last();
@@ -202,5 +193,18 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
     System.out.println("kinematic mpc bspline track, present=" + optional.isPresent());
     this.mpcBSplineTrack = optional;
+  }
+
+  @Override
+  public void run() {
+    while (running) {
+      requestControl();
+      try {
+        Thread.sleep(Magnitude.MILLI_SECOND.toLong(mpcPathFollowingConfig.updateCycle));
+      } catch (InterruptedException e) {
+        // sleep is interrupted once data arrives
+      }
+    }
+    System.out.println("Thread terminated");
   }
 }

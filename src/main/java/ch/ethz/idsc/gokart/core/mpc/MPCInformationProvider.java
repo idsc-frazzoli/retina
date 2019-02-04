@@ -3,14 +3,19 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** singleton instance */
 public class MPCInformationProvider extends MPCControlUpdateListener {
   private final static MPCInformationProvider INSTANCE = new MPCInformationProvider();
+  private final static Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
+  private final static Scalar NOSTEERING = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
 
   public static MPCInformationProvider getInstance() {
     return INSTANCE;
@@ -49,6 +54,24 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
       return accelerations;
     }
     return Tensors.empty();
+  }
+
+  public Boolean mpcAvailable() {
+    return Objects.nonNull(cns);
+  }
+
+  public Scalar getFirstWantedAcceleration() {
+    if (Objects.nonNull(cns))
+      return cns.steps[0].control.getaB();
+    else
+      return NOACCELERATION;
+  }
+
+  public Scalar getFirstWantedSteering() {
+    if (Objects.nonNull(cns))
+      return cns.steps[0].state.getS();
+    else
+      return NOSTEERING;
   }
 
   /** get the poses at steps in {x,y,a} */
