@@ -30,7 +30,7 @@ public class MPCExpectationRender implements RenderInterface, RimoGetListener {
   private final IntervalClock rimoClock = new IntervalClock();
   private Scalar lastTangentSpeed = Quantity.of(0, SI.VELOCITY);
   private final GeodesicIIR1Filter accelerationFilter = //
-      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(.02));
+      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(.1));
 
   public MPCExpectationRender(Tensor xya) {
     this.xya = xya;
@@ -42,13 +42,13 @@ public class MPCExpectationRender implements RenderInterface, RimoGetListener {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     geometricLayer.pushMatrix(DIAGONAL);
     // rimo line
-    Tensor rimoAccXY = Tensors.of(currentRimoAcc, Quantity.of(0, SI.ONE));
+    Tensor rimoAccXY = Tensors.of(Quantity.of(currentRimoAcc.number(), SI.ONE), Quantity.of(0, SI.ONE));
     geometricLayer.pushMatrix(Se2Utils.toSE2Translation(rimoAccXY));
     graphics.setColor(Color.BLUE);
     graphics.draw(geometricLayer.toPath2D(RIMOLINE));
     geometricLayer.popMatrix();
     // mpc line
-    Tensor mpcAccXY = Tensors.of(currentMPCAcc, Quantity.of(0, SI.ONE));
+    Tensor mpcAccXY = Tensors.of(Quantity.of(currentMPCAcc.number(), SI.ONE), Quantity.of(0, SI.ONE));
     geometricLayer.pushMatrix(Se2Utils.toSE2Translation(mpcAccXY));
     graphics.setColor(Color.RED);
     graphics.draw(geometricLayer.toPath2D(MPCLINE));
@@ -64,6 +64,7 @@ public class MPCExpectationRender implements RenderInterface, RimoGetListener {
     Scalar acceleration = currentTangentSpeed//
         .subtract(lastTangentSpeed)//
         .divide(Quantity.of(rimoClock.seconds(), SI.SECOND));
+    lastTangentSpeed = currentTangentSpeed;
     currentRimoAcc = (Scalar) accelerationFilter.apply(acceleration);
   }
 }
