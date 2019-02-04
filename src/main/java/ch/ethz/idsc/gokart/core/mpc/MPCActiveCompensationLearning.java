@@ -69,7 +69,7 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
         Scalar accelerationError = rimoAcceleration.subtract(wantedAcceleration);
         correctNegativeAcceleration(accelerationError, wantedAcceleration, deltaT);
         brakingCorrection = Max.of(MINVAL, brakingCorrection);
-        brakingCorrection = Quantity.of(1.4, SI.ONE);
+        brakingCorrection = MPCActiveCompensationLearningConfig.GLOBAL.fixedCorrection;
         System.out.println("error: "+accelerationError+"corrected: "+ brakingCorrection);
       }
       // Scalar
