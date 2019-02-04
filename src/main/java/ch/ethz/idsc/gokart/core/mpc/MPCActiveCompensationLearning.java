@@ -22,6 +22,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Tan;
 
 public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithAction implements RimoGetListener {
@@ -49,7 +50,8 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
       realRotationRate = (Scalar) vmu931ImuFrame.gyroZ();
     }
   };
-  private final static Scalar BRAKINGTHRESHOLD = Quantity.of(0, SI.ACCELERATION);
+  private final static Scalar BRAKINGTHRESHOLD = Quantity.of(-1, SI.ACCELERATION);
+  private final static Scalar MINVAL = Quantity.of(0.5, SI.ONE);
   Scalar steeringCorrection = RealScalar.ONE;
   Scalar brakingCorrection = RealScalar.ONE;
 
@@ -65,8 +67,10 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
       if (rimoControlled && linmotControlled && Scalars.lessThan(wantedAcceleration, BRAKINGTHRESHOLD)) {
         // correct
         Scalar accelerationError = rimoAcceleration.subtract(wantedAcceleration);
-        correctNegativeAcceleration(accelerationError, rimoAcceleration, deltaT);
-        System.out.println("corrected: "+ brakingCorrection);
+        correctNegativeAcceleration(accelerationError, wantedAcceleration, deltaT);
+        brakingCorrection = Max.of(MINVAL, brakingCorrection);
+        brakingCorrection = MPCActiveCompensationLearningConfig.GLOBAL.fixedCorrection;
+        System.out.println("error: " + accelerationError + "corrected: " + brakingCorrection);
       }
       // Scalar
       boolean steeringControlled = SteerSocket.INSTANCE.getPutProviderDesc().equals("mpc");
@@ -87,7 +91,8 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
    * @param absoluteAcceleration [m*s^-2]
    * @param deltaT [s] */
   private void correctNegativeAcceleration(Scalar accelerationError, Scalar absoluteAcceleration, Scalar deltaT) {
-    Scalar correctionStep = accelerationError.negate().multiply(absoluteAcceleration).multiply(deltaT);
+    Scalar correctionRate = MPCActiveCompensationLearningConfig.GLOBAL.negativeAccelerationCorrectionRate;
+    Scalar correctionStep = accelerationError.negate().multiply(absoluteAcceleration).multiply(deltaT).multiply(correctionRate);
     brakingCorrection = brakingCorrection.add(correctionStep);
   }
 
@@ -132,5 +137,6 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
         .subtract(lastTangentSpeed)//
         .divide(Quantity.of(rimoClock.seconds(), SI.SECOND));
     rimoAcceleration = (Scalar) accelerationFilter.apply(acceleration);
+    lastTangentSpeed = currentTangentSpeed;
   }
 }

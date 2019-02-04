@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
@@ -21,20 +22,20 @@ public class MPCOptimizationConfig {
   public Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
   /** The limit for the Go-kart longitudonal acceleration */
   @FieldSubdivide(start = "3f[m*s^-2]", end = "15[m*s^-2]", intervals = 48)
-  public Scalar maxLatAcc = Quantity.of(6, SI.ACCELERATION);
+  public Scalar maxLatAcc = Quantity.of(6.25, SI.ACCELERATION);
   /** The limit for the Go-kart lateral acceleration */
   @FieldSubdivide(start = "3f[m*s^-2]", end = "15[m*s^-2]", intervals = 48)
-  public Scalar maxLonAcc = Quantity.of(5, SI.ACCELERATION);
+  public Scalar maxLonAcc = Quantity.of(4.0, SI.ACCELERATION);
   /** The maximum corrected acceleration value for the front axle (to avoid understeering) */
   @FieldSubdivide(start = "3f[m*s^-2]", end = "15[m*s^-2]", intervals = 48)
   public Scalar latAccLim = Quantity.of(5, SI.ACCELERATION);
   /** The maximum corrected acceleration value for the front axle (to avoid understeering)
    * Why is this m? -> Acceleration/Rotational Acceleration -> m/s^2/(1/s^2)=m */
   @FieldSubdivide(start = "0f[m]", end = "5f[m]", intervals = 50)
-  public Scalar rotAccEffect = Quantity.of(1, SI.METER);
+  public Scalar rotAccEffect = Quantity.of(2, SI.METER);
   /** the amount of additional front acceleration capacity the torque vectoring can add */
   @FieldSubdivide(start = "0f[m*s^-2]", end = "10f[m*s^-2]", intervals = 50)
-  public Scalar torqueVecEffect = Quantity.of(0, SI.ACCELERATION);
+  public Scalar torqueVecEffect = Quantity.of(3, SI.ACCELERATION);
   /** the amount of additional front acceleration capacity strong braking can have
    * suggestion: low priority (braking can be done in a straight line */
   @FieldSubdivide(start = "0f[1]", end = "2[1]", intervals = 20)
@@ -44,12 +45,12 @@ public class MPCOptimizationConfig {
   /** The wait time after a successful optimization */
   public Scalar updateDelay = Quantity.of(0.0, SI.SECOND);
   /** Steering anti-lag */
-  public Scalar steerAntiLag = Quantity.of(0.4, SI.SECOND);
+  public Scalar steerAntiLag = Quantity.of(0.2, SI.SECOND);
   /** Braking anti-lag */
   public Scalar brakingAntiLag = Quantity.of(0.1, SI.SECOND);
   /** Padding */
   @FieldSubdivide(start = "0f[m]", end = "2[m]", intervals = 20)
-  public Scalar padding = Quantity.of(1, SI.METER);
+  public Scalar padding = Quantity.of(0.8, SI.METER);
   @FieldSubdivide(start = "0f", end = "1", intervals = 10)
-  public Scalar qpFactor = Quantity.of(1, SI.ONE);
+  public Scalar qpFactor = RealScalar.of(0);
 }
