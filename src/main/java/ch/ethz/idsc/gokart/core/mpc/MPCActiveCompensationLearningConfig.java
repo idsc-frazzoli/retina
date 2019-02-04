@@ -13,4 +13,6 @@ public class MPCActiveCompensationLearningConfig {
   public Scalar negativeAccelerationCorrectionRate = Quantity.of(0, SI.ACCELERATION.negate().multiply(RealScalar.of(2)).add(SI.PER_SECOND));
   /** how fast is the steering corrected scaled by steering rate (rotation per meter driven [m^-1]) */
   public Scalar steeringCorrectionRate = Quantity.of(0, SI.SECOND.add(SI.METER).add(SI.PER_SECOND));// ->gives us [m]
+  /** fixed correction rate for braking */
+  public Scalar fixedCorrection = Quantity.of(1.4, SI.ONE);
 }
