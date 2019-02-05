@@ -46,6 +46,12 @@ Navigation
 
 [Pure pursuit, also reverse](https://www.youtube.com/watch?v=H0qwudAnM48)
 
+<td>
+
+![gokart_mpc](https://user-images.githubusercontent.com/4012178/52276469-9d063e80-2952-11e9-8ce8-9f652238a0d8.png)
+
+MPC [outside](https://www.youtube.com/watch?v=B0QmMS1Dp8E), [inside](https://www.youtube.com/watch?v=N_GqjWpRkR4) view
+
 </tr>
 </table>
 

@@ -66,7 +66,7 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
         // correct
         Scalar accelerationError = rimoAcceleration.subtract(wantedAcceleration);
         correctNegativeAcceleration(accelerationError, rimoAcceleration, deltaT);
-        System.out.println("corrected: "+ brakingCorrection);
+        System.out.println("corrected: " + brakingCorrection);
       }
       // Scalar
       boolean steeringControlled = SteerSocket.INSTANCE.getPutProviderDesc().equals("mpc");
