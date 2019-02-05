@@ -1353,6 +1353,62 @@ public enum GokartLogFile implements LogFile {
   /** pure pursuit forward and reverse up to 6[m/s] */
   _20190128T171650_f558b2d4,
   /***************************************************/
+  /* 2019-01-31 */
+  /** mpc */
+  _20190131T105100_cb553d2c,
+  /** mpc */
+  _20190131T110019_cb553d2c,
+  /** mpc */
+  _20190131T115309_cb553d2c,
+  /** mpc */
+  _20190131T151301_76c01162,
+  /** mpc */
+  _20190131T152406_76c01162,
+  /** pure pursuit, manual driving */
+  _20190131T160439_9b9dc0ca,
+  /** manual driving */
+  _20190131T161655_9b9dc0ca,
+  /***************************************************/
+  /* 2019-02-04 */
+  /** pushing gokart manually to test track recon module */
+  _20190204T092436_a07a8452,
+  /** pure pursuit demo for visitor group */
+  _20190204T104424_a07a8452,
+  /** manual driving, mpc */
+  _20190204T125814_ee446e1c,
+  /** mpc */
+  _20190204T130517_ee446e1c,
+  /** manual driving, mpc */
+  _20190204T135550_2393d562,
+  /** mpc */
+  _20190204T140137_2393d562,
+  /** mpc */
+  _20190204T143908_e9fccdaa,
+  /** mpc */
+  _20190204T144259_e9fccdaa,
+  /** mpc */
+  _20190204T145011_e9fccdaa,
+  /** pure pursuit */
+  _20190204T145317_e9fccdaa,
+  /** mpc */
+  _20190204T145612_e9fccdaa,
+  /** mpc */
+  _20190204T150553_e9fccdaa,
+  /** mpc */
+  _20190204T151113_e9fccdaa,
+  /** mpc */
+  _20190204T154239_e9fccdaa,
+  /** mpc */
+  _20190204T155454_e9fccdaa,
+  /** mpc */
+  _20190204T160247_e9fccdaa,
+  /** mpc */
+  _20190204T161100_e9fccdaa,
+  /** pure pursuit */
+  _20190204T172205_e9fccdaa,
+  /** mpc, pure pursuit, manual driving */
+  _20190204T185052_fdc1b4b9,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
