@@ -125,7 +125,9 @@ public class GokartLcmLogCutter {
           new LcmLogFileCutter(gokartLogFileIndexer.file(), navigableMap) {
             @Override
             public File filename(int count) {
-              File folder = new File(export_root, String.format("%s_%d", title, count + 1));
+              File date = new File(export_root, String.format("%s", title.substring(0, 8)));
+              date.mkdir();
+              File folder = new File(date, String.format("%s_%02d", title, count));
               folder.mkdir();
               if (!folder.isDirectory())
                 throw new RuntimeException();

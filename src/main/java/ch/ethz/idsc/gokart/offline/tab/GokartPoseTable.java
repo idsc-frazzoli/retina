@@ -37,6 +37,7 @@ public class GokartPoseTable implements OfflineTableSupplier {
   // ---
   private Scalar time_next = ZERO_SECOND;
 
+  /** @param delta with unit [s] */
   public GokartPoseTable(Scalar delta) {
     this.delta = Sign.requirePositiveOrZero(delta);
   }
