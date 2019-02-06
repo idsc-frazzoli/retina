@@ -2,11 +2,18 @@
 package ch.ethz.idsc.demo.jph;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.gokart.offline.tab.GokartPoseTable;
-import ch.ethz.idsc.gokart.offline.tab.RimoGetChannel;
+import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
+import ch.ethz.idsc.gokart.offline.channel.RimoGetChannel;
+import ch.ethz.idsc.gokart.offline.channel.RimoPutChannel;
+import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
+import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
+import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.tensor.io.Export;
 
@@ -16,18 +23,27 @@ enum DynamicsConversion {
   private static final File DEST = new File("/media/datahaki/data/gokart/dynamics");
 
   public static void main(String[] args) {
+    List<SingleChannelInterface> singleChannelInterfaces = new LinkedList<>();
+    singleChannelInterfaces.add(new GokartPoseChannel());
+    singleChannelInterfaces.add(new RimoPutChannel());
+    singleChannelInterfaces.add(new RimoGetChannel());
+    singleChannelInterfaces.add(new SteerPutChannel());
+    singleChannelInterfaces.add(new SteerGetChannel());
+    // ---
     for (File folder : ROOT.listFiles()) {
       for (File cut : folder.listFiles()) {
         System.out.println(cut);
         File dest = new File(DEST, cut.getName());
         dest.mkdir();
         File file = new File(cut, "log.lcm");
-        OfflineTableSupplier pose = GokartPoseTable.all();
-        OfflineTableSupplier rimoPut = new SingleChannelTable(new RimoGetChannel());
+        List<OfflineTableSupplier> offlineTableSuppliers = //
+            singleChannelInterfaces.stream().map(SingleChannelTable::of).collect(Collectors.toList());
         try {
-          OfflineLogPlayer.process(file, pose, rimoPut);
-          Export.of(new File(dest, "pose.csv.gz"), pose.getTable());
-          Export.of(new File(dest, "rimoPut.csv.gz"), rimoPut.getTable());
+          OfflineLogPlayer.process(file, offlineTableSuppliers);
+          for (int index = 0; index < singleChannelInterfaces.size(); ++index)
+            Export.of( //
+                new File(dest, singleChannelInterfaces.get(index).channel() + ".csv.gz"), //
+                offlineTableSuppliers.get(index).getTable());
         } catch (Exception exception) {
           exception.printStackTrace();
         }

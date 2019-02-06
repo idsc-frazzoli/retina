@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.offline.tab;
+package ch.ethz.idsc.gokart.offline.channel;
 
 import java.nio.ByteBuffer;
 
