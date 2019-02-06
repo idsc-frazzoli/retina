@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
+import ch.ethz.idsc.gokart.offline.channel.GokartStatusChannel;
+import ch.ethz.idsc.gokart.offline.channel.LinmotGetChannel;
+import ch.ethz.idsc.gokart.offline.channel.LinmotPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
@@ -25,10 +28,13 @@ enum DynamicsConversion {
   public static void main(String[] args) {
     List<SingleChannelInterface> singleChannelInterfaces = new LinkedList<>();
     singleChannelInterfaces.add(new GokartPoseChannel());
+    singleChannelInterfaces.add(new GokartStatusChannel());
     singleChannelInterfaces.add(new RimoPutChannel());
     singleChannelInterfaces.add(new RimoGetChannel());
     singleChannelInterfaces.add(new SteerPutChannel());
     singleChannelInterfaces.add(new SteerGetChannel());
+    singleChannelInterfaces.add(new LinmotPutChannel());
+    singleChannelInterfaces.add(new LinmotGetChannel());
     // ---
     for (File folder : ROOT.listFiles()) {
       for (File cut : folder.listFiles()) {
