@@ -20,7 +20,7 @@ public class GokartPoseChannelTest extends TestCase {
   public void testSimple() throws IOException {
     GokartLogInterface gokartLogInterface = GokartLogAdapterTest.FULL;
     // ---
-    OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(new GokartPoseChannel());
+    OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
     assertEquals(Dimensions.of(tensor), Arrays.asList(36, 5));

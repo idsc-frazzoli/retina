@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
         System.out.println(folder);
         GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
         // ---
-        OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(new GokartPoseChannel());
+        OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
         OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
         Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
         Export.of(new File(dest, folder.getName() + ".csv"), tensor);

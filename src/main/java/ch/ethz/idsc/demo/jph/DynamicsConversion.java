@@ -27,7 +27,7 @@ enum DynamicsConversion {
 
   public static void main(String[] args) {
     List<SingleChannelInterface> singleChannelInterfaces = new LinkedList<>();
-    singleChannelInterfaces.add(new GokartPoseChannel());
+    singleChannelInterfaces.add(GokartPoseChannel.INSTANCE);
     singleChannelInterfaces.add(new GokartStatusChannel());
     singleChannelInterfaces.add(new RimoPutChannel());
     singleChannelInterfaces.add(new RimoGetChannel());

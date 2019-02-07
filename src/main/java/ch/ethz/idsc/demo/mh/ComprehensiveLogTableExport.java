@@ -51,7 +51,7 @@ public class ComprehensiveLogTableExport {
     // RimoSlipTable rimoSlipTable = new RimoSlipTable(PERIOD);
     // LocalizationTable localizationTable = new LocalizationTable(PERIOD, true);
     OfflineTableSupplier velodyneLocalizationTable = SingleChannelTable.of(new VelodyneLocalizationChannel());
-    OfflineTableSupplier gokartPoseTable = SingleChannelTable.of(new GokartPoseChannel());
+    OfflineTableSupplier gokartPoseTable = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
     //
     OfflineLogPlayer.process(file, //
         davisImuTable, //
