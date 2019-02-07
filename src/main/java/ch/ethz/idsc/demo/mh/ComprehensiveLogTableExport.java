@@ -5,13 +5,15 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.tab.DavisImuTable;
-import ch.ethz.idsc.gokart.offline.tab.GokartPoseTable;
 import ch.ethz.idsc.gokart.offline.tab.LinmotPassiveStatusTable;
 import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
 import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoOdometryTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
+import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.gokart.offline.tab.VelodyneLocalizationTable;
 import ch.ethz.idsc.gokart.offline.tab.Vmu931ImuTable;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -50,7 +52,7 @@ public class ComprehensiveLogTableExport {
     // RimoSlipTable rimoSlipTable = new RimoSlipTable(PERIOD);
     // LocalizationTable localizationTable = new LocalizationTable(PERIOD, true);
     VelodyneLocalizationTable velodyneLocalizationTable = new VelodyneLocalizationTable(PERIOD);
-    GokartPoseTable gokartPoseTable = new GokartPoseTable(PERIOD);
+    OfflineTableSupplier gokartPoseTable = SingleChannelTable.of(new GokartPoseChannel());
     //
     OfflineLogPlayer.process(file, //
         davisImuTable, //

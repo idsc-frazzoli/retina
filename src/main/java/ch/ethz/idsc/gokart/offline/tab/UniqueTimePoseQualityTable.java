@@ -18,9 +18,7 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-/** TimePoseQualityTable only exports unique pose messages
- * 
- * @see GokartPoseTable */
+/** TimePoseQualityTable only exports unique pose messages */
 public class UniqueTimePoseQualityTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private Tensor last = Tensors.empty();
