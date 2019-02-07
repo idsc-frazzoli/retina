@@ -9,12 +9,12 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineIndex;
-import ch.ethz.idsc.gokart.offline.tab.DavisImuTable;
-import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
+import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** export of davis240c imu content to determine accuracy of measurements.
  * subsequently, the gyro readings are used to stabilize the lidar based
@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       System.out.println(folder);
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
-      DavisImuTable davisImuTable = new DavisImuTable(Quantity.of(0, SI.SECOND));
+      OfflineTableSupplier davisImuTable = SingleChannelTable.of(new DavisImuChannel());
       OfflineLogPlayer.process(gokartLogInterface.file(), davisImuTable);
       Export.of(HomeDirectory.file(folder.getName() + ".csv"), davisImuTable.getTable().map(CsvFormat.strict()));
     }

@@ -8,12 +8,12 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineIndex;
-import ch.ethz.idsc.gokart.offline.tab.DavisImuTable;
-import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
+import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** investigation of temporal regularity/sampling rate of davis240c imu measurements
  * as the samples enhance the lidar based localization algorithm */
@@ -27,7 +27,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       System.out.println(name);
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
-      DavisImuTable davisImuTable = new DavisImuTable(Quantity.of(0, SI.SECOND));
+      OfflineTableSupplier davisImuTable = SingleChannelTable.of(new DavisImuChannel());
       OfflineLogPlayer.process(gokartLogInterface.file(), davisImuTable);
       Export.of(HomeDirectory.file("csv/" + name + ".csv"), davisImuTable.getTable().map(CsvFormat.strict()));
     }

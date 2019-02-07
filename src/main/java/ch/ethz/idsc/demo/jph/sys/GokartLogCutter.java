@@ -8,10 +8,10 @@ import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.gokart.offline.gui.GokartLcmLogCutter;
 import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
 
-enum GokartLogCutter {
+/* package */ enum GokartLogCutter {
   ;
   public static void main(String[] args) throws IOException {
-    GokartLogFile gokartLogFile = GokartLogFile._20190204T185052_fdc1b4b9;
+    GokartLogFile gokartLogFile = GokartLogFile._20190204T172205_e9fccdaa;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
     // file = new File("/media/datahaki/media/ethz/gokart/topic/mapping/20180924T104243_1/log.lcm");
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
