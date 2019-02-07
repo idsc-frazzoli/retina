@@ -15,7 +15,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO export more info
-public class VelodyneLocalizationChannel implements SingleChannelInterface {
+public enum VelodyneLocalizationChannel implements SingleChannelInterface {
+  INSTANCE;
+  // ---
   @Override // from SingleChannelInterface
   public String channel() {
     return VelodyneLcmChannels.pos(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);

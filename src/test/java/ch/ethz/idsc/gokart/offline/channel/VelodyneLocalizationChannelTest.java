@@ -17,7 +17,7 @@ public class VelodyneLocalizationChannelTest extends TestCase {
   public void testSimple() throws IOException {
     GokartLogInterface gokartLogInterface = GokartLogAdapterTest.FULL;
     // ---
-    OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(new VelodyneLocalizationChannel());
+    OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(VelodyneLocalizationChannel.INSTANCE);
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
     assertEquals(tensor.length(), 102);

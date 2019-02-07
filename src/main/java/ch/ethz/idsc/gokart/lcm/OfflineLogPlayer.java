@@ -54,6 +54,7 @@ public enum OfflineLogPlayer {
         }
       }
     } catch (Exception exception) {
+      log.close();
       if (!END_OF_FILE.equals(exception.getMessage()))
         throw exception;
     }

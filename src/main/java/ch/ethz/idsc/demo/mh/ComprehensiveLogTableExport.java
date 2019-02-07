@@ -50,7 +50,7 @@ public class ComprehensiveLogTableExport {
     RimoRateTable rimoRateTable = new RimoRateTable(POWERPERIOD);
     // RimoSlipTable rimoSlipTable = new RimoSlipTable(PERIOD);
     // LocalizationTable localizationTable = new LocalizationTable(PERIOD, true);
-    OfflineTableSupplier velodyneLocalizationTable = SingleChannelTable.of(new VelodyneLocalizationChannel());
+    OfflineTableSupplier velodyneLocalizationTable = SingleChannelTable.of(VelodyneLocalizationChannel.INSTANCE);
     OfflineTableSupplier gokartPoseTable = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
     //
     OfflineLogPlayer.process(file, //

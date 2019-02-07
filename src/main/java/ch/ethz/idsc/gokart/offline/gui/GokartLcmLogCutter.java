@@ -14,9 +14,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import javax.swing.JButton;
@@ -27,9 +29,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.lcm.LcmLogFileCutter;
+import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
+import ch.ethz.idsc.gokart.offline.api.GokartLogConfig;
+import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
+import ch.ethz.idsc.tensor.io.TensorProperties;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /** GUI to inspect a log, and select and extract parts into new log files */
 public class GokartLcmLogCutter {
@@ -135,8 +143,18 @@ public class GokartLcmLogCutter {
           };
           for (File file : lcmLogFileCutter.files())
             try {
+              File config = new File(file.getParentFile(), GOKART_LOG_CONFIG);
               System.out.println(file);
-              new File(file.getParentFile(), GOKART_LOG_CONFIG).createNewFile();
+              Optional<ByteBuffer> optional = FirstLogMessage.of(file, GokartPoseChannel.INSTANCE.channel());
+              if (optional.isPresent()) {
+                GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(optional.get());
+                GokartLogConfig gokartLogConfig = new GokartLogConfig();
+                gokartLogConfig.pose = gokartPoseEvent.getPose().map(Round._7);
+                boolean save = TensorProperties.wrap(gokartLogConfig).trySave(config);
+                if (!save)
+                  System.err.println("did not save properties");
+              } else
+                config.createNewFile();
             } catch (Exception exception) {
               exception.printStackTrace();
             }

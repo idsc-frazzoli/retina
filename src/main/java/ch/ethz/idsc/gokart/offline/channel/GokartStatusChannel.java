@@ -7,7 +7,9 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class GokartStatusChannel implements SingleChannelInterface {
+public enum GokartStatusChannel implements SingleChannelInterface {
+  INSTANCE;
+  // ---
   @Override // from SingleChannelTable
   public String channel() {
     return GokartLcmChannel.STATUS;

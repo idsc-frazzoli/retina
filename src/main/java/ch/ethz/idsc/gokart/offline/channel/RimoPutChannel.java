@@ -8,7 +8,9 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class RimoPutChannel implements SingleChannelInterface {
+public enum RimoPutChannel implements SingleChannelInterface {
+  INSTANCE;
+  // ---
   @Override // from SingleChannelTable
   public String channel() {
     return RimoLcmServer.CHANNEL_PUT;
