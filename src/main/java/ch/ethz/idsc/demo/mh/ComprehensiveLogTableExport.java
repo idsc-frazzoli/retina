@@ -6,8 +6,9 @@ import java.io.IOException;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.tab.DavisImuTable;
+import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.gokart.offline.tab.LinmotPassiveStatusTable;
 import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
 import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
@@ -15,7 +16,6 @@ import ch.ethz.idsc.gokart.offline.tab.RimoOdometryTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.gokart.offline.tab.VelodyneLocalizationTable;
-import ch.ethz.idsc.gokart.offline.tab.Vmu931ImuTable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.CsvFormat;
@@ -42,8 +42,8 @@ public class ComprehensiveLogTableExport {
   /** @param file gokart log to be converted into csv tables
    * @throws IOException for instance, if given file does not exist */
   public void process(File file) throws IOException {
-    DavisImuTable davisImuTable = new DavisImuTable(PERIOD);
-    Vmu931ImuTable vmu931ImuTable = new Vmu931ImuTable(PERIOD);
+    OfflineTableSupplier davisImuTable = SingleChannelTable.of(new DavisImuChannel());
+    OfflineTableSupplier vmu931ImuTable = SingleChannelTable.of(new Vmu931ImuChannel());
     LinmotPassiveStatusTable linmotStatusTable = new LinmotPassiveStatusTable();
     PowerSteerTable powerSteerTable = new PowerSteerTable(STEERINGPERIOD);
     RimoOdometryTable rimoOdometryTable = new RimoOdometryTable();

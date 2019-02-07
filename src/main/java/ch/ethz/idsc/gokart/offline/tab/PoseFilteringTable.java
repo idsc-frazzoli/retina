@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.filter.GeodesicCenter;
 import ch.ethz.idsc.sophus.filter.GeodesicCenterFilter;
@@ -48,7 +49,7 @@ public class PoseFilteringTable implements OfflineTableSupplier {
    * @throws IOException */
   public static void process(File lcmfile, File dest) throws IOException {
     PoseFilteringTable poseFiltering = new PoseFilteringTable();
-    DavisImuTable davisImuTable = DavisImuTable.all();
+    OfflineTableSupplier davisImuTable = SingleChannelTable.of(new DavisImuChannel());
     OfflineLogPlayer.process(lcmfile, poseFiltering, davisImuTable);
     dest.mkdir();
     Export.of( //

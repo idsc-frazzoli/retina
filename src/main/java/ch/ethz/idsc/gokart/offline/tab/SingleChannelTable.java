@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
+/** collects all messages from a single channel into a table */
 public class SingleChannelTable implements OfflineTableSupplier {
   public static OfflineTableSupplier of(SingleChannelInterface singleChannelInterface) {
     return new SingleChannelTable(singleChannelInterface);
@@ -26,7 +27,7 @@ public class SingleChannelTable implements OfflineTableSupplier {
   }
 
   @Override // from OfflineLogListener
-  public final void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(this.channel))
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND), //
@@ -34,7 +35,7 @@ public class SingleChannelTable implements OfflineTableSupplier {
   }
 
   @Override // from OfflineTableSupplier
-  public final Tensor getTable() {
+  public Tensor getTable() {
     return tableBuilder.toTable();
   }
 }

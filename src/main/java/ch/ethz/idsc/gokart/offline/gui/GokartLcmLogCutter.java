@@ -122,23 +122,24 @@ public class GokartLcmLogCutter {
         // ---
         System.out.println(navigableMap);
         try {
-          new LcmLogFileCutter(gokartLogFileIndexer.file(), navigableMap) {
-            @Override
+          final File date = new File(export_root, String.format("%s", title.substring(0, 8)));
+          date.mkdir();
+          // ---
+          LcmLogFileCutter lcmLogFileCutter = new LcmLogFileCutter(gokartLogFileIndexer.file(), navigableMap) {
+            @Override // from LcmLogFileCutter
             public File filename(int count) {
-              File date = new File(export_root, String.format("%s", title.substring(0, 8)));
-              date.mkdir();
               File folder = new File(date, String.format("%s_%02d", title, count));
               folder.mkdir();
-              if (!folder.isDirectory())
-                throw new RuntimeException();
-              try {
-                new File(folder, GOKART_LOG_CONFIG).createNewFile();
-              } catch (Exception exception) {
-                exception.printStackTrace();
-              }
               return new File(folder, LCM_FILE);
             }
           };
+          for (File file : lcmLogFileCutter.files())
+            try {
+              System.out.println(file);
+              new File(file.getParentFile(), GOKART_LOG_CONFIG).createNewFile();
+            } catch (Exception exception) {
+              exception.printStackTrace();
+            }
         } catch (Exception exception) {
           exception.printStackTrace();
         }

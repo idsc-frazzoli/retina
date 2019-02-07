@@ -40,7 +40,7 @@ public class Vlp16RateTable implements OfflineTableSupplier, LidarRayDataListene
     vlp16Decoder.addRayListener(this);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     if (Objects.nonNull(row) && Objects.nonNull(dif)) {
       Scalar gap = MOD.apply(row.Get(23).subtract(row.Get(0)));
@@ -54,7 +54,7 @@ public class Vlp16RateTable implements OfflineTableSupplier, LidarRayDataListene
     usec_last = usec;
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     row.append(RealScalar.of(rotational));
   }

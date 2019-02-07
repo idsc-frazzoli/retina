@@ -35,7 +35,7 @@ public class Vlp16BlackoutTable implements OfflineTableSupplier, LidarRayDataLis
     vlp16Decoder.addRayListener(this);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     if (Objects.nonNull(usec_last)) {
       delta_time = usec - usec_last;
@@ -44,7 +44,7 @@ public class Vlp16BlackoutTable implements OfflineTableSupplier, LidarRayDataLis
     usec_last = usec;
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     if (flag) {
       int delta_angle = VelodyneStatics.lookupAzimuth(rotational - rota_last);

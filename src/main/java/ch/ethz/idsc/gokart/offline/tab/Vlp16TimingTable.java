@@ -29,12 +29,12 @@ public class Vlp16TimingTable implements OfflineTableSupplier, LidarRayDataListe
     vlp16Decoder.addRayListener(this);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     this.usec = usec;
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     if (tableBuilder.getRowCount() < LIMIT)
       tableBuilder.appendRow( //
