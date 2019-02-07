@@ -20,26 +20,27 @@ public abstract class LcmLogFileCutter {
     final Log log = new Log(src.toString(), "r");
     int index = 0;
     for (Entry<Integer, Integer> entry : navigableMap.entrySet()) {
-      System.out.println(entry);
-      final int lo = entry.getKey();
+      /** break point lo */
+      final int lo = entry.getKey() - 1;
+      /** break point hi */
       final int hi = entry.getValue();
       File dst = filename(index);
       if (dst.exists()) {
         System.out.println("deleting: " + dst);
         dst.delete();
       }
-      LogEventWriter logWriter = new LogEventWriter(dst);
+      LogEventWriter logEventWriter = new LogEventWriter(dst);
       {
         while (true) {
           Event event = log.readNext();
-          if (lo <= event.eventNumber + 1)
+          if (lo <= event.eventNumber)
             break;
         }
         while (true) {
           Event event = log.readNext();
           try {
             new BinaryBlob(event.data);
-            logWriter.write(event);
+            logEventWriter.write(event);
           } catch (Exception exception) {
             // ---
             exception.printStackTrace();
@@ -48,7 +49,7 @@ public abstract class LcmLogFileCutter {
             break;
         }
       }
-      logWriter.close();
+      logEventWriter.close();
       ++index;
     }
   }

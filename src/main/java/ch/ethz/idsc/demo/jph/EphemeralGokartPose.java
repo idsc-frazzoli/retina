@@ -8,7 +8,8 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.gokart.offline.tab.GokartPoseTable;
+import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
+import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
@@ -24,7 +25,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
         System.out.println(folder);
         GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
         // ---
-        OfflineTableSupplier offlineTableSupplier = GokartPoseTable.all();
+        OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(new GokartPoseChannel());
         OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
         Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
         Export.of(new File(dest, folder.getName() + ".csv"), tensor);
