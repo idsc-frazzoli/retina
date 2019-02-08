@@ -5,6 +5,7 @@ import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -95,5 +96,24 @@ public class SensorsConfig {
   public Scalar getGyroZ(DavisImuFrame davisImuFrame) {
     return davisImuFrame.gyroImageFrame().Get(1).subtract(davis_imuY_bias) // image - y axis
         .multiply(davis_imuY_scale);
+  }
+
+  /** .
+   * ante 20190408: the vmu931 was mounted on the gokart with xyz aligned with the gokart coordinate system
+   * post 20190408: the vmu931 is mounted rotated around U axis with 180[deg]
+   * 
+   * @param vmu931ImuFrame
+   * @return vector of length 2 of acceleration in gokart coordinates */
+  public Tensor getAccXY(Vmu931ImuFrame vmu931ImuFrame) {
+    Tensor accRawXY = vmu931ImuFrame.accXY();
+    return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate());
+  }
+
+  /** see description above
+   * 
+   * @param vmu931ImuFrame
+   * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
+  public Scalar getGyroZ(Vmu931ImuFrame vmu931ImuFrame) {
+    return vmu931ImuFrame.gyroZ().negate();
   }
 }

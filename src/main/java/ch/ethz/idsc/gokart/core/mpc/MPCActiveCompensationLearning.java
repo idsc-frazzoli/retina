@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
@@ -48,7 +49,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
   private final Vmu931ImuFrameListener vmu931ImuFrameListener = new Vmu931ImuFrameListener() {
     @Override
     public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-      realRotationRate = (Scalar) vmu931ImuFrame.gyroZ();
+      realRotationRate = SensorsConfig.GLOBAL.getGyroZ(vmu931ImuFrame);
     }
   };
   private final static Scalar BRAKINGTHRESHOLD = Quantity.of(-1, SI.ACCELERATION);

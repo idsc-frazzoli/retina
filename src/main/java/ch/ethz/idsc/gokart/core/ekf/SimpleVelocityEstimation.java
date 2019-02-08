@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.ekf;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
@@ -99,8 +100,8 @@ public class SimpleVelocityEstimation implements VelocityEstimation, Vmu931ImuFr
 
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    Tensor acc = vmu931ImuFrame.accXY();
-    Scalar gyro = (Scalar) vmu931ImuFrame.gyroZ();
+    Tensor acc = SensorsConfig.GLOBAL.getAccXY(vmu931ImuFrame);
+    Scalar gyro = SensorsConfig.GLOBAL.getGyroZ(vmu931ImuFrame);
     int currentTime = vmu931ImuFrame.timestamp_ms();
     Scalar time = Quantity.of((currentTime - lastVmuTime) * 1e-3, SI.SECOND);
     lastVmuTime = currentTime;
