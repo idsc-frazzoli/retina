@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.sca.Real;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public enum BrakingFunction {
+public class BrakingFunction {
   ;
   /** point after which the brake is effective
    * 2.5 / 100.0 == 0.025 */

@@ -50,7 +50,7 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
       realRotationRate = (Scalar) vmu931ImuFrame.gyroZ();
     }
   };
-  private final static Scalar BRAKINGTHRESHOLD = Quantity.of(-1, SI.ACCELERATION);
+  private final static Scalar BRAKINGTHRESHOLD = Quantity.of(-0.5, SI.ACCELERATION);
   private final static Scalar MINVAL = Quantity.of(0.5, SI.ONE);
   Scalar steeringCorrection = RealScalar.ONE;
   Scalar brakingCorrection = RealScalar.ONE;

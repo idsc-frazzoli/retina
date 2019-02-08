@@ -27,7 +27,7 @@ public class MPCAggressiveCorrectedTorqueVectoringBraking extends MPCBraking {
     // Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
     Scalar braking = Max.of(NOACCELERATION, cnsStep.control.getaB().negate());
     // System.out.println(braking);
-    return BrakingFunction.getRelativeBrakeActuation(braking.multiply(activeCompensationLearning.brakingCorrection));
+    return BrakingFunction.getRelativeBrakeActuation(braking);
   }
 
   @Override
