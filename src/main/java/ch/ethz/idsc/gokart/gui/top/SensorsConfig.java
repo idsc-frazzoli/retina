@@ -5,6 +5,7 @@ import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -95,5 +96,14 @@ public class SensorsConfig {
   public Scalar getGyroZ(DavisImuFrame davisImuFrame) {
     return davisImuFrame.gyroImageFrame().Get(1).subtract(davis_imuY_bias) // image - y axis
         .multiply(davis_imuY_scale);
+  }
+
+  public Tensor getXYacc(Vmu931ImuFrame frame) {
+    Tensor xyzAccRaw = frame.acceleration();
+    return Tensors.of(xyzAccRaw.Get(1).negate(), xyzAccRaw.Get(0).negate());
+  }
+
+  public Scalar getGyroZ(Vmu931ImuFrame frame) {
+    return frame.gyroZ().negate();
   }
 }

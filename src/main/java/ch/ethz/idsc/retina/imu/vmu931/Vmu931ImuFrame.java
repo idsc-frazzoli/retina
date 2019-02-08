@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -59,7 +60,7 @@ public class Vmu931ImuFrame {
         Quantity.of(gyro_z * DPS_TO_RPS, SI.PER_SECOND));
   }
 
-  public Tensor gyroZ() {
+  public Scalar gyroZ() {
     return Quantity.of(gyro_z * DPS_TO_RPS, SI.PER_SECOND);
   }
 }
