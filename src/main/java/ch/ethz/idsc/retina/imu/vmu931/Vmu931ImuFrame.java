@@ -60,6 +60,7 @@ public class Vmu931ImuFrame {
         Quantity.of(gyro_z * DPS_TO_RPS, SI.PER_SECOND));
   }
 
+  /** @return quantity with unit [s^-1] */
   public Scalar gyroZ() {
     return Quantity.of(gyro_z * DPS_TO_RPS, SI.PER_SECOND);
   }
