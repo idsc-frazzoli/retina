@@ -82,7 +82,7 @@ abstract class ViewLcmModule extends AbstractModule {
   }
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  public void first() throws Exception {
     viewLcmFrame.geometricComponent.setButtonDrag(MouseEvent.BUTTON1);
     {
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
@@ -166,7 +166,7 @@ abstract class ViewLcmModule extends AbstractModule {
   }
 
   @Override // from AbstractModule
-  protected void last() {
+  public void last() {
     viewLcmFrame.close();
     // if (Objects.nonNull(trackReconModule))
     // trackReconModule.listenersRemove(trackReconRender);

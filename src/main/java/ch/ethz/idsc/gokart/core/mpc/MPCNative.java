@@ -14,7 +14,7 @@ public enum MPCNative {
   public static final int TCP_SERVER_PORT = 4143;
   public static final int MPC_HORIZON = 10;
   public static final int INITIALMSGSIZE = 100;
-  public static final int PREDICTIONSIZE = 31;
+  public static final int PREDICTION_SIZE = 31;
   public static final int SPLINEPREVIEWSIZE = 10;
   public static final int GOKART_STATE = 0;
   /** First Byte of message: which kind of message are we sending?

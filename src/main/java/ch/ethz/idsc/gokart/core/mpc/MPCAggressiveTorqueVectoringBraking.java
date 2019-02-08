@@ -10,8 +10,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
-public class MPCAggressiveTorqueVectoringBraking extends MPCBraking {
-  // private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
+/* package */ class MPCAggressiveTorqueVectoringBraking extends MPCBraking {
   private static final Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
   private final MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
 

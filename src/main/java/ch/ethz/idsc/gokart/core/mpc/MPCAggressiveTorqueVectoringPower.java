@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Tan;
 
-public class MPCAggressiveTorqueVectoringPower extends MPCPower {
+/* package */ class MPCAggressiveTorqueVectoringPower extends MPCPower {
   private static final Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
   // private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
