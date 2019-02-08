@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-public class ControlAndPredictionSteps implements MPCNativeInsertable {
+/* package */ class ControlAndPredictionSteps implements MPCNativeInsertable {
   public final ControlAndPredictionStep[] steps;
 
   public ControlAndPredictionSteps(ControlAndPredictionStep[] controlAndPredictionSteps) {
@@ -12,9 +12,9 @@ public class ControlAndPredictionSteps implements MPCNativeInsertable {
 
   // TODO can use byteBuffer.remaining() for adaptive size
   public ControlAndPredictionSteps(ByteBuffer byteBuffer) {
-    steps = new ControlAndPredictionStep[MPCNative.PREDICTIONSIZE];
-    for (int i = 0; i < MPCNative.PREDICTIONSIZE; ++i)
-      steps[i] = new ControlAndPredictionStep(byteBuffer);
+    steps = new ControlAndPredictionStep[MPCNative.PREDICTION_SIZE];
+    for (int index = 0; index < MPCNative.PREDICTION_SIZE; ++index)
+      steps[index] = new ControlAndPredictionStep(byteBuffer);
   }
 
   @Override

@@ -1,18 +1,9 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.top;
+package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.mpc.DubendorfTrack;
-import ch.ethz.idsc.gokart.core.mpc.GokartState;
-import ch.ethz.idsc.gokart.core.mpc.LcmMPCControlClient;
-import ch.ethz.idsc.gokart.core.mpc.MPCInformationProvider;
-import ch.ethz.idsc.gokart.core.mpc.MPCNative;
-import ch.ethz.idsc.gokart.core.mpc.MPCOpenLoopSteering;
-import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationParameter;
-import ch.ethz.idsc.gokart.core.mpc.MPCPathParameter;
-import ch.ethz.idsc.gokart.core.mpc.MPCSimpleBraking;
-import ch.ethz.idsc.gokart.core.mpc.MPCTorqueVectoringPower;
+import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

@@ -68,8 +68,9 @@ public enum LogPoseInject {
         logWriter.write(event);
       }
     } catch (Exception exception) {
-      exception.printStackTrace();
-      System.err.println(exception.getMessage());
+      String message = exception.getMessage();
+      if (Objects.isNull(message) || !message.equals("EOF"))
+        exception.printStackTrace();
     }
     logWriter.close();
     // ---

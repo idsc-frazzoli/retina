@@ -3,9 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-public class ControlAndPredictionStep implements MPCNativeInsertable {
-  // not used:
-  // private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
+/* package */ class ControlAndPredictionStep implements MPCNativeInsertable {
   public final GokartState state;
   public final GokartControl control;
 

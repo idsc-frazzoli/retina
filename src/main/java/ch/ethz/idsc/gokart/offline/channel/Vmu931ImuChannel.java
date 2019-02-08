@@ -11,6 +11,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+// TODO make consistent with DavisImuChannel: either subtract first timestamp, or not?
 public class Vmu931ImuChannel implements SingleChannelInterface {
   private Integer time_zero = null;
 
