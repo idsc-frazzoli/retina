@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.offline.tab;
+package ch.ethz.idsc.demo.jph;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
 /** TimePoseQualityTable only exports unique pose messages */
-public class UniqueTimePoseQualityTable implements OfflineTableSupplier {
+/* package */ class UniqueTimePoseQualityTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private Tensor last = Tensors.empty();
 
@@ -47,12 +47,12 @@ public class UniqueTimePoseQualityTable implements OfflineTableSupplier {
    * @param dest
    * @throws IOException */
   public static void process(File lcmfile, File dest) throws IOException {
-    UniqueTimePoseQualityTable timePoseQualityTable = new UniqueTimePoseQualityTable();
-    OfflineLogPlayer.process(lcmfile, timePoseQualityTable);
+    OfflineTableSupplier offlineTableSupplier = new UniqueTimePoseQualityTable();
+    OfflineLogPlayer.process(lcmfile, offlineTableSupplier);
     dest.mkdir();
     String name = lcmfile.getName();
     Export.of( //
         new File(dest, name.substring(0, name.length() - 4) + ".csv"), //
-        timePoseQualityTable.getTable().map(CsvFormat.strict()));
+        offlineTableSupplier.getTable().map(CsvFormat.strict()));
   }
 }

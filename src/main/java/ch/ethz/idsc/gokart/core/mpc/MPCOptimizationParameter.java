@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MPCOptimizationParameter implements MPCNativeInsertable {
+/* package */ class MPCOptimizationParameter implements MPCNativeInsertable {
   public final Scalar speedLimit;
   public final Scalar xAccLimit;
   public final Scalar yAccLimit;

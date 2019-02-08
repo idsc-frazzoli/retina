@@ -7,7 +7,9 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class SteerPutChannel implements SingleChannelInterface {
+public enum SteerPutChannel implements SingleChannelInterface {
+  INSTANCE;
+  // ---
   @Override // from SingleChannelTable
   public String channel() {
     return SteerLcmServer.CHANNEL_PUT;

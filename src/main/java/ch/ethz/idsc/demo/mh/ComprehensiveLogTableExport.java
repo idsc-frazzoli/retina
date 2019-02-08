@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
+import ch.ethz.idsc.gokart.offline.channel.VelodyneLocalizationChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.gokart.offline.tab.LinmotPassiveStatusTable;
 import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
@@ -15,7 +16,6 @@ import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoOdometryTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
-import ch.ethz.idsc.gokart.offline.tab.VelodyneLocalizationTable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.CsvFormat;
@@ -25,7 +25,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** export of various content to determine accuracy of measurements.
  * export data for system identification */
 public class ComprehensiveLogTableExport {
-  private static final Scalar PERIOD = Quantity.of(0, SI.SECOND);
   private static final Scalar STEERINGPERIOD = Quantity.of(0.01, SI.SECOND);
   private static final Scalar POWERPERIOD = Quantity.of(0.01, SI.SECOND);
   private static final Scalar OFFSET = Quantity.of(0, SI.SECOND);
@@ -51,8 +50,8 @@ public class ComprehensiveLogTableExport {
     RimoRateTable rimoRateTable = new RimoRateTable(POWERPERIOD);
     // RimoSlipTable rimoSlipTable = new RimoSlipTable(PERIOD);
     // LocalizationTable localizationTable = new LocalizationTable(PERIOD, true);
-    VelodyneLocalizationTable velodyneLocalizationTable = new VelodyneLocalizationTable(PERIOD);
-    OfflineTableSupplier gokartPoseTable = SingleChannelTable.of(new GokartPoseChannel());
+    OfflineTableSupplier velodyneLocalizationTable = SingleChannelTable.of(VelodyneLocalizationChannel.INSTANCE);
+    OfflineTableSupplier gokartPoseTable = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
     //
     OfflineLogPlayer.process(file, //
         davisImuTable, //

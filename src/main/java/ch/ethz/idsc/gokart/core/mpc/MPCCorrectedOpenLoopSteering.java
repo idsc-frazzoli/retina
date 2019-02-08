@@ -5,10 +5,11 @@ import java.util.Objects;
 
 import ch.ethz.idsc.tensor.Scalar;
 
-public class MPCCorrectedOpenLoopSteering extends MPCSteering {
-  MPCStateEstimationProvider mpcStateProvider;
-  MPCActiveCompensationLearning mpcActiveCompensationLearning = MPCActiveCompensationLearning.getInstance();
-  MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
+/* package */ class MPCCorrectedOpenLoopSteering extends MPCSteering {
+  private final MPCActiveCompensationLearning mpcActiveCompensationLearning = MPCActiveCompensationLearning.getInstance();
+  private final MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
+  // TODO MH variable not used:
+  private MPCStateEstimationProvider mpcStateProvider;
 
   @Override
   public Scalar getSteering(Scalar time) {

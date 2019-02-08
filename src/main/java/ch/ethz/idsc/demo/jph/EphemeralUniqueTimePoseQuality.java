@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.jph;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.gokart.offline.tab.UniqueTimePoseQualityTable;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum EphemeralUniqueTimePoseQuality {

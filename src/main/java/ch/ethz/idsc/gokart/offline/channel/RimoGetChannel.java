@@ -7,7 +7,9 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class RimoGetChannel implements SingleChannelInterface {
+public enum RimoGetChannel implements SingleChannelInterface {
+  INSTANCE;
+  // ---
   @Override // from SingleChannelTable
   public String channel() {
     return RimoLcmServer.CHANNEL_GET;

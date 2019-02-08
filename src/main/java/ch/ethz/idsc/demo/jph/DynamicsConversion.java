@@ -27,14 +27,14 @@ enum DynamicsConversion {
 
   public static void main(String[] args) {
     List<SingleChannelInterface> singleChannelInterfaces = new LinkedList<>();
-    singleChannelInterfaces.add(new GokartPoseChannel());
-    singleChannelInterfaces.add(new GokartStatusChannel());
-    singleChannelInterfaces.add(new RimoPutChannel());
-    singleChannelInterfaces.add(new RimoGetChannel());
-    singleChannelInterfaces.add(new SteerPutChannel());
-    singleChannelInterfaces.add(new SteerGetChannel());
-    singleChannelInterfaces.add(new LinmotPutChannel());
-    singleChannelInterfaces.add(new LinmotGetChannel());
+    singleChannelInterfaces.add(GokartPoseChannel.INSTANCE);
+    singleChannelInterfaces.add(GokartStatusChannel.INSTANCE);
+    singleChannelInterfaces.add(RimoPutChannel.INSTANCE);
+    singleChannelInterfaces.add(RimoGetChannel.INSTANCE);
+    singleChannelInterfaces.add(SteerPutChannel.INSTANCE);
+    singleChannelInterfaces.add(SteerGetChannel.INSTANCE);
+    singleChannelInterfaces.add(LinmotPutChannel.INSTANCE);
+    singleChannelInterfaces.add(LinmotGetChannel.INSTANCE);
     // ---
     for (File folder : ROOT.listFiles()) {
       for (File cut : folder.listFiles()) {

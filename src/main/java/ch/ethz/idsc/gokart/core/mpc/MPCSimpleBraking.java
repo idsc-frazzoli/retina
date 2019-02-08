@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
-public class MPCSimpleBraking extends MPCBraking {
+/* package */ class MPCSimpleBraking extends MPCBraking {
   private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
   private final MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
 

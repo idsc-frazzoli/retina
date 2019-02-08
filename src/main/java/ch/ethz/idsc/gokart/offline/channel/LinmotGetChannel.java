@@ -7,7 +7,9 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class LinmotGetChannel implements SingleChannelInterface {
+public enum LinmotGetChannel implements SingleChannelInterface {
+  INSTANCE;
+  // ---
   @Override // from SingleChannelTable
   public String channel() {
     return LinmotLcmServer.CHANNEL_GET;

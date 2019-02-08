@@ -10,22 +10,21 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
-public class MPCAggressiveCorrectedTorqueVectoringBraking extends MPCBraking {
-  // private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
-  private static final Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
-  private final MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
+/* package */ class MPCAggressiveCorrectedTorqueVectoringBraking extends MPCBraking {
+  private static final Scalar NO_ACCELERATION = Quantity.of(0, SI.ACCELERATION);
+  private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
   private final MPCActiveCompensationLearning activeCompensationLearning = MPCActiveCompensationLearning.getInstance();
 
   @Override
   public Scalar getBraking(Scalar time) {
-    Scalar controlTime = time.add(config.brakingAntiLag);
+    Scalar controlTime = time.add(mpcOptimizationConfig.brakingAntiLag);
     ControlAndPredictionStep cnsStep = getStep(controlTime);
     if (Objects.isNull(cnsStep))
       return RealScalar.ZERO;
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar min = (Scalar) Mean.of(minmax);
     // Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
-    Scalar braking = Max.of(NOACCELERATION, cnsStep.control.getaB().negate());
+    Scalar braking = Max.of(NO_ACCELERATION, cnsStep.control.getaB().negate());
     // System.out.println(braking);
     return BrakingFunction.getRelativeBrakeActuation(braking);
   }

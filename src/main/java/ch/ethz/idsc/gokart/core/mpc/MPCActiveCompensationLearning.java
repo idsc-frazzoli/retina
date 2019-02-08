@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
@@ -11,6 +12,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
@@ -25,7 +27,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Tan;
 
-public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithAction implements RimoGetListener {
+/* package */ class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithAction implements RimoGetListener {
   private final static MPCActiveCompensationLearning INSTANCE = new MPCActiveCompensationLearning();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
@@ -36,8 +38,8 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
 
   private boolean running = false;
   private ControlAndPredictionSteps lastCNS = null;
-  IntervalClock updateClock = new IntervalClock();
-  IntervalClock rimoClock = new IntervalClock();
+  private IntervalClock updateClock = new IntervalClock();
+  private IntervalClock rimoClock = new IntervalClock();
   private Scalar lastTangentSpeed = Quantity.of(0, SI.VELOCITY);
   private final GeodesicIIR1Filter accelerationFilter = //
       new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(.05));
@@ -47,7 +49,7 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
   private final Vmu931ImuFrameListener vmu931ImuFrameListener = new Vmu931ImuFrameListener() {
     @Override
     public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-      realRotationRate = (Scalar) vmu931ImuFrame.gyroZ();
+      realRotationRate = SensorsConfig.GLOBAL.getGyroZ(vmu931ImuFrame);
     }
   };
   private final static Scalar BRAKINGTHRESHOLD = Quantity.of(-0.5, SI.ACCELERATION);
@@ -55,7 +57,7 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
   Scalar steeringCorrection = RealScalar.ONE;
   Scalar brakingCorrection = RealScalar.ONE;
 
-  @Override
+  @Override // from MPCControlUpdateListenerWithAction
   void doAction() {
     double seconds = updateClock.seconds();
     Scalar deltaT = Quantity.of(seconds, SI.SECOND);
@@ -130,7 +132,7 @@ public class MPCActiveCompensationLearning extends MPCControlUpdateListenerWithA
     }
   }
 
-  @Override
+  @Override // from RimoGetListener
   public void getEvent(RimoGetEvent getEvent) {
     Scalar currentTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
     Scalar acceleration = currentTangentSpeed//

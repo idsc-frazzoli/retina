@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import ch.ethz.idsc.tensor.Scalar;
 
-public class MPCOpenLoopSteering extends MPCSteering {
+/* package */ class MPCOpenLoopSteering extends MPCSteering {
   MPCStateEstimationProvider mpcStateProvider;
   MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
 

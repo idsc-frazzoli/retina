@@ -8,7 +8,9 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class GokartPoseChannel implements SingleChannelInterface {
+public enum GokartPoseChannel implements SingleChannelInterface {
+  INSTANCE;
+  // ---
   @Override // from SingleChannelTable
   public String channel() {
     return GokartLcmChannel.POSE_LIDAR;

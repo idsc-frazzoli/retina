@@ -98,12 +98,22 @@ public class SensorsConfig {
         .multiply(davis_imuY_scale);
   }
 
-  public Tensor getXYacc(Vmu931ImuFrame frame) {
-    Tensor xyzAccRaw = frame.acceleration();
-    return Tensors.of(xyzAccRaw.Get(1).negate(), xyzAccRaw.Get(0).negate());
+  /** .
+   * ante 20190408: the vmu931 was mounted on the gokart with xyz aligned with the gokart coordinate system
+   * post 20190408: the vmu931 is mounted rotated around U axis with 180[deg]
+   * 
+   * @param vmu931ImuFrame
+   * @return vector of length 2 of acceleration in gokart coordinates */
+  public Tensor getAccXY(Vmu931ImuFrame vmu931ImuFrame) {
+    Tensor accRawXY = vmu931ImuFrame.accXY();
+    return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate());
   }
 
-  public Scalar getGyroZ(Vmu931ImuFrame frame) {
-    return frame.gyroZ().negate();
+  /** see description above
+   * 
+   * @param vmu931ImuFrame
+   * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
+  public Scalar getGyroZ(Vmu931ImuFrame vmu931ImuFrame) {
+    return vmu931ImuFrame.gyroZ().negate();
   }
 }

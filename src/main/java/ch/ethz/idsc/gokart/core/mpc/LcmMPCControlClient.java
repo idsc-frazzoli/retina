@@ -12,7 +12,7 @@ import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
 import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
 import idsc.BinaryBlob;
 
-public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
+/* package */ class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
   private final List<MPCControlUpdateListener> listeners = new CopyOnWriteArrayList<>();
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs");

@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Tan;
 
-public class MPCTorqueVectoringPower extends MPCPower {
+/* package */ class MPCTorqueVectoringPower extends MPCPower {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
       new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
