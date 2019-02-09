@@ -5,8 +5,6 @@ The performance of the go-kart hardware and software are documented in [reports]
 
 > The code in the repository operates a heavy and fast robot that may endanger living creatures. We follow best practices and coding standards to protect from avoidable errors. See [development_guidelines](doc/development_guidelines.md)
 
-![gokart](https://user-images.githubusercontent.com/4012178/51981458-64b6ba00-2493-11e9-9e1e-5c5fe602e00b.png)
-
 ## Gallery Autonomous Driving
 
 <table>

@@ -29,7 +29,7 @@ import lcm.logging.Log.Event;
 import lcm.logging.LogEventWriter;
 
 /** changes pose messages based on given pose estimating interface */
-public class LogPoseInject implements LocalizationResultListener {
+public class LogPosePostInject implements LocalizationResultListener {
   // private static final String POST_POSE = ;
   // ---
   private LocalizationResult localizationResult = null;
@@ -62,7 +62,7 @@ public class LogPoseInject implements LocalizationResultListener {
             offlineLogListener.event(time, event.channel, ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
             // ---
             if (Objects.nonNull(localizationResult)) {
-              System.out.println("inject");
+              // System.out.println("inject");
               GokartPoseEvent gokartPoseEvent = GokartPoseEvents.getPoseEvent( //
                   GokartPoseHelper.attachUnits(localizationResult.pose_xyt), //
                   localizationResult.ratio);
