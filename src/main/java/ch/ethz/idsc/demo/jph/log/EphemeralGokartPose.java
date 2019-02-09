@@ -1,11 +1,13 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.log;
 
 import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
+import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
@@ -20,7 +22,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       if (folder.isDirectory()) {
         File file = new File(folder, "post.lcm");
         if (file.isFile()) {
-          OfflineTableSupplier offlineTableSupplier = new UniqueTimePoseQualityTable();
+          OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(GokartPosePostChannel.INSTANCE);
           OfflineLogPlayer.process(file, offlineTableSupplier);
           Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
           File dest = HomeDirectory.file("Projects/ephemeral/src/main/resources/dubilab/app/pose/5m");

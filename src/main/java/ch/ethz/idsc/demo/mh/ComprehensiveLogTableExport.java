@@ -41,8 +41,8 @@ public class ComprehensiveLogTableExport {
   /** @param file gokart log to be converted into csv tables
    * @throws IOException for instance, if given file does not exist */
   public void process(File file) throws IOException {
-    OfflineTableSupplier davisImuTable = SingleChannelTable.of(new DavisImuChannel());
-    OfflineTableSupplier vmu931ImuTable = SingleChannelTable.of(new Vmu931ImuChannel());
+    OfflineTableSupplier davisImuTable = SingleChannelTable.of(DavisImuChannel.INSTANCE);
+    OfflineTableSupplier vmu931ImuTable = SingleChannelTable.of(Vmu931ImuChannel.INSTANCE);
     LinmotPassiveStatusTable linmotStatusTable = new LinmotPassiveStatusTable();
     PowerSteerTable powerSteerTable = new PowerSteerTable(STEERINGPERIOD);
     RimoOdometryTable rimoOdometryTable = new RimoOdometryTable();

@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
       System.out.println(folder);
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
-      OfflineTableSupplier davisImuTable = SingleChannelTable.of(new DavisImuChannel());
+      OfflineTableSupplier davisImuTable = SingleChannelTable.of(DavisImuChannel.INSTANCE);
       OfflineLogPlayer.process(gokartLogInterface.file(), davisImuTable);
       Export.of(HomeDirectory.file(folder.getName() + ".csv"), davisImuTable.getTable().map(CsvFormat.strict()));
     }
