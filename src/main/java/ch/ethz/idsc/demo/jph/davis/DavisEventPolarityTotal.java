@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /** class adapted for gioele
  * extract all dvs events */
-class DavisEventPolarityTotal implements OfflineLogListener, DavisDvsListener {
+/* package */ class DavisEventPolarityTotal implements OfflineLogListener, DavisDvsListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   int[] total = new int[2];
 

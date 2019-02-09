@@ -20,7 +20,7 @@ import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.tensor.io.Export;
 
-enum DynamicsConversion {
+/* package */ enum DynamicsConversion {
   ;
   private static final File ROOT = new File("/media/datahaki/data/gokart/cuts");
   private static final File DEST = new File("/media/datahaki/data/gokart/dynamics");

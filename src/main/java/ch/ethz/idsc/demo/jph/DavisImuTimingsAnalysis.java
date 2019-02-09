@@ -2,7 +2,6 @@
 package ch.ethz.idsc.demo.jph;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
@@ -16,21 +15,21 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-/** export of davis240c imu content to determine accuracy of measurements.
- * subsequently, the gyro readings are used to stabilize the lidar based
- * localization algorithm.
- * 
- * https://github.com/idsc-frazzoli/retina/files/1801712/20180131_davis_imu.pdf */
-/* package */ enum GyroAnalysis {
+/** investigation of temporal regularity/sampling rate of davis240c imu measurements
+ * as the samples enhance the lidar based localization algorithm */
+/* package */ enum DavisImuTimingsAnalysis {
   ;
-  public static void main(String[] args) throws FileNotFoundException, IOException {
-    for (File folder : OfflineIndex.folders(HomeDirectory.file("gokart", "LocalQuick"))) {
-      System.out.println(folder);
+  public static void main(String[] args) throws IOException {
+    for (File folder : OfflineIndex.folders(HomeDirectory.file("gokart/ImuTimings"))) {
+      // System.out.println(folder);
+      String parent = folder.getParentFile().getName();
+      final String name = parent + "_" + folder.getName();
+      System.out.println(name);
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
       OfflineTableSupplier davisImuTable = SingleChannelTable.of(new DavisImuChannel());
       OfflineLogPlayer.process(gokartLogInterface.file(), davisImuTable);
-      Export.of(HomeDirectory.file(folder.getName() + ".csv"), davisImuTable.getTable().map(CsvFormat.strict()));
+      Export.of(HomeDirectory.file("csv/" + name + ".csv"), davisImuTable.getTable().map(CsvFormat.strict()));
     }
   }
 }

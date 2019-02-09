@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.io.Put;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
-enum DavisDvsIntervalDistribution {
+/* package */ enum DavisDvsIntervalDistribution {
   ;
   public static void main(String[] args) throws Exception {
     LogPlayerConfig cfg = new LogPlayerConfig();

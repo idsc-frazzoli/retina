@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-class RunDavisRgbCalibration implements DavisDvsListener {
+/* package */ class RunDavisRgbCalibration implements DavisDvsListener {
   public static final int SIZE = 300;
   long evt_count;
   Color color = new Color(0, 0, 0);

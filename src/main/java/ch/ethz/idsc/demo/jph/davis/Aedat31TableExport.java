@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-class Aedat31TableExport implements DavisDvsListener, Aedat31FrameListener, Aedat31Imu6Listener {
+/* package */ class Aedat31TableExport implements DavisDvsListener, Aedat31FrameListener, Aedat31Imu6Listener {
   private final TableBuilder table_frame = new TableBuilder();
   private final TableBuilder table_imu6 = new TableBuilder();
   private final Map<Integer, Integer> map = new TreeMap<>();

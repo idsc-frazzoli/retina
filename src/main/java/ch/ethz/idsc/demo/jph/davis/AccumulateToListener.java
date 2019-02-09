@@ -18,7 +18,7 @@ import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-class AccumulateToListener implements OfflineLogListener, TimedImageListener {
+/* package */ class AccumulateToListener implements OfflineLogListener, TimedImageListener {
   private final String CHANNEL = DavisDvsBlockPublisher.channel("overview");
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private int count = 0;

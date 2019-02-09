@@ -4,8 +4,11 @@ package ch.ethz.idsc.demo.jph;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
+@Deprecated
+@Refactor
 /* package */ enum EphemeralUniqueTimePoseQuality {
   ;
   public static void main(String[] args) throws IOException {

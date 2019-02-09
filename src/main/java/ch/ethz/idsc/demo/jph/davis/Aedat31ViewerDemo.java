@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.tensor.io.AnimatedGifWriter;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-enum Aedat31ViewerDemo {
+/* package */ enum Aedat31ViewerDemo {
   ;
   public static void main(String[] args) throws Exception {
     try (AnimatedGifWriter agw2 = AnimatedGifWriter.of(HomeDirectory.file("events.gif"), 100)) {

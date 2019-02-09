@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -19,6 +20,8 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
 /** TimePoseQualityTable only exports unique pose messages */
+@Deprecated
+@Refactor
 /* package */ class UniqueTimePoseQualityTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private Tensor last = Tensors.empty();
