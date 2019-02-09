@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 
 /** display joystick status in console */
-/* package */ enum JoystickLcmClientDemo {
+/* package */ enum ManualControlLcmClientDemo {
   ;
   public static void main(String[] args) throws Exception {
     ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();

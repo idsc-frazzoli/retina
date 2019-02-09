@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-/* package */ class GyroBiasAnalysis implements OfflineTableSupplier {
+/* package */ class DavisImuBiasAnalysis implements OfflineTableSupplier {
   private static final String CHANNEL_DAVIS_IMU = //
       DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   private static final int LIMIT = 60 * 1000;
@@ -51,7 +51,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
         // System.out.println(gokartLogFile);
         File file = DatahakiLogFileLocator.file(gokartLogFile);
         // System.out.println(file);
-        GyroBiasAnalysis gyroBiasAnalysis = new GyroBiasAnalysis();
+        DavisImuBiasAnalysis gyroBiasAnalysis = new DavisImuBiasAnalysis();
         OfflineLogPlayer.process(file, gyroBiasAnalysis);
         Tensor tensor = gyroBiasAnalysis.getTable();
         Export.of(new File( //
