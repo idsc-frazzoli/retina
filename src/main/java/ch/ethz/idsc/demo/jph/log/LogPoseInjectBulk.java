@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.sys;
+package ch.ethz.idsc.demo.jph.log;
 
 import java.io.File;
 
@@ -23,7 +23,7 @@ enum LogPoseInjectBulk {
         } else {
           // dst.delete();
           GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
-          LogPoseInject.process( //
+          new LogPoseInject().process( //
               gokartLogInterface.file(), dst, new LidarGyroPoseEstimator(gokartLogInterface));
         }
       }

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.sys;
+package ch.ethz.idsc.demo.jph.log;
 
 import java.io.File;
 
@@ -16,7 +16,7 @@ import ch.ethz.idsc.gokart.offline.pose.LogPoseInject;
     if (target.isFile())
       System.out.println("skip " + folder);
     else
-      LogPoseInject.process( //
+      new LogPoseInject().process( //
           gokartLogInterface.file(), //
           new File(folder, "post.lcm"), //
           new LidarGyroPoseEstimator(gokartLogInterface));

@@ -11,7 +11,7 @@ import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.gokart.offline.slam.GyroOfflineLocalize;
+import ch.ethz.idsc.gokart.offline.slam.LidarGyroOfflineLocalize;
 import ch.ethz.idsc.gokart.offline.slam.LocalizationResult;
 import ch.ethz.idsc.gokart.offline.slam.LocalizationResultListener;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalize;
@@ -32,7 +32,7 @@ public class LidarGyroPoseEstimator implements OfflinePoseEstimator, Localizatio
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
     ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
     scatterImage = new WallScatterImage(predefinedMap);
-    OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
+    OfflineLocalize offlineLocalize = new LidarGyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
     // TODO using the wrap here is an overkill because a table is collected!
     offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
     offlineLocalize.addListener(this);
@@ -43,7 +43,7 @@ public class LidarGyroPoseEstimator implements OfflinePoseEstimator, Localizatio
     return Objects.isNull(localizationResult) //
         ? GokartPoseEvents.getPoseEvent( //
             gokartLogInterface.pose(), //
-            RealScalar.ONE)
+            RealScalar.ZERO)
         : GokartPoseEvents.getPoseEvent( //
             GokartPoseHelper.attachUnits(localizationResult.pose_xyt), //
             localizationResult.ratio);
