@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.Tensors;
 public class LinmotPutEvent extends DataEvent {
   /** 12 bytes encoding length */
   private static final int LENGTH = 12;
+  private static final double PUT_POSITION_TO_METER = 1e-4;
   // ---
   public final short control_word;
   /** motion_cmd_hdr is private because the bits of the short value encode two different values:
@@ -92,7 +93,7 @@ public class LinmotPutEvent extends DataEvent {
     return Tensors.vector( //
         control_word & 0xffff, //
         motion_cmd_hdr & 0xffff, //
-        target_position, //
+        target_position * PUT_POSITION_TO_METER, //
         max_velocity, //
         acceleration, //
         deceleration);

@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 public enum GokartPoseSmoothing implements TensorUnaryOperator {
   INSTANCE;
   // ---
-  private static final int HALF_WIDTH = 10;
+  private static final int HALF_WIDTH = 6;
   private static final TensorUnaryOperator TENSOR_UNARY_OPERATOR = //
       GeodesicCenter.of(Se2Geodesic.INSTANCE, new WindowCenterSampler(GaussianWindow.FUNCTION));
 

@@ -43,7 +43,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       LinmotPutChannel.INSTANCE, //
       LinmotGetChannel.INSTANCE, //
       Vmu931ImuChannel.INSTANCE);
-  private static final String SMOOTH = "gokart.pose.smooth";
+  static final String GOKART_POSE_SMOOTH = "gokart.pose.smooth";
 
   public static void process(File cut) {
     System.out.println(cut);
@@ -67,7 +67,7 @@ import ch.ethz.idsc.tensor.sca.Round;
           for (int index = 0; index < 3; ++index)
             pose.set(smooth.get(Tensor.ALL, index), Tensor.ALL, index + 1);
           Export.of( //
-              new File(target, SMOOTH + ".csv.gz"), //
+              new File(target, GOKART_POSE_SMOOTH + ".csv.gz"), //
               pose);
         }
       } catch (Exception exception) {
@@ -78,7 +78,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   public static void main(String[] args) {
-    File single = new File("/media/datahaki/data/gokart/cuts/20190208/20190208T145312_22");
+    File single = new File("/media/datahaki/data/gokart/cuts/20190208/20190208T145312_04");
     process(single);
     // for (File folder : ROOT.listFiles())
     // if (!folder.getName().startsWith("_"))

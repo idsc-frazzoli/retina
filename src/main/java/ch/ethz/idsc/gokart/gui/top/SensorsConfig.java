@@ -105,7 +105,10 @@ public class SensorsConfig {
    * @param vmu931ImuFrame
    * @return vector of length 2 of acceleration in gokart coordinates */
   public Tensor getAccXY(Vmu931ImuFrame vmu931ImuFrame) {
-    Tensor accRawXY = vmu931ImuFrame.accXY();
+    return getAccXY(vmu931ImuFrame.accXY());
+  }
+
+  public Tensor getAccXY(Tensor accRawXY) {
     return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate());
   }
 
@@ -114,6 +117,10 @@ public class SensorsConfig {
    * @param vmu931ImuFrame
    * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
   public Scalar getGyroZ(Vmu931ImuFrame vmu931ImuFrame) {
-    return vmu931ImuFrame.gyroZ().negate();
+    return getGyroZ(vmu931ImuFrame.gyroZ());
+  }
+
+  public Scalar getGyroZ(Scalar gyroZ) {
+    return gyroZ.negate();
   }
 }
