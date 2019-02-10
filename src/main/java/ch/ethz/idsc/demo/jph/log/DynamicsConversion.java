@@ -4,8 +4,9 @@ package ch.ethz.idsc.demo.jph.log;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -45,36 +46,34 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   public static void process(File cut) {
     System.out.println(cut);
-    File dest = new File(DEST, cut.getName());
-    dest.mkdir();
+    File target = new File(DEST, cut.getName());
+    target.mkdir();
     File file = new File(cut, "post.lcm");
-    int INDEX_POSE = IntStream.range(0, SINGLE_CHANNEL_INTERFACES.size()) //
-        .filter(index -> SINGLE_CHANNEL_INTERFACES.get(index).equals(GokartPosePostChannel.INSTANCE)) //
-        .findFirst().getAsInt();
     if (file.isFile()) {
-      List<OfflineTableSupplier> offlineTableSuppliers = //
-          SINGLE_CHANNEL_INTERFACES.stream().map(SingleChannelTable::of).collect(Collectors.toList());
+      Map<SingleChannelInterface, OfflineTableSupplier> map = //
+          SINGLE_CHANNEL_INTERFACES.stream().collect(Collectors.toMap(i -> i, SingleChannelTable::of));
       try {
-        OfflineLogPlayer.process(file, offlineTableSuppliers);
-        for (int index = 0; index < SINGLE_CHANNEL_INTERFACES.size(); ++index)
+        OfflineLogPlayer.process(file, map.values());
+        for (Entry<SingleChannelInterface, OfflineTableSupplier> entry : map.entrySet())
           Export.of( //
-              new File(dest, SINGLE_CHANNEL_INTERFACES.get(index).channel() + ".csv.gz"), //
-              offlineTableSuppliers.get(index).getTable().map(CsvFormat.strict()));
+              new File(target, entry.getKey().channel() + ".csv.gz"), //
+              entry.getValue().getTable().map(CsvFormat.strict()));
         // ---
         {
-          Tensor pose = offlineTableSuppliers.get(INDEX_POSE).getTable().copy();
+          Tensor pose = map.get(GokartPosePostChannel.INSTANCE).getTable().copy();
           Tensor tensor = Tensor.of(pose.stream().map(row -> row.extract(1, 4)));
           Tensor smooth = GokartPoseSmoothing.INSTANCE.apply(tensor).map(Round._6);
           for (int index = 0; index < 3; ++index)
             pose.set(smooth.get(Tensor.ALL, index), Tensor.ALL, index + 1);
           Export.of( //
-              new File(dest, SMOOTH + ".csv.gz"), //
+              new File(target, SMOOTH + ".csv.gz"), //
               pose);
         }
       } catch (Exception exception) {
         exception.printStackTrace();
       }
-    }
+    } else
+      System.err.println("missing: " + file);
   }
 
   public static void main(String[] args) {

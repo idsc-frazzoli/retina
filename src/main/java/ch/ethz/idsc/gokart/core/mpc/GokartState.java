@@ -295,7 +295,7 @@ import ch.ethz.idsc.tensor.sca.Sin;
   }
 
   public Tensor getCenterPosition() {
-    // TODO: use Tensor library function
+    // TODO JPH use Tensor library function
     Scalar dirX = Cos.of(getPsi());
     Scalar dirY = Sin.of(getPsi());
     return getPosition().add(Tensors.of(dirX, dirY).multiply(CENTEROFFSET));

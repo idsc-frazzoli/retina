@@ -98,7 +98,12 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
-			<version>0.3.1</version>
+			<version>0.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.ethz.idsc</groupId>
+			<artifactId>subare</artifactId>
+			<version>0.2.5</version>
 		</dependency>
 
 		<dependency>
@@ -169,6 +174,14 @@
 		<repository>
 			<id>tensor-mvn-repo</id>
 			<url>https://raw.github.com/idsc-frazzoli/tensor/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>subare-mvn-repo</id>
+			<url>https://raw.github.com/idsc-frazzoli/subare/mvn-repo/</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>

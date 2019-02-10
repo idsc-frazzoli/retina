@@ -12,12 +12,11 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
-import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ enum EphemeralGokartPose {
   ;
   public static void main(String[] args) throws IOException {
-    File root = new File("/media/datahaki/data/gokart/cuts/20190204");
+    File root = new File("/media/datahaki/data/gokart/cuts/20190208");
     for (File folder : root.listFiles())
       if (folder.isDirectory()) {
         File file = new File(folder, "post.lcm");
@@ -26,7 +25,7 @@ import ch.ethz.idsc.tensor.sca.Round;
           OfflineLogPlayer.process(file, offlineTableSupplier);
           Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
           File dest = HomeDirectory.file("Projects/ephemeral/src/main/resources/dubilab/app/pose/5m");
-          Export.of(new File(dest, folder.getName() + ".csv"), tensor.map(Round._6));
+          Export.of(new File(dest, folder.getName() + ".csv"), tensor);
         } else
           System.err.println("skip " + folder);
       }
