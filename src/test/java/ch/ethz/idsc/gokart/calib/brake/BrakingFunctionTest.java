@@ -11,18 +11,18 @@ import junit.framework.TestCase;
 
 public class BrakingFunctionTest extends TestCase {
   public void testBrakingAccel() {
-    Scalar scalar = BrakingFunction.getInstance().getAcceleration(Quantity.of(0.03, "m"));
+    Scalar scalar = BrakingFunction.getInstance().getDeceleration(Quantity.of(0.03, "m"));
     // System.out.println("HERE=" + scalar);
     Clip.function(Quantity.of(1.85, "m*s^-2"), Quantity.of(1.86, "m*s^-2")).requireInside(scalar);
   }
 
   public void testBrakingAccelZero() {
-    assertEquals(Quantity.of(0, "m*s^-2"), BrakingFunction.getInstance().getAcceleration(Quantity.of(0.00, "m")));
-    assertEquals(Quantity.of(0, "m*s^-2"), BrakingFunction.getInstance().getAcceleration(Quantity.of(0.025, "m")));
+    assertEquals(Quantity.of(0, "m*s^-2"), BrakingFunction.getInstance().getDeceleration(Quantity.of(0.00, "m")));
+    assertEquals(Quantity.of(0, "m*s^-2"), BrakingFunction.getInstance().getDeceleration(Quantity.of(0.025, "m")));
   }
 
   public void testAccelPushLimit() {
-    BrakingFunction.getInstance().getAcceleration(Quantity.of(0.05, "m"));
+    BrakingFunction.getInstance().getDeceleration(Quantity.of(0.05, "m"));
     // System.out.println("TEST=" + scalar);
     // Clip.function(Quantity.of(1.85, "m*s^-2"), Quantity.of(1.86, "m*s^-2")).requireInside(scalar);
   }
@@ -30,8 +30,20 @@ public class BrakingFunctionTest extends TestCase {
   public void testInversion() {
     Scalar wa1 = Quantity.of(2, SI.ACCELERATION);
     Scalar brakepos = BrakingFunction.getInstance().getNeededBrakeActuation(wa1);
-    Scalar wa2 = BrakingFunction.getInstance().getAcceleration(brakepos);
+    Scalar wa2 = BrakingFunction.getInstance().getDeceleration(brakepos);
     System.out.println("braking position: " + brakepos);
+    System.out.println("wa1: " + wa1);
+    System.out.println("wa2: " + wa2);
+    System.out.println("[0-1]: " + BrakingFunction.getRelativePosition(brakepos));
+    Chop._10.requireClose(wa1, wa2);
+  }
+
+  public void testInversionWithMultiplicator() {
+    Scalar wa1 = Quantity.of(2, SI.ACCELERATION);
+    Scalar fadeFactor = RealScalar.of(0.8);
+    Scalar brakepos = BrakingFunction.getInstance().getNeededBrakeActuation(wa1, fadeFactor);
+    Scalar wa2 = BrakingFunction.getInstance().getDeceleration(brakepos).multiply(fadeFactor);
+    System.out.println("braking position (with fading): " + brakepos);
     System.out.println("wa1: " + wa1);
     System.out.println("wa2: " + wa2);
     System.out.println("[0-1]: " + BrakingFunction.getRelativePosition(brakepos));

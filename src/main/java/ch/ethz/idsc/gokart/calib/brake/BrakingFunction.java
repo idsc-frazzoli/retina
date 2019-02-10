@@ -39,12 +39,12 @@ public class BrakingFunction {
   protected BrakingFunction() {
   }
 
-  // Note: this is highlyenum inaccurate. TODO do it more precisely
+  // Note: this is highly inaccurate. TODO do it more precisely
   /** get the induced braking deceleration (added to motor acceleration)
    * 
    * @param brakingPosition [m]
    * @return braking deceleration */
-  @Deprecated // TODO: JPH, why is this Deprecated?
+  // @Deprecated // TODO: JPH, why is this Deprecated?
   protected Scalar getAcceleration(Scalar brakingPosition, Scalar brakeCurveFactor) {
     // FIXME JPH/MH cap result at some max value
     return Ramp.FUNCTION.apply(BRAKING_ACCELERATION.apply(Ramp.FUNCTION.apply(brakingPosition.subtract(BRAKE_START)))).multiply(brakeCurveFactor);
@@ -54,8 +54,8 @@ public class BrakingFunction {
    * 
    * @param brakingPosition [m]
    * @return braking deceleration */
-  @Deprecated // TODO: JPH, why is this Deprecated?
-  Scalar getAcceleration(Scalar brakingPosition) {
+  // @Deprecated // TODO: JPH, why is this Deprecated?
+  Scalar getDeceleration(Scalar brakingPosition) {
     return getAcceleration(brakingPosition, RealScalar.ONE);
   }
 
@@ -67,24 +67,24 @@ public class BrakingFunction {
 
   /** get the wanted actuation position
    * 
-   * @param wantedAcceleration wanted additional braking deceleration [m*s^-2] positive for braking effect
-   * @param brakeCurveFactor the scaling factor for the curve (comes from brake heat/body weight)
+   * @param wantedDeceleration wanted additional braking deceleration [m*s^-2] positive for braking effect
+   * @param brakeCurveMultiplicator the scaling factor for the curve (comes from brake heat/body weight)
    * @return needed braking position [m] positive for braking effect */
-  protected Scalar getNeededBrakeActuation(Scalar wantedAcceleration, Scalar brakeCurveFactor) {
-    if (Sign.isNegativeOrZero(wantedAcceleration))
+  public Scalar getNeededBrakeActuation(Scalar wantedDeceleration, Scalar brakeCurveMultiplicator) {
+    if (Sign.isNegativeOrZero(wantedDeceleration))
       return LINMOT_CLIP.min();
-    Tensor coeffs = COEFFS.copy().multiply(brakeCurveFactor);
-    coeffs.set(scalar -> scalar.subtract(wantedAcceleration), 0); // poly(x) == y -> poly(x) - y == 0
+    Tensor coeffs = COEFFS.copy().multiply(brakeCurveMultiplicator);
+    coeffs.set(scalar -> scalar.subtract(wantedDeceleration), 0); // poly(x) == y -> poly(x) - y == 0
     Tensor roots = Roots.of(coeffs);
     return Real.FUNCTION.apply(roots.Get(0)).add(BRAKE_START);
   }
 
   /** get the wanted actuation position
    * 
-   * @param wantedAcceleration wanted additional braking deceleration [m*s^-2] positive for braking effect
+   * @param wantedDeceleration wanted additional braking deceleration [m*s^-2] positive for braking effect
    * @return needed braking position [m] positive for braking effect */
-  Scalar getNeededBrakeActuation(Scalar wantedAcceleration) {
-    return getNeededBrakeActuation(wantedAcceleration, RealScalar.ONE);
+  Scalar getNeededBrakeActuation(Scalar wantedDeceleration) {
+    return getNeededBrakeActuation(wantedDeceleration, RealScalar.ONE);
   }
 
   /** @param absolutePosition brake position [m] 0.005 in rest position and growing for pushed brake

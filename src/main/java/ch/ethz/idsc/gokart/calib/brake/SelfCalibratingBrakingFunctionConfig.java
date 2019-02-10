@@ -13,7 +13,7 @@ public class SelfCalibratingBrakingFunctionConfig {
   /** the speed threshold after which the correction is active [m/s] */
   public Scalar speedThreshold = Quantity.of(1, SI.VELOCITY);
   /** the ratio between gokart speed and wheelspeed after which the wheel is considered to be locked up */
-  public Scalar lockupRatio = Quantity.of(0.6, SI.VELOCITY);
+  public Scalar lockupRatio = RealScalar.of(0.6);
   /** the filter for the update */
   public Scalar geodesicFilterAlpha = RealScalar.of(0.01);
 }

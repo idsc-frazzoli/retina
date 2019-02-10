@@ -22,7 +22,7 @@ public class SelfCalibratingBrakingFunction extends BrakingFunction {
   }
 
   @Override
-  public Scalar getAcceleration(Scalar brakingPosition) {
+  public Scalar getDeceleration(Scalar brakingPosition) {
     return super.getAcceleration(brakingPosition, curveCorrectionFactor);
   }
 
@@ -62,6 +62,7 @@ public class SelfCalibratingBrakingFunction extends BrakingFunction {
       // geodesic filter is not modifiable
       Scalar alpha = SelfCalibratingBrakingFunctionConfig.GLOBAL.geodesicFilterAlpha;
       curveCorrectionFactor = RealScalar.ONE.subtract(alpha).multiply(curveCorrectionFactor).add(alpha.multiply(newCurveCorrectionFactor));
+      System.out.println(curveCorrectionFactor);
     }
   }
 }

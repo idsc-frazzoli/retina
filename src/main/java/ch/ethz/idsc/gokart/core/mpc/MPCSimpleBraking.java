@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.red.Max;
     Scalar min = minmax.Get(0);
     Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
     // System.out.println(braking);
-    return BrakingFunction.getRelativeBrakeActuation(braking);
+    return BrakingFunction.getInstance().getRelativeBrakeActuation(braking);
   }
 
   @Override
