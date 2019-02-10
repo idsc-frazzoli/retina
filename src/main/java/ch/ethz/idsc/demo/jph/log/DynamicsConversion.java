@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
@@ -31,7 +32,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   ;
   private static final File ROOT = new File("/media/datahaki/data/gokart/cuts");
   private static final File DEST = new File("/media/datahaki/data/gokart/dynamics");
-  private static final List<SingleChannelInterface> SINGLE_CHANNEL_INTERFACES = Arrays.asList( //
+  static final List<SingleChannelInterface> SINGLE_CHANNEL_INTERFACES = Arrays.asList( //
       GokartPoseChannel.INSTANCE, //
       GokartPosePostChannel.INSTANCE, //
       GokartStatusChannel.INSTANCE, //
@@ -50,8 +51,8 @@ import ch.ethz.idsc.tensor.sca.Round;
     target.mkdir();
     File file = new File(cut, "post.lcm");
     if (file.isFile()) {
-      Map<SingleChannelInterface, OfflineTableSupplier> map = //
-          SINGLE_CHANNEL_INTERFACES.stream().collect(Collectors.toMap(i -> i, SingleChannelTable::of));
+      Map<SingleChannelInterface, OfflineTableSupplier> map = SINGLE_CHANNEL_INTERFACES.stream() //
+          .collect(Collectors.toMap(Function.identity(), SingleChannelTable::of));
       try {
         OfflineLogPlayer.process(file, map.values());
         for (Entry<SingleChannelInterface, OfflineTableSupplier> entry : map.entrySet())
