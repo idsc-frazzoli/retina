@@ -27,6 +27,7 @@ import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
+import ch.ethz.idsc.gokart.lcm.autobox.SteerGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
@@ -54,6 +55,7 @@ public class PresenterLcmModule extends AbstractModule {
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
+  private final SteerGetLcmClient steerGetLcmClient = new SteerGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final ManualControlLcmClient manualControlLcmClient = new ManualControlLcmClient();
@@ -176,15 +178,16 @@ public class PresenterLcmModule extends AbstractModule {
     }
     {
       GokartHudRender gokartHudRender = new GokartHudRender(gokartPoseLcmLidar);
-      manualControlLcmClient.addListener(gokartHudRender);
+      steerGetLcmClient.addListener(gokartHudRender.steerGetListener);
       timerFrame.geometricComponent.addRenderInterface(gokartHudRender);
-      rimoGetLcmClient.addListener(gokartHudRender);
+      rimoGetLcmClient.addListener(gokartHudRender.rimoGetListener);
     }
     // ---
     gokartPoseLcmLidar.gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
+    steerGetLcmClient.startSubscriptions();
     gokartStatusLcmClient.startSubscriptions();
     manualControlLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
@@ -225,6 +228,7 @@ public class PresenterLcmModule extends AbstractModule {
     rimoGetLcmClient.stopSubscriptions();
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
+    steerGetLcmClient.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
     gokartPoseLcmLidar.gokartPoseLcmClient.stopSubscriptions();
     manualControlLcmClient.stopSubscriptions();
