@@ -26,19 +26,8 @@ class GokartHudRender implements RenderInterface {
   private final GokartPoseInterface gokartPoseInterface;
   private RimoGetEvent rimoGetEvent = RimoGetEvents.create(0, 0);
   private SteerGetEvent steerGetEvent = SteerGetEvents.ZEROS;
-  final RimoGetListener rimoGetListener = new RimoGetListener() {
-    @Override
-    public void getEvent(RimoGetEvent getEvent) {
-      rimoGetEvent = getEvent;
-    }
-  };
-  final SteerGetListener steerGetListener = new SteerGetListener() {
-    @Override
-    public void getEvent(SteerGetEvent getEvent) {
-      System.out.println("update");
-      steerGetEvent = getEvent;
-    }
-  };
+  final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
+  final SteerGetListener steerGetListener = getEvent -> steerGetEvent = getEvent;
 
   public GokartHudRender(GokartPoseInterface gokartPoseInterface) {
     this.gokartPoseInterface = gokartPoseInterface;

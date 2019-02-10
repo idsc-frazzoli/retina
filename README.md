@@ -88,7 +88,7 @@ MPC [outside](https://www.youtube.com/watch?v=B0QmMS1Dp8E), [inside](https://www
 
 ## Go-kart Operation
 
-![gokart_operation](https://user-images.githubusercontent.com/4012178/50010529-00f73100-ffba-11e8-8ac7-518f99d6ce9c.png)
+![gokart_operation](https://user-images.githubusercontent.com/4012178/52531841-22f00400-2d1c-11e9-8fd7-92d6217b35e3.png)
 
 ### Actuation
 
