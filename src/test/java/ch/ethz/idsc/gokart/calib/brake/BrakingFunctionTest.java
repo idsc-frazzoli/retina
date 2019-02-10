@@ -11,26 +11,26 @@ import junit.framework.TestCase;
 
 public class BrakingFunctionTest extends TestCase {
   public void testBrakingAccel() {
-    Scalar scalar = BrakingFunction.getAcceleration(Quantity.of(0.03, "m"));
+    Scalar scalar = BrakingFunction.getInstance().getAcceleration(Quantity.of(0.03, "m"));
     // System.out.println("HERE=" + scalar);
     Clip.function(Quantity.of(1.85, "m*s^-2"), Quantity.of(1.86, "m*s^-2")).requireInside(scalar);
   }
 
   public void testBrakingAccelZero() {
-    assertEquals(Quantity.of(0, "m*s^-2"), BrakingFunction.getAcceleration(Quantity.of(0.00, "m")));
-    assertEquals(Quantity.of(0, "m*s^-2"), BrakingFunction.getAcceleration(Quantity.of(0.025, "m")));
+    assertEquals(Quantity.of(0, "m*s^-2"), BrakingFunction.getInstance().getAcceleration(Quantity.of(0.00, "m")));
+    assertEquals(Quantity.of(0, "m*s^-2"), BrakingFunction.getInstance().getAcceleration(Quantity.of(0.025, "m")));
   }
 
   public void testAccelPushLimit() {
-    BrakingFunction.getAcceleration(Quantity.of(0.05, "m"));
+    BrakingFunction.getInstance().getAcceleration(Quantity.of(0.05, "m"));
     // System.out.println("TEST=" + scalar);
     // Clip.function(Quantity.of(1.85, "m*s^-2"), Quantity.of(1.86, "m*s^-2")).requireInside(scalar);
   }
 
   public void testInversion() {
     Scalar wa1 = Quantity.of(2, SI.ACCELERATION);
-    Scalar brakepos = BrakingFunction.getNeededBrakeActuation(wa1);
-    Scalar wa2 = BrakingFunction.getAcceleration(brakepos);
+    Scalar brakepos = BrakingFunction.getInstance().getNeededBrakeActuation(wa1);
+    Scalar wa2 = BrakingFunction.getInstance().getAcceleration(brakepos);
     System.out.println("braking position: " + brakepos);
     System.out.println("wa1: " + wa1);
     System.out.println("wa2: " + wa2);
@@ -39,23 +39,23 @@ public class BrakingFunctionTest extends TestCase {
   }
 
   public void testZeroNeg() {
-    assertEquals(BrakingFunction.getRelativeBrakeActuation(Quantity.of(+0, SI.ACCELERATION)), RealScalar.ZERO);
-    assertEquals(BrakingFunction.getRelativeBrakeActuation(Quantity.of(-1, SI.ACCELERATION)), RealScalar.ZERO);
-    assertEquals(BrakingFunction.getRelativeBrakeActuation(Quantity.of(-2, SI.ACCELERATION)), RealScalar.ZERO);
+    assertEquals(BrakingFunction.getInstance().getRelativeBrakeActuation(Quantity.of(+0, SI.ACCELERATION)), RealScalar.ZERO);
+    assertEquals(BrakingFunction.getInstance().getRelativeBrakeActuation(Quantity.of(-1, SI.ACCELERATION)), RealScalar.ZERO);
+    assertEquals(BrakingFunction.getInstance().getRelativeBrakeActuation(Quantity.of(-2, SI.ACCELERATION)), RealScalar.ZERO);
   }
 
   public void testBigValues() {
     // only important that it does not crash here
-    Scalar brakepos1 = BrakingFunction.getNeededBrakeActuation(Quantity.of(1, SI.ACCELERATION));
+    Scalar brakepos1 = BrakingFunction.getInstance().getNeededBrakeActuation(Quantity.of(1, SI.ACCELERATION));
     // System.out.println(brakepos1);
     Clip.function(Quantity.of(0.025, "m"), Quantity.of(0.030, "m")).requireInside(brakepos1);
-    Scalar brakepos2 = BrakingFunction.getNeededBrakeActuation(Quantity.of(2, SI.ACCELERATION));
+    Scalar brakepos2 = BrakingFunction.getInstance().getNeededBrakeActuation(Quantity.of(2, SI.ACCELERATION));
     Clip.function(Quantity.of(0.030, "m"), Quantity.of(0.035, "m")).requireInside(brakepos2);
-    Scalar brakepos3 = BrakingFunction.getNeededBrakeActuation(Quantity.of(3, SI.ACCELERATION));
+    Scalar brakepos3 = BrakingFunction.getInstance().getNeededBrakeActuation(Quantity.of(3, SI.ACCELERATION));
     Clip.function(Quantity.of(0.030, "m"), Quantity.of(0.035, "m")).requireInside(brakepos3);
-    Scalar brakepos4 = BrakingFunction.getNeededBrakeActuation(Quantity.of(30, SI.ACCELERATION));
+    Scalar brakepos4 = BrakingFunction.getInstance().getNeededBrakeActuation(Quantity.of(30, SI.ACCELERATION));
     Clip.function(Quantity.of(0.040, "m"), Quantity.of(0.045, "m")).requireInside(brakepos4);
-    Scalar brakepos5 = BrakingFunction.getNeededBrakeActuation(Quantity.of(50, SI.ACCELERATION));
+    Scalar brakepos5 = BrakingFunction.getInstance().getNeededBrakeActuation(Quantity.of(50, SI.ACCELERATION));
     Clip.function(Quantity.of(0.040, "m"), Quantity.of(0.045, "m")).requireInside(brakepos5);
     assertEquals(brakepos4, brakepos5);
   }
