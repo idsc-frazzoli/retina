@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.brake.SelfCalibratingBrakingFunction;
-import ch.ethz.idsc.gokart.core.ekf.SimpleVelocityEstimation;
+import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -14,6 +14,7 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -25,6 +26,8 @@ import ch.ethz.idsc.tensor.red.Max;
   // private final MPCActiveCompensationLearning activeCompensationLearning = MPCActiveCompensationLearning.getInstance();
   private final SelfCalibratingBrakingFunction brakingFunction = SelfCalibratingBrakingFunction.getInstance();
   private final Vmu931ImuLcmClient vmu931imuLcmClient = new Vmu931ImuLcmClient();
+  private final SimplePositionVelocityModule simpleVelocityEstimation = // 
+      ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
 
   @Override
   public Scalar getBraking(Scalar time) {
@@ -38,7 +41,7 @@ import ch.ethz.idsc.tensor.red.Max;
     Scalar braking = Max.of(NO_ACCELERATION, cnsStep.control.getaB().negate());
     // System.out.println(braking);
     // self calibration
-    Scalar gokartSpeed = SimpleVelocityEstimation.getInstance().getVelocity().Get(0).negate();
+    Scalar gokartSpeed = simpleVelocityEstimation.getVelocity().Get(0).negate();
     Scalar realBraking = currentAcceleration.negate();
     brakingFunction.correctBraking(braking.negate(), realBraking, gokartSpeed, wheelSpeed);
     return brakingFunction.getRelativeBrakeActuation(braking);

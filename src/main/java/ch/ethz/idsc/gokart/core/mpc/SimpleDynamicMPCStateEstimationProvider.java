@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.ekf.SimpleVelocityEstimation;
+import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
@@ -20,6 +20,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -27,6 +28,8 @@ import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ class SimpleDynamicMPCStateEstimationProvider extends MPCStateEstimationProvider {
+  private final SimplePositionVelocityModule simpleVelocityEstimation = // 
+      ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
   private Scalar Ux = Quantity.of(0, SI.VELOCITY);
   // assumed to be zero here (Kinematic controller cannot do anything with this information
   private Scalar Uy = Quantity.of(0, SI.VELOCITY);
@@ -85,9 +88,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   public GokartState getState() {
     // check if there was an update since the creation of the last gokart state
     if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate))
-      Ux = SimpleVelocityEstimation.getInstance().getVelocity().Get(0);
-    Uy = SimpleVelocityEstimation.getInstance().getVelocity().Get(1);
-    dotOrientation = SimpleVelocityEstimation.getInstance().getVelocity().Get(2);
+      Ux = simpleVelocityEstimation.getVelocity().Get(0);
+    Uy = simpleVelocityEstimation.getVelocity().Get(1);
+    dotOrientation = simpleVelocityEstimation.getVelocity().Get(2);
     lastGokartState = new GokartState( //
         getTime(), //
         Ux, //

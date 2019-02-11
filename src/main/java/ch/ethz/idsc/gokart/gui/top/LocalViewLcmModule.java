@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.ekf.SimpleVelocityEstimation;
+import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -15,6 +15,7 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -35,7 +36,8 @@ public class LocalViewLcmModule extends AbstractModule {
   private final MPCExpectationRender mpcExpectationRender = new MPCExpectationRender(MINOR);
   private final TimerFrame timerFrame = new TimerFrame();
   private final AccelerationRender accelerationRender = new AccelerationRender(MINOR, 100);
-  private final SimpleVelocityEstimation simpleVelocityEstimation = SimpleVelocityEstimation.getInstance();
+  private final SimplePositionVelocityModule simpleVelocityEstimation = // 
+      ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
   private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(simpleVelocityEstimation, MINOR);
   private final BrakeCalibrationRender brakeCalibrationRender = new BrakeCalibrationRender(MINORRIGHT);
   private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
