@@ -52,7 +52,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   }
 
   @Override // from AbstractModule
-  protected final void first() throws Exception {
+  protected final void first() {
     lidarSpacialProvider.addListener(this);
     velodyneLcmClient.startSubscriptions();
     gokartStatusLcmClient.addListener(this);

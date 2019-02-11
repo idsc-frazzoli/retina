@@ -10,8 +10,12 @@ public final class SeesLcmModule extends AbstractModule {
   private SeesLcmProcess seesLcmProcess;
 
   @Override
-  protected void first() throws Exception {
-    seesLcmProcess = new SeesLcmProcess();
+  protected void first() {
+    try {
+      seesLcmProcess = new SeesLcmProcess();
+    } catch (Exception exception) {
+      throw new RuntimeException();
+    }
   }
 
   @Override

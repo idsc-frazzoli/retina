@@ -31,7 +31,7 @@ public class PanoramaViewModule extends AbstractModule {
 
   @SuppressWarnings("unused")
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     VelodyneModel velodyneModel = VelodyneModel.VLP16;
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     velodyneLcmClient = new VelodyneLcmClient(velodyneModel, velodyneDecoder, "center");

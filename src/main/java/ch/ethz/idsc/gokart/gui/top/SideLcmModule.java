@@ -25,7 +25,7 @@ public class SideLcmModule extends AbstractModule {
   }
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     {
       LidarRender lidarRender = new SideLidarRender(gokartPoseInterface);
       lidarRender.setColor(new Color(0, 0, 128, 128));

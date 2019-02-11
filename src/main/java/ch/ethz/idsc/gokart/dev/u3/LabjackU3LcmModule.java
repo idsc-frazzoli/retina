@@ -23,7 +23,7 @@ public class LabjackU3LcmModule extends AbstractModule implements LabjackAdcList
   private final StartAndStoppable labjackU3LiveProvider = LabjackU3LiveProviders.create(this);
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     labjackU3LiveProvider.start();
   }
 

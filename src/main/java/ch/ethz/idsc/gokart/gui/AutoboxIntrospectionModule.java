@@ -39,7 +39,7 @@ public class AutoboxIntrospectionModule extends AbstractModule {
   private final JLabel[][] jLabel = new JLabel[NUMEL][LENGTH];
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     JPanel jPanel = new JPanel(new BorderLayout());
     { // title
       JPanel jPanelTitle = new JPanel(new GridLayout(NUMEL, 1));

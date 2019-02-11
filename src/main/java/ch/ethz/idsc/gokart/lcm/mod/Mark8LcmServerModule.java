@@ -14,11 +14,15 @@ public class Mark8LcmServerModule extends AbstractModule {
   private Mark8LcmServer mark8LcmServer = null;
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     final int returns = Mark8LcmServer.DEFAULT_RETURNS;
     Mark8Digest mark8Digest = new Mark8DeflateDigest(returns);
     mark8LcmServer = new Mark8LcmServer(IP, mark8Digest, "center");
-    mark8LcmServer.start();
+    try {
+      mark8LcmServer.start();
+    } catch (Exception exception) {
+      throw new RuntimeException();
+    }
   }
 
   @Override

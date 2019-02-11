@@ -29,7 +29,7 @@ public class ManualResetModule extends AbstractClockedModule {
   }
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     manualControlProvider.start();
   }
 

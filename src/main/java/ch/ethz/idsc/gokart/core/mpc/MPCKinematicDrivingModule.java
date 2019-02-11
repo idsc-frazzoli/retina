@@ -138,7 +138,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   }
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     if (Objects.nonNull(gokartTrackReconModule))
       gokartTrackReconModule.listenersAdd(this);
     // ---

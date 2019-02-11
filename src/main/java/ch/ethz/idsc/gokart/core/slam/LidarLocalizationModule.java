@@ -42,7 +42,7 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
   // = new GeodesicCausal1Filter(Se2Geodesic.INSTANCE, RealScalar.of(0.85), p, q);
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);

@@ -19,7 +19,7 @@ public class SysidSignalsModule extends AbstractModule {
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     jFrame.setContentPane(sysidSignalsComponent.getScrollPane());
     jFrame.addWindowListener(new WindowAdapter() {
       @Override

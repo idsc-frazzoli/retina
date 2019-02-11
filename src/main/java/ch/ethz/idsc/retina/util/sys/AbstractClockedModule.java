@@ -24,7 +24,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
   /** Initialization for user implementation.
    * Runs before runEventModule() is ever called. */
   @Override
-  protected abstract void first() throws Exception;
+  protected abstract void first();
 
   /** Graceful closure for user implementation Runs after runEventModule() is
    * terminated for good. */
@@ -37,7 +37,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
   protected abstract Scalar getPeriod();
 
   @Override
-  public final void launch() throws Exception {
+  public final void launch() {
     first();
     TimerTask timerTask = new TimerTask() {
       @Override

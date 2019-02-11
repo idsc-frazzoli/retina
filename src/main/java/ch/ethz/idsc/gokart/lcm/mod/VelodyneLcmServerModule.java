@@ -19,7 +19,7 @@ abstract class VelodyneLcmServerModule extends AbstractModule {
   }
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     int portRay = VelodyneStatics.RAY_DEFAULT_PORT;
     int portPos = VelodyneStatics.POS_DEFAULT_PORT;
     velodyneLcmServer = new VelodyneLcmServer(velodyneModel, channel, portRay, portPos);

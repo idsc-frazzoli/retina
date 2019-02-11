@@ -31,7 +31,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
   private RimoGetEvent rimoGetEvent = null;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
     urg04lxLcmHandler.lidarAngularFiringCollector.addListener(this);

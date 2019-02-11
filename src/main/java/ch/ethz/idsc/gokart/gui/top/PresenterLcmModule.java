@@ -71,7 +71,7 @@ public class PresenterLcmModule extends AbstractModule {
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     {
       ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));

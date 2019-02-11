@@ -23,7 +23,7 @@ public final class SpeedLimitSafetyModule extends AbstractModule implements Rimo
   private final Watchdog watchdog = SoftWatchdog.barking(Magnitude.SECOND.toDouble(SafetyConfig.GLOBAL.penalty));
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     RimoSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addPutProvider(this);
   }

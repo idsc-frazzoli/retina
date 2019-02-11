@@ -18,7 +18,7 @@ public class GokartStatusLcmModule extends AbstractClockedModule {
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.STATUS);
 
   @Override // from AbstractClockedModule
-  protected void first() throws Exception {
+  protected void first() {
     // ---
   }
 

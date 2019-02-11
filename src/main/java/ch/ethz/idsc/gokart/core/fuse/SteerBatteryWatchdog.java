@@ -23,7 +23,7 @@ public final class SteerBatteryWatchdog extends EmergencyModule<RimoPutEvent> im
   private boolean isBlown = false;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     MiscSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addPutProvider(this);
   }

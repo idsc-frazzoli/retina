@@ -15,7 +15,7 @@ public class DavisDetailModule extends AbstractModule {
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     windowConfiguration.attach(getClass(), davisDetailViewer.davisViewerFrame.jFrame);
     davisDetailViewer.davisViewerFrame.jFrame.setVisible(true);
     davisDetailViewer.start();
