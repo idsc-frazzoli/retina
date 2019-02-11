@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.calib.brake.BrakingFunction;
+import ch.ethz.idsc.gokart.calib.brake.BrakingFunctions;
 import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.red.Max;
     Scalar min = minmax.Get(0);
     Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
     // System.out.println(braking);
-    return BrakingFunction.getInstance().getRelativeBrakeActuation(braking);
+    return BrakingFunctions.STATIC.getRelativeBrakeActuation(braking);
   }
 
   @Override

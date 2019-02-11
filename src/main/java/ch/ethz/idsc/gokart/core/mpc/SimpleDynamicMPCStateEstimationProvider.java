@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ class SimpleDynamicMPCStateEstimationProvider extends MPCStateEstimationProvider {
-  private final SimplePositionVelocityModule simpleVelocityEstimation = // 
+  private final SimplePositionVelocityModule simpleVelocityEstimation = //
       ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
   private Scalar Ux = Quantity.of(0, SI.VELOCITY);
   // assumed to be zero here (Kinematic controller cannot do anything with this information

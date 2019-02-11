@@ -15,13 +15,7 @@ import ch.ethz.idsc.tensor.sca.Real;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public class BrakingFunction {
-  private static BrakingFunction INSTANCE = new BrakingFunction();
-
-  public static BrakingFunction getInstance() {
-    return INSTANCE;
-  }
-
+public class StaticBrakingFunction {
   /** point after which the brake is effective
    * 2.5 / 100.0 == 0.025 */
   private static final Scalar BRAKE_START = Quantity.of(0.025, SI.METER);
@@ -36,7 +30,7 @@ public class BrakingFunction {
       Quantity.of(0.005, SI.METER), //
       Quantity.of(0.050, SI.METER));
 
-  protected BrakingFunction() {
+  protected StaticBrakingFunction() {
   }
 
   // Note: this is highly inaccurate. TODO do it more precisely

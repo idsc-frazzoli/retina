@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import ch.ethz.idsc.gokart.calib.brake.SelfCalibratingBrakingFunction;
+import ch.ethz.idsc.gokart.calib.brake.BrakingFunctions;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -26,7 +26,7 @@ public class BrakeCalibrationRender implements RenderInterface {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     geometricLayer.pushMatrix(DIAGONAL);
     // calibration line
-    Scalar calibrationValue = SelfCalibratingBrakingFunction.getInstance().getBrakeFadeFactor();
+    Scalar calibrationValue = BrakingFunctions.CALIBRATING.getBrakeFadeFactor();
     graphics.setColor(Color.BLUE);
     Tensor polygon = Tensors.of(Tensors.vector(0, 0), Tensors.of(calibrationValue, RealScalar.ZERO));
     graphics.draw(geometricLayer.toPath2D(polygon));

@@ -1,24 +1,17 @@
+// code by mh
 package ch.ethz.idsc.gokart.calib.brake;
 
-import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
-import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 
-public class SelfCalibratingBrakingFunction extends BrakingFunction {
-  private static SelfCalibratingBrakingFunction INSTANCE = new SelfCalibratingBrakingFunction();
-  private final GeodesicIIR1Filter geodesicIIR1Filter = //
-      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, SelfCalibratingBrakingFunctionConfig.GLOBAL.geodesicFilterAlpha);
-
-  public static SelfCalibratingBrakingFunction getInstance() {
-    return INSTANCE;
-  }
-
+public class SelfCalibratingBrakingFunction extends StaticBrakingFunction {
+  // private final GeodesicIIR1Filter geodesicIIR1Filter = //
+  // new GeodesicIIR1Filter(RnGeodesic.INSTANCE, SelfCalibratingBrakingFunctionConfig.GLOBAL.geodesicFilterAlpha);
   private Scalar curveCorrectionFactor = RealScalar.ONE;
 
-  private SelfCalibratingBrakingFunction() {
-    super();
+  SelfCalibratingBrakingFunction() {
+    // ---
   }
 
   @Override

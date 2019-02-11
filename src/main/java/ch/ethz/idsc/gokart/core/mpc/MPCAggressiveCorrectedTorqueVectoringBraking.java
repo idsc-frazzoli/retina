@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.brake.BrakingFunctions;
 import ch.ethz.idsc.gokart.calib.brake.SelfCalibratingBrakingFunction;
 import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
@@ -24,9 +25,9 @@ import ch.ethz.idsc.tensor.red.Max;
   private static final Scalar NO_ACCELERATION = Quantity.of(0, SI.ACCELERATION);
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
   // private final MPCActiveCompensationLearning activeCompensationLearning = MPCActiveCompensationLearning.getInstance();
-  private final SelfCalibratingBrakingFunction brakingFunction = SelfCalibratingBrakingFunction.getInstance();
+  private final SelfCalibratingBrakingFunction brakingFunction = BrakingFunctions.CALIBRATING;
   private final Vmu931ImuLcmClient vmu931imuLcmClient = new Vmu931ImuLcmClient();
-  private final SimplePositionVelocityModule simpleVelocityEstimation = // 
+  private final SimplePositionVelocityModule simpleVelocityEstimation = //
       ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
 
   @Override
