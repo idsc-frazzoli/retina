@@ -92,4 +92,12 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
     }
     return Tensors.empty();
   }
+
+  @Override
+  public void start() {
+  }
+
+  @Override
+  public void stop() {
+  }
 }

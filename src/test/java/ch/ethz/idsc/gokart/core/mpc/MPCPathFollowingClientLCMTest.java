@@ -64,6 +64,18 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
           this.cns = controlAndPredictionSteps;
           System.out.println("control update");
         }
+
+        @Override
+        public void start() {
+          // TODO Auto-generated method stub
+          
+        }
+
+        @Override
+        public void stop() {
+          // TODO Auto-generated method stub
+          
+        }
       };
       lcmMPCControlClient.registerControlUpdateLister(mpcControlUpdateListener);
       DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
