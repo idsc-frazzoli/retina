@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.calib.brake;
 
 import ch.ethz.idsc.retina.util.math.SI;
@@ -12,9 +13,9 @@ public class SelfCalibratingBrakeFunctionTest extends TestCase {
     Scalar brakeFade = RealScalar.of(0.8);
     Scalar brakeDeceleration = Quantity.of(2.7, SI.ACCELERATION);
     Scalar realSpeed = Quantity.of(5, SI.VELOCITY);
-    SelfCalibratingBrakingFunction correctingBrakingFunction = BrakingFunctions.CALIBRATING;
+    SelfCalibratingBrakeFunction correctingBrakingFunction = new SelfCalibratingBrakeFunction();
     // SelfCalibratingBrakingFunctionConfig.GLOBAL.geodesicFilterAlpha = RealScalar.of(0.1);
-    StaticBrakingFunction brakingFunction = BrakingFunctions.STATIC;
+    StaticBrakeFunction brakingFunction = StaticBrakeFunction.INSTANCE;
     for (int i = 0; i < 1000; i++) {
       // simulate step
       Scalar brakePos = correctingBrakingFunction.getNeededBrakeActuation(brakeDeceleration);

@@ -1,9 +1,9 @@
+// code by mh
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import ch.ethz.idsc.gokart.calib.brake.BrakingFunctions;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 public class BrakeCalibrationRender implements RenderInterface {
+  public static Scalar calibrationValue = RealScalar.ONE;
   private static final Tensor DIAGONAL = DiagonalMatrix.of(.5, .5, 1);
   private final Tensor xya;
 
@@ -26,7 +27,6 @@ public class BrakeCalibrationRender implements RenderInterface {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     geometricLayer.pushMatrix(DIAGONAL);
     // calibration line
-    Scalar calibrationValue = BrakingFunctions.CALIBRATING.getBrakeFadeFactor();
     graphics.setColor(Color.BLUE);
     Tensor polygon = Tensors.of(Tensors.vector(0, 0), Tensors.of(calibrationValue, RealScalar.ZERO));
     graphics.draw(geometricLayer.toPath2D(polygon));

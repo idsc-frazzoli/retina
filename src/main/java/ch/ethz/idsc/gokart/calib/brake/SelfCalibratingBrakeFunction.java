@@ -1,27 +1,22 @@
 // code by mh
 package ch.ethz.idsc.gokart.calib.brake;
 
+import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 
-public class SelfCalibratingBrakingFunction extends StaticBrakingFunction {
-  // private final GeodesicIIR1Filter geodesicIIR1Filter = //
-  // new GeodesicIIR1Filter(RnGeodesic.INSTANCE, SelfCalibratingBrakingFunctionConfig.GLOBAL.geodesicFilterAlpha);
+public class SelfCalibratingBrakeFunction extends AbstractBrakeFunction {
   private Scalar curveCorrectionFactor = RealScalar.ONE;
 
-  SelfCalibratingBrakingFunction() {
-    // ---
+  @Override
+  public final Scalar getDeceleration(Scalar brakingPosition) {
+    return getDeceleration(brakingPosition, curveCorrectionFactor);
   }
 
   @Override
-  public Scalar getDeceleration(Scalar brakingPosition) {
-    return super.getAcceleration(brakingPosition, curveCorrectionFactor);
-  }
-
-  @Override
-  Scalar getNeededBrakeActuation(Scalar wantedAcceleration) {
-    return super.getNeededBrakeActuation(wantedAcceleration, curveCorrectionFactor);
+  public Scalar getNeededBrakeActuation(Scalar wantedDeceleration) {
+    return super.getNeededBrakeActuation(wantedDeceleration, curveCorrectionFactor);
   }
 
   public Scalar getBrakeFadeFactor() {
@@ -42,19 +37,21 @@ public class SelfCalibratingBrakingFunction extends StaticBrakingFunction {
     Scalar slipRatio = wheelSpeed.divide(wheelSpeed);
     boolean lockedUp = Scalars.lessThan(//
         slipRatio, //
-        SelfCalibratingBrakingFunctionConfig.GLOBAL.lockupRatio);
+        BrakeFunctionConfig.GLOBAL.lockupRatio);
     boolean tooSlow = Scalars.lessThan(//
         gokartSpeed, //
-        SelfCalibratingBrakingFunctionConfig.GLOBAL.speedThreshold);
+        BrakeFunctionConfig.GLOBAL.speedThreshold);
     boolean notEnoughBraking = Scalars.lessThan(//
         expectedBrakingDeceleration, //
-        SelfCalibratingBrakingFunctionConfig.GLOBAL.decelerationThreshold);
+        BrakeFunctionConfig.GLOBAL.decelerationThreshold);
     if (!lockedUp && !tooSlow && !notEnoughBraking) {
       Scalar newCurveCorrectionFactor = realBrakingDeceleration.divide(expectedBrakingDeceleration).multiply(curveCorrectionFactor);
       // curveCorrectionFactor = (Scalar) geodesicIIR1Filter.apply(newCurveCorrectionFactor);
       // geodesic filter is not modifiable
-      Scalar alpha = SelfCalibratingBrakingFunctionConfig.GLOBAL.geodesicFilterAlpha;
-      curveCorrectionFactor = RealScalar.ONE.subtract(alpha).multiply(curveCorrectionFactor).add(alpha.multiply(newCurveCorrectionFactor));
+      // TODO JPH/MH
+      Scalar alpha = BrakeFunctionConfig.GLOBAL.geodesicFilterAlpha;
+      curveCorrectionFactor = RnGeodesic.INSTANCE.split(curveCorrectionFactor, newCurveCorrectionFactor, alpha).Get();
+      // curveCorrectionFactor = RealScalar.ONE.subtract(alpha).multiply(curveCorrectionFactor).add(alpha.multiply(newCurveCorrectionFactor));
       System.out.println(curveCorrectionFactor);
     }
   }
