@@ -110,8 +110,9 @@ public class SensorsConfig {
     return vmu931AccXY(vmu931ImuFrame.accXY());
   }
 
-  public Tensor vmu931AccXY(Tensor accRawXY) {
-    return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate());
+  /* package */ Tensor vmu931AccXY(Tensor accRawXY) {
+    // return accRawXY.copy(); // ante 20190208)
+    return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate()); // post [20190208
   }
 
   /** see description above
@@ -122,7 +123,8 @@ public class SensorsConfig {
     return vmu931GyroZ(vmu931ImuFrame.gyroZ());
   }
 
-  public Scalar vmu931GyroZ(Scalar gyroZ) {
-    return gyroZ.negate();
+  /* package */ Scalar vmu931GyroZ(Scalar gyroZ) {
+    // return gyroZ; // ante 20190208)
+    return gyroZ.negate(); // post [20190208
   }
 }

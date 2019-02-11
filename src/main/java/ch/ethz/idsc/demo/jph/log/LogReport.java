@@ -41,16 +41,23 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 public class LogReport {
   private static final int WIDTH = 854;
   private static final int HEIGHT = 480;
+
+  // ---
+  public static void generate(File directory) throws IOException {
+    new LogReport(directory);
+  }
+
+  // ---
   private final File plot;
   private final Map<SingleChannelInterface, Tensor> map;
 
-  public LogReport(File directory) {
+  private LogReport(File directory) throws IOException {
     plot = new File(directory, "plot");
     plot.mkdir();
-    map = DynamicsConversion.SINGLE_CHANNEL_INTERFACES.stream() //
+    map = StaticHelper.SINGLE_CHANNEL_INTERFACES.stream() //
         .collect(Collectors.toMap(Function.identity(), singleChannelInterface -> {
           try {
-            return Import.of(new File(directory, singleChannelInterface.exportName() + ".csv.gz"));
+            return Import.of(new File(directory, singleChannelInterface.exportName() + StaticHelper.EXTENSION));
           } catch (Exception exception) {
             throw new RuntimeException();
           }
@@ -76,6 +83,17 @@ public class LogReport {
       htmlUtf8.appendln("<img src='plot/speeds.png' /><br/><br/>");
       htmlUtf8.appendln("<img src='plot/vmu931accSmooth.png' /><br/><br/>");
     }
+    exportStatus();
+    exportSteerGet();
+    exportRimoPut();
+    exportRimoGet();
+    exportLinmotPosition();
+    exportLinmotTemperature();
+    exportVmu931acc();
+    exportVmu931accSmooth();
+    exportPose();
+    exportPoseSmooth();
+    exportPoseDerivative();
   }
 
   public void exportStatus() throws IOException {
@@ -224,7 +242,7 @@ public class LogReport {
     VisualSet visualSet = new VisualSet();
     visualSet.setPlotLabel("Smoothed Pose");
     visualSet.setAxesLabelX("time [s]");
-    Tensor tensor = Import.of(new File(plot.getParentFile(), DynamicsConversion.GOKART_POSE_SMOOTH + ".csv.gz"));
+    Tensor tensor = Import.of(new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz"));
     Tensor domain = tensor.get(Tensor.ALL, 0);
     visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("global x position [m]");
     visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global y position [m]");
@@ -235,7 +253,7 @@ public class LogReport {
 
   public void exportPoseDerivative() throws IOException {
     final Scalar hertz = RealScalar.of(20.0);
-    Tensor tensor = Import.of(new File(plot.getParentFile(), DynamicsConversion.GOKART_POSE_SMOOTH + ".csv.gz"));
+    Tensor tensor = Import.of(new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz"));
     LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
     Tensor refined = Tensor.of(tensor.stream().map(row -> row.extract(1, 4)));
     Tensor speeds = lieDifferences.apply(refined);
@@ -270,18 +288,6 @@ public class LogReport {
   }
 
   public static void main(String[] args) throws IOException {
-    File directory = new File("/media/datahaki/data/gokart/dynamics/20190208T145312_04");
-    LogReport logReport = new LogReport(directory);
-    logReport.exportStatus();
-    logReport.exportSteerGet();
-    logReport.exportRimoPut();
-    logReport.exportRimoGet();
-    logReport.exportLinmotPosition();
-    logReport.exportLinmotTemperature();
-    logReport.exportVmu931acc();
-    logReport.exportVmu931accSmooth();
-    logReport.exportPose();
-    logReport.exportPoseSmooth();
-    logReport.exportPoseDerivative();
+    LogReport.generate(new File("/media/datahaki/data/gokart/dynamics/20190208/20190208T145312_04"));
   }
 }
