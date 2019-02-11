@@ -3,6 +3,8 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.util.data.BufferInsertable;
+
 /* package */ class ControlAndPredictionStepsMessage extends MPCNativeMessage {
   public final ControlAndPredictionSteps controlAndPredictionSteps;
 
@@ -16,13 +18,13 @@ import java.nio.ByteBuffer;
     controlAndPredictionSteps = new ControlAndPredictionSteps(byteBuffer);
   }
 
-  @Override
-  public int getMessagePrefix() {
-    return MPCNative.CONTROL_UPDATE;
+  @Override // from MPCNativeMessage
+  MessageType getMessageType() {
+    return MessageType.CONTROL_PREDICTION;
   }
 
-  @Override
-  public MPCNativeInsertable getPayload() {
+  @Override // from MPCNativeMessage
+  BufferInsertable getPayload() {
     return controlAndPredictionSteps;
   }
 }

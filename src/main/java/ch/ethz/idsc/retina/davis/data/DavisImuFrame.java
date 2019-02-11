@@ -57,12 +57,12 @@ public class DavisImuFrame extends DataEvent {
   }
 
   @Override
-  protected int length() {
+  public int length() {
     return LENGTH;
   }
 
   @Override
-  protected void insert(ByteBuffer byteBuffer) {
+  public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putInt(time);
     byteBuffer.putShort(accelX);
     byteBuffer.putShort(accelY);

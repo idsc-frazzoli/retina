@@ -6,18 +6,18 @@ import ch.ethz.idsc.tensor.Scalar;
 
 public final class StaticBrakeFunction extends AbstractBrakeFunction {
   public static final StaticBrakeFunction INSTANCE = new StaticBrakeFunction();
+  // ---
   private static final Scalar ONE = RealScalar.of(1.0);
 
-  // ---
   private StaticBrakeFunction() {
   }
 
-  @Override
+  @Override // from AbstractBrakeFunction
   Scalar getDeceleration(Scalar brakingPosition) {
     return getDeceleration(brakingPosition, ONE);
   }
 
-  @Override
+  @Override // from AbstractBrakeFunction
   Scalar getNeededBrakeActuation(Scalar wantedDeceleration) {
     return getNeededBrakeActuation(wantedDeceleration, ONE);
   }

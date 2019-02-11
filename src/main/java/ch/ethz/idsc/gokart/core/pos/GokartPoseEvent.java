@@ -33,7 +33,7 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
   }
 
   @Override // from DataEvent
-  protected void insert(ByteBuffer byteBuffer) {
+  public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putDouble(x);
     byteBuffer.putDouble(y);
     byteBuffer.putDouble(angle);
@@ -41,7 +41,7 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
   }
 
   @Override // from DataEvent
-  protected int length() {
+  public int length() {
     return LENGTH;
   }
 

@@ -30,7 +30,7 @@ public class RimoPutEvent extends DataEvent {
   }
 
   @Override // from DataEvent
-  protected int length() {
+  public int length() {
     return LENGTH;
   }
 

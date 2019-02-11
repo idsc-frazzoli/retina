@@ -51,13 +51,13 @@ public class MiscGetEvent extends DataEvent {
   }
 
   @Override // from DataEvent
-  protected void insert(ByteBuffer byteBuffer) {
+  public void insert(ByteBuffer byteBuffer) {
     byteBuffer.put(emergency);
     byteBuffer.putFloat(batteryAdc);
   }
 
   @Override // from DataEvent
-  protected int length() {
+  public int length() {
     return LENGTH;
   }
 

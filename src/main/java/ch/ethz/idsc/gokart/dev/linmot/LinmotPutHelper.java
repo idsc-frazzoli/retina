@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 public enum LinmotPutHelper {
   ;
@@ -20,9 +23,9 @@ public enum LinmotPutHelper {
   // ---
   public static final List<Word> COMMANDS = Arrays.asList( //
       CMD_HOME, CMD_OPERATION, CMD_ERR_ACK, CMD_OFF_MODE);
-  public static final List<Word> HEADER = Arrays.asList( //
-      MC_POSITION, MC_ZEROS); //
+  public static final List<Word> HEADER = Arrays.asList(MC_POSITION, MC_ZEROS);
   // ---
+  static final double POS_TO_METER = 1e-4;
   /** all magic numbers are justified through experimentation
    * the number -500 corresponds to an elogation of 50[mm] to the front */
   public static final int TARGETPOS_MIN = -500;
@@ -41,6 +44,9 @@ public enum LinmotPutHelper {
   public static final int DECELERATION_MIN = 0;
   public static final int DECELERATION_MAX = 5000;
   public static final short DECELERATION_INIT = 500;
+  private static final Clip SCALE_POSITIVE = Clip.function( //
+      Quantity.of(-TARGETPOS_INIT * POS_TO_METER, SI.METER), //
+      Quantity.of(-TARGETPOS_MIN * POS_TO_METER, SI.METER));
 
   // ---
   public static Word findControlWord(short value) {
@@ -49,5 +55,10 @@ public enum LinmotPutHelper {
 
   public static Word findHeaderWord(short value) {
     return Word.findShort(HEADER, value);
+  }
+
+  /** @return range from 0.005[m] to 0.05[m] */
+  public static Clip scalePositive() {
+    return SCALE_POSITIVE;
   }
 }

@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Objects;
 
 /* package */ class MPCNativeSession {
-  private Process process;
   private final Map<Integer, Integer> messageCounter = new HashMap<>();
-  public BufferedReader is;
+  private Process process;
+  private BufferedReader bufferedReader;
   private boolean test = false;
   private boolean externStart = false;
 
@@ -40,7 +40,7 @@ import java.util.Objects;
       ProcessBuilder processBuilder = new ProcessBuilder(list);
       try {
         process = processBuilder.start();
-        is = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
           System.out.println(new Date() + " mpc-server: isAlive=" + process.isAlive());
           process.destroy();
@@ -56,8 +56,8 @@ import java.util.Objects;
     // doesn't seem to work
     String res = "";
     try {
-      while (is.ready())
-        res = res + is.readLine() + "\n";
+      while (bufferedReader.ready())
+        res = res + bufferedReader.readLine() + "\n";
     } catch (Exception exception) {
       exception.printStackTrace();
     }
@@ -65,8 +65,8 @@ import java.util.Objects;
   }
 
   /** gets a unique ID for any object that inherits MPCNative */
-  int getMessageId(MPCNativeMessage message) {
-    int prefix = message.getMessagePrefix();
+  int getMessageId(MPCNativeMessage mpcNativeMessage) {
+    int prefix = mpcNativeMessage.getMessageType().ordinal();
     Integer current = messageCounter.get(prefix);
     if (Objects.isNull(current))
       current = 0;

@@ -66,7 +66,7 @@ public class LinmotGetEvent extends DataEvent {
   }
 
   @Override // from DataEvent
-  protected void insert(ByteBuffer byteBuffer) {
+  public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putShort(status_word);
     byteBuffer.putShort(state_variable);
     byteBuffer.putInt(actual_position);
@@ -76,7 +76,7 @@ public class LinmotGetEvent extends DataEvent {
   }
 
   @Override // from DataEvent
-  protected int length() {
+  public int length() {
     return LENGTH;
   }
 

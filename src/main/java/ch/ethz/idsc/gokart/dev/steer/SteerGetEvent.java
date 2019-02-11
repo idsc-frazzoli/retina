@@ -89,7 +89,7 @@ public class SteerGetEvent extends DataEvent {
   }
 
   @Override
-  protected void insert(ByteBuffer byteBuffer) {
+  public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putFloat(motAsp_CANInput);
     byteBuffer.putFloat(motAsp_Qual);
     byteBuffer.putFloat(tsuTrq_CANInput);
@@ -105,7 +105,7 @@ public class SteerGetEvent extends DataEvent {
   }
 
   @Override
-  protected int length() {
+  public int length() {
     return LENGTH;
   }
 

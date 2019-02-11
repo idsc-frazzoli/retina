@@ -3,7 +3,9 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-/* package */ class ControlAndPredictionSteps implements MPCNativeInsertable {
+import ch.ethz.idsc.retina.util.data.BufferInsertable;
+
+/* package */ class ControlAndPredictionSteps implements BufferInsertable {
   public final ControlAndPredictionStep[] steps;
 
   public ControlAndPredictionSteps(ControlAndPredictionStep[] controlAndPredictionSteps) {

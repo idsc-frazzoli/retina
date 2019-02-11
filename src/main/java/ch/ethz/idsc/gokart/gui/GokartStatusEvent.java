@@ -33,7 +33,7 @@ public class GokartStatusEvent extends DataEvent implements SteerColumnInterface
   }
 
   @Override // from DataEvent
-  protected int length() {
+  public int length() {
     return LENGTH;
   }
 

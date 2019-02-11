@@ -26,13 +26,13 @@ public final class LabjackAdcFrame extends DataEvent implements Serializable {
   }
 
   @Override // from DataEvent
-  protected void insert(ByteBuffer byteBuffer) {
+  public void insert(ByteBuffer byteBuffer) {
     for (int index = 0; index < array.length; ++index)
       byteBuffer.putFloat(array[index]);
   }
 
   @Override // from DataEvent
-  protected int length() {
+  public int length() {
     return array.length << 2; // multiplication by 4 == Float.BYTES
   }
 

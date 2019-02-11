@@ -68,7 +68,7 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
       lcmMPCControlClient.registerControlUpdateLister(mpcControlUpdateListener);
       DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
       Tensor position = Tensors.of(gokartState.getX(), gokartState.getY());
-      MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position, Quantity.of(0, SI.METER));
+      MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER));
       lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
       Thread.sleep(100);// should even work with 30ms
       System.out.println(mpcControlUpdateListener.cns);
