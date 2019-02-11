@@ -58,7 +58,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     // files.add(HomeDirectory.file("brakingtest.lcm"));
     // files.add(HomeDirectory.file("20190125T105720_ecbd24e3.lcm.00"));
     // files.add(HomeDirectory.file("20190125T134537_e5eb6f95.lcm.00"));
-    files.add(HomeDirectory.file("20190128T141006_6f6e3dee.lcm.00"));
+    //files.add(HomeDirectory.file("20190128T141006_6f6e3dee.lcm.00"));
+    files.add(HomeDirectory.file("20190211T100755_8b7a8047.lcm.00"));
     for (File inputFile : files)
       try {
         systemAnalysis.process(inputFile);
