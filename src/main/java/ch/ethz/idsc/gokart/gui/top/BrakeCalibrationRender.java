@@ -28,7 +28,7 @@ public class BrakeCalibrationRender implements RenderInterface {
     // calibration line
     Scalar calibrationValue = SelfCalibratingBrakingFunction.getInstance().getBrakeFadeFactor();
     graphics.setColor(Color.BLUE);
-    Tensor polygon = Tensors.of(Tensors.vector(0, 0), Tensors.of(calibrationValue,RealScalar.ZERO));
+    Tensor polygon = Tensors.of(Tensors.vector(0, 0), Tensors.of(calibrationValue, RealScalar.ZERO));
     graphics.draw(geometricLayer.toPath2D(polygon));
     //
     geometricLayer.popMatrix();

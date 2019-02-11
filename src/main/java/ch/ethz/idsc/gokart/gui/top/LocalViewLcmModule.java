@@ -38,7 +38,6 @@ public class LocalViewLcmModule extends AbstractModule {
   private final SimpleVelocityEstimation simpleVelocityEstimation = SimpleVelocityEstimation.getInstance();
   private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(simpleVelocityEstimation, MINOR);
   private final BrakeCalibrationRender brakeCalibrationRender = new BrakeCalibrationRender(MINORRIGHT);
-  
   private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
