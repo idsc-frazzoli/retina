@@ -145,7 +145,7 @@ public class TrackRefinement {
   }
 
   private static final Scalar gdRadiusGrowth = Quantity.of(0.007, SI.METER);
-  private static final Scalar gdRegularizer = RealScalar.of(0.001);
+  private static final Scalar gdRegularizer = RealScalar.of(0.0007);
   private static final Scalar gdLimits = RealScalar.of(0.4);
   private static final Scalar gdRadius = RealScalar.of(0.8);
   private static final TensorUnaryOperator REGULARIZATION_CYCLIC = Regularization2Step.cyclic(RnGeodesic.INSTANCE, gdRegularizer);
