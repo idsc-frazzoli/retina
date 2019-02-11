@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.mat.Det;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
@@ -65,5 +66,10 @@ public class SensorsConfigTest extends TestCase {
   public void testVmu931AccXY() {
     Tensor matrix = Tensor.of(IdentityMatrix.of(2).stream().map(SensorsConfig.GLOBAL::vmu931AccXY));
     assertEquals(Det.of(matrix), RealScalar.ONE.negate());
+    assertEquals(SensorsConfig.GLOBAL.vmu931AccXY(Tensors.vector(1, 2)), Tensors.vector(-2, -1));
+  }
+
+  public void testVmu931GyroZ() {
+    assertEquals(SensorsConfig.GLOBAL.vmu931GyroZ(RealScalar.of(2)), RealScalar.of(-2));
   }
 }
