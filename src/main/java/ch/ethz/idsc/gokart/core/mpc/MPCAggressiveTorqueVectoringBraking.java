@@ -32,4 +32,12 @@ import ch.ethz.idsc.tensor.red.Max;
   public void setStateProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
     // ---
   }
+
+  @Override
+  public void start() {
+  }
+
+  @Override
+  public void stop() {
+  }
 }

@@ -25,11 +25,11 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
-  // private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
-  private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
+  private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
+  // private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
   // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
-  private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
+  private final MPCBraking mpcBraking = new MPCAggressiveCorrectedTorqueVectoringBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final Thread thread = new Thread(this);
@@ -154,12 +154,23 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     // ---
     LinmotSocket.INSTANCE.addPutProvider(mpcLinmotProvider);
     //
+    mpcBraking.start();
+    mpcSteering.start();
+    mpcPower.start();
     lcmMPCPathFollowingClient.registerControlUpdateLister(new MPCControlUpdateListenerWithAction() {
       @Override
       void doAction() {
         // we got an update
         // interupt
         thread.interrupt();
+      }
+
+      @Override
+      public void start() {
+      }
+
+      @Override
+      public void stop() {
       }
     });
     thread.start();
@@ -179,6 +190,9 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     // ---
     RimoSocket.INSTANCE.removePutProvider(mpcRimoProvider);
     //
+    mpcBraking.stop();
+    mpcSteering.stop();
+    mpcPower.stop();
     // MPCActiveCompensationLearning.getInstance().setActive(false);
     // ---
     lcmMPCPathFollowingClient.stop();
