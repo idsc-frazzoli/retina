@@ -5,8 +5,11 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** information sent to micro-autobox to forward to the linear motor that
  * controls the break of the gokart */
@@ -86,6 +89,10 @@ public class LinmotPutEvent extends DataEvent {
 
   public byte getMotionCmdHeaderCounter() {
     return (byte) (motion_cmd_hdr & 0xf);
+  }
+
+  public Scalar getTargetPosition() {
+    return Quantity.of(target_position * PUT_POSITION_TO_METER, SI.METER);
   }
 
   @Override // from OfflineVectorInterface

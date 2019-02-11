@@ -13,14 +13,14 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartStatusChannel;
-import ch.ethz.idsc.gokart.offline.channel.LinmotGetChannel;
-import ch.ethz.idsc.gokart.offline.channel.LinmotPutChannel;
+import ch.ethz.idsc.gokart.offline.channel.LinmotGetVehicleChannel;
+import ch.ethz.idsc.gokart.offline.channel.LinmotPutVehicleChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
 import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
-import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
+import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
 import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.tensor.Tensor;
@@ -40,9 +40,9 @@ import ch.ethz.idsc.tensor.sca.Round;
       RimoGetChannel.INSTANCE, //
       SteerPutChannel.INSTANCE, //
       SteerGetChannel.INSTANCE, //
-      LinmotPutChannel.INSTANCE, //
-      LinmotGetChannel.INSTANCE, //
-      Vmu931ImuChannel.INSTANCE);
+      LinmotPutVehicleChannel.INSTANCE, //
+      LinmotGetVehicleChannel.INSTANCE, //
+      Vmu931ImuVehicleChannel.INSTANCE);
   static final String GOKART_POSE_SMOOTH = "gokart.pose.smooth";
 
   public static void process(File cut) {
@@ -57,7 +57,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         OfflineLogPlayer.process(file, map.values());
         for (Entry<SingleChannelInterface, OfflineTableSupplier> entry : map.entrySet())
           Export.of( //
-              new File(target, entry.getKey().channel() + ".csv.gz"), //
+              new File(target, entry.getKey().exportName() + ".csv.gz"), //
               entry.getValue().getTable().map(CsvFormat.strict()));
         // ---
         {

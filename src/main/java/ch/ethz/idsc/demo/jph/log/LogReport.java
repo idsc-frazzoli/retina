@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.jph.log;
 import java.awt.BasicStroke;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -11,20 +12,20 @@ import java.util.stream.Collectors;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartStatusChannel;
-import ch.ethz.idsc.gokart.offline.channel.LinmotGetChannel;
-import ch.ethz.idsc.gokart.offline.channel.LinmotPutChannel;
+import ch.ethz.idsc.gokart.offline.channel.LinmotGetVehicleChannel;
+import ch.ethz.idsc.gokart.offline.channel.LinmotPutVehicleChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
 import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
-import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
+import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
 import ch.ethz.idsc.sophus.group.LieDifferences;
 import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
 import ch.ethz.idsc.sophus.group.Se2Group;
+import ch.ethz.idsc.sophus.math.WindowCenterSampler;
 import ch.ethz.idsc.subare.util.HtmlUtf8;
 import ch.ethz.idsc.subare.util.plot.ListPlot;
 import ch.ethz.idsc.subare.util.plot.VisualRow;
@@ -32,8 +33,10 @@ import ch.ethz.idsc.subare.util.plot.VisualSet;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.ListConvolve;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 import ch.ethz.idsc.tensor.io.Import;
+import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 
 public class LogReport {
   private static final int WIDTH = 854;
@@ -47,13 +50,14 @@ public class LogReport {
     map = DynamicsConversion.SINGLE_CHANNEL_INTERFACES.stream() //
         .collect(Collectors.toMap(Function.identity(), singleChannelInterface -> {
           try {
-            return Import.of(new File(directory, singleChannelInterface.channel() + ".csv.gz"));
+            return Import.of(new File(directory, singleChannelInterface.exportName() + ".csv.gz"));
           } catch (Exception exception) {
             throw new RuntimeException();
           }
         }));
     try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(directory, "index.html"))) {
       htmlUtf8.appendln("<h1>" + directory.getName() + "</h1>");
+      htmlUtf8.appendln("<p><small>report generated: " + new Date() + "</small>");
       htmlUtf8.appendln("<h2>Steering</h2>");
       htmlUtf8.appendln("<img src='plot/status.png' /><br/><br/>");
       htmlUtf8.appendln("<img src='plot/steerget.png' /><br/><br/>");
@@ -61,7 +65,8 @@ public class LogReport {
       htmlUtf8.appendln("<img src='plot/rimoput.png' /><br/><br/>");
       htmlUtf8.appendln("<img src='plot/rimoget.png' /><br/><br/>");
       htmlUtf8.appendln("<h2>Brake</h2>");
-      htmlUtf8.appendln("<img src='plot/linmotput.png' /><br/><br/>");
+      htmlUtf8.appendln("<img src='plot/linmotPosition.png' /><br/><br/>");
+      htmlUtf8.appendln("<img src='plot/linmotTemperature.png' /><br/><br/>");
       htmlUtf8.appendln("<h2>VMU931 IMU</h2>");
       htmlUtf8.appendln("<img src='plot/vmu931acc.png' /><br/><br/>");
       htmlUtf8.appendln("<img src='plot/vmu931gyro.png' /><br/><br/>");
@@ -69,12 +74,13 @@ public class LogReport {
       htmlUtf8.appendln("<img src='plot/pose_raw.png' /><br/><br/>");
       htmlUtf8.appendln("<img src='plot/pose_smooth.png' /><br/><br/>");
       htmlUtf8.appendln("<img src='plot/speeds.png' /><br/><br/>");
+      htmlUtf8.appendln("<img src='plot/vmu931accSmooth.png' /><br/><br/>");
     }
   }
 
   public void exportStatus() throws IOException {
     VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(128));
-    visualSet.setPlotLabel("power steering position (0 = straight)");
+    visualSet.setPlotLabel("power steering position");
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("power steering position [n.a.]");
     {
@@ -85,7 +91,7 @@ public class LogReport {
     {
       Tensor tensor = map.get(GokartStatusChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("calibrated");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("calibrated (0 = straight)");
     }
     JFreeChart jFreeChart = ListPlot.of(visualSet);
     ChartUtils.saveChartAsPNG(new File(plot, "status.png"), jFreeChart, WIDTH, HEIGHT);
@@ -112,7 +118,7 @@ public class LogReport {
 
   public void exportRimoPut() throws IOException {
     VisualSet visualSet = new VisualSet();
-    visualSet.setPlotLabel("Rear Wheel Motors torque command");
+    visualSet.setPlotLabel("rear wheel motors torque command");
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("torque command [ARMS]");
     Tensor tensor = map.get(RimoPutChannel.INSTANCE);
@@ -125,9 +131,9 @@ public class LogReport {
 
   public void exportRimoGet() throws IOException {
     VisualSet visualSet = new VisualSet();
-    visualSet.setPlotLabel("Rear Wheel Motors readings");
+    visualSet.setPlotLabel("rear wheel motors rotational rate");
     visualSet.setAxesLabelX("time [s]");
-    visualSet.setAxesLabelY("wheel rate [rad*s^-1]");
+    visualSet.setAxesLabelY("wheel rotational rate [rad*s^-1]");
     Tensor tensor = map.get(RimoGetChannel.INSTANCE);
     Tensor domain = tensor.get(Tensor.ALL, 0);
     visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("left");
@@ -136,23 +142,38 @@ public class LogReport {
     ChartUtils.saveChartAsPNG(new File(plot, "rimoget.png"), jFreeChart, WIDTH, HEIGHT);
   }
 
-  public void exportLinmotPut() throws IOException {
+  public void exportLinmotPosition() throws IOException {
     VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(192));
     visualSet.setPlotLabel("Brake position");
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("brake position [m]");
     {
-      Tensor tensor = map.get(LinmotPutChannel.INSTANCE);
+      Tensor tensor = map.get(LinmotPutVehicleChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 3).negate()).setLabel("commanded");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("command");
     }
     {
-      Tensor tensor = map.get(LinmotGetChannel.INSTANCE);
+      Tensor tensor = map.get(LinmotGetVehicleChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 3).negate()).setLabel("effective");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("effective");
     }
     JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "linmotput.png"), jFreeChart, WIDTH, HEIGHT);
+    ChartUtils.saveChartAsPNG(new File(plot, "linmotPosition.png"), jFreeChart, WIDTH, HEIGHT);
+  }
+
+  public void exportLinmotTemperature() throws IOException {
+    VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(192));
+    visualSet.setPlotLabel("Brake temperature");
+    visualSet.setAxesLabelX("time [s]");
+    visualSet.setAxesLabelY("temperature [degC]");
+    {
+      Tensor tensor = map.get(LinmotGetVehicleChannel.INSTANCE);
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("winding 1");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("winding 2");
+    }
+    JFreeChart jFreeChart = ListPlot.of(visualSet);
+    ChartUtils.saveChartAsPNG(new File(plot, "linmotTemperature.png"), jFreeChart, WIDTH, HEIGHT);
   }
 
   public void exportVmu931acc() throws IOException {
@@ -160,15 +181,30 @@ public class LogReport {
     visualSet.setPlotLabel("VMU931 acceleration");
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("acceleration [m*s^-2]");
-    Tensor tensor = map.get(Vmu931ImuChannel.INSTANCE);
+    Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
     Tensor domain = tensor.get(Tensor.ALL, 0);
-    Tensor accXY = Tensor.of(tensor.stream() //
-        .map(row -> row.extract(2, 4)) //
-        .map(SensorsConfig.GLOBAL::getAccXY));
-    visualSet.add(domain, accXY.get(Tensor.ALL, 0)).setLabel("x (forward)");
-    visualSet.add(domain, accXY.get(Tensor.ALL, 1)).setLabel("y (left)");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
     JFreeChart jFreeChart = ListPlot.of(visualSet);
     ChartUtils.saveChartAsPNG(new File(plot, "vmu931acc.png"), jFreeChart, WIDTH, HEIGHT);
+  }
+
+  public void exportVmu931accSmooth() throws IOException {
+    VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(192));
+    visualSet.setPlotLabel("Smoothed Acceleration from VMU931");
+    visualSet.setAxesLabelX("time [s]");
+    visualSet.setAxesLabelY("acceleration [m*s^-2]");
+    {
+      Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
+      Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
+      Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
+      visualSet.add(domain.extract(0, smoothX.length()), smoothX).setLabel("x (forward)");
+      visualSet.add(domain.extract(0, smoothY.length()), smoothY).setLabel("y (left)");
+    }
+    JFreeChart jFreeChart = ListPlot.of(visualSet);
+    ChartUtils.saveChartAsPNG(new File(plot, "vmu931accSmooth.png"), jFreeChart, WIDTH, HEIGHT);
   }
 
   public void exportPose() throws IOException {
@@ -225,11 +261,8 @@ public class LogReport {
         visualRow.setStroke(new BasicStroke(2f));
       }
       {
-        Tensor vmu931 = map.get(Vmu931ImuChannel.INSTANCE);
-        Tensor gyroZ = Tensor.of(vmu931.stream() //
-            .map(row -> row.Get(7)) //
-            .map(SensorsConfig.GLOBAL::getGyroZ));
-        visualSet.add(vmu931.get(Tensor.ALL, 0), gyroZ).setLabel("from VMU931");
+        Tensor vmu931 = map.get(Vmu931ImuVehicleChannel.INSTANCE);
+        visualSet.add(vmu931.get(Tensor.ALL, 0), vmu931.get(Tensor.ALL, 4)).setLabel("from VMU931");
       }
       JFreeChart jFreeChart = ListPlot.of(visualSet);
       ChartUtils.saveChartAsPNG(new File(plot, "vmu931gyro.png"), jFreeChart, WIDTH, HEIGHT);
@@ -243,8 +276,10 @@ public class LogReport {
     logReport.exportSteerGet();
     logReport.exportRimoPut();
     logReport.exportRimoGet();
-    logReport.exportLinmotPut();
+    logReport.exportLinmotPosition();
+    logReport.exportLinmotTemperature();
     logReport.exportVmu931acc();
+    logReport.exportVmu931accSmooth();
     logReport.exportPose();
     logReport.exportPoseSmooth();
     logReport.exportPoseDerivative();

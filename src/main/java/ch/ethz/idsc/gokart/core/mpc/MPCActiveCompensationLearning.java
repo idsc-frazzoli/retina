@@ -49,7 +49,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
   private final Vmu931ImuFrameListener vmu931ImuFrameListener = new Vmu931ImuFrameListener() {
     @Override
     public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-      realRotationRate = SensorsConfig.GLOBAL.getGyroZ(vmu931ImuFrame);
+      realRotationRate = SensorsConfig.GLOBAL.vmu931GyroZ(vmu931ImuFrame);
     }
   };
   private final static Scalar BRAKINGTHRESHOLD = Quantity.of(-1, SI.ACCELERATION);

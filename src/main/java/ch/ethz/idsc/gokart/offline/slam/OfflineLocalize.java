@@ -58,7 +58,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
 
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    Scalar rate = SensorsConfig.GLOBAL.getGyroZ(davisImuFrame);
+    Scalar rate = SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame);
     gyro_y.append(rate);
   }
 

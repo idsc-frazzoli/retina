@@ -91,24 +91,26 @@ public class SensorsConfig {
     return Round.of(davis_imu_rate.divide(vlp16_rate)).number().intValue();
   }
 
+  /***************************************************/
   /** @param davisImuFrame
    * @return rate of gokart around z-axis derived from imu measurements in "s^-1" */
-  public Scalar getGyroZ(DavisImuFrame davisImuFrame) {
+  public Scalar davisGyroZ(DavisImuFrame davisImuFrame) {
     return davisImuFrame.gyroImageFrame().Get(1).subtract(davis_imuY_bias) // image - y axis
         .multiply(davis_imuY_scale);
   }
 
+  /***************************************************/
   /** .
    * ante 20190408: the vmu931 was mounted on the gokart with xyz aligned with the gokart coordinate system
    * post 20190408: the vmu931 is mounted rotated around U axis with 180[deg]
    * 
    * @param vmu931ImuFrame
    * @return vector of length 2 of acceleration in gokart coordinates */
-  public Tensor getAccXY(Vmu931ImuFrame vmu931ImuFrame) {
-    return getAccXY(vmu931ImuFrame.accXY());
+  public Tensor vmu931AccXY(Vmu931ImuFrame vmu931ImuFrame) {
+    return vmu931AccXY(vmu931ImuFrame.accXY());
   }
 
-  public Tensor getAccXY(Tensor accRawXY) {
+  public Tensor vmu931AccXY(Tensor accRawXY) {
     return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate());
   }
 
@@ -116,11 +118,11 @@ public class SensorsConfig {
    * 
    * @param vmu931ImuFrame
    * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
-  public Scalar getGyroZ(Vmu931ImuFrame vmu931ImuFrame) {
-    return getGyroZ(vmu931ImuFrame.gyroZ());
+  public Scalar vmu931GyroZ(Vmu931ImuFrame vmu931ImuFrame) {
+    return vmu931GyroZ(vmu931ImuFrame.gyroZ());
   }
 
-  public Scalar getGyroZ(Scalar gyroZ) {
+  public Scalar vmu931GyroZ(Scalar gyroZ) {
     return gyroZ.negate();
   }
 }

@@ -100,8 +100,8 @@ public class SimpleVelocityEstimation implements VelocityEstimation, Vmu931ImuFr
 
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    Tensor acc = SensorsConfig.GLOBAL.getAccXY(vmu931ImuFrame);
-    Scalar gyro = SensorsConfig.GLOBAL.getGyroZ(vmu931ImuFrame);
+    Tensor acc = SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame);
+    Scalar gyro = SensorsConfig.GLOBAL.vmu931GyroZ(vmu931ImuFrame);
     int currentTime = vmu931ImuFrame.timestamp_ms();
     Scalar time = Quantity.of((currentTime - lastVmuTime) * 1e-3, SI.SECOND);
     lastVmuTime = currentTime;
