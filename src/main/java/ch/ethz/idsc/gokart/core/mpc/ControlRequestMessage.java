@@ -19,12 +19,12 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
   }
 
   @Override
-  public int getMessagePrefix() {
+  int getMessagePrefix() {
     return MPCNative.GOKART_STATE;
   }
 
   @Override
-  public BufferInsertable getPayload() {
+  BufferInsertable getPayload() {
     return stateAndPath;
   }
 }
