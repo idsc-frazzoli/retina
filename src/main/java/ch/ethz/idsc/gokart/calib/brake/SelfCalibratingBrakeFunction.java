@@ -35,7 +35,7 @@ public class SelfCalibratingBrakeFunction extends AbstractBrakeFunction {
       Scalar realBrakingDeceleration, //
       Scalar gokartSpeed, //
       Scalar wheelSpeed) {
-    Scalar slipRatio = wheelSpeed.divide(wheelSpeed);
+    Scalar slipRatio = wheelSpeed.divide(gokartSpeed);
     boolean lockedUp = Scalars.lessThan( //
         slipRatio, //
         BrakeFunctionConfig.GLOBAL.lockupRatio);
@@ -45,6 +45,7 @@ public class SelfCalibratingBrakeFunction extends AbstractBrakeFunction {
     boolean notEnoughBraking = Scalars.lessThan( //
         expectedBrakingDeceleration, //
         BrakeFunctionConfig.GLOBAL.decelerationThreshold);
+    System.out.println("locked up: "+lockedUp+"/notEnoughBraking: "+notEnoughBraking+"/too slow: "+tooSlow);
     if (!lockedUp && !tooSlow && !notEnoughBraking) {
       Scalar newCurveCorrectionFactor = realBrakingDeceleration.divide(expectedBrakingDeceleration).multiply(curveCorrectionFactor);
       // curveCorrectionFactor = (Scalar) geodesicIIR1Filter.apply(newCurveCorrectionFactor);

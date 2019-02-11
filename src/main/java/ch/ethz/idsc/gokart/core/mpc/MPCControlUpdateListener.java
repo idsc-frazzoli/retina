@@ -3,10 +3,11 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 
-/* package */ class MPCControlUpdateListener {
+/* package */ abstract class MPCControlUpdateListener implements StartAndStoppable {
   protected ControlAndPredictionSteps cns = null;
   int istep = 0;
 

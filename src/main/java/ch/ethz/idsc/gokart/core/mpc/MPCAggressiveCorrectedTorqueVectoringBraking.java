@@ -7,6 +7,7 @@ import ch.ethz.idsc.gokart.calib.brake.SelfCalibratingBrakeFunction;
 import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.top.BrakeCalibrationRender;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -21,7 +22,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 
-/* package */ class MPCAggressiveCorrectedTorqueVectoringBraking extends MPCBraking implements Vmu931ImuFrameListener, RimoGetListener, StartAndStoppable {
+/* package */ class MPCAggressiveCorrectedTorqueVectoringBraking extends MPCBraking implements Vmu931ImuFrameListener, RimoGetListener {
   private static final Scalar NO_ACCELERATION = Quantity.of(0, SI.ACCELERATION);
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
   // private final MPCActiveCompensationLearning activeCompensationLearning = MPCActiveCompensationLearning.getInstance();
@@ -58,14 +59,16 @@ import ch.ethz.idsc.tensor.red.Max;
   public void start() {
     vmu931imuLcmClient.addListener(this);
     vmu931imuLcmClient.startSubscriptions();
+    RimoSocket.INSTANCE.addGetListener(this);
   }
 
   @Override
   public void stop() {
     vmu931imuLcmClient.stopSubscriptions();
+    RimoSocket.INSTANCE.removeGetListener(this);;
   }
 
-  private Scalar currentAcceleration;
+  private Scalar currentAcceleration = Quantity.of(0, SI.ACCELERATION);
 
   @Override
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
