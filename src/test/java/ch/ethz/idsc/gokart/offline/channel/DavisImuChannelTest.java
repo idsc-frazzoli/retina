@@ -18,7 +18,7 @@ public class DavisImuChannelTest extends TestCase {
   public void testSimple() throws IOException {
     GokartLogInterface gokartLogInterface = GokartLogAdapterTest.FULL;
     // ---
-    OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(new DavisImuChannel());
+    OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(DavisImuChannel.INSTANCE);
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
     assertEquals(Dimensions.of(tensor), Arrays.asList(719, 9));

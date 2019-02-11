@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.sca.N;
 /** localization that uses lidar in combination with gyro rate to rectify measurements
  * 
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
-public class GyroOfflineLocalize extends OfflineLocalize {
+public class LidarGyroOfflineLocalize extends OfflineLocalize {
   private static final Scalar LIDAR_RATE = Quantity.of(20, SI.PER_SECOND);
   private static final int MIN_POINTS = LocalizationConfig.GLOBAL.min_points.number().intValue();
   private static final int FAN = 4;
@@ -47,7 +47,7 @@ public class GyroOfflineLocalize extends OfflineLocalize {
   /** @param map_image
    * @param pose {x[m], y[m], angle}
    * @param scatterImage */
-  public GyroOfflineLocalize(BufferedImage map_image, Tensor pose, ScatterImage scatterImage) {
+  public LidarGyroOfflineLocalize(BufferedImage map_image, Tensor pose, ScatterImage scatterImage) {
     super(map_image, pose);
     this.scatterImage = scatterImage;
   }

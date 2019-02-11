@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * The analysis led to the development of the lidar based emergency braking logic
  * https://www.youtube.com/watch?v=b_Sqy2TmKIk */
-enum BrakeDistanceAnalysis {
+/* package */ enum BrakeDistanceAnalysis {
   ;
   static void brakeAnalysis() throws FileNotFoundException, IOException {
     for (File folder : OfflineIndex.folders(HomeDirectory.file("gokart/BrakeDistanceAnalysis"))) {

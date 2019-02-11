@@ -6,7 +6,7 @@ import java.io.File;
 import ch.ethz.idsc.retina.davis.app.AedatLogConverter;
 import ch.ethz.idsc.tensor.io.Timing;
 
-enum AedatLogConverterDemo {
+/* package */ enum AedatLogConverterDemo {
   ;
   public static void main(String[] args) throws Exception {
     Timing timing = Timing.started();

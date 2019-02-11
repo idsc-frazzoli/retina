@@ -49,7 +49,7 @@ public class PoseFilteringTable implements OfflineTableSupplier {
    * @throws IOException */
   public static void process(File lcmfile, File dest) throws IOException {
     PoseFilteringTable poseFiltering = new PoseFilteringTable();
-    OfflineTableSupplier davisImuTable = SingleChannelTable.of(new DavisImuChannel());
+    OfflineTableSupplier davisImuTable = SingleChannelTable.of(DavisImuChannel.INSTANCE);
     OfflineLogPlayer.process(lcmfile, poseFiltering, davisImuTable);
     dest.mkdir();
     Export.of( //

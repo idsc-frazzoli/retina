@@ -46,6 +46,7 @@ import ch.ethz.idsc.tensor.red.Max;
 
   @Override
   public void setStateProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
+    // ---
   }
 
   @Override
@@ -63,7 +64,7 @@ import ch.ethz.idsc.tensor.red.Max;
 
   @Override
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    currentAcceleration = SensorsConfig.GLOBAL.getAccXY(vmu931ImuFrame).Get(0);
+    currentAcceleration = SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame).Get(0);
   }
 
   private Scalar wheelSpeed = Quantity.of(0, SI.VELOCITY);

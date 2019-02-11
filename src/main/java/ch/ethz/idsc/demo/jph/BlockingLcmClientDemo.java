@@ -13,9 +13,10 @@ import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
 
-enum BlockingLcmClientDemo implements DavisImuFrameListener, GokartPoseListener, Runnable {
+/* package */ enum BlockingLcmClientDemo implements DavisImuFrameListener, GokartPoseListener, Runnable {
   INSTANCE;
-  Thread thread = new Thread(this);
+  // ---
+  final Thread thread = new Thread(this);
 
   @Override
   public void imuFrame(DavisImuFrame davisImuFrame) {

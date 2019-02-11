@@ -1,16 +1,16 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.sys;
+package ch.ethz.idsc.demo.jph.log;
 
 import java.io.File;
 
-/* package */ enum LogPostBulk {
+/* package */ enum LogPosePostInjectBulk {
   ;
   public static void main(String[] args) throws Exception {
-    final File root = new File("/media/datahaki/data/gokart/cuts/20190204");
+    final File root = new File("/media/datahaki/data/gokart/cuts/20190208");
     for (File folder : root.listFiles())
       if (folder.isDirectory()) {
         System.out.println(folder);
-        LogPoseInjectSingle.post(folder);
+        LogPosePostInjectSingle.in(folder);
       }
   }
 }

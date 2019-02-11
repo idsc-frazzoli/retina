@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.log;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.io.StringScalar;
     File root = HomeDirectory.file("Projects/ephemeral/src/main/resources/dubilab/app/pose");
     List<File> folders = Arrays.asList(root.listFiles());
     Collections.sort(folders);
-    // List<String> output = new LinkedList<>();
+    // ---
     Tensor tensor = Tensors.empty();
     for (File folder : folders)
       if (folder.isDirectory()) {

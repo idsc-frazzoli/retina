@@ -51,8 +51,9 @@ public class LocalViewLcmModule extends AbstractModule {
     linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
     gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
     rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
-    vmu931ImuLcmClient.addListener(vmu931ImuFrame -> accelerationRender.setAccelerationXY(//
-        SensorsConfig.GLOBAL.getAccXY(vmu931ImuFrame)));
+    // ---
+    vmu931ImuLcmClient.addListener(vmu931ImuFrame -> accelerationRender.setAccelerationXY( //
+        SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame)));
     // ---
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     timerFrame.geometricComponent.addRenderInterface(gokartRender);

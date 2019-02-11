@@ -9,7 +9,11 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.VectorQ;
+import ch.ethz.idsc.tensor.mat.Det;
+import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
@@ -50,10 +54,22 @@ public class SensorsConfigTest extends TestCase {
     byteBuffer.putShort((short) -4233);
     byteBuffer.flip();
     DavisImuFrame davisImuFrame = new DavisImuFrame(byteBuffer);
-    Scalar gyroZ = SensorsConfig.GLOBAL.getGyroZ(davisImuFrame);
+    Scalar gyroZ = SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame);
     Clip clip = Clip.function( //
         Quantity.of(-0.56, SI.PER_SECOND), //
         Quantity.of(-0.50, SI.PER_SECOND));
     clip.requireInside(gyroZ);
+  }
+
+  /** post 20190208: the sensor is flipped upside down and rotated by 90[deg]
+   * in the XY plane, this corresponds to a mirror operation */
+  public void testVmu931AccXY() {
+    Tensor matrix = Tensor.of(IdentityMatrix.of(2).stream().map(SensorsConfig.GLOBAL::vmu931AccXY));
+    assertEquals(Det.of(matrix), RealScalar.ONE.negate());
+    assertEquals(SensorsConfig.GLOBAL.vmu931AccXY(Tensors.vector(1, 2)), Tensors.vector(-2, -1));
+  }
+
+  public void testVmu931GyroZ() {
+    assertEquals(SensorsConfig.GLOBAL.vmu931GyroZ(RealScalar.of(2)), RealScalar.of(-2));
   }
 }

@@ -23,7 +23,7 @@ public enum DavisImuTracker implements DavisImuFrameListener {
 
   @Override
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    gyroZ.set(SensorsConfig.GLOBAL.getGyroZ(davisImuFrame), index);
+    gyroZ.set(SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame), index);
     ++index;
     index %= gyroZ.length();
     ++framecount;

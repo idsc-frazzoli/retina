@@ -14,7 +14,7 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineIndex;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.gokart.offline.slam.GyroOfflineLocalize;
+import ch.ethz.idsc.gokart.offline.slam.LidarGyroOfflineLocalize;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalize;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeWrap;
 import ch.ethz.idsc.gokart.offline.slam.PoseScatterImage;
@@ -39,7 +39,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
       // ---
       ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
       scatterImage = new WallScatterImage(predefinedMap);
-      OfflineLocalize offlineLocalize = new GyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
+      OfflineLocalize offlineLocalize = new LidarGyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
       OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
       OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
       Export.of(HomeDirectory.file(folder.getName() + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));

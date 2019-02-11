@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /** collects all messages from a single channel into a table */
 public class SingleChannelTable implements OfflineTableSupplier {
@@ -30,7 +31,7 @@ public class SingleChannelTable implements OfflineTableSupplier {
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(this.channel))
       tableBuilder.appendRow( //
-          time.map(Magnitude.SECOND), //
+          time.map(Magnitude.SECOND).map(Round._6), //
           singleChannelInterface.row(byteBuffer));
   }
 
