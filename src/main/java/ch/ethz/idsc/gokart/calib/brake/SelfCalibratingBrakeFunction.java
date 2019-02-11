@@ -35,7 +35,7 @@ public class SelfCalibratingBrakeFunction extends AbstractBrakeFunction {
       Scalar realBrakingDeceleration, //
       Scalar gokartSpeed, //
       Scalar wheelSpeed) {
-    Scalar slipRatio = wheelSpeed.divide(wheelSpeed);
+    Scalar slipRatio = wheelSpeed.divide(gokartSpeed);
     boolean lockedUp = Scalars.lessThan( //
         slipRatio, //
         BrakeFunctionConfig.GLOBAL.lockupRatio);

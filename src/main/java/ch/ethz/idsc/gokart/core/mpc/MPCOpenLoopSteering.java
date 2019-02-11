@@ -38,4 +38,12 @@ import ch.ethz.idsc.tensor.Scalar;
   public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
   }
+
+  @Override
+  public void start() {
+  }
+
+  @Override
+  public void stop() {
+  }
 }
