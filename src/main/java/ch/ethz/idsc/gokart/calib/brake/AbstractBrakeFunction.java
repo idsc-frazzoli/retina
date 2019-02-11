@@ -19,7 +19,7 @@ public abstract class AbstractBrakeFunction {
   /** old value: 4.3996 * 100.0 == 439.96 */
   /** new data (measured with IMU): 2.5555 * 100.0 == 255.55 */
   private static final Scalar LINEAR_FACTOR = Quantity.of(255.55, SI.ACCELERATION.add(SI.METER.negate()));
-  /** old value: -0.0008 * 10000.0 == -8.0 */
+  /** old value: -1.3735 * 10000.0 == -13735.0 */
   /** new data (measured with IMU) -0.0008 * 10000.0 == -8.0 */
   private static final Scalar QUADRATIC_FACTOR = Quantity.of(-8.0, SI.ACCELERATION.add(SI.METER.add(SI.METER).negate()));
   protected static final Tensor COEFFS = Tensors.of(RealScalar.ZERO, LINEAR_FACTOR, QUADRATIC_FACTOR).unmodifiable();
