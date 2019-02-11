@@ -12,15 +12,14 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Cos;
-import ch.ethz.idsc.tensor.sca.Sin;
 
 /* package */ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable {
   // TODO full documentation
   // not used yet:
   // private static final Unit SCE = SteerPutEvent.UNIT_ENCODER;
-  private final static Scalar CENTEROFFSET = Quantity.of(0.4, SI.METER);
+  private final static Scalar CENTER_OFFSET = Quantity.of(0.4, SI.METER);
   /** time in seconds from synchronized time point */
   private final float time;
   /** forward velocity in gokart frame with unit m*s^1 */
@@ -295,10 +294,7 @@ import ch.ethz.idsc.tensor.sca.Sin;
   }
 
   public Tensor getCenterPosition() {
-    // TODO JPH use Tensor library function
-    Scalar dirX = Cos.of(getPsi());
-    Scalar dirY = Sin.of(getPsi());
-    return getPosition().add(Tensors.of(dirX, dirY).multiply(CENTEROFFSET));
+    return getPosition().add(AngleVector.of(getPsi()).multiply(CENTER_OFFSET));
   }
 
   public Scalar getdotPsi() {

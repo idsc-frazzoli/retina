@@ -18,7 +18,7 @@ public class BrakeCalibrationRender implements RenderInterface {
   private static final Tensor DIAGONAL = DiagonalMatrix.of(.5, .5, 1);
   private final Tensor xya;
 
-  public BrakeCalibrationRender(Tensor xya) {
+  BrakeCalibrationRender(Tensor xya) {
     this.xya = xya;
   }
 
