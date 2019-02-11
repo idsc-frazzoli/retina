@@ -36,11 +36,9 @@ import ch.ethz.idsc.tensor.red.Max;
 
   @Override
   public void start() {
-
   }
 
   @Override
   public void stop() {
-
   }
 }

@@ -14,7 +14,6 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
-import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -43,9 +42,9 @@ import ch.ethz.idsc.tensor.red.Max;
     Scalar braking = Max.of(NO_ACCELERATION, cnsStep.control.getaB().negate());
     // System.out.println(braking);
     // self calibration
-    Scalar gokartSpeed = simpleVelocityEstimation.getVelocity().Get(0).negate();
+    Scalar gokartSpeed = simpleVelocityEstimation.getVelocity().Get(0);
     Scalar realBraking = currentAcceleration.negate();
-    selfCalibratingBrakeFunction.correctBraking(braking.negate(), realBraking, gokartSpeed, wheelSpeed);
+    selfCalibratingBrakeFunction.correctBraking(braking, realBraking, gokartSpeed, wheelSpeed);
     BrakeCalibrationRender.calibrationValue = selfCalibratingBrakeFunction.getBrakeFadeFactor(); // TODO JPH
     return selfCalibratingBrakeFunction.getRelativeBrakeActuation(braking);
   }
@@ -65,7 +64,8 @@ import ch.ethz.idsc.tensor.red.Max;
   @Override
   public void stop() {
     vmu931imuLcmClient.stopSubscriptions();
-    RimoSocket.INSTANCE.removeGetListener(this);;
+    RimoSocket.INSTANCE.removeGetListener(this);
+    ;
   }
 
   private Scalar currentAcceleration = Quantity.of(0, SI.ACCELERATION);
