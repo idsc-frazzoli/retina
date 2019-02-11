@@ -17,9 +17,11 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
 public abstract class AbstractBrakeFunction {
   /** 4.3996 * 100.0 == 439.96 */
-  private static final Scalar LINEAR_FACTOR = Quantity.of(439.96, SI.ACCELERATION.add(SI.METER.negate()));
-  /** -1.3735 * 10000.0 == -13735.0 */
-  private static final Scalar QUADRATIC_FACTOR = Quantity.of(-13735.0, SI.ACCELERATION.add(SI.METER.add(SI.METER).negate()));
+  //private static final Scalar LINEAR_FACTOR = Quantity.of(439.96, SI.ACCELERATION.add(SI.METER.negate()));
+  /** new data (measured with IMU) 2.5555 * 100.0 == 255.55 */
+  private static final Scalar LINEAR_FACTOR = Quantity.of(255.55, SI.ACCELERATION.add(SI.METER.negate()));
+  /** new data (measured with IMU) -0.0008 * 10000.0 == -8.0 */
+  private static final Scalar QUADRATIC_FACTOR = Quantity.of(-8.0, SI.ACCELERATION.add(SI.METER.add(SI.METER).negate()));
   protected static final Tensor COEFFS = Tensors.of(RealScalar.ZERO, LINEAR_FACTOR, QUADRATIC_FACTOR).unmodifiable();
   private static final ScalarUnaryOperator BRAKING_ACCELERATION = Series.of(COEFFS);
   /** point after which the brake is effective
