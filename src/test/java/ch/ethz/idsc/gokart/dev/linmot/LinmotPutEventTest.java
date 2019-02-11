@@ -6,6 +6,7 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Objects;
 
+import ch.ethz.idsc.tensor.RealScalar;
 import junit.framework.TestCase;
 
 public class LinmotPutEventTest extends TestCase {
@@ -51,5 +52,6 @@ public class LinmotPutEventTest extends TestCase {
     assertTrue(Arrays.equals(array, lpe2.asArray()));
     assertEquals(linmotPutEvent.asVector().length(), 6);
     assertEquals(linmotPutEvent.asVector(), lpe2.asVector());
+    assertEquals(lpe2.asVector().Get(2), RealScalar.of(-0.0302));
   }
 }

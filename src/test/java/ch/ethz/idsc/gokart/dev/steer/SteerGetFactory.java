@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.dev.steer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public enum SteerGetHelper {
+public enum SteerGetFactory {
   ;
   public static SteerGetEvent create(float value, float rckQual) {
     byte[] array = new byte[44];

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
-import ch.ethz.idsc.gokart.dev.steer.SteerGetHelper;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetFactory;
 import junit.framework.TestCase;
 
 public class SteerCalibrationWatchdogTest extends TestCase {
@@ -18,8 +18,8 @@ public class SteerCalibrationWatchdogTest extends TestCase {
 
   public void testNonPresent() throws Exception {
     SteerColumnTracker steerColumnTracker = new SteerColumnTracker();
-    steerColumnTracker.getEvent(SteerGetHelper.create(+0.75f));
-    steerColumnTracker.getEvent(SteerGetHelper.create(-0.75f));
+    steerColumnTracker.getEvent(SteerGetFactory.create(+0.75f));
+    steerColumnTracker.getEvent(SteerGetFactory.create(-0.75f));
     assertTrue(steerColumnTracker.isSteerColumnCalibrated());
     Optional<RimoPutEvent> optional = SteerCalibrationWatchdog.create(steerColumnTracker);
     assertFalse(optional.isPresent());

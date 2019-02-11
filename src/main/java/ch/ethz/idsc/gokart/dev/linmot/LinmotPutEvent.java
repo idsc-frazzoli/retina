@@ -5,14 +5,18 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** information sent to micro-autobox to forward to the linear motor that
  * controls the break of the gokart */
 public class LinmotPutEvent extends DataEvent {
   /** 12 bytes encoding length */
   private static final int LENGTH = 12;
+  private static final double PUT_POSITION_TO_METER = 1e-4;
   // ---
   public final short control_word;
   /** motion_cmd_hdr is private because the bits of the short value encode two different values:
@@ -87,12 +91,16 @@ public class LinmotPutEvent extends DataEvent {
     return (byte) (motion_cmd_hdr & 0xf);
   }
 
+  public Scalar getTargetPosition() {
+    return Quantity.of(target_position * PUT_POSITION_TO_METER, SI.METER);
+  }
+
   @Override // from OfflineVectorInterface
   public Tensor asVector() {
     return Tensors.vector( //
         control_word & 0xffff, //
         motion_cmd_hdr & 0xffff, //
-        target_position, //
+        target_position * PUT_POSITION_TO_METER, //
         max_velocity, //
         acceleration, //
         deceleration);

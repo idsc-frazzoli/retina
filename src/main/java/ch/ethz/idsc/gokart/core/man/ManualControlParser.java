@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 
-public enum ManualControlParser {
+/* package */ enum ManualControlParser {
   ;
   public static Optional<ManualControlInterface> event(String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.LABJACK_U3_ADC))

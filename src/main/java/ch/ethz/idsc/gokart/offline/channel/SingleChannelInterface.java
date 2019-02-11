@@ -9,6 +9,11 @@ public interface SingleChannelInterface {
   /** @return channel name */
   String channel();
 
+  /** @return channel name */
+  default String exportName() {
+    return channel();
+  }
+
   /** @param byteBuffer
    * @return vector of message to be appended to table */
   Tensor row(ByteBuffer byteBuffer);
