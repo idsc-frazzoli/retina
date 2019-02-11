@@ -2,8 +2,11 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 /* package */ class MPCCorrectedOpenLoopSteering extends MPCSteering {
   // private final MPCActiveCompensationLearning mpcActiveCompensationLearning = MPCActiveCompensationLearning.getInstance();
@@ -12,27 +15,28 @@ import ch.ethz.idsc.tensor.Scalar;
   private MPCStateEstimationProvider mpcStateProvider;
 
   @Override
-  public Scalar getSteering(Scalar time) {
+  public Optional<Tensor> getSteering(Scalar time) {
     Scalar controlTime = time.add(config.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
     if (Objects.isNull(cnpStep))
-      return null;
+      return Optional.empty();
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
-    return cnpStep.state.getS().add(rampUp);
+    return Optional.of(Tensors.of( //
+        cnpStep.state.getS().add(rampUp), //
+        cnpStep.control.getudotS()));
     // .multiply(mpcActiveCompensationLearning.steeringCorrection);
   }
 
-  @Override
-  public Scalar getDotSteering(Scalar time) {
-    Scalar controlTime = time.add(config.steerAntiLag);
-    ControlAndPredictionStep cnpStep = getStep(controlTime);
-    if (Objects.isNull(cnpStep))
-      return null;
-    return cnpStep.control.getudotS();
-    // .multiply(mpcActiveCompensationLearning.steeringCorrection);
-  }
-
+  // @Override
+  // public Scalar getDotSteering(Scalar time) {
+  // Scalar controlTime = time.add(config.steerAntiLag);
+  // ControlAndPredictionStep cnpStep = getStep(controlTime);
+  // if (Objects.isNull(cnpStep))
+  // return null;
+  // return
+  // .multiply(mpcActiveCompensationLearning.steeringCorrection);
+  // }
   @Override
   public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
     cns = controlAndPredictionSteps;

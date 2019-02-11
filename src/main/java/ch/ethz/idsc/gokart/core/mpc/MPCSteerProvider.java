@@ -13,6 +13,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -35,13 +36,16 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       vlp16PassiveSlowing.bypassSafety();
     // ---
     Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
-    Scalar steering = mpcSteering.getSteering(time);
-    Scalar dSteering = mpcSteering.getDotSteering(time);
-    if (Objects.nonNull(steering)) {
+    Optional<Tensor> optional = mpcSteering.getSteering(time);
+    if (optional.isPresent()) {
+      Tensor steering = optional.get();
       Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-      Scalar torqueCmd = steerPositionController.iterate(currAngle, steering, dSteering);
+      Scalar torqueCmd = steerPositionController.iterate( //
+          currAngle, //
+          steering.Get(0), //
+          steering.Get(1));
       return Optional.of(SteerPutEvent.createOn(torqueCmd));
     }
-    return Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_0);
+    return Optional.empty();
   }
 }
