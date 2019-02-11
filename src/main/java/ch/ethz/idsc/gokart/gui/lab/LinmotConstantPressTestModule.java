@@ -31,7 +31,7 @@ public class LinmotConstantPressTestModule extends AbstractModule {
   private short position = -50;
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     LinmotSocket.INSTANCE.addPutProvider(linmotConstantPressTestLinmot);
     {
       JPanel jPanel = new JPanel(new GridLayout(2, 2));

@@ -13,7 +13,7 @@ public class StaticBrakeFunctionTest extends TestCase {
   public void testBrakingAccel() {
     Scalar scalar = StaticBrakeFunction.INSTANCE.getDeceleration(Quantity.of(0.03, "m"));
     // System.out.println("HERE=" + scalar);
-    Clip.function(Quantity.of(1.85, "m*s^-2"), Quantity.of(1.86, "m*s^-2")).requireInside(scalar);
+    Clip.function(Quantity.of(1.25, "m*s^-2"), Quantity.of(1.30, "m*s^-2")).requireInside(scalar);
   }
 
   public void testBrakingAccelZero() {
@@ -41,7 +41,7 @@ public class StaticBrakeFunctionTest extends TestCase {
   public void testInversionWithMultiplicator() {
     Scalar wa1 = Quantity.of(2, SI.ACCELERATION);
     Scalar fadeFactor = RealScalar.of(0.8);
-    Scalar brakepos = StaticBrakeFunction.INSTANCE.getNeededBrakeActuation(wa1, fadeFactor);
+    Scalar brakepos = AbstractBrakeFunction.getNeededBrakeActuation(wa1, fadeFactor);
     Scalar wa2 = StaticBrakeFunction.INSTANCE.getDeceleration(brakepos).multiply(fadeFactor);
     System.out.println("braking position (with fading): " + brakepos);
     System.out.println("wa1: " + wa1);
@@ -64,12 +64,11 @@ public class StaticBrakeFunctionTest extends TestCase {
     Scalar brakepos2 = StaticBrakeFunction.INSTANCE.getNeededBrakeActuation(Quantity.of(2, SI.ACCELERATION));
     Clip.function(Quantity.of(0.030, "m"), Quantity.of(0.035, "m")).requireInside(brakepos2);
     Scalar brakepos3 = StaticBrakeFunction.INSTANCE.getNeededBrakeActuation(Quantity.of(3, SI.ACCELERATION));
-    Clip.function(Quantity.of(0.030, "m"), Quantity.of(0.035, "m")).requireInside(brakepos3);
+    Clip.function(Quantity.of(0.035, "m"), Quantity.of(0.037, "m")).requireInside(brakepos3);
     Scalar brakepos4 = StaticBrakeFunction.INSTANCE.getNeededBrakeActuation(Quantity.of(30, SI.ACCELERATION));
-    Clip.function(Quantity.of(0.040, "m"), Quantity.of(0.045, "m")).requireInside(brakepos4);
+    Clip.function(Quantity.of(0.140, "m"), Quantity.of(0.150, "m")).requireInside(brakepos4);
     Scalar brakepos5 = StaticBrakeFunction.INSTANCE.getNeededBrakeActuation(Quantity.of(50, SI.ACCELERATION));
-    Clip.function(Quantity.of(0.040, "m"), Quantity.of(0.045, "m")).requireInside(brakepos5);
-    assertEquals(brakepos4, brakepos5);
+    Clip.function(Quantity.of(0.220, "m"), Quantity.of(0.235, "m")).requireInside(brakepos5);
   }
 
   public void testGetRelative() {

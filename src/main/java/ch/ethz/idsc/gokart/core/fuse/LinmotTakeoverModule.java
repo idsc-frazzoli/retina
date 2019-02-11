@@ -27,7 +27,7 @@ public final class LinmotTakeoverModule extends EmergencyModule<LinmotPutEvent> 
   private boolean isBlown = false;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     LinmotSocket.INSTANCE.addGetListener(this);
     LinmotSocket.INSTANCE.addPutProvider(this);
   }

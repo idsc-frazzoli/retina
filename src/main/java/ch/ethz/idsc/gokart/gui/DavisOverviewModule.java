@@ -28,7 +28,7 @@ public class DavisOverviewModule extends AbstractModule {
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     int period_us = 10_000;
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisLidarComponent davisLidarComponent = new DavisLidarComponent();

@@ -12,7 +12,7 @@ public class GokartPoseLcmModule extends AbstractClockedModule {
   // ---
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     GokartPoseLcmServer.INSTANCE.odometryRimoGetLcmClient.startSubscriptions();
   }
 

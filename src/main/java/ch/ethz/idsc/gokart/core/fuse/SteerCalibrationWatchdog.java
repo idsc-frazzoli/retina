@@ -11,7 +11,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 /** sends stop command if steer angle is not calibrated or steer angle tracking is unhealthy */
 public final class SteerCalibrationWatchdog extends EmergencyModule<RimoPutEvent> {
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 

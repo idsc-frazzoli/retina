@@ -27,7 +27,7 @@ public class SteerPassiveModule extends AbstractModule implements LinmotGetListe
   private boolean isHealthy = true;
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     LinmotSocket.INSTANCE.addGetListener(this);
     SteerSocket.INSTANCE.addPutProvider(this);
   }

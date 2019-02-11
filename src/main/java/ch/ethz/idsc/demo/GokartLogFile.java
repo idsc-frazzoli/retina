@@ -1420,6 +1420,8 @@ public enum GokartLogFile implements LogFile {
   _20190211T113051_e3c6742e,
   /** testing adv conversion, no driving */
   _20190211T120203_e3c6742e,
+  /** testing non-threaded abstract module, pure pursuit, manual driving */
+  _20190211T130907_ad3cc9bb, //
   /***************************************************/
   ;
   // ---

@@ -17,7 +17,7 @@ public final class MiscEmergencyWatchdog extends EmergencyModule<RimoPutEvent> i
   private boolean isEmergency = true;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     MiscSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addPutProvider(this);
   }

@@ -25,7 +25,7 @@ public class ParametersModule extends AbstractModule {
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     ParametersHelper.OBJECTS.forEach(this::addTab);
     // only classes that other classes do not extend from
     jFrame.setContentPane(jTabbedPane);

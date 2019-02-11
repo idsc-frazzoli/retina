@@ -18,7 +18,7 @@ public final class LinmotCoolingModule extends EmergencyModule<RimoPutEvent> imp
   private boolean isTemperatureOperationSafe = false;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     LinmotSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addPutProvider(this);
   }

@@ -55,7 +55,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   }
 
   MPCKinematicDrivingModule(Timing timing) {
-    //this(new SimpleKinematicMPCStateEstimationProvider(timing), timing, null);
+    // this(new SimpleKinematicMPCStateEstimationProvider(timing), timing, null);
     this(new SimpleDynamicMPCStateEstimationProvider(timing), timing, null);
   }
 
@@ -139,7 +139,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   }
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     if (Objects.nonNull(gokartTrackReconModule))
       gokartTrackReconModule.listenersAdd(this);
     // ---

@@ -113,7 +113,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   }
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     vmu931ImuLcmClient.addListener(this);
     gokartPoseLcmClient.addListener(this);
     // ---

@@ -67,7 +67,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   }
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     timerFrame.geometricComponent.setModel2Pixel(HANGAR_MODEL2PIXEL);
     {
       timerFrame.geometricComponent.addRenderInterfaceBackground(GRID_RENDER);

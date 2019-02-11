@@ -73,7 +73,7 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
   }
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     manualControlProvider.start();
   }
 

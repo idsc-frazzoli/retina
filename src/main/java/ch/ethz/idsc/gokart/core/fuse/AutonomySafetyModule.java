@@ -19,7 +19,7 @@ public final class AutonomySafetyModule extends AbstractModule {
   final AutonomySafetySteer autonomySafetySteer = new AutonomySafetySteer(() -> isAutonomousPressed());
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     manualControlProvider.start();
     SteerSocket.INSTANCE.addPutProvider(autonomySafetySteer);
     RimoSocket.INSTANCE.addPutProvider(autonomySafetyRimo);

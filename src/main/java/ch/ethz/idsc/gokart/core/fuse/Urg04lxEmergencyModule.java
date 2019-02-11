@@ -24,7 +24,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
   private final Watchdog watchdog = HardWatchdog.notified(WATCHDOG_MS * 1e-3);
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     urg04lxLcmClient.startSubscriptions();
     urg04lxLcmClient.urg04lxDecoder.addRayListener(this);
     RimoSocket.INSTANCE.addPutProvider(this);

@@ -172,7 +172,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   }
 
   @Override // from AbstractClockedModule
-  protected void first() throws Exception {
+  protected void first() {
     // ---
     gokartPoseLcmClient.addListener(gokartPoseListener);
     // ---

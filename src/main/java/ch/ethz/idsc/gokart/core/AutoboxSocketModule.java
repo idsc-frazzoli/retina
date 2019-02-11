@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
  * operation of the gokart without AutoboxSocketModule is not possible. */
 public class AutoboxSocketModule extends AbstractModule {
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     RimoSocket.INSTANCE.start();
     LinmotSocket.INSTANCE.start();
     SteerSocket.INSTANCE.start();

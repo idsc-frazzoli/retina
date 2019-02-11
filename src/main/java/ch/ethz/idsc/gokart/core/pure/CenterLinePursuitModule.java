@@ -26,7 +26,7 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     if (Objects.nonNull(gokartTrackReconModule))
       gokartTrackReconModule.listenersAdd(this);
     // ---
