@@ -1,7 +1,6 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
@@ -24,12 +23,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
     Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
-    Tensor currents = mpcPower.getPower(time);
-    if (Objects.nonNull(currents))
+    Optional<Tensor> optional = mpcPower.getPower(time);
+    if (optional.isPresent()) {
+      Tensor currents = optional.get();
       return Optional.of(RimoPutHelper.operationTorque( //
           (short) -Magnitude.ARMS.toFloat(currents.Get(0)), // sign left invert
           (short) +Magnitude.ARMS.toFloat(currents.Get(1)) // sign right id
       ));
+    }
     return Optional.empty();
   }
 }

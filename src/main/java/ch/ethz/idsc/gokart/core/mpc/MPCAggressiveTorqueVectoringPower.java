@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedPredictiveTorqueVectoring;
@@ -9,11 +10,9 @@ import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Tan;
@@ -33,23 +32,25 @@ import ch.ethz.idsc.tensor.sca.Tan;
   }
 
   @Override
-  public Tensor getPower(Scalar time) {
+  Optional<Tensor> getPower(Scalar time) {
     ControlAndPredictionStep cnsStep = getStep(time);
     if (Objects.isNull(cnsStep)) {
-      return Tensors.of(//
-          Quantity.of(0, NonSI.ARMS), //
-          Quantity.of(0, NonSI.ARMS));
+      return Optional.empty();
     }
     if (Objects.isNull(mpcStateProvider)) {
       // return torqueless power
-      return torqueVectoring.getMotorCurrentsFromAcceleration(//
+      return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(//
           Quantity.of(0, SI.SECOND.negate()), //
           cnsStep.state.getUx(), //
           Quantity.of(0, SI.SECOND.negate()), //
           cnsStep.control.getaB(), //
-          Quantity.of(0, SI.SECOND.negate()));
+          Quantity.of(0, SI.SECOND.negate())));
     }
-    Scalar theta = steerMapping.getAngleFromSCE(mpcSteering.getSteering(time)); // steering angle of imaginary front wheel
+    Optional<Tensor> optional = mpcSteering.getSteering(time);
+    if (!optional.isPresent())
+      return Optional.empty();
+    Tensor steering = optional.get();
+    Scalar theta = steerMapping.getAngleFromSCE(steering.Get(0)); // steering angle of imaginary front wheel
     Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
     Scalar tangentialSpeed = mpcStateProvider.getState().getUx();
     Scalar wantedRotationRate = expectedRotationPerMeterDriven.multiply(tangentialSpeed); // unit s^-1
@@ -61,12 +62,12 @@ import ch.ethz.idsc.tensor.sca.Tan;
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar midpoint = (Scalar) Mean.of(minmax);
     // more tame version
-    return torqueVectoring.getMotorCurrentsFromAcceleration(//
+    return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //
         tangentialSpeed, //
         angularSlip, //
         Max.of(NOACCELERATION, wantedAcceleration), //
-        gyroZ);
+        gyroZ));
   }
 
   @Override

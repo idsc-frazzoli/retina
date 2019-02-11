@@ -21,7 +21,7 @@ public class MPCOpenLoopSteeringTest extends TestCase {
     steps[1] = new ControlAndPredictionStep(control1, state1);
     ControlAndPredictionSteps cns = new ControlAndPredictionSteps(steps);
     steering.getControlAndPredictionSteps(cns);
-    System.out.println(steering.getSteering(Quantity.of(0.1, SI.SECOND)));
+    System.out.println(steering.getSteering(Quantity.of(0.1, SI.SECOND)).get());
     // test interpolation and extrapolation
     // System.out.println(steering.getSteering(Quantity.of(0.1, SI.SECOND)));
     // FIXME MH test fail

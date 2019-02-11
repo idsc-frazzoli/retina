@@ -2,33 +2,35 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 /* package */ class MPCOpenLoopSteering extends MPCSteering {
   MPCStateEstimationProvider mpcStateProvider;
   MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
 
   @Override
-  public Scalar getSteering(Scalar time) {
+  public Optional<Tensor> getSteering(Scalar time) {
     Scalar controlTime = time.add(config.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
     if (Objects.isNull(cnpStep))
-      return null;
+      return Optional.empty();
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
-    return cnpStep.state.getS().add(rampUp);
+    return Optional.of(Tensors.of(cnpStep.state.getS().add(rampUp), cnpStep.control.getudotS()));
   }
 
-  @Override
-  public Scalar getDotSteering(Scalar time) {
-    Scalar controlTime = time.add(config.steerAntiLag);
-    ControlAndPredictionStep cnpStep = getStep(controlTime);
-    if (Objects.isNull(cnpStep))
-      return null;
-    return cnpStep.control.getudotS();
-  }
-
+  // @Override
+  // public Scalar getDotSteering(Scalar time) {
+  // Scalar controlTime = time.add(config.steerAntiLag);
+  // ControlAndPredictionStep cnpStep = getStep(controlTime);
+  // if (Objects.isNull(cnpStep))
+  // return null;
+  // return
+  // }
   @Override
   public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
     cns = controlAndPredictionSteps;
