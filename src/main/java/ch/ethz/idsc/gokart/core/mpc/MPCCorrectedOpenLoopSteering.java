@@ -6,7 +6,7 @@ import java.util.Objects;
 import ch.ethz.idsc.tensor.Scalar;
 
 /* package */ class MPCCorrectedOpenLoopSteering extends MPCSteering {
-  private final MPCActiveCompensationLearning mpcActiveCompensationLearning = MPCActiveCompensationLearning.getInstance();
+  // private final MPCActiveCompensationLearning mpcActiveCompensationLearning = MPCActiveCompensationLearning.getInstance();
   private final MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
   // TODO MH variable not used:
   private MPCStateEstimationProvider mpcStateProvider;
@@ -19,8 +19,8 @@ import ch.ethz.idsc.tensor.Scalar;
       return null;
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
-    return cnpStep.state.getS().add(rampUp)//
-        .multiply(mpcActiveCompensationLearning.steeringCorrection);
+    return cnpStep.state.getS().add(rampUp);
+    // .multiply(mpcActiveCompensationLearning.steeringCorrection);
   }
 
   @Override
@@ -29,8 +29,8 @@ import ch.ethz.idsc.tensor.Scalar;
     ControlAndPredictionStep cnpStep = getStep(controlTime);
     if (Objects.isNull(cnpStep))
       return null;
-    return cnpStep.control.getudotS()//
-        .multiply(mpcActiveCompensationLearning.steeringCorrection);
+    return cnpStep.control.getudotS();
+    // .multiply(mpcActiveCompensationLearning.steeringCorrection);
   }
 
   @Override

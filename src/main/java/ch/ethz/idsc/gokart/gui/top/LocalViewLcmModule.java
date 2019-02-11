@@ -34,7 +34,7 @@ public class LocalViewLcmModule extends AbstractModule {
   private final MPCExpectationRender mpcExpectationRender = new MPCExpectationRender(MINOR);
   private final TimerFrame timerFrame = new TimerFrame();
   private final AccelerationRender accelerationRender = new AccelerationRender(MINOR, 100);
-  private final SimpleVelocityEstimation simpleVelocityEstimation = new SimpleVelocityEstimation();
+  private final SimpleVelocityEstimation simpleVelocityEstimation = SimpleVelocityEstimation.getInstance();
   private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(simpleVelocityEstimation, MINOR);
   private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
   private final WindowConfiguration windowConfiguration = //
@@ -42,7 +42,6 @@ public class LocalViewLcmModule extends AbstractModule {
 
   @Override
   protected void first() throws Exception {
-    gokartPoseLcmClient.addListener(simpleVelocityEstimation);
     gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
     rimoGetLcmClient.addListener(mpcExpectationRender);
@@ -52,7 +51,6 @@ public class LocalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
     vmu931ImuLcmClient.addListener(vmu931ImuFrame -> accelerationRender.setAccelerationXY(//
         SensorsConfig.GLOBAL.getAccXY(vmu931ImuFrame)));
-    vmu931ImuLcmClient.addListener(simpleVelocityEstimation);
     // ---
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     timerFrame.geometricComponent.addRenderInterface(gokartRender);

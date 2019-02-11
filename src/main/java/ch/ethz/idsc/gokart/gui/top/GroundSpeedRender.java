@@ -6,7 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 
-import ch.ethz.idsc.gokart.core.ekf.VelocityEstimation;
+import ch.ethz.idsc.gokart.core.ekf.VelocityAndPositionEstimation;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -22,10 +22,10 @@ import ch.ethz.idsc.tensor.alg.Array;
   private static final Tensor ORIGIN = Array.zeros(2);
   private static final Scalar SCALE = RealScalar.of(0.1);
   // ---
-  private final VelocityEstimation velocityEstimation;
+  private final VelocityAndPositionEstimation velocityEstimation;
   private final Tensor xya;
 
-  public GroundSpeedRender(VelocityEstimation velocityEstimation, Tensor xya) {
+  public GroundSpeedRender(VelocityAndPositionEstimation velocityEstimation, Tensor xya) {
     this.velocityEstimation = velocityEstimation;
     this.xya = xya;
   }

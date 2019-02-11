@@ -82,7 +82,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcPower);
     lcmMPCPathFollowingClient.registerControlUpdateLister(mpcBraking);
     lcmMPCPathFollowingClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
-    lcmMPCPathFollowingClient.registerControlUpdateLister(MPCActiveCompensationLearning.getInstance());
+    // lcmMPCPathFollowingClient.registerControlUpdateLister(MPCActiveCompensationLearning.getInstance());
     // state estimation provider
     mpcBraking.setStateProvider(mpcStateEstimationProvider);
     mpcPower.setStateProvider(mpcStateEstimationProvider);
@@ -144,7 +144,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     // ---
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
-    MPCActiveCompensationLearning.getInstance().setActive(true);
+    // MPCActiveCompensationLearning.getInstance().setActive(true);
     manualControlProvider.start();
     // ---
     SteerSocket.INSTANCE.addPutProvider(mpcSteerProvider);
@@ -178,7 +178,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     // ---
     RimoSocket.INSTANCE.removePutProvider(mpcRimoProvider);
     //
-    MPCActiveCompensationLearning.getInstance().setActive(false);
+    // MPCActiveCompensationLearning.getInstance().setActive(false);
     // ---
     lcmMPCPathFollowingClient.stop();
     mpcStateEstimationProvider.last();
