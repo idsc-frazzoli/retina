@@ -4,7 +4,6 @@ function M = ModelfreeStateEstimation(folder)
     %folder = 'retina_out/20180820T1438522.lcm/';
     gplocalization = csvread(strcat(folder,'gplocalization.csv'));
     %davisIMU = csvread(strcat(folder,'davisIMU.csv'));
-
     %absolute lidar estimation
     lx = gplocalization(:,3);
     ly = gplocalization(:,4);

@@ -8,6 +8,9 @@ powersteer = csvread(strcat(folder,'powersteer.csv'));
 powerrimo = csvread(strcat(folder,'powerrimo.csv'));
 rimorate = csvread(strcat(folder,'rimorate.csv'));
 
+vmuimu = csvread(strcat(folder,'rimorate.csv'));
+imuddx = vmuimu(:,
+
 linmot = csvread(strcat(folder,'linmot.csv'));
 lt = linmot(:,1);
 lp = linmot(:,4);
@@ -48,7 +51,7 @@ wrr = gaussfilter(wrr,10);
 cRTSM = convertM(RTSM);
 
 t = cRTSM(:,1);
-% whole table: [t x y Ksi dotx_b doty_b dotKsi  dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr lp  ltemp dotltemp]
+% whole table: [t x y Ksi dotx_b doty_b dotKsi  dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr lp  ltemp dotltemp imuddx imuddy imudr]
 
 M = [cRTSM,...%t x y Ksi dotx_b doty_b dotKsi dotdotx_b dotdoty_b dotdotKsi
     interp1(st,sa,t),...%sa
@@ -61,7 +64,8 @@ M = [cRTSM,...%t x y Ksi dotx_b doty_b dotKsi dotdotx_b dotdoty_b dotdotKsi
     interp1(wt,dotwrr,t),...%dotwrr
     interp1(lt,lp,t),...%lp
     interp1(lt,ltemp,t),...%ltemp
-    interp1(lt,dotltemp,t)];%dotltemp
+    interp1(lt,dotltemp,t),...
+    interp1(lt,];%dotltemp
 show = 1;
 
     %if(show)
