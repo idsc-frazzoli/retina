@@ -23,6 +23,7 @@ public class LocalViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor POSE = Tensors.fromString("{0[m],0[m],0}").unmodifiable();
   private static final Tensor MINOR = Tensors.vector(0, -2.5, 0);
+  private static final Tensor MINORRIGHT = Tensors.vector(0, -3, 0);
   static final Tensor MODEL2PIXEL = Tensors.fromString("{{0,-100,200},{-100,0,300},{0,0,1}}").unmodifiable();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
@@ -36,6 +37,8 @@ public class LocalViewLcmModule extends AbstractModule {
   private final AccelerationRender accelerationRender = new AccelerationRender(MINOR, 100);
   private final SimpleVelocityEstimation simpleVelocityEstimation = SimpleVelocityEstimation.getInstance();
   private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(simpleVelocityEstimation, MINOR);
+  private final BrakeCalibrationRender brakeCalibrationRender = new BrakeCalibrationRender(MINORRIGHT);
+  
   private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
@@ -58,6 +61,7 @@ public class LocalViewLcmModule extends AbstractModule {
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
     timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
     timerFrame.geometricComponent.addRenderInterface(mpcExpectationRender);
+    timerFrame.geometricComponent.addRenderInterface(brakeCalibrationRender);
     TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(Tensors.vector(1, -2.5, 0));
     rimoGetLcmClient.addListener(tachometerMustangDash);
     timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);

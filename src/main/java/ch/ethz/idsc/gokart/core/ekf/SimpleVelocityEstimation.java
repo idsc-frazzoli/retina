@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 
 // TODO MH cleanup comments/unused code
 public class SimpleVelocityEstimation extends AbstractModule implements VelocityAndPositionEstimation, Vmu931ImuFrameListener, GokartPoseListener {
-  private static SimpleVelocityEstimation INSTANCE;
+  private static SimpleVelocityEstimation INSTANCE = new SimpleVelocityEstimation();
 
   public static SimpleVelocityEstimation getInstance() {
     return INSTANCE;
