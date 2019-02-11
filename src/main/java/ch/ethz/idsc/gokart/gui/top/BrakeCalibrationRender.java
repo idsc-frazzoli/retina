@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 public class BrakeCalibrationRender implements RenderInterface {
-  private static final Tensor DIAGONAL = DiagonalMatrix.of(.2, .2, 1);
+  private static final Tensor DIAGONAL = DiagonalMatrix.of(.5, .5, 1);
   private final Tensor xya;
 
   public BrakeCalibrationRender(Tensor xya) {
@@ -28,7 +28,7 @@ public class BrakeCalibrationRender implements RenderInterface {
     // calibration line
     Scalar calibrationValue = SelfCalibratingBrakingFunction.getInstance().getBrakeFadeFactor();
     graphics.setColor(Color.BLUE);
-    Tensor polygon = Tensors.of(Tensors.vector(0, 0), Tensors.of(calibrationValue, RealScalar.ZERO));
+    Tensor polygon = Tensors.of(Tensors.vector(0, 0), Tensors.of(calibrationValue,RealScalar.ZERO));
     graphics.draw(geometricLayer.toPath2D(polygon));
     //
     geometricLayer.popMatrix();

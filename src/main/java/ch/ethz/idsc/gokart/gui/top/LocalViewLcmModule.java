@@ -23,7 +23,7 @@ public class LocalViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor POSE = Tensors.fromString("{0[m],0[m],0}").unmodifiable();
   private static final Tensor MINOR = Tensors.vector(0, -2.5, 0);
-  private static final Tensor MINORRIGHT = Tensors.vector(0, -3, 0);
+  private static final Tensor MINORRIGHT = Tensors.vector(0, -3.5, 0);
   static final Tensor MODEL2PIXEL = Tensors.fromString("{{0,-100,200},{-100,0,300},{0,0,1}}").unmodifiable();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
