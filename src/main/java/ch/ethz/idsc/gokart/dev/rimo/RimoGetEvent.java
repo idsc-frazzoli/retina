@@ -29,13 +29,13 @@ public class RimoGetEvent extends DataEvent {
   }
 
   @Override
-  protected void insert(ByteBuffer byteBuffer) {
+  public void insert(ByteBuffer byteBuffer) {
     getTireL.encode(byteBuffer);
     getTireR.encode(byteBuffer);
   }
 
   @Override
-  protected int length() {
+  public int length() {
     return LENGTH;
   }
 

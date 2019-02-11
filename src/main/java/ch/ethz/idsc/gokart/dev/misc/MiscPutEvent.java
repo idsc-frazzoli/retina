@@ -50,7 +50,7 @@ public class MiscPutEvent extends DataEvent {
   }
 
   @Override // from DataEvent
-  protected int length() {
+  public int length() {
     return LENGTH;
   }
 

@@ -36,7 +36,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   private boolean running = true;
   // private final Timing timing;
   // private boolean useTorqueVectoring;
-  private final int previewSize = MPCNative.SPLINEPREVIEWSIZE;
+  private final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
   private Optional<MPCBSplineTrack> mpcBSplineTrack = Optional.empty();
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();

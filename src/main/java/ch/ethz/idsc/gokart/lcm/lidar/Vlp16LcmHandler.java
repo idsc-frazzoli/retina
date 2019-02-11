@@ -13,7 +13,7 @@ public class Vlp16LcmHandler implements LcmClientInterface {
   public static final int MAX_COORDINATES = 2304 * 32;
   // ---
   public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  // FIXME this is coupled!!
+  // FIXME JPH this is coupled!!
   public final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(MAX_COORDINATES, 3);
   private final VelodyneLcmClient velodyneLcmClient;
