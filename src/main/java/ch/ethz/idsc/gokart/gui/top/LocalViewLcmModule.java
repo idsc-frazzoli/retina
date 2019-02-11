@@ -45,7 +45,7 @@ public class LocalViewLcmModule extends AbstractModule {
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
     rimoGetLcmClient.addListener(mpcExpectationRender);

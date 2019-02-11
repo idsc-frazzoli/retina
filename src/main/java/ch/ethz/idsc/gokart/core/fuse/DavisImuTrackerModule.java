@@ -27,7 +27,7 @@ public class DavisImuTrackerModule extends EmergencyModule<RimoPutEvent> impleme
   }
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     davisImuLcmClient.startSubscriptions();
     RimoSocket.INSTANCE.addPutProvider(this);
   }

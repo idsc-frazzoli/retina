@@ -10,7 +10,7 @@ public class Urg04lxLcmServerModule extends AbstractModule {
   private final Urg04lxLcmServer urg04lxLcmServer = new Urg04lxLcmServer(GokartLcmChannel.URG04LX_FRONT);
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     urg04lxLcmServer.start();
   }
 

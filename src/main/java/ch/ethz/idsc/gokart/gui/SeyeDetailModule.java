@@ -33,7 +33,7 @@ public class SeyeDetailModule extends AbstractModule implements TimedImageListen
   private final Aedat31PolarityImage aedat31PolarityImage = new Aedat31PolarityImage(Color.DARK_GRAY, PACKETS);
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setContentPane(jComponent);

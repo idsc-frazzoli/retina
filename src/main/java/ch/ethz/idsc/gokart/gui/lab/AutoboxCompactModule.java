@@ -21,7 +21,7 @@ public class AutoboxCompactModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     autoboxCompactComponent.start();
     // ---
     jFrame.setContentPane(autoboxCompactComponent.getScrollPane());

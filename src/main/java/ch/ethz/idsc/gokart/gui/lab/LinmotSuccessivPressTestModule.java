@@ -36,7 +36,7 @@ public class LinmotSuccessivPressTestModule extends AbstractModule {
   private Tensor intensities;
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     LinmotSocket.INSTANCE.addPutProvider(linmotPressTestLinmot);
     RimoSocket.INSTANCE.addPutProvider(linmotPressTestRimo);
     {

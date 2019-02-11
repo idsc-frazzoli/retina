@@ -5,7 +5,7 @@ import java.util.List;
 
 public abstract class GroupModule extends AbstractModule {
   @Override
-  protected final void first() throws Exception {
+  protected final void first() {
     ModuleAuto.INSTANCE.runAll(modules());
   }
 

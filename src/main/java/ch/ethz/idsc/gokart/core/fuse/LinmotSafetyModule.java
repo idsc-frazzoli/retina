@@ -21,7 +21,7 @@ public final class LinmotSafetyModule extends AbstractModule implements LinmotGe
   private boolean isOperational = false;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     LinmotSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addPutProvider(this);
   }

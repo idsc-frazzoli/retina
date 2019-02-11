@@ -20,7 +20,7 @@ abstract class FigureBaseModule extends AbstractModule {
   }
 
   @Override // from AbstractModule
-  protected final void first() throws Exception {
+  protected final void first() {
     purePursuitModule.launch();
   }
 

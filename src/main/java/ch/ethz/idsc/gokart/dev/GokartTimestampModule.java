@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.dev;
 
 import java.io.File;
+import java.io.IOException;
 
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
@@ -12,10 +13,14 @@ public class GokartTimestampModule extends AbstractModule {
   private static final File ROOT = new File("resources/hardware");
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     if (isHardware()) {
       ROOT.mkdir();
-      new File(ROOT, SystemTimestamp.asString() + "_beg").createNewFile();
+      try {
+        new File(ROOT, SystemTimestamp.asString() + "_beg").createNewFile();
+      } catch (IOException ioException) {
+        // ---
+      }
     }
   }
 

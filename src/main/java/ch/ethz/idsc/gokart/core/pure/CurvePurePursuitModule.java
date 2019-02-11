@@ -41,7 +41,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   }
 
   @Override // from AbstractModule
-  protected final void protected_first() throws Exception {
+  protected final void protected_first() {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
     RimoSocket.INSTANCE.addGetListener(rimoGetListener);

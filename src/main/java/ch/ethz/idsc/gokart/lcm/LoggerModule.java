@@ -13,8 +13,12 @@ public final class LoggerModule extends AbstractModule {
   private LcmLogProcess lcmLogProcess;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
-    lcmLogProcess = LcmLogProcess.createDefault(HomeDirectory.file());
+  protected void first() {
+    try {
+      lcmLogProcess = LcmLogProcess.createDefault(HomeDirectory.file());
+    } catch (Exception exception) {
+      throw new RuntimeException();
+    }
   }
 
   @Override // from AbstractModule

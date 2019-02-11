@@ -24,7 +24,7 @@ public class GokartSoundLcmModule extends AbstractModule {
       new ChirpSpeedModifier(5, 0.4f), gokartMotorStateLcmProvider);
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     gokartMotorStateLcmProvider.start();
     gokartSoundCreator.start();
   }

@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 @Refactor // TODO JAN
 class ManualControlModule extends AbstractModule {
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     ManualControlSingleton.INSTANCE.start();
   }
 

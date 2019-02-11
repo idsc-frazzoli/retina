@@ -82,7 +82,7 @@ abstract class ViewLcmModule extends AbstractModule {
   }
 
   @Override // from AbstractModule
-  public void first() throws Exception {
+  public void first() {
     viewLcmFrame.geometricComponent.setButtonDrag(MouseEvent.BUTTON1);
     {
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();

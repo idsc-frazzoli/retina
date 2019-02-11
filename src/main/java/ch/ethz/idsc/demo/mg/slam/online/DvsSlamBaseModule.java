@@ -27,7 +27,7 @@ public class DvsSlamBaseModule extends AbstractClockedModule {
   }
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     onlineSlamWrap.start();
     // ---
     slamCurvePurePursuitModule.launch();

@@ -19,7 +19,7 @@ public final class SlamCurvePurePursuitModule extends PurePursuitModule {
   }
 
   @Override // form AbstractModule
-  protected void protected_first() throws Exception {
+  protected void protected_first() {
     // ---
   }
 

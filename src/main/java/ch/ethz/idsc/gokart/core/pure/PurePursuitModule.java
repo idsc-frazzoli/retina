@@ -26,7 +26,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   }
 
   @Override // from AbstractModule
-  protected final void first() throws Exception {
+  protected final void first() {
     protected_first();
     joystickLcmProvider.start();
     purePursuitRimo.start();
@@ -41,7 +41,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
     protected_last();
   }
 
-  protected abstract void protected_first() throws Exception;
+  protected abstract void protected_first();
 
   protected abstract void protected_last();
 

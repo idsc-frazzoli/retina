@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
 
   @Override // from AbstractModule
-  public final void first() throws Exception {
+  public final void first() {
     manualControlProvider.start();
     protected_first();
   }

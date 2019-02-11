@@ -10,9 +10,13 @@ public class SpyModule extends AbstractModule {
   private Spy spy;
 
   @Override
-  protected void first() throws Exception {
-    spy = new Spy("");
-    spy.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+  protected void first() {
+    try {
+      spy = new Spy("");
+      spy.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+    } catch (Exception exception) {
+      throw new RuntimeException();
+    }
   }
 
   @Override

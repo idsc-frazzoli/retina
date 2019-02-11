@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   private ScalarUnaryOperator signal = SysidSignals.CHIRP_SLOW.get();
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     joystickLcmProvider.start();
     RimoSocket.INSTANCE.addPutProvider(this);
   }

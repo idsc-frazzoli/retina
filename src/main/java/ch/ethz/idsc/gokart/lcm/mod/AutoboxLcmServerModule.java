@@ -18,7 +18,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
  * the commands sent to the micro-autobox. */
 public class AutoboxLcmServerModule extends AbstractModule {
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     RimoSocket.INSTANCE.addGetListener(RimoLcmServer.INSTANCE);
     RimoSocket.INSTANCE.addPutListener(RimoLcmServer.INSTANCE);
     // ---

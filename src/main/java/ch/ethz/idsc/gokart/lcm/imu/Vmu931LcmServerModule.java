@@ -25,7 +25,7 @@ public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Liste
   private Vmu931 vmu931;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     send.order(ByteOrder.LITTLE_ENDIAN);
     vmu931 = new Vmu931(PORT, //
         EnumSet.of(Vmu931Channel.ACCELEROMETER, Vmu931Channel.GYROSCOPE), //

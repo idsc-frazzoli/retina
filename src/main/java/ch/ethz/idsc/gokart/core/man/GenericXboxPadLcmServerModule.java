@@ -14,7 +14,7 @@ public class GenericXboxPadLcmServerModule extends AbstractModule {
   private JoystickLcmServer joystickLcmServer;
 
   @Override
-  protected final void first() throws Exception {
+  protected final void first() {
     joystickLcmServer = new JoystickLcmServer( //
         getJoystickType(), GokartLcmChannel.JOYSTICK, PERIOD_MS);
     joystickLcmServer.start();

@@ -28,7 +28,7 @@ class RimoMetronomeModule extends AbstractModule implements RimoPutProvider {
   private final Scalar testPulseHi = Quantity.of(20, "rad*s^-1");
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     RimoSocket.INSTANCE.addGetListener(rimoRateControllerWrap);
     RimoSocket.INSTANCE.addPutProvider(this);
   }

@@ -32,7 +32,7 @@ public class LinmotPressTestModule extends AbstractModule {
   private final LinmotPressTestRimo linmotPressTestRimo = new LinmotPressTestRimo();
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     LinmotSocket.INSTANCE.addPutProvider(linmotPressTestLinmot);
     RimoSocket.INSTANCE.addPutProvider(linmotPressTestRimo);
     {

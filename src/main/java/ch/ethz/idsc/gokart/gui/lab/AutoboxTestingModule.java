@@ -22,7 +22,7 @@ public class AutoboxTestingModule extends AbstractModule {
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     addTab(new LinmotComponent());
     addTab(new MiscComponent());
     addTab(new SteerComponent());
