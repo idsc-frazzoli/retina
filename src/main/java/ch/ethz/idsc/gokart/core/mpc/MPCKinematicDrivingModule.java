@@ -55,7 +55,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   }
 
   MPCKinematicDrivingModule(Timing timing) {
-    //this(new SimpleKinematicMPCStateEstimationProvider(timing), timing, null);
+    // this(new SimpleKinematicMPCStateEstimationProvider(timing), timing, null);
     this(new SimpleDynamicMPCStateEstimationProvider(timing), timing, null);
   }
 
