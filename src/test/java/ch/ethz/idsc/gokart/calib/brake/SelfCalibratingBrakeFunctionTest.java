@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.calib.brake;
 
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.ExactScalarQ;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -9,6 +10,11 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class SelfCalibratingBrakeFunctionTest extends TestCase {
+  public void testNumeric() {
+    SelfCalibratingBrakeFunction selfCalibratingBrakeFunction = new SelfCalibratingBrakeFunction();
+    assertFalse(ExactScalarQ.of(selfCalibratingBrakeFunction.getBrakeFadeFactor()));
+  }
+
   public void testCalibration() {
     Scalar brakeFade = RealScalar.of(0.8);
     Scalar brakeDeceleration = Quantity.of(2.7, SI.ACCELERATION);

@@ -1413,6 +1413,14 @@ public enum GokartLogFile implements LogFile {
   /** vmu931 at new location, manual driving, mpc */
   _20190208T145312_dac9d0fb,
   /***************************************************/
+  /* 2019-02-11 */
+  /** manual driving for collecting brake data */
+  _20190211T100755_8b7a8047, //
+  /** manual driving for collecting brake data, testing velocity estimation */
+  _20190211T113051_e3c6742e,
+  /** testing adv conversion, no driving */
+  _20190211T120203_e3c6742e,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

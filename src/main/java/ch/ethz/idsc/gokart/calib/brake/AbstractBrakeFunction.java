@@ -71,11 +71,11 @@ public abstract class AbstractBrakeFunction {
    * 
    * @param brakingPosition [m]
    * @return braking deceleration */
-  public abstract Scalar getDeceleration(Scalar brakingPosition);
+  abstract Scalar getDeceleration(Scalar brakingPosition);
 
   /** get the wanted actuation position
    * 
    * @param wantedDeceleration wanted additional braking deceleration [m*s^-2] positive for braking effect
    * @return needed braking position [m] positive for braking effect */
-  public abstract Scalar getNeededBrakeActuation(Scalar wantedDeceleration);
+  abstract Scalar getNeededBrakeActuation(Scalar wantedDeceleration);
 }

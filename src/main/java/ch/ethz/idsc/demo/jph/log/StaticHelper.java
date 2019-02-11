@@ -6,6 +6,7 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartStatusChannel;
+import ch.ethz.idsc.gokart.offline.channel.LabjackAdcChannel;
 import ch.ethz.idsc.gokart.offline.channel.LinmotGetVehicleChannel;
 import ch.ethz.idsc.gokart.offline.channel.LinmotPutVehicleChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoGetChannel;
@@ -29,6 +30,8 @@ import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
       SteerGetChannel.INSTANCE, //
       LinmotPutVehicleChannel.INSTANCE, //
       LinmotGetVehicleChannel.INSTANCE, //
-      Vmu931ImuVehicleChannel.INSTANCE);
+      Vmu931ImuVehicleChannel.INSTANCE, //
+      LabjackAdcChannel.INSTANCE //
+  );
   static final String GOKART_POSE_SMOOTH = "gokart.pose.smooth";
 }
