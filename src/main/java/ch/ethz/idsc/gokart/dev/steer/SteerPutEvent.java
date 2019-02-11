@@ -70,7 +70,7 @@ public class SteerPutEvent extends DataEvent {
   }
 
   @Override // from DataEvent
-  protected int length() {
+  public int length() {
     return LENGTH;
   }
 

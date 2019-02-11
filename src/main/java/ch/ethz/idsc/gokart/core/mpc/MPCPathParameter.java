@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -10,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ class MPCPathParameter implements MPCNativeInsertable {
+/* package */ class MPCPathParameter implements BufferInsertable {
   // starting Progress designates the current position on the path. (0->middle point between first 2 control points)
   // starting Progress is in [0,N-2] where N is the number of control points.
   final Scalar startingProgress;

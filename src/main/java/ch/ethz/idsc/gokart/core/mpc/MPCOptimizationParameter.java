@@ -3,12 +3,13 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ class MPCOptimizationParameter implements MPCNativeInsertable {
+/* package */ class MPCOptimizationParameter implements BufferInsertable {
   public final Scalar speedLimit;
   public final Scalar xAccLimit;
   public final Scalar yAccLimit;

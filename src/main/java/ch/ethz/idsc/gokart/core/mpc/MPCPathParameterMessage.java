@@ -3,6 +3,8 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.retina.util.data.BufferInsertable;
+
 /* package */ class MPCPathParameterMessage extends MPCNativeMessage {
   public final MPCPathParameter mpcPathParameters;
 
@@ -22,7 +24,7 @@ import java.nio.ByteBuffer;
   }
 
   @Override
-  public MPCNativeInsertable getPayload() {
+  public BufferInsertable getPayload() {
     return mpcPathParameters;
   }
 }

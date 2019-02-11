@@ -23,12 +23,10 @@ import ch.ethz.idsc.tensor.io.Export;
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
     final File target = new File(folder, FILENAME);
     if (target.isFile()) {
-      System.err.println("delete " + target);
-      target.delete();
-      // System.out.println("skip " + folder);
-    }
-    // else
-    {
+      // System.err.println("delete " + target);
+      // target.delete();
+      System.out.println("skip " + folder);
+    } else {
       LidarGyroPoseEstimator lidarGyroPoseEstimator = //
           new LidarGyroPoseEstimator(gokartLogInterface, VoidScatterImage.INSTANCE);
       LogPosePostInject logPosePostInject = new LogPosePostInject();

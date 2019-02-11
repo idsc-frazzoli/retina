@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * $GPRMC,142802,A,4724.3445,N,00837.8776,E,000.0,111.4,080118,001.8,E,A*1B
  * 
  * Example of invalid
- * FIXME parse with string tokenizer or string#split if necessary
+ * FIXME JPH parse with string tokenizer or string#split if necessary
  * $GPRMC,145817,V,4724.3230,N,00837.8329,E,,,120118,001.8,E,N*04
  * 
  * in VLP-16 lcm package the $GPRMC is at byte offset 218 */
