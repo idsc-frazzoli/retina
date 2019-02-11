@@ -10,7 +10,8 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
   /** it is the responsibility of the extender to initiate the payload! */
   public MPCNativeMessage(ByteBuffer byteBuffer) {
-    if (getMessagePrefix() != byteBuffer.getInt()) {
+    int messageType = byteBuffer.getInt();
+    if (getMessageType().ordinal() != messageType) {
       // TODO MH do something!
     }
     messageSequence = byteBuffer.getInt();
@@ -33,13 +34,13 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
   @Override // from BufferInsertable
   public final void insert(ByteBuffer byteBuffer) {
     // just override this for different kinds of messages
-    byteBuffer.putInt(getMessagePrefix());
+    byteBuffer.putInt(getMessageType().ordinal());
     byteBuffer.putInt(messageSequence);
     getPayload().insert(byteBuffer);
   }
 
   /** @return unique identified of the message type */
-  abstract int getMessagePrefix();
+  abstract MessageType getMessageType();
 
   /** @return message payload/content data */
   abstract BufferInsertable getPayload();

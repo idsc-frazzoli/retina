@@ -18,12 +18,12 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
     mpcPathParameters = new MPCPathParameter(byteBuffer);
   }
 
-  @Override
-  int getMessagePrefix() {
-    return MPCNative.PATH_UPDATE;
+  @Override // from MPCNativeMessage
+  MessageType getMessageType() {
+    return MessageType.PATH_PARAMETER;
   }
 
-  @Override
+  @Override // from MPCNativeMessage
   BufferInsertable getPayload() {
     return mpcPathParameters;
   }

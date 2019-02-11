@@ -18,12 +18,12 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
     stateAndPath = new StateAndPath(byteBuffer);
   }
 
-  @Override
-  int getMessagePrefix() {
-    return MPCNative.GOKART_STATE;
+  @Override // from MPCNativeMessage
+  MessageType getMessageType() {
+    return MessageType.CONTROL_REQUEST;
   }
 
-  @Override
+  @Override // from MPCNativeMessage
   BufferInsertable getPayload() {
     return stateAndPath;
   }

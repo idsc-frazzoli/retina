@@ -18,12 +18,12 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
     controlAndPredictionSteps = new ControlAndPredictionSteps(byteBuffer);
   }
 
-  @Override
-  int getMessagePrefix() {
-    return MPCNative.CONTROL_UPDATE;
+  @Override // from MPCNativeMessage
+  MessageType getMessageType() {
+    return MessageType.CONTROL_PREDICTION;
   }
 
-  @Override
+  @Override // from MPCNativeMessage
   BufferInsertable getPayload() {
     return controlAndPredictionSteps;
   }
