@@ -144,8 +144,10 @@ public class TrackRefinement {
     this.occupancyGrid = occupancyGrid;
   }
 
-  private static final Scalar gdRadiusGrowth = Quantity.of(0.07, SI.METER);
-  private static final Scalar gdRegularizer = RealScalar.of(0.01);
+  private static final Scalar gdRadiusGrowth = Quantity.of(0.007, SI.METER);
+  private static final Scalar gdRegularizer = RealScalar.of(0.001);
+  private static final Scalar gdLimits = RealScalar.of(0.4);
+  private static final Scalar gdRadius = RealScalar.of(0.8);
   private static final TensorUnaryOperator REGULARIZATION_CYCLIC = Regularization2Step.cyclic(RnGeodesic.INSTANCE, gdRegularizer);
   private static final TensorUnaryOperator REGULARIZATION_STRING = Regularization2Step.string(RnGeodesic.INSTANCE, gdRegularizer);
 
@@ -201,8 +203,6 @@ public class TrackRefinement {
   // for debugging
   // TODO JPH/MH not used
   private static final Scalar defaultRadius = Quantity.of(1, SI.METER);
-  private static final Scalar gdLimits = RealScalar.of(0.4);
-  private static final Scalar gdRadius = RealScalar.of(0.8);
   private List<Tensor> freeLines = new ArrayList<>();
 
   /** .

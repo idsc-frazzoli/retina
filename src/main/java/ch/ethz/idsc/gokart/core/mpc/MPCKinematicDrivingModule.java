@@ -29,7 +29,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
   // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
-  private final MPCBraking mpcBraking = new MPCAggressiveCorrectedTorqueVectoringBraking();
+  private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final Thread thread = new Thread(this);
@@ -55,7 +55,8 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   }
 
   MPCKinematicDrivingModule(Timing timing) {
-    this(new SimpleKinematicMPCStateEstimationProvider(timing), timing, null);
+    //this(new SimpleKinematicMPCStateEstimationProvider(timing), timing, null);
+    this(new SimpleDynamicMPCStateEstimationProvider(timing), timing, null);
   }
 
   /** Hint: constructor only for testing

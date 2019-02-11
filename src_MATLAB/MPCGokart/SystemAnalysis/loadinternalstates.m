@@ -8,8 +8,13 @@ powersteer = csvread(strcat(folder,'powersteer.csv'));
 powerrimo = csvread(strcat(folder,'powerrimo.csv'));
 rimorate = csvread(strcat(folder,'rimorate.csv'));
 
-vmuimu = csvread(strcat(folder,'rimorate.csv'));
-imuddx = vmuimu(:,
+vmuimu = csvread(strcat(folder,'vmu931IMU.csv'));
+imuddx = gaussfilter(-vmuimu(:,4),50);
+imuddy = gaussfilter(-vmuimu(:,3),50);
+imudz = gaussfilter(-vmuimu(:,8),50);
+imut = vmuimu(:,1);
+
+plot(imut,imuddx);
 
 linmot = csvread(strcat(folder,'linmot.csv'));
 lt = linmot(:,1);
@@ -64,8 +69,10 @@ M = [cRTSM,...%t x y Ksi dotx_b doty_b dotKsi dotdotx_b dotdoty_b dotdotKsi
     interp1(wt,dotwrr,t),...%dotwrr
     interp1(lt,lp,t),...%lp
     interp1(lt,ltemp,t),...%ltemp
-    interp1(lt,dotltemp,t),...
-    interp1(lt,];%dotltemp
+    interp1(lt,dotltemp,t),...%dotltemp
+    interp1(imut,imuddx,t),...
+    interp1(imut,imuddy,t),...
+    interp1(imut,imudz,t)];
 show = 1;
 
     %if(show)
