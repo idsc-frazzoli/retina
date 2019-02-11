@@ -19,7 +19,7 @@ public class SimpleVelocityEstimationTest extends TestCase {
     Scalar deltaT = Quantity.of(0.01, SI.SECOND);
     Scalar deltaTl = Quantity.of(0.1, SI.SECOND);
     Distribution distr = NormalDistribution.of(0, 10);
-    SimpleVelocityEstimation estimation = new SimpleVelocityEstimation();
+    SimplePositionVelocityModule estimation = new SimplePositionVelocityModule();
     Tensor originPos = Tensors.of(//
         Quantity.of(0, SI.METER), Quantity.of(0, SI.METER), Quantity.of(0, SI.ONE));
     Scalar rotVelocity = Quantity.of(0, SI.PER_SECOND);
@@ -32,6 +32,6 @@ public class SimpleVelocityEstimationTest extends TestCase {
       estimation.measurePose(originPos, deltaTl);
     }
     System.out.println(estimation.velocity);
-    assertTrue(Scalars.lessThan(Norm._2.of(estimation.velocity), Quantity.of(0.1, SI.VELOCITY)));
+    assertTrue(Scalars.lessThan(Norm._2.of(estimation.velocity), Quantity.of(0.2, SI.VELOCITY)));
   }
 }

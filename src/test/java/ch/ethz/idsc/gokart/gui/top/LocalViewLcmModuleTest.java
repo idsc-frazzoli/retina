@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 public class LocalViewLcmModuleTest extends TestCase {
   public void testSimple() throws InterruptedException {
     ModuleAuto.INSTANCE.runOne(LocalViewLcmModule.class);
-    Thread.sleep(20000);
+    Thread.sleep(200);
     ModuleAuto.INSTANCE.endOne(LocalViewLcmModule.class);
   }
 

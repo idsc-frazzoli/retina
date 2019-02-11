@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.ekf.SimpleVelocityEstimation;
+import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -15,6 +15,7 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -23,6 +24,7 @@ public class LocalViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor POSE = Tensors.fromString("{0[m],0[m],0}").unmodifiable();
   private static final Tensor MINOR = Tensors.vector(0, -2.5, 0);
+  private static final Tensor MINORRIGHT = Tensors.vector(0, -3.5, 0);
   static final Tensor MODEL2PIXEL = Tensors.fromString("{{0,-100,200},{-100,0,300},{0,0,1}}").unmodifiable();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
@@ -34,15 +36,16 @@ public class LocalViewLcmModule extends AbstractModule {
   private final MPCExpectationRender mpcExpectationRender = new MPCExpectationRender(MINOR);
   private final TimerFrame timerFrame = new TimerFrame();
   private final AccelerationRender accelerationRender = new AccelerationRender(MINOR, 100);
-  private final SimpleVelocityEstimation simpleVelocityEstimation = new SimpleVelocityEstimation();
+  private final SimplePositionVelocityModule simpleVelocityEstimation = //
+      ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
   private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(simpleVelocityEstimation, MINOR);
+  private final BrakeCalibrationRender brakeCalibrationRender = new BrakeCalibrationRender(MINORRIGHT);
   private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() throws Exception {
-    gokartPoseLcmClient.addListener(simpleVelocityEstimation);
     gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
     rimoGetLcmClient.addListener(mpcExpectationRender);
@@ -50,9 +53,9 @@ public class LocalViewLcmModule extends AbstractModule {
     linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
     gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
     rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
+    // ---
     vmu931ImuLcmClient.addListener(vmu931ImuFrame -> accelerationRender.setAccelerationXY( //
         SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame)));
-    vmu931ImuLcmClient.addListener(simpleVelocityEstimation);
     // ---
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
@@ -60,6 +63,7 @@ public class LocalViewLcmModule extends AbstractModule {
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
     timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
     timerFrame.geometricComponent.addRenderInterface(mpcExpectationRender);
+    timerFrame.geometricComponent.addRenderInterface(brakeCalibrationRender);
     TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(Tensors.vector(1, -2.5, 0));
     rimoGetLcmClient.addListener(tachometerMustangDash);
     timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);

@@ -2,12 +2,15 @@
 package ch.ethz.idsc.gokart.core.ekf;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -18,22 +21,33 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 // TODO MH cleanup comments/unused code
-public class SimpleVelocityEstimation implements VelocityEstimation, Vmu931ImuFrameListener, GokartPoseListener {
+public class SimplePositionVelocityModule extends AbstractModule implements //
+    Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
   private static final Clip CLIP_TIME = Clip.function(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
   // ---
+  private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
+  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClockLidar = new IntervalClock();
-  // private final IntervalClock intervalClockIMU = new IntervalClock();
+  private Tensor lastPosition = null;
+  private Scalar angularVelocity = Quantity.of(0, SI.ANGULAR_ACCELERATION);
+  private int lastVmuTime = 0;
+  Tensor velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+  // private long lastReset = 0;
 
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent getEvent) {
     measurePose(getEvent.getPose());
   }
 
-  private Tensor lastPosition = null;
-  private Scalar angularVelocity = Quantity.of(0, SI.ANGULAR_ACCELERATION);
-  private int lastVmuTime = 0;
-  Tensor velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
-  // private long lastReset = 0;
+  @Override // from Vmu931ImuFrameListener
+  public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
+    Tensor acc = SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame);
+    Scalar gyro = SensorsConfig.GLOBAL.vmu931GyroZ(vmu931ImuFrame);
+    int currentTime = vmu931ImuFrame.timestamp_ms();
+    Scalar time = Quantity.of((currentTime - lastVmuTime) * 1e-3, SI.SECOND);
+    lastVmuTime = currentTime;
+    measureAcceleration(acc, gyro, CLIP_TIME.apply(time));
+  }
 
   /** take new lidar pose into account
    * @param pose measured lidar pose: {x[m], y[m], angle[]} */
@@ -98,13 +112,24 @@ public class SimpleVelocityEstimation implements VelocityEstimation, Vmu931ImuFr
     return velocity.copy().append(angularVelocity);
   }
 
-  @Override // from Vmu931ImuFrameListener
-  public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    Tensor acc = SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame);
-    Scalar gyro = SensorsConfig.GLOBAL.vmu931GyroZ(vmu931ImuFrame);
-    int currentTime = vmu931ImuFrame.timestamp_ms();
-    Scalar time = Quantity.of((currentTime - lastVmuTime) * 1e-3, SI.SECOND);
-    lastVmuTime = currentTime;
-    measureAcceleration(acc, gyro, CLIP_TIME.apply(time));
+  @Override
+  protected void first() throws Exception {
+    vmu931ImuLcmClient.addListener(this);
+    gokartPoseLcmClient.addListener(this);
+    // ---
+    vmu931ImuLcmClient.startSubscriptions();
+    gokartPoseLcmClient.startSubscriptions();
+  }
+
+  @Override
+  protected void last() {
+    vmu931ImuLcmClient.stopSubscriptions();
+    gokartPoseLcmClient.stopSubscriptions();
+  }
+
+  @Override
+  public Tensor getPosition() {
+    // FIXME MH
+    throw new UnsupportedOperationException();
   }
 }
