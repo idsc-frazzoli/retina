@@ -43,7 +43,7 @@ import ch.ethz.idsc.tensor.Tensors;
   }
 
   @Override
-  public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
+  public void setStateEstimationProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
   }
 

@@ -45,7 +45,8 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     DubendorfTrack track = DubendorfTrack.CHICANE;
     MPCSimpleBraking mpcSimpleBraking = new MPCSimpleBraking();
     MPCOpenLoopSteering mpcOpenLoopSteering = new MPCOpenLoopSteering();
-    MPCTorqueVectoringPower mpcTorqueVectoringPower = new MPCTorqueVectoringPower(mpcOpenLoopSteering);
+    // FIXME MH where is the MPCStateEstimationProvider being set ? is this equivalent to null !?
+    MPCTorqueVectoringPower mpcTorqueVectoringPower = new MPCTorqueVectoringPower(null, mpcOpenLoopSteering);
     lcmMPCControlClient.registerControlUpdateLister(mpcSimpleBraking);
     lcmMPCControlClient.registerControlUpdateLister(mpcOpenLoopSteering);
     lcmMPCControlClient.registerControlUpdateLister(mpcTorqueVectoringPower);

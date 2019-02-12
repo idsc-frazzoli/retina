@@ -50,7 +50,7 @@ import ch.ethz.idsc.tensor.red.Max;
   }
 
   @Override
-  public void setStateProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
+  public void setStateEstimationProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
     // ---
   }
 

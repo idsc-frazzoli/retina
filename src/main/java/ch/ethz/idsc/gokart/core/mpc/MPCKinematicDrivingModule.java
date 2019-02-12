@@ -62,15 +62,15 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   /** Hint: constructor only for testing
    * create Module with custom estimator
    * 
-   * @param estimator the custom estimator
+   * @param mpcStateEstimationProvider the custom estimator
    * @param timing that shows the same time that also was used for the custom estimator */
-  MPCKinematicDrivingModule(MPCStateEstimationProvider estimator, Timing timing, MPCPreviewableTrack track) {
-    mpcStateEstimationProvider = estimator;
+  MPCKinematicDrivingModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
+    this.mpcStateEstimationProvider = mpcStateEstimationProvider;
     this.track = track;
     // this.timing = timing;
     // link mpc steering
     // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
-    mpcPower = new MPCAggressiveTorqueVectoringPower(mpcSteering);
+    mpcPower = new MPCAggressiveTorqueVectoringPower(mpcStateEstimationProvider, mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
     mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
@@ -85,9 +85,9 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     lcmMPCPathFollowingClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
     // lcmMPCPathFollowingClient.registerControlUpdateLister(MPCActiveCompensationLearning.getInstance());
     // state estimation provider
-    mpcBraking.setStateProvider(mpcStateEstimationProvider);
-    mpcPower.setStateProvider(mpcStateEstimationProvider);
-    mpcSteering.setStateProvider(mpcStateEstimationProvider);
+    mpcBraking.setStateEstimationProvider(mpcStateEstimationProvider);
+    // mpcPower.setStateEstimationProvider(mpcStateEstimationProvider);
+    mpcSteering.setStateEstimationProvider(mpcStateEstimationProvider);
   }
 
   private void requestControl() {

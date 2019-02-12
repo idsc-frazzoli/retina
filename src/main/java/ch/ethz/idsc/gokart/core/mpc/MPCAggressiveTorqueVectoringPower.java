@@ -25,9 +25,10 @@ import ch.ethz.idsc.tensor.sca.Tan;
       new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   private final MPCSteering mpcSteering;
   // ---
-  private MPCStateEstimationProvider mpcStateProvider;
+  private final MPCStateEstimationProvider mpcStateProvider;
 
-  public MPCAggressiveTorqueVectoringPower(MPCSteering mpcSteering) {
+  public MPCAggressiveTorqueVectoringPower(MPCStateEstimationProvider mpcStateProvider, MPCSteering mpcSteering) {
+    this.mpcStateProvider = mpcStateProvider;
     this.mpcSteering = mpcSteering;
   }
 
@@ -70,16 +71,18 @@ import ch.ethz.idsc.tensor.sca.Tan;
         gyroZ));
   }
 
-  @Override
-  public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
-    this.mpcStateProvider = mpcstateProvider;
-  }
-
+  // @Override
+  // public void setStateEstimationProvider(MPCStateEstimationProvider mpcstateProvider) {
+  // // FIXME JPH obsolete
+  // // this.mpcStateProvider = mpcstateProvider;
+  // }
   @Override
   public void start() {
+    // TODO MH document why empty
   }
 
   @Override
   public void stop() {
+    // TODO MH document why empty
   }
 }

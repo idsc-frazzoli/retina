@@ -6,8 +6,8 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
 /* package */ class StateAndPath implements BufferInsertable {
-  final GokartState gokartState;
-  final MPCPathParameter mpcPathParameter;
+  private final GokartState gokartState;
+  private final MPCPathParameter mpcPathParameter;
 
   public StateAndPath(GokartState gokartState, MPCPathParameter mpcPathParameter) {
     this.gokartState = gokartState;
