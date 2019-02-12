@@ -8,8 +8,9 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 
 /* package */ abstract class MPCControlUpdateListener implements StartAndStoppable {
-  protected ControlAndPredictionSteps cns = null;
-  int istep = 0;
+  /* package */ ControlAndPredictionSteps cns = null;
+  // FIXME MH document that keeping istep outside the function is intended
+  private int istep = 0;
 
   /** get the last step before a point int time
    * 
@@ -20,6 +21,8 @@ import ch.ethz.idsc.tensor.Scalars;
     if (Objects.isNull(cns) || //
         Scalars.lessThan(MPCNative.OPEN_LOOP_TIME, time.subtract(cns.steps[0].state.getTime())))
       return null;
+    // FIXME MH without any assumptions on cns.steps[] this is not safe!
+    // ... since istep may be greater than array !
     while (istep > 0 //
         && Scalars.lessThan( //
             time, //

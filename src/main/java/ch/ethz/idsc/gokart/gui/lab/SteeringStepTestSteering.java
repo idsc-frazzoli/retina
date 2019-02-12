@@ -35,7 +35,7 @@ public class SteeringStepTestSteering implements SteerPutProvider {
       Scalar torqueCmd = steerPositionController.iterate(difference);
       return Optional.of(SteerPutEvent.createOn(torqueCmd));
     }
-    return null;
+    return Optional.empty();
   }
 
   public void startStep(Scalar scalar) {

@@ -9,8 +9,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /* package */ class MPCOpenLoopSteering extends MPCSteering {
-  MPCStateEstimationProvider mpcStateProvider;
-  MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
+  // TODO MH not used
+  private MPCStateEstimationProvider mpcStateProvider;
+  private MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
 
   @Override
   public Optional<Tensor> getSteering(Scalar time) {
@@ -20,17 +21,11 @@ import ch.ethz.idsc.tensor.Tensors;
       return Optional.empty();
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
-    return Optional.of(Tensors.of(cnpStep.state.getS().add(rampUp), cnpStep.control.getudotS()));
+    return Optional.of(Tensors.of( //
+        cnpStep.state.getS().add(rampUp), //
+        cnpStep.control.getudotS()));
   }
 
-  // @Override
-  // public Scalar getDotSteering(Scalar time) {
-  // Scalar controlTime = time.add(config.steerAntiLag);
-  // ControlAndPredictionStep cnpStep = getStep(controlTime);
-  // if (Objects.isNull(cnpStep))
-  // return null;
-  // return
-  // }
   @Override
   public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
     cns = controlAndPredictionSteps;
@@ -43,9 +38,11 @@ import ch.ethz.idsc.tensor.Tensors;
 
   @Override
   public void start() {
+    // TODO MH comment if empty is the right implementation
   }
 
   @Override
   public void stop() {
+    // TODO MH comment if empty is the right implementation
   }
 }
