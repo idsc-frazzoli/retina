@@ -14,8 +14,8 @@ import ch.ethz.idsc.tensor.red.Max;
   private static final Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
   private final MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
 
-  @Override
-  public Scalar getBraking(Scalar time) {
+  @Override // from MPCBraking
+  Scalar getBraking(Scalar time) {
     Scalar controlTime = time.add(config.brakingAntiLag);
     ControlAndPredictionStep cnsStep = getStep(controlTime);
     if (Objects.isNull(cnsStep))
@@ -23,21 +23,23 @@ import ch.ethz.idsc.tensor.red.Max;
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar min = (Scalar) Mean.of(minmax);
     // Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
-    Scalar braking = Max.of(NOACCELERATION, cnsStep.control.getaB().negate());
+    Scalar braking = Max.of(NOACCELERATION, cnsStep.gokartControl.getaB().negate());
     // System.out.println(braking);
     return StaticBrakeFunction.INSTANCE.getRelativeBrakeActuation(braking);
   }
 
   @Override
-  public void setStateProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
-    // ---
+  public void setStateEstimationProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
+    // TODO MH is this function needed at all ?
   }
 
   @Override
   public void start() {
+    // TODO MH document that empty implementation is desired
   }
 
   @Override
   public void stop() {
+    // TODO MH document that empty implementation is desired
   }
 }

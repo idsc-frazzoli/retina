@@ -15,8 +15,10 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 
-/* package */ public class GokartControl implements BufferInsertable, OfflineVectorInterface {
+/* package */ class GokartControl implements BufferInsertable, OfflineVectorInterface {
+  public static final int LENGTH = 20;
   private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
+  // ---
   private final float uL;
   private final float uR;
   private final float udotS;
@@ -82,7 +84,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
 
   @Override
   public int length() {
-    return 5 * 4;
+    return LENGTH;
   }
 
   @Override

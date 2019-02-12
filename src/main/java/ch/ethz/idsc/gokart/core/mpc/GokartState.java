@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ public class GokartState implements OfflineVectorInterface, BufferInsertable {
+  public static final int LENGTH = 11 * Float.BYTES; // 11 * 4
   // TODO full documentation
   // not used yet:
   // private static final Unit SCE = SteerPutEvent.UNIT_ENCODER;
@@ -347,7 +348,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   public int length() {
-    return 11 * Float.BYTES; // 11 * 4
+    return LENGTH;
   }
 
   @Override

@@ -30,8 +30,8 @@ import ch.ethz.idsc.tensor.red.Max;
   private final SimplePositionVelocityModule simpleVelocityEstimation = //
       ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
 
-  @Override
-  public Scalar getBraking(Scalar time) {
+  @Override // from MPCBraking
+  Scalar getBraking(Scalar time) {
     Scalar controlTime = time.add(mpcOptimizationConfig.brakingAntiLag);
     ControlAndPredictionStep cnsStep = getStep(controlTime);
     if (Objects.isNull(cnsStep))
@@ -39,7 +39,7 @@ import ch.ethz.idsc.tensor.red.Max;
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar min = (Scalar) Mean.of(minmax);
     // Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
-    Scalar braking = Max.of(NO_ACCELERATION, cnsStep.control.getaB().negate());
+    Scalar braking = Max.of(NO_ACCELERATION, cnsStep.gokartControl.getaB().negate());
     // System.out.println(braking);
     // self calibration
     Scalar gokartSpeed = simpleVelocityEstimation.getVelocity().Get(0);
@@ -50,8 +50,8 @@ import ch.ethz.idsc.tensor.red.Max;
   }
 
   @Override
-  public void setStateProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
-    // ---
+  public void setStateEstimationProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
+    // TODO MH is there every going to be actions here, or in any MPCBraking instances?
   }
 
   @Override
@@ -65,7 +65,6 @@ import ch.ethz.idsc.tensor.red.Max;
   public void stop() {
     vmu931imuLcmClient.stopSubscriptions();
     RimoSocket.INSTANCE.removeGetListener(this);
-    ;
   }
 
   private Scalar currentAcceleration = Quantity.of(0, SI.ACCELERATION);

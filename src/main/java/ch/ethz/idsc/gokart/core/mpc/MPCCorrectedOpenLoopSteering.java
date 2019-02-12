@@ -15,19 +15,20 @@ import ch.ethz.idsc.tensor.Tensors;
   private MPCStateEstimationProvider mpcStateProvider;
 
   @Override
-  public Optional<Tensor> getSteering(Scalar time) {
+  Optional<Tensor> getSteering(Scalar time) {
     Scalar controlTime = time.add(config.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
     if (Objects.isNull(cnpStep))
       return Optional.empty();
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
-    Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
+    Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl.getudotS());
     return Optional.of(Tensors.of( //
-        cnpStep.state.getS().add(rampUp), //
-        cnpStep.control.getudotS()));
+        cnpStep.gokartState.getS().add(rampUp), //
+        cnpStep.gokartControl.getudotS()));
     // .multiply(mpcActiveCompensationLearning.steeringCorrection);
   }
 
+  // TODO MH remove commented out code below:
   // @Override
   // public Scalar getDotSteering(Scalar time) {
   // Scalar controlTime = time.add(config.steerAntiLag);
@@ -43,15 +44,17 @@ import ch.ethz.idsc.tensor.Tensors;
   }
 
   @Override
-  public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
+  public void setStateEstimationProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
   }
 
   @Override
   public void start() {
+    // TODO MH document that empty implementation is desired
   }
 
   @Override
   public void stop() {
+    // TODO MH document that empty implementation is desired
   }
 }

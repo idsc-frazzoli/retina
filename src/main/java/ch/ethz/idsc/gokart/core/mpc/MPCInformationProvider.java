@@ -37,8 +37,8 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
         // TODO make member function in GokartState
         positions.append(//
             Tensors.of( //
-                localCNS.steps[i].state.getX(), //
-                localCNS.steps[i].state.getY()));
+                localCNS.steps[i].gokartState.getX(), //
+                localCNS.steps[i].gokartState.getY()));
       return positions;
     }
     return Tensors.empty();
@@ -50,7 +50,7 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
       ControlAndPredictionSteps localCNS = cns;
       Tensor accelerations = Tensors.empty();
       for (int i = 0; i < localCNS.steps.length; i++)
-        accelerations.append(localCNS.steps[i].control.getaB());
+        accelerations.append(localCNS.steps[i].gokartControl.getaB());
       return accelerations;
     }
     return Tensors.empty();
@@ -62,13 +62,13 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
 
   public Scalar getFirstWantedAcceleration() {
     if (Objects.nonNull(cns))
-      return cns.steps[0].control.getaB();
+      return cns.steps[0].gokartControl.getaB();
     return NO_ACCELERATION;
   }
 
   public Scalar getFirstWantedSteering() {
     if (Objects.nonNull(cns))
-      return cns.steps[0].state.getS();
+      return cns.steps[0].gokartState.getS();
     return NO_STEERING;
   }
 
@@ -79,13 +79,13 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
       Tensor orientations = Tensors.empty();
       for (int i = 0; i < localCNS.steps.length; i++) {
         // TODO make member function in GokartState
-        Scalar X = RealScalar.of(localCNS.steps[i].state.getX().number().doubleValue());
-        Scalar Y = RealScalar.of(localCNS.steps[i].state.getY().number().doubleValue());
+        Scalar X = RealScalar.of(localCNS.steps[i].gokartState.getX().number().doubleValue());
+        Scalar Y = RealScalar.of(localCNS.steps[i].gokartState.getY().number().doubleValue());
         orientations.append(//
             Tensors.of(//
                 X, //
                 Y, //
-                localCNS.steps[i].state.getPsi()//
+                localCNS.steps[i].gokartState.getPsi()//
             ));
       }
       return orientations;
@@ -95,9 +95,11 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
 
   @Override
   public void start() {
+    // TODO MH document that empty implementation is desired
   }
 
   @Override
   public void stop() {
+    // TODO MH document that empty implementation is desired
   }
 }
