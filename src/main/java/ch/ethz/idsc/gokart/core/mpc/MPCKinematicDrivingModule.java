@@ -55,6 +55,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   }
 
   MPCKinematicDrivingModule(Timing timing) {
+    // FIXME MH "kinematic" should not call "Dynamic..."
     // this(new SimpleKinematicMPCStateEstimationProvider(timing), timing, null);
     this(new SimpleDynamicMPCStateEstimationProvider(timing), timing, null);
   }
@@ -167,10 +168,12 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
 
       @Override
       public void start() {
+        // TODO MH document that empty implementation is desired
       }
 
       @Override
       public void stop() {
+        // TODO MH document that empty implementation is desired
       }
     });
     thread.start();

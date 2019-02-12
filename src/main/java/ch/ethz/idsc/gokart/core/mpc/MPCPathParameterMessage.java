@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
 /* package */ class MPCPathParameterMessage extends MPCNativeMessage {
-  public final MPCPathParameter mpcPathParameter;
+  private final MPCPathParameter mpcPathParameter;
 
   public MPCPathParameterMessage(MPCPathParameter mpcPathParameter, MPCNativeSession mpcNativeSession) {
     super(mpcNativeSession);

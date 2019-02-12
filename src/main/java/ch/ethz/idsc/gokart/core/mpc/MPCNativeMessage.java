@@ -13,6 +13,7 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
     int messageType = byteBuffer.getInt();
     if (getMessageType().ordinal() != messageType) {
       // TODO MH do something!
+      System.err.println("unexpected " + messageType + " != " + getMessageType().ordinal());
     }
     messageSequence = byteBuffer.getInt();
   }

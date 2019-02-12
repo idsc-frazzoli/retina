@@ -10,7 +10,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /* package */ abstract class MPCStateEstimationProvider {
   private final Timing timing;
   // default value
-  protected Scalar pathProgress = RealScalar.ZERO;
+  // TODO MH pathProgress not used
+  private Scalar pathProgress = RealScalar.ZERO;
 
   protected MPCStateEstimationProvider(Timing timing) {
     this.timing = timing;

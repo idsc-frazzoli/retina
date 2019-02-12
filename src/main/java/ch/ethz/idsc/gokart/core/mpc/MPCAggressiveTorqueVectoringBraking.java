@@ -14,8 +14,8 @@ import ch.ethz.idsc.tensor.red.Max;
   private static final Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
   private final MPCOptimizationConfig config = MPCOptimizationConfig.GLOBAL;
 
-  @Override
-  public Scalar getBraking(Scalar time) {
+  @Override // from MPCBraking
+  Scalar getBraking(Scalar time) {
     Scalar controlTime = time.add(config.brakingAntiLag);
     ControlAndPredictionStep cnsStep = getStep(controlTime);
     if (Objects.isNull(cnsStep))
@@ -30,14 +30,16 @@ import ch.ethz.idsc.tensor.red.Max;
 
   @Override
   public void setStateEstimationProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
-    // ---
+    // TODO MH is this function needed at all ?
   }
 
   @Override
   public void start() {
+    // TODO MH document that empty implementation is desired
   }
 
   @Override
   public void stop() {
+    // TODO MH document that empty implementation is desired
   }
 }

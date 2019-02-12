@@ -30,8 +30,8 @@ import ch.ethz.idsc.tensor.red.Max;
   private final SimplePositionVelocityModule simpleVelocityEstimation = //
       ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
 
-  @Override
-  public Scalar getBraking(Scalar time) {
+  @Override // from MPCBraking
+  Scalar getBraking(Scalar time) {
     Scalar controlTime = time.add(mpcOptimizationConfig.brakingAntiLag);
     ControlAndPredictionStep cnsStep = getStep(controlTime);
     if (Objects.isNull(cnsStep))
@@ -51,7 +51,7 @@ import ch.ethz.idsc.tensor.red.Max;
 
   @Override
   public void setStateEstimationProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
-    // ---
+    // TODO MH is there every going to be actions here, or in any MPCBraking instances?
   }
 
   @Override
@@ -65,7 +65,6 @@ import ch.ethz.idsc.tensor.red.Max;
   public void stop() {
     vmu931imuLcmClient.stopSubscriptions();
     RimoSocket.INSTANCE.removeGetListener(this);
-    ;
   }
 
   private Scalar currentAcceleration = Quantity.of(0, SI.ACCELERATION);

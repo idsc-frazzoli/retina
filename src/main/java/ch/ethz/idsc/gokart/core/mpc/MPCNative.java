@@ -10,10 +10,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ enum MPCNative {
   ;
-  public static final int TCP_PORT = 4142;
-  public static final int TCP_SERVER_PORT = 4143;
-  public static final int MPC_HORIZON = 10;
-  public static final int INITIALMSGSIZE = 100;
+  // public static final int TCP_PORT = 4142;
+  // public static final int TCP_SERVER_PORT = 4143;
+  // public static final int MPC_HORIZON = 10;
+  // public static final int INITIAL_MSG_SIZE = 100;
   public static final int PREDICTION_SIZE = 31;
   public static final int SPLINE_PREVIEW_SIZE = 10;
   /** time that the controller is allowed to operate in open loop control */

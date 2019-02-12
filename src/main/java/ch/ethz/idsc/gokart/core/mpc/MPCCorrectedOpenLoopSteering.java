@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.Tensors;
   private MPCStateEstimationProvider mpcStateProvider;
 
   @Override
-  public Optional<Tensor> getSteering(Scalar time) {
+  Optional<Tensor> getSteering(Scalar time) {
     Scalar controlTime = time.add(config.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
     if (Objects.isNull(cnpStep))
@@ -28,6 +28,7 @@ import ch.ethz.idsc.tensor.Tensors;
     // .multiply(mpcActiveCompensationLearning.steeringCorrection);
   }
 
+  // TODO MH remove commented out code below:
   // @Override
   // public Scalar getDotSteering(Scalar time) {
   // Scalar controlTime = time.add(config.steerAntiLag);
@@ -49,9 +50,11 @@ import ch.ethz.idsc.tensor.Tensors;
 
   @Override
   public void start() {
+    // TODO MH document that empty implementation is desired
   }
 
   @Override
   public void stop() {
+    // TODO MH document that empty implementation is desired
   }
 }
