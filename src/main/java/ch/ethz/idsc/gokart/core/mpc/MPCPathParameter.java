@@ -71,6 +71,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   public int length() {
-    return getN() * 4 * 3 + 4 + 4;
+    // the buffer is structured as
+    // int
+    // float
+    // float[N][3]
+    return 4 + 4 + getN() * 3 * 4;
   }
 }

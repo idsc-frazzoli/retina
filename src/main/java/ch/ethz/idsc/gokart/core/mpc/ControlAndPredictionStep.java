@@ -6,32 +6,34 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
 /* package */ class ControlAndPredictionStep implements BufferInsertable {
-  public final GokartState state;
-  public final GokartControl control;
+  public static final int LENGTH = GokartControl.LENGTH + GokartState.LENGTH;
+  // ---
+  final GokartControl gokartControl;
+  final GokartState gokartState;
 
-  public ControlAndPredictionStep(GokartControl control, GokartState state) {
-    this.control = control;
-    this.state = state;
+  public ControlAndPredictionStep(GokartControl gokartControl, GokartState gokartState) {
+    this.gokartControl = gokartControl;
+    this.gokartState = gokartState;
   }
 
   public ControlAndPredictionStep(ByteBuffer byteBuffer) {
-    control = new GokartControl(byteBuffer);
-    state = new GokartState(byteBuffer);
+    gokartControl = new GokartControl(byteBuffer);
+    gokartState = new GokartState(byteBuffer);
   }
 
   @Override
   public void insert(ByteBuffer byteBuffer) {
-    control.insert(byteBuffer);
-    state.insert(byteBuffer);
+    gokartControl.insert(byteBuffer);
+    gokartState.insert(byteBuffer);
   }
 
   @Override
   public int length() {
-    return control.length() + state.length();
+    return LENGTH;
   }
 
   @Override
   public String toString() {
-    return "cns:\n" + control.toString() + state.toString();
+    return "cns:\n" + gokartControl.toString() + gokartState.toString();
   }
 }

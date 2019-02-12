@@ -6,11 +6,11 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
 /* package */ class ControlRequestMessage extends MPCNativeMessage {
-  public final StateAndPath stateAndPath;
+  final StateAndPath stateAndPath;
 
   public ControlRequestMessage(GokartState gokartState, MPCPathParameter mpcPathParameter, MPCNativeSession mpcNativeSession) {
     super(mpcNativeSession);
-    this.stateAndPath = new StateAndPath(mpcPathParameter, gokartState);
+    this.stateAndPath = new StateAndPath(gokartState, mpcPathParameter);
   }
 
   public ControlRequestMessage(ByteBuffer byteBuffer) {

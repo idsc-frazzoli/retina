@@ -6,16 +6,16 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
 /* package */ class MPCPathParameterMessage extends MPCNativeMessage {
-  public final MPCPathParameter mpcPathParameters;
+  public final MPCPathParameter mpcPathParameter;
 
-  public MPCPathParameterMessage(MPCPathParameter mpcPathParameters, MPCNativeSession mpcNativeSession) {
+  public MPCPathParameterMessage(MPCPathParameter mpcPathParameter, MPCNativeSession mpcNativeSession) {
     super(mpcNativeSession);
-    this.mpcPathParameters = mpcPathParameters;
+    this.mpcPathParameter = mpcPathParameter;
   }
 
   public MPCPathParameterMessage(ByteBuffer byteBuffer) {
     super(byteBuffer);
-    mpcPathParameters = new MPCPathParameter(byteBuffer);
+    mpcPathParameter = new MPCPathParameter(byteBuffer);
   }
 
   @Override // from MPCNativeMessage
@@ -25,6 +25,6 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
   @Override // from MPCNativeMessage
   BufferInsertable getPayload() {
-    return mpcPathParameters;
+    return mpcPathParameter;
   }
 }

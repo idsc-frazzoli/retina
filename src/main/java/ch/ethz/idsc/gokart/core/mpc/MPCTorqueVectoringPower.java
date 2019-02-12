@@ -37,9 +37,9 @@ import ch.ethz.idsc.tensor.sca.Tan;
       // return torqueless power
       return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(//
           Quantity.of(0, SI.SECOND.negate()), //
-          cnsStep.state.getUx(), //
+          cnsStep.gokartState.getUx(), //
           Quantity.of(0, SI.SECOND.negate()), //
-          cnsStep.control.getaB(), //
+          cnsStep.gokartControl.getaB(), //
           Quantity.of(0, SI.SECOND.negate())));
     }
     Optional<Tensor> optional = mpcSteering.getSteering(time);
@@ -52,7 +52,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
     // compute (negative) angular slip
     Scalar gyroZ = mpcStateProvider.getState().getdotPsi(); // unit s^-1
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
-    Scalar wantedAcceleration = cnsStep.control.getaB();// when used in
+    Scalar wantedAcceleration = cnsStep.gokartControl.getaB();// when used in
     return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //
         tangentialSpeed, //

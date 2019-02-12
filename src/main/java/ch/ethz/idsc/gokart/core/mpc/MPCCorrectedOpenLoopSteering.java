@@ -21,10 +21,10 @@ import ch.ethz.idsc.tensor.Tensors;
     if (Objects.isNull(cnpStep))
       return Optional.empty();
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
-    Scalar rampUp = timeSinceLastStep.multiply(cnpStep.control.getudotS());
+    Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl.getudotS());
     return Optional.of(Tensors.of( //
-        cnpStep.state.getS().add(rampUp), //
-        cnpStep.control.getudotS()));
+        cnpStep.gokartState.getS().add(rampUp), //
+        cnpStep.gokartControl.getudotS()));
     // .multiply(mpcActiveCompensationLearning.steeringCorrection);
   }
 
