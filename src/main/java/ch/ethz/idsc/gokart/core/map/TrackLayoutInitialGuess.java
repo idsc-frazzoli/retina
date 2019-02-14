@@ -190,8 +190,14 @@ public class TrackLayoutInitialGuess implements RenderInterface {
      * }
      * } */
     // gokart immediate target
-    if (Objects.nonNull(currPos))
-      dijkstraGokartBack = cellGrid[currPos.Get(0).number().intValue()][currPos.Get(1).number().intValue()];
+    if (Objects.nonNull(currPos)) {
+      int indx = currPos.Get(0).number().intValue();
+      int indy = currPos.Get(1).number().intValue();
+      if (0 <= indx && indx < cellGrid.length && 0 <= indy && indy < cellGrid[0].length)
+        dijkstraGokartBack = cellGrid[indx][indy];
+      else
+        return false;
+    }
     // add start to Q
     if (!searchFromGokart)
       dijkstraStart = cellGrid[sfx][sfy];
@@ -243,7 +249,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     int leftx = (int) currentx;
     int lefty = (int) currenty;
     // delete all cells on line
-    int steps = (int) (Math.sqrt(1.0 * (rightx - leftx) * (rightx - leftx) + 1.0 * (righty - lefty) * (righty - lefty)) + 1.0);
+    // int steps = (int) (Math.sqrt(1.0 * (rightx - leftx) * (rightx - leftx) + 1.0 * (righty - lefty) * (righty - lefty)) + 1.0);
+    int steps = (int) (Math.hypot(rightx - leftx, righty - lefty) + 1);
     for (int i = 0; i < steps; ++i) {
       int posx = (int) Math.round(leftx + (rightx - leftx) * (1.0 * i / (steps - 1.0)));
       int posy = (int) Math.round(lefty + (righty - lefty) * (1.0 * i / (steps - 1.0)));
