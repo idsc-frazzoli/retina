@@ -27,6 +27,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** only needed when no IMU/velocity estimation is available */
 /* package */ class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimationProvider {
   private Scalar Ux = Quantity.of(0, SI.VELOCITY);
   // assumed to be zero here (Kinematic controller cannot do anything with this information

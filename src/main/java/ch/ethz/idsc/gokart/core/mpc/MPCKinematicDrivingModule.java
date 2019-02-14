@@ -55,8 +55,7 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
   }
 
   MPCKinematicDrivingModule(Timing timing) {
-    // FIXME MH "kinematic" should not call "Dynamic..."
-    // this(new SimpleKinematicMPCStateEstimationProvider(timing), timing, null);
+    // using dynamic is not a mistake here:
     this(new SimpleDynamicMPCStateEstimationProvider(timing), timing, null);
   }
 

@@ -52,7 +52,7 @@ public class SelfCalibratingBrakeFunction extends AbstractBrakeFunction {
       // curveCorrectionFactor = (Scalar) geodesicIIR1Filter.apply(newCurveCorrectionFactor);
       Scalar alpha = BrakeFunctionConfig.GLOBAL.geodesicFilterAlpha;
       curveCorrectionFactor = RnGeodesic.INSTANCE.split(curveCorrectionFactor, newCurveCorrectionFactor, alpha).Get();
-      System.out.println(curveCorrectionFactor);
+      // System.out.println(curveCorrectionFactor);
     }
   }
 }

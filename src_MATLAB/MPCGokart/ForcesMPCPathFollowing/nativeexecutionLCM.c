@@ -66,8 +66,8 @@ static void getLastControls(
 	double dTime = time-lastSolutionTime;
 	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
 	*dStepTime = dTime - lastStep*ISS;
-	printf("timeval: %f\n",time);
-	printf("last step: %d/dtime %f\n",lastStep,*dStepTime);
+	//printf("timeval: %f\n",time);
+	//printf("last step: %d/dtime %f\n",lastStep,*dStepTime);
 	*ab = lastSolution[i*S+8];
 	*dotab = lastSolution[i*S];
 	*beta = lastSolution[i*S+9];
@@ -78,26 +78,26 @@ static void para_handler(const lcm_recv_buf_t *rbuf,
         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
 	printf("received path message\n");
 	memcpy((int8_t*)&lastParaMsg, msg->data, msg->data_length);
-	printf("max speed: %f\n",lastParaMsg.para.speedLimit);
-	printf("max X-acc: %f\n",lastParaMsg.para.maxxacc);
-	printf("max Y-acc: %f\n",lastParaMsg.para.maxyacc);
-	printf("max front lat acc: %f\n",lastParaMsg.para.latacclim);
-	printf("max rot acc: %f\n",lastParaMsg.para.rotacceffect);
-	printf("torque vec effect: %f\n",lastParaMsg.para.torqueveceffect);
-	printf("brake effect: %f\n",lastParaMsg.para.brakeeffect);
+	//printf("max speed: %f\n",lastParaMsg.para.speedLimit);
+	//printf("max X-acc: %f\n",lastParaMsg.para.maxxacc);
+	//printf("max Y-acc: %f\n",lastParaMsg.para.maxyacc);
+	//printf("max front lat acc: %f\n",lastParaMsg.para.latacclim);
+	//printf("max rot acc: %f\n",lastParaMsg.para.rotacceffect);
+	//printf("torque vec effect: %f\n",lastParaMsg.para.torqueveceffect);
+	//printf("brake effect: %f\n",lastParaMsg.para.brakeeffect);
 }
 
 static void state_handler(const lcm_recv_buf_t *rbuf,
         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
-	printf("received control message\n");
+	//printf("received control message\n");
 	memcpy((int8_t*)&lastCRMsg, msg->data, msg->data_length);
-  for (int i = 0; i<POINTSN; i++)
+  /*for (int i = 0; i<POINTSN; i++)
 	{
     		struct PathEntry pe = lastCRMsg.path.controlPoints[i];
 		printf("i=%d: pointX:%f\n",i,pe.pex);
 		printf("i=%d: pointY:%f\n",i,pe.pey);
 		printf("i=%d: pointR:%f\n",i,pe.per);
-	}
+	}*/
 
 	struct MPCPathFollowing_params params;
 
@@ -136,9 +136,9 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[6] = lastCRMsg.path.startingProgress;
 	//params.xinit[7] = lastCRMsg.state.bTemp;
 
-	for(int i = 0; i<7;i++){
+	/*for(int i = 0; i<7;i++){
 		printf("%i: %f\n",i,params.xinit[i]);
-	}
+	}*/
 
 	//gather parameter data
 	int pl = 3*POINTSN+7;
@@ -168,7 +168,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	//fix for 2PI wrap around problem: change initial guess according
 	//change amount:
 	MPCPathFollowing_float deltaPsi = lastCRMsg.state.Psi-lastInitialPsi;
-	printf("deltaPsi %f", deltaPsi);
+	//printf("deltaPsi %f", deltaPsi);
 	for(int i = 0; i<N;i++){
 		params.x0[i*S+6]+=deltaPsi;
 	}
@@ -181,7 +181,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	//optimal or maxit (maxit is ok in most cases)
 	if(exitflag == 1 || exitflag == 0){
 		memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*S*N);
-		printf("lastSolution: %f\n", lastSolution[341]);
+		//printf("lastSolution: %f\n", lastSolution[341]);
 		timeOfLastSolution = lastCRMsg.state.time;
 
 		struct ControlAndStateMsg cnsmsg;
@@ -196,7 +196,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
 			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+7];
 			cnsmsg.cns[i].state.Uy = 0;//assumed = 0
-			printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+6],myoutput.alldata[i*S+10],myoutput.alldata[i*S+2]);
+			//printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+6],myoutput.alldata[i*S+10],myoutput.alldata[i*S+2]);
 			cnsmsg.cns[i].state.dotPsi = 0; //not in use
 			cnsmsg.cns[i].state.X = myoutput.alldata[i*S+4];
 			cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+5];
@@ -207,12 +207,12 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].state.bTemp = 60;
 		}
 
-		printf("prepared blob\n");
+		//printf("prepared blob\n");
 		struct _idsc_BinaryBlob blob;
 		blob.data_length = sizeof(struct ControlAndStateMsg);
 		blob.data = (int8_t*)&cnsmsg;
-		printf("lcm addr: %p\n",lcm);
-		printf("blob addr: %p\n",&blob);
+		//printf("lcm addr: %p\n",lcm);
+		//printf("blob addr: %p\n",&blob);
 		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
 			printf("published message: %lu\n",sizeof(struct ControlAndStateMsg));
 		else

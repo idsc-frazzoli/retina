@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.Scalars;
 
 /* package */ abstract class MPCControlUpdateListener implements StartAndStoppable {
   /* package */ ControlAndPredictionSteps cns = null;
-  // FIXME MH document that keeping istep outside the function is intended
+  // TODO MH document that keeping istep outside the function is intended
   private int istep = 0;
 
   /** get the last step before a point int time
@@ -18,23 +18,24 @@ import ch.ethz.idsc.tensor.Scalars;
    * @return the control and prediction step before time */
   ControlAndPredictionStep getStep(Scalar time) {
     // ensure that old data is not used
+    // condition always holds: cns.steps.length == 30
     if (Objects.isNull(cns) || //
+        cns.steps.length == 0 || //
         Scalars.lessThan(MPCNative.OPEN_LOOP_TIME, time.subtract(cns.steps[0].gokartState.getTime())))
       return null;
-    // FIXME MH without any assumptions on cns.steps[] this is not safe!
-    // ... since istep may be greater than array !
+    istep = Math.min(istep, cns.steps.length - 1);
     while (istep > 0 //
         && Scalars.lessThan( //
             time, //
-            cns.steps[istep].gokartState.getTime())) {
+            cns.steps[istep].gokartState.getTime()))
       --istep;
-    }
+    // ---
     while (istep + 1 < cns.steps.length //
         && Scalars.lessThan( //
             cns.steps[istep + 1].gokartState.getTime(), //
-            time)) {
+            time))
       ++istep;
-    }
+    // ---
     // System.out.println("time: "+time.subtract(cns.steps[0].state.getTime())+"step: "+istep);
     return cns.steps[istep];
   }
