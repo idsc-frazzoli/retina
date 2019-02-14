@@ -25,8 +25,8 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
-  private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
-  // private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
+  //private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
+  private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
   // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
   private final MPCBraking mpcBraking = new MPCAggressiveCorrectedTorqueVectoringBraking();
