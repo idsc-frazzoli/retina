@@ -21,11 +21,11 @@ import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSplineTrackListener, Runnable {
-  private final TrackReconModule gokartTrackReconModule = //
+  private final TrackReconModule trackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
   private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
-  //private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
+  // private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
   // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
@@ -140,8 +140,10 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
 
   @Override
   protected void first() {
-    if (Objects.nonNull(gokartTrackReconModule))
-      gokartTrackReconModule.listenersAdd(this);
+    if (Objects.nonNull(trackReconModule))
+      trackReconModule.listenersAdd(this);
+    else
+      System.err.println("did not subscribe to track info !!!");
     // ---
     lcmMPCPathFollowingClient.start();
     mpcStateEstimationProvider.first();
@@ -201,8 +203,8 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     mpcStateEstimationProvider.last();
     manualControlProvider.stop();
     // ---
-    if (Objects.nonNull(gokartTrackReconModule))
-      gokartTrackReconModule.listenersRemove(this);
+    if (Objects.nonNull(trackReconModule))
+      trackReconModule.listenersRemove(this);
   }
 
   @Override // from MPCBSplineTrackListener

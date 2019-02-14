@@ -20,15 +20,16 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
    * resolution = 200 results in a spacing of ~0.25[m] */
   private static final int RESOLUTION = 200;
   // ---
-  private final TrackReconModule gokartTrackReconModule = //
-      ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
+  private final TrackReconModule trackReconModule = ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   private final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
   @Override
   protected void first() {
-    if (Objects.nonNull(gokartTrackReconModule))
-      gokartTrackReconModule.listenersAdd(this);
+    if (Objects.nonNull(trackReconModule))
+      trackReconModule.listenersAdd(this);
+    else
+      System.err.println("did not subscribe to track info !!!");
     // ---
     purePursuitModule.launch();
   }
@@ -37,8 +38,8 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
   protected void last() {
     purePursuitModule.terminate();
     // ---
-    if (Objects.nonNull(gokartTrackReconModule))
-      gokartTrackReconModule.listenersRemove(this);
+    if (Objects.nonNull(trackReconModule))
+      trackReconModule.listenersRemove(this);
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(null);
   }
