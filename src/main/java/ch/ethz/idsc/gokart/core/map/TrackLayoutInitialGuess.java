@@ -199,9 +199,12 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         return false;
     }
     // add start to Q
-    if (!searchFromGokart)
-      dijkstraStart = cellGrid[sfx][sfy];
-    else
+    if (!searchFromGokart) {
+      if (0 <= sfx && sfx < cellGrid.length && 0 <= sfy && sfy < cellGrid[0].length)
+        dijkstraStart = cellGrid[sfx][sfy];
+      else
+        return false;
+    } else
       dijkstraStart = dijkstraGokartBack;
     if (Objects.isNull(dijkstraStart))
       return false;
