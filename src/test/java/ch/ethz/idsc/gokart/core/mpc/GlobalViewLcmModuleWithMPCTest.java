@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -45,8 +46,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     DubendorfTrack track = DubendorfTrack.CHICANE;
     MPCSimpleBraking mpcSimpleBraking = new MPCSimpleBraking();
     MPCOpenLoopSteering mpcOpenLoopSteering = new MPCOpenLoopSteering();
-    // FIXME MH where is the MPCStateEstimationProvider being set ? is this equivalent to null !?
-    MPCTorqueVectoringPower mpcTorqueVectoringPower = new MPCTorqueVectoringPower(null, mpcOpenLoopSteering);
+    MPCTorqueVectoringPower mpcTorqueVectoringPower = new MPCTorqueVectoringPower(new FakeNewsEstimator(Timing.started()), mpcOpenLoopSteering);
     lcmMPCControlClient.registerControlUpdateLister(mpcSimpleBraking);
     lcmMPCControlClient.registerControlUpdateLister(mpcOpenLoopSteering);
     lcmMPCControlClient.registerControlUpdateLister(mpcTorqueVectoringPower);
