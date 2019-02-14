@@ -52,8 +52,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
-  // TODO JPH/MH flag start has to be set to true before active mode
-  private boolean flagStart = true;
   private boolean isActive = true;
   private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
@@ -81,13 +79,13 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
         listenersAdd(globalViewLcmModule.trackReconRender);
     }
     {
-      JButton jButton = new JButton("reset & flag start");
-      jButton.addActionListener(actionEvent -> resetFlagStart());
+      JButton jButton = new JButton("set start");
+      jButton.addActionListener(actionEvent -> setStart());
       timerFrame.jToolBar.add(jButton);
     }
     {
-      JButton jButton = new JButton("reset track");
-      jButton.addActionListener(actionEvent -> resetTrack());
+      JButton jButton = new JButton("compute track");
+      jButton.addActionListener(actionEvent -> computeTrack());
       timerFrame.jToolBar.add(jButton);
     }
     {
@@ -131,24 +129,15 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       return;
     }
     // ---
-    if (flagStart && !trackReconManagement.isStartSet()) {
-      trackReconManagement.setStart(gokartPoseEvent);
-      if (trackReconManagement.isStartSet()) {
-        System.out.println("start set!");
-        flagStart = false;
-      } else {
-        System.err.println("start NOT set");
-      }
-    }
     double seconds = intervalClock.seconds(); // reset
     if (isActive) {
-      trackMapping.prepareMap();
-      lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
+      if (trackReconManagement.isStartSet()) {
+        trackMapping.prepareMap();
+        lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
+      } else
+        System.out.println("no start set");
     }
     // ---
-    // Optional<MPCBSplineTrack> sendTrack = trackReconMode.isSendLast() //
-    // ? lastTrack
-    // : Optional.empty();
     listeners.forEach(listener -> listener.mpcBSplineTrack(lastTrack));
   }
 
@@ -163,14 +152,17 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   }
 
   /** reset track and flag start at current pose */
-  public void resetFlagStart() {
-    trackReconManagement.resetTrack();
-    flagStart = true;
+  public void setStart() {
+    if (Objects.isNull(gokartPoseEvent)) {
+      System.out.println("no pose");
+      return;
+    }
+    trackReconManagement.setStart(gokartPoseEvent);
   }
 
   /** reset track */
-  public void resetTrack() {
-    trackReconManagement.resetTrack();
+  public void computeTrack() {
+    trackReconManagement.computeTrack();
   }
 
   // public void setMode(TrackReconMode trackReconMode) {
