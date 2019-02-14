@@ -39,7 +39,8 @@ import ch.ethz.idsc.tensor.red.Max;
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar min = (Scalar) Mean.of(minmax);
     // Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
-    Scalar braking = Max.of(NO_ACCELERATION, cnsStep.gokartControl.getaB().negate());
+    Scalar braking = Max.of(NO_ACCELERATION, cnsStep.gokartControl.getaB().negate())//
+        .multiply(MPCOptimizationConfig.GLOBAL.brakeMultiplicator);
     // System.out.println(braking);
     // self calibration
     Scalar gokartSpeed = simpleVelocityEstimation.getVelocity().Get(0);
