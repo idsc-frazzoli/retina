@@ -10,10 +10,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.jfree.chart.ChartUtils;
-import org.jfree.chart.JFreeChart;
 
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartStatusChannel;
+import ch.ethz.idsc.gokart.offline.channel.LabjackAdcChannel;
 import ch.ethz.idsc.gokart.offline.channel.LinmotGetVehicleChannel;
 import ch.ethz.idsc.gokart.offline.channel.LinmotPutVehicleChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoGetChannel;
@@ -38,7 +38,7 @@ import ch.ethz.idsc.tensor.img.ColorDataLists;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 
-public class LogReport {
+/* package */ class LogReport {
   private static final int WIDTH = 854;
   private static final int HEIGHT = 480;
 
@@ -82,6 +82,8 @@ public class LogReport {
       htmlUtf8.appendln("<img src='plot/pose_smooth.png' /><br/><br/>");
       htmlUtf8.appendln("<img src='plot/speeds.png' /><br/><br/>");
       htmlUtf8.appendln("<img src='plot/vmu931accSmooth.png' /><br/><br/>");
+      htmlUtf8.appendln("<h2>Misc</h2>");
+      htmlUtf8.appendln("<img src='plot/labjackAdc.png' /><br/><br/>");
     }
     exportStatus();
     exportSteerGet();
@@ -94,6 +96,11 @@ public class LogReport {
     exportPose();
     exportPoseSmooth();
     exportPoseDerivative();
+    exportLabjackAdc();
+  }
+
+  private void exportListPlot(String filename, VisualSet visualSet) throws IOException {
+    ChartUtils.saveChartAsPNG(new File(plot, filename), ListPlot.of(visualSet), WIDTH, HEIGHT);
   }
 
   public void exportStatus() throws IOException {
@@ -103,16 +110,15 @@ public class LogReport {
     visualSet.setAxesLabelY("power steering position [n.a.]");
     {
       Tensor tensor = map.get(SteerGetChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 8)).setLabel("raw");
+      Tensor domain = tensor.get(Tensor.ALL, 1);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 9)).setLabel("raw");
     }
     {
       Tensor tensor = map.get(GokartStatusChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("calibrated (0 = straight)");
+      Tensor domain = tensor.get(Tensor.ALL, 1);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("calibrated (0 = straight)");
     }
-    JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "status.png"), jFreeChart, WIDTH, HEIGHT);
+    exportListPlot("status.png", visualSet);
   }
 
   public void exportSteerGet() throws IOException {
@@ -122,16 +128,15 @@ public class LogReport {
     visualSet.setAxesLabelY("torque [n.a.]");
     {
       Tensor tensor = map.get(SteerPutChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("commanded");
+      Tensor domain = tensor.get(Tensor.ALL, 1);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("commanded");
     }
     {
       Tensor tensor = map.get(SteerGetChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 5)).setLabel("effective");
+      Tensor domain = tensor.get(Tensor.ALL, 1);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 6)).setLabel("effective");
     }
-    JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "steerget.png"), jFreeChart, WIDTH, HEIGHT);
+    exportListPlot("steerget.png", visualSet);
   }
 
   public void exportRimoPut() throws IOException {
@@ -140,11 +145,10 @@ public class LogReport {
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("torque command [ARMS]");
     Tensor tensor = map.get(RimoPutChannel.INSTANCE);
-    Tensor domain = tensor.get(Tensor.ALL, 0);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("left");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("right");
-    JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "rimoput.png"), jFreeChart, WIDTH, HEIGHT);
+    Tensor domain = tensor.get(Tensor.ALL, 1);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("left");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("right");
+    exportListPlot("rimoput.png", visualSet);
   }
 
   public void exportRimoGet() throws IOException {
@@ -153,11 +157,10 @@ public class LogReport {
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("wheel rotational rate [rad*s^-1]");
     Tensor tensor = map.get(RimoGetChannel.INSTANCE);
-    Tensor domain = tensor.get(Tensor.ALL, 0);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("left");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2 + 7)).setLabel("right");
-    JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "rimoget.png"), jFreeChart, WIDTH, HEIGHT);
+    Tensor domain = tensor.get(Tensor.ALL, 1);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("left");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3 + 7)).setLabel("right");
+    exportListPlot("rimoget.png", visualSet);
   }
 
   public void exportLinmotPosition() throws IOException {
@@ -167,16 +170,15 @@ public class LogReport {
     visualSet.setAxesLabelY("brake position [m]");
     {
       Tensor tensor = map.get(LinmotPutVehicleChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("command");
+      Tensor domain = tensor.get(Tensor.ALL, 1);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("command");
     }
     {
       Tensor tensor = map.get(LinmotGetVehicleChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("effective");
+      Tensor domain = tensor.get(Tensor.ALL, 1);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("effective");
     }
-    JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "linmotPosition.png"), jFreeChart, WIDTH, HEIGHT);
+    exportListPlot("linmotPosition.png", visualSet);
   }
 
   public void exportLinmotTemperature() throws IOException {
@@ -186,12 +188,11 @@ public class LogReport {
     visualSet.setAxesLabelY("temperature [degC]");
     {
       Tensor tensor = map.get(LinmotGetVehicleChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("winding 1");
-      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("winding 2");
+      Tensor domain = tensor.get(Tensor.ALL, 1);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("winding 1");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("winding 2");
     }
-    JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "linmotTemperature.png"), jFreeChart, WIDTH, HEIGHT);
+    exportListPlot("linmotTemperature.png", visualSet);
   }
 
   public void exportVmu931acc() throws IOException {
@@ -200,11 +201,10 @@ public class LogReport {
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("acceleration [m*s^-2]");
     Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
-    Tensor domain = tensor.get(Tensor.ALL, 0);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
-    JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "vmu931acc.png"), jFreeChart, WIDTH, HEIGHT);
+    Tensor domain = tensor.get(Tensor.ALL, 1);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("x (forward)");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("y (left)");
+    exportListPlot("vmu931acc.png", visualSet);
   }
 
   public void exportVmu931accSmooth() throws IOException {
@@ -214,15 +214,14 @@ public class LogReport {
     visualSet.setAxesLabelY("acceleration [m*s^-2]");
     {
       Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 0);
+      Tensor domain = tensor.get(Tensor.ALL, 1);
       Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
-      Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
-      Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
+      Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
+      Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 4));
       visualSet.add(domain.extract(0, smoothX.length()), smoothX).setLabel("x (forward)");
       visualSet.add(domain.extract(0, smoothY.length()), smoothY).setLabel("y (left)");
     }
-    JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "vmu931accSmooth.png"), jFreeChart, WIDTH, HEIGHT);
+    exportListPlot("vmu931accSmooth.png", visualSet);
   }
 
   public void exportPose() throws IOException {
@@ -230,12 +229,11 @@ public class LogReport {
     visualSet.setPlotLabel("Pose");
     visualSet.setAxesLabelX("time [s]");
     Tensor tensor = map.get(GokartPoseChannel.INSTANCE);
-    Tensor domain = tensor.get(Tensor.ALL, 0);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("global x position [m]");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global y position [m]");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global heading [rad]");
-    JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "pose_raw.png"), jFreeChart, WIDTH, HEIGHT);
+    Tensor domain = tensor.get(Tensor.ALL, 1);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global x position [m]");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global y position [m]");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("global heading [rad]");
+    exportListPlot("pose_raw.png", visualSet);
   }
 
   public void exportPoseSmooth() throws IOException {
@@ -243,21 +241,20 @@ public class LogReport {
     visualSet.setPlotLabel("Smoothed Pose");
     visualSet.setAxesLabelX("time [s]");
     Tensor tensor = Import.of(new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz"));
-    Tensor domain = tensor.get(Tensor.ALL, 0);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("global x position [m]");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global y position [m]");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global heading [rad]");
-    JFreeChart jFreeChart = ListPlot.of(visualSet);
-    ChartUtils.saveChartAsPNG(new File(plot, "pose_smooth.png"), jFreeChart, WIDTH, HEIGHT);
+    Tensor domain = tensor.get(Tensor.ALL, 1);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global x position [m]");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global y position [m]");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("global heading [rad]");
+    exportListPlot("pose_smooth.png", visualSet);
   }
 
   public void exportPoseDerivative() throws IOException {
     final Scalar hertz = RealScalar.of(20.0);
     Tensor tensor = Import.of(new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz"));
     LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
-    Tensor refined = Tensor.of(tensor.stream().map(row -> row.extract(1, 4)));
+    Tensor refined = Tensor.of(tensor.stream().map(row -> row.extract(2, 5)));
     Tensor speeds = lieDifferences.apply(refined);
-    Tensor times = tensor.get(Tensor.ALL, 0);
+    Tensor times = tensor.get(Tensor.ALL, 1);
     Tensor domain = times.extract(0, tensor.length() - 1);
     {
       VisualSet visualSet = new VisualSet();
@@ -265,8 +262,7 @@ public class LogReport {
       visualSet.setAxesLabelX("time [s]");
       visualSet.add(domain, speeds.get(Tensor.ALL, 0).multiply(hertz)).setLabel("tangent velocity [m/s]");
       visualSet.add(domain, speeds.get(Tensor.ALL, 1).multiply(hertz)).setLabel("side slip [m/s]");
-      JFreeChart jFreeChart = ListPlot.of(visualSet);
-      ChartUtils.saveChartAsPNG(new File(plot, "speeds.png"), jFreeChart, WIDTH, HEIGHT);
+      exportListPlot("speeds.png", visualSet);
     }
     {
       VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(192));
@@ -280,11 +276,25 @@ public class LogReport {
       }
       {
         Tensor vmu931 = map.get(Vmu931ImuVehicleChannel.INSTANCE);
-        visualSet.add(vmu931.get(Tensor.ALL, 0), vmu931.get(Tensor.ALL, 4)).setLabel("from VMU931");
+        visualSet.add(vmu931.get(Tensor.ALL, 1), vmu931.get(Tensor.ALL, 5)).setLabel("from VMU931");
       }
-      JFreeChart jFreeChart = ListPlot.of(visualSet);
-      ChartUtils.saveChartAsPNG(new File(plot, "vmu931gyro.png"), jFreeChart, WIDTH, HEIGHT);
+      exportListPlot("vmu931gyro.png", visualSet);
     }
+  }
+
+  public void exportLabjackAdc() throws IOException {
+    Tensor tensor = map.get(LabjackAdcChannel.INSTANCE);
+    VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(192));
+    visualSet.setPlotLabel("Labjack ADC readout");
+    visualSet.setAxesLabelX("time [s]");
+    visualSet.setAxesLabelY("voltage [V]");
+    Tensor domain = tensor.get(Tensor.ALL, 1);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("boost");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("reverse");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("throttle");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 5)).setLabel("autonomous button");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 6)).setLabel("ADC5 (not used)");
+    exportListPlot("labjackAdc.png", visualSet);
   }
 
   public static void main(String[] args) throws IOException {

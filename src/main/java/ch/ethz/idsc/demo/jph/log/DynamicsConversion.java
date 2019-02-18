@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   public static File single(File cut) {
     File file = new File(cut, "post.lcm");
     if (!file.isFile())
-      throw new RuntimeException();
+      throw new RuntimeException("" + file);
     // ---
     File folder = new File(DEST, cut.getName().substring(0, 8)); // date e.g. 20190208
     folder.mkdir();
@@ -41,10 +41,10 @@ import ch.ethz.idsc.tensor.sca.Round;
       // ---
       {
         Tensor pose = map.get(GokartPosePostChannel.INSTANCE).getTable().copy();
-        Tensor tensor = Tensor.of(pose.stream().map(row -> row.extract(1, 4)));
+        Tensor tensor = Tensor.of(pose.stream().map(row -> row.extract(2, 5)));
         Tensor smooth = GokartPoseSmoothing.INSTANCE.apply(tensor).map(Round._6);
         for (int index = 0; index < 3; ++index)
-          pose.set(smooth.get(Tensor.ALL, index), Tensor.ALL, index + 1);
+          pose.set(smooth.get(Tensor.ALL, index), Tensor.ALL, 2 + index);
         Export.of( //
             new File(target, StaticHelper.GOKART_POSE_SMOOTH + StaticHelper.EXTENSION), //
             pose);
@@ -56,6 +56,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   public static void main(String[] args) {
-    single(new File("/media/datahaki/data/gokart/cuts/20190208/20190208T145312_04"));
+    single(new File("/media/datahaki/data/gokart/cuts/_20190208/20190208T145312_04"));
   }
 }
