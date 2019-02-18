@@ -71,7 +71,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private List<TrajectorySample> trajectory;
 
   @Override
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       Tensor pose = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose());

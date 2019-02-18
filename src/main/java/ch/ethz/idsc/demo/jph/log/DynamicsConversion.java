@@ -7,14 +7,17 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import ch.ethz.idsc.gokart.lcm.LogStartTime;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
 import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ enum DynamicsConversion {
@@ -33,6 +36,9 @@ import ch.ethz.idsc.tensor.sca.Round;
     Map<SingleChannelInterface, OfflineTableSupplier> map = StaticHelper.SINGLE_CHANNEL_INTERFACES.stream() //
         .collect(Collectors.toMap(Function.identity(), SingleChannelTable::of));
     try {
+      long utime = LogStartTime.utime(file);
+      Put.of(new File(target, StaticHelper.LOG_START_TIME), RealScalar.of(utime));
+      // ---
       OfflineLogPlayer.process(file, map.values());
       for (Entry<SingleChannelInterface, OfflineTableSupplier> entry : map.entrySet())
         Export.of( //
@@ -41,10 +47,10 @@ import ch.ethz.idsc.tensor.sca.Round;
       // ---
       {
         Tensor pose = map.get(GokartPosePostChannel.INSTANCE).getTable().copy();
-        Tensor tensor = Tensor.of(pose.stream().map(row -> row.extract(2, 5)));
+        Tensor tensor = Tensor.of(pose.stream().map(row -> row.extract(1, 4)));
         Tensor smooth = GokartPoseSmoothing.INSTANCE.apply(tensor).map(Round._6);
         for (int index = 0; index < 3; ++index)
-          pose.set(smooth.get(Tensor.ALL, index), Tensor.ALL, 2 + index);
+          pose.set(smooth.get(Tensor.ALL, index), Tensor.ALL, 1 + index);
         Export.of( //
             new File(target, StaticHelper.GOKART_POSE_SMOOTH + StaticHelper.EXTENSION), //
             pose);

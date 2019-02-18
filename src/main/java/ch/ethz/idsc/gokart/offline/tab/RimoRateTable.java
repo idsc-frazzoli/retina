@@ -35,7 +35,7 @@ public class RimoRateTable implements OfflineTableSupplier {
   }
 
   @Override // from OfflineLogListener
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       rge = new RimoGetEvent(byteBuffer);
     } else //

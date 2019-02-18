@@ -54,7 +54,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   }
 
   @Override // from OfflineLogListener
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     int index = getMinute(time);
     if (0 <= index && index < LENGTH) {
       table.set(MAX, index, INDEX_LOGE);

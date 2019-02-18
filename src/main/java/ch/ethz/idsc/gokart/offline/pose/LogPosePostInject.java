@@ -59,7 +59,7 @@ public class LogPosePostInject implements LocalizationResultListener {
           }
           if (Objects.nonNull(binaryBlob)) {
             Scalar time = UnitSystem.SI().apply(Quantity.of(event.utime - tic, NonSI.MICRO_SECOND));
-            offlineLogListener.event(event.utime, time, event.channel, ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
+            offlineLogListener.event(time, event.channel, ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
             // ---
             if (Objects.nonNull(localizationResult)) {
               // System.out.println("inject");

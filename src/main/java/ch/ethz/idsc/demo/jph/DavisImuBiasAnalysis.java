@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   TableBuilder tableBuilder = new TableBuilder();
 
   @Override
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (count < LIMIT) {
       if (CHANNEL_DAVIS_IMU.equals(channel)) {
         DavisImuFrame davisImuFrame = new DavisImuFrame(byteBuffer);

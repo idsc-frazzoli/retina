@@ -57,7 +57,7 @@ public class Vlp16GapTable implements OfflineTableSupplier, LidarRayDataListener
   }
 
   @Override // from OfflineLogListener
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(LIDAR)) {
       this.time = time;
       vlp16Decoder.lasers(byteBuffer);

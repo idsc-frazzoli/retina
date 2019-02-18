@@ -106,7 +106,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   @Override // from OfflineLogListener
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     this.time = time;
     if (channel.equals(CHANNEL_LIDAR))
       velodyneDecoder.lasers(byteBuffer);

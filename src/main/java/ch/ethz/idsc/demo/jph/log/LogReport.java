@@ -35,6 +35,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.ListConvolve;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
+import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 
@@ -64,6 +65,8 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
         }));
     try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(directory, "index.html"))) {
       htmlUtf8.appendln("<h1>" + directory.getName() + "</h1>");
+      Tensor tensor = Get.of(new File(directory, StaticHelper.LOG_START_TIME));
+      htmlUtf8.appendln("<p>Absolute time of start of log recording: " + tensor + " [us] <small>since 1970-01-01</small></p>");
       htmlUtf8.appendln("<p><small>report generated: " + new Date() + "</small>");
       htmlUtf8.appendln("<h2>Steering</h2>");
       htmlUtf8.appendln("<img src='plot/status.png' /><br/><br/>");
@@ -110,13 +113,13 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelY("power steering position [n.a.]");
     {
       Tensor tensor = map.get(SteerGetChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 1);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 9)).setLabel("raw");
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 8)).setLabel("raw");
     }
     {
       Tensor tensor = map.get(GokartStatusChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 1);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("calibrated (0 = straight)");
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("calibrated (0 = straight)");
     }
     exportListPlot("status.png", visualSet);
   }
@@ -128,13 +131,13 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelY("torque [n.a.]");
     {
       Tensor tensor = map.get(SteerPutChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 1);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("commanded");
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("commanded");
     }
     {
       Tensor tensor = map.get(SteerGetChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 1);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 6)).setLabel("effective");
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 5)).setLabel("effective");
     }
     exportListPlot("steerget.png", visualSet);
   }
@@ -145,9 +148,9 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("torque command [ARMS]");
     Tensor tensor = map.get(RimoPutChannel.INSTANCE);
-    Tensor domain = tensor.get(Tensor.ALL, 1);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("left");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("right");
+    Tensor domain = tensor.get(Tensor.ALL, 0);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("left");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("right");
     exportListPlot("rimoput.png", visualSet);
   }
 
@@ -157,9 +160,9 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("wheel rotational rate [rad*s^-1]");
     Tensor tensor = map.get(RimoGetChannel.INSTANCE);
-    Tensor domain = tensor.get(Tensor.ALL, 1);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("left");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3 + 7)).setLabel("right");
+    Tensor domain = tensor.get(Tensor.ALL, 0);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("left");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2 + 7)).setLabel("right");
     exportListPlot("rimoget.png", visualSet);
   }
 
@@ -170,13 +173,13 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelY("brake position [m]");
     {
       Tensor tensor = map.get(LinmotPutVehicleChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 1);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("command");
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("command");
     }
     {
       Tensor tensor = map.get(LinmotGetVehicleChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 1);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("effective");
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("effective");
     }
     exportListPlot("linmotPosition.png", visualSet);
   }
@@ -188,9 +191,9 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelY("temperature [degC]");
     {
       Tensor tensor = map.get(LinmotGetVehicleChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 1);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("winding 1");
-      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("winding 2");
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("winding 1");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("winding 2");
     }
     exportListPlot("linmotTemperature.png", visualSet);
   }
@@ -201,9 +204,9 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("acceleration [m*s^-2]");
     Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
-    Tensor domain = tensor.get(Tensor.ALL, 1);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("x (forward)");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("y (left)");
+    Tensor domain = tensor.get(Tensor.ALL, 0);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
     exportListPlot("vmu931acc.png", visualSet);
   }
 
@@ -214,10 +217,10 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelY("acceleration [m*s^-2]");
     {
       Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 1);
+      Tensor domain = tensor.get(Tensor.ALL, 0);
       Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
-      Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
-      Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 4));
+      Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
+      Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
       visualSet.add(domain.extract(0, smoothX.length()), smoothX).setLabel("x (forward)");
       visualSet.add(domain.extract(0, smoothY.length()), smoothY).setLabel("y (left)");
     }
@@ -229,10 +232,10 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setPlotLabel("Pose");
     visualSet.setAxesLabelX("time [s]");
     Tensor tensor = map.get(GokartPoseChannel.INSTANCE);
-    Tensor domain = tensor.get(Tensor.ALL, 1);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global x position [m]");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global y position [m]");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("global heading [rad]");
+    Tensor domain = tensor.get(Tensor.ALL, 0);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("global x position [m]");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global y position [m]");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global heading [rad]");
     exportListPlot("pose_raw.png", visualSet);
   }
 
@@ -241,10 +244,10 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setPlotLabel("Smoothed Pose");
     visualSet.setAxesLabelX("time [s]");
     Tensor tensor = Import.of(new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz"));
-    Tensor domain = tensor.get(Tensor.ALL, 1);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global x position [m]");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global y position [m]");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("global heading [rad]");
+    Tensor domain = tensor.get(Tensor.ALL, 0);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("global x position [m]");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global y position [m]");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global heading [rad]");
     exportListPlot("pose_smooth.png", visualSet);
   }
 
@@ -252,9 +255,9 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     final Scalar hertz = RealScalar.of(20.0);
     Tensor tensor = Import.of(new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz"));
     LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
-    Tensor refined = Tensor.of(tensor.stream().map(row -> row.extract(2, 5)));
+    Tensor refined = Tensor.of(tensor.stream().map(row -> row.extract(1, 4)));
     Tensor speeds = lieDifferences.apply(refined);
-    Tensor times = tensor.get(Tensor.ALL, 1);
+    Tensor times = tensor.get(Tensor.ALL, 0);
     Tensor domain = times.extract(0, tensor.length() - 1);
     {
       VisualSet visualSet = new VisualSet();
@@ -270,13 +273,13 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       visualSet.setAxesLabelX("time [s]");
       visualSet.setAxesLabelY("gyro [rad*s^-1]");
       {
-        VisualRow visualRow = visualSet.add(domain, speeds.get(Tensor.ALL, 2).multiply(hertz));
+        VisualRow visualRow = visualSet.add(domain, speeds.get(Tensor.ALL, 1).multiply(hertz));
         visualRow.setLabel("from smoothed pose [rad/s]");
         visualRow.setStroke(new BasicStroke(2f));
       }
       {
         Tensor vmu931 = map.get(Vmu931ImuVehicleChannel.INSTANCE);
-        visualSet.add(vmu931.get(Tensor.ALL, 1), vmu931.get(Tensor.ALL, 5)).setLabel("from VMU931");
+        visualSet.add(vmu931.get(Tensor.ALL, 0), vmu931.get(Tensor.ALL, 4)).setLabel("from VMU931");
       }
       exportListPlot("vmu931gyro.png", visualSet);
     }
@@ -288,12 +291,12 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setPlotLabel("Labjack ADC readout");
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("voltage [V]");
-    Tensor domain = tensor.get(Tensor.ALL, 1);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("boost");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("reverse");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("throttle");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 5)).setLabel("autonomous button");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 6)).setLabel("ADC5 (not used)");
+    Tensor domain = tensor.get(Tensor.ALL, 0);
+    visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("boost");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("reverse");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("throttle");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("autonomous button");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 5)).setLabel("ADC5 (not used)");
     exportListPlot("labjackAdc.png", visualSet);
   }
 

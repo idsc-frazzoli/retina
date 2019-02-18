@@ -20,7 +20,7 @@ public class LinmotPassiveStatusTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
 
   @Override
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
       LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
       tableBuilder.appendRow( //

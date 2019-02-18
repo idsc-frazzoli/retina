@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   private final TableBuilder tableBuilder = new TableBuilder();
 
   @Override // from OfflineLogListener
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (GokartLcmChannel.LABJACK_U3_ADC.equals(channel)) {
       LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(byteBuffer);
       tableBuilder.appendRow( //

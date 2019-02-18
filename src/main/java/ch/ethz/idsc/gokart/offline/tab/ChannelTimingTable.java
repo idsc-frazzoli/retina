@@ -24,7 +24,7 @@ public class ChannelTimingTable implements OfflineTableSupplier {
   private final Map<String, Tensor> deltas = new TreeMap<>();
 
   @Override
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (timings.containsKey(channel)) {
       Scalar last = timings.get(channel);
       deltas.get(channel).append(Magnitude.SECOND.apply(time.subtract(last)));

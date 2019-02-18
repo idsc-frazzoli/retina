@@ -63,7 +63,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
   }
 
   @Override // from OfflineLogListener
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(CHANNEL_LIDAR))
       velodyneDecoder.lasers(byteBuffer);
     else //

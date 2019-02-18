@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   }
 
   @Override
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals("davis240c.overview.dvs")) {
       davisDvsDatagramDecoder.decode(byteBuffer);
     }

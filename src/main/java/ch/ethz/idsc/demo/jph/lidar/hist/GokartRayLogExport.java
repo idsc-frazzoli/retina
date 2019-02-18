@@ -27,7 +27,7 @@ enum GokartRayLogExport {
     vlp16Decoder.addRayListener(planarHistogram);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
-      public void event(long utime, Scalar time, String _channel, ByteBuffer byteBuffer) {
+      public void event(Scalar time, String _channel, ByteBuffer byteBuffer) {
         if (_channel.equals(channel))
           vlp16Decoder.lasers(byteBuffer);
       }

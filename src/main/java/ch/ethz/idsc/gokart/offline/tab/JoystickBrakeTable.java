@@ -20,7 +20,7 @@ public class JoystickBrakeTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
 
   @Override
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(JOYSTICK)) {
       JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
       ManualControlInterface manualControlInterface = (ManualControlInterface) joystickEvent;

@@ -34,4 +34,5 @@ import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
       LabjackAdcChannel.INSTANCE //
   );
   static final String GOKART_POSE_SMOOTH = "gokart.pose.smooth";
+  static final String LOG_START_TIME = "logStartTime_us.txt";
 }

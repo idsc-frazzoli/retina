@@ -34,7 +34,7 @@ public class LinmotStatusTable implements OfflineTableSupplier {
   }
 
   @Override
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     boolean inWindow = range.isInside(time);
     if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
       LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);

@@ -52,7 +52,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   @Override // from OfflineLogListener
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (CHANNEL_LIDAR.equals(channel))
       velodyneDecoder.lasers(byteBuffer);
   }

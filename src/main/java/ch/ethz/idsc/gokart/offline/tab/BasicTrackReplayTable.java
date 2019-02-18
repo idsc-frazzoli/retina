@@ -53,7 +53,7 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
 
   @Override // from OfflineLogListener
-  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(CHANNEL_IMU)) {
       davisImuFrame = new DavisImuFrame(byteBuffer);
     } else //
