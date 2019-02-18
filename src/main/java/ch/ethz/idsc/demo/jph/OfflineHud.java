@@ -82,7 +82,7 @@ public class OfflineHud implements OfflineLogListener {
   }
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       rimoGetEvent = new RimoGetEvent(byteBuffer);
     } else //

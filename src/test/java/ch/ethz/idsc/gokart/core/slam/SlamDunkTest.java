@@ -50,7 +50,7 @@ public class SlamDunkTest extends TestCase {
     lidarAngularFiringCollector.addListener(offlineLocalize);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
-      public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+      public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
         offlineLocalize.setTime(time);
         if (channel.equals("vlp16.center.ray"))
           velodyneDecoder.lasers(byteBuffer);

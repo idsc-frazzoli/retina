@@ -92,7 +92,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   private int count = 0;
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       bayesianOccupancyGridThic.setPose(gokartPoseEvent.getPose());

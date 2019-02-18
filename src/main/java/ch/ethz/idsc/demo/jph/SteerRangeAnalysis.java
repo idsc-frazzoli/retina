@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   private final SteerColumnTracker steerColumnTracker = new SteerColumnTracker();
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
       SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
       steerColumnTracker.getEvent(steerGetEvent);

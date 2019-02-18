@@ -54,7 +54,7 @@ public class PowerSteerTable implements OfflineTableSupplier {
   }
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(SteerLcmServer.CHANNEL_GET))
       sge = new SteerGetEvent(byteBuffer);
     else //

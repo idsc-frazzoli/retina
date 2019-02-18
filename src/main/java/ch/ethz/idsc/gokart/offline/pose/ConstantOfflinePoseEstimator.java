@@ -20,7 +20,7 @@ public class ConstantOfflinePoseEstimator implements OfflinePoseEstimator {
   }
 
   @Override
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     // ---
   }
 }

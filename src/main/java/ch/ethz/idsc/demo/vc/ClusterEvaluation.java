@@ -45,7 +45,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         vlp16LcmHandler.lidarAngularFiringCollector.addListener(clusterEvaluationListener.lidarClustering);
         OfflineLogListener offlineLogListener = new OfflineLogListener() {
           @Override
-          public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+          public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
             if (channel.equals(CHANNEL_VLP16))
               vlp16LcmHandler.velodyneDecoder.lasers(byteBuffer);
             else //

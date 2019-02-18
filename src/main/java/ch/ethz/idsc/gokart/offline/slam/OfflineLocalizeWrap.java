@@ -79,7 +79,7 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
   }
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(CHANNEL_LIDAR)) {
       offlineLocalize.setTime(time);
       velodyneDecoder.lasers(byteBuffer);

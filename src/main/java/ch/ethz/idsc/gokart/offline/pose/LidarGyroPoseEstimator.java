@@ -26,7 +26,7 @@ public class LidarGyroPoseEstimator implements OfflineLogListener {
   }
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    offlineTableSupplier.event(time, channel, byteBuffer);
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
+    offlineTableSupplier.event(utime, time, channel, byteBuffer);
   }
 }

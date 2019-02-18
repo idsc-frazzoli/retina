@@ -77,7 +77,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   }
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     int index = time.divide(RESOLUTION).number().intValue();
     if (raster2event.size() <= index)
       append(event_count);

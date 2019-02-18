@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.Scalar;
   }
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(CHANNEL_DVS))
       dvsLcmClient.messageReceived(byteBuffer);
   }

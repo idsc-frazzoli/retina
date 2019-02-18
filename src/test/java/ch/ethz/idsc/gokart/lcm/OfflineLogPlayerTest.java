@@ -41,7 +41,7 @@ public class OfflineLogPlayerTest extends TestCase {
     velodyneDecoder.addPosListener(velodynePosListener);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
-      public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+      public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
         if (channel.equals("vlp16.center.pos")) {
           velodyneDecoder.positioning(byteBuffer);
         }

@@ -27,7 +27,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   }
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.RIMO_CONTROLLER_PI)) {
       byteBuffer.order(byteOrder);
       Tensor tensor = VectorFloatBlob.decode(byteBuffer);

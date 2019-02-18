@@ -57,7 +57,7 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
   }
 
   @Override
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       rge = new RimoGetEvent(byteBuffer);
     } else //

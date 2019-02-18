@@ -58,7 +58,7 @@ public enum BoundedOfflineLogPlayer {
             for (OfflineLogListener offlineLogListener : offlineLogListeners) {
               Scalar time = UnitSystem.SI().apply(Quantity.of(event.utime - tic, NonSI.MICRO_SECOND)).map(Round._6).Get();
               ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN);
-              offlineLogListener.event(time, event.channel, byteBuffer);
+              offlineLogListener.event(event.utime, time, event.channel, byteBuffer);
             }
         }
       }

@@ -23,7 +23,7 @@ public class OfflineVectorTable implements OfflineTableSupplier {
   }
 
   @Override // from OfflineLogListener
-  public final void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public final void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (this.channel.equals(channel))
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //

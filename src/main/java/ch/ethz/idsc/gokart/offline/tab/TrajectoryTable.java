@@ -16,7 +16,7 @@ public class TrajectoryTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
 
   @Override
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     System.out.print("Processing: " + time + "\n");
     if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME)) {
       Tensor trj = ArrayFloatBlob.decode(byteBuffer);

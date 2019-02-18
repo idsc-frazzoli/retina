@@ -10,7 +10,7 @@ public enum MessageConsistency implements OfflineLogListener {
   INSTANCE;
   // ---
   @Override
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     // System.out.println(time + " " + channel + " " + byteBuffer.remaining());
   }
 }

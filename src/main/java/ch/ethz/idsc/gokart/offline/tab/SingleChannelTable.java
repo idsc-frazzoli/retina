@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
@@ -28,9 +29,10 @@ public class SingleChannelTable implements OfflineTableSupplier {
   }
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(this.channel))
       tableBuilder.appendRow( //
+          RealScalar.of(utime), //
           time.map(Magnitude.SECOND).map(Round._6), //
           singleChannelInterface.row(byteBuffer));
   }

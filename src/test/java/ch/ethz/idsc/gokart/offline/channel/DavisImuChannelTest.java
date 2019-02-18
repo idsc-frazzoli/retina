@@ -21,6 +21,6 @@ public class DavisImuChannelTest extends TestCase {
     OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(DavisImuChannel.INSTANCE);
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
-    assertEquals(Dimensions.of(tensor), Arrays.asList(719, 9));
+    assertEquals(Dimensions.of(tensor), Arrays.asList(719, 10));
   }
 }

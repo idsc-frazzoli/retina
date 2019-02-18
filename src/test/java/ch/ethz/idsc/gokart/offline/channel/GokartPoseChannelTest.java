@@ -23,9 +23,9 @@ public class GokartPoseChannelTest extends TestCase {
     OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
-    assertEquals(Dimensions.of(tensor), Arrays.asList(36, 5));
+    assertEquals(Dimensions.of(tensor), Arrays.asList(36, 6));
     // check that pose quality is in the interval [0, 1]
-    long count = tensor.get(Tensor.ALL, 4).stream() //
+    long count = tensor.get(Tensor.ALL, 5).stream() //
         .map(Scalar.class::cast) //
         .filter(Clip.unit()::isOutside) //
         .count();

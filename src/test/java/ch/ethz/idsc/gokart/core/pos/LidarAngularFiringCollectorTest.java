@@ -60,7 +60,7 @@ public class LidarAngularFiringCollectorTest extends TestCase {
     lidarAngularFiringCollector.addListener(lidarRayBlockListener);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
-      public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+      public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
         // System.out.println(time + " " + event.channel);
         if (channel.equals("vlp16.center.ray")) {
           velodyneDecoder.lasers(byteBuffer);

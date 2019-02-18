@@ -12,7 +12,7 @@ public class SteerRelRckWatchdog implements OfflineLogListener {
   private boolean fuse = true;
 
   @Override
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
       SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
       if (!steerGetEvent.isRelRckQual() && fuse) {

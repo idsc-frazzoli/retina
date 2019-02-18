@@ -54,7 +54,7 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
   private Scalar time_next = Quantity.of(0, SI.SECOND);
 
   @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+  public void event(long utime, Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gpe = new GokartPoseEvent(byteBuffer);
     } else //
