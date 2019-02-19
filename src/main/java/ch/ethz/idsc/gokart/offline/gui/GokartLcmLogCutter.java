@@ -46,7 +46,7 @@ public class GokartLcmLogCutter {
   private static final Font FONT = //
       new Font(Font.DIALOG, Font.PLAIN, GokartLcmImage.FX + 2);
   // ---
-  private final JFrame jFrame = new JFrame();
+  public final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final NavigableMap<Integer, Integer> map = new TreeMap<>();
@@ -121,7 +121,9 @@ public class GokartLcmLogCutter {
         NavigableMap<Integer, Integer> navigableMap = new TreeMap<>();
         for (Entry<Integer, Integer> entry : map.entrySet()) {
           int x0 = gokartLogFileIndexer.getEventIndex(entry.getKey());
-          int x1 = gokartLogFileIndexer.getEventIndex(entry.getValue());
+          int size = gokartLogFileIndexer.getRasterSize();
+          int last = Math.min(entry.getValue(), size - 1);
+          int x1 = gokartLogFileIndexer.getEventIndex(last);
           // Integer last = navigableMap.lastKey();
           if (navigableMap.isEmpty() || navigableMap.lastKey() < x0)
             if (x0 < x1)

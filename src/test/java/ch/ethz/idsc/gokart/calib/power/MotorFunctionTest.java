@@ -46,8 +46,10 @@ public class MotorFunctionTest extends TestCase {
       Scalar eneg = MotorFunction.getAccelerationEstimation( //
           power.negate(), //
           velocity.negate());
-      System.out.println(power + "/" + velocity + ": " + epos + "/" + eneg);
-      Chop._05.requireClose(epos, eneg.negate());
+      if (!Chop._05.close(epos, eneg.negate())) {
+        System.out.println(power + "/" + velocity + ": " + epos + "/" + eneg);
+        fail();
+      }
     }
   }
 }

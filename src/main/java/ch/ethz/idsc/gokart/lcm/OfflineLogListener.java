@@ -8,8 +8,8 @@ import ch.ethz.idsc.tensor.Scalar;
 @FunctionalInterface
 public interface OfflineLogListener {
   /** function processes message from log file
-   * 
-   * @param time with unit [s]
+   *
+   * @param time since begin of log with unit [s]
    * @param channel
    * @param byteBuffer */
   void event(Scalar time, String channel, ByteBuffer byteBuffer);

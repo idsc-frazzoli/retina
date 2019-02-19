@@ -25,6 +25,7 @@ import ch.ethz.idsc.retina.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -32,11 +33,13 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Boole;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
 public class GokartLogFileIndexer implements OfflineLogListener {
   public static GokartLogFileIndexer create(File file) throws IOException {
     GokartLogFileIndexer lcmLogFileIndexer = new GokartLogFileIndexer(file);
-    System.out.print("building index... ");
+    Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
+    System.out.print("building index... " + mb.map(Round._2) + " GB ");
     OfflineLogPlayer.process(file, lcmLogFileIndexer);
     System.out.println("done.");
     return lcmLogFileIndexer;
@@ -136,5 +139,9 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   public int getEventIndex(int x0) {
     return raster2event.get(x0);
+  }
+
+  public int getRasterSize() {
+    return raster2event.size();
   }
 }

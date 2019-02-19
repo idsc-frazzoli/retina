@@ -17,11 +17,9 @@ import ch.ethz.idsc.tensor.io.Export;
 
 /* package */ enum LogPosePostInjectSingle {
   ;
-  private static final String FILENAME = "post.lcm";
-
   public static void in(File folder) throws Exception {
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
-    final File target = new File(folder, FILENAME);
+    final File target = new File(folder, StaticHelper.FILENAME);
     if (target.isFile()) {
       // System.err.println("delete " + target);
       // target.delete();
@@ -36,10 +34,10 @@ import ch.ethz.idsc.tensor.io.Export;
   }
 
   public static void main(String[] args) throws Exception {
-    File folder = new File("/media/datahaki/data/gokart/cuts/20190204/20190204T185052_01");
+    File folder = new File(StaticHelper.CUTS, "20190204/20190204T185052_01");
     in(folder);
     OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(GokartPosePostChannel.INSTANCE);
-    File post = new File(folder, FILENAME);
+    File post = new File(folder, StaticHelper.FILENAME);
     OfflineLogPlayer.process(post, offlineTableSupplier);
     Export.of(new File(folder, GokartPosePostChannel.INSTANCE.channel() + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
   }

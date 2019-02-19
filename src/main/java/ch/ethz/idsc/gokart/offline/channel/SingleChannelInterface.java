@@ -9,7 +9,10 @@ public interface SingleChannelInterface {
   /** @return channel name */
   String channel();
 
-  /** @return channel name */
+  /** useful in case raw channel data needs to be converted to gokart frame of reference
+   * 
+   * @return channel name
+   * @see Vmu931ImuVehicleChannel */
   default String exportName() {
     return channel();
   }

@@ -1,9 +1,11 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.log;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.offline.channel.DavisDvsChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartStatusChannel;
 import ch.ethz.idsc.gokart.offline.channel.LabjackAdcChannel;
@@ -30,8 +32,14 @@ import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
       SteerGetChannel.INSTANCE, //
       LinmotPutVehicleChannel.INSTANCE, //
       LinmotGetVehicleChannel.INSTANCE, //
+      DavisDvsChannel.INSTANCE, //
       Vmu931ImuVehicleChannel.INSTANCE, //
       LabjackAdcChannel.INSTANCE //
   );
   static final String GOKART_POSE_SMOOTH = "gokart.pose.smooth";
+  static final String LOG_START_TIME = "logStartTime_us.txt";
+  // ---
+  static final File CUTS = new File("/media/datahaki/data/gokart/cuts");
+  static final File DEST = new File("/media/datahaki/data/gokart/dynamics");
+  static final String FILENAME = "post.lcm";
 }

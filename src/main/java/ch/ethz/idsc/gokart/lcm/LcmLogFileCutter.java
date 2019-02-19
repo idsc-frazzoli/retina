@@ -47,7 +47,6 @@ public abstract class LcmLogFileCutter {
             new BinaryBlob(event.data);
             logEventWriter.write(event);
           } catch (Exception exception) {
-            // ---
             exception.printStackTrace();
           }
           if (hi <= event.eventNumber)
