@@ -132,8 +132,9 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 100;
+tend = 1000;
 eulersteps = 10;
+planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]
 %[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
 fpoints = points(1:2,1:2);
@@ -217,7 +218,7 @@ for i =1:tend
     xs
     history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
     planc = planc + 1;
-    if(planc>10)
+    if(planc>planintervall)
        planc = 1; 
        plansx = [plansx; outputM(:,index.x)'];
        plansy = [plansy; outputM(:,index.y)'];
