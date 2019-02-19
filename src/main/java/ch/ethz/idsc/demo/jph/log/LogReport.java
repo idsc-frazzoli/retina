@@ -22,6 +22,7 @@ import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
 import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
+import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 import ch.ethz.idsc.sophus.group.LieDifferences;
 import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
 import ch.ethz.idsc.sophus.group.Se2Group;
@@ -87,6 +88,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       htmlUtf8.appendln("<img src='plot/vmu931accSmooth.png' /><br/><br/>");
       htmlUtf8.appendln("<h2>Misc</h2>");
       htmlUtf8.appendln("<img src='plot/labjackAdc.png' /><br/><br/>");
+      htmlUtf8.appendln("<img src='plot/poseQuality.png' /><br/><br/>");
     }
     exportStatus();
     exportSteerGet();
@@ -100,6 +102,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     exportPoseSmooth();
     exportPoseDerivative();
     exportLabjackAdc();
+    exportPoseQuality();
   }
 
   private void exportListPlot(String filename, VisualSet visualSet) throws IOException {
@@ -273,7 +276,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       visualSet.setAxesLabelX("time [s]");
       visualSet.setAxesLabelY("gyro [rad*s^-1]");
       {
-        VisualRow visualRow = visualSet.add(domain, speeds.get(Tensor.ALL, 1).multiply(hertz));
+        VisualRow visualRow = visualSet.add(domain, speeds.get(Tensor.ALL, 2).multiply(hertz));
         visualRow.setLabel("from smoothed pose [rad/s]");
         visualRow.setStroke(new BasicStroke(2f));
       }
@@ -298,6 +301,24 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("autonomous button");
     visualSet.add(domain, tensor.get(Tensor.ALL, 5)).setLabel("ADC5 (not used)");
     exportListPlot("labjackAdc.png", visualSet);
+  }
+
+  public void exportPoseQuality() throws IOException {
+    VisualSet visualSet = new VisualSet();
+    visualSet.setPlotLabel("Pose Estimation Quality");
+    visualSet.setAxesLabelX("time [s]");
+    visualSet.setAxesLabelY("quality in [0, 1]");
+    {
+      Tensor tensor = map.get(GokartPoseChannel.INSTANCE);
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("live");
+    }
+    {
+      Tensor tensor = map.get(GokartPosePostChannel.INSTANCE);
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("post-processing");
+    }
+    exportListPlot("poseQuality.png", visualSet);
   }
 
   public static void main(String[] args) throws IOException {

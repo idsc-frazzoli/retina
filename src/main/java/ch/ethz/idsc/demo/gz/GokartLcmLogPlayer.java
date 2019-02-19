@@ -14,9 +14,6 @@ import lcm.logging.LogPlayerConfig;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();
     File file;
-    file = new File( //
-        "/home/datahaki/Projects/retina/src/test/resources/localization", //
-        "vlp16.center.ray_autobox.rimo.get.lcm");
     file = HomeDirectory.file("temp/20180108T165210_manual.lcm");
     file = HomeDirectory.file("gokart/twist/20180108T165210_4/log.lcm");
     file = HomeDirectory.file("gokart/short/20180108T165210_1/log.lcm");
