@@ -36,6 +36,7 @@ public class TrackReconManagement {
   private double startOrientation = 0;
   private boolean closedTrack = false;
   private boolean oldWasClosed = false;
+  private boolean cleared = false;
   private final Timing lastTrackReset = Timing.started();
   private List<TrackConstraint> constraints = new LinkedList<>();
   private final Scalar openTrackValid = Quantity.of(1, SI.SECOND);
@@ -76,6 +77,7 @@ public class TrackReconManagement {
     startX = pixelPos.Get(0).number().intValue();
     startY = pixelPos.Get(1).number().intValue();
     startOrientation = pose.Get(2).number().doubleValue();
+    occupancyGrid.clearStart(startX, startY, startOrientation);
   }
 
   /** @param gokartPoseEvent non null
@@ -89,7 +91,7 @@ public class TrackReconManagement {
     System.out.println("update called: " + timeSinceLastTrackUpdate);
     MPCBSplineTrack lastTrack = null;
     timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
-    if (Objects.isNull(trackDataXYR)) {
+    if (!closedTrack || Objects.isNull(trackDataXYR)) {
       trackLayoutInitialGuess.update(startX, startY, startOrientation, pose);
       closedTrack = trackLayoutInitialGuess.isClosed();
       if (closedTrack) {
@@ -107,11 +109,9 @@ public class TrackReconManagement {
            * constraints.add(refinenement.new PositionalStartConstraint());
            * constraints.add(refinenement.new PositionalEndConstraint());
            * } */
-          if (closedTrack) {
-            trackDataXYR = trackRefinement.getRefinedTrack( //
-                Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER)))), //
-                RealScalar.of(8), 100, closedTrack, constraints);
-          }
+          trackDataXYR = trackRefinement.getRefinedTrack( //
+              Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER)))), //
+              RealScalar.of(8), 100, closedTrack, constraints);
           /* else
            * trackData = refinenement.getRefinedTrack(//
            * ctrpoints.get(0), //
@@ -129,13 +129,31 @@ public class TrackReconManagement {
             // lastTrack = null;
           }
         }
+      } else {
+        // we have a partial track
+        // check if route is long enough
+        if (trackLayoutInitialGuess.getRouteLength() > 2) {
+          Optional<Tensor> optional = trackLayoutInitialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
+          if (optional.isPresent()) {
+            Tensor ctrpointsXY = optional.get();
+            Tensor newTrackDataXYR = Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER))));
+            System.out.println("open track");
+            newTrackDataXYR = trackRefinement.getRefinedTrack( //
+                newTrackDataXYR, //
+                RealScalar.of(8), 20, closedTrack, constraints);
+            if(Objects.nonNull(newTrackDataXYR))
+              trackDataXYR = newTrackDataXYR;
+            if(Objects.nonNull(trackDataXYR))
+              lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
+          }
+        }
       }
     } else //
     if (closedTrack) {
       System.out.println(++count);
       // refine
       System.out.println("refine");
-      trackDataXYR = trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 10, closedTrack, constraints);
+      trackDataXYR = trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 30, closedTrack, constraints);
       // consider: slower track update
       if (Objects.nonNull(trackDataXYR))
         lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);

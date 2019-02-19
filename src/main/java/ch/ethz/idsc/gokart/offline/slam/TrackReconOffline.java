@@ -54,7 +54,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
-  private static final Scalar DELTA = Quantity.of(0.1, SI.SECOND);
+  private static final Scalar DELTA = Quantity.of(0.05, SI.SECOND);
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
@@ -86,6 +86,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThic);
+    //trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThin);
     trackLayoutInitialGuess = trackReconManagement.getTrackLayoutInitialGuess();
   }
 
@@ -99,16 +100,16 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       bayesianOccupancyGridThin.setPose(gokartPoseEvent.getPose());
       if (!trackReconManagement.isStartSet())
         trackReconManagement.setStart(gokartPoseEvent);
-      if (count++ > 5) {
-        Optional<MPCBSplineTrack> lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(0.05, SI.SECOND));
-        trackReconRender.mpcBSplineTrack(lastTrack);
-      }
     } else //
     if (channel.equals(CHANNEL_LIDAR))
       velodyneDecoder.lasers(byteBuffer);
     // ---
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(DELTA);
+      if (count++ > 5) {
+        Optional<MPCBSplineTrack> lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(0.05, SI.SECOND));
+        trackReconRender.mpcBSplineTrack(lastTrack);
+      }
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
       BufferedImage bufferedImage = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
       double zoom = 3;
@@ -121,11 +122,11 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       ImageRender imageRender = ImageRender.of(predefinedMap.getImage(), predefinedMap.range());
       imageRender.render(geometricLayer, graphics);
       gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
-      // bayesianOccupancyGridThic.render(gl, graphics);
+      //bayesianOccupancyGridThic.render(geometricLayer, graphics);
       bayesianOccupancyGridThin.render(geometricLayer, graphics);
       gokartRender.render(geometricLayer, graphics);
       trackReconRender.render(geometricLayer, graphics);
-      trackLayoutInitialGuess.render(geometricLayer, graphics);
+      //trackLayoutInitialGuess.render(geometricLayer, graphics);
       // ---
       bayesianOccupancyGridThin.genObstacleMap();
       bayesianOccupancyGridThic.genObstacleMap();

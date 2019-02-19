@@ -77,16 +77,20 @@ public class TrackRender implements RenderInterface {
         if (closed)
           path2d.closePath();
         graphics.setColor(new Color(255, 0, 0, 192));
-        graphics.draw(path2d);
-        render(geometricLayer, graphics, lineLeft);
+        if (closed) {
+          graphics.draw(path2d);
+          render(geometricLayer, graphics, lineLeft);
+        }
       }
       { // right line
         Path2D path2d = geometricLayer.toPath2D(lineRight);
         if (closed)
           path2d.closePath();
         graphics.setColor(new Color(0, 255, 0, 192));
-        graphics.draw(path2d);
-        render(geometricLayer, graphics, lineRight);
+        if (closed) {
+          graphics.draw(path2d);
+          render(geometricLayer, graphics, lineRight);
+        }
       }
       GraphicsUtil.setQualityDefault(graphics);
     }

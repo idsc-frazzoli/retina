@@ -349,30 +349,35 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         closed = false;
         actualTarget = getFarthestCell();
         LinkedList<Cell> routeFromStart = actualTarget.getRoute();
-        route = routeFromStart;
+        //route = routeFromStart;
         // can we reach gokart?
-        /* if (reachable(dijkstraGokartBack)) {
-         * System.out.println("start->gokart found. Expanding beyond gokart");
-         * route = routeFromStart;
-         * } else {
-         * // search from gokart toward
-         * System.out.println("searching from gokart towards starting line");
-         * boolean targetAvailable = initialise(startX, startY, startorientation, curPos, true);
-         * if (targetAvailable)
-         * processDijkstra();
-         * if (targetAvailable && reachable(dijkstraTarget)) {
-         * // found way from gokart
-         * route = dijkstraTarget.getRoute();
-         * route.addAll(routeFromStart);
-         * } else {
-         * System.out.println("no route found to gokart");
-         * route = routeFromStart;
-         * }
-         * } */
+        if (reachable(dijkstraGokartBack)) {
+          System.out.println("start->gokart found. Expanding beyond gokart");
+          route = routeFromStart;
+        } else {
+          // search from gokart toward
+          System.out.println("searching from gokart towards starting line");
+          boolean targetAvailable = initialize(startX, startY, startorientation, curPos, true);
+          if (targetAvailable)
+            processDijkstra();
+          if (targetAvailable && reachable(dijkstraTarget)) {
+            // found way from gokart
+            route = dijkstraTarget.getRoute();
+            System.out.println("found gokart->target->farthest point");
+            route.addAll(routeFromStart);
+          } else {
+            System.out.println("no route found to gokart");
+            route = routeFromStart;
+          }
+        }
       }
     } else {
       System.out.println("Target not available.");
     }
+  }
+
+  public int getRouteLength() {
+    return route.size();
   }
 
   private static boolean reachable(Cell target) {
@@ -393,14 +398,17 @@ public class TrackLayoutInitialGuess implements RenderInterface {
    * @param controlPointResolution
    * @return matrix of dimension n x 2 */
   Optional<Tensor> getControlPointGuess(Scalar spacing, Scalar controlPointResolution) {
+    Scalar halfspacing = RealScalar.of(0.5).multiply(spacing);
     Tensor wantedPositionsXY = Tensors.empty();
     // Tensor wantedPositionsY = Tensors.empty();
     Tensor lastPosition = route.getFirst().getPos();
+    Tensor endPosition = route.getLast().getPos();
     positionalSupports = new LinkedList<>();
     for (Cell cell : route) {
       Tensor pos = cell.getPos();
       Tensor dist = pos.subtract(lastPosition);
-      if (Scalars.lessThan(spacing, Norm._2.of(dist))) {
+      Tensor enddist = pos.subtract(endPosition);
+      if (Scalars.lessThan(spacing, Norm._2.of(dist)) && Scalars.lessThan(halfspacing, Norm._2.of(enddist))) {
         lastPosition = pos;
         wantedPositionsXY.append(Extract2D.FUNCTION.apply(pos));
         // wantedPositionsY.append(pos.Get(1));

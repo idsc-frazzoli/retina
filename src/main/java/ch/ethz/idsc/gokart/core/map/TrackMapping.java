@@ -151,4 +151,9 @@ public class TrackMapping implements //
   public Tensor getTransform() {
     return bayesianOccupancyGrid.getTransform();
   }
+
+  @Override
+  public void clearStart(int startX, int startY, double orientation) {
+    bayesianOccupancyGrid.clearStart(startX, startY, orientation);
+  }
 }
