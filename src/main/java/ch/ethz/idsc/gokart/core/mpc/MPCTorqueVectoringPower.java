@@ -10,10 +10,8 @@ import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Tan;
 
 /* package */ class MPCTorqueVectoringPower extends MPCPower {
@@ -25,7 +23,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
 
   public MPCTorqueVectoringPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering) {
-    this.mpcStateEstimationProvider = mpcStateEstimationProvider;
+    this.mpcStateEstimationProvider = Objects.requireNonNull(mpcStateEstimationProvider);
     this.mpcSteering = mpcSteering;
   }
 
@@ -34,15 +32,6 @@ import ch.ethz.idsc.tensor.sca.Tan;
     ControlAndPredictionStep cnsStep = getStep(time);
     if (Objects.isNull(cnsStep))
       return Optional.empty();
-    if (Objects.isNull(mpcStateEstimationProvider)) {
-      // return torqueless power
-      return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(//
-          Quantity.of(0, SI.SECOND.negate()), //
-          cnsStep.gokartState.getUx(), //
-          Quantity.of(0, SI.SECOND.negate()), //
-          cnsStep.gokartControl.getaB(), //
-          Quantity.of(0, SI.SECOND.negate())));
-    }
     Optional<Tensor> optional = mpcSteering.getSteering(time);
     if (!optional.isPresent())
       return Optional.empty();

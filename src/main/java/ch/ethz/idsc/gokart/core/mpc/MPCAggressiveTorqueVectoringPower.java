@@ -25,38 +25,28 @@ import ch.ethz.idsc.tensor.sca.Tan;
       new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   private final MPCSteering mpcSteering;
   // ---
-  private final MPCStateEstimationProvider mpcStateProvider;
+  private final MPCStateEstimationProvider mpcStateEstimationProvider;
 
-  public MPCAggressiveTorqueVectoringPower(MPCStateEstimationProvider mpcStateProvider, MPCSteering mpcSteering) {
-    this.mpcStateProvider = mpcStateProvider;
+  public MPCAggressiveTorqueVectoringPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering) {
+    this.mpcStateEstimationProvider = Objects.requireNonNull(mpcStateEstimationProvider);
     this.mpcSteering = mpcSteering;
   }
 
   @Override
   Optional<Tensor> getPower(Scalar time) {
     ControlAndPredictionStep cnsStep = getStep(time);
-    if (Objects.isNull(cnsStep)) {
+    if (Objects.isNull(cnsStep))
       return Optional.empty();
-    }
-    if (Objects.isNull(mpcStateProvider)) {
-      // return torqueless power
-      return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(//
-          Quantity.of(0, SI.SECOND.negate()), //
-          cnsStep.gokartState.getUx(), //
-          Quantity.of(0, SI.SECOND.negate()), //
-          cnsStep.gokartControl.getaB(), //
-          Quantity.of(0, SI.SECOND.negate())));
-    }
     Optional<Tensor> optional = mpcSteering.getSteering(time);
     if (!optional.isPresent())
       return Optional.empty();
     Tensor steering = optional.get();
     Scalar theta = steerMapping.getAngleFromSCE(steering.Get(0)); // steering angle of imaginary front wheel
     Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
-    Scalar tangentialSpeed = mpcStateProvider.getState().getUx();
+    Scalar tangentialSpeed = mpcStateEstimationProvider.getState().getUx();
     Scalar wantedRotationRate = expectedRotationPerMeterDriven.multiply(tangentialSpeed); // unit s^-1
     // compute (negative) angular slip
-    Scalar gyroZ = mpcStateProvider.getState().getdotPsi(); // unit s^-1
+    Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
     Scalar wantedAcceleration = cnsStep.gokartControl.getaB();// when used in
     // get midpoint of powered acceleration range
@@ -71,11 +61,6 @@ import ch.ethz.idsc.tensor.sca.Tan;
         gyroZ));
   }
 
-  // @Override
-  // public void setStateEstimationProvider(MPCStateEstimationProvider mpcstateProvider) {
-  // // FIXME JPH obsolete
-  // // this.mpcStateProvider = mpcstateProvider;
-  // }
   @Override
   public void start() {
     // TODO MH document why empty

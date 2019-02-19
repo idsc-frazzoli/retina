@@ -51,9 +51,10 @@ public class TrackReconManagement {
     height = gridSize.Get(1).number().intValue();
   }
 
-  public void resetTrack() {
+  /** clears track data: center line, boundaries, ...
+   * but keeps start position */
+  public void computeTrack() {
     trackDataXYR = null;
-    startX = -1;
   }
 
   public boolean isStartSet() {

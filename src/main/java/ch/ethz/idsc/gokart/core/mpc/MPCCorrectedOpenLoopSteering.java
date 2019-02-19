@@ -24,8 +24,8 @@ import ch.ethz.idsc.tensor.Tensors;
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl.getudotS());
     return Optional.of(Tensors.of( //
         cnpStep.gokartState.getS().add(rampUp), //
-        cnpStep.gokartControl.getudotS()));
-    // .multiply(mpcActiveCompensationLearning.steeringCorrection);
+        cnpStep.gokartControl.getudotS())//
+        .multiply(MPCOptimizationConfig.GLOBAL.steerMultiplicator));
   }
 
   // TODO MH remove commented out code below:

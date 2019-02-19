@@ -55,4 +55,6 @@ public class MPCOptimizationConfig {
   public Scalar qpFactor = RealScalar.of(0);
   /** How much does mpc underestimate the braking */
   public Scalar brakeMultiplicator = RealScalar.of(1);
+  /** How much does mpc underestimate the steering */
+  public Scalar steerMultiplicator = RealScalar.of(1.2);
 }
