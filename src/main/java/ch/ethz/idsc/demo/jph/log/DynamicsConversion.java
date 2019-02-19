@@ -22,14 +22,12 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ enum DynamicsConversion {
   ;
-  private static final File DEST = new File("/media/datahaki/data/gokart/dynamics");
-
   public static File single(File cut) {
-    File file = new File(cut, "post.lcm");
+    File file = new File(cut, StaticHelper.FILENAME);
     if (!file.isFile())
       throw new RuntimeException("" + file);
     // ---
-    File folder = new File(DEST, cut.getName().substring(0, 8)); // date e.g. 20190208
+    File folder = new File(StaticHelper.DEST, cut.getName().substring(0, 8)); // date e.g. 20190208
     folder.mkdir();
     File target = new File(folder, cut.getName());
     target.mkdir();
@@ -62,6 +60,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   public static void main(String[] args) {
-    single(new File("/media/datahaki/data/gokart/cuts/_20190208/20190208T145312_04"));
+    single(new File(StaticHelper.CUTS, "_20190208/20190208T145312_04"));
   }
 }

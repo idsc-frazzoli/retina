@@ -40,20 +40,20 @@ import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 
-/* package */ class LogReport {
+/* package */ class HtmlLogReport {
   private static final int WIDTH = 854;
   private static final int HEIGHT = 480;
 
   // ---
   public static void generate(File directory) throws IOException {
-    new LogReport(directory);
+    new HtmlLogReport(directory);
   }
 
   // ---
   private final File plot;
   private final Map<SingleChannelInterface, Tensor> map;
 
-  private LogReport(File directory) throws IOException {
+  private HtmlLogReport(File directory) throws IOException {
     plot = new File(directory, "plot");
     plot.mkdir();
     map = StaticHelper.SINGLE_CHANNEL_INTERFACES.stream() //
@@ -322,6 +322,6 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
   }
 
   public static void main(String[] args) throws IOException {
-    LogReport.generate(new File("/media/datahaki/data/gokart/dynamics/20190208/20190208T145312_04"));
+    HtmlLogReport.generate(new File(StaticHelper.DEST, "20190208/20190208T145312_04"));
   }
 }
