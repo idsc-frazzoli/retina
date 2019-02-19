@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import org.jfree.chart.ChartUtils;
 
+import ch.ethz.idsc.gokart.offline.channel.DavisDvsChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartStatusChannel;
 import ch.ethz.idsc.gokart.offline.channel.LabjackAdcChannel;
@@ -34,6 +35,7 @@ import ch.ethz.idsc.subare.util.plot.VisualSet;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Accumulate;
 import ch.ethz.idsc.tensor.alg.ListConvolve;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 import ch.ethz.idsc.tensor.io.Get;
@@ -89,6 +91,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       htmlUtf8.appendln("<h2>Misc</h2>");
       htmlUtf8.appendln("<img src='plot/labjackAdc.png' /><br/><br/>");
       htmlUtf8.appendln("<img src='plot/poseQuality.png' /><br/><br/>");
+      htmlUtf8.appendln("<img src='plot/davisPolarity.png' /><br/><br/>");
     }
     exportStatus();
     exportSteerGet();
@@ -103,6 +106,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     exportPoseDerivative();
     exportLabjackAdc();
     exportPoseQuality();
+    exportPolarity();
   }
 
   private void exportListPlot(String filename, VisualSet visualSet) throws IOException {
@@ -240,6 +244,17 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global y position [m]");
     visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global heading [rad]");
     exportListPlot("pose_raw.png", visualSet);
+  }
+
+  public void exportPolarity() throws IOException {
+    VisualSet visualSet = new VisualSet();
+    visualSet.setPlotLabel("Polarity Delta");
+    visualSet.setAxesLabelX("time [s]");
+    Tensor tensor = map.get(DavisDvsChannel.INSTANCE);
+    Tensor domain = tensor.get(Tensor.ALL, 0);
+    visualSet.add(domain, Accumulate.of(tensor.get(Tensor.ALL, 1))).setLabel("bright to dark");
+    visualSet.add(domain, Accumulate.of(tensor.get(Tensor.ALL, 2))).setLabel("dark to bright");
+    exportListPlot("davisPolarity.png", visualSet);
   }
 
   public void exportPoseSmooth() throws IOException {

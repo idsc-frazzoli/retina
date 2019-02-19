@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.offline.channel.DavisDvsChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartStatusChannel;
 import ch.ethz.idsc.gokart.offline.channel.LabjackAdcChannel;
@@ -31,6 +32,7 @@ import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
       SteerGetChannel.INSTANCE, //
       LinmotPutVehicleChannel.INSTANCE, //
       LinmotGetVehicleChannel.INSTANCE, //
+      DavisDvsChannel.INSTANCE, //
       Vmu931ImuVehicleChannel.INSTANCE, //
       LabjackAdcChannel.INSTANCE //
   );
