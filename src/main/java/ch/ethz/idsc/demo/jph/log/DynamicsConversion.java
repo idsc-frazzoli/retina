@@ -60,6 +60,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   public static void main(String[] args) {
-    single(new File(StaticHelper.CUTS, "_20190208/20190208T145312_04"));
+    single(new File(StaticHelper.CUTS, "20190211/20190211T100755_00"));
   }
 }

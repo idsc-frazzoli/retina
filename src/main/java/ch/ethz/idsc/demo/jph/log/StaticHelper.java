@@ -16,6 +16,7 @@ import ch.ethz.idsc.gokart.offline.channel.RimoPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
 import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
+import ch.ethz.idsc.gokart.offline.channel.Vlp16RayChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
 import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 
@@ -33,6 +34,7 @@ import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
       LinmotPutVehicleChannel.INSTANCE, //
       LinmotGetVehicleChannel.INSTANCE, //
       DavisDvsChannel.INSTANCE, //
+      Vlp16RayChannel.INSTANCE, //
       Vmu931ImuVehicleChannel.INSTANCE, //
       LabjackAdcChannel.INSTANCE //
   );
