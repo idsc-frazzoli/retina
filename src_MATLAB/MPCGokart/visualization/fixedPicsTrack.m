@@ -17,13 +17,15 @@ daspect([1 1 1])
 [leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),1,startpoints);
 %plot(leftline(:,1),leftline(:,2),'b')
 %plot(rightline(:,1),rightline(:,2),'b')
-plot(middleline(:,1),middleline(:,2),'--r')
+plot(middleline(:,1),middleline(:,2),'--r','LineWidth',2)
 plot([points(:,1);points(1,1)],[points(:,2);points(1,2)], '-ks')
 %plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'-ks') 
 %plot(llc(:,1),llc(:,2),'-k');
 %plot(rlc(:,1),rlc(:,2),'-k');
 hold off
 print('centerline','-dpng','-r600')
+xl = xlim;
+yl = ylim;
 
 
 %show track width spline
@@ -34,7 +36,7 @@ ylabel('track width [m]')
 [leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),0,startpoints);
 plot(leftline(:,1),leftline(:,2),'b')
 plot(rightline(:,1),rightline(:,2),'b')
-plot(middleline(:,1),middleline(:,2),'--r')
+plot(middleline(:,1),middleline(:,2),'--r','LineWidth',2)
 %plot([points(:,1);points(1,1)],[points(:,2);points(1,2)], '-ks')
 plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'ks') 
 plot(llc(:,1),llc(:,2),'-k');
@@ -45,13 +47,15 @@ print('widthcontrol','-dpng','-r600')
 
 %show track width spline
 figure
+xlim(xl);
+ylim(yl);
 hold on
 set(gca,'visible','off')
 daspect([1 1 1])
 [leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),1,startpoints);
 plot(leftline(:,1),leftline(:,2),'b')
 plot(rightline(:,1),rightline(:,2),'b')
-plot(middleline(:,1),middleline(:,2),'--r')
+plot(middleline(:,1),middleline(:,2),'--r','LineWidth',2)
 %plot([points(:,1);points(1,1)],[points(:,2);points(1,2)], '-ks')
 plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'-ks') 
 plot(llc(:,1),llc(:,2),'-k');
@@ -59,15 +63,56 @@ plot(rlc(:,1),rlc(:,2),'-k');
 hold off
 print('combined','-dpng','-r600')
 
-%end result
+
+%show partial track width spline
 figure
+xlim(xl);
+ylim(yl);
 hold on
 set(gca,'visible','off')
 daspect([1 1 1])
 [leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),1,startpoints);
 plot(leftline(:,1),leftline(:,2),'b')
 plot(rightline(:,1),rightline(:,2),'b')
-plot(middleline(:,1),middleline(:,2),'--r')
+plot(middleline(:,1),middleline(:,2),'--r','LineWidth',2)
+plot([points(:,1);points(1,1)],[points(:,2);points(1,2)], '-ks')
+%plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'-ks') 
+%plot(llc(:,1),llc(:,2),'-k');
+%plot(rlc(:,1),rlc(:,2),'-k');
+hold off
+print('preextracted','-dpng','-r600')
+
+figure
+xlim(xl);
+ylim(yl);
+pointsel = 2:7
+hold on
+set(gca,'visible','off')
+daspect([1 1 1])
+[leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),1,startpoints);
+[trackm,~]=size(leftline);
+tracksel=1*trackm/m:1:5*trackm/m;
+plot(leftline(tracksel,1),leftline(tracksel,2),'b')
+plot(rightline(tracksel,1),rightline(tracksel,2),'b')
+plot(middleline(tracksel,1),middleline(tracksel,2),'--r','LineWidth',2)
+plot(points(pointsel,1),points(pointsel,2), '-ks')
+%plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'-ks') 
+%plot(llc(:,1),llc(:,2),'-k');
+%plot(rlc(:,1),rlc(:,2),'-k');
+hold off
+print('extracted','-dpng','-r600')
+
+%end result
+figure
+xlim(xl);
+ylim(yl);
+hold on
+set(gca,'visible','off')
+daspect([1 1 1])
+[leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),1,startpoints);
+plot(leftline(:,1),leftline(:,2),'b')
+plot(rightline(:,1),rightline(:,2),'b')
+plot(middleline(:,1),middleline(:,2),'--r','LineWidth',2)
 %plot([points(:,1);points(1,1)],[points(:,2);points(1,2)], '-ks')
 %plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'-ks') 
 %plot(llc(:,1),llc(:,2),'-k');

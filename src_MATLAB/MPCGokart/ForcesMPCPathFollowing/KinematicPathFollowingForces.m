@@ -81,10 +81,13 @@ model.hl = [-inf;-inf;-inf;-inf;-inf;-inf];
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));
     
-points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+%points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+points = getPoints('/wildpoints.csv');
+points(:,3)=points(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
 %points = [0,40,40,5,0;0,0,10,9,10]';
 trajectorytimestep = integrator_stepsize;
+solvetimes = [];
 %[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 model.npar = pointsO + 3*pointsN;
 for i=1:model.N
@@ -151,6 +154,7 @@ xs(index.beta-index.nu)=0;
 xs(index.s-index.nu)=0.01;
 %xs(index.braketemp-index.nu)=40;
 history = zeros(tend*eulersteps,model.nvar+1);
+splinepointhist = zeros(tend,pointsN*3+1);
 plansx = [];
 plansy = [];
 planss = [];
@@ -184,14 +188,14 @@ for i =1:tend
     ip = splinestart;
     [nkp, ~] = size(points);
     nextSplinePoints = zeros(pointsN,3);
-    for i=1:pointsN
+    for ii=1:pointsN
        while ip>nkp
             ip = ip -nkp;
        end
-       nextSplinePoints(i,:)=points(ip,:);
+       nextSplinePoints(ii,:)=points(ip,:);
        ip = ip + 1;
     end
-    
+    splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
     problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,maxyacc,latacclim,rotacceffect,torqueveceffect, brakeeffect,nextSplinePoints) , model.N ,1);
@@ -201,6 +205,7 @@ for i =1:tend
     
     % solve mpc
     [output,exitflag,info] = MPCPathFollowing(problem);
+    solvetimes(end+1)=info.solvetime;
     if(exitflag==0)
        a = 1; 
     end

@@ -334,6 +334,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   public void update(int startX, int startY, double startorientation, Tensor gokartPosition) {
     // position if map
     Tensor curPos = null;
+    route = null;
     if (Objects.nonNull(gokartPosition))
       curPos = getPixelPosition(gokartPosition);
     if (initialize(startX, startY, startorientation, curPos, false)) {
@@ -341,15 +342,15 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       // check if we can reach target
       if (reachable(dijkstraTarget)) // we can reach target;
       {
-        System.out.println("target found");
+        System.out.println("direct route found");
         closed = true;
         route = dijkstraTarget.getRoute();
       } else {
-        System.out.println("target not found");
+        System.out.println("direct round not found");
         closed = false;
         actualTarget = getFarthestCell();
         LinkedList<Cell> routeFromStart = actualTarget.getRoute();
-        //route = routeFromStart;
+        // route = routeFromStart;
         // can we reach gokart?
         if (reachable(dijkstraGokartBack)) {
           System.out.println("start->gokart found. Expanding beyond gokart");
@@ -366,8 +367,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
             System.out.println("found gokart->target->farthest point");
             route.addAll(routeFromStart);
           } else {
-            System.out.println("no route found to gokart");
-            route = routeFromStart;
+            System.out.println("no route found to gokart (we are lost)");
+            // route = routeFromStart;
           }
         }
       }
@@ -377,7 +378,9 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   }
 
   public int getRouteLength() {
-    return route.size();
+    if (Objects.nonNull(route))
+      return route.size();
+    return 0;
   }
 
   private static boolean reachable(Cell target) {

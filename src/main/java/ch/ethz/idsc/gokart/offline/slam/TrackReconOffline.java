@@ -4,6 +4,8 @@ package ch.ethz.idsc.gokart.offline.slam;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.Objects;
@@ -46,11 +48,15 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO contains redundancies with GokartMappingModule 
 public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListener, MPCBSplineTrackListener {
+  private static final File DIRECTORY = HomeDirectory.Pictures("log", "mapper");
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
@@ -106,7 +112,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     // ---
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(DELTA);
-      if (count++ > 5) {
+      if (count++ > 1) {
         Optional<MPCBSplineTrack> lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(0.05, SI.SECOND));
         trackReconRender.mpcBSplineTrack(lastTrack);
       }
@@ -118,6 +124,15 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
           { 0., -7.5 * zoom, 640 + 640 }, //
           { 0., 0., 1. }, //
       }));
+      final File file = new File(DIRECTORY, "fielddata"+count+".csv");
+      Tensor lastTrack = trackReconManagement.getTrackData();
+      if(Objects.nonNull(lastTrack))
+        try {
+          Export.of(file, lastTrack.divide(Quantity.of(1, SI.METER)));
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       Graphics2D graphics = bufferedImage.createGraphics();
       ImageRender imageRender = ImageRender.of(predefinedMap.getImage(), predefinedMap.range());
       imageRender.render(geometricLayer, graphics);
