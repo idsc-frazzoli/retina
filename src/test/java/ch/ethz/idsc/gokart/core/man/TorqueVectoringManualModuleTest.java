@@ -100,7 +100,7 @@ public class TorqueVectoringManualModuleTest extends TestCase {
     TorqueVectoringManualModule torqueVectoringJoystickModule = new SimpleTorqueVectoringManualModule();
     torqueVectoringJoystickModule.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip left
-    System.out.println(slip + " slip left");
+    // System.out.println(slip + " slip left");
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.3, SI.PER_SECOND));
     torqueVectoringJoystickModule.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
@@ -108,8 +108,8 @@ public class TorqueVectoringManualModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false, false);
     Optional<RimoPutEvent> control = torqueVectoringJoystickModule.control(steerColumnAdapter, manualControlInterface);
     RimoPutEvent rimoPutEvent5 = control.get();
-    System.out.println(rimoPutEvent5.putTireL.getTorque());
-    System.out.println(rimoPutEvent5.putTireR.getTorque());
+    // System.out.println(rimoPutEvent5.putTireL.getTorque());
+    // System.out.println(rimoPutEvent5.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent5.putTireR.getTorque(), rimoPutEvent5.putTireL.getTorque().negate()));
     assertTrue(Scalars.lessThan(Quantity.of(0, NonSI.ARMS), rimoPutEvent5.putTireL.getTorque().negate()));
     Scalar meanPower = rimoPutEvent5.putTireL.getTorque().negate().add(rimoPutEvent5.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
@@ -122,7 +122,7 @@ public class TorqueVectoringManualModuleTest extends TestCase {
     TorqueVectoringManualModule tvjm = new SimpleTorqueVectoringManualModule();
     tvjm.first();
     Scalar slip = RationalScalar.of(-3, 4); // 3/4 forward slip right
-    System.out.println(slip + " slip right");
+    // System.out.println(slip + " slip right");
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(-0.3, SI.PER_SECOND));
     tvjm.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0.1, "SCE"));
@@ -130,8 +130,8 @@ public class TorqueVectoringManualModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0.75, 0), false, false);
     Optional<RimoPutEvent> control = tvjm.control(steerColumnAdapter, manualControlInterface);
     RimoPutEvent rimoPutEvent6 = control.get();
-    System.out.println(rimoPutEvent6.putTireL.getTorque());
-    System.out.println(rimoPutEvent6.putTireR.getTorque());
+    // System.out.println(rimoPutEvent6.putTireL.getTorque());
+    // System.out.println(rimoPutEvent6.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent6.putTireL.getTorque().negate(), rimoPutEvent6.putTireR.getTorque()));
     Scalar meanPower = rimoPutEvent6.putTireL.getTorque().negate().add(rimoPutEvent6.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
     Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);
@@ -143,7 +143,7 @@ public class TorqueVectoringManualModuleTest extends TestCase {
     TorqueVectoringManualModule torqueVectoringJoystickModule = new SimpleTorqueVectoringManualModule();
     torqueVectoringJoystickModule.first();
     Scalar slip = RationalScalar.of(-3, 4); // 3/4 forward slip left
-    System.out.println(slip + " slip left");
+    // System.out.println(slip + " slip left");
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.3, SI.PER_SECOND));
     torqueVectoringJoystickModule.getEvent(RimoGetEvents.create(200, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(-0.1, "SCE"));
@@ -151,8 +151,8 @@ public class TorqueVectoringManualModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0.75, 0), false, false);
     Optional<RimoPutEvent> control = torqueVectoringJoystickModule.control(steerColumnAdapter, manualControlInterface);
     RimoPutEvent rimoPutEvent7 = control.get();
-    System.out.println(rimoPutEvent7.putTireL.getTorque());
-    System.out.println(rimoPutEvent7.putTireR.getTorque());
+    // System.out.println(rimoPutEvent7.putTireL.getTorque());
+    // System.out.println(rimoPutEvent7.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent7.putTireR.getTorque(), rimoPutEvent7.putTireL.getTorque().negate()));
     Scalar meanPower = rimoPutEvent7.putTireL.getTorque().negate().add(rimoPutEvent7.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
     Scalar wantedPower = ManualConfig.GLOBAL.torqueLimit.multiply(slip);

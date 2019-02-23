@@ -7,32 +7,36 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import ch.ethz.idsc.gokart.lcm.LogStartTime;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
 import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ enum DynamicsConversion {
   ;
-  private static final File DEST = new File("/media/datahaki/data/gokart/dynamics");
-
   public static File single(File cut) {
-    File file = new File(cut, "post.lcm");
+    File file = new File(cut, StaticHelper.FILENAME);
     if (!file.isFile())
-      throw new RuntimeException();
+      throw new RuntimeException("" + file);
     // ---
-    File folder = new File(DEST, cut.getName().substring(0, 8)); // date e.g. 20190208
+    File folder = new File(StaticHelper.DEST, cut.getName().substring(0, 8)); // date e.g. 20190208
     folder.mkdir();
     File target = new File(folder, cut.getName());
     target.mkdir();
     Map<SingleChannelInterface, OfflineTableSupplier> map = StaticHelper.SINGLE_CHANNEL_INTERFACES.stream() //
         .collect(Collectors.toMap(Function.identity(), SingleChannelTable::of));
     try {
+      long utime = LogStartTime.utime(file);
+      Put.of(new File(target, StaticHelper.LOG_START_TIME), RealScalar.of(utime));
+      // ---
       OfflineLogPlayer.process(file, map.values());
       for (Entry<SingleChannelInterface, OfflineTableSupplier> entry : map.entrySet())
         Export.of( //
@@ -44,7 +48,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         Tensor tensor = Tensor.of(pose.stream().map(row -> row.extract(1, 4)));
         Tensor smooth = GokartPoseSmoothing.INSTANCE.apply(tensor).map(Round._6);
         for (int index = 0; index < 3; ++index)
-          pose.set(smooth.get(Tensor.ALL, index), Tensor.ALL, index + 1);
+          pose.set(smooth.get(Tensor.ALL, index), Tensor.ALL, 1 + index);
         Export.of( //
             new File(target, StaticHelper.GOKART_POSE_SMOOTH + StaticHelper.EXTENSION), //
             pose);
@@ -56,6 +60,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   public static void main(String[] args) {
-    single(new File("/media/datahaki/data/gokart/cuts/20190208/20190208T145312_04"));
+    single(new File(StaticHelper.CUTS, "_20190208/20190208T145312_04"));
   }
 }
