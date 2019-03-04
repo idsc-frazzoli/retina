@@ -9,6 +9,7 @@ C1 = C;
 C2 = C;
 D1 = 0.8*D;
 D2 = D;
+maxA = D*0.9;
 param = [B1,C1,D1,B2,C2,D2,Cf,maxA];
 modelDx(1,0,0,0.5,0,0, param)
 %VELX,VELY,VELROTZ,BETA,AB,TV

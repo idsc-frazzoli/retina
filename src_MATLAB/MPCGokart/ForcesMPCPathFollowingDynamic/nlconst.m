@@ -12,7 +12,7 @@ slack = z(index.slack);
 pointsO = 7;
 pointsN = 10;
 points = getPointsFromParameters(p, pointsO, pointsN);
-radii = getRadiiFromParameters(p, pointsO, pointsN)
+radii = getRadiiFromParameters(p, pointsO, pointsN);
 
 [splx,sply] = casadiDynamicBSPLINE(z(index.s),points);
 [spldx, spldy] = casadiDynamicBSPLINEforward(z(index.s),points);
@@ -76,6 +76,6 @@ v5 = -laterror-r-0.5*slack;
 %v4 = error'*error;
 %v2 = -1;
 %v = [v1;v2;v3];
-v = [v2;v3;v4;v5;v6;v7];
+v = [v2;v3;v4;v5;];
 end
 

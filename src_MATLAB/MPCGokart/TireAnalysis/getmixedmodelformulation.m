@@ -1,6 +1,6 @@
 clear all;
 close all;
-B = 4;
+B = 2;
 C = 1.7;
 D = 0.7*9.81;
 Cf = 0.15;

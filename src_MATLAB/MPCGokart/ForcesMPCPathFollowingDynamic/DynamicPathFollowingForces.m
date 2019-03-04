@@ -60,12 +60,12 @@ model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 l = 1;
 
 %limit lateral acceleration
-model.nh = 6; 
+model.nh = 4; 
 model.ineq = @(z,p) nlconst(z,p);
 %model.hu = [36,0];
 %model.hl = [-inf,-inf];
-model.hu = [0;1;0;0;0;0];
-model.hl = [-inf;-inf;-inf;-inf;-inf;-inf];
+model.hu = [0;1;0;0];
+model.hl = [-inf;-inf;-inf;-inf];
 
 %points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
   %  controlPointsX.append(Quantity.of(36.2, SI.METER));
@@ -115,8 +115,8 @@ model.lb(index.ds)=-1;
 %model.ub(index.ab)=2;
 model.lb(index.ab)=-4.5;
 model.lb(index.ab)=-inf;
-model.lb(index.tv)=3.5;
-model.lb(index.tv)=3.5;
+model.ub(index.tv)=3.5;
+model.lb(index.tv)=-3.5;
 model.lb(index.slack)=0;
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;
@@ -129,7 +129,7 @@ model.lb(index.s)=0;
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
@@ -150,7 +150,7 @@ pangle = atan2(pdir(2),pdir(1));
 xs(index.x-index.nu)=pstart(1);
 xs(index.y-index.nu)=pstart(2);
 xs(index.theta-index.nu)=pangle;
-xs(index.v-index.nu)=1;
+xs(index.v-index.nu)=5;
 xs(index.ab-index.nu)=0;
 xs(index.beta-index.nu)=0;
 xs(index.s-index.nu)=0.01;

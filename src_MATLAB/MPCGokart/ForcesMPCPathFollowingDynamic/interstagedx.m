@@ -32,6 +32,7 @@ function dx = interstagedx(x,u)
     vy = x(index.yv-index.nu);
     dottheta = x(index.dottheta-index.nu);
     beta = x(index.beta-index.nu);
+    %beta = 0;
     %temp = x(index.braketemp-index.nu);
     %braking=max(0,-ab+casadiGetMaxNegAcc(speed));
     %brakingheatup = heatupfunction(-ab-1.5);
@@ -39,6 +40,8 @@ function dx = interstagedx(x,u)
     l = 1.19;
     ackermannAngle = -0.58*beta*beta*beta+0.93*beta;
    
+    %(VELX,VELY,VELROTZ,BETA,AB,TV, param)
+    %[ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(vx,vy,dottheta,ackermannAngle,ab,tv, param);
     [ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(vx,vy,dottheta,ackermannAngle,ab,tv, param);
     
     
@@ -48,12 +51,16 @@ function dx = interstagedx(x,u)
     else
         dx = SX.zeros(index.ns,1);
     end
-    dx(index.x-index.nu)=vx*cos(theta);
-    dx(index.y-index.nu)=vx*sin(theta);
+    rotmat = @(beta)[cos(beta),-sin(beta);sin(beta),cos(beta)];
+    lv = [vx;vy];
+    gv = rotmat(theta)*lv;
+    dx(index.x-index.nu)=gv(1);
+    dx(index.y-index.nu)=gv(2);
     dx(index.dottheta-index.nu)=ACCROTZ;
     dx(index.theta-index.nu)=dottheta;
     %dx(index.theta-index.nu)=vx/l*tan(ackermannAngle);
     dx(index.v-index.nu)=ACCX;
+    dx(index.yv-index.nu)=ACCY;
     dx(index.beta-index.nu)=dotbeta;
     dx(index.s-index.nu)=ds;
     %dx(index.braketemp-index.nu)=brakingheatup+brakingcooldown;

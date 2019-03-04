@@ -9,11 +9,13 @@ function [ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV,
     Cf = param(7);
     maxA = param(8);
     magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
-    simpleslip = @(VELY,VELX,taccx)-(1+(taccx*Cf)^2)*VELY/(VELX+0.001);
+    reg = 4;
+    simpleslip = @(VELY,VELX,taccx)-(1+(taccx*Cf)^2)*VELY/(VELX+reg);
     simplediraccy = @(VELY,VELX,taccx)magic(simpleslip(VELY,VELX,taccx),B2,C2,D2);
     simpleaccy = @(VELY,VELX,taccx)(1-satfun((taccx/D2)^2))^(1/2)*simplediraccy(VELY,VELX,taccx);
     acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
-    simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+0.001),B1,C1,D1);
+    simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1);
+    simpleaccy = @(VELY,VELX,taccx)magic(-VELY/(VELX+reg),B2,C2,D2);
 
 
 
@@ -33,10 +35,12 @@ function [ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV,
     F2x = AB;
     F2y1 = simpleaccy(VELY-l2*VELROTZ,VELX,(AB+TV)/f2n)*f2n/2;
     F2y2 = simpleaccy(VELY-l2*VELROTZ,VELX,(AB-TV)/f2n)*f2n/2;
+    F2y = simpleaccy(VELY-l2*VELROTZ,VELX,AB/f2n)*f2n;
     TVTrq = TV*w;
     
     
-    ACCROTZ = TVTrq + F1y*l1 -(F2y1+F2y2)*l2;
+    ACCROTZ = TVTrq + F1y*l1 -F2y*l2;
+    %ACCROTZ = TVTrq + F1y*l1;
     ACCX = F1x+F2x+VELROTZ*VELY;
     ACCY = F1y+F2y1+F2y2-VELROTZ*VELX;
 end
