@@ -27,9 +27,9 @@ for iff = 1:frames
        sphy = sph(2+pointsN:1+2*pointsN)';
        sphr = sph(2+2*pointsN:1+3*pointsN)';
        [leftline,middleline,rightline]=drawTrack([sphx,sphy],sphr);
-       %plot(leftline(1:800,1),leftline(1:800,2),'--b')
-       %plot(rightline(1:800,1),rightline(1:800,2),'--b')
-       %plot(sphx,sphy,'--s','color',[.7 .2 .2]);
+       plot(leftline(1:800,1),leftline(1:800,2),'--b')
+       plot(rightline(1:800,1),rightline(1:800,2),'--b')
+       plot(sphx,sphy,'--s','color',[.7 .2 .2]);
     end
     endind = iff*eulersteps*planintervall;
     for i=max(1,endind-tracelength):endind
