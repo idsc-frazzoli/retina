@@ -2,7 +2,7 @@
 addpath('..');
 userDir = getuserdir;
 addpath([userDir '/Forces']);
-addpath('casadi');
+
     
 clear model
 clear problem
@@ -129,7 +129,7 @@ model.lb(index.s)=0;
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
@@ -138,7 +138,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 FORCES_NLP(model, codeoptions,output);
 
 tend = 100;
-eulersteps = 10;
+eulersteps = 2;
 planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]
 %[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
@@ -205,7 +205,9 @@ for i =1:tend
     %problem.x0 = rand(341,1);
     
     % solve mpc
+
     [output,exitflag,info] = MPCPathFollowing(problem);
+    toc
     if(exitflag==0)
        a = 1; 
     end
