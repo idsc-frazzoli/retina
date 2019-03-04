@@ -34,6 +34,7 @@ function f = objective(z,points,radii,vmax, maxxacc,maxyacc,latacclim,rotacceffe
     dAckermannAngle = -0.58*3*beta*beta*dotbeta+0.93*dotbeta;
     latacc = (tan(ackermannAngle)*tangentspeed^2)/l;
     rotacc = dAckermannAngle*tangentspeed/l;
+    tv = z(index.tv);
     frontaxlelatacc = abs(latacc+rotacc*rotacceffect);
     torquevectoringcapability = torqueveccapsmooth(forwardacc)*torqueveceffect;
     %torquevectoringcapability = 0;
@@ -47,5 +48,5 @@ function f = objective(z,points,radii,vmax, maxxacc,maxyacc,latacclim,rotacceffe
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
     %f = lagcost+latcost+reg+prog+over75d*over75d*0.001+speedcost+accviolation+trackViolation;
-    f = lagcost+latcost*0.01+reg+prog+5*slack+speedcost;
+    f = lagcost+latcost*0.01+reg+prog+5*slack+speedcost+0.1*tv^2;
 end

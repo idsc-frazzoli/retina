@@ -50,7 +50,9 @@ function dx = interstagedx(x,u)
     end
     dx(index.x-index.nu)=vx*cos(theta);
     dx(index.y-index.nu)=vx*sin(theta);
-    dx(index.theta-index.nu)=vx/l*tan(ackermannAngle);
+    dx(index.dottheta-index.nu)=ACCROTZ;
+    dx(index.theta-index.nu)=dottheta;
+    %dx(index.theta-index.nu)=vx/l*tan(ackermannAngle);
     dx(index.v-index.nu)=ACCX;
     dx(index.beta-index.nu)=dotbeta;
     dx(index.s-index.nu)=ds;
