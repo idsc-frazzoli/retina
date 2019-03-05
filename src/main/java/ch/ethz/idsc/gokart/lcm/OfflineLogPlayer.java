@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -33,6 +34,7 @@ public enum OfflineLogPlayer {
 
   public static void process(File file, Collection<? extends OfflineLogListener> offlineLogListeners) throws IOException {
     Set<String> set = new HashSet<>();
+    set.add(GokartLcmChannel.LCM_SELF_TEST);
     Log log = new Log(file.toString(), "r");
     Long tic = null;
     try {
