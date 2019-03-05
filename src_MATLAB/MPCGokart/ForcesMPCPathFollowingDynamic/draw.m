@@ -2,10 +2,16 @@
 figure;
 global index
 
+l = 1.19;
+l1 = 0.73;
+l2 = l-l1;
+
 % variables history = [t,ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 %start later in history
 hstart = 1;
 hend = 2000;
+spacing = 5;
+spc = 1;
 lhistory = history(hstart:end,:);
 
 m = 2;
@@ -20,9 +26,10 @@ title('reference trajectory vs actual');
 %legend('reference', 'MPC controlled')
 
 %plot acceleration and deceleration in colors
-p = lhistory(:,[index.x+1,index.y+1]);
-offset = 0.4*gokartforward(lhistory(:,index.theta+1));
-p = offset + p;
+po = lhistory(:,[index.x+1,index.y+1]);
+offset = 0.2*gokartforward(lhistory(:,index.theta+1));
+forward = gokartforward(lhistory(:,index.theta+1));
+p = offset + po;
 acc = lhistory(:,index.ab+1);
 maxacc = max(abs(acc));
 [nu,~]=size(p);
@@ -32,6 +39,14 @@ for i=1:nu-1
    y = [p(i,2),p(next,2)];
    vc = acc(i)/maxacc;
    line(x,y,'Color',[0.5-0.5*vc,0.5+0.5*vc,0]);
+   %draw angle
+   spc = spc+1;
+   if(spc>=spacing)
+       spc = 1;
+       back = p(i,:) - forward(i,:)*l2;
+       front = p(i,:) + forward(i,:)*l1;
+       plot([back(1),front(1)],[back(2),front(2)],'-k');
+   end
 end
 %draw track
 if(1)
@@ -74,6 +89,7 @@ subplot(m,n,3)
 hold on
 yyaxis left
 stairs(lhistory(:,1), lhistory(:,index.ab+1))
+stairs(lhistory(:,1), lhistory(:,index.tv+1))
 ylabel('acceleration [m/s²]')
 axis([-inf inf -8 8])
 yyaxis right

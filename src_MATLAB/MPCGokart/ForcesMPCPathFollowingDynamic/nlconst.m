@@ -7,6 +7,8 @@ l = 1.19;
 beta  = z(index.beta);
 dotbeta = z(index.dotbeta);
 forwardacc = z(index.ab);
+VELX = z(index.v);
+VELY = z(index.yv);
 slack = z(index.slack);
 
 pointsO = 7;
@@ -23,7 +25,7 @@ forward = [spldx;spldy];
 sidewards = [splsx;splsy];
 %[splx,sply] = casadiBSPLINE(z(9),points);
 realPos = z([index.x,index.y]);
-centerOffset = 0.4*gokartforward(z(index.theta))';
+centerOffset = 0.2*gokartforward(z(index.theta))';
 centerPos = realPos+centerOffset;%+0.4*forward;
 wantedpos = [splx;sply];
 error = centerPos-wantedpos;
@@ -60,6 +62,8 @@ v6 = frontaxlelatacc -torquevectoringcapability- latacclim-slack;
 %v7 = -frontaxlelatacc - latacclim-torquevectoringcapability-slack;
 v7 = -frontaxlelatacc -torquevectoringcapability - latacclim-slack;
 
+maxA = 6.2;
+acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
 
 wantedpos = [splx;sply];
 realPos = z([index.x,index.y]);
@@ -69,7 +73,7 @@ l = 1.19;
 %v1 = (tan(z(index.beta))*z(index.v)^2/l)^2+z(index.ab)^2;
 %v1=(tan(z(8))*z(7)^2/l);
 v2 = z(index.ab)-casadiGetSmoothMaxAcc(z(index.v));
-v3 = accnorm-slack;
+v3 = acclim(VELY,VELX,forwardacc)-slack;
 v4 = laterror-r-0.5*slack;
 v5 = -laterror-r-0.5*slack;
 

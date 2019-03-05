@@ -19,8 +19,8 @@ function [ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV,
 
 
 
-    l = 1.29;
-    l1 = 1;
+    l = 1.19;
+    l1 = 0.73;
     l2 = l-l1;
     f1n = l2/l;
     f2n = l1/l;
