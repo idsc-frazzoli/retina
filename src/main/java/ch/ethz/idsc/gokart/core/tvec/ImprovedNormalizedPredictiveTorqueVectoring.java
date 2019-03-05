@@ -18,7 +18,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
    * 0 means 100% old value
    * 1 means 100% new value
    * 0.5 means average */
-  private static final Scalar ROLLING_AVERAGE_RATIO = RealScalar.of(0.1); // good data expected
+  private static final Scalar ROLLING_AVERAGE_RATIO = RealScalar.of(0.5); // good data expected
   private static final Scalar ROLLING_AVERAGE_VALUE = Quantity.of(0.0, SI.ANGULAR_ACCELERATION);
   // ---
   private final IntervalClock intervalClock = new IntervalClock();
