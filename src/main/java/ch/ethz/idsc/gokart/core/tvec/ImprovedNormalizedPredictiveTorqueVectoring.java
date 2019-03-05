@@ -16,13 +16,12 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
   private static final Scalar ROLLING_AVERAGE_VALUE = Quantity.of(0.0, SI.ANGULAR_ACCELERATION);
   // ---
   private final IntervalClock intervalClock = new IntervalClock();
-  private final GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter( //
-      RnGeodesic.INSTANCE, //
-      TorqueVectoringConfig.GLOBAL.rollingAverageRatio, //
-      ROLLING_AVERAGE_VALUE);
+  private final GeodesicIIR1Filter geodesicIIR1Filter;
 
   public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
+    geodesicIIR1Filter = new GeodesicIIR1Filter( //
+        RnGeodesic.INSTANCE, torqueVectoringConfig.rollingAverageRatio, ROLLING_AVERAGE_VALUE);
   }
 
   @Override // from ImprovedNormalizedTorqueVectoring
