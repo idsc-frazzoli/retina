@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ final class MPCRimoProvider extends MPCBaseProvider<RimoPutEvent> {
+/* package */public final class MPCRimoProvider extends MPCBaseProvider<RimoPutEvent> {
   private final MPCPower mpcPower;
 
   public MPCRimoProvider(Timing timing, MPCPower mpcPower) {
