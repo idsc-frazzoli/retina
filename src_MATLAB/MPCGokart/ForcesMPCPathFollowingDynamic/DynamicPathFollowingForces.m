@@ -2,6 +2,7 @@
 addpath('..');
 userDir = getuserdir;
 addpath([userDir '/Forces']);
+addpath('casadi');
 
     
 clear model
@@ -60,12 +61,12 @@ model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 l = 1;
 
 %limit lateral acceleration
-model.nh = 4; 
+model.nh = 5; 
 model.ineq = @(z,p) nlconst(z,p);
 %model.hu = [36,0];
 %model.hl = [-inf,-inf];
-model.hu = [0;1;0;0];
-model.hl = [-inf;-inf;-inf;-inf];
+model.hu = [0;0;1;0;0];
+model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 %points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
   %  controlPointsX.append(Quantity.of(36.2, SI.METER));
@@ -84,7 +85,9 @@ model.hl = [-inf;-inf;-inf;-inf];
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));
     
-points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+%points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+points = getPoints('/wildpoints.csv');
+points(:,3)=points(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
 %points = [0,40,40,5,0;0,0,10,9,10]';
 trajectorytimestep = integrator_stepsize;
@@ -114,9 +117,11 @@ model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
 %model.ub(index.ab)=2;
 model.lb(index.ab)=-4.5;
-model.lb(index.ab)=-inf;
-model.ub(index.tv)=3.5;
-model.lb(index.tv)=-3.5;
+model.lb(index.ab)=-inf
+model.ub(index.tv)=1.7;
+model.lb(index.tv)=-1.7;
+%model.ub(index.tv)=0.1;
+%model.lb(index.tv)=-0.1;
 model.lb(index.slack)=0;
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;
@@ -129,7 +134,7 @@ model.lb(index.s)=0;
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
@@ -137,8 +142,8 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 100;
-eulersteps = 2;
+tend = 1000;
+eulersteps = 10;
 planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]
 %[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
@@ -156,6 +161,7 @@ xs(index.beta-index.nu)=0;
 xs(index.s-index.nu)=0.01;
 %xs(index.braketemp-index.nu)=40;
 history = zeros(tend*eulersteps,model.nvar+1);
+splinepointhist = zeros(tend,pointsN*3+1);
 plansx = [];
 plansy = [];
 planss = [];
@@ -196,6 +202,7 @@ for i =1:tend
        nextSplinePoints(i,:)=points(ip,:);
        ip = ip + 1;
     end
+    splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
@@ -207,7 +214,6 @@ for i =1:tend
     % solve mpc
 
     [output,exitflag,info] = MPCPathFollowing(problem);
-    toc
     if(exitflag==0)
        a = 1; 
     end
@@ -215,7 +221,7 @@ for i =1:tend
         draw
        return 
     end
-    nextSplinePoints
+    %nextSplinePoints
     %get output
     outputM = reshape(output.alldata,[model.nvar,model.N])';
     x0 = outputM';

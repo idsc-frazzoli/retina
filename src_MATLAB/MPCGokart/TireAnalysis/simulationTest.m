@@ -1,6 +1,6 @@
 function [x,y,o,vx,vy,vo] = simulationTest(u,dt)
 
-    B = 4;
+    B = 6;
     C = 1.7;
     D = 0.7*9.81;
     Cf = 0.15;

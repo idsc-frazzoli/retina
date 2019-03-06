@@ -27,6 +27,7 @@ function f = objective(z,points,radii,vmax, maxxacc,maxyacc,latacclim,rotacceffe
     speedcost = speedPunisher(z(index.v),vmax)*0.04;
     beta = z(index.beta);
     tangentspeed = z(index.v);
+    sidewardsspeed = z(index.yv);
     forwardacc = z(index.ab);
     slack = z(index.slack);
     dotbeta = z(index.dotbeta);
@@ -48,5 +49,5 @@ function f = objective(z,points,radii,vmax, maxxacc,maxyacc,latacclim,rotacceffe
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
     %f = lagcost+latcost+reg+prog+over75d*over75d*0.001+speedcost+accviolation+trackViolation;
-    f = lagcost+latcost*0.01+reg+prog+5*slack+speedcost+0.01*tv^2;
+    f = lagcost+latcost*0.01+reg+prog+5*slack+speedcost+0.01*tv^2;%-0.01*sidewardsspeed^2;
 end

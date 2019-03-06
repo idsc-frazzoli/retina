@@ -42,25 +42,7 @@ torqueveceffect = p(index.ptve);
 brakeeffect = p(index.pbre);
 
 ackermannAngle = -0.58*beta*beta*beta+0.93*beta;
-dAckermannAngle = -0.58*3*beta*beta*dotbeta+0.93*dotbeta;
 tangentspeed = z(index.v);
-latacc = (tan(ackermannAngle)*tangentspeed^2)/l;
-%avoid oversteer
-accnorm = ((latacc/maxyacc)^2+(z(index.ab)/maxxacc)^2);
-
-%avoid understeer
-rotacc = dAckermannAngle*tangentspeed/l;
-frontaxlelatacc = latacc+rotacc*rotacceffect;
-%torquevectoringcapability = torqueveccapsmooth(forwardacc)*torqueveceffect;
-%simplified 
-accbudget = (1.8-forwardacc)/1.6;
-torquevectoringcapability = accbudget*torqueveceffect;
-%understeerright
-%v6 = frontaxlelatacc - latacclim-torquevectoringcapability-slack;
-v6 = frontaxlelatacc -torquevectoringcapability- latacclim-slack;
-%understeerleft
-%v7 = -frontaxlelatacc - latacclim-torquevectoringcapability-slack;
-v7 = -frontaxlelatacc -torquevectoringcapability - latacclim-slack;
 
 maxA = 6.2;
 acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
@@ -72,7 +54,8 @@ error = realPos-wantedpos;
 l = 1.19;
 %v1 = (tan(z(index.beta))*z(index.v)^2/l)^2+z(index.ab)^2;
 %v1=(tan(z(8))*z(7)^2/l);
-v2 = z(index.ab)-casadiGetSmoothMaxAcc(z(index.v));
+v1 = z(index.ab)+z(index.tv)-casadiGetSmoothMaxAcc(z(index.v));
+v2 = z(index.ab)-z(index.tv)-casadiGetSmoothMaxAcc(z(index.v));
 v3 = acclim(VELY,VELX,forwardacc)-slack;
 v4 = laterror-r-0.5*slack;
 v5 = -laterror-r-0.5*slack;
@@ -80,6 +63,6 @@ v5 = -laterror-r-0.5*slack;
 %v4 = error'*error;
 %v2 = -1;
 %v = [v1;v2;v3];
-v = [v2;v3;v4;v5;];
+v = [v1;v2;v3;v4;v5;];
 end
 

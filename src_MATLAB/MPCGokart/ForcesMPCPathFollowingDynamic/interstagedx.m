@@ -3,10 +3,10 @@ function dx = interstagedx(x,u)
     global index
     
     %just for the moment
-    B = 4;
+    B = 8;
     C = 1.7;
     D = 0.7*9.81;
-    maxA = D*0.9;
+    maxA = D*0.95;
     Cf = 0.15;
     B1 = B;
     B2 = B;
