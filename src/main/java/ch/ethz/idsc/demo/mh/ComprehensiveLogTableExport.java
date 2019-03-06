@@ -19,7 +19,6 @@ import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -66,8 +65,7 @@ public class ComprehensiveLogTableExport {
         // rimoSlipTable);
         // localizationTable);
         // velodyneLocalizationTable);
-        gokartPoseTable,
-        basicSysIDTable);
+        gokartPoseTable, basicSysIDTable);
     //
     File folder = createTableFolder(file);
     // ---
@@ -81,10 +79,10 @@ public class ComprehensiveLogTableExport {
     // Export.of(new File(folder, "localization.csv"), localizationTable.getTable().map(CsvFormat.strict()));
     // Export.of(new File(folder, "vlocalization.csv"), velodyneLocalizationTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "gplocalization.csv"), gokartPoseTable.getTable().map(CsvFormat.strict()));
-    //Export.of(new File(folder, "linmot.csv"), linmotStatusTable.getTable().map(CsvFormat.strict()));
+    // Export.of(new File(folder, "linmot.csv"), linmotStatusTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "linmot.csv"), linmotStatusTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "sysID.csv"), basicSysIDTable.getTable().map(CsvFormat.strict()));
-    //Export.of(new File(folder, "sysID.csv"), basicSysIDTable.getTable());
+    // Export.of(new File(folder, "sysID.csv"), basicSysIDTable.getTable());
   }
 
   private File createTableFolder(File file) {

@@ -170,7 +170,7 @@ public class TrackReconManagement {
     oldWasClosed = closedTrack;
     return Optional.ofNullable(lastTrack);
   }
-  
+
   public Tensor getTrackData() {
     return trackDataXYR;
   }

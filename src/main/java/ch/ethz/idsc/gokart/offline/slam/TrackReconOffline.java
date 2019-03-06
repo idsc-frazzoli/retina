@@ -92,7 +92,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThic);
-    //trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThin);
+    // trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThin);
     trackLayoutInitialGuess = trackReconManagement.getTrackLayoutInitialGuess();
   }
 
@@ -124,9 +124,9 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
           { 0., -7.5 * zoom, 640 + 640 }, //
           { 0., 0., 1. }, //
       }));
-      final File file = new File(DIRECTORY, "fielddata"+count+".csv");
+      final File file = new File(DIRECTORY, "fielddata" + count + ".csv");
       Tensor lastTrack = trackReconManagement.getTrackData();
-      if(Objects.nonNull(lastTrack))
+      if (Objects.nonNull(lastTrack))
         try {
           Export.of(file, lastTrack.divide(Quantity.of(1, SI.METER)));
         } catch (IOException e) {
@@ -137,11 +137,11 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       ImageRender imageRender = ImageRender.of(predefinedMap.getImage(), predefinedMap.range());
       imageRender.render(geometricLayer, graphics);
       gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
-      //bayesianOccupancyGridThic.render(geometricLayer, graphics);
+      // bayesianOccupancyGridThic.render(geometricLayer, graphics);
       bayesianOccupancyGridThin.render(geometricLayer, graphics);
       gokartRender.render(geometricLayer, graphics);
       trackReconRender.render(geometricLayer, graphics);
-      //trackLayoutInitialGuess.render(geometricLayer, graphics);
+      // trackLayoutInitialGuess.render(geometricLayer, graphics);
       // ---
       bayesianOccupancyGridThin.genObstacleMap();
       bayesianOccupancyGridThic.genObstacleMap();

@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.Tensor;
 
   /** @return world coordinates to grid coordinates */
   Tensor getTransform();
-  
+
   /** clear area around starting position */
   void clearStart(int startX, int startY, double orientation);
 }

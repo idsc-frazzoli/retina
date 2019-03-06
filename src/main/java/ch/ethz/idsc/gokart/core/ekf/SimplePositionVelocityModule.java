@@ -111,11 +111,11 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   public Tensor getVelocity() {
     return velocity.copy().append(angularVelocity);
   }
-  
+
   public Tensor getXYVelocity() {
     return velocity.copy();
   }
-  
+
   public Tensor getGyroVelocity() {
     return angularVelocity.copy();
   }

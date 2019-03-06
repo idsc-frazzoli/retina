@@ -51,6 +51,5 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
   @Override
   public void clearStart(int startX, int startY, double orientation) {
     // TODO Auto-generated method stub
-    
   }
 }

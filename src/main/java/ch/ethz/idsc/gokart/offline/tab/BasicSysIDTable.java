@@ -39,13 +39,13 @@ public class BasicSysIDTable implements OfflineTableSupplier {
       Vmu931ImuFrame frame = new Vmu931ImuFrame(byteBuffer);
       velocityModule.vmu931ImuFrame(frame);
       // append to table
-        tableBuilder.appendRow( //
-            time.map(Magnitude.SECOND).map(Round._6), //
-            velocityModule.getXYVelocity().map(Magnitude.VELOCITY).map(Round._5), //
-            velocityModule.getGyroVelocity().map(Magnitude.PER_SECOND).map(Round._5), //
-            SensorsConfig.GLOBAL.vmu931AccXY(frame).map(Magnitude.ACCELERATION).map(Round._5), //
-            RealScalar.of(steerPosition.number().floatValue()), //
-            powerPair.map(Magnitude.ARMS).map(Round._5));
+      tableBuilder.appendRow( //
+          time.map(Magnitude.SECOND).map(Round._6), //
+          velocityModule.getXYVelocity().map(Magnitude.VELOCITY).map(Round._5), //
+          velocityModule.getGyroVelocity().map(Magnitude.PER_SECOND).map(Round._5), //
+          SensorsConfig.GLOBAL.vmu931AccXY(frame).map(Magnitude.ACCELERATION).map(Round._5), //
+          RealScalar.of(steerPosition.number().floatValue()), //
+          powerPair.map(Magnitude.ARMS).map(Round._5));
       // System.out.println("vmu time: "+time);
     } else if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
