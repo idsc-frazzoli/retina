@@ -12,7 +12,9 @@ import javax.sound.sampled.DataLine;
 
 import ch.ethz.idsc.gokart.core.fuse.EmergencyBrakeProvider;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
+import ch.ethz.idsc.gokart.core.mpc.MPCRimoProvider;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
@@ -98,15 +100,16 @@ public class GokartVoiceOutputs extends AbstractClockedModule {
       sayCalibrated();
       calibrationSaid = true;
     }
-    if (!emergencyBrakingSaid && LinmotSocket.INSTANCE.getClass().equals(EmergencyBrakeProvider.class)) {
+    boolean emergencyBraking = LinmotSocket.INSTANCE.getPutProviderDesc().equals(EmergencyBrakeProvider.class.getSimpleName());
+    if (!emergencyBrakingSaid && emergencyBraking) {
       sayEmergenyBraking();
       timeSinceEmergenyCallout = Timing.started();
     }
     if (emergencyBrakingSaid && //
         timeSinceEmergenyCallout.seconds() > durationBetweenEmergenyCallouts && //
-        !LinmotSocket.INSTANCE.getClass().equals(EmergencyBrakeProvider.class))
+        !emergencyBraking)
       emergencyBrakingSaid = false;
-    boolean humanDriving = !isAutonomousPressed();
+    boolean humanDriving = !RimoSocket.INSTANCE.getPutProviderDesc().equals(MPCRimoProvider.class.getSimpleName());
     if (humanDriving && !humanDrivingSaid) {
       humanDrivingSaid = humanDriving;
       if (timeSinceDriverCallout.seconds() > durationBetweenDriverCallouts) {
