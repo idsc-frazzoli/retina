@@ -58,7 +58,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   /** take new lidar pose into account
    * @param pose measured lidar pose: {x[m], y[m], angle[]}
    * @param deltaT [s] */
-  void measurePose(Tensor pose, Scalar deltaT) {
+  public void measurePose(Tensor pose, Scalar deltaT) {
     Tensor position = Tensors.of(pose.Get(0), pose.Get(1));
     Scalar orientation = pose.Get(2);
     // TODO JPH how do we do this without null
@@ -110,6 +110,14 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   @Override // from VelocityEstimation
   public Tensor getVelocity() {
     return velocity.copy().append(angularVelocity);
+  }
+  
+  public Tensor getXYVelocity() {
+    return velocity.copy();
+  }
+  
+  public Tensor getGyroVelocity() {
+    return angularVelocity.copy();
   }
 
   @Override

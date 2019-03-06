@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.VelodyneLocalizationChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
+import ch.ethz.idsc.gokart.offline.tab.BasicSysIDTable;
 import ch.ethz.idsc.gokart.offline.tab.LinmotPassiveStatusTable;
 import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
 import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
@@ -18,6 +19,7 @@ import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -52,6 +54,7 @@ public class ComprehensiveLogTableExport {
     // LocalizationTable localizationTable = new LocalizationTable(PERIOD, true);
     OfflineTableSupplier velodyneLocalizationTable = SingleChannelTable.of(VelodyneLocalizationChannel.INSTANCE);
     OfflineTableSupplier gokartPoseTable = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
+    BasicSysIDTable basicSysIDTable = new BasicSysIDTable();
     //
     OfflineLogPlayer.process(file, //
         davisImuTable, //
@@ -63,7 +66,8 @@ public class ComprehensiveLogTableExport {
         // rimoSlipTable);
         // localizationTable);
         // velodyneLocalizationTable);
-        gokartPoseTable);
+        gokartPoseTable,
+        basicSysIDTable);
     //
     File folder = createTableFolder(file);
     // ---
@@ -77,7 +81,10 @@ public class ComprehensiveLogTableExport {
     // Export.of(new File(folder, "localization.csv"), localizationTable.getTable().map(CsvFormat.strict()));
     // Export.of(new File(folder, "vlocalization.csv"), velodyneLocalizationTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "gplocalization.csv"), gokartPoseTable.getTable().map(CsvFormat.strict()));
+    //Export.of(new File(folder, "linmot.csv"), linmotStatusTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "linmot.csv"), linmotStatusTable.getTable().map(CsvFormat.strict()));
+    Export.of(new File(folder, "sysID.csv"), basicSysIDTable.getTable().map(CsvFormat.strict()));
+    //Export.of(new File(folder, "sysID.csv"), basicSysIDTable.getTable());
   }
 
   private File createTableFolder(File file) {
