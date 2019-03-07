@@ -16,11 +16,13 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
   @Override
   protected void first() {
     SteerSocket.INSTANCE.addGetListener(this);
+    SteerSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override
   protected void last() {
     SteerSocket.INSTANCE.removeGetListener(this);
+    SteerSocket.INSTANCE.removePutProvider(this);
   }
 
   @Override
