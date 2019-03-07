@@ -12,6 +12,7 @@ import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
+import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
 import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
@@ -113,7 +114,8 @@ enum RunTabbedTaskGui {
       ImprovedNormalizedPredictiveTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
       ManualGroupModule.class, //
-      SysidSignalsModule.class //
+      SysidSignalsModule.class, //
+      PowerSteeringModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       MPCKinematicDrivingModule.class, //
