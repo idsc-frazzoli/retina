@@ -17,7 +17,6 @@ public class BrakeTorquesTest extends TestCase {
     Scalar mu = RealScalar.of(0.8); // friction coefficient on dry road
     TireForces tireForces = new TireForces(carModel, carState, cc, mu);
     BrakeTorques brakes = new BrakeTorques(carModel, carState, cc, tireForces);
-    // System.out.println(brakes.asVector());
     assertEquals(brakes.torque(0), brakes.torque(1));
     assertTrue(Scalars.lessThan(brakes.torque(0), RealScalar.ZERO));
     assertEquals(brakes.torque(2), brakes.torque(3));

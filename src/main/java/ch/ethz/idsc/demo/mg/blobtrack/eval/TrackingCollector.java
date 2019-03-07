@@ -8,12 +8,12 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
 import ch.ethz.idsc.demo.mg.blobtrack.algo.ImageBlobSelector;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 /** this class saves the estimatedFeatures at timestamps when hand-labeled ground truth is available and saves
  * finally to a CSV file for further analysis with TrackingEvaluator */
-// TODO if no features are hand-labeled at a certain instant, we do not collect the estimatedFeatures at that instant.
+// TODO MG if no features are hand-labeled at a certain instant, we do not collect the estimatedFeatures at that instant.
 public class TrackingCollector implements DavisDvsListener {
   private final ImageBlobSelector imageBlobSelector;
   private final String imagePrefix;

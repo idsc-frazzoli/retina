@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ch.ethz.idsc.retina.util.math.Clusters;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class ClusterCollection {
@@ -34,12 +33,11 @@ public class ClusterCollection {
   }
 
   public void decompose() {
-    Iterator<ClusterDeque> iterator = collection.iterator();
     List<ClusterDeque> newDeques = new ArrayList<>();
-    while (iterator.hasNext()) {
+    for (Iterator<ClusterDeque> iterator = collection.iterator(); iterator.hasNext();) {
       ClusterDeque x = iterator.next();
       Tensor vertices = Tensor.of(x.vertexStream());
-      Tensor elkiDBSCAN = Clusters.dbscan(vertices, 0.03, 6);
+      Tensor elkiDBSCAN = Dbscan.of(vertices, 0.03, 6);
       switch (elkiDBSCAN.length()) {
       case 0:
         // System.out.println("cluster is all noise");
@@ -60,9 +58,8 @@ public class ClusterCollection {
   }
 
   public void removeDeques(Set<Integer> removeIndex) {
-    Iterator<ClusterDeque> iterator = collection.iterator();
     int i = 0;
-    while (iterator.hasNext()) {
+    for (Iterator<ClusterDeque> iterator = collection.iterator(); iterator.hasNext();) {
       iterator.next();
       if (removeIndex.contains(i)) {
         iterator.remove();

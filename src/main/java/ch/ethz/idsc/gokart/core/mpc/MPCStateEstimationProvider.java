@@ -1,28 +1,27 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public abstract class MPCStateEstimationProvider {
-  private final Stopwatch stopwatch;
+/* package */ abstract class MPCStateEstimationProvider {
+  private final Timing timing;
   // default value
-  protected Scalar pathProgress = RealScalar.ZERO;
+  // TODO MH pathProgress not used
+  private Scalar pathProgress = RealScalar.ZERO;
 
-  protected MPCStateEstimationProvider(Stopwatch stopwatch) {
-    this.stopwatch = stopwatch;
+  protected MPCStateEstimationProvider(Timing timing) {
+    this.timing = timing;
   }
 
   /** get the time
    * 
    * @return time with unit "s" */
   protected Scalar getTime() {
-    return Quantity.of(//
-        stopwatch.display_seconds(), //
-        SI.SECOND);
+    return Quantity.of(timing.seconds(), SI.SECOND);
   }
 
   /** get the newest state estimation *

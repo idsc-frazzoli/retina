@@ -14,9 +14,9 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
+import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
+import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -44,7 +44,7 @@ public class ResampledLidarRender extends LidarRender {
       graphics.setColor(new Color(0, 128, 0, 128));
       graphics.fill(new Ellipse2D.Double(point2D.getX() - w / 2, point2D.getY() - w / 2, w, w));
     }
-    final List<Tensor> list = LocalizationConfig.GLOBAL.getUniformResample().apply(points).getPoints();
+    final List<Tensor> list = LocalizationConfig.GLOBAL.getResample().apply(points).getPoints();
     {
       graphics.setColor(color);
       for (Tensor pnts : list) {

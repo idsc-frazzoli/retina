@@ -1,11 +1,11 @@
 // code by jph
 package ch.ethz.idsc.gokart.lcm.autobox;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutListener;
-import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutListener;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 
 public enum RimoLcmServer implements RimoGetListener, RimoPutListener {
   INSTANCE;

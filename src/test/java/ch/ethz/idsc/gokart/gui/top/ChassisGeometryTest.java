@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -12,8 +12,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
@@ -82,11 +82,11 @@ public class ChassisGeometryTest extends TestCase {
   public void testOdometry() {
     RimoGetEvent rimoGetEvent = RimoGetEvents.create(100, 200);
     Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
-    assertEquals(Units.of(speed), Unit.of("s^-1*m"));
+    assertEquals(QuantityUnit.of(speed), Unit.of("s^-1*m"));
     Scalar vel = Magnitude.VELOCITY.apply(speed);
     assertTrue(Chop._04.close(vel, RealScalar.of(0.3)));
     Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
-    assertEquals(Units.of(rate), Unit.of("s^-1"));
+    assertEquals(QuantityUnit.of(rate), Unit.of("s^-1"));
     Scalar ome = Magnitude.PER_SECOND.apply(rate);
     assertTrue(Chop._04.close(ome, RealScalar.of(0.18518518518518517)));
   }

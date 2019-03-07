@@ -8,11 +8,14 @@ if(0)
     folders{end+1} = '/Documents/retina_out/20181025T1334006b1a19b1.lcm/';
     targetfiles{end+1}= 'brakingMLData.csv';
 end
-if(1)
+if(0)
     folders{end+1} = '/retina_out/brakingtest.lcm/';
     targetfiles{end+1}= 'brakingMLData.csv';
 end
-
+if(1)
+    folders{end+1} = '/retina_out/20190211T100755/';
+    targetfiles{end+1}= 'brakingMLData.csv';
+end
 
 
 

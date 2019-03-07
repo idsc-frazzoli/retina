@@ -3,9 +3,9 @@ package ch.ethz.idsc.gokart.offline.tab;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
-import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 
 public class SteerRelRckWatchdog implements OfflineLogListener {

@@ -3,11 +3,11 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.nio.FloatBuffer;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
-import ch.ethz.idsc.retina.dev.steer.SteerColumnAdapter;
-import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;

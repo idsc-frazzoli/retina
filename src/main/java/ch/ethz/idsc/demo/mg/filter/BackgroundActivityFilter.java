@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.filter;
 
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 /** Implementation of background activity filter as presented in
  * "Frame-free dynamic digial vision" by Tobi Delbruck
@@ -15,15 +15,15 @@ public class BackgroundActivityFilter extends AbstractFilterHandler {
   private final int threshold_us;
 
   public BackgroundActivityFilter(int width, int height, int threshold_us) {
-    this.x_last = width - 1;
-    this.y_last = height - 1;
+    x_last = width - 1;
+    y_last = height - 1;
     timeStamps = new int[width][height];
     this.threshold_us = threshold_us;
   }
 
   @Override // from DavisDvsEventFilter
   public boolean filter(DavisDvsEvent davisDvsEvent) {
-    // TODO investigate why siliconEye data sometimes wrong
+    // TODO MG investigate why siliconEye data sometimes wrong
     if (davisDvsEvent.x <= x_last && davisDvsEvent.y <= y_last) {
       updateNeighboursTimeStamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
       return davisDvsEvent.time - timeStamps[davisDvsEvent.x][davisDvsEvent.y] <= threshold_us;

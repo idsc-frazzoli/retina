@@ -14,8 +14,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.retina.util.gui.RowPanel;
-
 public class ToolbarsComponent {
   public static final int WEST_WIDTH = 140;
   public static final int HEIGHT = 30;
@@ -42,16 +40,20 @@ public class ToolbarsComponent {
   }
 
   protected JToolBar createRow(String title) {
+    return createRow(title, HEIGHT);
+  }
+
+  protected JToolBar createRow(String title, int height) {
     JToolBar jToolBar1 = new JToolBar();
     JToolBar jToolBar2 = new JToolBar();
     jToolBar1.setFloatable(false);
     jToolBar1.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
     JLabel jLabel = new JLabel(title);
-    jLabel.setPreferredSize(new Dimension(jLabel.getPreferredSize().width, HEIGHT));
+    jLabel.setPreferredSize(new Dimension(jLabel.getPreferredSize().width, height));
     jToolBar1.add(jLabel);
     jToolBar2.setFloatable(false);
     jToolBar2.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
-    addPair(jToolBar1, jToolBar2);
+    addPair(jToolBar1, jToolBar2, height);
     return jToolBar2;
   }
 

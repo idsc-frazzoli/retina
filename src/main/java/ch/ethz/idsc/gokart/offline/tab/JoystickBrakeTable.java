@@ -4,9 +4,9 @@ package ch.ethz.idsc.gokart.offline.tab;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.joystick.JoystickDecoder;
+import ch.ethz.idsc.retina.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -23,8 +23,8 @@ public class JoystickBrakeTable implements OfflineTableSupplier {
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(JOYSTICK)) {
       JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
-      GokartJoystickInterface gji = (GokartJoystickInterface) joystickEvent;
-      Scalar scalar = gji.getBreakStrength();
+      ManualControlInterface manualControlInterface = (ManualControlInterface) joystickEvent;
+      Scalar scalar = manualControlInterface.getBreakStrength();
       if (Scalars.nonZero(scalar))
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND).map(Round._2), //

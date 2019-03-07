@@ -3,13 +3,14 @@ package ch.ethz.idsc.demo.gz;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.lcm.davis.DavisLcmLogUzhConvert;
+import ch.ethz.idsc.gokart.lcm.davis.DavisLcmLogUzhConvert;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-enum RunDavisLcmLogUzhConvert {
+/* package */ enum RunDavisLcmLogUzhConvert {
   ;
   public static void main(String[] args) {
-    File file = new File("/home/gio/Downloads/logs/log.lcm");
-    File target = new File("/home/gio/Downloads/logs");
+    File file = HomeDirectory.file("Downloads/logs/log.lcm");
+    File target = HomeDirectory.file("Downloads/logs");
     DavisLcmLogUzhConvert.of(file, target);
   }
 }

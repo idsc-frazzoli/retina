@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -64,7 +64,7 @@ public class EmergencyBrakeManeuverTest extends TestCase {
     Scalar velocity = Quantity.of(10, "m*s");
     try {
       new EmergencyBrakeManeuver(responseTime, maxDeceleration, velocity);
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

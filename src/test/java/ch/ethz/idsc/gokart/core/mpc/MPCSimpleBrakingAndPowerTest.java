@@ -1,9 +1,9 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.owl.data.Stopwatch;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
@@ -12,8 +12,8 @@ public class MPCSimpleBrakingAndPowerTest extends TestCase {
   public void testDerivative() {
     MPCBraking braking = new MPCSimpleBraking();
     // this has no effect
-    Stopwatch started = Stopwatch.started();
-    braking.setStateProvider(new FakeNewsEstimator(started));
+    Timing started = Timing.started();
+    braking.setStateEstimationProvider(new FakeNewsEstimator(started));
     GokartState state0 = new GokartState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     GokartState state1 = new GokartState(1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
     GokartState state2 = new GokartState(2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);

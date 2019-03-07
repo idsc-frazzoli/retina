@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
@@ -19,7 +18,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.ObstacleClusterTrackingRender;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
@@ -27,10 +25,11 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-class ClusterAreaEvaluationListener {
-  static final File DIRECTORY_CLUSTERS = UserHome.Pictures("clusters");
-  private static final File DIRECTORY_PF = UserHome.Pictures("pf");
+/* package */ class ClusterAreaEvaluationListener {
+  static final File DIRECTORY_CLUSTERS = HomeDirectory.Pictures("clusters");
+  private static final File DIRECTORY_PF = HomeDirectory.Pictures("pf");
   private static final Tensor MODEL2PIXEL = Tensors.matrix(new Number[][] { //
       { 15, 0, -320 }, //
       { 0, -15, 960 }, //
@@ -100,8 +99,8 @@ class ClusterAreaEvaluationListener {
                           "{Average perf SP, Average perf LP,Average recall SP,Average recall LP,Average precision SP,Average precision LP,Noise ratio}"), //
                       Tensors.vectorDouble(perfAveragedSP, perfAveragedLP, recallAveragedSP, recallAveragedLP, //
                           precisionAveragedSP, precisionAveragedLP, noiseRatio)));
-            } catch (IOException e) {
-              e.printStackTrace();
+            } catch (Exception exception) {
+              exception.printStackTrace();
             }
           }
         }
@@ -117,8 +116,8 @@ class ClusterAreaEvaluationListener {
         try {
           DIRECTORY_CLUSTERS.mkdir();
           ImageIO.write(bufferedImage, "png", new File(DIRECTORY_CLUSTERS, String.format("clusters%04d.png", count)));
-        } catch (IOException e) {
-          e.printStackTrace();
+        } catch (Exception exception) {
+          exception.printStackTrace();
         }
       }
     };

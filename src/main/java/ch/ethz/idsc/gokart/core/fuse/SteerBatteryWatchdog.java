@@ -3,14 +3,14 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
-import ch.ethz.idsc.retina.dev.misc.MiscGetListener;
-import ch.ethz.idsc.retina.dev.misc.MiscSocket;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.gokart.dev.misc.MiscGetEvent;
+import ch.ethz.idsc.gokart.dev.misc.MiscGetListener;
+import ch.ethz.idsc.gokart.dev.misc.MiscSocket;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.util.data.HardWatchdog;
 import ch.ethz.idsc.retina.util.data.Watchdog;
-import ch.ethz.idsc.retina.util.data.WatchdogInterface;
 
 /** sends stop command if the steer battery voltage is outside of valid range for a certain duration */
 public final class SteerBatteryWatchdog extends EmergencyModule<RimoPutEvent> implements MiscGetListener {
@@ -19,11 +19,11 @@ public final class SteerBatteryWatchdog extends EmergencyModule<RimoPutEvent> im
    * we tolerate voltage drops below a threshold for a short period of time */
   private static final long VOLTAGE_TIMEOUT_MS = 1000; // 1[s] below threshold
   // ---
-  private final WatchdogInterface watchdog_steerVoltage = new Watchdog(VOLTAGE_TIMEOUT_MS * 1e-3);
+  private final Watchdog watchdog = HardWatchdog.notified(VOLTAGE_TIMEOUT_MS * 1e-3);
   private boolean isBlown = false;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     MiscSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addPutProvider(this);
   }
@@ -38,13 +38,13 @@ public final class SteerBatteryWatchdog extends EmergencyModule<RimoPutEvent> im
   @Override // from MiscGetListener
   public void getEvent(MiscGetEvent miscGetEvent) {
     if (SteerConfig.GLOBAL.operatingVoltageClip().isInside(miscGetEvent.getSteerBatteryVoltage()))
-      watchdog_steerVoltage.pacify(); // <- at nominal rate the watchdog is notified every 4[ms]
+      watchdog.notifyWatchdog(); // <- at nominal rate the watchdog is notified every 4[ms]
   }
 
   /***************************************************/
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    isBlown |= watchdog_steerVoltage.isBlown();
+    isBlown |= watchdog.isBarking();
     return isBlown //
         ? StaticHelper.OPTIONAL_RIMO_PASSIVE
         : Optional.empty();

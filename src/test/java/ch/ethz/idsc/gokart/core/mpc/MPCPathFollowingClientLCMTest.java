@@ -13,7 +13,6 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
     // uncomment if you are able to compile the binary
     /* LcmMPCPathFollowingClient lcmMPCPathFollowingClient = new LcmMPCPathFollowingClient();
      * try {
-     * // TODO jan had to add try here
      * lcmMPCPathFollowingClient.start();
      * for (int i = 0; i < 4; i++) {
      * System.out.println("i=" + i);
@@ -65,18 +64,28 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
           this.cns = controlAndPredictionSteps;
           System.out.println("control update");
         }
+
+        @Override
+        public void start() {
+          // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void stop() {
+          // TODO Auto-generated method stub
+        }
       };
       lcmMPCControlClient.registerControlUpdateLister(mpcControlUpdateListener);
       DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
       Tensor position = Tensors.of(gokartState.getX(), gokartState.getY());
-      MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINEPREVIEWSIZE, position);
+      MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER));
       lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
       Thread.sleep(100);// should even work with 30ms
       System.out.println(mpcControlUpdateListener.cns);
-      assertTrue(mpcControlUpdateListener.cns != null);
+      assertNotNull(mpcControlUpdateListener.cns);
       lcmMPCControlClient.stop();
     } catch (Exception e) {
-      // TODO: handle exception
+      e.printStackTrace();
     }
   }
 }

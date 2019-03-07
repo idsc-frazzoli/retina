@@ -16,17 +16,17 @@ public class ImageToGokartLookup implements ImageToGokartInterface {
   private final ImageToGokartUtil imageToGokartUtil;
   private final double[][] lookupArray;
   private final int width;
-  private final int height;
+  // private final int height;
 
   private ImageToGokartLookup(ImageToGokartUtil transformUtil, int width, int height) {
     this.width = width;
-    this.height = height;
-    lookupArray = new double[this.width * this.height][];
-    this.imageToGokartUtil = transformUtil;
+    // this.height = height;
+    lookupArray = new double[width * height][];
+    imageToGokartUtil = transformUtil;
     int index = -1;
-    for (int y = 0; y < this.height; ++y)
-      for (int x = 0; x < this.width; ++x)
-        lookupArray[++index] = this.imageToGokartUtil.imageToGokart(x, y);
+    for (int y = 0; y < height; ++y)
+      for (int x = 0; x < width; ++x)
+        lookupArray[++index] = imageToGokartUtil.imageToGokart(x, y);
   }
 
   @Override // from ImageToGokartInterface

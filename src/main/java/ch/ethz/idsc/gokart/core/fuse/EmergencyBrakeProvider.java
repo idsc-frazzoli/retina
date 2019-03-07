@@ -2,15 +2,16 @@
 package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.gokart.core.AutoboxScheduledProvider;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.owl.math.state.ProviderRank;
-import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.sys.SafetyCritical;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.retina.util.data.SoftWatchdog;
+import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -26,7 +27,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * <li>receives the distance to an obstacle along the x-axis
  * <li>schedules the press of the brake for the estimated duration that is required to stop the vehicle
  * </ul> */
-@SafetyCritical
 public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEvent> implements RimoGetListener {
   // TODO magic const to filter slip
   private static final Clip CLIP = Clip.function( //
@@ -38,7 +38,9 @@ public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<Linmo
   /** unit m*s^-1 */
   private final Scalar minVelocity = LinmotConfig.GLOBAL.minVelocity;
   /** without unit but with interpretation in meter */
+  // TODO JPH make function SensorsConfig.GLOBAL.vlp16.Get(0)
   private final Scalar margin = ChassisGeometry.GLOBAL.xTipMeter().subtract(SensorsConfig.GLOBAL.vlp16.Get(0));
+  private final Watchdog watchdog = SoftWatchdog.barking(0.1);
   private Scalar velocity = Quantity.of(0.0, SI.VELOCITY);
 
   private EmergencyBrakeProvider() {
@@ -55,9 +57,14 @@ public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<Linmo
     velocity = CLIP.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
   }
 
+  public void pacify() {
+    watchdog.notifyWatchdog();
+  }
+
   /** @param min without unit but with interpretation in meter from lidar */
+  // TODO JPH expect unit [m]
   public void consider(Scalar min) {
-    if (Scalars.lessEquals(minVelocity, velocity) && isIdle()) {
+    if (watchdog.isBarking() && Scalars.lessEquals(minVelocity, velocity) && isIdle()) {
       EmergencyBrakeManeuver emergencyBrakeManeuver = LinmotConfig.GLOBAL.brakeDistance(velocity);
       if (emergencyBrakeManeuver.isRequired(Quantity.of(min.subtract(margin), SI.METER)))
         schedule();

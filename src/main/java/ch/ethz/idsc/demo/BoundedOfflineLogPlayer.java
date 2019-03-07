@@ -11,8 +11,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -54,7 +54,7 @@ public enum BoundedOfflineLogPlayer {
             if (set.add(event.channel))
               System.err.println("not a binary blob: " + event.channel);
           }
-          if (binaryBlob != null)
+          if (Objects.nonNull(binaryBlob))
             for (OfflineLogListener offlineLogListener : offlineLogListeners) {
               Scalar time = UnitSystem.SI().apply(Quantity.of(event.utime - tic, NonSI.MICRO_SECOND)).map(Round._6).Get();
               ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN);

@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.List;
 
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.IntegerQ;
 import ch.ethz.idsc.tensor.Scalar;

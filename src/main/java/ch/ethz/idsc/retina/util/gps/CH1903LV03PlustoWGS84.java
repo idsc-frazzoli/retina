@@ -33,6 +33,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * @author mrieser */
 public enum CH1903LV03PlustoWGS84 {
   ;
+  /** .
+   * @param coord_getX quantity with unit compatible with [m]
+   * @param coord_getY quantity with unit compatible with [m]
+   * @return */
   public static Tensor transform(Scalar coord_getX, Scalar coord_getY) {
     return transform( //
         Magnitude.METER.toDouble(coord_getX), //

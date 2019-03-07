@@ -1,24 +1,11 @@
-# ch.ethz.idsc.retina+gokart <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
+# ch.ethz.idsc.gokart <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
 
-Sensor and actuator interfaces, Gokart software
+Software to operate the go-kart in autonomous and manual modes.
+The performance of the go-kart hardware and software are documented in [reports](doc/reports.md).
 
-The repository was developed with the following objectives in mind
-* interface sensors without loss of precision or temporal resolution
-* interface actuators of gokart using a protocol that is specific to the MicroAutoBox implementation
+> The code in the repository operates a heavy and fast robot that may endanger living creatures. We follow best practices and coding standards to protect from avoidable errors. See [development_guidelines](doc/development_guidelines.md)
 
-The code in the repository operates a heavy and fast robot that may endanger living creatures.
-We follow best practices and coding standards to protect from avoidable errors.
-See [development_guidelines](doc/development_guidelines.md)
-
-## Features
-
-* interfaces to lidars Velodyne VLP-16, HDL-32E, Quanergy Mark8, HOKUYO URG-04LX-UG01
-* interfaces to event based camera Davis240C with lossless compression by 4x
-* lidar based localization
-* simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
-* offline processing of log data
-
-## Gallery
+## Gallery Autonomous Driving
 
 <table>
 <tr>
@@ -32,7 +19,9 @@ See [development_guidelines](doc/development_guidelines.md)
 
 ![planning_obstacles](https://user-images.githubusercontent.com/4012178/40268689-2af06cd4-5b72-11e8-95cf-d94edfdc3dd1.png)
 
-[Static obstacles](https://www.youtube.com/watch?v=xLZeKFeAokM)
+Navigation
+[initial](https://www.youtube.com/watch?v=xLZeKFeAokM),
+[demo](https://www.youtube.com/watch?v=UnqaZavf3G0)
 
 <td>
 
@@ -47,30 +36,64 @@ See [development_guidelines](doc/development_guidelines.md)
 [Event-based SLAM](https://www.youtube.com/watch?v=NKylhRHbnGA), [Fig. 8](https://www.youtube.com/watch?v=NpCwG_32Cr8)
 
 </tr>
+
+<tr>
+<td>
+
+![purepursuit](https://user-images.githubusercontent.com/4012178/51901763-bdfdeb00-23b8-11e9-8132-0c36099ea08e.jpg)
+
+[Pure pursuit, also reverse](https://www.youtube.com/watch?v=H0qwudAnM48)
+
+<td>
+
+![gokart_mpc](https://user-images.githubusercontent.com/4012178/52276469-9d063e80-2952-11e9-8ce8-9f652238a0d8.png)
+
+MPC [outside](https://www.youtube.com/watch?v=B0QmMS1Dp8E), [inside](https://www.youtube.com/watch?v=N_GqjWpRkR4) view
+
+</tr>
+</table>
+
+## Features
+
+* simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
+* lidar-based localization enhanced with odometry and gyro
+* bayesian occupancy grid
+* track reconnaissance
+* torque vectoring
+* synthesis of engine sound
+* offline processing of log data
+
+## Gallery Manual Driving
+
+<table>
+<tr>
+<td>
+
+![torquevectoring](https://user-images.githubusercontent.com/4012178/49995554-c75c0100-ff8c-11e8-8a86-f50b6e6833ad.jpg)
+
+[Torque Vectoring](https://www.youtube.com/watch?v=szKhTCxhPyI)
+
+</tr>
 </table>
 
 ## Architecture
 
-Source file size distribution
+* [`tensor`](https://github.com/idsc-frazzoli/tensor) for linear algebra with physical units
+* [`owl`](https://github.com/idsc-frazzoli/retina) for motion planning
+* [`lcm`](https://github.com/idsc-frazzoli/lcm-java) *Lightweight Communications and Marshalling* for message interchange, logging, and playback. All messages are encoded using a single type `BinaryBlob`. The byte order of the binary data is `little-endian` since the encoding is native on most architectures.
+* [`io.humble`](http://www.humble.io/) for video generation
+* [`jSerialComm`](http://fazecast.github.io/jSerialComm/) platform-independent serial port access
+* [`ELKI`](https://elki-project.github.io/) for DBSCAN
+* [`lwjgl`](https://www.lwjgl.org/) for joystick readout
 
-![retina](https://user-images.githubusercontent.com/4012178/47344851-b9cf7c80-d6a9-11e8-940f-94e1512bec52.png)
+## Go-kart Operation
 
-We use `LCM` for message interchange.
-All messages are encoded using a single type `BinaryBlob`.
-The byte order of the binary data is `little endian` since the encoding is native on most architectures.
-
-* [Video on Gokart Actuators](https://www.youtube.com/watch?v=t3oAqQlWoyo)
-* [Video of Testing Software](https://www.youtube.com/watch?v=Oh9SyG4Lgm8)
-
-## GOKART
-
-![gokart_operation](https://user-images.githubusercontent.com/4012178/48998067-88d3e300-f152-11e8-89c3-37749fb93bcc.png)
+![gokart_operation](https://user-images.githubusercontent.com/4012178/52531841-22f00400-2d1c-11e9-8fd7-92d6217b35e3.png)
 
 ### Actuation
 
 <table>
   <tr><th>Priority<th>Module<th>Purpose<th>Rimo<th>Steer<th>Linmot<th>Misc</tr>
-  <tr><td>Hardware<td>SteerBatteryCharger<td>prevent overcharging of battery<th><th>X<th><th></tr>
   <tr><td>Hardware<td>LinmotFireFighter<td>prevent brake hardware damage<th><th><th>X<th></tr>
   <tr><td>Emergency<td>LinmotCoolingModule<td>no acceleration while temperature of linmot critical<th>X<th><th><th></tr>
   <tr><td>Emergency<td>MiscEmergencyModule<td>no acceleration with steering battery low<th>X<th><th><th></tr>
@@ -97,6 +120,33 @@ The byte order of the binary data is `little endian` since the encoding is nativ
   <tr><td>Fallback<td>LinmotPutFallback<td>maintain operation in home position<th><th><th>X<th></tr>
   <tr><td>Fallback<td>MiscPutFallback<td>normal operation, all LEDs off<th><th><th><th>X</tr>
 </table>
+
+## Contributors
+
+Jan Hakenberg, Mario Gini, Yannik Nager, Valentina Cavinato, Marc Heim
+
+## Press Coverage
+
+* [2018-06 bitluni's lab](https://www.youtube.com/watch?v=GQVsl4fV3O0)
+* [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
+* [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
+
+---
+
+![ethz300](https://user-images.githubusercontent.com/4012178/45925071-bf9d3b00-bf0e-11e8-9d92-e30650fd6bf6.png)
+
+# ch.ethz.idsc.retina <a href="https://travis-ci.org/idsc-frazzoli/retina"><img src="https://travis-ci.org/idsc-frazzoli/retina.svg?branch=master" alt="Build Status"></a>
+
+Sensor interfaces
+
+![retina](https://user-images.githubusercontent.com/4012178/51981593-d7c03080-2493-11e9-92d8-bb2066575f2c.png)
+
+## Features
+
+* interfaces to lidars Velodyne VLP-16, HDL-32E, Quanergy Mark8, HOKUYO URG-04LX-UG01
+* interfaces to inertial measurement unit Variense VMU931
+* interfaces to event based camera Davis240C with lossless compression by 4x
+* interfaces to LabJack U3
 
 ## LIDAR
 
@@ -127,7 +177,11 @@ intensity as 360[deg] panorama
 our code builds upon the
 [urg_library-1.2.0](https://sourceforge.net/projects/urgnetwork/files/urg_library/)
 
-## DVS
+## Inertial Measurement Unit
+
+### VMU931
+
+## Event Based Camera
 
 ### IniLabs DAVIS240C
 
@@ -197,8 +251,6 @@ Events only
 </tr>
 </table>
 
-
-
 AEDAT 2.0, and AEDAT 3.1
 
 * parsing and visualization
@@ -214,19 +266,19 @@ Quote from Luca/iniLabs:
 
 We observed that in *global shutter mode*, during signal image capture the stream of events is suppressed. Whereas, in *rolling shutter mode* the events are more evenly distributed.
 
-## streaming DAT files
+### streaming DAT files
 
 ![hdr](https://user-images.githubusercontent.com/4012178/27771907-a3bbcef4-5f58-11e7-8b0e-3dfb0cb0ecaf.gif)
 
-## streaming DAVIS recordings
+### streaming DAVIS recordings
 
 ![shapes_6dof](https://user-images.githubusercontent.com/4012178/27771912-cb58ebb8-5f58-11e7-9566-79f3fbc5d9ba.gif)
 
-## generating DVS from video sequence
+### generating DVS from video sequence
 
 ![cat_final](https://user-images.githubusercontent.com/4012178/27771885-0eadb2aa-5f58-11e7-9f4d-78a57e610f56.gif)
 
-## synthetic signal generation 
+### synthetic signal generation 
 
 <table><tr>
 <td>
@@ -239,14 +291,10 @@ We observed that in *global shutter mode*, during signal image capture the strea
 
 </tr></table>
 
-## Integration
+## References
 
-Due to the rapid development of the code base, `retina` is not yet available as a maven artifact.
-Instead, download the project and run `mvn install` on your machine.
-Subsequently, you can use the project on your machine as
+* [*Simultaneous localization and mapping for event-based vision systems*](https://mediatum.ub.tum.de/doc/1191908/1191908.pdf) by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
 
-    <dependency>
-      <groupId>ch.ethz.idsc</groupId>
-      <artifactId>retina</artifactId>
-      <version>0.0.1</version>
-    </dependency>
+---
+
+![ethz300](https://user-images.githubusercontent.com/4012178/45925071-bf9d3b00-bf0e-11e8-9d92-e30650fd6bf6.png)

@@ -4,10 +4,9 @@ package ch.ethz.idsc.gokart.gui.lab;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoPutTire;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutTire;
 import ch.ethz.idsc.retina.util.data.Word;
-import ch.ethz.idsc.retina.util.gui.SliderExt;
-import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 
 /** gui elements to configure message sent for a single rear tire:
  * operation mode (2 bytes)

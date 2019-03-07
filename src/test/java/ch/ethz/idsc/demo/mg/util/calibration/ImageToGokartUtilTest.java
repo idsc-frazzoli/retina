@@ -10,12 +10,12 @@ public class ImageToGokartUtilTest extends TestCase {
   public void testSimple() {
     SlamCoreConfig slamCoreConfig = EventCamera.DAVIS.slamCoreConfig;
     slamCoreConfig.dvsConfig.logFileLocations = LogFileLocations.DUBI15a;
-    ImageToGokartLookup test = (ImageToGokartLookup) slamCoreConfig.dvsConfig.createImageToGokartInterface();
-    test.printInfo();
-    System.out.println("---");
+    ImageToGokartLookup imageToGokartLookup = //
+        (ImageToGokartLookup) slamCoreConfig.dvsConfig.createImageToGokartInterface();
+    // imageToGokartLookup.printInfo();
     int x = 170;
     int y = 100;
-    double[] physicalPos = test.imageToGokart(x, y);
+    double[] physicalPos = imageToGokartLookup.imageToGokart(x, y);
     assertEquals(physicalPos[0], 3.4386292832405725);
     assertEquals(physicalPos[1], -0.4673008409796591);
   }

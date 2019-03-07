@@ -6,16 +6,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.function.Consumer;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.dev.davis.io.Aedat31FileSupplier;
+import ch.ethz.idsc.retina.davis.io.Aedat31FileSupplier;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum SiliconEyeVideo {
   ;
   public static void main(String[] args) throws Exception {
     /** Read in some option values and their defaults. */
     final int snaps = 32; // fps
-    final String filename = UserHome.file("siliconeye.mp4").toString();
+    final String filename = HomeDirectory.file("siliconeye.mp4").toString();
     File file = new File("/media/datahaki/backup/siliconeye/20180830", //
         "sees_control_recording_2018_08_30-13_45_50.aedat");
     Aedat31FileSupplier aedat31FileSupplier = new Aedat31FileSupplier(file);

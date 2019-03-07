@@ -18,7 +18,7 @@ public class SlipInterfaceTest extends TestCase {
     new RobustSlip(c.wheel(0).pacejka(), Tensors.vector(0, 0), RealScalar.ZERO).slip();
     try {
       new TextbookSlip(c.wheel(1).pacejka(), Tensors.vector(0, 0), RealScalar.ZERO).slip();
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

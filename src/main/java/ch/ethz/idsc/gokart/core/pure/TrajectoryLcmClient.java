@@ -5,11 +5,11 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.ArrayFloatBlob;
+import ch.ethz.idsc.gokart.lcm.SimpleLcmClient;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
-import ch.ethz.idsc.owl.gui.ani.TrajectoryListener;
+import ch.ethz.idsc.owl.ani.api.TrajectoryListener;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
-import ch.ethz.idsc.retina.lcm.ArrayFloatBlob;
-import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
@@ -31,20 +31,13 @@ public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
   }
 
   // ---
-  private final String channel;
-
   private TrajectoryLcmClient(String channel) {
-    this.channel = channel;
+    super(channel);
   }
 
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     List<TrajectorySample> trajectory = trajectory(byteBuffer);
     listeners.forEach(listener -> listener.trajectory(trajectory));
-  }
-
-  @Override // from BinaryLcmClient
-  protected String channel() {
-    return channel;
   }
 }

@@ -7,12 +7,12 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
-import ch.ethz.idsc.retina.dev.davis.Aedat31FrameListener;
-import ch.ethz.idsc.retina.dev.davis.io.Aedat31FrameEvent;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
+import ch.ethz.idsc.retina.davis.Aedat31FrameListener;
+import ch.ethz.idsc.retina.davis.io.Aedat31FrameEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
 
-class SiliconEyeVideoFrame implements Aedat31FrameListener, TimedImageListener {
+/* package */ class SiliconEyeVideoFrame implements Aedat31FrameListener, TimedImageListener {
   static final int WIDTH = 320;
   static final int HEIGHT = 264;
   // ---
@@ -38,7 +38,7 @@ class SiliconEyeVideoFrame implements Aedat31FrameListener, TimedImageListener {
     graphics.fillRect(WIDTH, 0, WIDTH, HEIGHT);
     // graphics.drawImage(timedImageEvent.bufferedImage, WIDTH, 0, null);
     graphics.drawImage(timedImageEvent.bufferedImage, WIDTH, 0, null);
-    String string = "" + timedImageEvent.time + "[us]";
+    String string = Integer.toString(timedImageEvent.time) + "[us]";
     graphics.setColor(Color.BLACK);
     graphics.drawString(string, WIDTH + 1, 12);
     graphics.setColor(Color.WHITE);

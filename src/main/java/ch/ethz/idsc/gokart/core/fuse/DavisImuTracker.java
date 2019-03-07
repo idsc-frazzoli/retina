@@ -2,8 +2,9 @@
 package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -22,7 +23,7 @@ public enum DavisImuTracker implements DavisImuFrameListener {
 
   @Override
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    gyroZ.set(SensorsConfig.GLOBAL.getGyroZ(davisImuFrame), index);
+    gyroZ.set(SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame), index);
     ++index;
     index %= gyroZ.length();
     ++framecount;
@@ -44,6 +45,7 @@ public enum DavisImuTracker implements DavisImuFrameListener {
    * 
    * @param value with unit s^-1 */
   public void setGyroZ(Scalar value) {
+    Magnitude.PER_SECOND.apply(value); // consistency check
     gyroZ.set(l -> value, Tensor.ALL);
   }
 }

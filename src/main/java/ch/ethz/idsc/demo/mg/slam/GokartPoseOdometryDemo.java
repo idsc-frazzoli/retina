@@ -4,14 +4,14 @@ package ch.ethz.idsc.demo.mg.slam;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.math.StateSpaceModels;
 import ch.ethz.idsc.owl.math.flow.Flow;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.sca.N;
 // DEMO class which provides velocity such that it can be integrated into the SLAM algorithm
 // rad 0.14, ytir = 0.65 very good rotation tracking! but speed not accurate
 // rad 0.12, ytir = 0.54 good speed tracking, rotation ok
-// TODO lots of commonality with GokartPoseOdometry -> unify
+// TODO MG lots of commonality with GokartPoseOdometry -> unify
 public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListener {
   public static GokartPoseOdometryDemo create(Tensor state) {
     return new GokartPoseOdometryDemo(state);
@@ -40,7 +40,7 @@ public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListe
   // ---
   private static final Tensor VELOCITY_INIT = Tensors.fromString("{0[m*s^-1],0[m*s^-1],0[s^-1]}").unmodifiable();
   // ---
-  private final Scalar dt = RimoSocket.INSTANCE.getGetPeriod(); // 1/250[s] update period
+  private final Scalar dt = RimoSocket.getGetPeriod(); // 1/250[s] update period
   // ---
   private Tensor state;
   /** velocity is the tangent of the state {vx[m*s^-1], 0[m*s^-1], angular_rate[s^-1]} */

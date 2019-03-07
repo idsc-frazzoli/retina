@@ -3,10 +3,10 @@ package ch.ethz.idsc.gokart.gui;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.davis.app.DavisDetailViewer;
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.gokart.lcm.davis.DavisDetailViewer;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 public class DavisDetailModule extends AbstractModule {
   private DavisDetailViewer davisDetailViewer = //
@@ -15,7 +15,7 @@ public class DavisDetailModule extends AbstractModule {
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     windowConfiguration.attach(getClass(), davisDetailViewer.davisViewerFrame.jFrame);
     davisDetailViewer.davisViewerFrame.jFrame.setVisible(true);
     davisDetailViewer.start();

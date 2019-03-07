@@ -5,12 +5,12 @@ import java.io.File;
 
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.LogFileLocator;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-public enum AleLogFileLocator implements LogFileLocator {
+/* package */ enum AleLogFileLocator implements LogFileLocator {
   INSTANCE;
   // ---
-  private static final File LOG_ROOT = UserHome.file("datasets/gokartlogs");
+  private static final File LOG_ROOT = HomeDirectory.file("datasets", "gokartlogs");
 
   @Override
   public File getAbsoluteFile(LogFile logFile) {

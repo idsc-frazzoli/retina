@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.mg.slam.config;
 import ch.ethz.idsc.demo.mg.filter.EventPolarityFilter;
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
-import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -71,7 +70,7 @@ public class SlamCoreConfig {
 
   /** @return mapArray containing ground truth occurrence map */
   public double[] getMapArray() {
-    return PrimitivesIO.loadFromCSV(SlamFileLocations.RECORDED_MAP.inFolder(dvsConfig.logFilename()));
+    return StaticHelper.loadFromCSV(SlamFileLocations.RECORDED_MAP.inFolder(dvsConfig.logFilename()));
   }
 
   public final double kartLength() {

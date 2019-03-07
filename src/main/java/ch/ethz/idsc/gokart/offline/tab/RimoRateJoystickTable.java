@@ -5,19 +5,19 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutHelper;
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
+import ch.ethz.idsc.retina.joystick.JoystickDecoder;
+import ch.ethz.idsc.retina.joystick.JoystickEvent;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -37,7 +37,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
   private RimoGetEvent rge;
   private RimoPutEvent rpe;
   private GokartStatusEvent gse;
-  private GokartJoystickInterface gji;
+  private ManualControlInterface manualControlInterface;
 
   /** @param delta
    * @param byteOrder use BIG_ENDIAN for log files on day: 20180427 */
@@ -59,7 +59,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
     } else //
     if (channel.equals("joystick.generic_xbox_pad")) {
       JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
-      gji = (GokartJoystickInterface) joystickEvent;
+      manualControlInterface = (ManualControlInterface) joystickEvent;
     } else //
     if (channel.equals(GokartLcmChannel.RIMO_CONTROLLER_PI)) {
       byteBuffer.order(byteOrder);
@@ -70,14 +70,14 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
           Objects.nonNull(rpe) && //
           Objects.nonNull(gse) && //
           gse.isSteerColumnCalibrated() && //
-          Objects.nonNull(gji)) {
+          Objects.nonNull(manualControlInterface)) {
         // System.out.println("export " + time.number().doubleValue());
         time_next = time.add(delta);
         // ---
         Tensor rates = rge.getAngularRate_Y_pair();
         Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
         Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
-        Scalar factor = Boole.of(gji.isAutonomousPressed());
+        Scalar factor = Boole.of(manualControlInterface.isAutonomousPressed());
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             rpe.getTorque_Y_pair().map(Magnitude.ARMS), // ARMS
@@ -85,8 +85,8 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
             speed.map(Magnitude.VELOCITY), // m/s
             rate.map(Magnitude.PER_SECOND), //
             gse.getSteerColumnEncoderCentered().map(SteerPutEvent.ENCODER), //
-            gji.getAheadAverage(), //
-            Ramp.FUNCTION.apply(gji.getAheadAverage()).multiply(factor) //
+            manualControlInterface.getAheadAverage(), //
+            Ramp.FUNCTION.apply(manualControlInterface.getAheadAverage()).multiply(factor) //
         );
       }
     }

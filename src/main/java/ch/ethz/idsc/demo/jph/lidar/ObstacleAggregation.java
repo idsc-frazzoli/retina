@@ -19,21 +19,21 @@ import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
+import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
+import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 /* package */ class ObstacleAggregation implements OfflineLogListener, LidarSpacialListener {
@@ -45,6 +45,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
   private static final SpacialXZObstaclePredicate SPACIAL_XZ = //
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   // ---
+  private final LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.vlp16SpacialProvider();
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private GeometricLayer geometricLayer = new GeometricLayer(IdentityMatrix.of(3), Array.zeros(3));
   private boolean initialized = false;
@@ -52,7 +53,6 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
   private final Graphics2D graphics;
 
   public ObstacleAggregation() {
-    LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.vlp16SpacialProvider();
     lidarSpacialProvider.addListener(this);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     ImageCopy imageCopy = new ImageCopy();
@@ -76,7 +76,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
     }
   }
 
-  @Override
+  @Override // from LidarSpacialListener
   public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
     float[] coords = lidarSpacialEvent.coords;
     if (SPACIAL_XZ.isObstacle(coords[0], coords[2]) && initialized) { // x z
@@ -87,7 +87,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
   public static void main(String[] args) throws IOException {
     ObstacleAggregation obstacleAggergation = new ObstacleAggregation();
-    OfflineLogPlayer.process(UserHome.file("gokart/pedestrian/20180604T150508/log.lcm"), obstacleAggergation);
-    ImageIO.write(obstacleAggergation.bufferedImage, "png", UserHome.Pictures("obstacles.png"));
+    OfflineLogPlayer.process(HomeDirectory.file("gokart/pedestrian/20180604T150508/log.lcm"), obstacleAggergation);
+    ImageIO.write(obstacleAggergation.bufferedImage, "png", HomeDirectory.Pictures("obstacles.png"));
   }
 }

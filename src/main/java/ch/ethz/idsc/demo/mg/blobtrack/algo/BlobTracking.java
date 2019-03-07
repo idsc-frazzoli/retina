@@ -8,7 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackObj;
 import ch.ethz.idsc.demo.mg.blobtrack.ImageBlob;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 
 /** This class implements an algorithm for Gaussian blob tracking which is inspired by the paper:
  * "asynchronous event-based multikernel algorithm for high-speed visual features tracking".
@@ -179,8 +179,7 @@ public class BlobTracking {
 
   // delete active blobs when activity is lower than aDown
   private void deleteBlobs() {
-    Iterator<BlobTrackObj> iterator = blobs.iterator();
-    while (iterator.hasNext()) {
+    for (Iterator<BlobTrackObj> iterator = blobs.iterator(); iterator.hasNext();) {
       BlobTrackObj davisSingleBlob = iterator.next();
       if (davisSingleBlob.getLayerID())
         if (davisSingleBlob.getActivity() < aDown)
@@ -228,7 +227,7 @@ public class BlobTracking {
     }
   }
 
-  // TODO helper function to create ImageBlob from BlobTrackObj
+  // TODO MG helper function to create ImageBlob from BlobTrackObj
   public List<ImageBlob> getActiveBlobs() {
     List<ImageBlob> list = new ArrayList<>();
     for (int i = 0; i < blobs.size(); ++i)

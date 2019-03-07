@@ -9,20 +9,21 @@ import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
-import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
+import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-enum ClusterEvaluation {
+/* package */ enum ClusterEvaluation {
   ;
   private static final String CHANNEL_VLP16 = VelodyneLcmChannels.ray(VelodyneModel.VLP16, "center");
 
@@ -54,9 +55,9 @@ enum ClusterEvaluation {
             }
           }
         };
-        File file = UserHome.file("Desktop/ETHZ/log/trimmed3.lcm");
-        if (UserHome.file("").getName().equals("datahaki"))
-          file = UserHome.file("gokart/pedestrian/20180412T163855/log.lcm");
+        File file = HomeDirectory.file("Desktop/ETHZ/log/trimmed3.lcm");
+        if (UserName.is("datahaki"))
+          file = HomeDirectory.file("gokart", "pedestrian", "20180412T163855", "log.lcm");
         OfflineLogPlayer.process(file, offlineLogListener);
       }
     }

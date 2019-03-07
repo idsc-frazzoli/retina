@@ -8,16 +8,17 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.tab.OfflineVectorTable;
 import ch.ethz.idsc.gokart.offline.tab.OfflineVectorTables;
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.Timing;
 
 /** export all io between actuators and computer as separate tables */
-enum ProduceReport {
+/* package */ enum ProduceReport {
   ;
   public static void of(LogFile logFile) throws IOException {
     File file = DatahakiLogFileLocator.file(logFile);
@@ -32,11 +33,11 @@ enum ProduceReport {
         OfflineVectorTables.rimoGet(), //
         OfflineVectorTables.rimoPut() //
     );
-    long tic = System.currentTimeMillis();
+    Timing timing = Timing.started();
     OfflineLogPlayer.process(file, list);
-    System.out.println(System.currentTimeMillis() - tic);
+    System.out.println("timing=" + timing.seconds());
     // ---
-    File dir = UserHome.file("export/" + logFile.getTitle());
+    File dir = HomeDirectory.file("export", logFile.getTitle());
     dir.mkdirs();
     for (OfflineVectorTable offlineTableSupplier : list)
       Export.of( //

@@ -3,13 +3,14 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
-import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
-import ch.ethz.idsc.retina.sys.AppResources;
+import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -48,10 +49,13 @@ public class SensorsConfig {
    * @see SafetyConfig */
   public final Scalar vlp16Height = Quantity.of(1.1558, SI.METER);
   /** number of rotations per second */
-  public Scalar vlp16_rate = Quantity.of(20, SI.PER_SECOND);
-  public Scalar davis_imu_rate = Quantity.of(1000, SI.PER_SECOND);
+  public final Scalar vlp16_rate = Quantity.of(20, SI.PER_SECOND);
+  public final Scalar davis_imu_rate = Quantity.of(1000, SI.PER_SECOND);
   // TODO the location of the frustum is not final
-  public Tensor davis_frustum = Tensors.fromString("{0[m],7[m]}");
+  public final Tensor davis_frustum = Tensors.fromString("{0[m],7[m]}");
+  /** 20181212: the value for the imu bias was established from
+   * the first 60[s] of the logs from December 6. and 11. */
+  public final Scalar davis_imuY_bias = Quantity.of(0.0142, SI.PER_SECOND);
   // TODO create a conversion formula from inclination to scaling factor (will have singularity)
   /** due to the inclined mounting of the davis camera,
    * the imuY measurement may have to be scaled.
@@ -87,10 +91,40 @@ public class SensorsConfig {
     return Round.of(davis_imu_rate.divide(vlp16_rate)).number().intValue();
   }
 
+  /***************************************************/
   /** @param davisImuFrame
    * @return rate of gokart around z-axis derived from imu measurements in "s^-1" */
-  public Scalar getGyroZ(DavisImuFrame davisImuFrame) {
-    return davisImuFrame.gyroImageFrame().Get(1) // image - y axis
+  public Scalar davisGyroZ(DavisImuFrame davisImuFrame) {
+    return davisImuFrame.gyroImageFrame().Get(1).subtract(davis_imuY_bias) // image - y axis
         .multiply(davis_imuY_scale);
+  }
+
+  /***************************************************/
+  /** .
+   * ante 20190408: the vmu931 was mounted on the gokart with xyz aligned with the gokart coordinate system
+   * post 20190408: the vmu931 is mounted rotated around U axis with 180[deg]
+   * 
+   * @param vmu931ImuFrame
+   * @return vector of length 2 of acceleration in gokart coordinates */
+  public Tensor vmu931AccXY(Vmu931ImuFrame vmu931ImuFrame) {
+    return vmu931AccXY(vmu931ImuFrame.accXY());
+  }
+
+  /* package */ Tensor vmu931AccXY(Tensor accRawXY) {
+    // return accRawXY.copy(); // ante 20190208)
+    return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate()); // post [20190208
+  }
+
+  /** see description above
+   * 
+   * @param vmu931ImuFrame
+   * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
+  public Scalar vmu931GyroZ(Vmu931ImuFrame vmu931ImuFrame) {
+    return vmu931GyroZ(vmu931ImuFrame.gyroZ());
+  }
+
+  /* package */ Scalar vmu931GyroZ(Scalar gyroZ) {
+    // return gyroZ; // ante 20190208)
+    return gyroZ.negate(); // post [20190208
   }
 }

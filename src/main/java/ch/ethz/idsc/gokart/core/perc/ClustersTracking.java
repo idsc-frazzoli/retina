@@ -10,12 +10,11 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Function;
 
-import ch.ethz.idsc.owl.data.Stopwatch;
-import ch.ethz.idsc.retina.util.math.ElkiDatabase;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Flatten;
 import ch.ethz.idsc.tensor.alg.Join;
+import ch.ethz.idsc.tensor.io.Timing;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
 import de.lmu.ifi.dbs.elki.data.Cluster;
 import de.lmu.ifi.dbs.elki.data.Clustering;
@@ -46,11 +45,11 @@ public enum ClustersTracking {
     NavigableMap<Integer, Integer> origin = partitionMap(array, Function.identity());
     Tensor matrix = Flatten.of(scans, 1);
     Database database = ElkiDatabase.from(matrix);
-    Stopwatch stopwatch = Stopwatch.started();
+    Timing timing = Timing.started();
     DBSCAN<NumberVector> dbscan = //
         new DBSCAN<>(SquaredEuclideanDistanceFunction.STATIC, eps, minPoints);
     Clustering<Model> clustering = dbscan.run(database);
-    long ns = stopwatch.display_nanoSeconds();
+    long ns = timing.nanoSeconds();
     System.out.println((ns * 1e-6) + "ms");
     Set<Integer> removeIndex = new HashSet<>();
     for (Cluster<Model> cluster : clustering.getAllClusters())

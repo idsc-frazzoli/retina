@@ -3,9 +3,9 @@ package ch.ethz.idsc.demo.jph.davis;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.lcm.davis.DavisSnippetLog;
+import ch.ethz.idsc.gokart.lcm.davis.DavisSnippetLog;
 
-enum RunDavisSnippetLog {
+/* package */ enum RunDavisSnippetLog {
   ;
   public static void main(String[] args) {
     int period_ms = 1700;

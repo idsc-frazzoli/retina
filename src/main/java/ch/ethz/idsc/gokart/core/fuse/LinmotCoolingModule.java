@@ -3,12 +3,12 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
-import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 
 /** linmot winding module does not allow driving
  * when the linmot winding temperature is not operation safe */
@@ -18,7 +18,7 @@ public final class LinmotCoolingModule extends EmergencyModule<RimoPutEvent> imp
   private boolean isTemperatureOperationSafe = false;
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     LinmotSocket.INSTANCE.addGetListener(this);
     RimoSocket.INSTANCE.addPutProvider(this);
   }

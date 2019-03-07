@@ -3,20 +3,25 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ public class GokartState implements OfflineVectorInterface, MPCNativeInsertable {
-  // TODO: full documentation
+/* package */ public class GokartState implements OfflineVectorInterface, BufferInsertable {
+  public static final int LENGTH = 11 * Float.BYTES; // 11 * 4
+  // TODO full documentation
   // not used yet:
   // private static final Unit SCE = SteerPutEvent.UNIT_ENCODER;
+  private final static Scalar CENTER_OFFSET = Quantity.of(0.4, SI.METER);
   /** time in seconds from synchronized time point */
   private final float time;
   /** forward velocity in gokart frame with unit m*s^1 */
@@ -164,7 +169,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @param s wheel encoder position in "CSE"
    * @param bTemp brake temperature in "°C" */
   public GokartState(//
-      Scalar time, Scalar Ux, //
+      Scalar time, //
+      Scalar Ux, //
       Scalar Uy, //
       Scalar dotPsi, //
       Scalar X, //
@@ -172,7 +178,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       Scalar Psi, //
       Scalar w2L, //
       Scalar w2R, //
-      Scalar s, Scalar bTemp) {
+      Scalar s, //
+      Scalar bTemp) {
     this.time = Magnitude.SECOND.toFloat(time);
     this.Ux = Magnitude.VELOCITY.toFloat(Ux);
     this.Uy = Magnitude.VELOCITY.toFloat(Uy);
@@ -201,6 +208,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * s [CSE],
    * bTemp [°C]} */
   public GokartState(Tensor GokartStateTensor) {
+    // TODO reuse constructors
+    // this(time, Ux, Uy, dotPsi, Ux, Uy, dotPsi, w2L, w2R, Psi)
     time = Magnitude.SECOND.toFloat(GokartStateTensor.Get(0));
     Ux = Magnitude.VELOCITY.toFloat(GokartStateTensor.Get(1));
     Uy = Magnitude.VELOCITY.toFloat(GokartStateTensor.Get(2));
@@ -224,6 +233,19 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     dotPsi = byteBuffer.getFloat();
     X = byteBuffer.getFloat();
     Y = byteBuffer.getFloat();
+    /* //if you want to test the wrap around problem
+     * float PsiVal = byteBuffer.getFloat();
+     * while (PsiVal > Math.PI)
+     * {
+     * System.out.println("wraparound up!");
+     * PsiVal -= Math.PI * 2;
+     * }
+     * while (PsiVal < -Math.PI) {
+     * System.out.println("wraparound down!");
+     * PsiVal += Math.PI * 2;
+     * }
+     * 
+     * Psi = PsiVal; */
     Psi = byteBuffer.getFloat();
     w2L = byteBuffer.getFloat();
     w2R = byteBuffer.getFloat();
@@ -243,16 +265,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
      * w2L, //
      * w2R,
      * s); */
-    return Tensors.of(//
+    return Tensors.of( //
         getTime(), //
         getUx(), //
-        getUy(), getdotPsi(), //
+        getUy(), //
+        getdotPsi(), //
         getX(), //
         getY(), //
         getPsi(), //
         getw2L(), //
         getw2R(), //
-        getS(), getBTemp());
+        getS(), //
+        getBTemp());
   }
 
   public Scalar getTime() {
@@ -265,6 +289,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   public Scalar getUy() {
     return Quantity.of(Uy, SI.VELOCITY);
+  }
+
+  public Tensor getPosition() {
+    return Tensors.of(getX(), getY());
+  }
+
+  public Tensor getCenterPosition() {
+    return getPosition().add(AngleVector.of(getPsi()).multiply(CENTER_OFFSET));
   }
 
   public Scalar getdotPsi() {
@@ -280,7 +312,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   public Scalar getPsi() {
-    return Quantity.of(Psi, SI.ONE);
+    return RealScalar.of(Psi);
   }
 
   public Scalar getw2L() {
@@ -301,22 +333,22 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   public void insert(ByteBuffer byteBuffer) {
-    byteBuffer.putFloat(time);
-    byteBuffer.putFloat(Ux);
-    byteBuffer.putFloat(Uy);
-    byteBuffer.putFloat(dotPsi);
-    byteBuffer.putFloat(X);
-    byteBuffer.putFloat(Y);
-    byteBuffer.putFloat(Psi);
-    byteBuffer.putFloat(w2L);
-    byteBuffer.putFloat(w2R);
-    byteBuffer.putFloat(s);
-    byteBuffer.putFloat(bTemp);
+    byteBuffer.putFloat(time); // 0
+    byteBuffer.putFloat(Ux); // 4
+    byteBuffer.putFloat(Uy); // 8
+    byteBuffer.putFloat(dotPsi); // 12
+    byteBuffer.putFloat(X); // 16
+    byteBuffer.putFloat(Y); // 20
+    byteBuffer.putFloat(Psi); // 24
+    byteBuffer.putFloat(w2L); // 28
+    byteBuffer.putFloat(w2R); // 32
+    byteBuffer.putFloat(s); // 36
+    byteBuffer.putFloat(bTemp); // 40
   }
 
   @Override
   public int length() {
-    return 11 * 4;
+    return LENGTH;
   }
 
   @Override

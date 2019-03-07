@@ -6,7 +6,6 @@ import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.retina.util.io.PrimitivesIO;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -46,7 +45,7 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
   /** saves the occurrence map after log file is completed if required by algorithm configuration */
   public void stop() {
     if (saveSlamMap) {
-      PrimitivesIO.saveToCSV( //
+      StaticHelper.saveToCSV( //
           SlamFileLocations.RECORDED_MAP.inFolder(logFilename), //
           occurrenceMap.getMapArray());
       System.out.println("Slam map successfully saved");

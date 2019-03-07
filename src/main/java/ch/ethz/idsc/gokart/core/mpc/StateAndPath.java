@@ -3,35 +3,35 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-public class StateAndPath implements MPCNativeInsertable {
-  // not used:
-  // private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
-  public final GokartState state;
-  public final MPCPathParameter path;
+import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
-  public StateAndPath(MPCPathParameter path, GokartState state) {
-    this.path = path;
-    this.state = state;
+/* package */ class StateAndPath implements BufferInsertable {
+  private final GokartState gokartState;
+  private final MPCPathParameter mpcPathParameter;
+
+  public StateAndPath(GokartState gokartState, MPCPathParameter mpcPathParameter) {
+    this.gokartState = gokartState;
+    this.mpcPathParameter = mpcPathParameter;
   }
 
   public StateAndPath(ByteBuffer byteBuffer) {
-    state = new GokartState(byteBuffer);
-    path = new MPCPathParameter(byteBuffer);
+    gokartState = new GokartState(byteBuffer);
+    mpcPathParameter = new MPCPathParameter(byteBuffer);
   }
 
-  @Override
+  @Override // from BufferInsertable
   public void insert(ByteBuffer byteBuffer) {
-    state.insert(byteBuffer);
-    path.insert(byteBuffer);
+    gokartState.insert(byteBuffer);
+    mpcPathParameter.insert(byteBuffer);
   }
 
-  @Override
+  @Override // from BufferInsertable
   public int length() {
-    return path.length() + state.length();
+    return GokartState.LENGTH + mpcPathParameter.length();
   }
 
-  @Override
+  @Override // from Object
   public String toString() {
-    return "state and path:\n" + state.toString() + path.toString();
+    return "state and path:\n" + gokartState.toString() + mpcPathParameter.toString();
   }
 }

@@ -3,12 +3,12 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import java.io.File;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 public enum SlamFileLocations {
-  MAP_FRAMES(UserHome.Pictures("slamFrames")), //
-  RECORDED_MAP(UserHome.Pictures("slamMaps")), //
-  OFFLINELOGS(UserHome.Pictures("slamOfflineLogs")), //
+  MAP_FRAMES(HomeDirectory.Pictures("slamFrames")), //
+  RECORDED_MAP(HomeDirectory.Pictures("slamMaps")), //
+  OFFLINELOGS(HomeDirectory.Pictures("slamOfflineLogs")), //
   ;
   private final File folder;
 

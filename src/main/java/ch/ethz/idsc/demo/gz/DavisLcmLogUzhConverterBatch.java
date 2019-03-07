@@ -3,9 +3,9 @@ package ch.ethz.idsc.demo.gz;
 
 import java.io.File;
 
-import ch.ethz.idsc.retina.lcm.davis.DavisLcmLogUzhConvert;
+import ch.ethz.idsc.gokart.lcm.davis.DavisLcmLogUzhConvert;
 
-enum DavisLcmLogUzhConverterBatch {
+/* package */ enum DavisLcmLogUzhConverterBatch {
   ;
   public static void process(File file, File destination) {
     DavisLcmLogUzhConvert.of(file, destination);

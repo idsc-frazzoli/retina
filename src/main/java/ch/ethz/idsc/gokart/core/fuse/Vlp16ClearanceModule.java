@@ -4,25 +4,25 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmClient;
 import ch.ethz.idsc.owl.car.math.ClearanceTracker;
 import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialListener;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneDecoder;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
-import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16SpacialProvider;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmClient;
-import ch.ethz.idsc.retina.sys.SafetyCritical;
-import ch.ethz.idsc.retina.util.data.PenaltyTimeout;
+import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
+import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
+import ch.ethz.idsc.retina.util.data.SoftWatchdog;
+import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.red.Min;
@@ -31,7 +31,6 @@ import ch.ethz.idsc.tensor.red.Min;
  * 
  * prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */
-@SafetyCritical
 abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
     LidarSpacialListener, GokartStatusListener {
   private static final Scalar UNIT_SPEED = DoubleScalar.of(1);
@@ -43,7 +42,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
-  private final PenaltyTimeout penaltyTimeout = new PenaltyTimeout(PENALTY_DURATION_S);
+  private final Watchdog watchdog = SoftWatchdog.barking(PENALTY_DURATION_S);
 
   public Vlp16ClearanceModule() {
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
@@ -53,7 +52,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   }
 
   @Override // from AbstractModule
-  protected final void first() throws Exception {
+  protected final void first() {
     lidarSpacialProvider.addListener(this);
     velodyneLcmClient.startSubscriptions();
     gokartStatusLcmClient.addListener(this);
@@ -91,7 +90,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
     float z = lidarSpacialEvent.coords[2];
     if (spacialXZObstaclePredicate.isObstacle(x, z) && //
         _clearanceTracker.isObstructed(lidarSpacialEvent.getXY()))
-      penaltyTimeout.flagPenalty();
+      watchdog.notifyWatchdog();
   }
 
   @Override // from GokartStatusListener
@@ -113,10 +112,9 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
       EmergencyBrakeProvider.INSTANCE.consider(_contact.get());
       contact = Optional.empty();
     }
-    // return Optional.empty();
-    return penaltyTimeout.isPenalty() //
-        ? penaltyAction()
-        : Optional.empty();
+    return watchdog.isBarking() //
+        ? Optional.empty()
+        : penaltyAction();
   }
 
   /** @return non-null */

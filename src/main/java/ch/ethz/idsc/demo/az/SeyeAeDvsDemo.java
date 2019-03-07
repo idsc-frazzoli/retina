@@ -9,12 +9,12 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.demo.jph.davis.Aedat31PolarityImage;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.dev.davis.io.SeyeAeDvsLcmClient;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
+import ch.ethz.idsc.gokart.lcm.seye.SeyeAeDvsLcmClient;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-enum SeyeAeDvsDemo {
+/* package */ enum SeyeAeDvsDemo {
   ;
   public static void main(String[] args) throws InterruptedException {
     SeyeAeDvsLcmClient seyeAeDvsLcmClient = new SeyeAeDvsLcmClient(GokartLcmChannel.SEYE_OVERVIEW);
@@ -31,11 +31,10 @@ enum SeyeAeDvsDemo {
       @Override
       public void timedImage(TimedImageEvent timedImageEvent) {
         System.out.println(timedImageEvent.time);
-        File img = UserHome.Pictures("img" + count + ".png");
+        File img = HomeDirectory.Pictures("img" + count + ".png");
         try {
           ImageIO.write(timedImageEvent.bufferedImage, "png", img);
         } catch (IOException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
         count++;

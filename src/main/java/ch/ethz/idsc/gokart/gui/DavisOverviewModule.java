@@ -6,18 +6,18 @@ import java.util.Objects;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.retina.dev.davis.DavisDevice;
-import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis.app.AbstractAccumulatedImage;
-import ch.ethz.idsc.retina.dev.davis.app.AccumulatedEventsGrayImage;
-import ch.ethz.idsc.retina.dev.davis.app.DavisImageBuffer;
-import ch.ethz.idsc.retina.dev.davis.app.DavisQuickFrame;
-import ch.ethz.idsc.retina.dev.davis.app.SignalResetDifference;
-import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
-import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
+import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.retina.davis.DavisDevice;
+import ch.ethz.idsc.retina.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.davis.app.AbstractAccumulatedImage;
+import ch.ethz.idsc.retina.davis.app.AccumulatedEventsGrayImage;
+import ch.ethz.idsc.retina.davis.app.DavisImageBuffer;
+import ch.ethz.idsc.retina.davis.app.DavisQuickFrame;
+import ch.ethz.idsc.retina.davis.app.SignalResetDifference;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 /** contains hard-coded channel names and magic constants */
 public class DavisOverviewModule extends AbstractModule {
@@ -28,7 +28,7 @@ public class DavisOverviewModule extends AbstractModule {
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     int period_us = 10_000;
     DavisDevice davisDevice = Davis240c.INSTANCE;
     DavisLidarComponent davisLidarComponent = new DavisLidarComponent();

@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 public class GokartMappingModuleTest extends TestCase {
   public void testSimple() {
-    GokartMappingModule gokartMappingModule = new GokartMappingModule();
+    ObstacleMapping gokartMappingModule = new ObstacleMapping();
     gokartMappingModule.start();
     gokartMappingModule.stop();
   }

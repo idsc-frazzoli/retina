@@ -7,7 +7,8 @@ import java.util.List;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
-/** j2b2 project */
+/** j2b2 project
+ * http://hakenberg.de/automation/j2b2_competition.htm */
 public class Se2MultiresGrids {
   private static final Scalar DECR = DoubleScalar.of(0.6);
   // ---
@@ -30,7 +31,7 @@ public class Se2MultiresGrids {
     return list.get(level);
   }
 
-  public int grids() {
+  public int levels() {
     return list.size();
   }
 }

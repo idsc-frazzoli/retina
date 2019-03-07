@@ -12,13 +12,13 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocket;
-import ch.ethz.idsc.retina.dev.misc.MiscEmergencyBit;
-import ch.ethz.idsc.retina.dev.misc.MiscGetEvent;
-import ch.ethz.idsc.retina.dev.misc.MiscPutEvent;
-import ch.ethz.idsc.retina.dev.misc.MiscSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
+import ch.ethz.idsc.gokart.dev.misc.MiscEmergencyBit;
+import ch.ethz.idsc.gokart.dev.misc.MiscGetEvent;
+import ch.ethz.idsc.gokart.dev.misc.MiscPutEvent;
+import ch.ethz.idsc.gokart.dev.misc.MiscSocket;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.data.Word;
-import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
 
 /* package */ class MiscComponent extends AutoboxTestingComponent<MiscGetEvent, MiscPutEvent> {

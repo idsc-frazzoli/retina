@@ -5,20 +5,28 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.GokartLogFile;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
 /* package */ enum GokartLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
-    LogPlayerConfig cfg = new LogPlayerConfig();
+    LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
     File file;
-    file = DatahakiLogFileLocator.file(GokartLogFile._20181018T140542_1a649e65);
-    // file = new File("/media/datahaki/media/ethz/gokart/topic/track_orange/20181008T183011_10/log.lcm");
-    // file = UserHome.file("20180927T145943_44599876Extracted1_Pose.lcm");
-    cfg.logFile = file.toString();
-    cfg.speed_numerator = 1;
-    cfg.speed_denominator = 1;
-    LogPlayer.create(cfg);
+    file = DatahakiLogFileLocator.file(GokartLogFile._20190304T181143_e8ec1e35);
+    file = new File("/media/datahaki/data/gokart/cuts/20190304/20190304T181143_05/log.lcm");
+    // file = new File("/media/datahaki/media/ethz/gokart/topic/trackid", "changingtrack.lcm");
+    // file = new File("/media/datahaki/data/gokart/cuts/20190208/20190208T145312_15/post.lcm");
+    logPlayerConfig.logFile = file.toString();
+    logPlayerConfig.speed_numerator = 1;
+    logPlayerConfig.speed_denominator = 1;
+    LogPlayer logPlayer = LogPlayer.create(logPlayerConfig);
+    WindowConfiguration windowConfiguration = //
+        AppCustomization.load(GokartLcmLogPlayer.class, new WindowConfiguration());
+    windowConfiguration.attach(GokartLcmLogPlayer.class, logPlayer.jFrame);
+    logPlayer.jFrame.setLocation(100, 100);
+    logPlayer.standalone();
   }
 }

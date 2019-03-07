@@ -3,10 +3,10 @@ package ch.ethz.idsc.gokart.lcm.mod;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneStatics;
-import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmServer;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmServer;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 abstract class VelodyneLcmServerModule extends AbstractModule {
   private VelodyneLcmServer velodyneLcmServer = null;
@@ -19,7 +19,7 @@ abstract class VelodyneLcmServerModule extends AbstractModule {
   }
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     int portRay = VelodyneStatics.RAY_DEFAULT_PORT;
     int portPos = VelodyneStatics.POS_DEFAULT_PORT;
     velodyneLcmServer = new VelodyneLcmServer(velodyneModel, channel, portRay, portPos);

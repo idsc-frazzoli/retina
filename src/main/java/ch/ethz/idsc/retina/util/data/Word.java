@@ -4,10 +4,8 @@ package ch.ethz.idsc.retina.util.data;
 import java.util.List;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
-import ch.ethz.idsc.retina.sys.SafetyCritical;
 
-@SafetyCritical
-public class Word {
+public final class Word {
   public static Word createShort(String string, short value) {
     return new Word(string, value, 2);
   }

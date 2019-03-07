@@ -22,10 +22,9 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.AffineTransforms;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.RadiusXY;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.util.math.Bresenham;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -43,11 +42,12 @@ import ch.ethz.idsc.tensor.sca.Sign;
  * 
  * the cascade of affine transformation is
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
-public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
+public class BayesianOccupancyGrid implements RenderInterface, OccupancyGrid {
   // TODO invert colors: black should be empty space
   private static final byte MASK_OCCUPIED = 0;
   private static final Color COLOR_OCCUPIED = Color.BLACK;
-  private static final Color COLOR_UNKNOWN = new Color(0xdd, 0xdd, 0xdd);
+  // private static final Color COLOR_UNKNOWN = new Color(0xdd, 0xdd, 0xdd);
+  private static final Color COLOR_UNKNOWN = Color.WHITE;
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space
@@ -57,13 +57,25 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
    * If not set or below cellDim, only the occupied cell is labeled as an obstacle
    * @return BayesianOccupancyGrid with grid dimensions ceil'ed to fit a whole number of cells per dimension */
   public static BayesianOccupancyGrid of(Tensor lbounds, Tensor range, Scalar cellDim, Scalar obstacleRadius) {
+    return of(lbounds, range, cellDim, obstacleRadius, false);
+  }
+
+  /** @param lbounds vector of length 2
+   * @param range effective size of grid in coordinate space
+   * @param cellDim non-negative dimension of cell with unit SI.METER
+   * @param obstacleRadius with unit SI.METER
+   * @param fill whether the map should be considered occupied at the beginning
+   * cells within this radius of an occupied cell will also be labeled as occupied.
+   * If not set or below cellDim, only the occupied cell is labeled as an obstacle
+   * @return BayesianOccupancyGrid with grid dimensions ceil'ed to fit a whole number of cells per dimension */
+  public static BayesianOccupancyGrid of(Tensor lbounds, Tensor range, Scalar cellDim, Scalar obstacleRadius, boolean fill) {
     // sizeCeil is for instance {200[m^-1], 200[m^-1]}
     Tensor sizeCeil = Ceiling.of(range.divide(Sign.requirePositive(cellDim)));
     Tensor rangeCeil = sizeCeil.multiply(cellDim);
     Dimension dimension = new Dimension( //
         Magnitude.PER_METER.toInt(sizeCeil.Get(0)), //
         Magnitude.PER_METER.toInt(sizeCeil.Get(1)));
-    return new BayesianOccupancyGrid(lbounds, rangeCeil, dimension, obstacleRadius);
+    return new BayesianOccupancyGrid(lbounds, rangeCeil, dimension, obstacleRadius, fill);
   }
 
   // ---
@@ -114,7 +126,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   /** @param lbounds vector of length 2
    * @param rangeCeil effective size of grid in coordinate space of the form {value, value}
    * @param dimension of grid in cell space */
-  private BayesianOccupancyGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension, Scalar obstacleRadius) {
+  private BayesianOccupancyGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension, Scalar obstacleRadius, boolean fillMap) {
     VectorQ.requireLength(rangeCeil, 2);
     System.out.print("Grid range: " + rangeCeil + "\n");
     System.out.print("Grid size: " + dimension + "\n");
@@ -139,7 +151,12 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     // ---
     // PREDEFINED_P
     logOdds = new double[dimx * dimy];
-    Arrays.fill(logOdds, StaticHelper.pToLogOdd(P_M));
+    if (!fillMap)
+      Arrays.fill(logOdds, StaticHelper.pToLogOdd(P_M));
+    else {
+      Arrays.fill(logOdds, StaticHelper.pToLogOdd(0.99));
+      setHset();
+    }
     // ---
     Tensor grid2cell = DiagonalMatrix.of(cellDimInv, cellDimInv, RealScalar.ONE);
     Tensor world2grid = getWorld2grid();
@@ -206,9 +223,10 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
           }
         }
       }
-    } else {
-      System.err.println("Observation not processed - no pose received");
     }
+    // else {
+    // System.err.println("Observation not processed - no pose received");
+    // }
   }
 
   /** set vehicle pose w.r.t world frame
@@ -226,7 +244,7 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
   /***************************************************/
   /** clears current obstacle image and redraws all known obstacles */
   // TODO LHF this function should return, or update a region object created here, or provided from the outside!
-  public void genObstacleMap() {
+  public synchronized void genObstacleMap() {
     imageGraphics.setColor(COLOR_UNKNOWN);
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
     synchronized (hset) {
@@ -300,6 +318,18 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     }
   }
 
+  private void setHset() {
+    synchronized (hset) {
+      hset.clear();
+      for (int i = 0; i < dimx; i++)
+        for (int j = 0; j < dimy; j++) {
+          double logOdd = logOdds[j * dimx + i];
+          if (logOdd > L_THRESH)
+            hset.add(Tensors.vector(i, j));
+        }
+    }
+  }
+
   /** Update the log odds of a cell using the probability of occupation given a new observation.
    * l_t = l_{t-1} + log[ p(m|z_t) / (1 - p(m|z_t)) ] + log[ (1-p(m)) / p(m) ]
    * @param idx of cell to be updated
@@ -353,13 +383,43 @@ public class BayesianOccupancyGrid implements Region<Tensor>, RenderInterface {
     return true;
   }
 
+  /** @return the currently used gridsize */
+  @Override
+  public Tensor getGridSize() {
+    return gridSize;
+  }
+
+  /** return if specific cell is occupied
+   * @param cell
+   * @return true if cell is occupied */
+  @Override
+  public boolean isCellOccupied(int pix, int piy) {
+    if (0 <= pix && pix < dimx)
+      if (0 <= piy && piy < dimy)
+        return imagePixels[piy * dimx + pix] == MASK_OCCUPIED;
+    return true;
+  }
+
   @Override // from RenderInterface
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  public synchronized void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    // TODO JPH simplify use ImageRender?
     Tensor model2pixel = geometricLayer.getMatrix();
     Tensor translate = IdentityMatrix.of(3);
     translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
     translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
     Tensor matrix = model2pixel.dot(scaling).dot(translate);
+    // Graphics2D graphics2d = obstacleImage.createGraphics();
+    // graphics2d.setColor(Color.BLACK);
+    // graphics2d.drawRect(0, 0, 100, 100);
+    // graphics2d.drawLine(0, 0, 100, 100);
     graphics.drawImage(obstacleImage, AffineTransforms.toAffineTransform(matrix), null);
+  }
+
+  @Override
+  public Tensor getTransform() {
+    Tensor translate = IdentityMatrix.of(3);
+    translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
+    translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
+    return IdentityMatrix.of(3).dot(scaling).dot(translate);
   }
 }

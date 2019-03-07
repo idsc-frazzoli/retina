@@ -5,13 +5,14 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.davis.DavisImuFramePublisher;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.dev.lidar.LidarRayDataListener;
-import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.dev.lidar.vlp16.Vlp16Decoder;
-import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
-import ch.ethz.idsc.retina.lcm.lidar.VelodyneLcmChannels;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.lidar.LidarRayDataListener;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -25,7 +26,7 @@ public class Vlp16RateTable implements OfflineTableSupplier, LidarRayDataListene
   private static final String DAVIS = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   private static final String LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
-  private static final Mod MOD = Mod.function(36000);
+  private static final Mod MOD = Mod.function(VelodyneStatics.AZIMUTH_RESOLUTION);
   // ---
   private final Vlp16Decoder vlp16Decoder = new Vlp16Decoder();
   private final TableBuilder tableBuilder = new TableBuilder();
@@ -39,7 +40,7 @@ public class Vlp16RateTable implements OfflineTableSupplier, LidarRayDataListene
     vlp16Decoder.addRayListener(this);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     if (Objects.nonNull(row) && Objects.nonNull(dif)) {
       Scalar gap = MOD.apply(row.Get(23).subtract(row.Get(0)));
@@ -53,7 +54,7 @@ public class Vlp16RateTable implements OfflineTableSupplier, LidarRayDataListene
     usec_last = usec;
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     row.append(RealScalar.of(rotational));
   }

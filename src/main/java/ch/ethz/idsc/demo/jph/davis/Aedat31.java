@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.jph.davis;
 import java.io.File;
 
 /** references to silicon eye recordings */
-enum Aedat31 {
+/* package */ enum Aedat31 {
   LOG_01(new File("/media/datahaki/media/ethz/insightness/aedat", //
       "sees_control_recording_2018_03_16-15_36_46.aedat")), //
   LOG_02(new File("/media/datahaki/media/ethz/insightness/aedat", //

@@ -30,15 +30,15 @@ public class SimpleSpacialObstaclePredicateTest extends TestCase {
     SpacialXZObstaclePredicate sop = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
     // double z_corrected = z - x * inc; // negative sign
     assertTrue(sop.isObstacle(100, 100 * 0.04f));
-    assertFalse(sop.isObstacle(100, 100 * 0.04f + 1));
-    assertFalse(sop.isObstacle(100, 100 * 0.04f - 1));
+    assertFalse(sop.isObstacle(100, 100 * 0.04f + 0.6f));
+    assertFalse(sop.isObstacle(100, 100 * 0.04f - 1.2f));
   }
 
   public void testSimpleXZFarBack() {
     SpacialXZObstaclePredicate sop = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
     // double z_corrected = z - x * inc; // negative sign
     assertTrue(sop.isObstacle(-100, -100 * 0.04f));
-    assertFalse(sop.isObstacle(-100, -100 * 0.04f + 1));
-    assertFalse(sop.isObstacle(-100, -100 * 0.04f - 1));
+    assertFalse(sop.isObstacle(-100, -100 * 0.04f + 0.6f));
+    assertFalse(sop.isObstacle(-100, -100 * 0.04f - 1.2f));
   }
 }

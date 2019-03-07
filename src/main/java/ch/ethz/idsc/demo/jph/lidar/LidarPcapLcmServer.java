@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.lidar;
 
-import ch.ethz.idsc.retina.dev.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.lcm.lidar.VelodynePcapLcmServer;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodynePcapLcmServer;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 import ch.ethz.idsc.retina.util.io.PcapRealtimePlayback;
 

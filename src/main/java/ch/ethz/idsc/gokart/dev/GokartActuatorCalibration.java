@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.dev;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
-import ch.ethz.idsc.retina.dev.misc.MiscIgnitionProvider;
-import ch.ethz.idsc.retina.dev.steer.SteerCalibrationProvider;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotCalibrationProvider;
+import ch.ethz.idsc.gokart.dev.misc.MiscIgnitionProvider;
+import ch.ethz.idsc.gokart.dev.steer.SteerCalibrationProvider;
 
 public enum GokartActuatorCalibration {
   ;

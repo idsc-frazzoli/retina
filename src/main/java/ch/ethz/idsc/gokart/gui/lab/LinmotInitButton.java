@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.event.ActionEvent;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotCalibrationProvider;
 
 /** gui element to initiate calibration procedure of linmot break
  * 
@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.dev.linmot.LinmotCalibrationProvider;
  * 2) LinmotGetEvent was received with status not operational */
 /* package */ class LinmotInitButton extends AutoboxInitButton {
   public LinmotInitButton() {
-    super("Init");
+    super("Init", "calibrate linmot");
   }
 
   @Override // from ActionListener

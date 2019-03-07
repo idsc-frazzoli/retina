@@ -7,9 +7,9 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 /** AutoboxCompactModule facilitates the initialization of the actuators
  * and the monitoring of the joystick and Davis240C sensor
@@ -18,11 +18,10 @@ import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
 public class AutoboxCompactModule extends AbstractModule {
   private final AutoboxCompactComponent autoboxCompactComponent = new AutoboxCompactComponent();
   private final JFrame jFrame = new JFrame("Autobox Compact");
-  private final WindowConfiguration windowConfiguration = //
-      AppCustomization.load(getClass(), new WindowConfiguration());
+  private final WindowConfiguration windowConfiguration = AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     autoboxCompactComponent.start();
     // ---
     jFrame.setContentPane(autoboxCompactComponent.getScrollPane());

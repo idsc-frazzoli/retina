@@ -4,8 +4,8 @@ package ch.ethz.idsc.gokart.gui;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.dev.steer.SteerMapping;
+import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -18,7 +18,7 @@ public class GokartStatusEventTest extends TestCase {
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
     try {
       steerMapping.getAngleFromSCE(gokartStatusEvent);
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

@@ -110,6 +110,7 @@ import ch.ethz.idsc.tensor.Tensors;
    * @param resizeFactor [-]
    * @return outputMap same type as inputMap */
   // could be used in the future to reduce computational load
+  @SuppressWarnings("unused")
   private static Mat resizeMat(Mat inputMap, double resizeFactor) {
     int newHeight = (int) (inputMap.rows() / resizeFactor);
     int newWidth = (int) (inputMap.cols() / resizeFactor);

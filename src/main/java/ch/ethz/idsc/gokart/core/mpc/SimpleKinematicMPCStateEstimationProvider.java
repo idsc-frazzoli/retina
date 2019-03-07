@@ -1,39 +1,43 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import java.util.Objects;
+
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.owl.data.Stopwatch;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetListener;
-import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.retina.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerGetListener;
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimationProvider {
+/** only needed when no IMU/velocity estimation is available */
+/* package */ class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimationProvider {
   private Scalar Ux = Quantity.of(0, SI.VELOCITY);
   // assumed to be zero here (Kinematic controller cannot do anything with this information
   private Scalar Uy = Quantity.of(0, SI.VELOCITY);
-  private Scalar orientation = Quantity.of(0, SI.ONE);
+  private Scalar orientation = RealScalar.of(0);
   private Scalar dotOrientation = Quantity.of(0, SI.PER_SECOND);
   private Scalar XPosition = Quantity.of(0, SI.METER);
   private Scalar YPosition = Quantity.of(0, SI.METER);
-  private Scalar w2L = Quantity.of(0, SI.VELOCITY);
-  private Scalar w2R = Quantity.of(0, SI.VELOCITY);
+  private Scalar w2L = Quantity.of(0, SI.PER_SECOND);
+  private Scalar w2R = Quantity.of(0, SI.PER_SECOND);
   private Scalar s = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
   private Scalar bTemp = Quantity.of(0, NonSI.DEGREE_CELSIUS);
   private Scalar lastUpdate = Quantity.of(0, SI.SECOND);
@@ -62,7 +66,7 @@ public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimatio
     @Override
     public void getEvent(SteerGetEvent getEvent) {
       if (steerColumnInterface.isSteerColumnCalibrated()) {
-        // TODO: is this smart? Can we get the info directly from the getEvenet
+        // TODO is this smart? Can we get the info directly from the getEvenet
         s = steerColumnInterface.getSteerColumnEncoderCentered();
         lastUpdate = getTime();
       }
@@ -79,15 +83,15 @@ public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimatio
     }
   };
 
-  protected SimpleKinematicMPCStateEstimationProvider(Stopwatch stopwatch) {
-    super(stopwatch);
+  protected SimpleKinematicMPCStateEstimationProvider(Timing timing) {
+    super(timing);
   }
 
   @Override
   public GokartState getState() {
     // check if there was an update since the creation of the last gokart state
-    if (lastGokartState == null || !lastGokartState.getTime().equals(lastUpdate))
-      lastGokartState = new GokartState(//
+    if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate))
+      lastGokartState = new GokartState( //
           getTime(), //
           Ux, //
           Uy, //
@@ -102,7 +106,7 @@ public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimatio
     return lastGokartState;
   }
 
-  @Override
+  @Override // from MPCStateEstimationProvider
   void first() {
     LinmotSocket.INSTANCE.addGetListener(linmotGetListener);
     RimoSocket.INSTANCE.addGetListener(rimoGetListener);
@@ -111,7 +115,7 @@ public class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimatio
     gokartPoseLcmClient.startSubscriptions();
   }
 
-  @Override
+  @Override // from MPCStateEstimationProvider
   void last() {
     LinmotSocket.INSTANCE.removeGetListener(linmotGetListener);
     RimoSocket.INSTANCE.removeGetListener(rimoGetListener);

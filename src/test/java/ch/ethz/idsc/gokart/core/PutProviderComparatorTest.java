@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.EmergencyModule;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import junit.framework.TestCase;
 
 public class PutProviderComparatorTest extends TestCase {

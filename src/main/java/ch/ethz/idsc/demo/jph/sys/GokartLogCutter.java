@@ -8,22 +8,16 @@ import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.gokart.offline.gui.GokartLcmLogCutter;
 import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
 
-enum GokartLogCutter {
+/* package */ enum GokartLogCutter {
   ;
-  /** azure:
-   * _20180827T150209_db899976
-   * _20180827T170643_db899976
-   * _20180827T175941_db899976
-   * _20180830T101537_db899976
-   * _20180830T111749_db899976 */
   public static void main(String[] args) throws IOException {
-    GokartLogFile gokartLogFile = GokartLogFile._20181008T183011_786ab990;
+    GokartLogFile gokartLogFile = GokartLogFile._20190215T154532_380160a9;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
     // file = new File("/media/datahaki/media/ethz/gokart/topic/mapping/20180924T104243_1/log.lcm");
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //
         gokartLogFileIndexer, //
-        new File("/media/datahaki/media/ethz/gokart/topic/track_orange"), //
+        new File("/media/datahaki/data/gokart/cuts"), //
         gokartLogFile.getTitle());
   }
 }

@@ -13,10 +13,10 @@ function dx = interstagedx(x,u)
     theta = x(index.theta-index.nu);
     v = x(index.v-index.nu);
     beta = x(index.beta-index.nu);
-    temp = x(index.braketemp-index.nu);
+    %temp = x(index.braketemp-index.nu);
     %braking=max(0,-ab+casadiGetMaxNegAcc(speed));
-    brakingheatup = heatupfunction(-ab-1.5);
-    brakingcooldown = cooldownfunction(temp);
+    %brakingheatup = heatupfunction(-ab-1.5);
+    %brakingcooldown = cooldownfunction(temp);
     l = 1.19;
     ackermannAngle = -0.58*beta*beta*beta+0.93*beta;
    
@@ -32,7 +32,7 @@ function dx = interstagedx(x,u)
     dx(index.v-index.nu)=ab;
     dx(index.beta-index.nu)=dotbeta;
     dx(index.s-index.nu)=ds;
-    dx(index.braketemp-index.nu)=brakingheatup+brakingcooldown;
+    %dx(index.braketemp-index.nu)=brakingheatup+brakingcooldown;
     dx(index.ab-index.nu)=dotab;
     
     %dx = [v*cos(theta);

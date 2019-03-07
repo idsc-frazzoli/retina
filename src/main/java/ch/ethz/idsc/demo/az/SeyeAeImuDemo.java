@@ -2,11 +2,11 @@
 package ch.ethz.idsc.demo.az;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.dev.davis.Aedat31Imu6Listener;
-import ch.ethz.idsc.retina.dev.davis.io.Aedat31Imu6Event;
-import ch.ethz.idsc.retina.dev.davis.io.SeyeAeImuLcmClient;
+import ch.ethz.idsc.gokart.lcm.seye.SeyeAeImuLcmClient;
+import ch.ethz.idsc.retina.davis.Aedat31Imu6Listener;
+import ch.ethz.idsc.retina.davis.io.Aedat31Imu6Event;
 
-enum SeyeAeImuDemo {
+/* package */ enum SeyeAeImuDemo {
   ;
   public static void main(String[] args) throws InterruptedException {
     SeyeAeImuLcmClient seyeAeImuLcmHandler = new SeyeAeImuLcmClient(GokartLcmChannel.SEYE_OVERVIEW);

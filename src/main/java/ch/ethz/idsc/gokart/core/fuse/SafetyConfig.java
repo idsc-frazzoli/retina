@@ -1,20 +1,20 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.owl.car.math.ClearanceTracker;
 import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.dev.steer.SteerMapping;
-import ch.ethz.idsc.retina.sys.AppResources;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.SIDerived;
+import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -32,7 +32,7 @@ public class SafetyConfig {
    * @see Vlp16ClearanceModule */
   public Scalar clearance_XHi = Quantity.of(4.5, SI.METER);
   /** 20180226: changed from -1.0[m] to -0.9[m] because the sensor rack was lowered by ~8[cm] */
-  public Scalar vlp16_ZLo = Quantity.of(-0.9, SI.METER);
+  public Scalar vlp16_ZLo = Quantity.of(-1.05, SI.METER);
   public Scalar vlp16_ZHi = Quantity.of(+0.1, SI.METER);
   /** rate limit is used in {@link SpeedLimitSafetyModule} */
   public Scalar rateLimit = Quantity.of(30, SIDerived.RADIAN_PER_SECOND);
@@ -40,14 +40,14 @@ public class SafetyConfig {
 
   /***************************************************/
   /** @return */
-  public Clip vlp16_ZClip() {
+  /* package */ Clip vlp16_ZClip() {
     return Clip.function( //
         Magnitude.METER.apply(vlp16_ZLo), //
         Magnitude.METER.apply(vlp16_ZHi));
   }
 
   /** @return */
-  public Clip getClearanceClip() {
+  /* package */ Clip getClearanceClip() {
     return Clip.function( //
         Magnitude.METER.apply(clearance_XLo), //
         Magnitude.METER.apply(clearance_XHi));

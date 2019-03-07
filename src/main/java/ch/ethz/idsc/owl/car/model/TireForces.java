@@ -4,7 +4,6 @@ package ch.ethz.idsc.owl.car.model;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.math.RobustSlip;
-import ch.ethz.idsc.owl.math.planar.Cross2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -104,7 +103,7 @@ public class TireForces {
    * @param index of wheel
    * @return */
   private Tensor get_ui_2d(Scalar delta, int index) { // as in doc
-    Tensor tangent_2 = carState.u_2d().add(Cross2D.of(vehicleModel.wheel(index).lever().extract(0, 2).multiply(carState.r)));
+    Tensor tangent_2 = carState.u_2d().add(Cross.of(vehicleModel.wheel(index).lever().extract(0, 2).multiply(carState.r)));
     return RotationMatrix.of(delta.negate()).dot(tangent_2);
   }
 

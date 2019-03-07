@@ -10,12 +10,12 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.owl.bot.r2.ImageEdges;
 import ch.ethz.idsc.owl.bot.r2.ImageRegions;
-import ch.ethz.idsc.owl.bot.util.UserHome;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
@@ -44,9 +44,11 @@ public enum PredefinedMap implements LocalizationImage {
   /** only front tent, aerotain poster shifted, no balloons */
   DUBILAB_LOCALIZATION_20180901(7.5), //
   /** no tents, aerotain poster shifted, no balloons */
-  DUBILAB_LOCALIZATION_20180904(7.5), //
+  // DUBILAB_LOCALIZATION_20180904(7.5), //
   /** car and house tents in new positions for tse2 planning */
-  DUBILAB_LOCALIZATION_20180912(7.5), //
+  // DUBILAB_LOCALIZATION_20180912(7.5), //
+  /** tents at parking position */
+  DUBILAB_LOCALIZATION_20181128(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   private static final int TTL = 3;
@@ -75,11 +77,11 @@ public enum PredefinedMap implements LocalizationImage {
     if (bufferedImage.getHeight() != size)
       new RuntimeException("map image not squared").printStackTrace();
     double s = scale.number().doubleValue();
-    int h = bufferedImage.getHeight();
+    double h = bufferedImage.getHeight();
     model2pixel = Tensors.matrix(new Number[][] { //
-        { s, 0, 0 }, //
-        { 0, -s, h }, //
-        { 0, 0, 1 }, //
+        { s, 0., 0. }, //
+        { 0., -s, h }, //
+        { 0., 0., 1. }, //
     }).unmodifiable();
   }
 
@@ -137,6 +139,6 @@ public enum PredefinedMap implements LocalizationImage {
   }
 
   public static void main(String[] args) throws IOException {
-    ImageIO.write(DUBILAB_LOCALIZATION_20180912.bufferedImage, "png", UserHome.file("20180912.png"));
+    ImageIO.write(DUBILAB_LOCALIZATION_20181128.bufferedImage, "png", HomeDirectory.file("20181128.png"));
   }
 }

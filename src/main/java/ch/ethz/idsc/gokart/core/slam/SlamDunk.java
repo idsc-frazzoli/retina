@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.slam;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.util.math.ParametricResample;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
@@ -21,7 +20,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
  * rotational rates of up to 180[deg*s^-1]. */
 public enum SlamDunk {
   ;
-  /** the list of points is typically provided by {@link ParametricResample}
+  /** the list of points is typically provided by ParametricResample
    * 
    * @param se2MultiresGrids
    * @param geometricLayer
@@ -32,7 +31,7 @@ public enum SlamDunk {
       Se2MultiresGrids se2MultiresGrids, GeometricLayer geometricLayer, Tensor points, SlamScore slamScore) {
     Tensor result = IdentityMatrix.of(3);
     int score = -1;
-    for (int level = 0; level < se2MultiresGrids.grids(); ++level) {
+    for (int level = 0; level < se2MultiresGrids.levels(); ++level) {
       score = -1;
       Se2GridPoint best = null;
       Se2Grid se2grid = se2MultiresGrids.grid(level);
@@ -50,7 +49,7 @@ public enum SlamDunk {
       geometricLayer.pushMatrix(best.matrix()); // manifest for next level
       result = result.dot(best.matrix());
     }
-    IntStream.range(0, se2MultiresGrids.grids()) //
+    IntStream.range(0, se2MultiresGrids.levels()) //
         .forEach(index -> geometricLayer.popMatrix());
     return new SlamResult(result, RationalScalar.of(score, points.length() * 255));
   }

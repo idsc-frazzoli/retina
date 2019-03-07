@@ -3,12 +3,14 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-public class ControlRequestMessage extends MPCNativeMessage {
-  public final StateAndPath stateAndPath;
+import ch.ethz.idsc.retina.util.data.BufferInsertable;
+
+/* package */ class ControlRequestMessage extends MPCNativeMessage {
+  final StateAndPath stateAndPath;
 
   public ControlRequestMessage(GokartState gokartState, MPCPathParameter mpcPathParameter, MPCNativeSession mpcNativeSession) {
     super(mpcNativeSession);
-    this.stateAndPath = new StateAndPath(mpcPathParameter, gokartState);
+    this.stateAndPath = new StateAndPath(gokartState, mpcPathParameter);
   }
 
   public ControlRequestMessage(ByteBuffer byteBuffer) {
@@ -16,13 +18,13 @@ public class ControlRequestMessage extends MPCNativeMessage {
     stateAndPath = new StateAndPath(byteBuffer);
   }
 
-  @Override
-  public int getMessagePrefix() {
-    return MPCNative.GOKART_STATE;
+  @Override // from MPCNativeMessage
+  MessageType getMessageType() {
+    return MessageType.CONTROL_REQUEST;
   }
 
-  @Override
-  public MPCNativeInsertable getPayload() {
+  @Override // from MPCNativeMessage
+  BufferInsertable getPayload() {
     return stateAndPath;
   }
 }

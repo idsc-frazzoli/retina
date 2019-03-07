@@ -6,16 +6,16 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 
 import ch.ethz.idsc.demo.GokartLogFile;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateJoystickTable;
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-enum RimoRateAnalysis {
+/* package */ enum RimoRateAnalysis {
   ;
   public static void main(String[] args) throws IOException {
     // _20180307T150715_28f09b86 ok but needs extraction
@@ -28,6 +28,6 @@ enum RimoRateAnalysis {
     LogFile logFile = GokartLogFile._20180427T121545_22662115;
     File file = AleLogFileLocator.file(logFile);
     OfflineLogPlayer.process(file, rimoRateTable);
-    Export.of(UserHome.file(logFile.getTitle() + ".csv"), rimoRateTable.getTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file(logFile.getTitle() + ".csv"), rimoRateTable.getTable().map(CsvFormat.strict()));
   }
 }

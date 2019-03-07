@@ -3,10 +3,10 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerUno;
-import ch.ethz.idsc.retina.dev.rimo.RimoRateControllerWrap;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerUno;
+import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 

@@ -9,13 +9,13 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.retina.dev.lidar.LidarAngularFiringCollector;
-import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.retina.dev.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.dev.lidar.LidarRotationProvider;
-import ch.ethz.idsc.retina.dev.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
+import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
+import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
+import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
+import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -28,10 +28,8 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
   public static boolean TRACKING = false;
   public static boolean FLAGSNAP = false;
   // ---
-  private final GokartPoseOdometry gokartPoseOdometry = //
-      GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
+  private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  // private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   public final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
   /** tear down flag to stop thread */
   private boolean isLaunched = true;
@@ -40,9 +38,11 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
    * containing the cross-section of the static geometry
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
+  // private GeodesicCausal1Filter gc1f = null;
+  // = new GeodesicCausal1Filter(Se2Geodesic.INSTANCE, RealScalar.of(0.85), p, q);
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -51,10 +51,8 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     lidarAngularFiringCollector.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
-    // davisImuLcmClient.addListener(lidarGyroLocalization);
     // ---
     vlp16LcmHandler.startSubscriptions();
-    // davisImuLcmClient.startSubscriptions();
     thread.start();
   }
 
@@ -63,7 +61,6 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     isLaunched = false;
     thread.interrupt();
     vlp16LcmHandler.stopSubscriptions();
-    // davisImuLcmClient.stopSubscriptions();
   }
 
   @Override // from LidarRayBlockListener
@@ -85,6 +82,10 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
       if (Objects.nonNull(points)) {
         points2d_ferry = null;
         Tensor state = gokartPoseOdometry.getPose(); // {x[m],y[m],angle[]}
+        // if (gc1f==null) {
+        // Tensor p = GokartPoseHelper.toUnitless(state);
+        // gc1f = new GeodesicCausal1Filter(Se2Geodesic.INSTANCE, RealScalar.of(0.85), p, p);
+        // }
         // System.out.println("tracking");
         lidarGyroLocalization.setState(state);
         // Stopwatch stopwatch = Stopwatch.started();
@@ -96,11 +97,14 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
           gokartPoseOdometry.setPose(slamResult.getTransform(), slamResult.getMatchRatio());
         } else
           // TODO check is the code below is sufficient
+          // TODO create module with rank safety that prohibits autonomous driving
+          // ... with bad pose quality (similar to autonomous button pressed)
           gokartPoseOdometry.setPose(state, RealScalar.ZERO);
       } else
         try {
-          Thread.sleep(1000);
-        } catch (InterruptedException e) {
+          // sleep is interrupted once data arrives
+          Thread.sleep(2000);
+        } catch (Exception exception) {
           // ---
         }
     }

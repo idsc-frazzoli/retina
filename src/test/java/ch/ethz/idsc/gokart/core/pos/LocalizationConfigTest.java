@@ -2,8 +2,11 @@
 package ch.ethz.idsc.gokart.core.pos;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.ParametricResample;
 import ch.ethz.idsc.tensor.IntegerQ;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.pdf.RandomVariate;
+import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
@@ -19,5 +22,10 @@ public class LocalizationConfigTest extends TestCase {
     Scalar bitShift = LocalizationConfig.GLOBAL.bitShift;
     assertTrue(IntegerQ.of(bitShift));
     assertTrue(Sign.isPositiveOrZero(bitShift));
+  }
+
+  public void testGetUniformResample() {
+    ParametricResample parametricResample = LocalizationConfig.GLOBAL.getResample();
+    parametricResample.apply(RandomVariate.of(UniformDistribution.unit(), 10, 2));
   }
 }

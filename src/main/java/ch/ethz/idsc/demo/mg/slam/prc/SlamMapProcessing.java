@@ -44,7 +44,7 @@ public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, Sta
       } else
         try {
           Thread.sleep(1000);
-        } catch (InterruptedException e) {
+        } catch (Exception exception) {
           // ---
         }
   }

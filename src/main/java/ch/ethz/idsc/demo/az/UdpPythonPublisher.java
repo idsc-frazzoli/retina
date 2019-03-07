@@ -15,17 +15,17 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.davis.DavisDevice;
-import ch.ethz.idsc.retina.dev.davis._240c.Davis240c;
-import ch.ethz.idsc.retina.dev.davis.app.AbstractAccumulatedImage;
-import ch.ethz.idsc.retina.dev.davis.app.SAEGaussDecayImage;
-import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
+import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
+import ch.ethz.idsc.retina.davis.DavisDevice;
+import ch.ethz.idsc.retina.davis._240c.Davis240c;
+import ch.ethz.idsc.retina.davis.app.AbstractAccumulatedImage;
+import ch.ethz.idsc.retina.davis.app.SAEGaussDecayImage;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.retina.util.io.DatagramSocketManager;
 
-class UdpPythonPublisher implements TimedImageListener {
+/* package */ class UdpPythonPublisher implements TimedImageListener {
   /** port to send data to */
   private static final int S2_PORT = 6785;
   // ---

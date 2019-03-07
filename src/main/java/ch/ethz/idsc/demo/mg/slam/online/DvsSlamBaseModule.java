@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import ch.ethz.idsc.demo.mg.slam.SlamAlgoConfig;
 import ch.ethz.idsc.demo.mg.slam.config.EventCamera;
 import ch.ethz.idsc.gokart.core.pure.SlamCurvePurePursuitModule;
-import ch.ethz.idsc.retina.sys.AbstractClockedModule;
+import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -27,7 +27,7 @@ public class DvsSlamBaseModule extends AbstractClockedModule {
   }
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     onlineSlamWrap.start();
     // ---
     slamCurvePurePursuitModule.launch();

@@ -11,16 +11,15 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocket;
-import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutHelper;
-import ch.ethz.idsc.retina.dev.linmot.LinmotPutOperation;
-import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.dev.linmot.LinmotStatusWordBit;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotPutHelper;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotStatusWordBit;
 import ch.ethz.idsc.retina.util.data.Word;
-import ch.ethz.idsc.retina.util.gui.SliderExt;
-import ch.ethz.idsc.retina.util.gui.SpinnerLabel;
+import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -122,8 +121,8 @@ import ch.ethz.idsc.tensor.sca.Round;
       jCheckBoxStatusWord[lsw.ordinal()].setSelected(selected);
     }
     jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.state_variable));
-    jTextFieldActualPosition.setText("" + linmotGetEvent.actual_position);
-    jTextFieldDemandPosition.setText("" + linmotGetEvent.demand_position);
+    jTextFieldActualPosition.setText(Integer.toString(linmotGetEvent.actual_position));
+    jTextFieldDemandPosition.setText(Integer.toString(linmotGetEvent.demand_position));
     Scalar scalar = RealScalar.of(linmotGetEvent.getPositionDiscrepancyRaw());
     jTextFieldDemandPosition.setBackground(ColorFormat.toColor( //
         ColorDataGradients.TEMPERATURE.apply(LinmotConfig.NOMINAL_POSITION_DELTA.rescale(scalar))));

@@ -3,9 +3,9 @@ package ch.ethz.idsc.gokart.gui.lab;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutProvider;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutProvider;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 
 /* package */ class LinmotPressTestRimo implements RimoPutProvider {
   private boolean isActive = false;

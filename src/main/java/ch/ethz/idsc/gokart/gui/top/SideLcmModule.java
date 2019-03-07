@@ -7,10 +7,10 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
-import ch.ethz.idsc.retina.lcm.lidar.Vlp16LcmHandler;
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 public class SideLcmModule extends AbstractModule {
   protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
@@ -25,7 +25,7 @@ public class SideLcmModule extends AbstractModule {
   }
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     {
       LidarRender lidarRender = new SideLidarRender(gokartPoseInterface);
       lidarRender.setColor(new Color(0, 0, 128, 128));
@@ -48,7 +48,7 @@ public class SideLcmModule extends AbstractModule {
     // vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
     // timerFrame.geometricComponent.addRenderInterface(lidarRender);
     // }
-    viewLcmFrame.geometricComponent.addRenderInterface(GridRender.INSTANCE);
+    viewLcmFrame.geometricComponent.addRenderInterface(Dubilab.GRID_RENDER);
     // ---
     vlp16LcmHandler.startSubscriptions();
     // ---

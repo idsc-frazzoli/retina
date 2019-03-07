@@ -1,6 +1,7 @@
 %add force path (change that for yourself)
-addpath('/home/gokart/Forces')
 addpath('..');
+userDir = getuserdir;
+addpath([userDir '/Forces']);
 addpath('casadi');
     
 clear model
@@ -8,32 +9,42 @@ clear problem
 clear all
 close all
 
-maxSpeed = 2;
-pointsO = 1;
+maxSpeed = 10;
+maxxacc = 4;
+maxyacc = 8;
+latacclim = 6;
+rotacceffect  = 2;
+torqueveceffect = 3;
+brakeeffect = 0;
+pointsO = 7;
 pointsN = 10;
 splinestart = 1;
 nextsplinepoints = 0;
-%parameters: p = [maxspeed, pointsx, pointsy]
-
-% variables z = [dotab,dotbeta,ds,x,y,theta,v,ab,beta,s,braketemp]
+%parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
+% variables z = [dotab,dotbeta,ds,slack,x,y,theta,v,ab,beta,s]
 global index
 index.dotab = 1;
 index.dotbeta = 2;
 index.ds = 3;
-index.x = 4;
-index.y = 5;
-index.theta = 6;
-index.v = 7;
-index.ab = 8;
-index.beta = 9;
-index.s = 10;
-index.braketemp = 11;
-index.ns = 8;
-index.nu = 3;
+index.slack = 4;
+index.x = 5;
+index.y = 6;
+index.theta = 7;
+index.v = 8;
+index.ab = 9;
+index.beta = 10;
+index.s = 11;
+index.ns = 7;
+index.nu = 4;
 index.nv = index.ns+index.nu;
 index.sb = index.nu+1;
 index.ps = 1;
-
+index.pax = 2;
+index.pay = 3;
+index.pll = 4;
+index.prae = 5;
+index.ptve = 6;
+index.pbre = 7;
 integrator_stepsize = 0.1;
 
 model.N = 31;
@@ -46,12 +57,12 @@ model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 l = 1;
 
 %limit lateral acceleration
-model.nh = 1; 
-model.ineq = @(z,p) nlconst(z,p,getPointsFromParameters(p, pointsO, pointsN));
+model.nh = 6; 
+model.ineq = @(z,p) nlconst(z,p);
 %model.hu = [36,0];
 %model.hl = [-inf,-inf];
-model.hu = [0];
-model.hl = [-inf];
+model.hu = [0;1;0;0;0;0];
+model.hl = [-inf;-inf;-inf;-inf;-inf;-inf];
 
 %points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
   %  controlPointsX.append(Quantity.of(36.2, SI.METER));
@@ -70,14 +81,23 @@ model.hl = [-inf];
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));
     
-points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33]';
+points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+%points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
 %points = [0,40,40,5,0;0,0,10,9,10]';
 trajectorytimestep = integrator_stepsize;
-[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
-
-model.npar = pointsO + 2*pointsN;
+%[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
+model.npar = pointsO + 3*pointsN;
 for i=1:model.N
-   model.objective{i} = @(z,p)objective(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
+   model.objective{i} = @(z,p)objective(z,...
+       getPointsFromParameters(p, pointsO, pointsN),...
+       getRadiiFromParameters(p, pointsO, pointsN),...
+       p(index.ps),...
+       p(index.pax),...
+       p(index.pay),...
+       p(index.pll),...
+       p(index.prae),...
+       p(index.ptve),...
+       p(index.pbre));
 end
 %model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
 
@@ -87,11 +107,12 @@ model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
 %model.ub(index.dotbeta)=5;
 %model.lb(index.dotbeta)=-5;
-model.ub(index.ds)=2;
-model.lb(index.ds)=0;
+model.ub(index.ds)=5;
+model.lb(index.ds)=-1;
 %model.ub(index.ab)=2;
 model.lb(index.ab)=-4.5;
 model.lb(index.ab)=-inf;
+model.lb(index.slack)=0;
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
@@ -103,7 +124,7 @@ model.lb(index.s)=0;
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
@@ -111,19 +132,23 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 150;
+tend = 100;
 eulersteps = 10;
 %[...,x,y,theta,v,ab,beta,s,braketemp]
-xs(index.x-index.nu)=20;
-xs(index.x-index.nu)=37;
-xs(index.y-index.nu)=0;
-xs(index.y-index.nu)=44;
-xs(index.theta-index.nu)=0.3;
+%[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
+fpoints = points(1:2,1:2);
+pdir = diff(fpoints);
+[pstartx,pstarty] = casadiDynamicBSPLINE(0.01,points);
+pstart = [pstartx,pstarty];
+pangle = atan2(pdir(2),pdir(1));
+xs(index.x-index.nu)=pstart(1);
+xs(index.y-index.nu)=pstart(2);
+xs(index.theta-index.nu)=pangle;
 xs(index.v-index.nu)=1;
 xs(index.ab-index.nu)=0;
 xs(index.beta-index.nu)=0;
 xs(index.s-index.nu)=0.01;
-xs(index.braketemp-index.nu)=40;
+%xs(index.braketemp-index.nu)=40;
 history = zeros(tend*eulersteps,model.nvar+1);
 plansx = [];
 plansy = [];
@@ -133,7 +158,7 @@ planc = 10;
 x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
 %x0 = zeros(model.N*model.nvar,1); 
 tstart = 1;
-paras = ttpos(tstart:tstart+model.N-1,2:3)';
+%paras = ttpos(tstart:tstart+model.N-1,2:3)';
 for i =1:tend
     tstart = i;
     %model.xinit = [0,5,0,0.1,0,0];
@@ -157,7 +182,7 @@ for i =1:tend
     %script
     ip = splinestart;
     [nkp, ~] = size(points);
-    nextSplinePoints = zeros(pointsN,2);
+    nextSplinePoints = zeros(pointsN,3);
     for i=1:pointsN
        while ip>nkp
             ip = ip -nkp;
@@ -168,10 +193,10 @@ for i =1:tend
     
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-    problem.all_parameters = repmat (getParameters(maxSpeed,nextSplinePoints) , model.N ,1);
+    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,maxyacc,latacclim,rotacceffect,torqueveceffect, brakeeffect,nextSplinePoints) , model.N ,1);
     %problem.all_parameters = zeros(22,1);
     problem.x0 = x0(:);
-    %problem.x0 = zeros(310,1);
+    %problem.x0 = rand(341,1);
     
     % solve mpc
     [output,exitflag,info] = MPCPathFollowing(problem);

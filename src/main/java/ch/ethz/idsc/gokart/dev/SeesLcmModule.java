@@ -4,14 +4,18 @@ package ch.ethz.idsc.gokart.dev;
 import java.util.Date;
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 public final class SeesLcmModule extends AbstractModule {
   private SeesLcmProcess seesLcmProcess;
 
   @Override
-  protected void first() throws Exception {
-    seesLcmProcess = new SeesLcmProcess();
+  protected void first() {
+    try {
+      seesLcmProcess = new SeesLcmProcess();
+    } catch (Exception exception) {
+      throw new RuntimeException();
+    }
   }
 
   @Override

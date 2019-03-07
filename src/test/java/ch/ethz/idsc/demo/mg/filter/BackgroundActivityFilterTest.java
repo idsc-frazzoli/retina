@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.demo.mg.filter;
 
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import junit.framework.TestCase;
 
 public class BackgroundActivityFilterTest extends TestCase {

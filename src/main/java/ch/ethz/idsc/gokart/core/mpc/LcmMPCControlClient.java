@@ -7,18 +7,22 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.retina.lcm.BinaryBlobPublisher;
-import ch.ethz.idsc.retina.lcm.BinaryBlobs;
-import ch.ethz.idsc.retina.lcm.BinaryLcmClient;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
+import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
 import idsc.BinaryBlob;
 
-public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
+/* package */ class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
   private final List<MPCControlUpdateListener> listeners = new CopyOnWriteArrayList<>();
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs");
   private final BinaryBlobPublisher optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op");
   // TODO design no good. lastcns should not be public. use member function instead
   public ControlAndPredictionSteps lastcns = null;
+
+  public LcmMPCControlClient() {
+    super(GokartLcmChannel.MPC_FORCES_CNS);
+  }
 
   @Override
   public void start() {
@@ -80,14 +84,8 @@ public class LcmMPCControlClient extends BinaryLcmClient implements MPCControlCl
     // get new message
     ControlAndPredictionStepsMessage cns = new ControlAndPredictionStepsMessage(byteBuffer);
     // System.out.println(cns.controlAndPredictionSteps.steps[0]);
-    for (MPCControlUpdateListener listener : listeners) {
+    for (MPCControlUpdateListener listener : listeners)
       listener.getControlAndPredictionSteps(cns.controlAndPredictionSteps);
-    }
     lastcns = cns.controlAndPredictionSteps;
-  }
-
-  @Override
-  protected String channel() {
-    return GokartLcmChannel.MPC_FORCES_CNS;
   }
 }

@@ -50,7 +50,7 @@ public class MapProvider {
    * @param targetMap */
   // currently unused, requires normalization map
   public static void divide(MapProvider numerator, MapProvider denominator, MapProvider targetMap) {
-    // TODO loop can be done in parallel
+    // TODO MG loop can be done in parallel
     for (int index = 0; index < targetMap.getNumberOfCells(); ++index)
       if (denominator.getValue(index) != 0) {
         double newValue = numerator.getValue(index) / denominator.getValue(index);

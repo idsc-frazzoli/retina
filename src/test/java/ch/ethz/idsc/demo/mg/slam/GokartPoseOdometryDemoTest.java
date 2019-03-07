@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.demo.mg.slam;
 
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -59,7 +59,7 @@ public class GokartPoseOdometryDemoTest extends TestCase {
     GokartPoseOdometryDemo demo = GokartPoseOdometryDemo.create();
     try {
       demo.setPose(Array.zeros(3));
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

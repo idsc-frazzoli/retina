@@ -3,10 +3,10 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.owl.math.state.ProviderRank;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetEvent;
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetHelper;
-import ch.ethz.idsc.retina.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetHelper;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import junit.framework.TestCase;
 
 public class LinmotSafetyModuleTest extends TestCase {
@@ -30,7 +30,7 @@ public class LinmotSafetyModuleTest extends TestCase {
     assertEquals(linmotSafetyModule.putEvent().get(), RimoPutEvent.PASSIVE);
     linmotSafetyModule.getEvent(LinmotGetHelper.createTemperature(300, 300));
     assertFalse(linmotSafetyModule.putEvent().isPresent()); // timeout
-    linmotSafetyModule.getEvent(LinmotGetHelper.createNonOperational());
+    linmotSafetyModule.getEvent(LinmotGetHelper.createNonOperational(-23545));
     assertEquals(linmotSafetyModule.putEvent().get(), RimoPutEvent.PASSIVE);
     linmotSafetyModule.last();
   }

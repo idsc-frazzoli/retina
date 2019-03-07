@@ -5,11 +5,12 @@ import java.io.File;
 
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.LogFileLocator;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-public enum YnLogFileLocator implements LogFileLocator {
+/* package */ enum YnLogFileLocator implements LogFileLocator {
   INSTANCE;
   // ---
-  private static final File LOG_ROOT = new File("/home/ynager/gokart/logs");
+  private static final File LOG_ROOT = HomeDirectory.file("gokart", "logs");
   private static final File ALT_ROOT = new File("/media/datahaki/backup/gokartlogs");
 
   @Override

@@ -15,34 +15,32 @@ import javax.imageio.ImageIO;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AccumulatedEventRender;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.gokart.gui.top.CurveRender;
+import ch.ethz.idsc.gokart.gui.top.GokartPathRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
-import ch.ethz.idsc.gokart.gui.top.PathRender;
 import ch.ethz.idsc.gokart.gui.top.TrigonometryRender;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.region.ImageRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -70,7 +68,7 @@ public class OfflineHud implements OfflineLogListener {
   final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   final AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
   final TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
-  final PathRender pathRender = new PathRender(gokartPoseInterface);
+  final GokartPathRender pathRender = new GokartPathRender(gokartPoseInterface);
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rimoGetEvent;
@@ -125,7 +123,6 @@ public class OfflineHud implements OfflineLogListener {
           renderInterface.render(geometricLayer, graphics);
           geometricLayer.popMatrix();
         }
-        new CurveRender(DubendorfCurve.HYPERLOOP_EIGHT).render(geometricLayer, graphics);
         trigonometryRender.gokartStatusListener.getEvent(gokartStatusEvent);
         trigonometryRender.render(geometricLayer, graphics);
         pathRender.gokartStatusListener.getEvent(gokartStatusEvent);
@@ -141,7 +138,7 @@ public class OfflineHud implements OfflineLogListener {
         String string = String.format("%+3.1f[m/s]", vel.map(Round._1).Get().number().doubleValue());
         // System.out.println(string);
         graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
-        graphics.drawString("" + time.map(Round._6), 0, 10);
+        graphics.drawString(time.map(Round._6).toString(), 0, 10);
         graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 50));
         graphics.drawString(string, 0, 60);
         callback(bufferedImage);
@@ -152,15 +149,16 @@ public class OfflineHud implements OfflineLogListener {
 
   public void callback(BufferedImage bufferedImage) {
     try {
-      ImageIO.write(bufferedImage, "png", UserHome.file("asd.png"));
+      ImageIO.write(bufferedImage, "png", HomeDirectory.file("asd.png"));
     } catch (Exception exception) {
       exception.printStackTrace();
     }
+    // TODO JPH flow does not make sense
     System.exit(0);
   }
 
   public static void main(String[] args) throws IOException {
     OfflineHud offlineHud = new OfflineHud(Quantity.of(RationalScalar.of(1, 30), SI.SECOND));
-    OfflineLogPlayer.process(UserHome.file("20180522T111414.lcm"), offlineHud);
+    OfflineLogPlayer.process(HomeDirectory.file("20180522T111414.lcm"), offlineHud);
   }
 }

@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.util.io;
 
 /** consumer of a byte array */
+@FunctionalInterface
 public interface ByteArrayConsumer {
   /** @param data
    * @param length */

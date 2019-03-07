@@ -1,7 +1,10 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotGetHelper;
+import java.util.Arrays;
+
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetHelper;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import junit.framework.TestCase;
 
 public class LinmotTakeoverModuleTest extends TestCase {
@@ -40,5 +43,17 @@ public class LinmotTakeoverModuleTest extends TestCase {
     Thread.sleep(20);
     linmotTakeoverModule.getEvent(LinmotGetHelper.createPos(-100_000, -50_000));
     assertTrue(linmotTakeoverModule.putEvent().isPresent());
+  }
+
+  public void testOne() throws Exception {
+    ModuleAuto.INSTANCE.runOne(LinmotTakeoverModule.class);
+    Thread.sleep(50); // needs time to start thread that invokes first()
+    ModuleAuto.INSTANCE.endOne(LinmotTakeoverModule.class);
+  }
+
+  public void testAll() throws Exception {
+    ModuleAuto.INSTANCE.runAll(Arrays.asList(LinmotTakeoverModule.class));
+    Thread.sleep(100);
+    ModuleAuto.INSTANCE.endAll();
   }
 }

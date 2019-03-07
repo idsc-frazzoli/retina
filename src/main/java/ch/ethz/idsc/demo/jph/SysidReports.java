@@ -7,19 +7,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 
-/** Instance in all log files:
- * 20180607T140443 \--> 323.837875[s]
- * 20180607T144545 \--> 561.786948[s]
- * 20180607T165423 \--> 29.085299[s]
- * 20180607T170837 \--> 556.908939[s]
- * 20180611T101502 \--> 553.125962[s]
- * 20180611T144759 \--> 146.609942[s]
- * 20180611T150139 \--> 8.32E-4[s]
- * 20180614T092856 \--> 20.875161[s]
- * 20180614T092944 \--> 0.00161[s]
- * 20180614T122925 \--> 28.178607[s]
- * 20180614T142228 \--> 57.514723[s] */
-enum SysidReports {
+/* package */ enum SysidReports {
   ;
   public static void main(String[] args) {
     List<LogFile> list = Arrays.asList( //

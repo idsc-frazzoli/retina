@@ -6,10 +6,10 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.sys.GuiConfig;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.GuiConfig;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.io.TensorProperties;
 
 /** ParametersModule is a graphical user interface to configure all constant
@@ -25,7 +25,7 @@ public class ParametersModule extends AbstractModule {
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     ParametersHelper.OBJECTS.forEach(this::addTab);
     // only classes that other classes do not extend from
     jFrame.setContentPane(jTabbedPane);
@@ -45,7 +45,9 @@ public class ParametersModule extends AbstractModule {
     if (0 < TensorProperties.wrap(object).fields().count()) {
       ParametersComponent propertiesComponent = new ParametersComponent(object);
       String title = object.getClass().getSimpleName();
-      title = title.endsWith("Config") ? title.substring(0, title.length() - 6) : title;
+      title = title.endsWith("Config") //
+          ? title.substring(0, title.length() - 6)
+          : title;
       jTabbedPane.addTab(title, propertiesComponent.getScrollPane());
       {
         // change tab component to modify display size

@@ -4,14 +4,14 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.owl.math.planar.ArcTan2D;
+import ch.ethz.idsc.sophus.planar.ArcTan2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.Norm;
 
-public enum CurveUtils {
+/* package */ enum CurveUtils {
   ;
   public static final int NO_MATCH = -1;
   /** 28 is half of 42 therefore this is the answer (joke) */

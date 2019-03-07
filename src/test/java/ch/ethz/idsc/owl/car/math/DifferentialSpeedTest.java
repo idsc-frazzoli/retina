@@ -8,8 +8,8 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
-import ch.ethz.idsc.tensor.qty.Units;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Cos;
 import junit.framework.TestCase;
@@ -80,8 +80,8 @@ public class DifferentialSpeedTest extends TestCase {
       Tensor pair = tireRearL.pair(speed, angle);
       // System.out.println(pair);
       assertEquals(pair, Tensors.of(tireL, tireR));
-      assertEquals(Units.of(pair.Get(0)), Unit.of("rad*s^-1"));
-      assertEquals(Units.of(pair.Get(1)), Unit.of("rad*s^-1"));
+      assertEquals(QuantityUnit.of(pair.Get(0)), Unit.of("rad*s^-1"));
+      assertEquals(QuantityUnit.of(pair.Get(1)), Unit.of("rad*s^-1"));
     }
     {
       Scalar angle = RealScalar.of(-0.3);
@@ -155,7 +155,7 @@ public class DifferentialSpeedTest extends TestCase {
   public void testFail() {
     try {
       DifferentialSpeed.fromSI(RealScalar.of(0.0), RealScalar.of(.5));
-      assertTrue(false);
+      fail();
     } catch (Exception exception) {
       // ---
     }

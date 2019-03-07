@@ -14,10 +14,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import javax.swing.JButton;
@@ -28,9 +29,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.lcm.LcmLogFileCutter;
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.lcm.LcmLogFileCutter;
+import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
+import ch.ethz.idsc.gokart.offline.api.GokartLogConfig;
+import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
+import ch.ethz.idsc.tensor.io.TensorProperties;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /** GUI to inspect a log, and select and extract parts into new log files */
 public class GokartLcmLogCutter {
@@ -39,7 +46,7 @@ public class GokartLcmLogCutter {
   private static final Font FONT = //
       new Font(Font.DIALOG, Font.PLAIN, GokartLcmImage.FX + 2);
   // ---
-  private final JFrame jFrame = new JFrame();
+  public final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final NavigableMap<Integer, Integer> map = new TreeMap<>();
@@ -96,7 +103,8 @@ public class GokartLcmLogCutter {
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {
       synchronized (map) {
-        map.put(pressed.x, mouseEvent.getX());
+        if (Objects.nonNull(pressed))
+          map.put(pressed.x, mouseEvent.getX());
       }
       jComponent.repaint();
     }
@@ -108,12 +116,14 @@ public class GokartLcmLogCutter {
   };
   private final ActionListener actionListener = new ActionListener() {
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent actionEvent) {
       synchronized (map) {
         NavigableMap<Integer, Integer> navigableMap = new TreeMap<>();
         for (Entry<Integer, Integer> entry : map.entrySet()) {
           int x0 = gokartLogFileIndexer.getEventIndex(entry.getKey());
-          int x1 = gokartLogFileIndexer.getEventIndex(entry.getValue());
+          int size = gokartLogFileIndexer.getRasterSize();
+          int last = Math.min(entry.getValue(), size - 1);
+          int x1 = gokartLogFileIndexer.getEventIndex(last);
           // Integer last = navigableMap.lastKey();
           if (navigableMap.isEmpty() || navigableMap.lastKey() < x0)
             if (x0 < x1)
@@ -122,21 +132,34 @@ public class GokartLcmLogCutter {
         // ---
         System.out.println(navigableMap);
         try {
-          new LcmLogFileCutter(gokartLogFileIndexer.file(), navigableMap) {
-            @Override
+          final File date = new File(export_root, String.format("%s", title.substring(0, 8)));
+          date.mkdir();
+          // ---
+          LcmLogFileCutter lcmLogFileCutter = new LcmLogFileCutter(gokartLogFileIndexer.file(), navigableMap) {
+            @Override // from LcmLogFileCutter
             public File filename(int count) {
-              File folder = new File(export_root, String.format("%s_%d", title, count + 1));
+              File folder = new File(date, String.format("%s_%02d", title, count));
               folder.mkdir();
-              if (!folder.isDirectory())
-                throw new RuntimeException();
-              try {
-                new File(folder, GOKART_LOG_CONFIG).createNewFile();
-              } catch (IOException e) {
-                e.printStackTrace();
-              }
               return new File(folder, LCM_FILE);
             }
           };
+          for (File file : lcmLogFileCutter.files())
+            try {
+              File config = new File(file.getParentFile(), GOKART_LOG_CONFIG);
+              System.out.println(file);
+              Optional<ByteBuffer> optional = FirstLogMessage.of(file, GokartPoseChannel.INSTANCE.channel());
+              if (optional.isPresent()) {
+                GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(optional.get());
+                GokartLogConfig gokartLogConfig = new GokartLogConfig();
+                gokartLogConfig.pose = gokartPoseEvent.getPose().map(Round._7);
+                boolean save = TensorProperties.wrap(gokartLogConfig).trySave(config);
+                if (!save)
+                  System.err.println("did not save properties");
+              } else
+                config.createNewFile();
+            } catch (Exception exception) {
+              exception.printStackTrace();
+            }
         } catch (Exception exception) {
           exception.printStackTrace();
         }
@@ -144,9 +167,19 @@ public class GokartLcmLogCutter {
     }
   };
 
-  public GokartLcmLogCutter(GokartLogFileIndexer gokartLogFileIndexer, File export_root, String title) {
+  /** @param gokartLogFileIndexer
+   * @param export_root
+   * @param title is the first part of the extracted log files
+   * @throws Exception if export_root is not a directory and cannot be created */
+  public GokartLcmLogCutter( //
+      GokartLogFileIndexer gokartLogFileIndexer, //
+      File export_root, //
+      String title) {
     this.gokartLogFileIndexer = gokartLogFileIndexer;
     this.export_root = export_root;
+    export_root.mkdir();
+    if (!export_root.isDirectory())
+      throw new RuntimeException(export_root.toString());
     this.title = title;
     bufferedImage = GokartLcmImage.of(gokartLogFileIndexer);
     // ---
@@ -166,6 +199,7 @@ public class GokartLcmLogCutter {
     jComponent.addMouseListener(mouseListener);
     jComponent.addMouseMotionListener(mouseListener);
     JScrollPane jScrollPane = new JScrollPane(jComponent, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+    jScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
     jPanel.add(jScrollPane, BorderLayout.CENTER);
     jFrame.setContentPane(jPanel);
     // ---

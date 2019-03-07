@@ -2,7 +2,9 @@
 package ch.ethz.idsc.demo.mg.blobtrack.eval;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +17,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +40,16 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
  * Features can be rotated with scrolling while holding alt key.
  * Labels can be loaded/saved to a file
  * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension
- * TODO would be more convenient if slider can be moved with left hand, e.g. y and x keys */
+ * TODO MG would be more convenient if slider can be moved with left hand, e.g. y and x keys */
 /* package */ class HandLabeler {
+  /** draw ellipses for image based on list of blobs for the image.
+   *
+   * @param graphics
+   * @param list */
+  static void drawEllipsesOnImage(Graphics2D graphics, List<ImageBlob> list) {
+    list.forEach(imageBlob -> VisBlobTrackUtil.drawImageBlob(graphics, imageBlob, Color.WHITE));
+  }
+
   private final float scaling = 2; // original images are tiny
   private final int initXAxis; // initial feature shape
   private final int initYAxis;
@@ -66,7 +75,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     @Override
     protected void paintComponent(Graphics graphics) {
       setBufferedImage();
-      VisBlobTrackUtil.drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
+      drawEllipsesOnImage(bufferedImage.createGraphics(), labeledFeatures.get(currentImgNumber - 1));
       graphics.drawImage(BufferedImageResize.of(bufferedImage, scaling), 0, 0, null);
       graphics.drawString("Image number: " + currentImgNumber, 10, 380);
     }
@@ -116,17 +125,17 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   };
   private final MouseAdapter mouseAdapter = new MouseAdapter() {
     @Override
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(MouseEvent mouseEvent) {
       // add labels with left click
-      if (e.getButton() == MouseEvent.BUTTON1) {
-        Point p = e.getPoint();
+      if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
+        Point p = mouseEvent.getPoint();
         // point coordinates need to be scaled back since we click on a scaled image
         ImageBlob blob = new ImageBlob(new float[] { p.x / scaling, p.y / scaling }, new double[][] { { initXAxis, 0 }, { 0, initYAxis } },
             timeStamps[currentImgNumber - 1], true, defaultBlobID);
         labeledFeatures.get(currentImgNumber - 1).add(blob);
       }
       // remove last added label with right click
-      if (e.getButton() == MouseEvent.BUTTON3) {
+      if (mouseEvent.getButton() == MouseEvent.BUTTON3) {
         labeledFeatures.get(currentImgNumber - 1).remove(labeledFeatures.get(currentImgNumber - 1).size() - 1);
       }
       jComponent.repaint();
@@ -134,7 +143,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   };
   private final ActionListener loadListener = new ActionListener() {
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent actionEvent) {
       labeledFeatures = EvalUtil.loadFromCSV(EvaluationFileLocations.HANDLABEL_CSV.subfolder(fileName), timeStamps);
       System.out.println("Successfully loaded from file " + fileName + ".csv");
       // repaint such that saved blobs of current image are displayed
@@ -143,7 +152,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
   };
   private final ActionListener saveListener = new ActionListener() {
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent actionEvent) {
       // avoid overwriting the original labeledFeatures csv
       String currentFileName = fileName + saveCount;
       EvalUtil.saveToCSV(EvaluationFileLocations.HANDLABEL_CSV.subfolder(currentFileName), labeledFeatures, timeStamps);
@@ -213,8 +222,8 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
     File pathToFile = new File(MgEvaluationFolders.HANDLABEL.subfolder(imagePrefix), fileName);
     try {
       bufferedImage = ImageIO.read(pathToFile);
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
   }
 

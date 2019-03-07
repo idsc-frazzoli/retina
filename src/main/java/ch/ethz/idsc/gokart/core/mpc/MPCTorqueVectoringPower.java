@@ -1,61 +1,67 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.gokart.core.joy.ImprovedNormalizedTorqueVectoring;
-import ch.ethz.idsc.gokart.core.joy.TorqueVectoringConfig;
+import java.util.Objects;
+import java.util.Optional;
+
+import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
+import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedPredictiveTorqueVectoring;
+import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
+import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.dev.steer.SteerMapping;
-import ch.ethz.idsc.retina.util.math.NonSI;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Tan;
 
-public class MPCTorqueVectoringPower extends MPCPower {
-  ImprovedNormalizedTorqueVectoring torqueVectoring;
-  MPCStateEstimationProvider mpcStateProvider;
+/* package */ class MPCTorqueVectoringPower extends MPCPower {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  MPCSteering mpcSteering;
+  private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
+      new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
+  private final MPCSteering mpcSteering;
+  // ---
+  private final MPCStateEstimationProvider mpcStateEstimationProvider;
 
-  public MPCTorqueVectoringPower(MPCSteering mpcSteering) {
+  public MPCTorqueVectoringPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering) {
+    this.mpcStateEstimationProvider = Objects.requireNonNull(mpcStateEstimationProvider);
     this.mpcSteering = mpcSteering;
-    torqueVectoring = new ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   }
 
-  @Override
-  public Tensor getPower(Scalar time) {
+  @Override // from MPCPower
+  Optional<Tensor> getPower(Scalar time) {
     ControlAndPredictionStep cnsStep = getStep(time);
-    if (cnsStep == null) {
-      return Tensors.of(//
-          Quantity.of(0, NonSI.ARMS), //
-          Quantity.of(0, NonSI.ARMS));
-    }
-    if (true || mpcStateProvider == null) {
-      // return torqueless power
-      return torqueVectoring.getMotorCurrentsFromAcceleration(//
-          Quantity.of(0, SI.SECOND.negate()), //
-          cnsStep.state.getUx(), //
-          Quantity.of(0, SI.SECOND.negate()), //
-          cnsStep.control.getaB(), //
-          Quantity.of(0, SI.SECOND.negate()));
-    }
-    Scalar theta = steerMapping.getAngleFromSCE(mpcSteering.getSteering(time)); // steering angle of imaginary front wheel
+    if (Objects.isNull(cnsStep))
+      return Optional.empty();
+    Optional<Tensor> optional = mpcSteering.getSteering(time);
+    if (!optional.isPresent())
+      return Optional.empty();
+    Scalar theta = steerMapping.getAngleFromSCE(optional.get().Get(0)); // steering angle of imaginary front wheel
     Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
-    Scalar currentSlip = mpcStateProvider.getState().getdotPsi().subtract(expectedRotationPerMeterDriven);
-    Scalar wantedAcceleration = cnsStep.control.getaB();// when used in
-    return torqueVectoring.getMotorCurrentsFromAcceleration(//
+    Scalar tangentialSpeed = mpcStateEstimationProvider.getState().getUx();
+    Scalar wantedRotationRate = expectedRotationPerMeterDriven.multiply(tangentialSpeed); // unit s^-1
+    // compute (negative) angular slip
+    Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
+    Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
+    Scalar wantedAcceleration = cnsStep.gokartControl.getaB();// when used in
+    return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //
-        mpcStateProvider.getState().getUx(), //
-        currentSlip, //
+        tangentialSpeed, //
+        angularSlip, //
         wantedAcceleration, //
-        mpcStateProvider.getState().getdotPsi());
+        gyroZ));
+  }
+
+  // @Override // from MPCStateProviderClient
+  // public void setStateEstimationProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
+  // this.mpcStateEstimationProvider = mpcStateEstimationProvider;
+  // }
+  @Override
+  public void start() {
+    // TODO MH document that empty implementation is intended
   }
 
   @Override
-  public void setStateProvider(MPCStateEstimationProvider mpcstateProvider) {
-    this.mpcStateProvider = mpcstateProvider;
+  public void stop() {
+    // TODO MH document that empty implementation is intended
   }
 }

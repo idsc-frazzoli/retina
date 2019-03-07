@@ -4,7 +4,10 @@ package ch.ethz.idsc.demo.mg.blobtrack;
 import java.io.Serializable;
 
 import ch.ethz.idsc.retina.util.math.Covariance2D;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Primitives;
 
 /** blob object for blob tracking algorithm. position in the image plane is tracked */
 public class ImageBlob implements Serializable {
@@ -25,8 +28,8 @@ public class ImageBlob implements Serializable {
     this.timeStamp = timeStamp;
     this.blobID = blobID;
     this.isHidden = isHidden;
-    // TODO constructor of Covariance2D is ineffective, i.e. doesn't do anything with the data
-    covariance2D = new Covariance2D(covariance);
+    covariance[1][0] = covariance[0][1];
+    covariance2D = new Covariance2D(Tensors.matrixDouble(covariance));
   }
 
   /** @return square roots of the eigenvalues of the covariance matrix */
@@ -36,7 +39,7 @@ public class ImageBlob implements Serializable {
 
   /** @return angle between the eigenvector belonging to the first eigenvalue and the x-axis */
   public double getRotAngle() {
-    return covariance2D.rotAngle();
+    return covariance2D.angle().number().doubleValue();
   }
 
   public float getDistanceTo(float[] otherPos) {
@@ -48,7 +51,7 @@ public class ImageBlob implements Serializable {
   }
 
   public double[][] getCovariance() {
-    return covariance2D.getCovariance();
+    return Primitives.toDoubleArray2D(covariance2D.matrix());
   }
 
   public boolean getIsRecognized() {
@@ -73,7 +76,7 @@ public class ImageBlob implements Serializable {
   }
 
   public void setCovariance(double firstAxis, double secondAxis, double rotAngle) {
-    covariance2D = Covariance2D.of(firstAxis, secondAxis, rotAngle);
+    covariance2D = Covariance2D.of(RealScalar.of(firstAxis), RealScalar.of(secondAxis), RealScalar.of(rotAngle));
   }
 
   public void setIsRecognized(boolean isRecognized) {

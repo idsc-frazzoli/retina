@@ -9,22 +9,22 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
-import ch.ethz.idsc.retina.dev.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickDecoder;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.retina.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.lcm.davis.DavisImuFramePublisher;
+import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
+import ch.ethz.idsc.gokart.lcm.davis.DavisImuFramePublisher;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -32,11 +32,13 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Boole;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
 public class GokartLogFileIndexer implements OfflineLogListener {
   public static GokartLogFileIndexer create(File file) throws IOException {
     GokartLogFileIndexer lcmLogFileIndexer = new GokartLogFileIndexer(file);
-    System.out.print("building index... ");
+    Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
+    System.out.print("building index... " + mb.map(Round._2) + " GB ");
     OfflineLogPlayer.process(file, lcmLogFileIndexer);
     System.out.println("done.");
     return lcmLogFileIndexer;
@@ -92,11 +94,15 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       poseq = gokartPoseEvent.getQuality();
     } else //
-    if (channel.equals(GokartLcmChannel.JOYSTICK)) {
-      JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
-      GokartJoystickInterface gji = (GokartJoystickInterface) joystickEvent;
-      auton = Boole.of(gji.isAutonomousPressed());
+    if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
+      SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
+      auton = Boole.of(steerGetEvent.isActive());
     } else //
+    // if (channel.equals(GokartLcmChannel.JOYSTICK)) {
+    // JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
+    // ManualControlInterface manualControlInterface = (ManualControlInterface) joystickEvent;
+    // auton = Boole.of(manualControlInterface.isAutonomousPressed());
+    // } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
       SteerColumnInterface steerColumnInterface = new GokartStatusEvent(byteBuffer);
       steer = steerColumnInterface.isSteerColumnCalibrated() //
@@ -105,7 +111,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     } else //
     if (channel.equals(CHANNEL_DAVIS_IMU)) {
       DavisImuFrame davisImuFrame = new DavisImuFrame(byteBuffer);
-      gyroz = Magnitude.PER_SECOND.apply(SensorsConfig.GLOBAL.getGyroZ(davisImuFrame));
+      gyroz = Magnitude.PER_SECOND.apply(SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame));
     }
     ++event_count;
   }
@@ -136,5 +142,9 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   public int getEventIndex(int x0) {
     return raster2event.get(x0);
+  }
+
+  public int getRasterSize() {
+    return raster2event.size();
   }
 }

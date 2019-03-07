@@ -6,6 +6,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Reverse;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -27,7 +28,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
     Tensor controlPoints = ResourceData.of("/dubilab/controlpoints/eight/20180603.csv").multiply(Quantity.of(1, SI.METER));
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
-    // TODO: do this smarter
+    // TODO do this smarter
     for (int i = 0; i < controlPoints.length(); i++) {
       Tensor iTensor = controlPoints.get(i);
       Scalar x = iTensor.Get(0);
@@ -35,15 +36,15 @@ public class DubendorfTrack extends MPCBSplineTrack {
       controlPointsX.append(x);
       controlPointsY.append(y);
     }
-    return new DubendorfTrack(controlPointsX, controlPointsY, //
-        getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
+    return new DubendorfTrack(Transpose.of(Tensors.of(controlPointsX, controlPointsY, //
+        getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)))));
   }
 
   private static DubendorfTrack hyperloop_eight_reverse() {
     Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/eight/20180603.csv")).multiply(Quantity.of(1, SI.METER));
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
-    // TODO: do this smarter
+    // TODO do this smarter
     for (int i = 0; i < controlPoints.length(); i++) {
       Tensor iTensor = controlPoints.get(i);
       Scalar x = iTensor.Get(0);
@@ -51,17 +52,16 @@ public class DubendorfTrack extends MPCBSplineTrack {
       controlPointsX.append(x);
       controlPointsY.append(y);
     }
-    return new DubendorfTrack(controlPointsX, controlPointsY, //
-        getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)));
+    return new DubendorfTrack(Transpose.of(Tensors.of(controlPointsX, controlPointsY, //
+        getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)))));
   }
 
-  /* TODO: jph how to update Ephemeral version
-   * Can't access data
+  /* Can't access data
    * private static DubendorfTrack chicane_track() {
    * Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/chicane/chicane.csv")).multiply(Quantity.of(1, SI.METER));
    * Tensor controlPointsX = Tensors.empty();
    * Tensor controlPointsY = Tensors.empty();
-   * // TODO: do this smarter
+   * // TODO do this smarter
    * for (int i = 0; i < controlPoints.length(); i++) {
    * Tensor iTensor = controlPoints.get(i);
    * Scalar x = iTensor.Get(0);
@@ -75,6 +75,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
   private static DubendorfTrack chicane_track() {
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
+    Tensor controlPointsR = Tensors.empty();
     // add them in code
     /* 36.2,44.933
      * 49.867,58.2
@@ -84,6 +85,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
      * 47,43
      * 41.8,38.333 */
     // X
+    // QuantityTensor.of(Tensors.vector(36.2,44.933,2), SI.METER);
     controlPointsX.append(Quantity.of(36.2, SI.METER));
     controlPointsX.append(Quantity.of(52, SI.METER));
     controlPointsX.append(Quantity.of(57.2, SI.METER));
@@ -99,7 +101,15 @@ public class DubendorfTrack extends MPCBSplineTrack {
     controlPointsY.append(Quantity.of(44, SI.METER));
     controlPointsY.append(Quantity.of(43, SI.METER));
     controlPointsY.append(Quantity.of(38.333, SI.METER));
-    return new DubendorfTrack(controlPointsX, controlPointsY, getConstantRadius(controlPointsX.length(), Quantity.of(2, SI.METER)));
+    // R
+    controlPointsR.append(Quantity.of(1.8, SI.METER));
+    controlPointsR.append(Quantity.of(1.8, SI.METER));
+    controlPointsR.append(Quantity.of(1.8, SI.METER));
+    controlPointsR.append(Quantity.of(0.8, SI.METER));
+    controlPointsR.append(Quantity.of(0.8, SI.METER));
+    controlPointsR.append(Quantity.of(0.8, SI.METER));
+    controlPointsR.append(Quantity.of(1.8, SI.METER));
+    return new DubendorfTrack(Transpose.of(Tensors.of(controlPointsX, controlPointsY, controlPointsR)));
   }
 
   private static DubendorfTrack waypoint_track() {
@@ -129,11 +139,11 @@ public class DubendorfTrack extends MPCBSplineTrack {
     controlPointsY.append(Quantity.of(42.63, SI.METER));
     controlPointsY.append(Quantity.of(36.45, SI.METER));
     controlPointsY.append(Quantity.of(41.94, SI.METER));
-    return new DubendorfTrack(controlPointsX, controlPointsY, getConstantRadius(controlPointsX.length(), Quantity.of(2, SI.METER)));
+    return new DubendorfTrack(Transpose.of(Tensors.of(controlPointsX, controlPointsY, getConstantRadius(controlPointsX.length(), Quantity.of(2, SI.METER)))));
   }
 
   // ---
-  private DubendorfTrack(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
-    super(controlPointsX, controlPointsY, radiusControlPoints);
+  private DubendorfTrack(Tensor combinedControlPoints) {
+    super(combinedControlPoints, true);
   }
 }

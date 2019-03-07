@@ -3,9 +3,9 @@ package ch.ethz.idsc.demo.mg;
 
 import java.io.File;
 
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.lcm.MessageConsistency;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.MessageConsistency;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
@@ -17,7 +17,7 @@ enum LogEventExtract {
     File src = LogFileLocations.DUBISiliconEyeG.getFile();
     System.out.println(src.toString());
     File dst = null;
-    dst = UserHome.file("logs/20181005T154321_1cb189b4Extracted3.lcm");
+    dst = HomeDirectory.file("logs/20181005T154321_1cb189b4Extracted3.lcm");
     if (dst.exists()) {
       System.out.println("deleting: " + dst);
       dst.delete();

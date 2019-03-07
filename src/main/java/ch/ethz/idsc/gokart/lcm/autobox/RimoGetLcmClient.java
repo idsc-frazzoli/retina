@@ -3,12 +3,16 @@ package ch.ethz.idsc.gokart.lcm.autobox;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.retina.lcm.SimpleLcmClient;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.gokart.lcm.SimpleLcmClient;
 
 public class RimoGetLcmClient extends SimpleLcmClient<RimoGetListener> {
   private static boolean notify_flag = true;
+
+  public RimoGetLcmClient() {
+    super(RimoLcmServer.CHANNEL_GET);
+  }
 
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
@@ -23,10 +27,5 @@ public class RimoGetLcmClient extends SimpleLcmClient<RimoGetListener> {
         System.err.println("RimoGetLcmClient protocol change");
       }
     }
-  }
-
-  @Override // from BinaryLcmClient
-  protected String channel() {
-    return RimoLcmServer.CHANNEL_GET;
   }
 }

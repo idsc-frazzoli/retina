@@ -3,12 +3,11 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.joy.JoystickConfig;
-import ch.ethz.idsc.retina.dev.joystick.GokartJoystickInterface;
-import ch.ethz.idsc.retina.dev.joystick.JoystickEvent;
-import ch.ethz.idsc.retina.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.lcm.joystick.JoystickLcmProvider;
-import ch.ethz.idsc.retina.sys.AbstractClockedModule;
+import ch.ethz.idsc.gokart.core.man.ManualConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.joystick.ManualControlProvider;
+import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.alg.Differences;
@@ -16,7 +15,7 @@ import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 public abstract class PurePursuitModule extends AbstractClockedModule {
-  private final JoystickLcmProvider joystickLcmProvider = JoystickConfig.GLOBAL.createProvider();
+  private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   protected final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
@@ -27,9 +26,9 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   }
 
   @Override // from AbstractModule
-  protected final void first() throws Exception {
+  protected final void first() {
     protected_first();
-    joystickLcmProvider.startSubscriptions();
+    joystickLcmProvider.start();
     purePursuitRimo.start();
     purePursuitSteer.start();
   }
@@ -38,34 +37,33 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   protected final void last() {
     purePursuitRimo.stop();
     purePursuitSteer.stop();
-    joystickLcmProvider.stopSubscriptions();
+    joystickLcmProvider.stop();
     protected_last();
   }
 
-  protected abstract void protected_first() throws Exception;
+  protected abstract void protected_first();
 
   protected abstract void protected_last();
 
   /***************************************************/
   @Override // from AbstractClockedModule
   protected final void runAlgo() {
-    final Optional<JoystickEvent> joystick = joystickLcmProvider.getJoystick();
+    final Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
     Optional<Scalar> heading = deriveHeading();
     if (heading.isPresent())
       purePursuitSteer.setHeading(heading.get());
     // ---
-    final boolean status = joystick.isPresent() && heading.isPresent();
+    final boolean status = optional.isPresent() && heading.isPresent();
     purePursuitSteer.setOperational(status);
     if (status) {
-      GokartJoystickInterface gokartJoystickInterface = (GokartJoystickInterface) joystick.get();
+      ManualControlInterface manualControlInterface = optional.get();
       // ante 20180604: the ahead average was used in combination with Ramp
-      Scalar ratio = gokartJoystickInterface.getAheadAverage(); // in [-1, 1]
+      Scalar ratio = manualControlInterface.getAheadAverage(); // in [-1, 1]
       // post 20180604: the forward command is provided by right slider
-      Scalar pair = Differences.of(gokartJoystickInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
+      Scalar pair = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
       // post 20180619: allow reverse driving
       Scalar speed = Clip.absoluteOne().apply(ratio.add(pair));
-      purePursuitRimo.setSpeed(Times.of( //
-          pursuitConfig.rateFollower, speed, getSpeedMultiplier()));
+      purePursuitRimo.setSpeed(Times.of(pursuitConfig.rateFollower, speed, getSpeedMultiplier()));
     }
     purePursuitRimo.setOperational(status);
   }

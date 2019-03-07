@@ -21,26 +21,25 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.SmoothingKernel;
-import ch.ethz.idsc.owl.math.group.LieDifferences;
-import ch.ethz.idsc.owl.math.group.Se2CoveringExponential;
-import ch.ethz.idsc.owl.math.group.Se2Geodesic;
-import ch.ethz.idsc.owl.math.group.Se2Group;
-import ch.ethz.idsc.owl.math.map.Se2Utils;
-import ch.ethz.idsc.owl.math.planar.Arrowhead;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
-import ch.ethz.idsc.owl.subdiv.curve.BSpline1CurveSubdivision;
-import ch.ethz.idsc.owl.subdiv.curve.GeodesicCenter;
-import ch.ethz.idsc.owl.subdiv.curve.GeodesicCenterFilter;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.util.gui.GraphicsUtil;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.sophus.curve.BSpline1CurveSubdivision;
+import ch.ethz.idsc.sophus.filter.GeodesicCenter;
+import ch.ethz.idsc.sophus.filter.GeodesicCenterFilter;
+import ch.ethz.idsc.sophus.group.LieDifferences;
+import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
+import ch.ethz.idsc.sophus.group.Se2Geodesic;
+import ch.ethz.idsc.sophus.group.Se2Group;
+import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.math.SmoothingKernel;
+import ch.ethz.idsc.sophus.planar.Arrowhead;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -48,6 +47,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Entrywise;
 import ch.ethz.idsc.tensor.red.Mean;
@@ -55,7 +55,7 @@ import ch.ethz.idsc.tensor.red.Nest;
 import ch.ethz.idsc.tensor.sca.InvertUnlessZero;
 import ch.ethz.idsc.tensor.sca.Round;
 
-abstract class TrajectoryVideo implements OfflineLogListener {
+/* package */ abstract class TrajectoryVideo implements OfflineLogListener {
   private static final TensorUnaryOperator GEODESIC_CENTER_FILTER = //
       GeodesicCenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, SmoothingKernel.GAUSSIAN), 5);
   private static final Scalar METER2PIXEL = RealScalar.of(30);
@@ -79,7 +79,7 @@ abstract class TrajectoryVideo implements OfflineLogListener {
       times.append(time);
     } else //
     if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME)) {
-      // TODO render image
+      // TODO JPH render image
       if (Tensors.nonEmpty(trail) && Objects.nonNull(trajectory) && !trajectory.isEmpty()) {
         Tensor filtered = GEODESIC_CENTER_FILTER.apply(trail);
         Tensor planned = Tensor.of(trajectory.stream().map(TrajectorySample::stateTime).map(StateTime::state));
@@ -87,14 +87,14 @@ abstract class TrajectoryVideo implements OfflineLogListener {
         Tensor speeds = LIE_DIFFERENCES.apply(filtered);
         Tensor dt = Differences.of(times).map(Magnitude.SECOND).map(InvertUnlessZero.FUNCTION);
         final Scalar mean = Mean.of(speeds.get(Tensor.ALL, 0).pmul(dt)).Get();
-        // TODO make more elegant
-        Stream<Tensor> a = filtered.stream().map(Extract2D::of);
-        Stream<Tensor> b = planned.stream().map(Extract2D::of);
+        // TODO JPH make more elegant
+        Stream<Tensor> a = filtered.stream().map(Extract2D.FUNCTION);
+        Stream<Tensor> b = planned.stream().map(Extract2D.FUNCTION);
         Tensor reduceMin = Stream.concat(a, b).reduce(Entrywise.min()).get();
         // System.out.println(reduceMin);
         reduceMin = Tensors.vector(30, 34);
-        a = filtered.stream().map(Extract2D::of);
-        b = planned.stream().map(Extract2D::of);
+        a = filtered.stream().map(Extract2D.FUNCTION);
+        b = planned.stream().map(Extract2D.FUNCTION);
         Tensor reduceMax = Stream.concat(a, b).reduce(Entrywise.max()).get();
         reduceMax = Tensors.vector(60, 62);
         Tensor extensions = reduceMax.subtract(reduceMin);
@@ -155,7 +155,7 @@ abstract class TrajectoryVideo implements OfflineLogListener {
   public static void main(String[] args) throws Exception {
     File file = DatahakiLogFileLocator.INSTANCE.getAbsoluteFile(GokartLogFile._20180904T183437_b00c893a);
     System.out.println(file);
-    try (Mp4AnimationWriter mp4 = new Mp4AnimationWriter(UserHome.file("video.mp4").getPath(), new Dimension(900, 840), 2)) {
+    try (Mp4AnimationWriter mp4 = new Mp4AnimationWriter(HomeDirectory.file("video.mp4").getPath(), new Dimension(900, 840), 2)) {
       TrajectoryVideo trajectoryImages = new TrajectoryVideo() {
         @Override
         public void image(BufferedImage bufferedImage) {

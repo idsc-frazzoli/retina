@@ -9,11 +9,10 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
-import ch.ethz.idsc.retina.sys.ModuleAuto;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 
 public class GlobalViewLcmModule extends ViewLcmModule {
-  private final GokartPoseOdometry gokartPoseOdometry = //
-      GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
+  private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
 
   public GlobalViewLcmModule() {
     setGokartPoseInterface(gokartPoseOdometry);
@@ -28,7 +27,7 @@ public class GlobalViewLcmModule extends ViewLcmModule {
     globalViewLcmModule.viewLcmFrame.jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
-        ModuleAuto.INSTANCE.terminateOne(LidarLocalizationModule.class);
+        ModuleAuto.INSTANCE.endOne(LidarLocalizationModule.class);
       }
     });
   }

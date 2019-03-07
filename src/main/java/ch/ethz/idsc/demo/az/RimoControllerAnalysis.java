@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.retina.lcm.OfflineLogListener;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
 /* package */ class RimoControllerAnalysis implements OfflineLogListener {
@@ -56,12 +56,12 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
   public static void main(String[] args) throws IOException {
     String string = "20180830T151854_21b2e8ae";
-    File file = UserHome.file("/datasets/gokartlogs/" + string + ".lcm.00");
+    File file = HomeDirectory.file("datasets/gokartlogs/" + string + ".lcm.00");
     RimoControllerAnalysis offlineTableSupplier = new RimoControllerAnalysis(ByteOrder.LITTLE_ENDIAN);
     OfflineLogPlayer.process(file, offlineTableSupplier);
-    Export.of(UserHome.file("git_cloned/car_model/MATLAB/gokartSYSID/rimo_pi/" + string + "_pi" + ".csv"),
+    Export.of(HomeDirectory.file("git_cloned/car_model/MATLAB/gokartSYSID/rimo_pi/" + string + "_pi" + ".csv"),
         offlineTableSupplier.getTable1().map(CsvFormat.strict()));
-    Export.of(UserHome.file("git_cloned/car_model/MATLAB/gokartSYSID/rimo_pi/" + string + "_rimo" + ".csv"),
+    Export.of(HomeDirectory.file("git_cloned/car_model/MATLAB/gokartSYSID/rimo_pi/" + string + "_rimo" + ".csv"),
         offlineTableSupplier.getTable2().map(CsvFormat.strict()));
   }
 }

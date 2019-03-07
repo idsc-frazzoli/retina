@@ -9,13 +9,13 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.jph.davis.Aedat31PolarityImage;
-import ch.ethz.idsc.retina.dev.davis.io.SeyeAeDvsLcmClient;
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.TimedImageEvent;
-import ch.ethz.idsc.retina.util.TimedImageListener;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.gokart.lcm.seye.SeyeAeDvsLcmClient;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
+import ch.ethz.idsc.retina.util.img.TimedImageEvent;
+import ch.ethz.idsc.retina.util.img.TimedImageListener;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 public class SeyeDetailModule extends AbstractModule implements TimedImageListener {
   public static final int PACKETS = 200;
@@ -33,7 +33,7 @@ public class SeyeDetailModule extends AbstractModule implements TimedImageListen
   private final Aedat31PolarityImage aedat31PolarityImage = new Aedat31PolarityImage(Color.DARK_GRAY, PACKETS);
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setContentPane(jComponent);

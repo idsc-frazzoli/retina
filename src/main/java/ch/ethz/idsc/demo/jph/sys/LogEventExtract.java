@@ -4,8 +4,8 @@ package ch.ethz.idsc.demo.jph.sys;
 import java.io.File;
 
 import ch.ethz.idsc.demo.GokartLogFile;
-import ch.ethz.idsc.retina.lcm.MessageConsistency;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.MessageConsistency;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;

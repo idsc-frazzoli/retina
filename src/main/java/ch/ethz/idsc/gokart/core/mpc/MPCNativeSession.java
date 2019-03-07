@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Date;
@@ -11,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class MPCNativeSession {
-  private Process process;
+/* package */ class MPCNativeSession {
   private final Map<Integer, Integer> messageCounter = new HashMap<>();
-  public BufferedReader is;
+  private Process process;
+  private BufferedReader bufferedReader;
   private boolean test = false;
   private boolean externStart = false;
 
@@ -41,7 +40,7 @@ public class MPCNativeSession {
       ProcessBuilder processBuilder = new ProcessBuilder(list);
       try {
         process = processBuilder.start();
-        is = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
           System.out.println(new Date() + " mpc-server: isAlive=" + process.isAlive());
           process.destroy();
@@ -57,22 +56,20 @@ public class MPCNativeSession {
     // doesn't seem to work
     String res = "";
     try {
-      while (is.ready())
-        res = res + is.readLine() + "\n";
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      while (bufferedReader.ready())
+        res = res + bufferedReader.readLine() + "\n";
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
     return res;
   }
 
   /** gets a unique ID for any object that inherits MPCNative */
-  int getMessageId(MPCNativeMessage message) {
-    int prefix = message.getMessagePrefix();
+  int getMessageId(MPCNativeMessage mpcNativeMessage) {
+    int prefix = mpcNativeMessage.getMessageType().ordinal();
     Integer current = messageCounter.get(prefix);
-    if (current == null) {
+    if (Objects.isNull(current))
       current = 0;
-    }
     messageCounter.put(prefix, current + 1);
     return current;
   }

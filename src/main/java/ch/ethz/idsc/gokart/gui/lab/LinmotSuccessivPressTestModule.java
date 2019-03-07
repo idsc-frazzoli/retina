@@ -2,8 +2,6 @@
 package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,21 +10,19 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.dev.linmot.LinmotConfig;
-import ch.ethz.idsc.retina.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.dev.rimo.RimoSocket;
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 
 /** linmot press test enables the driver to apply the brake
- * at a constant value for a certain period of time
- * 
- * TODO generate a report from the log files about the brake effect */
+ * at a constant value for a certain period of time */
 public class LinmotSuccessivPressTestModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
@@ -40,7 +36,7 @@ public class LinmotSuccessivPressTestModule extends AbstractModule {
   private Tensor intensities;
 
   @Override
-  protected void first() throws Exception {
+  protected void first() {
     LinmotSocket.INSTANCE.addPutProvider(linmotPressTestLinmot);
     RimoSocket.INSTANCE.addPutProvider(linmotPressTestRimo);
     {
@@ -51,39 +47,26 @@ public class LinmotSuccessivPressTestModule extends AbstractModule {
       // button for previous test
       prev = new JButton("previous");
       list.add(prev);
-      prev.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          previous();
-        }
-      });
+      prev.addActionListener(actionEvent -> previous());
       jPanel.add(prev);
       // button for test
       test = new JButton("test: 0");
       list.add(test);
-      test.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          list.forEach(button -> button.setEnabled(false));
-          new Thread(new Runnable() {
-            @Override
-            public void run() {
-              test();
-              list.forEach(button -> button.setEnabled(true));
-            }
-          }).start();
-        }
+      test.addActionListener(actionEvent -> {
+        list.forEach(button -> button.setEnabled(false));
+        new Thread(new Runnable() {
+          @Override
+          public void run() {
+            test();
+            list.forEach(button -> button.setEnabled(true));
+          }
+        }).start();
       });
       jPanel.add(test);
       // button for next test
       next = new JButton("next");
       list.add(next);
-      next.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          next();
-        }
-      });
+      next.addActionListener(actionEvent -> next());
       jPanel.add(next);
       updateButtons();
       jFrame.setContentPane(jPanel);

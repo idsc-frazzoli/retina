@@ -49,5 +49,7 @@ public class DubendorfCurveTest extends TestCase {
     testCurve(DubendorfCurve.DEMODAY_EIGHT);
     testCurve(DubendorfCurve.HYPERLOOP_EIGHT);
     testCurve(DubendorfCurve.HYPERLOOP_OVAL);
+    testCurve(DubendorfCurve.TIRES_TRACK_A);
+    testCurve(DubendorfCurve.TIRES_TRACK_B);
   }
 }

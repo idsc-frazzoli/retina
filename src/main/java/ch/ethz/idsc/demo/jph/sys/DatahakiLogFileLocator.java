@@ -9,7 +9,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.GokartLogFiles;
 import ch.ethz.idsc.gokart.offline.api.LogFile;
 import ch.ethz.idsc.gokart.offline.api.LogFileLocator;
-import ch.ethz.idsc.owl.bot.util.UserHome;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 public enum DatahakiLogFileLocator implements LogFileLocator {
   INSTANCE;
@@ -18,7 +18,7 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
   private static final File ARCHIVE = new File("/media/datahaki/backup/gokartlogs");
   private static final List<File> LOG_ROOT = Arrays.asList( //
       ARCHIVE, //
-      UserHome.file("gokartlogs"));
+      HomeDirectory.file("gokartlogs"));
 
   @Override // from LogFileLocator
   public File getAbsoluteFile(LogFile logFile) {
@@ -33,9 +33,7 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
   }
 
   /** @param logFile
-   * @return
-   * @throws Exception if file cannot be located */
-  // TODO comment not in sync with implementation
+   * @return valid log file, or null if file could not be found */
   public static File file(LogFile logFile) {
     return INSTANCE.getAbsoluteFile(logFile);
   }

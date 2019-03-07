@@ -13,16 +13,15 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.DavisSerial;
-import ch.ethz.idsc.owl.bot.util.UserHome;
-import ch.ethz.idsc.retina.dev.davis.DavisDvsListener;
-import ch.ethz.idsc.retina.dev.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.retina.lcm.davis.DavisLcmClient;
+import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
+import ch.ethz.idsc.retina.davis.DavisDvsListener;
+import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-class RunDavisRgbCalibration implements DavisDvsListener {
+/* package */ class RunDavisRgbCalibration implements DavisDvsListener {
   public static final int SIZE = 300;
   long evt_count;
   Color color = new Color(0, 0, 0);
@@ -52,7 +51,7 @@ class RunDavisRgbCalibration implements DavisDvsListener {
       public void windowClosed(WindowEvent e) {
         timer.cancel();
         try {
-          Export.of(UserHome.file("green.csv"), stats);
+          Export.of(HomeDirectory.file("green.csv"), stats);
         } catch (IOException e1) {
           e1.printStackTrace();
         }

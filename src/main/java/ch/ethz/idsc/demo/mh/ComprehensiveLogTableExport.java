@@ -4,15 +4,18 @@ package ch.ethz.idsc.demo.mh;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.gokart.offline.tab.DavisImuTable;
-import ch.ethz.idsc.gokart.offline.tab.GokartPoseTable;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
+import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
+import ch.ethz.idsc.gokart.offline.channel.VelodyneLocalizationChannel;
+import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.gokart.offline.tab.LinmotPassiveStatusTable;
 import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
 import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoOdometryTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
-import ch.ethz.idsc.gokart.offline.tab.VelodyneLocalizationTable;
-import ch.ethz.idsc.retina.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.CsvFormat;
@@ -22,7 +25,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** export of various content to determine accuracy of measurements.
  * export data for system identification */
 public class ComprehensiveLogTableExport {
-  private static final Scalar PERIOD = Quantity.of(0, SI.SECOND);
   private static final Scalar STEERINGPERIOD = Quantity.of(0.01, SI.SECOND);
   private static final Scalar POWERPERIOD = Quantity.of(0.01, SI.SECOND);
   private static final Scalar OFFSET = Quantity.of(0, SI.SECOND);
@@ -39,7 +41,8 @@ public class ComprehensiveLogTableExport {
   /** @param file gokart log to be converted into csv tables
    * @throws IOException for instance, if given file does not exist */
   public void process(File file) throws IOException {
-    DavisImuTable davisImuTable = new DavisImuTable(PERIOD);
+    OfflineTableSupplier davisImuTable = SingleChannelTable.of(DavisImuChannel.INSTANCE);
+    OfflineTableSupplier vmu931ImuTable = SingleChannelTable.of(Vmu931ImuChannel.INSTANCE);
     LinmotPassiveStatusTable linmotStatusTable = new LinmotPassiveStatusTable();
     PowerSteerTable powerSteerTable = new PowerSteerTable(STEERINGPERIOD);
     RimoOdometryTable rimoOdometryTable = new RimoOdometryTable();
@@ -47,8 +50,8 @@ public class ComprehensiveLogTableExport {
     RimoRateTable rimoRateTable = new RimoRateTable(POWERPERIOD);
     // RimoSlipTable rimoSlipTable = new RimoSlipTable(PERIOD);
     // LocalizationTable localizationTable = new LocalizationTable(PERIOD, true);
-    VelodyneLocalizationTable velodyneLocalizationTable = new VelodyneLocalizationTable(PERIOD);
-    GokartPoseTable gokartPoseTable = new GokartPoseTable(PERIOD);
+    OfflineTableSupplier velodyneLocalizationTable = SingleChannelTable.of(VelodyneLocalizationChannel.INSTANCE);
+    OfflineTableSupplier gokartPoseTable = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
     //
     OfflineLogPlayer.process(file, //
         davisImuTable, //
@@ -56,6 +59,7 @@ public class ComprehensiveLogTableExport {
         // rimoOdometryTable, //
         powerRimoAnalysis, //
         rimoRateTable, //
+        vmu931ImuTable, //
         // rimoSlipTable);
         // localizationTable);
         // velodyneLocalizationTable);
@@ -64,6 +68,7 @@ public class ComprehensiveLogTableExport {
     File folder = createTableFolder(file);
     // ---
     Export.of(new File(folder, "davisIMU.csv"), davisImuTable.getTable().map(CsvFormat.strict()));
+    Export.of(new File(folder, "vmu931IMU.csv"), vmu931ImuTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "powersteer.csv"), powerSteerTable.getTable().map(CsvFormat.strict()));
     // Export.of(new File(folder, "rimoodom.csv"), rimoOdometryTable.getTable().map(CsvFormat.strict()));
     Export.of(new File(folder, "powerrimo.csv"), powerRimoAnalysis.getTable().map(CsvFormat.strict()));

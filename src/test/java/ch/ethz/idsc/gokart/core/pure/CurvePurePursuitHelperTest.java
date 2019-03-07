@@ -46,4 +46,32 @@ public class CurvePurePursuitHelperTest extends TestCase {
     Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAheadMeter());
     assertFalse(optional.isPresent());
   }
+
+  public void testSpecificHLE() throws Exception {
+    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 0.0}");
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, true, PursuitConfig.GLOBAL.lookAheadMeter());
+    Scalar lookAhead = optional.get();
+    Clip.function(0.062, 0.069).requireInside(lookAhead);
+  }
+
+  public void testSpecificHLE_R() throws Exception {
+    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 0.0}");
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, false, PursuitConfig.GLOBAL.lookAheadMeter());
+    Scalar lookAhead = optional.get();
+    Clip.function(0.0096, 0.015).requireInside(lookAhead);
+  }
+
+  public void testSpecificHLER() throws Exception {
+    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 3.1415926535897932385}");
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, true, PursuitConfig.GLOBAL.lookAheadMeter());
+    Scalar lookAhead = optional.get();
+    Clip.function(-0.015, -0.0096).requireInside(lookAhead);
+  }
+
+  public void testSpecificHLER_R() throws Exception {
+    Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 3.1415926535897932385}");
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, false, PursuitConfig.GLOBAL.lookAheadMeter());
+    Scalar lookAhead = optional.get();
+    Clip.function(-0.069, -0.062).requireInside(lookAhead);
+  }
 }

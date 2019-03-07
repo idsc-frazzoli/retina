@@ -21,10 +21,10 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.AutoboxSocket;
 import ch.ethz.idsc.gokart.core.AutoboxSockets;
 import ch.ethz.idsc.gokart.core.ProviderRanks;
-import ch.ethz.idsc.owl.math.state.ProviderRank;
-import ch.ethz.idsc.retina.sys.AbstractModule;
-import ch.ethz.idsc.retina.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.gui.WindowConfiguration;
+import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 public class AutoboxIntrospectionModule extends AbstractModule {
   private static final int NUMEL = 4;
@@ -39,7 +39,7 @@ public class AutoboxIntrospectionModule extends AbstractModule {
   private final JLabel[][] jLabel = new JLabel[NUMEL][LENGTH];
 
   @Override // from AbstractModule
-  protected void first() throws Exception {
+  protected void first() {
     JPanel jPanel = new JPanel(new BorderLayout());
     { // title
       JPanel jPanelTitle = new JPanel(new GridLayout(NUMEL, 1));
