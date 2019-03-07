@@ -1,9 +1,8 @@
 clear all;
 close all;
 B = 2;
-C = 1.7;
+C = 1.5;
 D = 0.7*9.81;
-Cf = 0.15;
 slx = @(VELY,VELX, wheelSpeed)(VELX-wheelSpeed)./(wheelSpeed+0.001);
 sly = @(VELY,VELX, wheelSpeed)(1+slx(VELY,VELX, wheelSpeed)).*VELY./(VELX+0.001);
 slip = @(VELY,VELX,wheelSpeed)(slx(VELY,VELX,wheelSpeed).^2+sly(VELY,VELX, wheelSpeed).^2).^(0.5)+0.001;
@@ -45,10 +44,11 @@ legend show
 hold off
 
 %simplified model
-maxA = 6.5;
-simpleslip = @(VELY,VELX,taccx)-(1+(taccx*Cf)^2)*VELY/(VELX+0.001);
+maxA = D;
+capfactor = @(taccx)(1-satfun((taccx/D)^2))^(1/2);
+simpleslip = @(VELY,VELX,taccx)-(1/capfactor(taccx))*VELY/(VELX+0.001);
 simplediraccy = @(VELY,VELX,taccx)magic(simpleslip(VELY,VELX,taccx),B,C,D);
-simpleaccy = @(VELY,VELX,taccx)(1-satfun((taccx/D)^2))^(1/2)*simplediraccy(VELY,VELX,taccx);
+simpleaccy = @(VELY,VELX,taccx)capfactor(taccx)*simplediraccy(VELY,VELX,taccx);
 acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
 simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+0.001),B,C,D);
 

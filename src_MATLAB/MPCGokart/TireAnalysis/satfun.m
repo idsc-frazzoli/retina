@@ -12,7 +12,7 @@ function y = satfun(x)
         end
     else
         d = (1+r-x)/r;
-        y=0.97*if_else(x<l,x,...
+        y=0.95*if_else(x<l,x,...
             if_else(x<1+r,1-1/4*r*d^2,1));
     end
 end

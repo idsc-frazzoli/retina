@@ -1,20 +1,21 @@
-function [ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV, param)
-    %param = [B1,C1,D1,B2,C2,D2,Cf,maxA];
+function [ACCX,ACCY,ACCROTZ] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV, param)
+    %param = [B1,C1,D1,B2,C2,D2,Ic];
     B1 = param(1);
     C1 = param(2);
     D1 = param(3);
     B2 = param(4);
     C2 = param(5);
     D2 = param(6);
-    Cf = param(7);
-    maxA = param(8);
+    Ic = param(7);
+    %maxA = param(8);
     magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
-    reg = 4;
-    simpleslip = @(VELY,VELX,taccx)-(1+(taccx*Cf)^2)*VELY/(VELX+reg);
+    reg = 1;
+    capfactor = @(taccx)(1-satfun((taccx/D2)^2))^(1/2);
+    simpleslip = @(VELY,VELX,taccx)-(1/capfactor(taccx))*VELY/(VELX+reg);
     %simpleslip = @(VELY,VELX,taccx)-VELY/(VELX+reg);
     simplediraccy = @(VELY,VELX,taccx)magic(simpleslip(VELY,VELX,taccx),B2,C2,D2);
-    simpleaccy = @(VELY,VELX,taccx)(1-satfun((taccx/D2)^2))^(1/2)*simplediraccy(VELY,VELX,taccx);
-    acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
+    simpleaccy = @(VELY,VELX,taccx)capfactor(taccx)*simplediraccy(VELY,VELX,taccx);
+    %acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
     simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1);
     %simpleaccy = @(VELY,VELX,taccx)magic(-VELY/(VELX+reg),B2,C2,D2);
 
@@ -40,7 +41,7 @@ function [ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV,
     TVTrq = TV*w;
     
     
-    ACCROTZ = TVTrq + F1y*l1 -F2y*l2;
+    ACCROTZ = (TVTrq + F1y*l1 -F2y*l2)/Ic;
     %ACCROTZ = TVTrq + F1y*l1;
     ACCX = F1x+F2x+VELROTZ*VELY;
     ACCY = F1y+F2y1+F2y2-VELROTZ*VELX;
