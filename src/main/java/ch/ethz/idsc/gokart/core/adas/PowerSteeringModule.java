@@ -25,9 +25,15 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 
+  SteerGetEvent prev;
+  double diffRelRckPos;
+
   @Override
   public void getEvent(SteerGetEvent getEvent) {
-    // TODO Auto-generated method stub
+    if (prev != null) {
+      diffRelRckPos = getEvent.getGcpRelRckPos() - prev.getGcpRelRckPos();
+    }
+    prev = getEvent;
   }
 
   @Override
@@ -37,6 +43,6 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
-    return Optional.of(SteerPutEvent.createOn(Quantity.of(0.3, "SCT")));
+    return Optional.of(SteerPutEvent.createOn(Quantity.of(diffRelRckPos > 0 ? 0.3 : -0.3, "SCT")));
   }
 }
