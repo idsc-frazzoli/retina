@@ -72,7 +72,7 @@ public class LocalizationConfig {
   /***************************************************/
   /** @return predefined map with static geometry for lidar based localization */
   public static PredefinedMap getPredefinedMap() {
-    return PredefinedMap.DUBILAB_LOCALIZATION_20181128; // without tents
+    return PredefinedMap.DUBILAB_LOCALIZATION_20190307; // without tents
   }
 
   /** @return new instance of LidarGyroLocalization method */
@@ -81,7 +81,6 @@ public class LocalizationConfig {
   }
 
   public static PredefinedMap getPredefinedMapObstacles() {
-    return PredefinedMap.DUBILAB_OBSTACLES_20180703; // without tents
-    // return PredefinedMap.DUBILAB_OBSTACLES_20180704; // with tents
+    return PredefinedMap.DUBILAB_OBSTACLES_20180703; // with container moved
   }
 }

@@ -38,6 +38,7 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Accumulate;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.ListConvolve;
@@ -46,6 +47,7 @@ import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 
+// FIXME JPH SUBARE 026 handle empty rows in plots
 /* package */ class HtmlLogReport {
   private static final int WIDTH = 854;
   private static final int HEIGHT = 360; // 480;
@@ -77,6 +79,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       htmlUtf8.appendln("<p><small>report generated: " + new Date() + "</small>");
       htmlUtf8.appendln("<h2>Steering</h2>");
       htmlUtf8.appendln("<img src='plot/status.png'/><br/><br/>");
+      // htmlUtf8.appendln("<img src='plot/status_diff.png'/><br/><br/>");
       htmlUtf8.appendln("<img src='plot/steerget.png'/><br/><br/>");
       htmlUtf8.appendln("<h2>Rear Wheel Motors</h2>");
       htmlUtf8.appendln("<img src='plot/rimoput.png'/><br/><br/>");
@@ -103,6 +106,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       htmlUtf8.appendln("<img src='plot/labjackAdc.png'/><br/><br/>");
     }
     exportStatus();
+    // exportStatusDiff();
     exportSteerGet();
     exportRimoPut();
     exportRimoGet();
@@ -145,6 +149,20 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("calibrated (0 = straight)");
     }
     exportListPlot("status.png", visualSet);
+  }
+
+  public void exportStatusDiff() throws IOException {
+    VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(128));
+    visualSet.setPlotLabel("power steering position differences");
+    visualSet.setAxesLabelX("time [s]");
+    visualSet.setAxesLabelY("power steering position [n.a.]");
+    {
+      Tensor tensor = map.get(SteerGetChannel.INSTANCE);
+      Tensor pos_diff = Differences.of(tensor.get(Tensor.ALL, 8));
+      Tensor domain = tensor.get(Tensor.ALL, 0).extract(0, pos_diff.length());
+      visualSet.add(domain, pos_diff).setLabel("raw");
+    }
+    exportListPlot("status_diff.png", visualSet);
   }
 
   public void exportSteerGet() throws IOException {
@@ -231,8 +249,10 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelY("acceleration [m*s^-2]");
     Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
     Tensor domain = tensor.get(Tensor.ALL, 0);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
+    if (!Tensors.isEmpty(domain)) {
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
+    }
     exportListPlot("vmu931acc.png", visualSet);
   }
 
