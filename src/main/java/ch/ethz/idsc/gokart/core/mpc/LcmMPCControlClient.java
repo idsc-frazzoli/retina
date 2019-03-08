@@ -17,7 +17,7 @@ import idsc.BinaryBlob;
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs");
   private final BinaryBlobPublisher optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op");
-  private final Boolean dynamic;
+  private final boolean dynamic;
   // TODO design no good. lastcns should not be public. use member function instead
   public ControlAndPredictionSteps lastcns = null;
 
@@ -26,7 +26,7 @@ import idsc.BinaryBlob;
     dynamic = false;
   }
   
-  public LcmMPCControlClient(Boolean dynamic) {
+  public LcmMPCControlClient(boolean dynamic) {
     super(GokartLcmChannel.MPC_FORCES_CNS);
     this.dynamic = dynamic;
   }

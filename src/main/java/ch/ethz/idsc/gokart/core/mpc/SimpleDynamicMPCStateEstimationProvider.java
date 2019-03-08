@@ -26,6 +26,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
+import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Cos;
 import ch.ethz.idsc.tensor.sca.Sin;
@@ -82,11 +83,9 @@ import ch.ethz.idsc.tensor.sca.Sin;
         XPosition = pose.Get(0);
         YPosition = pose.Get(1);
       } else {
-        Scalar xOffset = Cos.of(orientation).multiply(ChassisGeometry.GLOBAL.xAxleRtoCoM);
-        Scalar yOffset = Sin.of(orientation).multiply(ChassisGeometry.GLOBAL.xAxleRtoCoM);
-        XPosition = pose.Get(0).add(xOffset);
-        YPosition = pose.Get(1).add(yOffset);
-        orientation = pose.Get(2);
+        Tensor shiftedPose = AngleVector.of(orientation).multiply(ChassisGeometry.GLOBAL.xAxleRtoCoM);
+        XPosition = pose.Get(0).add(shiftedPose.Get(0));
+        YPosition = pose.Get(1).add(shiftedPose.Get(1));
       }
     }
   };
@@ -106,7 +105,7 @@ import ch.ethz.idsc.tensor.sca.Sin;
     // check if there was an update since the creation of the last gokart state
     if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate)) {
       Ux = simpleVelocityEstimation.getVelocity().Get(0);
-      Uy = simpleVelocityEstimation.getVelocity().Get(1);
+      Uy = simpleVelocityEstimation.getVelocity().Get(1).add(dotOrientation.multiply(ChassisGeometry.GLOBAL.xAxleRtoCoM));
       dotOrientation = simpleVelocityEstimation.getVelocity().Get(2);
       lastGokartState = new GokartState( //
           getTime(), //
