@@ -26,10 +26,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
-import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Cos;
-import ch.ethz.idsc.tensor.sca.Sin;
 
 /* package */ class SimpleDynamicMPCStateEstimationProvider extends MPCStateEstimationProvider {
   private final SimplePositionVelocityModule simpleVelocityEstimation = //
@@ -45,7 +42,6 @@ import ch.ethz.idsc.tensor.sca.Sin;
   private Scalar s = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
   private Scalar bTemp = Quantity.of(0, NonSI.DEGREE_CELSIUS);
   private Scalar lastUpdate = Quantity.of(0, SI.SECOND);
-  private final boolean centerAtCoM;
   private GokartState lastGokartState = null;
   private final LinmotGetListener linmotGetListener = new LinmotGetListener() {
     @Override
@@ -79,25 +75,13 @@ import ch.ethz.idsc.tensor.sca.Sin;
     public void getEvent(GokartPoseEvent getEvent) {
       Tensor pose = getEvent.getPose();
       orientation = pose.Get(2);
-      if (!centerAtCoM) {
-        XPosition = pose.Get(0);
-        YPosition = pose.Get(1);
-      } else {
-        Tensor shiftedPose = AngleVector.of(orientation).multiply(ChassisGeometry.GLOBAL.xAxleRtoCoM);
-        XPosition = pose.Get(0).add(shiftedPose.Get(0));
-        YPosition = pose.Get(1).add(shiftedPose.Get(1));
-      }
+      XPosition = pose.Get(0);
+      YPosition = pose.Get(1);
     }
   };
 
   protected SimpleDynamicMPCStateEstimationProvider(Timing timing) {
     super(timing);
-    this.centerAtCoM = false;
-  }
-
-  protected SimpleDynamicMPCStateEstimationProvider(Timing timing, boolean centerAtCoM) {
-    super(timing);
-    this.centerAtCoM = centerAtCoM;
   }
 
   @Override

@@ -38,7 +38,7 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
   }
 
   public void testRealBinary() throws Exception {
-    LcmMPCControlClient lcmMPCControlClient = new LcmMPCControlClient();
+    LcmMPCControlClient lcmMPCControlClient = LcmMPCControlClient.kinematic();
     // start binary via command line
     // uncomment if you want to start the server yourself (useful if you want to see output)
     // lcmMPCControlClient.switchToExternalStart();

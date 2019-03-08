@@ -10,25 +10,39 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
 import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
+import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import idsc.BinaryBlob;
 
-/* package */ class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
+/* package */ abstract class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
+  public static LcmMPCControlClient kinematic() {
+    return new LcmMPCControlClient("") {
+      @Override
+      BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
+        return new MPCOptimizationParameterMessageKinematic(mpcOptimizationParameter, mpcNativeSession);
+      }
+    };
+  }
+
+  public static LcmMPCControlClient dynamic() {
+    return new LcmMPCControlClient("d") {
+      @Override
+      BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
+        return new MPCOptimizationParameterMessageDynamic(mpcOptimizationParameter, mpcNativeSession);
+      }
+    };
+  }
+
   private final List<MPCControlUpdateListener> listeners = new CopyOnWriteArrayList<>();
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
-  private final BinaryBlobPublisher controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs");
-  private final BinaryBlobPublisher optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op");
-  private final boolean dynamic;
+  private final BinaryBlobPublisher controlRequestPublisher;
+  private final BinaryBlobPublisher optimizationParameterPublisher;
   // TODO design no good. lastcns should not be public. use member function instead
-  public ControlAndPredictionSteps lastcns = null;
+  /* package for testing */ ControlAndPredictionSteps lastcns = null;
 
-  public LcmMPCControlClient() {
+  private LcmMPCControlClient(String appendix) {
     super(GokartLcmChannel.MPC_FORCES_CNS);
-    dynamic = false;
-  }
-  
-  public LcmMPCControlClient(boolean dynamic) {
-    super(GokartLcmChannel.MPC_FORCES_CNS);
-    this.dynamic = dynamic;
+    controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs" + appendix);
+    optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op" + appendix);
   }
 
   @Override
@@ -65,35 +79,16 @@ import idsc.BinaryBlob;
     mpcNativeSession.switchToExternalStart();
   }
 
-  /* public void publishPathParameter(MPCPathParameter mpcPathParameter) {
-   * MPCPathParameterMessage mpcPathParameterMessage = new MPCPathParameterMessage(mpcPathParameter, mpcNativeSession);
-   * BinaryBlob binaryBlob = BinaryBlobs.create(mpcPathParameterMessage.length());
-   * ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-   * byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-   * mpcPathParameterMessage.insert(byteBuffer);
-   * pathParameterPublisher.accept(binaryBlob);
-   * } */
-  public void publishOptimizationParameter(MPCOptimizationParameterKinematic mpcOptimizationParameter) {
-    //if(dynamic)
-    //  throw new Exception();
-    MPCOptimizationParameterMessageKinematic mpcOptimizationParameterMessage = new MPCOptimizationParameterMessageKinematic(mpcOptimizationParameter, mpcNativeSession);
-    BinaryBlob binaryBlob = BinaryBlobs.create(mpcOptimizationParameterMessage.length());
+  public void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {
+    BufferInsertable bufferInsertable = from(mpcOptimizationParameter, mpcNativeSession);
+    BinaryBlob binaryBlob = BinaryBlobs.create(bufferInsertable.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    mpcOptimizationParameterMessage.insert(byteBuffer);
+    bufferInsertable.insert(byteBuffer);
     optimizationParameterPublisher.accept(binaryBlob);
   }
-  
-  public void publishOptimizationParameter(MPCOptimizationParameterDynamic mpcOptimizationParameter) {
-    //if(!dynamic)
-    //  throw new Exception();
-    MPCOptimizationParameterMessageDynamic mpcOptimizationParameterMessage = new MPCOptimizationParameterMessageDynamic(mpcOptimizationParameter, mpcNativeSession);
-    BinaryBlob binaryBlob = BinaryBlobs.create(mpcOptimizationParameterMessage.length());
-    ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    mpcOptimizationParameterMessage.insert(byteBuffer);
-    optimizationParameterPublisher.accept(binaryBlob);
-  }
+
+  abstract BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession);
 
   public void registerControlUpdateLister(MPCControlUpdateListener listener) {
     listeners.add(listener);

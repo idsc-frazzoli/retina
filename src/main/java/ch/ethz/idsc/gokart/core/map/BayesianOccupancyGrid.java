@@ -426,12 +426,13 @@ public class BayesianOccupancyGrid implements RenderInterface, OccupancyGrid {
 
   @Override
   public void clearStart(int startX, int startY, double orientation) {
+    Tensor rotation = RotationMatrix.of(orientation);
     for (int ix = -1; ix < cellDimInv.number().doubleValue() * 12 * 2.0f; ix++) {
       int fromy = (int) (-cellDimInv.number().doubleValue() * 3 * 2.0f);
       int endy = -fromy;
       for (int iy = fromy; iy <= endy; iy++) {
         Tensor posVec = Tensors.vector(ix, iy);
-        Tensor rotPos = RotationMatrix.of(orientation).dot(posVec);
+        Tensor rotPos = rotation.dot(posVec);
         int posX = (int) (startX + rotPos.Get(0).number().intValue() / 2.0);
         int posY = (int) (startY + rotPos.Get(1).number().intValue() / 2.0);
         int idx = posY * dimx + posX;

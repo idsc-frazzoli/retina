@@ -23,14 +23,14 @@ import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
-import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedPredictiveTorqueVectoringManualModule;
-import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualGroupModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
+import ch.ethz.idsc.gokart.core.man.UltimateTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
@@ -108,15 +108,15 @@ enum RunTabbedTaskGui {
       GokartVoiceOutputs.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
+      UltimateTorqueVectoringModule.class, //
       RimoThrustManualModule.class, //
-      ImprovedNormalizedTorqueVectoringManualModule.class, //
-      ImprovedNormalizedPredictiveTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
       ManualGroupModule.class, //
       SysidSignalsModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       MPCKinematicDrivingModule.class, //
+      MPCDynamicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       FigureTiresAModule.class, //

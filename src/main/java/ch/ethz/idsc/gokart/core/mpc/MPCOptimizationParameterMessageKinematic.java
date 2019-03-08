@@ -6,9 +6,9 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
 /* package */ class MPCOptimizationParameterMessageKinematic extends MPCNativeMessage {
-  private final MPCOptimizationParameterKinematic mpcOptimizationParameter;
+  private final MPCOptimizationParameter mpcOptimizationParameter;
 
-  public MPCOptimizationParameterMessageKinematic(MPCOptimizationParameterKinematic mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
+  public MPCOptimizationParameterMessageKinematic(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
     super(mpcNativeSession);
     this.mpcOptimizationParameter = mpcOptimizationParameter;
   }

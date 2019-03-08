@@ -16,7 +16,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
   GokartState gokartState;
 
   public void testSimple() throws Exception {
-    LcmMPCControlClient lcmMPCControlClient = new LcmMPCControlClient();
+    LcmMPCControlClient lcmMPCControlClient = LcmMPCControlClient.kinematic();
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
     lcmMPCControlClient.switchToExternalStart();
     lcmMPCControlClient.start();

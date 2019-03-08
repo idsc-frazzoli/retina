@@ -47,7 +47,7 @@ public class BasicSysIDTable implements OfflineTableSupplier {
       // append to table
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
-          RealScalar.of(frame.timestamp_ms()),//
+          RealScalar.of(frame.timestamp_ms()), //
           velocityModule.getXYVelocity().map(Magnitude.VELOCITY).map(Round._5), //
           velocityModule.getGyroVelocity().map(Magnitude.PER_SECOND).map(Round._5), //
           SensorsConfig.GLOBAL.vmu931AccXY(frame).map(Magnitude.ACCELERATION).map(Round._5), //
