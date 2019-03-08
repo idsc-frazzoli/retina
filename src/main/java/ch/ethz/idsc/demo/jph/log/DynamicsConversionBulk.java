@@ -9,19 +9,16 @@ import java.util.stream.Stream;
 /* package */ enum DynamicsConversionBulk {
   ;
   public static void main(String[] args) {
-    for (File folder : StaticHelper.CUTS.listFiles())
-      if (folder.getName().startsWith("_"))
-        System.out.println("skip " + folder.getName());
-      else
-        for (File cut : Stream.of(folder.listFiles()).sorted().collect(Collectors.toList())) {
-          System.out.println(cut);
-          Optional<File> optional = DynamicsConversion.single(cut);
-          if (optional.isPresent())
-            try {
-              HtmlLogReport.generate(optional.get());
-            } catch (Exception exception) {
-              exception.printStackTrace();
-            }
+    final File folder = new File(StaticHelper.CUTS, "20190307");
+    for (File cut : Stream.of(folder.listFiles()).sorted().collect(Collectors.toList())) {
+      System.out.println(cut);
+      Optional<File> optional = DynamicsConversion.single(cut);
+      if (optional.isPresent())
+        try {
+          HtmlLogReport.generate(optional.get());
+        } catch (Exception exception) {
+          exception.printStackTrace();
         }
+    }
   }
 }
