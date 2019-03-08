@@ -56,7 +56,7 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
           0, //
           0, //
           0, 60);
-      MPCOptimizationParameter optimizationParameter = new MPCOptimizationParameter(Quantity.of(10, SI.VELOCITY));
+      MPCOptimizationParameterKinematic optimizationParameter = new MPCOptimizationParameterKinematic(Quantity.of(10, SI.VELOCITY));
       lcmMPCControlClient.publishOptimizationParameter(optimizationParameter);
       MPCControlUpdateListener mpcControlUpdateListener = new MPCControlUpdateListener() {
         @Override

@@ -18,6 +18,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
+import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -26,12 +27,13 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Cos;
+import ch.ethz.idsc.tensor.sca.Sin;
 
 /* package */ class SimpleDynamicMPCStateEstimationProvider extends MPCStateEstimationProvider {
   private final SimplePositionVelocityModule simpleVelocityEstimation = //
       ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
   private Scalar Ux = Quantity.of(0, SI.VELOCITY);
-  // assumed to be zero here (Kinematic controller cannot do anything with this information
   private Scalar Uy = Quantity.of(0, SI.VELOCITY);
   private Scalar orientation = RealScalar.of(0);
   private Scalar dotOrientation = Quantity.of(0, SI.PER_SECOND);
@@ -42,6 +44,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private Scalar s = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
   private Scalar bTemp = Quantity.of(0, NonSI.DEGREE_CELSIUS);
   private Scalar lastUpdate = Quantity.of(0, SI.SECOND);
+  private final boolean centerAtCoM;
   private GokartState lastGokartState = null;
   private final LinmotGetListener linmotGetListener = new LinmotGetListener() {
     @Override
@@ -74,35 +77,50 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     @Override
     public void getEvent(GokartPoseEvent getEvent) {
       Tensor pose = getEvent.getPose();
-      XPosition = pose.Get(0);
-      YPosition = pose.Get(1);
       orientation = pose.Get(2);
+      if (!centerAtCoM) {
+        XPosition = pose.Get(0);
+        YPosition = pose.Get(1);
+      } else {
+        Scalar xOffset = Cos.of(orientation).multiply(ChassisGeometry.GLOBAL.xAxleRtoCoM);
+        Scalar yOffset = Sin.of(orientation).multiply(ChassisGeometry.GLOBAL.xAxleRtoCoM);
+        XPosition = pose.Get(0).add(xOffset);
+        YPosition = pose.Get(1).add(yOffset);
+        orientation = pose.Get(2);
+      }
     }
   };
 
   protected SimpleDynamicMPCStateEstimationProvider(Timing timing) {
     super(timing);
+    this.centerAtCoM = false;
+  }
+
+  protected SimpleDynamicMPCStateEstimationProvider(Timing timing, boolean centerAtCoM) {
+    super(timing);
+    this.centerAtCoM = centerAtCoM;
   }
 
   @Override
   public GokartState getState() {
     // check if there was an update since the creation of the last gokart state
-    if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate))
+    if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate)) {
       Ux = simpleVelocityEstimation.getVelocity().Get(0);
-    Uy = simpleVelocityEstimation.getVelocity().Get(1);
-    dotOrientation = simpleVelocityEstimation.getVelocity().Get(2);
-    lastGokartState = new GokartState( //
-        getTime(), //
-        Ux, //
-        Uy, //
-        dotOrientation, //
-        XPosition, //
-        YPosition, //
-        orientation, //
-        w2L, //
-        w2R, //
-        s, //
-        bTemp);
+      Uy = simpleVelocityEstimation.getVelocity().Get(1);
+      dotOrientation = simpleVelocityEstimation.getVelocity().Get(2);
+      lastGokartState = new GokartState( //
+          getTime(), //
+          Ux, //
+          Uy, //
+          dotOrientation, //
+          XPosition, //
+          YPosition, //
+          orientation, //
+          w2L, //
+          w2R, //
+          s, //
+          bTemp);
+    }
     return lastGokartState;
   }
 

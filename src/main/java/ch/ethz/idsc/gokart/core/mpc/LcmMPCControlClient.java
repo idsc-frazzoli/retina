@@ -17,11 +17,18 @@ import idsc.BinaryBlob;
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs");
   private final BinaryBlobPublisher optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op");
+  private final Boolean dynamic;
   // TODO design no good. lastcns should not be public. use member function instead
   public ControlAndPredictionSteps lastcns = null;
 
   public LcmMPCControlClient() {
     super(GokartLcmChannel.MPC_FORCES_CNS);
+    dynamic = false;
+  }
+  
+  public LcmMPCControlClient(Boolean dynamic) {
+    super(GokartLcmChannel.MPC_FORCES_CNS);
+    this.dynamic = dynamic;
   }
 
   @Override
@@ -66,8 +73,21 @@ import idsc.BinaryBlob;
    * mpcPathParameterMessage.insert(byteBuffer);
    * pathParameterPublisher.accept(binaryBlob);
    * } */
-  public void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {
-    MPCOptimizationParameterMessage mpcOptimizationParameterMessage = new MPCOptimizationParameterMessage(mpcOptimizationParameter, mpcNativeSession);
+  public void publishOptimizationParameter(MPCOptimizationParameterKinematic mpcOptimizationParameter) {
+    //if(dynamic)
+    //  throw new Exception();
+    MPCOptimizationParameterMessageKinematic mpcOptimizationParameterMessage = new MPCOptimizationParameterMessageKinematic(mpcOptimizationParameter, mpcNativeSession);
+    BinaryBlob binaryBlob = BinaryBlobs.create(mpcOptimizationParameterMessage.length());
+    ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    mpcOptimizationParameterMessage.insert(byteBuffer);
+    optimizationParameterPublisher.accept(binaryBlob);
+  }
+  
+  public void publishOptimizationParameter(MPCOptimizationParameterDynamic mpcOptimizationParameter) {
+    //if(!dynamic)
+    //  throw new Exception();
+    MPCOptimizationParameterMessageDynamic mpcOptimizationParameterMessage = new MPCOptimizationParameterMessageDynamic(mpcOptimizationParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(mpcOptimizationParameterMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);

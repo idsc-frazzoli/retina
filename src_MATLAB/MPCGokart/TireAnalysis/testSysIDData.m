@@ -137,5 +137,5 @@ param = [B1,C1,D1,B2,C2,D2,Ic]
 
 options = optimset('Display','iter');
 minfun = @(param)costfit(param,SysID);
-solparams = fminsearch(minfun,param,options)
-csvwrite('solution',solparams)
+%solparams = fminsearch(minfun,param,options)
+%csvwrite('solution',solparams)

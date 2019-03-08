@@ -5,22 +5,22 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
-/* package */ class MPCOptimizationParameterMessage extends MPCNativeMessage {
+/* package */ class MPCOptimizationParameterMessageDynamic extends MPCNativeMessage {
   private final MPCOptimizationParameter mpcOptimizationParameter;
 
-  public MPCOptimizationParameterMessage(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
+  public MPCOptimizationParameterMessageDynamic(MPCOptimizationParameterDynamic mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
     super(mpcNativeSession);
     this.mpcOptimizationParameter = mpcOptimizationParameter;
   }
 
-  public MPCOptimizationParameterMessage(ByteBuffer byteBuffer) {
+  public MPCOptimizationParameterMessageDynamic(ByteBuffer byteBuffer) {
     super(byteBuffer);
-    mpcOptimizationParameter = new MPCOptimizationParameter(byteBuffer);
+    mpcOptimizationParameter = new MPCOptimizationParameterDynamic(byteBuffer);
   }
 
   @Override // from MPCNativeMessage
   MessageType getMessageType() {
-    return MessageType.OPTIMIZATION_PARAMETER;
+    return MessageType.OPTIMIZATION_PARAMETER_DYNAMIC;
   }
 
   @Override // from MPCNativeMessage

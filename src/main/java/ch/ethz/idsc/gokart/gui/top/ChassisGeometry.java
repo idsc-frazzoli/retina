@@ -46,6 +46,8 @@ public class ChassisGeometry {
   public final Scalar tireRadiusFront = Quantity.of(0.23 * 0.5, SIDerived.METER_PER_RADIAN);
   /** approx. radius of rear tire when on gokart is on ground [m/rad] */
   public final Scalar tireRadiusRear = Quantity.of(0.240 * 0.5, SIDerived.METER_PER_RADIAN);
+  /** longitudonal distance to center of mass from back axle */
+  public final Scalar xAxleRtoCoM = Quantity.of(0.46, SI.METER);
 
   /***************************************************/
   public Scalar yHalfWidthMeter() {

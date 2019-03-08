@@ -115,8 +115,8 @@ public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSpl
     // send message with max speed
     // optimization parameters will have more values in the future
     // MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
-    MPCOptimizationParameter mpcOptimizationParameter//
-        = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc, //
+    MPCOptimizationParameterKinematic mpcOptimizationParameter//
+        = new MPCOptimizationParameterKinematic(maxSpeed, maxXacc, maxYacc, //
             latAccLim, rotAccEffect, torqueVecEffect, brakeEffect);
     lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
