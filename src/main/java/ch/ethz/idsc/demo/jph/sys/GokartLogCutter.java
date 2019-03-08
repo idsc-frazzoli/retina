@@ -11,7 +11,7 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
 /* package */ enum GokartLogCutter {
   ;
   public static void main(String[] args) throws IOException {
-    GokartLogFile gokartLogFile = GokartLogFile._20190215T154532_380160a9;
+    GokartLogFile gokartLogFile = GokartLogFile._20190307T161708_086ad351;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
     // file = new File("/media/datahaki/media/ethz/gokart/topic/mapping/20180924T104243_1/log.lcm");
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
