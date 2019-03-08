@@ -1,4 +1,7 @@
-function d = costfit(param,SysID)
+function d = costfit(oldparam,SysID)
+    %oldparam = [B1,D1,B2,D2,Ic];
+    %param = [B1,C1,D1,B2,C2,D2,Ic];
+    param = [oldparam(1),1.5,oldparam(2:3),1.5,oldparam(4:5)];
 
     l = 1.19;
     l1 = 0.73;
@@ -36,5 +39,6 @@ function d = costfit(param,SysID)
             d=d+(ACCROTZ-ar(i))^2;
         end
     end
+    d=d/(2*m/10000);
 end
 

@@ -8,10 +8,10 @@ function dery = getDerivation(y, sigma, dt)
     dery = conv(y,derfilter,'same');
     n = numel(dery);
     X = 1:n;
-    figure
-    hold on
-    plot(X,y)
-    plot(X,dery)
-    legend('x','dotx')
-    hold off
+    %figure
+    %hold on
+    %plot(X,y)
+    %plot(X,dery)
+    %legend('x','dotx')
+    %hold off
 end

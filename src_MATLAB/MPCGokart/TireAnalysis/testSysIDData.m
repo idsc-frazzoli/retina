@@ -112,10 +112,29 @@ sela = sax>minAx & sax<maxAx & vx > 3;
 minAx = -3.6;
 maxAx = -3.4;
 selb = sax>minAx & sax<maxAx & vx > 3;
+magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
 scatter(-vy(sela)./vx(sela),say(sela),'b');
 scatter(vy(sela)./vx(sela),-say(sela),'b');
 scatter(-vy(selb)./vx(selb),say(selb),'r');
 scatter(vy(selb)./vx(selb),-say(selb),'r');
+
+B = 5;
+C = 1.8;
+D = 1*9.81;
+Ic = 1;
+B1 = B;
+B2 = B;
+C1 = C;
+C2 = C;
+D1 = 9.21;
+D2 = 13.5;
+
+capfactor = @(taccx)(1-satfun((taccx/D)^2))^(1/2);
+simpleslip = @(VELY,VELX,taccx)-(1/capfactor(taccx))*VELY/(VELX+0.001);
+simplediraccy = @(VELY,VELX,taccx)magic(simpleslip(VELY,VELX,taccx),B,C,D);
+simpleaccy = @(VELY,VELX,taccx)capfactor(taccx)*simplediraccy(VELY,VELX,taccx);
+acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
+simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+0.001),B,C,D);
 hold off
 
 %%
@@ -133,7 +152,8 @@ C1 = C;
 C2 = C;
 D1 = 0.8*D;
 D2 = D;
-param = [B1,C1,D1,B2,C2,D2,Ic]
+%param = [B1,C1,D1,B2,C2,D2,Ic]
+param = [B1,D1,B2,D2,Ic]
 
 options = optimset('Display','iter');
 minfun = @(param)costfit(param,SysID);
