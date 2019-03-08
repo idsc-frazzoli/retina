@@ -1,4 +1,4 @@
-function f = objective(z,points,radii,vmax, maxxacc,maxyacc,latacclim,rotacceffect,torqueveceffect, brakeeffect)
+function f = objective(z,points,radii,vmax, maxxacc)
     global index
 %[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline
@@ -36,11 +36,6 @@ function f = objective(z,points,radii,vmax, maxxacc,maxyacc,latacclim,rotacceffe
     latacc = (tan(ackermannAngle)*tangentspeed^2)/l;
     rotacc = dAckermannAngle*tangentspeed/l;
     tv = z(index.tv);
-    frontaxlelatacc = abs(latacc+rotacc*rotacceffect);
-    torquevectoringcapability = torqueveccapsmooth(forwardacc)*torqueveceffect;
-    %torquevectoringcapability = 0;
-    understeer = max(0,frontaxlelatacc - latacclim-torquevectoringcapability)^2;
-    accnorm = ((latacc/maxyacc)^2+(z(index.ab)/maxxacc)^2);
     %accviolation = max(0,accnorm-1)^2;
     lagcost = lagerror^2;
     latcost = laterror^2;

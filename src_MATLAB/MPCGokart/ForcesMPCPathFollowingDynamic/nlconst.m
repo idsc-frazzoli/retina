@@ -11,7 +11,7 @@ VELX = z(index.v);
 VELY = z(index.yv);
 slack = z(index.slack);
 
-pointsO = 7;
+pointsO = 2;
 pointsN = 10;
 points = getPointsFromParameters(p, pointsO, pointsN);
 radii = getRadiiFromParameters(p, pointsO, pointsN);
@@ -34,18 +34,18 @@ laterror = sidewards'*error;
 
 %parameters
 vmax =  p(index.ps);
-maxxacc = p(index.pax);
-maxyacc = p(index.pay);
-latacclim = p(index.pll);
-rotacceffect = p(index.prae);
-torqueveceffect = p(index.ptve);
-brakeeffect = p(index.pbre);
 
 ackermannAngle = -0.58*beta*beta*beta+0.93*beta;
 tangentspeed = z(index.v);
 
-maxA = 6.2;
+maxA = p(index.pax);
 acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
+
+l = 1.19;
+l1 = 0.73;
+l2 = l-l1;
+f1n = l2/l;
+f2n = l1/l;
 
 wantedpos = [splx;sply];
 realPos = z([index.x,index.y]);
@@ -56,7 +56,7 @@ l = 1.19;
 %v1=(tan(z(8))*z(7)^2/l);
 v1 = z(index.ab)+z(index.tv)-casadiGetSmoothMaxAcc(z(index.v));
 v2 = z(index.ab)-z(index.tv)-casadiGetSmoothMaxAcc(z(index.v));
-v3 = acclim(VELY,VELX,forwardacc)-slack;
+v3 = acclim(VELY,VELX,forwardacc/f2n)-slack;
 v4 = laterror-r-0.5*slack;
 v5 = -laterror-r-0.5*slack;
 
