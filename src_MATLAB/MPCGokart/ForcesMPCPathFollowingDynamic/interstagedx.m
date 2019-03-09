@@ -3,7 +3,7 @@ function dx = interstagedx(x,u)
     global index
     
     %just for the moment
-    Cf = 3;
+    Cf = 3.5;
     
     
     B1 = 12;

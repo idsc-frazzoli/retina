@@ -138,6 +138,7 @@ public class TrackReconManagement {
         } else {
           // we have a partial track
           // check if route is long enough
+          /*
           if (trackLayoutInitialGuess.getRouteLength() > 2) {
             Optional<Tensor> optional = trackLayoutInitialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
             if (optional.isPresent()) {
@@ -150,7 +151,7 @@ public class TrackReconManagement {
               if (Objects.nonNull(newTrackDataXYR))
                 trackDataXYR = newTrackDataXYR;
             }
-          }
+          }*/
         }
       }
     } else //
