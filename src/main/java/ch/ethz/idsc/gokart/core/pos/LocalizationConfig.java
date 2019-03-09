@@ -72,7 +72,7 @@ public class LocalizationConfig {
   /***************************************************/
   /** @return predefined map with static geometry for lidar based localization */
   public static PredefinedMap getPredefinedMap() {
-    return PredefinedMap.DUBILAB_LOCALIZATION_20190307; // without tents
+    return PredefinedMap.DUBILAB_LOCALIZATION_20190309; // without tents
   }
 
   /** @return new instance of LidarGyroLocalization method */

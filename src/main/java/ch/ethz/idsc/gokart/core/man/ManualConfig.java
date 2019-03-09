@@ -17,9 +17,11 @@ public class ManualConfig {
   public static final ManualConfig GLOBAL = AppResources.load(new ManualConfig());
   /***************************************************/
   /** the physical maximum torque limit is 2316[ARMS]
-   * the torque limit is used in {@link RimoTorqueManualModule} */
+   * the torque limit is used in {@link RimoThrustManualModule} */
   public final Scalar torqueLimit = Quantity.of(2315, NonSI.ARMS);
   public final Scalar timeout = Quantity.of(0.2, SI.SECOND);
+  /** torquePerGyro factor is used in {@link DriftThrustManualModule} */
+  public Scalar torquePerGyro = Quantity.of(1, SI.SECOND);
 
   /***************************************************/
   /** @return clip interval for permitted torque */
