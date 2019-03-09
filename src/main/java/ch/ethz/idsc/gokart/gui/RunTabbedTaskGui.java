@@ -88,12 +88,12 @@ enum RunTabbedTaskGui {
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
       Vlp16PassiveSlowing.class, //
+      SimplePositionVelocityModule.class, //
       LidarLocalizationModule.class, //
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
       ManualResetModule.class, //
-      DavisImuTrackerModule.class, //
-      SimplePositionVelocityModule.class
+      DavisImuTrackerModule.class //
   // AutonomySafetyModule.class // <- dead man switch
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //

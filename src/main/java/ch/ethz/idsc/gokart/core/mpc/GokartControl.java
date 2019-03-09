@@ -24,7 +24,6 @@ import ch.ethz.idsc.tensor.qty.Unit;
   private final float udotS;
   private final float uB;
   private final float aB;
-  private final boolean directTVControl;
 
   public GokartControl(float uL, float uR, float udotS, float uB) {
     this.uL = uL;
@@ -32,7 +31,6 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.udotS = udotS;
     this.uB = uB;
     this.aB = 0;
-    this.directTVControl = true;
   }
 
   public GokartControl(float aB, float udotS) {
@@ -41,7 +39,6 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.udotS = udotS;
     this.uB = 0;
     this.aB = aB;
-    this.directTVControl = false;
   }
 
   public Scalar getuL() {
@@ -70,7 +67,6 @@ import ch.ethz.idsc.tensor.qty.Unit;
     udotS = byteBuffer.getFloat();
     uB = byteBuffer.getFloat();
     aB = byteBuffer.getFloat();
-    directTVControl = uL != uR ;
   }
 
   @Override
@@ -89,14 +85,11 @@ import ch.ethz.idsc.tensor.qty.Unit;
 
   @Override
   public Tensor asVector() {
-    if (directTVControl)
-      return Tensors.of(//
-          getuL(), //
-          getuR(), //
-          getudotS(), //
-          getuB());
     return Tensors.of(//
+        getuL(), //
+        getuR(), //
         getudotS(), //
+        getuB(), //
         getaB());
   }
 
