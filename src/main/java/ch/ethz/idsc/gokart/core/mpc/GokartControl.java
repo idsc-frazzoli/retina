@@ -70,7 +70,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     udotS = byteBuffer.getFloat();
     uB = byteBuffer.getFloat();
     aB = byteBuffer.getFloat();
-    directTVControl = Math.signum(aB) == 0;
+    directTVControl = uL != uR ;
   }
 
   @Override

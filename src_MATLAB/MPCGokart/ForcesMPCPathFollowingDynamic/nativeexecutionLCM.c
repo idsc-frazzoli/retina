@@ -15,8 +15,10 @@
 #include "definitions.c"
 #include "helperFunctions.c"
 
+//[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
+
 #define N 31
-#define S 11
+#define S 14
 #define ISS 0.1
 /**
  * TCP Uses 2 types of sockets, the connection socket and the listen socket.
@@ -29,6 +31,8 @@ FILE *solverFile;
 bool finished = false;
 bool running = true;
 lcm_t * lcm;
+
+double backToCoM = 0.46;
 
 #define DATASIZE 100
 struct ControlAndStateMsg cns [DATASIZE];
@@ -55,6 +59,7 @@ extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, doub
 
 MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 
+//[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
 static void getLastControls(
 	MPCPathFollowing_float* ab,
 	MPCPathFollowing_float* dotab,
@@ -68,9 +73,9 @@ static void getLastControls(
 	*dStepTime = dTime - lastStep*ISS;
 	//printf("timeval: %f\n",time);
 	//printf("last step: %d/dtime %f\n",lastStep,*dStepTime);
-	*ab = lastSolution[i*S+8];
+	*ab = lastSolution[i*S+11];
 	*dotab = lastSolution[i*S];
-	*beta = lastSolution[i*S+9];
+	*beta = lastSolution[i*S+12];
 	*dotbeta = lastSolution[i*S+1];
 }
 
@@ -126,38 +131,35 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		initab = 0;
 
 	}
+	//[x,y,theta,dottheta,v,yv,ab,beta,s]
 	initbeta = lastCRMsg.state.s;
-	params.xinit[0] = lastCRMsg.state.X;
-	params.xinit[1] = lastCRMsg.state.Y;
+	params.xinit[0] = lastCRMsg.state.X+cos(lastCRMsg.state.Psi)*backToCoM;
+	params.xinit[1] = lastCRMsg.state.Y+sin(lastCRMsg.state.Psi)*backToCoM;
 	params.xinit[2] = lastCRMsg.state.Psi;
-	params.xinit[3] = lastCRMsg.state.Ux;
-	params.xinit[4] = initab;
-	params.xinit[5] = initbeta;
-	params.xinit[6] = lastCRMsg.path.startingProgress;
-	//params.xinit[7] = lastCRMsg.state.bTemp;
+	params.xinit[3] = lastCRMsg.state.dotPsi;
+	params.xinit[4] = lastCRMsg.state.Ux;
+	params.xinit[5] = lastCRMsg.state.Uy+lastCRMsg.state.dotPsi*backToCoM;
+	params.xinit[6] = initab;
+	params.xinit[7] = initbeta;
+	params.xinit[8] = lastCRMsg.path.startingProgress;
 
 	/*for(int i = 0; i<7;i++){
 		printf("%i: %f\n",i,params.xinit[i]);
 	}*/
 
 	//gather parameter data
-	int pl = 3*POINTSN+7;
+	int pl = 3*POINTSN+2;
 	
 	printf("parameters\n");
 	for(int i = 0; i<N;i++){
 		params.all_parameters[i*pl] = lastParaMsg.para.speedLimit;
 		params.all_parameters[i*pl+1] = lastParaMsg.para.maxxacc;
-		params.all_parameters[i*pl+2] = lastParaMsg.para.maxyacc;
-		params.all_parameters[i*pl+3] = lastParaMsg.para.latacclim;
-		params.all_parameters[i*pl+4] = lastParaMsg.para.rotacceffect;
-		params.all_parameters[i*pl+5] = lastParaMsg.para.torqueveceffect;
-		params.all_parameters[i*pl+6] = lastParaMsg.para.brakeeffect;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+7+ip]=lastCRMsg.path.controlPoints[ip].pex;
+			params.all_parameters[i*pl+2+ip]=lastCRMsg.path.controlPoints[ip].pex;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+7+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
+			params.all_parameters[i*pl+2+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+7+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
+			params.all_parameters[i*pl+2+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
 	}
 	
 	//assume that this works
@@ -170,7 +172,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	MPCPathFollowing_float deltaPsi = lastCRMsg.state.Psi-lastInitialPsi;
 	//printf("deltaPsi %f", deltaPsi);
 	for(int i = 0; i<N;i++){
-		params.x0[i*S+6]+=deltaPsi;
+		params.x0[i*S+7]+=deltaPsi;
 	}
 	lastInitialPsi = lastCRMsg.state.Psi;
 
@@ -184,26 +186,32 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		//printf("lastSolution: %f\n", lastSolution[341]);
 		timeOfLastSolution = lastCRMsg.state.time;
 
+		//[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
+		
 		struct ControlAndStateMsg cnsmsg;
 		cnsmsg.messageType = 3;
 		cnsmsg.sequenceInt = outC++;
 		for(int i = 0; i<N; i++){
-			cnsmsg.cns[i].control.uL = 0;//not in use
-			cnsmsg.cns[i].control.uR = 0;//not in use
+			MPCPathFollowing_float ab = myoutput.alldata[i*S+11];
+			MPCPathFollowing_float tv = myoutput.alldata[i*S+3];
+			MPCPathFollowing_float psi = myoutput.alldata[i*S+7];
+			MPCPathFollowing_float dotPsi = myoutput.alldata[i*S+8];
+			cnsmsg.cns[i].control.uL = ab-tv;
+			cnsmsg.cns[i].control.uR = ab+tv;
 			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
 			cnsmsg.cns[i].control.uB = 0;//not in use
-			cnsmsg.cns[i].control.aB = myoutput.alldata[i*S+8];
+			cnsmsg.cns[i].control.aB = ab;
 			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
-			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+7];
-			cnsmsg.cns[i].state.Uy = 0;//assumed = 0
+			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+9];
+			cnsmsg.cns[i].state.Uy = myoutput.alldata[i*S+10]-lastCRMsg.state.dotPsi*backToCoM;
 			//printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+6],myoutput.alldata[i*S+10],myoutput.alldata[i*S+2]);
-			cnsmsg.cns[i].state.dotPsi = 0; //not in use
-			cnsmsg.cns[i].state.X = myoutput.alldata[i*S+4];
-			cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+5];
-			cnsmsg.cns[i].state.Psi = myoutput.alldata[i*S+6];
+			cnsmsg.cns[i].state.dotPsi = dotPsi;
+			cnsmsg.cns[i].state.X = myoutput.alldata[i*S+5]-cos(psi)*backToCoM;
+			cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+6]-sin(psi)*backToCoM;
+			cnsmsg.cns[i].state.Psi = psi;
 			cnsmsg.cns[i].state.w2L = 0;//not in use
 			cnsmsg.cns[i].state.w2R = 0;//not in use
-			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+9];
+			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+13];
 			cnsmsg.cns[i].state.bTemp = 60;
 		}
 
@@ -242,9 +250,9 @@ int main(int argc, char *argv[]) {
 	
 	//sendEmptyControlAndStates(lcm);
 	printf("about to subscribe\n");
-	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs", &state_handler, NULL);
+	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs.d", &state_handler, NULL);
 	//idsc_BinaryBlob_subscribe(lcm, "mpc.forces.pp", &path_handler, NULL);
-	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.op", &para_handler, NULL);
+	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.op.d", &para_handler, NULL);
 	printf("starting main loop\n");
 	while(1)
 		lcm_handle(lcm);
