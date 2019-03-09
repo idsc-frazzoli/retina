@@ -20,7 +20,7 @@ public class MPCDynamicDrivingModule extends MPCAbstractDrivingModule {
 
   @Override // from MPCAbstractDrivingModule
   MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering) {
-    return new MPCExplicitTorqueVectoringPower(mpcStateEstimationProvider);
+    return new MPCExplicitTorqueVectoringPower();
   }
 
   @Override // from MPCAbstractDrivingModule

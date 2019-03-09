@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   public static void main(String[] args) {
     //
     File outputFolder = HomeDirectory.file("retina_out"); // MH modify if necessary
+    outputFolder.mkdir();
     ComprehensiveLogTableExport systemAnalysis = new ComprehensiveLogTableExport(outputFolder);
     //
     List<File> files = new LinkedList<>();
@@ -63,6 +64,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     // files.add(HomeDirectory.file("sysidlog.lcm"));
     // files.add(HomeDirectory.file("motorSysID.lcm"));
     files.add(HomeDirectory.file("understeerTest.lcm"));
+    // files.add(new File("/media/datahaki/data/gokart/cuts/20190308/20190308T163555_01/post.lcm"));
     for (File inputFile : files)
       try {
         systemAnalysis.process(inputFile);
