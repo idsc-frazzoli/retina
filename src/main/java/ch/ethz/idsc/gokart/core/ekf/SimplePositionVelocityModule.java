@@ -36,7 +36,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClockLidar = new IntervalClock();
   private Tensor lastPosition = null;
-  private Scalar angularVelocity = Quantity.of(0, SI.ANGULAR_ACCELERATION);
+  private Scalar angularVelocity = Quantity.of(0, SI.PER_SECOND);
   private int lastVmuTime = 0;
   /* package for testing */
   Tensor velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
@@ -57,11 +57,13 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     Scalar delta_time = Min.of( //
         Quantity.of(intervalClockLidar.seconds(), SI.SECOND), //
-        Quantity.of(0.2, SI.SECOND));
+        Quantity.of(0.03, SI.SECOND)); // 1/50 == 0.02 is nominal
     if (LidarLocalizationModule.TRACKING && Objects.nonNull(lidar_prev)) {
       lastPosition = lidar_prev.getPose().extract(0, 2);
       measurePose(gokartPoseEvent, delta_time);
-    }
+    } else
+      velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+    // ---
     lidar_prev = LidarLocalizationModule.TRACKING // TODO magic const
         && Scalars.lessThan(RealScalar.of(.2), gokartPoseEvent.getQuality()) //
             ? gokartPoseEvent
@@ -106,6 +108,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
    * @param accelerations {x[m/s^2], y[m/s^2]}
    * @param angularVelocity {x[1/s]}
    * @param deltaT [s] */
+  /* package for testing */
   void measureAcceleration(Tensor accelerations, Scalar angularVelocity, Scalar deltaT) {
     this.angularVelocity = angularVelocity;
     Scalar rdt = angularVelocity.multiply(deltaT);
@@ -130,8 +133,9 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     return velocity.copy();
   }
 
-  public Tensor getGyroVelocity() {
-    return angularVelocity.copy();
+  /** @return "s^-1" */
+  public Scalar getGyroVelocity() {
+    return angularVelocity;
   }
 
   @Override
@@ -153,9 +157,5 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   public Tensor getPosition() {
     // FIXME MH
     throw new UnsupportedOperationException();
-  }
-
-  public boolean isVelocityHealthy() {
-    return false;
   }
 }
