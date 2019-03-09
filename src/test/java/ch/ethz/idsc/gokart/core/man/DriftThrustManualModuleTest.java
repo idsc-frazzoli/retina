@@ -3,11 +3,13 @@ package ch.ethz.idsc.gokart.core.man;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.dev.ManualControlAdapter;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -15,6 +17,7 @@ import junit.framework.TestCase;
 
 public class DriftThrustManualModuleTest extends TestCase {
   public void testSimple() {
+    ModuleAuto.INSTANCE.runOne(SimplePositionVelocityModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.1, SI.PER_SECOND));
     Optional<RimoPutEvent> optional = driftThrustManualModule.control(null, ManualControlAdapter.PASSIVE);
@@ -25,9 +28,11 @@ public class DriftThrustManualModuleTest extends TestCase {
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
     assertEquals(torqueRawL, -231);
     assertEquals(torqueRawR, -231);
+    ModuleAuto.INSTANCE.endOne(SimplePositionVelocityModule.class);
   }
 
   public void testRapid() {
+    ModuleAuto.INSTANCE.runOne(SimplePositionVelocityModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(1.0, SI.PER_SECOND));
     Optional<RimoPutEvent> optional = driftThrustManualModule.control(null, ManualControlAdapter.PASSIVE);
@@ -38,9 +43,11 @@ public class DriftThrustManualModuleTest extends TestCase {
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
     assertEquals(torqueRawL, -ManualConfig.GLOBAL.torqueLimit.number().shortValue());
     assertEquals(torqueRawR, -ManualConfig.GLOBAL.torqueLimit.number().shortValue());
+    ModuleAuto.INSTANCE.endOne(SimplePositionVelocityModule.class);
   }
 
   public void testZero() {
+    ModuleAuto.INSTANCE.runOne(SimplePositionVelocityModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
     Optional<RimoPutEvent> optional = driftThrustManualModule.control(null, ManualControlAdapter.PASSIVE);
@@ -51,9 +58,11 @@ public class DriftThrustManualModuleTest extends TestCase {
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
     assertEquals(torqueRawL, 0);
     assertEquals(torqueRawR, 0);
+    ModuleAuto.INSTANCE.endOne(SimplePositionVelocityModule.class);
   }
 
   public void testForward() {
+    ModuleAuto.INSTANCE.runOne(SimplePositionVelocityModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
     ManualControlInterface manualControlInterface = new ManualControlAdapter( //
@@ -66,9 +75,11 @@ public class DriftThrustManualModuleTest extends TestCase {
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
     assertEquals(torqueRawL, -694);
     assertEquals(torqueRawR, +694);
+    ModuleAuto.INSTANCE.endOne(SimplePositionVelocityModule.class);
   }
 
   public void testForwardRotate() {
+    ModuleAuto.INSTANCE.runOne(SimplePositionVelocityModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
     DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.2, SI.PER_SECOND));
     ManualControlInterface manualControlInterface = new ManualControlAdapter( //
@@ -81,5 +92,6 @@ public class DriftThrustManualModuleTest extends TestCase {
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
     assertEquals(torqueRawL, -1157);
     assertEquals(torqueRawR, +231);
+    ModuleAuto.INSTANCE.endOne(SimplePositionVelocityModule.class);
   }
 }

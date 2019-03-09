@@ -30,6 +30,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 // TODO JPH refactor
 public class SimplePositionVelocityModule extends AbstractModule implements //
     Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
+  private static final Scalar MIN_DRIFT_VELOCITY = Quantity.of(1, SI.VELOCITY);
   private static final Clip CLIP_TIME = Clip.function(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
   // ---
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
@@ -133,6 +134,12 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
 
   public Tensor getXYVelocity() {
     return velocity.copy();
+  }
+
+  public Scalar getDrift() {
+    if (Scalars.lessThan(velocity.Get(0), MIN_DRIFT_VELOCITY))
+      return RealScalar.ZERO;
+    return velocity.Get(1).divide(velocity.Get(0));
   }
 
   /** @return "s^-1" */
