@@ -154,8 +154,9 @@ D1 = 0.8*D;
 D2 = D;
 %param = [B1,C1,D1,B2,C2,D2,Ic]
 param = [B1,D1,B2,D2,Ic]
+param = [Ic];
 
 options = optimset('Display','iter');
 minfun = @(param)costfit(param,SysID);
-%solparams = fminsearch(minfun,param,options)
+solparams = fminsearch(minfun,param,options)
 %csvwrite('solution',solparams)

@@ -24,7 +24,7 @@ import idsc.BinaryBlob;
   }
 
   public static LcmMPCControlClient dynamic() {
-    return new LcmMPCControlClient("d") {
+    return new LcmMPCControlClient(".d") {
       @Override
       BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
         return new MPCOptimizationParameterMessageDynamic(mpcOptimizationParameter, mpcNativeSession);

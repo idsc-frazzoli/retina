@@ -3,11 +3,7 @@ function dx = interstagedx(x,u)
     global index
     
     %just for the moment
-    B = 8;
-    C = 1.7;
-    D = 0.7*9.81;
-    maxA = D*0.95;
-    Cf = 0.15;
+    Cf = 3;
     
     
     B1 = 12;
@@ -17,7 +13,7 @@ function dx = interstagedx(x,u)
     B2 = 5;
     C2 = 1.4;
     D2 = 10.5;
-    param = [B1,C1,D1,B2,C2,D2,Cf,maxA];
+    param = [B1,C1,D1,B2,C2,D2,Cf];
 
     %[ab,dotbeta,ds,brake / x,y,theta,v,beta,s,braketemp]
     %evolution:

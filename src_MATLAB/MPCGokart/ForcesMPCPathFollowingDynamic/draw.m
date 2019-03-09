@@ -117,11 +117,8 @@ title('accelerations')
 axis([-inf inf -10 10])
 ylabel('[m/s²]')
 xlabel('[s]')
-plot(lhistory(:,1),la);
-%plot(history(:,1),fa);
-plot(lhistory(:,1),na);
-plot(lhistory(:,1),lra);
-legend('lateral acceleration','norm of acceleration','rotational acceleration [1/s^2]');
+plot(lhistory(:,1),lhistory(:,index.yv+1));
+legend show
 
 subplot(m,n,5)
 hold on
