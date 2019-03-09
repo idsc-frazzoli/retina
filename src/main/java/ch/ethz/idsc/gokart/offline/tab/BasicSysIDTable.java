@@ -58,9 +58,9 @@ public class BasicSysIDTable implements OfflineTableSupplier {
           wheelSpeed.map(Magnitude.VELOCITY).map(Round._5));
       // System.out.println("vmu time: "+time);
     } else if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       Scalar step = time.subtract(lastTime);
-      velocityModule.measurePose(gpe.getPose(), step);
+      velocityModule.measurePose(gokartPoseEvent, step);
       lastTime = time;
       System.out.println("pose time: " + time.number().doubleValue());
     } else if (channel.equals(SteerLcmServer.CHANNEL_GET)) {

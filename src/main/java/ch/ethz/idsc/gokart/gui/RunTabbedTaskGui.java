@@ -81,17 +81,17 @@ enum RunTabbedTaskGui {
       Vmu931LcmServerModule.class, // vmu931 imu
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
-      GokartPoseLcmModule.class, // publishes pose
       GokartTimestampModule.class, //
       LoggerModule.class, //
       LabjackU3LcmModule.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
-      Vlp16PassiveSlowing.class, //
-      SimplePositionVelocityModule.class, //
-      LidarLocalizationModule.class, //
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
+      Vlp16PassiveSlowing.class, //
+      SimplePositionVelocityModule.class, //
+      GokartPoseLcmModule.class, // publishes pose
+      LidarLocalizationModule.class, //
       ManualResetModule.class, //
       DavisImuTrackerModule.class //
   // AutonomySafetyModule.class // <- dead man switch
