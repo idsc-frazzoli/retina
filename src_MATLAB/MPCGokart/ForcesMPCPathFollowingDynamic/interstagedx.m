@@ -38,7 +38,7 @@ function dx = interstagedx(x,u)
     %brakingheatup = heatupfunction(-ab-1.5);
     %brakingcooldown = cooldownfunction(temp);
     l = 1.19;
-    ackermannAngle = -0.58*beta*beta*beta+0.93*beta;
+    ackermannAngle =-0.58.*s.*s.*s+0.93*s;
    
     %(VELX,VELY,VELROTZ,BETA,AB,TV, param)
     %[ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(vx,vy,dottheta,ackermannAngle,ab,tv, param);
