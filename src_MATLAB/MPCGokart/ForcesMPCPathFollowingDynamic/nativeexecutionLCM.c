@@ -52,10 +52,13 @@ MPCPathFollowing_float lastSolution [S*N];
 struct ControlRequestMsg lastCRMsg;
 struct ParaMsg lastParaMsg;
 
+/*
 extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, double *p,
                                                 double *f, double *nabla_f, double *c, double *nabla_c,
-                                                double *h, double *nabla_h, double *H, int stage);
+                                                double *h, double *nabla_h, double *H, int stage);*/
 
+
+extern void MPCPathFollowing_casadi2forces(MPCPathFollowing_float* x, MPCPathFollowing_float* y, MPCPathFollowing_float* lambda, MPCPathFollowing_float* params, MPCPathFollowing_float* pobj, MPCPathFollowing_float* g, MPCPathFollowing_float* c, MPCPathFollowing_float* Jeq, MPCPathFollowing_float* h, MPCPathFollowing_float* Jineq, MPCPathFollowing_float* H, solver_int32_default stage, solver_int32_default iterations);
 
 MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 
@@ -104,7 +107,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		printf("i=%d: pointR:%f\n",i,pe.per);
 	}*/
 
-	struct MPCPathFollowing_params params;
+	MPCPathFollowing_params params;
 
 	MPCPathFollowing_float lab;
 	MPCPathFollowing_float ldotab;
