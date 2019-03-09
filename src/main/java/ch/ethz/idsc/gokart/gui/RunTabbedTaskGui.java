@@ -23,6 +23,8 @@ import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
+import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
+import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualGroupModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
@@ -110,6 +112,8 @@ enum RunTabbedTaskGui {
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       UltimateTorqueVectoringModule.class, //
       RimoThrustManualModule.class, //
+      DriftThrustManualModule.class, //
+      ImprovedNormalizedTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
       ManualGroupModule.class, //
       SysidSignalsModule.class //
