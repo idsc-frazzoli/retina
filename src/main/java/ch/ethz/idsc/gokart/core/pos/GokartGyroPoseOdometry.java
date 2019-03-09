@@ -44,8 +44,9 @@ import ch.ethz.idsc.tensor.sca.N;
    * @return */
   @Override
   Flow singleton(Scalar speedL, Scalar speedR, Scalar yHalfWidth) {
-    final Scalar rate = DavisImuTracker.INSTANCE.getGyroZ();
-    // TODO also use rate from other Vmu931
+    final Scalar rate = Objects.isNull(simplePositionVelocityModule) //
+        ? DavisImuTracker.INSTANCE.getGyroZ()
+        : simplePositionVelocityModule.getGyroVelocity();
     Tensor x = Objects.isNull(simplePositionVelocityModule) //
         ? Tensors.of(speedL.add(speedR).multiply(HALF), RealScalar.ZERO, rate)
         : simplePositionVelocityModule.getXYVelocity().append(rate);

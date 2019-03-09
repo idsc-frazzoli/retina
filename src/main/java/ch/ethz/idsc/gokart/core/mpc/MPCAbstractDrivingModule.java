@@ -48,9 +48,9 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   }
 
   /** create Module with standard estimator */
-  MPCAbstractDrivingModule(LcmMPCControlClient lcmMPCPathFollowingClient, Timing timing) {
+  MPCAbstractDrivingModule(LcmMPCControlClient lcmMPCControlClient, Timing timing) {
     // using dynamic is not a mistake here:
-    this(lcmMPCPathFollowingClient, new SimpleDynamicMPCStateEstimationProvider(timing), timing, null);
+    this(lcmMPCControlClient, new SimpleDynamicMPCStateEstimationProvider(timing), timing, null);
   }
 
   /** Hint: constructor only for testing

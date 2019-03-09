@@ -44,15 +44,15 @@ public class BasicSysIDTable implements OfflineTableSupplier {
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
-      Vmu931ImuFrame frame = new Vmu931ImuFrame(byteBuffer);
-      velocityModule.vmu931ImuFrame(frame);
+      Vmu931ImuFrame vmu931ImuFrame = new Vmu931ImuFrame(byteBuffer);
+      velocityModule.vmu931ImuFrame(vmu931ImuFrame);
       // append to table
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
-          RealScalar.of(frame.timestamp_ms()), //
+          RealScalar.of(vmu931ImuFrame.timestamp_ms()), //
           velocityModule.getXYVelocity().map(Magnitude.VELOCITY).map(Round._5), //
           velocityModule.getGyroVelocity().map(Magnitude.PER_SECOND).map(Round._5), //
-          SensorsConfig.GLOBAL.vmu931AccXY(frame).map(Magnitude.ACCELERATION).map(Round._5), //
+          SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), //
           RealScalar.of(steerPosition.number().floatValue()), //
           powerPair.map(Magnitude.ARMS).map(Round._5), //
           powerAccelerationLeft.map(Magnitude.ACCELERATION).map(Round._5), //
@@ -62,16 +62,16 @@ public class BasicSysIDTable implements OfflineTableSupplier {
     } else //
     if (channel.equals(GokartLcmChannel.POSE_POST)) {
       isPosePostAvailable = true;
-      GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       Scalar step = time.subtract(lastTime);
-      velocityModule.measurePose(gpe.getPose(), step);
+      velocityModule.measurePose(gokartPoseEvent, step);
       lastTime = time;
       System.out.println("pose time: " + time.number().doubleValue());
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR) && !isPosePostAvailable) {
-      GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       Scalar step = time.subtract(lastTime);
-      velocityModule.measurePose(gpe.getPose(), step);
+      velocityModule.measurePose(gokartPoseEvent, step);
       lastTime = time;
       System.out.println("pose time: " + time.number().doubleValue());
     } else //

@@ -1,6 +1,8 @@
 package ch.ethz.idsc.gokart.core.ekf;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -29,7 +31,7 @@ public class SimpleVelocityEstimationTest extends TestCase {
         Scalar accY = RandomVariate.of(distr).multiply(accUnit);
         estimation.measureAcceleration(Tensors.of(accX, accY), rotVelocity, deltaT);
       }
-      estimation.measurePose(originPos, deltaTl);
+      estimation.measurePose(GokartPoseEvents.getPoseEvent(originPos, RealScalar.ONE), deltaTl);
     }
     System.out.println(estimation.velocity);
     assertTrue(Scalars.lessThan(Norm._2.of(estimation.velocity), Quantity.of(0.2, SI.VELOCITY)));
