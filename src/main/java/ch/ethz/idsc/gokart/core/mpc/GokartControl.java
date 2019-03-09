@@ -42,11 +42,11 @@ import ch.ethz.idsc.tensor.qty.Unit;
   }
 
   public Scalar getuL() {
-    return Quantity.of(uL, NonSI.ARMS);
+    return Quantity.of(uL, SI.ACCELERATION);
   }
 
   public Scalar getuR() {
-    return Quantity.of(uR, NonSI.ARMS);
+    return Quantity.of(uR, SI.ACCELERATION);
   }
 
   public Scalar getudotS() {
