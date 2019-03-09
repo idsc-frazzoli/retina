@@ -1,54 +1,154 @@
-clear all
-addpath('..')  
-userdir = getuserdir
-MLTargetFolder = strcat(userdir,'/Documents/ML_out/');
-file = 'fab.csv';
-M = csvread(strcat(MLTargetFolder,file));
-t = M(:,1);
-close all
-if(false)
-figure
-plot(M(:,1),M(:,5));
-end
 
-meanpower = mean(M(:,13:14)')';
+addpath('..')  
+clear
+close all
+userdir = getuserdir
+
+folders = {};
+targetfiles = {};
+if(0)
+    folders{end+1} = '/retina_out/20190125T105720/';
+end
+if(0)
+    folders{end+1} = '/retina_out/20190125T134537/';
+end
+if(0)
+    folders{end+1} = '/retina_out/20190128T141006/';
+end
+if(0)
+    folders{end+1} = '/retina_out/sysidlog/';
+end
+if(1)
+    folders{end+1} = '/retina_out/motorSysID/';
+end
+N = numel(folders);
+tic;
+for i = 1:N
+    folders{i}=strcat(userdir,folders{i});
+    SysID = loadSystIDData(folders{i});
+end
+toc;
+
+% [t,tms,vx,vy,vr,ax,ay,s,pl,pr,pal,par,vwx]
+
+l = 1.19;
+l1 = 0.73;
+l2 = l-l1;
+
+SysID=SysID(30000:end,:);
+t = SysID(:,1);
+s = SysID(:,8);
+pl = SysID(:,9);
+dpl = getDerivation(pl, 100, 0.001);
+absdpl = abs(dpl);
+hold on
+plot(t,pl);
+plot(t,absdpl);
+hold off
+steerSel = abs(s)<0.02;
+powSel = abs(pl)<2000;
+
+SysID=SysID(steerSel&powSel,:);
+t = SysID(:,1);
+dt = (t(1001)-t(1))/1000;
+tms = SysID(:,2);
+vx = SysID(:,3);
+vy = SysID(:,4);
+vr = SysID(:,5);
+ar = getDerivation(vr, 60, dt);
+ax = SysID(:,6);
+ay = SysID(:,7);
+sax = gaussfilter(ax,30);
+say = gaussfilter(ay,30);
+scay = say+l2*ar;
+cvy = vy+l2*vr;
+s = SysID(:,8);
+beta = -0.58.*s.*s.*s+0.93*s;
+kinrot = vx/l.*tan(beta);
+pl = SysID(:,9);
+pr = SysID(:,10);
+pal = SysID(:,11);
+par = SysID(:,12);
+ptv = (par-pal)/2;
+vwx = SysID(:,13);
+
+figure
+title('ay')
+hold on
+plot(t,ay)
+plot(t,say)
+hold off
+
+figure
+title('acc comparison')
+hold on
+plot(t,sax,'DisplayName', 'a-X')
+plot(t,mean([pal,par],2),'DisplayName', 'power a-X')
+legend show
+hold off
+
+figure
+title('torque vectoring')
+hold on
+plot(t,vr,'DisplayName', 'rot')
+plot(t,ptv,'DisplayName', 'tv')
+%plot(t,-beta*10,'DisplayName', 'beta')
+plot(t,kinrot,'DisplayName', 'kin rot')
+legend show
+hold off
+
+figure
+title('velocity')
+hold on
+plot(t,vy,'DisplayName', 'v-Y')
+plot(t,vx,'DisplayName', 'v-X')
+plot(t,vwx,'DisplayName', 'wheelspeed-X')
+legend show
+hold off
+
+figure
+title('rotationalAcceleration')
+hold on
+plot(t,vr,'DisplayName', 'rot')
+plot(t,ar,'DisplayName', 'rotacc')
+legend show
+hold off
+
+%%
+
+
+meanpower = mean([pl,pr],2);
 figure
 hold on
 yyaxis left
 xlabel('Time')
 ylabel('Power')
 
-plot(M(:,1),meanpower);
+plot(t,meanpower);
 yyaxis right
 ylabel('Forward Acceleration [m/s^2]')
 
 tc = 99.8;
 bc = 0.2;
 
-plot(M(:,1),M(:,8));
-meanRateAcceleration = mean(M(:,17:18),2);
-bottom = prctile(meanRateAcceleration,bc);
-top = prctile(meanRateAcceleration,tc);
-absmax = max(top,-bottom);
-top = absmax;
-bottom = -absmax;
-meanRateAcceleration = max(min(meanRateAcceleration,top),bottom)/8;%clamp
-plot(M(:,1),meanRateAcceleration);
+%plot(t,sax);
+meanRateAcceleration = sax;
+plot(t,meanRateAcceleration);
 
-legend('power','forward acceleration [lidar]','forward acceleration [rimo]')
+legend('power','forward acceleration [m/s^2]')
 
 %meanrate
-meanRate = mean(M(:,15:16),2);
+meanRate = vx;
 bottom = prctile(meanRate,bc);
 top = prctile(meanRate,tc);
-meanRate = max(min(meanRate,top),bottom)/8;%clamp
+%meanRate = max(min(meanRate,top),bottom)/8;%clamp
 
 
 X = [meanRate,meanpower];
 Y = meanRateAcceleration;
 
 %generateNetwork();
-if(false)
+if(true)
 figure
 hold on
 scatter3(meanRate,meanpower,meanRateAcceleration);
@@ -146,7 +246,7 @@ end
 [cp0,cp1,cp2,cp3] = getSlice(sfpos,maxpower);
 [cn0,cn1,cn2,cn3] = getSlice(sfneg,-maxpower);
 
-x = -5:0.01:5;
+x = -9:0.01:9;
 y = zeros(numel(x),1);
 ys = zeros(numel(x),1);
 for i = 1:numel(x)

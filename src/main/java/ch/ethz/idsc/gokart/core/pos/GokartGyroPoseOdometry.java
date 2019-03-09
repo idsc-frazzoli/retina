@@ -1,10 +1,14 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pos;
 
+import java.util.Objects;
+
+import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.math.StateSpaceModels;
 import ch.ethz.idsc.owl.math.flow.Flow;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -25,8 +29,12 @@ import ch.ethz.idsc.tensor.sca.N;
   }
 
   // ---
+  private final SimplePositionVelocityModule simplePositionVelocityModule = //
+      ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
+
   GokartGyroPoseOdometry(Tensor state) {
     super(state);
+    System.out.println("uses vel est " + Objects.nonNull(simplePositionVelocityModule));
   }
 
   /** .
@@ -36,9 +44,11 @@ import ch.ethz.idsc.tensor.sca.N;
    * @return */
   @Override
   Flow singleton(Scalar speedL, Scalar speedR, Scalar yHalfWidth) {
-    Scalar speed = speedL.add(speedR).multiply(HALF);
-    Scalar rate = DavisImuTracker.INSTANCE.getGyroZ();
-    return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, //
-        N.DOUBLE.of(Tensors.of(speed, RealScalar.ZERO, rate)));
+    final Scalar rate = DavisImuTracker.INSTANCE.getGyroZ();
+    // TODO also use rate from other Vmu931
+    Tensor x = Objects.isNull(simplePositionVelocityModule) //
+        ? Tensors.of(speedL.add(speedR).multiply(HALF), RealScalar.ZERO, rate)
+        : simplePositionVelocityModule.getXYVelocity().append(rate);
+    return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, N.DOUBLE.of(x));
   }
 }
