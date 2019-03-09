@@ -19,10 +19,9 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.sca.Ramp;
 
 /* package */ class MPCAggressiveCorrectedTorqueVectoringBraking extends MPCBraking implements Vmu931ImuFrameListener, RimoGetListener {
-  private static final Scalar NO_ACCELERATION = Quantity.of(0, SI.ACCELERATION);
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
   // private final MPCActiveCompensationLearning activeCompensationLearning = MPCActiveCompensationLearning.getInstance();
   private final SelfCalibratingBrakeFunction selfCalibratingBrakeFunction = new SelfCalibratingBrakeFunction();
@@ -39,7 +38,7 @@ import ch.ethz.idsc.tensor.red.Max;
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar min = (Scalar) Mean.of(minmax);
     // Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
-    Scalar braking = Max.of(NO_ACCELERATION, cnsStep.gokartControl.getaB().negate())//
+    Scalar braking = Ramp.FUNCTION.apply(cnsStep.gokartControl.getaB().negate()) //
         .multiply(MPCOptimizationConfig.GLOBAL.brakeMultiplicator);
     // System.out.println(braking);
     // self calibration

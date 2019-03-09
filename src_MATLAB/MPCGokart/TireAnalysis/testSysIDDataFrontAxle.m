@@ -17,6 +17,9 @@ end
 if(1)
     folders{end+1} = '/retina_out/sysidlog/';
 end
+if(1)
+    folders{end+1} = '/retina_out/understeerTest/';
+end
 N = numel(folders);
 tic;
 for i = 1:N
@@ -43,10 +46,11 @@ ax = SysID(:,6);
 ay = SysID(:,7);
 sax = gaussfilter(ax,100);
 say = gaussfilter(ay,100);
+sayf = say+l*ar;
 scay = say+l2*ar;
 cvy = vy+l2*vr;
 s = SysID(:,8);
-beta = -0.58.*s.*s.*s+0.93*s;
+beta = -0.63.*s.*s.*s+0.94*s;
 kinrot = vx/l.*tan(beta);
 pl = SysID(:,9);
 pr = SysID(:,10);
@@ -54,6 +58,15 @@ pal = SysID(:,11);
 par = SysID(:,12);
 ptv = (par-pal)/2;
 vwx = SysID(:,13);
+m = numel(t);
+fsa = zeros(m,1);
+fsc = cos(beta);
+rotmat = @(beta)[cos(beta),sin(beta);-sin(beta),cos(beta)];
+for i = 1:m
+    vel1 = rotmat(beta(i))*[vx(i);vy(i)+l*vr(i)]; 
+    fsa(i) = vel1(2)/vel1(1);
+end
+plot(t,sayf)
 
 figure
 title('ay')
@@ -104,7 +117,7 @@ hold off
 %%
 %look at back axle grip
 figure
-title('backaxlegrip')
+title('frontaxle')
 hold on
 minAx = -0.4;
 maxAx = 0.4;
@@ -112,22 +125,20 @@ sela = sax>minAx & sax<maxAx & vx > 3;
 minAx = -3.6;
 maxAx = -3.4;
 selb = sax>minAx & sax<maxAx & vx > 3;
+sel = vx>3;
 magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
-scatter(-vy(sela)./vx(sela),say(sela),'b');
-scatter(vy(sela)./vx(sela),-say(sela),'b');
-scatter(-vy(selb)./vx(selb),say(selb),'r');
-scatter(vy(selb)./vx(selb),-say(selb),'r');
+scatter(fsa(sel),-sayf(sel)./(fsc(sel)),'b');
+scatter(-fsa(sel),sayf(sel)./(fsc(sel)),'b');
+%scatter(-vy(selb)./vx(selb),say(selb),'r');
+%scatter(vy(selb)./vx(selb),-say(selb),'r');
 
 B = 5;
-C = 1.8;
 D = 1*9.81;
 Ic = 1;
-B1 = B;
-B2 = B;
-C1 = C;
-C2 = C;
-D1 = 9.21;
-D2 = 13.5;
+
+B1 = 12;
+C1 = 1.1;
+D1 = 9.8;
 
 capfactor = @(taccx)(1-satfun((taccx/D)^2))^(1/2);
 simpleslip = @(VELY,VELX,taccx)-(1/capfactor(taccx))*VELY/(VELX+0.001);
@@ -135,28 +146,13 @@ simplediraccy = @(VELY,VELX,taccx)magic(simpleslip(VELY,VELX,taccx),B,C,D);
 simpleaccy = @(VELY,VELX,taccx)capfactor(taccx)*simplediraccy(VELY,VELX,taccx);
 acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
 simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+0.001),B,C,D);
+
+isa = -1:0.01:1;
+mm = numel(isa);
+pfy = zeros(mm,1);
+for i = 1:mm
+    pfy(i) = magic(isa(i),B1,C1,D1);
+end
+
+plot(isa,pfy, 'r')
 hold off
-
-%%
-%fit model to data
-%initial guess
-%param = [B1,C1,D1,B2,C2,D2,Ic];
-
-B = 5;
-C = 1.8;
-D = 1*9.81;
-Ic = 1;
-B1 = B;
-B2 = B;
-C1 = C;
-C2 = C;
-D1 = 0.8*D;
-D2 = D;
-%param = [B1,C1,D1,B2,C2,D2,Ic]
-param = [B1,D1,B2,D2,Ic]
-param = [Ic];
-
-options = optimset('Display','iter');
-minfun = @(param)costfit(param,SysID);
-solparams = fminsearch(minfun,param,options)
-%csvwrite('solution',solparams)

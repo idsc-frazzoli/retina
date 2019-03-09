@@ -1,8 +1,17 @@
 function d = costfit(oldparam,SysID)
     %oldparam = [B1,D1,B2,D2,Ic];
     %param = [B1,C1,D1,B2,C2,D2,Ic];
-    param = [oldparam(1),1.5,oldparam(2:3),1.5,oldparam(4:5)];
+    %param = [oldparam(1),1.5,oldparam(2:3),1.5,oldparam(4:5)];
+    
+    B1 = 12;
+    C1 = 1.1;
+    D1 = 9.8;
 
+    B2 = 5;
+    C2 = 1.4;
+    D2 = 10.5;
+    param = [B1,C1,D1,B2,C2,D2,oldparam];
+    
     l = 1.19;
     l1 = 0.73;
     l2 = l-l1;
@@ -30,7 +39,7 @@ function d = costfit(oldparam,SysID)
     ptv = (par-pal)/2;
     vwx = SysID(:,13);
     [m,~]=size(SysID);
-    step = 10000;
+    step = 1000;
     d=0;
     for i = 1:step:m
         if(vx(i)>3)
@@ -39,6 +48,6 @@ function d = costfit(oldparam,SysID)
             d=d+(ACCROTZ-ar(i))^2;
         end
     end
-    d=d/(2*m/10000);
+    d=d/(2*m/step);
 end
 

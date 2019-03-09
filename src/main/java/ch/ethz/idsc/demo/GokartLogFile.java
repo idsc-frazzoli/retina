@@ -1503,6 +1503,26 @@ public enum GokartLogFile implements LogFile {
   /** power steering test, slow and fast manual driving */
   _20190307T161708_086ad351,
   /***************************************************/
+  /* 2019-03-08 */
+  /** manual driving fast straight */
+  _20190308T145103_ad48d4dd,
+  /** manual driving fast straight */
+  _20190308T145247_ad48d4dd,
+  /** manual driving fast curves */
+  _20190308T162915_ad48d4dd,
+  /** manual driving fast curves */
+  _20190308T163555_ad48d4dd,
+  /***************************************************/
+  /* 2019-03-09 */
+  /** manual driving tokyo drift with localization failure */
+  _20190309T115037_d527c4a8,
+  /** manual driving tokyo drift */
+  _20190309T134051_7b231074,
+  /** manual driving tokyo drift with localization failure */
+  _20190309T135141_a9dcd8dc,
+  /** swissloop drift doughnuts */
+  _20190309T160311_a9dcd8dc,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

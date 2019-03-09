@@ -20,13 +20,14 @@ public class MPCDynamicDrivingModule extends MPCAbstractDrivingModule {
 
   @Override // from MPCAbstractDrivingModule
   MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering) {
-    return new MPCExplicitTorqueVectoringPower(mpcStateEstimationProvider);
+    return new MPCExplicitTorqueVectoringPower();
   }
 
   @Override // from MPCAbstractDrivingModule
   MPCOptimizationParameter createOptimizationParameter() {
     Scalar maxSpeed = mpcOptimizationConfig.maxSpeed;
     Scalar minSpeed = mpcOptimizationConfig.minSpeed;
+    Scalar maxxAcc = mpcOptimizationConfig.maxLonAcc;
     Scalar mpcMaxSpeed = minSpeed;
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     if (optional.isPresent()) { // is joystick button "autonomoRus" pressed?
@@ -40,6 +41,6 @@ public class MPCDynamicDrivingModule extends MPCAbstractDrivingModule {
     // send message with max speed
     // optimization parameters will have more values in the future
     // MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
-    return new MPCOptimizationParameterDynamic(mpcMaxSpeed);
+    return new MPCOptimizationParameterDynamic(mpcMaxSpeed, maxxAcc);
   }
 }

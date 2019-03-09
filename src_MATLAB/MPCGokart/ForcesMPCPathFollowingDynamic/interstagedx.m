@@ -3,18 +3,17 @@ function dx = interstagedx(x,u)
     global index
     
     %just for the moment
-    B = 8;
-    C = 1.7;
-    D = 0.7*9.81;
-    maxA = D*0.95;
-    Cf = 0.15;
-    B1 = B;
-    B2 = B;
-    C1 = C;
-    C2 = C;
-    D1 = 0.8*D;
-    D2 = D;
-    param = [B1,C1,D1,B2,C2,D2,Cf,maxA];
+    Cf = 3;
+    
+    
+    B1 = 12;
+    C1 = 1.1;
+    D1 = 9.8;
+
+    B2 = 5;
+    C2 = 1.4;
+    D2 = 10.5;
+    param = [B1,C1,D1,B2,C2,D2,Cf];
 
     %[ab,dotbeta,ds,brake / x,y,theta,v,beta,s,braketemp]
     %evolution:
@@ -38,7 +37,7 @@ function dx = interstagedx(x,u)
     %brakingheatup = heatupfunction(-ab-1.5);
     %brakingcooldown = cooldownfunction(temp);
     l = 1.19;
-    ackermannAngle = -0.58*beta*beta*beta+0.93*beta;
+    ackermannAngle = -0.63.*beta.*beta.*beta+0.94*beta;
    
     %(VELX,VELY,VELROTZ,BETA,AB,TV, param)
     %[ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(vx,vy,dottheta,ackermannAngle,ab,tv, param);

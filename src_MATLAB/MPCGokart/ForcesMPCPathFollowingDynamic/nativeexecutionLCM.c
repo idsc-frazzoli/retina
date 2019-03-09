@@ -214,7 +214,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].state.Psi = psi;
 			cnsmsg.cns[i].state.w2L = 0;//not in use
 			cnsmsg.cns[i].state.w2R = 0;//not in use
-			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+13];
+			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+12];
 			cnsmsg.cns[i].state.bTemp = 60;
 		}
 

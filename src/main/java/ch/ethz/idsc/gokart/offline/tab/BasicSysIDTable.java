@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.offline.tab;
 
 import java.nio.ByteBuffer;
@@ -38,6 +39,7 @@ public class BasicSysIDTable implements OfflineTableSupplier {
   private Scalar wheelSpeed = Quantity.of(0, SI.VELOCITY);
   private Scalar powerAccelerationLeft = Quantity.of(0, SI.ACCELERATION);
   private Scalar powerAccelerationRight = Quantity.of(0, SI.ACCELERATION);
+  private boolean isPosePostAvailable = false;
 
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
@@ -57,13 +59,23 @@ public class BasicSysIDTable implements OfflineTableSupplier {
           powerAccelerationRight.map(Magnitude.ACCELERATION).map(Round._5), //
           wheelSpeed.map(Magnitude.VELOCITY).map(Round._5));
       // System.out.println("vmu time: "+time);
-    } else if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
+    } else //
+    if (channel.equals(GokartLcmChannel.POSE_POST)) {
+      isPosePostAvailable = true;
       GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       Scalar step = time.subtract(lastTime);
       velocityModule.measurePose(gokartPoseEvent, step);
       lastTime = time;
       System.out.println("pose time: " + time.number().doubleValue());
-    } else if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
+    } else //
+    if (channel.equals(GokartLcmChannel.POSE_LIDAR) && !isPosePostAvailable) {
+      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      Scalar step = time.subtract(lastTime);
+      velocityModule.measurePose(gokartPoseEvent, step);
+      lastTime = time;
+      System.out.println("pose time: " + time.number().doubleValue());
+    } else //
+    if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
       SteerGetEvent sge = new SteerGetEvent(byteBuffer);
       steerTracker.getEvent(sge);
       if (steerTracker.isCalibratedAndHealthy()) {
