@@ -58,9 +58,11 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     Scalar delta_time = Min.of( //
         Quantity.of(intervalClockLidar.seconds(), SI.SECOND), //
         Quantity.of(0.03, SI.SECOND)); // 1/50 == 0.02 is nominal
-    if (LidarLocalizationModule.TRACKING && Objects.nonNull(lidar_prev)) {
-      lastPosition = lidar_prev.getPose().extract(0, 2);
-      measurePose(gokartPoseEvent, delta_time);
+    if (LidarLocalizationModule.TRACKING) {
+      if (Objects.nonNull(lidar_prev)) {
+        lastPosition = lidar_prev.getPose().extract(0, 2);
+        measurePose(gokartPoseEvent, delta_time);
+      }
     } else
       velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
     // ---
