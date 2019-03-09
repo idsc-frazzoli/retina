@@ -28,6 +28,8 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+// TODO is this really needed as it is almost identical to TrackMapping?
+
 /** class interprets sensor data from lidar */
 public class ObstacleMapping implements //
     StartAndStoppable, Region<Tensor>, LidarRayBlockListener, GokartPoseListener, Runnable, RenderInterface {

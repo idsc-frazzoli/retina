@@ -2,12 +2,7 @@
 package ch.ethz.idsc.gokart.core.pure;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
@@ -256,7 +251,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       trajectory = Trajectories.glue(head, tail);
       Tensor curve = Tensor.of(trajectory.stream() //
-          .map(trajectorySample -> trajectorySample.stateTime().state().extract(0, 2)));
+          .map(trajectorySample -> trajectorySample.stateTime().state().extract(0, 2).multiply(RealScalar.of(1.2))));
       purePursuitModule.setCurve(Optional.of(curve));
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
@@ -269,5 +264,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
 
   Collection<Flow> getFlows(int resolution) {
     return flowsInterface.getFlows(resolution);
+  }
+
+  public List<TrajectorySample> currentTrajectory() {
+    return Collections.unmodifiableList(trajectory);
   }
 }
