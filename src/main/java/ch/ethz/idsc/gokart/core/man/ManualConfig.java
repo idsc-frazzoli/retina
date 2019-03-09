@@ -22,7 +22,7 @@ public class ManualConfig {
   public final Scalar torqueLimit = Quantity.of(2315, NonSI.ARMS);
   public final Scalar timeout = Quantity.of(0.2, SI.SECOND);
   /** torquePerGyro factor is used in {@link DriftThrustManualModule} */
-  public Scalar torquePerGyro = Quantity.of(1, SI.SECOND);
+  public Scalar torquePerGyro = Quantity.of(-2, SI.SECOND);
   /** when should drift be avoided */
   public Scalar driftAvoidStart = RealScalar.of(0.5);
   /** how strong should the drift be avoided */

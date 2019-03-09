@@ -26,8 +26,8 @@ public class DriftThrustManualModuleTest extends TestCase {
     RimoPutEvent rimoPutEvent = optional.get();
     short torqueRawL = rimoPutEvent.putTireL.getTorqueRaw();
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
-    assertEquals(torqueRawL, -231);
-    assertEquals(torqueRawR, -231);
+    assertEquals(torqueRawL, 463);
+    assertEquals(torqueRawR, 463);
     ModuleAuto.INSTANCE.endOne(SimplePositionVelocityModule.class);
   }
 
@@ -41,8 +41,8 @@ public class DriftThrustManualModuleTest extends TestCase {
     RimoPutEvent rimoPutEvent = optional.get();
     short torqueRawL = rimoPutEvent.putTireL.getTorqueRaw();
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
-    assertEquals(torqueRawL, -ManualConfig.GLOBAL.torqueLimit.number().shortValue());
-    assertEquals(torqueRawR, -ManualConfig.GLOBAL.torqueLimit.number().shortValue());
+    assertEquals(torqueRawL, ManualConfig.GLOBAL.torqueLimit.number().shortValue());
+    assertEquals(torqueRawR, ManualConfig.GLOBAL.torqueLimit.number().shortValue());
     ModuleAuto.INSTANCE.endOne(SimplePositionVelocityModule.class);
   }
 
@@ -90,8 +90,8 @@ public class DriftThrustManualModuleTest extends TestCase {
     RimoPutEvent rimoPutEvent = optional.get();
     short torqueRawL = rimoPutEvent.putTireL.getTorqueRaw();
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
-    assertEquals(torqueRawL, -1157);
-    assertEquals(torqueRawR, +231);
+    assertEquals(torqueRawL, +231);
+    assertEquals(torqueRawR, 1620);
     ModuleAuto.INSTANCE.endOne(SimplePositionVelocityModule.class);
   }
 }
