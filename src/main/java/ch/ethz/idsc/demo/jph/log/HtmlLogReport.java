@@ -38,7 +38,6 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Accumulate;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.ListConvolve;
@@ -47,7 +46,6 @@ import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 
-// FIXME JPH SUBARE 026 handle empty rows in plots
 /* package */ class HtmlLogReport {
   private static final int WIDTH = 854;
   private static final int HEIGHT = 360; // 480;
@@ -249,7 +247,8 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelY("acceleration [m*s^-2]");
     Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
     Tensor domain = tensor.get(Tensor.ALL, 0);
-    if (!Tensors.isEmpty(domain)) {
+    // if (!Tensors.isEmpty(domain))
+    {
       visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
       visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
     }
@@ -264,7 +263,8 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     {
       Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
-      if (!Tensors.isEmpty(domain)) {
+      // if (!Tensors.isEmpty(domain))
+      {
         Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
         Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
         Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
@@ -328,7 +328,8 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       {
         Tensor vmu931 = map.get(Vmu931ImuVehicleChannel.INSTANCE);
         Tensor vmu931_domain = vmu931.get(Tensor.ALL, 0);
-        if (!Tensors.isEmpty(vmu931_domain)) {
+        // if (!Tensors.isEmpty(vmu931_domain))
+        {
           visualSet.add(vmu931_domain, vmu931.get(Tensor.ALL, 4)).setLabel("from VMU931");
         }
       }
