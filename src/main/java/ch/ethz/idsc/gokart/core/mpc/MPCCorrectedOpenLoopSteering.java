@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
   @Override
   Optional<Tensor> getSteering(Scalar time) {
+    Scalar dotFactor = MPCOptimizationConfig.GLOBAL.steerDamp;
     Scalar controlTime = time.add(config.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
     if (Objects.isNull(cnpStep))
@@ -24,7 +25,7 @@ import ch.ethz.idsc.tensor.Tensors;
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl.getudotS());
     return Optional.of(Tensors.of( //
         cnpStep.gokartState.getS().add(rampUp), //
-        cnpStep.gokartControl.getudotS())//
+        cnpStep.gokartControl.getudotS().multiply(dotFactor))//
         .multiply(MPCOptimizationConfig.GLOBAL.steerMultiplicator));
   }
 

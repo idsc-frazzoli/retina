@@ -11,7 +11,7 @@ VELX = z(index.v);
 VELY = z(index.yv);
 slack = z(index.slack);
 
-pointsO = 2;
+pointsO = 3;
 pointsN = 10;
 points = getPointsFromParameters(p, pointsO, pointsN);
 radii = getRadiiFromParameters(p, pointsO, pointsN);

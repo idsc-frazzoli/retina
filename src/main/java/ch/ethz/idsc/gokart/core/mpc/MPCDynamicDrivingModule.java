@@ -28,6 +28,7 @@ public class MPCDynamicDrivingModule extends MPCAbstractDrivingModule {
     Scalar maxSpeed = mpcOptimizationConfig.maxSpeed;
     Scalar minSpeed = mpcOptimizationConfig.minSpeed;
     Scalar maxxAcc = mpcOptimizationConfig.maxLonAcc;
+    Scalar steeringReg = mpcOptimizationConfig.steeringReg;
     Scalar mpcMaxSpeed = minSpeed;
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     if (optional.isPresent()) { // is joystick button "autonomoRus" pressed?
@@ -41,6 +42,6 @@ public class MPCDynamicDrivingModule extends MPCAbstractDrivingModule {
     // send message with max speed
     // optimization parameters will have more values in the future
     // MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
-    return new MPCOptimizationParameterDynamic(mpcMaxSpeed, maxxAcc);
+    return new MPCOptimizationParameterDynamic(mpcMaxSpeed, maxxAcc, steeringReg);
   }
 }

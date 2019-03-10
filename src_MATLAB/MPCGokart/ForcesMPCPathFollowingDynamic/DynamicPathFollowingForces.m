@@ -12,12 +12,8 @@ close all
 
 maxSpeed = 10;
 maxxacc = 4;
-maxyacc = 8;
-latacclim = 6;
-rotacceffect  = 2;
-torqueveceffect = 3;
-brakeeffect = 0;
-pointsO = 2;
+steeringreg = 0.1;
+pointsO = 3;
 pointsN = 10;
 splinestart = 1;
 nextsplinepoints = 0;
@@ -45,6 +41,7 @@ index.nv = index.ns+index.nu;
 index.sb = index.nu+1;
 index.ps = 1;
 index.pax = 2;
+index.pbeta = 3;
 
 integrator_stepsize = 0.1;
 
@@ -95,7 +92,8 @@ for i=1:model.N
        getPointsFromParameters(p, pointsO, pointsN),...
        getRadiiFromParameters(p, pointsO, pointsN),...
        p(index.ps),...
-       p(index.pax));
+       p(index.pax),...
+       p(index.pbeta));
 end
 %model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
 
@@ -198,7 +196,7 @@ for i =1:tend
     
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,nextSplinePoints) , model.N ,1);
+    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,nextSplinePoints) , model.N ,1);
     %problem.all_parameters = zeros(22,1);
     problem.x0 = x0(:);
     %problem.x0 = rand(341,1);

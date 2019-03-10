@@ -59,4 +59,8 @@ public class MPCOptimizationConfig {
   public Scalar brakeMultiplicator = RealScalar.of(1);
   /** How much does mpc underestimate the steering */
   public Scalar steerMultiplicator = RealScalar.of(1);
+  /** steering regularization in MPC optimization */
+  public Scalar steeringReg = RealScalar.of(0.1);
+  /** steering damping factor */
+  public Scalar steerDamp = RealScalar.of(1);
 }
