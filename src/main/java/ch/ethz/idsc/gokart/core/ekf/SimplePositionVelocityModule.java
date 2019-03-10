@@ -15,9 +15,12 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.sophus.group.LieDifferences;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
+import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
 import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
+import ch.ethz.idsc.sophus.group.Se2Group;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -81,6 +84,9 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
             : null;
   }
 
+  private static LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
+  int countPrint = 0;
+
   /** take new lidar pose into account
    * @param pose measured lidar pose: {x[m], y[m], angle[]}
    * @param deltaT [s] */
@@ -100,6 +106,10 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     }
     lastPosition = position;
     // correct filtered Pose
+    if (++countPrint % 50 == 0) {
+      Tensor pair = lieDifferences.pair(filteredPose, newPose);
+      System.out.println(pair);
+    }
     filteredPose = Se2Geodesic.INSTANCE.split(filteredPose, newPose, VelocityEstimationConfig.GLOBAL.poseCorrectionFactor);
   }
 
