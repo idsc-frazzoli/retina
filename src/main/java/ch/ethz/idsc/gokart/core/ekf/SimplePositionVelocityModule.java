@@ -114,7 +114,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
    * @param deltaT [s] */
   /* package for testing */
   void measureAcceleration(Tensor accelerations, Scalar angularVelocity, Scalar deltaT) {
-    this.angularVelocity = angularVelocity;
+    this.angularVelocity = (Scalar) RnGeodesic.INSTANCE.split(this.angularVelocity, angularVelocity, VelocityEstimationConfig.GLOBAL.rotFilter);
     Scalar rdt = angularVelocity.multiply(deltaT);
     // transform old system (compensate for rotation)
     Tensor vel = velocity.add(Cross.of(velocity).multiply(rdt.negate()));
