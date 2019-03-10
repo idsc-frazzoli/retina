@@ -15,6 +15,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class CurvePurePursuitModuleTest extends TestCase {
@@ -38,7 +39,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
   public void testSome() {
     CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     Scalar period = purePursuitModule.getPeriod();
-    Clip clip = Clip.function(Quantity.of(0.01, "s"), Quantity.of(0.2, "s"));
+    Clip clip = Clips.interval(Quantity.of(0.01, "s"), Quantity.of(0.2, "s"));
     assertTrue(clip.isInside(period));
   }
 
@@ -82,7 +83,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     // System.out.println(heading);
     // assertEquals(Quantity.of(-0.013455281968592674, "rad"), heading);
-    Clip clip = Clip.function(Quantity.of(-0.02, "rad"), Quantity.of(-0.01, "rad"));
+    Clip clip = Clips.interval(Quantity.of(-0.02, "rad"), Quantity.of(-0.01, "rad"));
     clip.requireInside(heading);
     _checkFallback(purePursuitModule.purePursuitSteer.putEvent());
     assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
@@ -134,7 +135,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     // System.out.println(heading);
-    Clip clip = Clip.function(Quantity.of(-0.16, "rad"), Quantity.of(-0.12, "rad"));
+    Clip clip = Clips.interval(Quantity.of(-0.16, "rad"), Quantity.of(-0.12, "rad"));
     clip.requireInside(heading);
     _checkFallback(purePursuitModule.purePursuitSteer.putEvent());
     assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
@@ -154,7 +155,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     // System.out.println(heading);
-    Clip clip = Clip.function(Quantity.of(-0.15, "rad"), Quantity.of(-0.10, "rad"));
+    Clip clip = Clips.interval(Quantity.of(-0.15, "rad"), Quantity.of(-0.10, "rad"));
     clip.requireInside(heading);
     _checkFallback(purePursuitModule.purePursuitSteer.putEvent());
     assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());

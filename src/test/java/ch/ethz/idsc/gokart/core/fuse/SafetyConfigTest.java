@@ -10,13 +10,14 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class SafetyConfigTest extends TestCase {
   public void testVlp16Lo() {
     Clip clip = SafetyConfig.GLOBAL.vlp16_ZClip();
-    Clip.function(-1.1, -0.5).requireInside(clip.min());
-    Clip.function(-0.1, +0.3).requireInside(clip.max());
+    Clips.interval(-1.1, -0.5).requireInside(clip.min());
+    Clips.interval(-0.1, +0.3).requireInside(clip.max());
   }
 
   public void testCircleClearanceTracker() {
@@ -31,8 +32,8 @@ public class SafetyConfigTest extends TestCase {
 
   public void testClearance() {
     Clip clip = SafetyConfig.GLOBAL.getClearanceClip();
-    Clip.function(0.1, 0.3).requireInside(clip.min());
-    Clip.function(3.0, 7.0).requireInside(clip.max());
+    Clips.interval(0.1, 0.3).requireInside(clip.min());
+    Clips.interval(3.0, 7.0).requireInside(clip.max());
   }
 
   public void testRateLimit() {

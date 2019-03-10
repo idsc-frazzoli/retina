@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ final class GenericXboxPadJoystick extends JoystickEvent implements ManualControlInterface {
   // function for testing
@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 
   /** @param deadzone number between [0, 127] */
   public GenericXboxPadJoystick(double deadzone) {
-    clipzone = new Clipzone(Clip.function(deadzone / 127, 1.0));
+    clipzone = new Clipzone(Clips.interval(deadzone / 127, 1.0));
   }
 
   // ---

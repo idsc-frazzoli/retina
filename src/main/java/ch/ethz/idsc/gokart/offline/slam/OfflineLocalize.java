@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /** functionality is strictly for offline processing
  * do not use during live operation: memory consumption is not bounded */
@@ -74,7 +74,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
 
   protected final void appendRow(Scalar ratio, int sum, double duration) {
     LocalizationResult localizationResult = new LocalizationResult( //
-        time, Se2Utils.fromSE2Matrix(model), Clip.unit().requireInside(ratio));
+        time, Se2Utils.fromSE2Matrix(model), Clips.unit().requireInside(ratio));
     listeners.forEach(listener -> listener.localizationCallback(localizationResult));
   }
 

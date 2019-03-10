@@ -25,13 +25,14 @@ import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 // TODO MH cleanup comments/unused code
 // TODO JPH refactor
 public class SimplePositionVelocityModule extends AbstractModule implements //
     Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
   private static final Scalar MIN_DRIFT_VELOCITY = Quantity.of(1, SI.VELOCITY);
-  private static final Clip CLIP_TIME = Clip.function(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
+  private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
   // ---
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();

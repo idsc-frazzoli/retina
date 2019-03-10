@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public enum LinmotPutHelper {
   ;
@@ -44,7 +45,7 @@ public enum LinmotPutHelper {
   public static final int DECELERATION_MIN = 0;
   public static final int DECELERATION_MAX = 5000;
   public static final short DECELERATION_INIT = 500;
-  private static final Clip SCALE_POSITIVE = Clip.function( //
+  private static final Clip SCALE_POSITIVE = Clips.interval( //
       Quantity.of(-TARGETPOS_INIT * POS_TO_METER, SI.METER), //
       Quantity.of(-TARGETPOS_MIN * POS_TO_METER, SI.METER));
 

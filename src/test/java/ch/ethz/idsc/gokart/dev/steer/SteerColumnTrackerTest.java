@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.dev.steer;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class SteerColumnTrackerTest extends TestCase {
@@ -23,7 +24,7 @@ public class SteerColumnTrackerTest extends TestCase {
   }
 
   public void testMaxRange() {
-    Clip clip = Clip.function(Quantity.of(0.6, "SCE"), Quantity.of(0.7, "SCE"));
+    Clip clip = Clips.interval(Quantity.of(0.6, "SCE"), Quantity.of(0.7, "SCE"));
     clip.requireInside(SteerConfig.GLOBAL.columnMax);
   }
 

@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class CHatchbackModel extends DefaultCarModel {
   private static final Scalar WIDTH_165 = RealScalar.of(0.165);
@@ -105,8 +105,8 @@ public class CHatchbackModel extends DefaultCarModel {
 
   @Override
   public CarControl createControl(Tensor u) {
-    Clip.absoluteOne().requireInside(u.Get(0));
-    Clip.unit().requireInside(u.Get(3));
+    Clips.absoluteOne().requireInside(u.Get(0));
+    Clips.unit().requireInside(u.Get(3));
     // ---
     Scalar delta = u.Get(0).multiply(MAX_DELTA).multiply(carSteering.factor);
     Scalar brake = u.Get(1).multiply(MAX_PRESS);

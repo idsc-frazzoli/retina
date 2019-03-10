@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Mod;
 
 /** @author Marc Heim
@@ -113,7 +113,7 @@ public enum UniformBSpline2 {
   public static Tensor getBasisVector(int n, int der, boolean circle, final Scalar x) {
     Scalar xx = circle //
         ? x
-        : Clip.function(0, n - 2).apply(x);
+        : Clips.interval(0, n - 2).apply(x);
     return Tensors.vector(i -> getBasisElement(n, i, xx, der, circle), n);
   }
 

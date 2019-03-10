@@ -18,6 +18,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /** module controls the brake with rank {@link ProviderRank#EMERGENCY}
  * 
@@ -29,7 +30,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * </ul> */
 public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEvent> implements RimoGetListener {
   // TODO magic const to filter slip
-  private static final Clip CLIP = Clip.function( //
+  private static final Clip CLIP = Clips.interval( //
       Quantity.of(0, SI.VELOCITY), //
       Quantity.of(6, SI.VELOCITY));
   // ---
