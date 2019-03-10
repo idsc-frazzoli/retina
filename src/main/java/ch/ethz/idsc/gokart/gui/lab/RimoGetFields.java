@@ -15,10 +15,11 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class RimoGetFields {
-  private static final Clip RATE_RANGE = Clip.function( //
+  private static final Clip RATE_RANGE = Clips.interval( //
       Quantity.of(-3, SIDerived.RADIAN_PER_SECOND), //
       Quantity.of(+3, SIDerived.RADIAN_PER_SECOND));
   // ---

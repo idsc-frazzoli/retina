@@ -11,6 +11,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /** parameters for PI controller of torque control */
 public class ManualConfig {
@@ -26,7 +27,7 @@ public class ManualConfig {
   /***************************************************/
   /** @return clip interval for permitted torque */
   public Clip torqueLimitClip() {
-    return Clip.function(torqueLimit.negate(), torqueLimit);
+    return Clips.interval(torqueLimit.negate(), torqueLimit);
   }
 
   /** .

@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Cot;
 import ch.ethz.idsc.tensor.sca.Sign;
 
@@ -19,7 +20,7 @@ public enum ProjectionMatrix {
    * @param zFar
    * @return */
   public static Tensor of(double fovy, double aspect, double zNear, double zFar) {
-    return of(RealScalar.of(fovy), RealScalar.of(aspect), Clip.function(zNear, zFar));
+    return of(RealScalar.of(fovy), RealScalar.of(aspect), Clips.interval(zNear, zFar));
   }
 
   /** zNear positive distance from the viewer to the near clipping plane

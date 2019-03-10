@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.tvec;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 public class ImprovedTorqueVectoring extends SimpleTorqueVectoring {
@@ -14,7 +14,7 @@ public class ImprovedTorqueVectoring extends SimpleTorqueVectoring {
   @Override // from SimpleTorqueVectoring
   final Scalar wantedZTorque(Scalar wantedZTorque, Scalar realRotation) {
     if (Sign.isNegative(realRotation.multiply(wantedZTorque))) {
-      Scalar scalar = Clip.unit().apply(realRotation.abs().multiply(torqueVectoringConfig.ks));
+      Scalar scalar = Clips.unit().apply(realRotation.abs().multiply(torqueVectoringConfig.ks));
       Scalar stabilizerFactor = RealScalar.ONE.subtract(scalar);
       return wantedZTorque.multiply(stabilizerFactor);
     }

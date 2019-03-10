@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
 public enum TorqueVectoringClip {
@@ -26,6 +26,6 @@ public enum TorqueVectoringClip {
     Scalar delta = d2.subtract(d1);
     return Tensors.of( //
         powerL.add(delta), //
-        powerR.subtract(delta)).map(Clip.absoluteOne());
+        powerR.subtract(delta)).map(Clips.absoluteOne());
   }
 }

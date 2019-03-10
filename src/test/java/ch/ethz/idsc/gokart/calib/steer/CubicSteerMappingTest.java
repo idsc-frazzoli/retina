@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
@@ -29,7 +29,7 @@ public class CubicSteerMappingTest extends TestCase {
     Scalar angle = steerMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, sceIn));
     assertTrue(Sign.isPositive(angle));
-    Clip.function(.08, .15).requireInside(angle);
+    Clips.interval(.08, .15).requireInside(angle);
     Scalar sce = steerMapping.getSCEfromAngle(angle);
     assertTrue(Scalars.lessThan(sce.subtract(sceIn).abs(), Quantity.of(0.01, "SCE")));
   }
@@ -40,7 +40,7 @@ public class CubicSteerMappingTest extends TestCase {
     Scalar angle = steerMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, sceIn));
     assertTrue(Sign.isNegative(angle));
-    Clip.function(-.5, -.4).requireInside(angle);
+    Clips.interval(-.5, -.4).requireInside(angle);
     Scalar sce = steerMapping.getSCEfromAngle(angle);
     assertTrue(Scalars.lessThan(sce.subtract(sceIn).abs(), Quantity.of(0.05, "SCE")));
   }

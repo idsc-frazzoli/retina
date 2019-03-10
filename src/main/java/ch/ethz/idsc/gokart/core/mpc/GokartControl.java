@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
-import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

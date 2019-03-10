@@ -19,6 +19,7 @@ import ch.ethz.idsc.tensor.io.StringScalar;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class LinmotStatusTable implements OfflineTableSupplier {
@@ -30,7 +31,7 @@ public class LinmotStatusTable implements OfflineTableSupplier {
 
   // TODO JPH what does offset do?
   public LinmotStatusTable(Scalar offset) {
-    range = Clip.function(offset, offset.add(Quantity.of(0.2, SI.SECOND)));
+    range = Clips.interval(offset, offset.add(Quantity.of(0.2, SI.SECOND)));
   }
 
   @Override

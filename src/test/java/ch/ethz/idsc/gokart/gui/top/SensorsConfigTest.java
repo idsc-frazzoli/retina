@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.mat.Det;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
@@ -55,7 +56,7 @@ public class SensorsConfigTest extends TestCase {
     byteBuffer.flip();
     DavisImuFrame davisImuFrame = new DavisImuFrame(byteBuffer);
     Scalar gyroZ = SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame);
-    Clip clip = Clip.function( //
+    Clip clip = Clips.interval( //
         Quantity.of(-0.56, SI.PER_SECOND), //
         Quantity.of(-0.50, SI.PER_SECOND));
     clip.requireInside(gyroZ);

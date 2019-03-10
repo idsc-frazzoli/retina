@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /** parameters for PID controller of steering
  * 
@@ -55,13 +56,13 @@ public class SteerConfig {
   /***************************************************/
   /** @return voltage operating range of battery */
   public Clip operatingVoltageClip() {
-    return Clip.function(voltageLo, voltageHi);
+    return Clips.interval(voltageLo, voltageHi);
   }
 
   /** @return symmetric interval centered at zero that bounds the torque
    * applied to the steering wheel */
   public Clip torqueLimitClip() {
-    return Clip.function(torqueLimit.negate(), torqueLimit);
+    return Clips.interval(torqueLimit.negate(), torqueLimit);
   }
 
   /***************************************************/
@@ -76,6 +77,6 @@ public class SteerConfig {
   /** @return */
   public Clip getAngleLimit() {
     Scalar angleMax = Quantity.of(getSteerMapping().getAngleFromSCE(columnMax), SIDerived.RADIAN);
-    return Clip.function(angleMax.negate(), angleMax);
+    return Clips.interval(angleMax.negate(), angleMax);
   }
 }

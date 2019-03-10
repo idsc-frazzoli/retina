@@ -15,6 +15,7 @@ import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class CircleClearanceTracker implements ClearanceTracker, Serializable {
   private final Clip clip_Y;
@@ -34,7 +35,7 @@ public class CircleClearanceTracker implements ClearanceTracker, Serializable {
    * @param xya reference frame of sensor as 3-vector {px, py, angle}
    * @param clip_X */
   public CircleClearanceTracker(Scalar speed, Scalar half, Scalar angle, Tensor xya, Clip clip_X) {
-    clip_Y = Clip.function(half.negate(), half); // TODO there is a small error as gokart turns
+    clip_Y = Clips.interval(half.negate(), half); // TODO there is a small error as gokart turns
     this.clip_X = clip_X;
     u = Tensors.of(speed, speed.zero(), angle.multiply(speed)).unmodifiable();
     se2AxisYProject = Se2AxisYProject.of(u);

@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
@@ -65,8 +65,8 @@ public class TorqueVectoringManualModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.5), false, false);
     Optional<RimoPutEvent> control = torqueVectoringJoystickModule.control(steerColumnAdapter, manualControlInterface);
     RimoPutEvent rimoPutEvent3 = control.get();
-    Clip.function(Quantity.of(-400, "ARMS"), Quantity.of(-300, "ARMS")).requireInside(rimoPutEvent3.putTireL.getTorque());
-    Clip.function(Quantity.of(1900, "ARMS"), Quantity.of(2000, "ARMS")).requireInside(rimoPutEvent3.putTireR.getTorque());
+    Clips.interval(Quantity.of(-400, "ARMS"), Quantity.of(-300, "ARMS")).requireInside(rimoPutEvent3.putTireL.getTorque());
+    Clips.interval(Quantity.of(1900, "ARMS"), Quantity.of(2000, "ARMS")).requireInside(rimoPutEvent3.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent3.putTireL.getTorque().negate(), rimoPutEvent3.putTireR.getTorque()));
     Sign.requirePositive(rimoPutEvent3.putTireR.getTorque());
     Scalar meanPower = rimoPutEvent3.putTireL.getTorque().negate().add(rimoPutEvent3.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
@@ -86,8 +86,8 @@ public class TorqueVectoringManualModuleTest extends TestCase {
         RealScalar.of(.1), RealScalar.ZERO, RealScalar.of(0), Tensors.vector(0, 0.75), false, false);
     Optional<RimoPutEvent> control = torqueVectoringJoystickModule.control(steerColumnAdapter, manualControlInterface);
     RimoPutEvent rimoPutEvent4 = control.get();
-    Clip.function(Quantity.of(-1200, "ARMS"), Quantity.of(-1100, "ARMS")).requireInside(rimoPutEvent4.putTireL.getTorque());
-    Clip.function(Quantity.of(+2300, "ARMS"), Quantity.of(+2315, "ARMS")).requireInside(rimoPutEvent4.putTireR.getTorque());
+    Clips.interval(Quantity.of(-1200, "ARMS"), Quantity.of(-1100, "ARMS")).requireInside(rimoPutEvent4.putTireL.getTorque());
+    Clips.interval(Quantity.of(+2300, "ARMS"), Quantity.of(+2315, "ARMS")).requireInside(rimoPutEvent4.putTireR.getTorque());
     assertTrue(Scalars.lessThan(rimoPutEvent4.putTireL.getTorque().negate(), rimoPutEvent4.putTireR.getTorque()));
     assertTrue(Scalars.lessThan(Quantity.of(0, NonSI.ARMS), rimoPutEvent4.putTireR.getTorque()));
     Scalar meanPower = rimoPutEvent4.putTireL.getTorque().negate().add(rimoPutEvent4.putTireR.getTorque()).divide(Quantity.of(2, SI.ONE));
