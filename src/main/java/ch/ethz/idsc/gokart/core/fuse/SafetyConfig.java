@@ -18,6 +18,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /**  */
 public class SafetyConfig {
@@ -41,14 +42,14 @@ public class SafetyConfig {
   /***************************************************/
   /** @return */
   /* package */ Clip vlp16_ZClip() {
-    return Clip.function( //
+    return Clips.interval( //
         Magnitude.METER.apply(vlp16_ZLo), //
         Magnitude.METER.apply(vlp16_ZHi));
   }
 
   /** @return */
   /* package */ Clip getClearanceClip() {
-    return Clip.function( //
+    return Clips.interval( //
         Magnitude.METER.apply(clearance_XLo), //
         Magnitude.METER.apply(clearance_XHi));
   }

@@ -7,6 +7,7 @@ import ch.ethz.idsc.tensor.ExactScalarQ;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
@@ -19,7 +20,7 @@ public class ManualConfigTest extends TestCase {
   public void testTorqueLimit() {
     Scalar scalar = ManualConfig.GLOBAL.torqueLimit;
     Sign.requirePositive(scalar);
-    Clip clip = Clip.function(Quantity.of(500, NonSI.ARMS), Quantity.of(2315, NonSI.ARMS));
+    Clip clip = Clips.interval(Quantity.of(500, NonSI.ARMS), Quantity.of(2315, NonSI.ARMS));
     clip.requireInside(scalar);
     ExactScalarQ.require(scalar);
   }

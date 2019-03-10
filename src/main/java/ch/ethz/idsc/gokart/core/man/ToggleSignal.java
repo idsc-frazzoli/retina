@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.MappedInterpolation;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   public static ScalarUnaryOperator create(double width, double amplitude) {
     return new ToggleSignal( //
         RealScalar.of(width), //
-        Clip.unit().requireInside(RealScalar.of(amplitude)));
+        Clips.unit().requireInside(RealScalar.of(amplitude)));
   }
 
   // ---

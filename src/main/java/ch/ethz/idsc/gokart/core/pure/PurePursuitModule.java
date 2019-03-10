@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public abstract class PurePursuitModule extends AbstractClockedModule {
   private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
@@ -62,7 +63,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
       // post 20180604: the forward command is provided by right slider
       Scalar pair = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
       // post 20180619: allow reverse driving
-      Scalar speed = Clip.absoluteOne().apply(ratio.add(pair));
+      Scalar speed = Clips.absoluteOne().apply(ratio.add(pair));
       purePursuitRimo.setSpeed(Times.of(pursuitConfig.rateFollower, speed, getSpeedMultiplier()));
     }
     purePursuitRimo.setOperational(status);

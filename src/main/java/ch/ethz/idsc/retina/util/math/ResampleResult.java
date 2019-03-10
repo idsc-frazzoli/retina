@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class ResampleResult {
   // TODO JPH magic constant specific to gokart !
@@ -37,7 +38,7 @@ public class ResampleResult {
   }
 
   public List<Tensor> getPointsSpin(Scalar rate) {
-    Clip clip = Clip.function(0, numel);
+    Clip clip = Clips.interval(0, numel);
     List<Tensor> result = new ArrayList<>();
     for (Tensor vector : list) {
       Tensor entry = Tensors.empty();

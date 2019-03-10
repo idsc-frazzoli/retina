@@ -11,13 +11,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 /** values inspired by 20180217_emergency_braking.pdf */
 public class LinmotConfigTest extends TestCase {
   public void testTempClip() {
     Clip clip = LinmotConfig.GLOBAL.temperatureHardwareClip();
-    Clip maxrange = Clip.function(Quantity.of(90, NonSI.DEGREE_CELSIUS), Quantity.of(120, NonSI.DEGREE_CELSIUS));
+    Clip maxrange = Clips.interval(Quantity.of(90, NonSI.DEGREE_CELSIUS), Quantity.of(120, NonSI.DEGREE_CELSIUS));
     maxrange.requireInside(clip.max());
   }
 
@@ -45,18 +46,18 @@ public class LinmotConfigTest extends TestCase {
 
   public void testMinVel() {
     Scalar minVel = UnitSystem.SI().apply(LinmotConfig.GLOBAL.minVelocity);
-    Clip clip = Clip.function(Quantity.of(0.2, SI.VELOCITY), Quantity.of(0.4, SI.VELOCITY));
+    Clip clip = Clips.interval(Quantity.of(0.2, SI.VELOCITY), Quantity.of(0.4, SI.VELOCITY));
     clip.requireInside(minVel);
     // Sign.requirePositive(minVel);
   }
 
   public void testRangeResponseTime() {
-    Clip clip = Clip.function(Quantity.of(0.1, SI.SECOND), Quantity.of(0.3, SI.SECOND));
+    Clip clip = Clips.interval(Quantity.of(0.1, SI.SECOND), Quantity.of(0.3, SI.SECOND));
     clip.requireInside(UnitSystem.SI().apply(LinmotConfig.GLOBAL.responseTime));
   }
 
   public void testRangeMaxDecl() {
-    Clip clip = Clip.function(Quantity.of(-5, SI.ACCELERATION), Quantity.of(-3.5, SI.ACCELERATION));
+    Clip clip = Clips.interval(Quantity.of(-5, SI.ACCELERATION), Quantity.of(-3.5, SI.ACCELERATION));
     clip.requireInside(UnitSystem.SI().apply(LinmotConfig.GLOBAL.maxDeceleration));
   }
 }

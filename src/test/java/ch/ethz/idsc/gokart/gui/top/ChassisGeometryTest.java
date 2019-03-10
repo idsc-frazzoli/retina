@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Chop;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 import junit.framework.TestCase;
 
@@ -30,7 +30,7 @@ public class ChassisGeometryTest extends TestCase {
 
   public void testSingleton() {
     Scalar xAxleDistance = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
-    Clip.function(1.1, 1.25).requireInside(xAxleDistance);
+    Clips.interval(1.1, 1.25).requireInside(xAxleDistance);
     ChassisGeometry.GLOBAL.yTireFrontMeter();
   }
 

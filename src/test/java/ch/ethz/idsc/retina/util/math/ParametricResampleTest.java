@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class ParametricResampleTest extends TestCase {
@@ -40,7 +41,7 @@ public class ParametricResampleTest extends TestCase {
     assertEquals(pnts.size(), 1);
     Tensor difs = Differences.of(pnts.get(0));
     Tensor norm = Tensor.of(difs.stream().map(Norm._2::ofVector));
-    Clip clip = Clip.function(0.297, 0.299);
+    Clip clip = Clips.interval(0.297, 0.299);
     norm.stream().map(Scalar.class::cast).forEach(clip::requireInside);
   }
 

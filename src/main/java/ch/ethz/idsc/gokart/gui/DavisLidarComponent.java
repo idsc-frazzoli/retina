@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.Hue;
 import ch.ethz.idsc.tensor.lie.Rodrigues;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class DavisLidarComponent extends DavisQuickComponent implements LidarRayBlockListener {
   private static final Scalar NUMERIC_ONE = DoubleScalar.of(1);
@@ -38,7 +38,7 @@ public class DavisLidarComponent extends DavisQuickComponent implements LidarRay
     int height = width * 180 / 240;
     Viewport viewport = Viewport.create(width, height);
     Tensor projection = //
-        ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clip.function(1, 100)).unmodifiable();
+        ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clips.interval(1, 100)).unmodifiable();
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       Tensor rot1 = Rodrigues.exp(SensorsConfig.GLOBAL.vlp16_davis_w1);

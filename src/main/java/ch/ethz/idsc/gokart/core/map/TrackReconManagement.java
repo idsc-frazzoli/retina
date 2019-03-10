@@ -138,20 +138,19 @@ public class TrackReconManagement {
         } else {
           // we have a partial track
           // check if route is long enough
-          /*
-          if (trackLayoutInitialGuess.getRouteLength() > 2) {
-            Optional<Tensor> optional = trackLayoutInitialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
-            if (optional.isPresent()) {
-              Tensor ctrpointsXY = optional.get();
-              Tensor newTrackDataXYR = Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER))));
-              System.out.println("open track");
-              newTrackDataXYR = trackRefinement.getRefinedTrack( //
-                  newTrackDataXYR, //
-                  RealScalar.of(8), 20, closedTrack, constraints);
-              if (Objects.nonNull(newTrackDataXYR))
-                trackDataXYR = newTrackDataXYR;
-            }
-          }*/
+          /* if (trackLayoutInitialGuess.getRouteLength() > 2) {
+           * Optional<Tensor> optional = trackLayoutInitialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
+           * if (optional.isPresent()) {
+           * Tensor ctrpointsXY = optional.get();
+           * Tensor newTrackDataXYR = Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER))));
+           * System.out.println("open track");
+           * newTrackDataXYR = trackRefinement.getRefinedTrack( //
+           * newTrackDataXYR, //
+           * RealScalar.of(8), 20, closedTrack, constraints);
+           * if (Objects.nonNull(newTrackDataXYR))
+           * trackDataXYR = newTrackDataXYR;
+           * }
+           * } */
         }
       }
     } else //

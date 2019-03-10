@@ -1522,6 +1522,18 @@ public enum GokartLogFile implements LogFile {
   _20190309T135141_a9dcd8dc,
   /** swissloop drift doughnuts */
   _20190309T160311_a9dcd8dc,
+  /** slow manual driving */
+  _20190309T171059_ed0b19fb,
+  /** slow manual driving */
+  _20190309T172802_ed0b19fb,
+  /** slow manual driving */
+  _20190309T173356_ed0b19fb,
+  /** mpc dynamic model */
+  _20190309T174349_ed0b19fb,
+  /** mpc dynamic model */
+  _20190309T181745_ed0b19fb,
+  /** mpc dynamic model */
+  _20190309T191245_885223b3,
   /***************************************************/
   ;
   // ---
