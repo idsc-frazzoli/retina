@@ -39,7 +39,8 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
      * Quantity.of(5, SI.ACCELERATION), Quantity.of(10, SI.ACCELERATION)); */
     MPCOptimizationParameterDynamic optimizationParameterDynamic = new MPCOptimizationParameterDynamic(//
         Quantity.of(10, SI.VELOCITY), //
-        Quantity.of(4, SI.ACCELERATION));
+        Quantity.of(4, SI.ACCELERATION),//
+        Quantity.of(0.1, SI.ONE));
     /* MPCOptimizationParameter optimizationParameter = new MPCOptimizationParameter(//
      * Quantity.of(20, SI.VELOCITY), //
      * Quantity.of(5, SI.ACCELERATION), Quantity.of(10, SI.ACCELERATION),
