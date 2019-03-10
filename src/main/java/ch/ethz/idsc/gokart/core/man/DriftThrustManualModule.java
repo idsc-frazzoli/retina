@@ -20,6 +20,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.sca.Abs;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
 /** class was designed to exaggerate rotation of gokart */
@@ -37,7 +38,7 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> {
     RimoSocket.INSTANCE.removePutProvider(this);
   }
 
-  private static final Clip deltaClip = Clip.absoluteOne();
+  private static final Clip deltaClip = Clips.absoluteOne();
 
   /***************************************************/
   @Override // from GuideJoystickModule
