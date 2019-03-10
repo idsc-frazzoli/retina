@@ -20,10 +20,10 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       return Optional.empty();
     Scalar braking = Ramp.FUNCTION.apply(cnsStep.gokartControl.getaB().negate());
     Scalar leftPower = powerLookupTable.getNeededCurrent(//
-        cnsStep.gokartControl.getuL().subtract(braking), //
+        cnsStep.gokartControl.getuL().add(braking), //
         cnsStep.gokartState.getUx());
     Scalar rightPower = powerLookupTable.getNeededCurrent(//
-        cnsStep.gokartControl.getuR().subtract(braking), //
+        cnsStep.gokartControl.getuR().add(braking), //
         cnsStep.gokartState.getUx());
     return Optional.of(Tensors.of(leftPower, rightPower));
   }

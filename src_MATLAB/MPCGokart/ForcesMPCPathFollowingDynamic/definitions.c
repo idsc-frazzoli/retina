@@ -51,6 +51,7 @@ struct PathParameter {
 struct OptimizationParameter {
 	float speedLimit;
 	float maxxacc;
+	float steeringreg;
 };
 
 struct ControlAndStateMsg{

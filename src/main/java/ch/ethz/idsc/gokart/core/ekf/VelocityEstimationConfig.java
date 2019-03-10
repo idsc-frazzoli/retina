@@ -10,4 +10,6 @@ public class VelocityEstimationConfig {
   // ---
   /** How much does the computed velocity from lidar correct the integrated velocity */
   public Scalar correctionFactor = RealScalar.of(0.01);
+  /** Rotation filtering */
+  public Scalar rotFilter = RealScalar.of(0.5);
 }

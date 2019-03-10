@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -22,7 +23,11 @@ public class ManualConfig {
   public final Scalar torqueLimit = Quantity.of(2315, NonSI.ARMS);
   public final Scalar timeout = Quantity.of(0.2, SI.SECOND);
   /** torquePerGyro factor is used in {@link DriftThrustManualModule} */
-  public Scalar torquePerGyro = Quantity.of(1, SI.SECOND);
+  public Scalar torquePerGyro = Quantity.of(-2, SI.SECOND);
+  /** when should drift be avoided */
+  public Scalar driftAvoidStart = RealScalar.of(0.5);
+  /** how strong should the drift be avoided */
+  public Scalar driftAvoidRamp = RealScalar.of(5);
 
   /***************************************************/
   /** @return clip interval for permitted torque */

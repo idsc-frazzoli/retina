@@ -31,6 +31,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 // TODO JPH refactor
 public class SimplePositionVelocityModule extends AbstractModule implements //
     Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
+  private static final Scalar MIN_DRIFT_VELOCITY = Quantity.of(1, SI.VELOCITY);
   private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
   // ---
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
@@ -113,7 +114,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
    * @param deltaT [s] */
   /* package for testing */
   void measureAcceleration(Tensor accelerations, Scalar angularVelocity, Scalar deltaT) {
-    this.angularVelocity = angularVelocity;
+    this.angularVelocity = (Scalar) RnGeodesic.INSTANCE.split(this.angularVelocity, angularVelocity, VelocityEstimationConfig.GLOBAL.rotFilter);
     Scalar rdt = angularVelocity.multiply(deltaT);
     // transform old system (compensate for rotation)
     Tensor vel = velocity.add(Cross.of(velocity).multiply(rdt.negate()));
@@ -134,6 +135,12 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
 
   public Tensor getXYVelocity() {
     return velocity.copy();
+  }
+
+  public Scalar getDrift() {
+    if (Scalars.lessThan(velocity.Get(0), MIN_DRIFT_VELOCITY))
+      return RealScalar.ZERO;
+    return velocity.Get(1).divide(velocity.Get(0));
   }
 
   /** @return "s^-1" */

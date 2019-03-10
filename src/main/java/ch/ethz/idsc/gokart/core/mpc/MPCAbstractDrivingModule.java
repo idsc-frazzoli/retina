@@ -103,11 +103,12 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     // : gokartTrackReconModule.getMPCBSplineTrack();
     Scalar padding = MPCOptimizationConfig.GLOBAL.padding;
     Scalar qpFactor = MPCOptimizationConfig.GLOBAL.qpFactor;
+    Scalar qpLimit = MPCOptimizationConfig.GLOBAL.qpLimit;
     if (Objects.nonNull(track))
-      mpcPathParameter = track.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor);
+      mpcPathParameter = track.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor, qpLimit);
     else //
     if (Objects.nonNull(liveTrack))
-      mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor);
+      mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor, qpLimit);
     if (Objects.nonNull(mpcPathParameter))
       lcmMPCControlClient.publishControlRequest(state, mpcPathParameter);
     else

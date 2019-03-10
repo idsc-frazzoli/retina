@@ -1,4 +1,4 @@
-function f = objective(z,points,radii,vmax, maxxacc)
+function f = objective(z,points,radii,vmax, maxxacc, steeringreg)
     global index
 %[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline
@@ -21,20 +21,14 @@ function f = objective(z,points,radii,vmax, maxxacc)
     error = centerPos-wantedpos;
     lagerror = forward'*error;
     laterror = sidewards'*error;
-    latdist = abs(laterror);
     speedcost = speedPunisher(z(index.v),vmax)*0.04;
-    beta = z(index.beta);
-    tangentspeed = z(index.v);
-    sidewardsspeed = z(index.yv);
-    forwardacc = z(index.ab);
     slack = z(index.slack);
-    dotbeta = z(index.dotbeta);
     tv = z(index.tv);
     %accviolation = max(0,accnorm-1)^2;
     lagcost = lagerror^2;
     latcost = laterror^2;
     prog = -0.2*z(index.ds);
-    reg = z(index.dotab).^2*0.0004+z(index.dotbeta).^2*0.1;
+    reg = z(index.dotab).^2*0.0004+z(index.dotbeta).^2*steeringreg;
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
     %f = lagcost+latcost+reg+prog+over75d*over75d*0.001+speedcost+accviolation+trackViolation;
