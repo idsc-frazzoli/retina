@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.ekf;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -15,6 +16,8 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
+import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
+import ch.ethz.idsc.sophus.group.Se2Geodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -22,10 +25,12 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.Cross;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
+import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
+import ch.ethz.idsc.tensor.sca.Mod;
 
 // TODO MH cleanup comments/unused code
 // TODO JPH refactor
@@ -41,7 +46,8 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   private Scalar angularVelocity = Quantity.of(0, SI.PER_SECOND);
   private int lastVmuTime = 0;
   /* package for testing */
-  Tensor velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+  Tensor filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+  Tensor filteredPose = GokartPoseHelper.attachUnits(Tensors.vector(0, 0, 0));
   // private long lastReset = 0;
   private GokartPoseEvent lidar_prev = null;
 
@@ -63,10 +69,11 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     if (LidarLocalizationModule.TRACKING) {
       if (Objects.nonNull(lidar_prev)) {
         lastPosition = lidar_prev.getPose().extract(0, 2);
+        filteredPose = gokartPoseEvent.getPose();
         measurePose(gokartPoseEvent, delta_time);
       }
     } else
-      velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+      filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
     // ---
     lidar_prev = LidarLocalizationModule.TRACKING // TODO magic const
         && Scalars.lessThan(RealScalar.of(.2), gokartPoseEvent.getQuality()) //
@@ -78,20 +85,22 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
    * @param pose measured lidar pose: {x[m], y[m], angle[]}
    * @param deltaT [s] */
   public void measurePose(GokartPoseEvent gokartPoseEvent, Scalar deltaT) {
-    Tensor pose = gokartPoseEvent.getPose();
-    Tensor position = pose.extract(0, 2);
-    Scalar orientation = pose.Get(2);
+    Tensor newPose = gokartPoseEvent.getPose();
+    Tensor position = newPose.extract(0, 2);
+    Scalar orientation = newPose.Get(2);
     // TODO JPH how do we do this without null
     if (lastPosition != null) {
       Tensor differenceToLast = position.subtract(lastPosition);
       Tensor lidarSpeed = getCompensationRotationMatrix(orientation) //
           .dot(differenceToLast) //
           .divide(deltaT);
-      velocity = RnGeodesic.INSTANCE.split(velocity, lidarSpeed, VelocityEstimationConfig.GLOBAL.correctionFactor);
+      filteredVelocity = RnGeodesic.INSTANCE.split(filteredVelocity, lidarSpeed, VelocityEstimationConfig.GLOBAL.velocityCorrectionFactor);
       // System.out.println("new factor: "+newFactor+" delta T: "+deltaT);
       // System.out.println("pose: "+pose+" Velocity: "+ velocity);
     }
     lastPosition = position;
+    // correct filtered Pose
+    filteredPose = Se2Geodesic.INSTANCE.split(filteredPose, newPose, VelocityEstimationConfig.GLOBAL.poseCorrectionFactor);
   }
 
   /** take new lidar pose into account
@@ -107,6 +116,8 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   // void measureAcceleration(Tensor accelerations, Scalar angularVelocity) {
   // measureAcceleration(accelerations, angularVelocity, Quantity.of(intervalClockIMU.seconds(), SI.SECOND));
   // }
+  private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
+
   /** take new acceleration measurement into account
    * 
    * @param accelerations {x[m/s^2], y[m/s^2]}
@@ -117,30 +128,29 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     this.angularVelocity = (Scalar) RnGeodesic.INSTANCE.split(this.angularVelocity, angularVelocity, VelocityEstimationConfig.GLOBAL.rotFilter);
     Scalar rdt = angularVelocity.multiply(deltaT);
     // transform old system (compensate for rotation)
-    Tensor vel = velocity.add(Cross.of(velocity).multiply(rdt.negate()));
+    Tensor vel = filteredVelocity.add(Cross.of(filteredVelocity).multiply(rdt.negate()));
     // Tensors.of(vx, vy);
     // System.out.println("Acc: "+accelerations);
-    this.velocity = vel.add(accelerations.multiply(deltaT));
-    // if(System.currentTimeMillis()-lastReset>10000)
-    // {
-    // lastReset = System.currentTimeMillis();
-    // this.velocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
-    // }
+    this.filteredVelocity = vel.add(accelerations.multiply(deltaT));
+    // integrate pose
+    Tensor currentVelocity = getVelocity();
+    filteredPose = Se2CoveringIntegrator.INSTANCE.spin(filteredPose, currentVelocity.multiply(deltaT));
+    filteredPose.set(MOD_DISTANCE, 2);
   }
 
   @Override // from VelocityEstimation
   public Tensor getVelocity() {
-    return velocity.copy().append(angularVelocity);
+    return filteredVelocity.copy().append(angularVelocity);
   }
 
   public Tensor getXYVelocity() {
-    return velocity.copy();
+    return filteredVelocity.copy();
   }
 
   public Scalar getDrift() {
-    if (Scalars.lessThan(velocity.Get(0), MIN_DRIFT_VELOCITY))
+    if (Scalars.lessThan(filteredVelocity.Get(0), MIN_DRIFT_VELOCITY))
       return RealScalar.ZERO;
-    return velocity.Get(1).divide(velocity.Get(0));
+    return filteredVelocity.Get(1).divide(filteredVelocity.Get(0));
   }
 
   /** @return "s^-1" */
@@ -164,8 +174,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   }
 
   @Override
-  public Tensor getPosition() {
-    // FIXME MH
-    throw new UnsupportedOperationException();
+  public Tensor getPose() {
+    return filteredPose.copy();
   }
 }
