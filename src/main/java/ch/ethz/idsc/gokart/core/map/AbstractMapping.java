@@ -1,10 +1,6 @@
 // code by ynager, mheim
 package ch.ethz.idsc.gokart.core.map;
 
-import java.awt.Graphics2D;
-import java.nio.FloatBuffer;
-import java.util.Objects;
-
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -13,11 +9,7 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
-import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
-import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
+import ch.ethz.idsc.retina.lidar.*;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
@@ -26,19 +18,12 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-/** class interprets sensor data from lidar */
-public class TrackMapping extends AbstractMapping {
-  public TrackMapping() {
-    super(MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid(), //
-            TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), -6, 200);
-  }
-}
-
-@Deprecated // TODO is this really needed as it is almost identical to ObstacleMapping?
-// differences marked by "<-- diff"
+import java.awt.*;
+import java.nio.FloatBuffer;
+import java.util.Objects;
 
 /** class interprets sensor data from lidar */
-/* public */ class TrackMappingOld implements //
+public abstract class AbstractMapping implements //
     StartAndStoppable, LidarRayBlockListener, GokartPoseListener, OccupancyGrid, Runnable, RenderInterface {
   // TODO check rationale behind constant 10000!
   private static final int LIDAR_SAMPLES = 10000;
@@ -46,13 +31,12 @@ public class TrackMapping extends AbstractMapping {
   private final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
   private final double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
-  private final Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -6); // <-- diff
+  private final Vlp16SegmentProvider lidarSpacialProvider;
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-  private final BayesianOccupancyGrid bayesianOccupancyGrid = //
-      MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid(); // <-- diff
-  private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
+  private final BayesianOccupancyGrid bayesianOccupancyGrid;
+  private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder(); // TODO needed? also contained in vlp16LcmHandler
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private final SpacialXZObstaclePredicate predicate = TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(); // <-- diff
+  private final SpacialXZObstaclePredicate predicate;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent;
   /** tear down flag to stop thread */
@@ -62,8 +46,15 @@ public class TrackMapping extends AbstractMapping {
    * containing the cross-section of the static geometry
    * with the horizontal plane at height of the lidar */
   private Tensor points3d_ferry = null;
+  private final int waitMillis;
 
-  public TrackMappingOld() {
+  /* package */ AbstractMapping(BayesianOccupancyGrid bayesianOccupancyGrid, SpacialXZObstaclePredicate predicate, //
+                         int max_alt, int waitMillis) {
+    this.bayesianOccupancyGrid = bayesianOccupancyGrid;
+    lidarSpacialProvider = new Vlp16SegmentProvider(offset, max_alt);
+    this.predicate = predicate;
+    this.waitMillis = waitMillis;
+    // ---
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     // ---
@@ -126,7 +117,7 @@ public class TrackMapping extends AbstractMapping {
         }
       } else
         try {
-          Thread.sleep(200); // <-- diff
+          Thread.sleep(waitMillis);
         } catch (Exception exception) {
           // ---
         }

@@ -28,10 +28,19 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-// TODO is this really needed as it is almost identical to TrackMapping?
+/** class interprets sensor data from lidar */
+public class ObstacleMapping extends AbstractMapping {
+  public ObstacleMapping() {
+    super(MappingConfig.GLOBAL.createBayesianOccupancyGrid(), //
+            SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), -1, 1000);
+  }
+}
+
+@Deprecated // TODO is this really needed as it is almost identical to TrackMapping?
+// differences marked by "<-- diff"
 
 /** class interprets sensor data from lidar */
-public class ObstacleMapping implements //
+/* public */ class ObstacleMappingOld implements //
     StartAndStoppable, Region<Tensor>, LidarRayBlockListener, GokartPoseListener, Runnable, RenderInterface {
   // TODO check rationale behind constant 10000!
   private static final int LIDAR_SAMPLES = 10000;
@@ -39,12 +48,12 @@ public class ObstacleMapping implements //
   private final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
   private final double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
-  private final Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -1);
+  private final Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -1); // <-- diff
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-  private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createBayesianOccupancyGrid();
+  private final BayesianOccupancyGrid bayesianOccupancyGrid = MappingConfig.GLOBAL.createBayesianOccupancyGrid(); // <-- diff
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(); // <-- diff
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent;
   /** tear down flag to stop thread */
@@ -55,7 +64,7 @@ public class ObstacleMapping implements //
    * with the horizontal plane at height of the lidar */
   private Tensor points3d_ferry = null;
 
-  public ObstacleMapping() {
+  public ObstacleMappingOld() {
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     // ---
@@ -116,7 +125,7 @@ public class ObstacleMapping implements //
         }
       } else
         try {
-          Thread.sleep(1000);
+          Thread.sleep(1000); // <-- diff
         } catch (Exception exception) {
           // ---
         }
