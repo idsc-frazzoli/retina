@@ -51,7 +51,7 @@ public class MPCOptimizationConfig {
   /** Padding */
   @FieldSubdivide(start = "0f[m]", end = "2[m]", intervals = 20)
   public Scalar padding = Quantity.of(0.5, SI.METER);
-  @FieldSubdivide(start = "0f", end = "1", intervals = 10)
+  @FieldSubdivide(start = "-5f", end = "1", intervals = 50)
   public Scalar qpFactor = RealScalar.of(0);
   @FieldSubdivide(start = "0f", end = "1", intervals = 10)
   public Scalar qpLimit = RealScalar.of(0.9);
@@ -63,4 +63,6 @@ public class MPCOptimizationConfig {
   public Scalar steeringReg = RealScalar.of(0.1);
   /** steering damping factor */
   public Scalar steerDamp = RealScalar.of(1);
+  /** specific MoI */
+  public Scalar specificMoI = RealScalar.of(0.5);
 }
