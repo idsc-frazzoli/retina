@@ -45,9 +45,9 @@ import ch.ethz.idsc.tensor.sca.Sign;
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
 public class BayesianOccupancyGrid implements RenderInterface, OccupancyGrid {
   private static final byte MASK_OCCUPIED = 0;
-  private static final Color COLOR_OCCUPIED = Color.WHITE;
+  private static final Color COLOR_OCCUPIED = Color.BLACK;
   // private static final Color COLOR_UNKNOWN = new Color(0xdd, 0xdd, 0xdd);
-  private static final Color COLOR_UNKNOWN = Color.GRAY;
+  private static final Color COLOR_UNKNOWN = Color.WHITE;
 
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space

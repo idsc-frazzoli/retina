@@ -103,12 +103,10 @@ public abstract class AbstractMapping implements //
   public void run() {
     while (isLaunched) {
       Tensor points = points3d_ferry;
-      if (Objects.nonNull(points) && //
-          Objects.nonNull(gokartPoseEvent)) {
+      if (Objects.nonNull(points) && Objects.nonNull(gokartPoseEvent)) {
         points3d_ferry = null;
         // TODO pose quality is not considered yet
         bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
-        // System.out.println("process "+points.length());
         for (Tensor point : points) {
           boolean isObstacle = predicate.isObstacle(point); // only x and z are used
           bayesianOccupancyGrid.processObservation( //
