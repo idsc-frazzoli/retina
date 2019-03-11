@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.tvec;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.Times;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class SimpleTorqueVectoring implements TorqueVectoringInterface {
   final TorqueVectoringConfig torqueVectoringConfig;
@@ -26,7 +26,7 @@ public class SimpleTorqueVectoring implements TorqueVectoringInterface {
         dynamicComponent.add(staticComponent), // One
         realRotation);
     // left and right power prefer power over Z-torque
-    Scalar power = Clip.absoluteOne().apply(wantedPower);
+    Scalar power = Clips.absoluteOne().apply(wantedPower);
     return TorqueVectoringClip.of( //
         power.subtract(wantedZTorque), // unit one
         power.add(wantedZTorque) // unit one

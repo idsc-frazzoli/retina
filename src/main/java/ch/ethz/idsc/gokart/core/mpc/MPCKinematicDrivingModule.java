@@ -1,228 +1,52 @@
-// code by mh
+// code by mh, jph
 package ch.ethz.idsc.gokart.core.mpc;
 
-import java.util.Objects;
-//Not in use yet
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.core.map.TrackReconModule;
-import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
-import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.red.Max;
 
-public class MPCKinematicDrivingModule extends AbstractModule implements MPCBSplineTrackListener, Runnable {
-  private final TrackReconModule trackReconModule = //
-      ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  public final LcmMPCControlClient lcmMPCPathFollowingClient = new LcmMPCControlClient();
-  private final MPCOptimizationConfig mpcPathFollowingConfig = MPCOptimizationConfig.GLOBAL;
-  // private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
-  private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
-  // private final MPCBraking mpcBraking = new MPCSimpleBraking();
-  // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
-  private final MPCBraking mpcBraking = new MPCAggressiveCorrectedTorqueVectoringBraking();
-  private final MPCPower mpcPower;
-  private final MPCStateEstimationProvider mpcStateEstimationProvider;
-  private final Thread thread = new Thread(this);
-  private boolean running = true;
-  // private final Timing timing;
-  // private boolean useTorqueVectoring;
-  private final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
-  private Optional<MPCBSplineTrack> mpcBSplineTrack = Optional.empty();
-  private final MPCPreviewableTrack track;
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  final MPCRimoProvider mpcRimoProvider;
-  private final MPCSteerProvider mpcSteerProvider;
-  final MPCLinmotProvider mpcLinmotProvider;
-
-  /** switch to testing binary that send back test data has to be called before first */
-  public void switchToTest() {
-    lcmMPCPathFollowingClient.switchToTest();
-  }
-
-  /** create Module with standard estimator */
+public class MPCKinematicDrivingModule extends MPCAbstractDrivingModule {
   public MPCKinematicDrivingModule() {
-    this(Timing.started());
+    super(LcmMPCControlClient.kinematic(), Timing.started());
   }
 
-  MPCKinematicDrivingModule(Timing timing) {
-    // using dynamic is not a mistake here:
-    this(new SimpleDynamicMPCStateEstimationProvider(timing), timing, null);
-  }
-
-  /** Hint: constructor only for testing
-   * create Module with custom estimator
-   * 
-   * @param mpcStateEstimationProvider the custom estimator
-   * @param timing that shows the same time that also was used for the custom estimator */
+  // for testing only
   MPCKinematicDrivingModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
-    this.mpcStateEstimationProvider = mpcStateEstimationProvider;
-    this.track = track;
-    // this.timing = timing;
-    // link mpc steering
-    // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
-    mpcPower = new MPCAggressiveTorqueVectoringPower(mpcStateEstimationProvider, mpcSteering);
-    mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
-    mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
-    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
-    initModules();
+    super(LcmMPCControlClient.kinematic(), mpcStateEstimationProvider, timing, track);
   }
 
-  private void initModules() {
-    // link mpc steering
-    lcmMPCPathFollowingClient.registerControlUpdateLister(mpcSteering);
-    lcmMPCPathFollowingClient.registerControlUpdateLister(mpcPower);
-    lcmMPCPathFollowingClient.registerControlUpdateLister(mpcBraking);
-    lcmMPCPathFollowingClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
-    // lcmMPCPathFollowingClient.registerControlUpdateLister(MPCActiveCompensationLearning.getInstance());
-    // state estimation provider
-    mpcBraking.setStateEstimationProvider(mpcStateEstimationProvider);
-    // mpcPower.setStateEstimationProvider(mpcStateEstimationProvider);
-    mpcSteering.setStateEstimationProvider(mpcStateEstimationProvider);
+  @Override // from MPCAbstractDrivingModule
+  MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering) {
+    return new MPCAggressiveTorqueVectoringPower(mpcStateEstimationProvider, mpcSteering);
   }
 
-  private void requestControl() {
-    // use joystick for speed limit
-    // get joystick
-    Scalar maxSpeed = MPCOptimizationConfig.GLOBAL.maxSpeed;
-    Scalar minSpeed = MPCOptimizationConfig.GLOBAL.minSpeed;
-    Scalar maxXacc = MPCOptimizationConfig.GLOBAL.maxLonAcc;
-    Scalar maxYacc = MPCOptimizationConfig.GLOBAL.maxLatAcc;
-    Scalar latAccLim = MPCOptimizationConfig.GLOBAL.latAccLim;
-    Scalar rotAccEffect = MPCOptimizationConfig.GLOBAL.rotAccEffect;
-    Scalar torqueVecEffect = MPCOptimizationConfig.GLOBAL.torqueVecEffect;
-    Scalar brakeEffect = MPCOptimizationConfig.GLOBAL.brakeEffect;
-    Scalar padding = MPCOptimizationConfig.GLOBAL.padding;
-    Scalar qpFactor = MPCOptimizationConfig.GLOBAL.qpFactor;
+  @Override // from MPCAbstractDrivingModule
+  MPCOptimizationParameter createOptimizationParameter() {
+    Scalar maxSpeed = mpcOptimizationConfig.maxSpeed;
+    Scalar minSpeed = mpcOptimizationConfig.minSpeed;
+    Scalar maxXacc = mpcOptimizationConfig.maxLonAcc;
+    Scalar maxYacc = mpcOptimizationConfig.maxLatAcc;
+    Scalar latAccLim = mpcOptimizationConfig.latAccLim;
+    Scalar rotAccEffect = mpcOptimizationConfig.rotAccEffect;
+    Scalar torqueVecEffect = mpcOptimizationConfig.torqueVecEffect;
+    Scalar brakeEffect = mpcOptimizationConfig.brakeEffect;
+    Scalar mpcMaxSpeed = minSpeed;
     Optional<ManualControlInterface> optionalJoystick = manualControlProvider.getManualControl();
     if (optionalJoystick.isPresent()) { // is joystick button "autonomoRus" pressed?
       ManualControlInterface actualJoystick = optionalJoystick.get();
       Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
-      maxSpeed = mpcPathFollowingConfig.maxSpeed.multiply(forward);
-      maxSpeed = Max.of(minSpeed, maxSpeed);
+      mpcMaxSpeed = maxSpeed.multiply(forward);
+      mpcMaxSpeed = Max.of(minSpeed, mpcMaxSpeed);
       // maxSpeed = Quantity.of(1, SI.VELOCITY);
       // System.out.println("got joystick speed value: " + maxSpeed);
     }
     // send message with max speed
     // optimization parameters will have more values in the future
     // MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
-    MPCOptimizationParameter mpcOptimizationParameter//
-        = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc, //
-            latAccLim, rotAccEffect, torqueVecEffect, brakeEffect);
-    lcmMPCPathFollowingClient.publishOptimizationParameter(mpcOptimizationParameter);
-    // send the newest state and start the update state
-    GokartState state = mpcStateEstimationProvider.getState();
-    Tensor position = state.getCenterPosition();
-    MPCPathParameter mpcPathParameter = null;
-    MPCPreviewableTrack liveTrack = mpcBSplineTrack.orElse(null);
-    // Objects.isNull(gokartTrackReconModule) //
-    // ? null
-    // : gokartTrackReconModule.getMPCBSplineTrack();
-    if (Objects.nonNull(track))
-      mpcPathParameter = track.getPathParameterPreview(previewSize, position, padding, qpFactor);
-    else //
-    if (Objects.nonNull(liveTrack))
-      mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, position, padding, qpFactor);
-    if (Objects.nonNull(mpcPathParameter))
-      lcmMPCPathFollowingClient.publishControlRequest(state, mpcPathParameter);
-    else
-      System.out.println("no Track to drive on! :O");
-  }
-
-  @Override
-  protected void first() {
-    if (Objects.nonNull(trackReconModule))
-      trackReconModule.listenersAdd(this);
-    else
-      System.err.println("did not subscribe to track info !!!");
-    // ---
-    lcmMPCPathFollowingClient.start();
-    mpcStateEstimationProvider.first();
-    // MPCActiveCompensationLearning.getInstance().setActive(true);
-    manualControlProvider.start();
-    // ---
-    SteerSocket.INSTANCE.addPutProvider(mpcSteerProvider);
-    // ---
-    RimoSocket.INSTANCE.addPutProvider(mpcRimoProvider);
-    // ---
-    LinmotSocket.INSTANCE.addPutProvider(mpcLinmotProvider);
-    //
-    mpcBraking.start();
-    mpcSteering.start();
-    mpcPower.start();
-    lcmMPCPathFollowingClient.registerControlUpdateLister(new MPCControlUpdateListenerWithAction() {
-      @Override
-      void doAction() {
-        // we got an update
-        // interupt
-        thread.interrupt();
-      }
-
-      @Override
-      public void start() {
-        // TODO MH document that empty implementation is desired
-      }
-
-      @Override
-      public void stop() {
-        // TODO MH document that empty implementation is desired
-      }
-    });
-    thread.start();
-    // ---
-    System.out.println("Scheduling Timer: start");
-  }
-
-  @Override
-  protected void last() {
-    System.out.println("cancel timer: ending");
-    running = false;
-    thread.interrupt();
-    // ---
-    LinmotSocket.INSTANCE.removePutProvider(mpcLinmotProvider);
-    // ---
-    SteerSocket.INSTANCE.removePutProvider(mpcSteerProvider);
-    // ---
-    RimoSocket.INSTANCE.removePutProvider(mpcRimoProvider);
-    //
-    mpcBraking.stop();
-    mpcSteering.stop();
-    mpcPower.stop();
-    // MPCActiveCompensationLearning.getInstance().setActive(false);
-    // ---
-    lcmMPCPathFollowingClient.stop();
-    mpcStateEstimationProvider.last();
-    manualControlProvider.stop();
-    // ---
-    if (Objects.nonNull(trackReconModule))
-      trackReconModule.listenersRemove(this);
-  }
-
-  @Override // from MPCBSplineTrackListener
-  public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
-    System.out.println("kinematic mpc bspline track, present=" + optional.isPresent());
-    this.mpcBSplineTrack = optional;
-  }
-
-  @Override
-  public void run() {
-    while (running) {
-      requestControl();
-      try {
-        Thread.sleep(Magnitude.MILLI_SECOND.toLong(mpcPathFollowingConfig.updateCycle));
-      } catch (InterruptedException e) {
-        // sleep is interrupted once data arrives
-      }
-    }
-    System.out.println("Thread terminated");
+    return new MPCOptimizationParameterKinematic( //
+        mpcMaxSpeed, maxXacc, maxYacc, latAccLim, rotAccEffect, torqueVecEffect, brakeEffect);
   }
 }

@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -21,7 +22,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   // TODO full documentation
   // not used yet:
   // private static final Unit SCE = SteerPutEvent.UNIT_ENCODER;
-  private final static Scalar CENTER_OFFSET = Quantity.of(0.4, SI.METER);
+  private final static Scalar CENTER_OFFSET = ChassisGeometry.GLOBAL.xAxleRtoCoM;
   /** time in seconds from synchronized time point */
   private final float time;
   /** forward velocity in gokart frame with unit m*s^1 */

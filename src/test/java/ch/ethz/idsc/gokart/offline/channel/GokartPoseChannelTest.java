@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.io.CsvFormat;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class GokartPoseChannelTest extends TestCase {
@@ -27,7 +27,7 @@ public class GokartPoseChannelTest extends TestCase {
     // check that pose quality is in the interval [0, 1]
     long count = tensor.get(Tensor.ALL, 4).stream() //
         .map(Scalar.class::cast) //
-        .filter(Clip.unit()::isOutside) //
+        .filter(Clips.unit()::isOutside) //
         .count();
     assertEquals(count, 0);
   }

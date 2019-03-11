@@ -31,7 +31,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
  * {@link SimpleTorqueVectoringManualModule}
  * {@link ImprovedTorqueVectoringManualModule}
  * {@link ImprovedNormalizedTorqueVectoringManualModule}
- * {@link ImprovedNormalizedPredictiveTorqueVectoringManualModule} */
+ * {@link UltimateTorqueVectoringModule} */
 abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEvent> //
     implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();

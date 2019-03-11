@@ -28,8 +28,8 @@ import ch.ethz.idsc.gokart.offline.slam.VoidScatterImage;
     if (post_lcm.isFile()) {
       final File source = new File(folder, StaticHelper.LOG_LCM);
       if (source.isFile() && source.length() <= post_lcm.length()) {
-        source.delete();
-        System.out.println("remove " + source);
+        // source.delete();
+        // System.out.println("remove " + source);
       }
     }
   }

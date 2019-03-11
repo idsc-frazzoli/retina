@@ -8,6 +8,7 @@ tireradius = 0.12;
 % whole table: [t x y Ksi dotx_b doty_b dotKsi  dotdotx_b dotdoty_b dotdotKsi sa sdota pcl pcr wrl wrt dotwrl dotwrr lp ltemp dotltemp imux imuy imur]
 M = csvread(strcat(folder,file));
 M = M(20000:50000,:);
+%M = M(65000:72000,:);
 temp = M(:,20);
 dottemp = M(:,21);
 acc = tireradius*mean(M(:,17:18),2);

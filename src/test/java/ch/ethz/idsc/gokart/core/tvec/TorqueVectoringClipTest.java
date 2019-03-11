@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class TorqueVectoringClipTest extends TestCase {
@@ -37,7 +37,7 @@ public class TorqueVectoringClipTest extends TestCase {
 
   public void testClipRandom() {
     for (int count = 0; count < 100; ++count) {
-      Distribution distribution = UniformDistribution.of(Clip.absoluteOne());
+      Distribution distribution = UniformDistribution.of(Clips.absoluteOne());
       Scalar s1 = RandomVariate.of(distribution);
       Scalar s2 = RandomVariate.of(distribution);
       _checkSym(s1, s2, Tensors.of(s1, s2));

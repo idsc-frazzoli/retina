@@ -7,12 +7,12 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class ClipzoneTest extends TestCase {
   public void testDeadzonePos() {
-    Clipzone clipzone = new Clipzone(Clip.function(.1, 2));
+    Clipzone clipzone = new Clipzone(Clips.interval(.1, 2));
     assertEquals(clipzone.apply(RealScalar.ZERO), RealScalar.ZERO);
     assertEquals(clipzone.apply(RealScalar.of(.01)), RealScalar.ZERO);
     assertEquals(clipzone.apply(RealScalar.of(.1)), RealScalar.ZERO);
@@ -24,7 +24,7 @@ public class ClipzoneTest extends TestCase {
   }
 
   public void testDeadzoneNeg() {
-    Clipzone clipzone = new Clipzone(Clip.function(.1, 2));
+    Clipzone clipzone = new Clipzone(Clips.interval(.1, 2));
     assertEquals(clipzone.apply(RealScalar.ZERO), RealScalar.ZERO);
     assertEquals(clipzone.apply(RealScalar.of(-.01)), RealScalar.ZERO);
     assertEquals(clipzone.apply(RealScalar.of(-.1)), RealScalar.ZERO);
@@ -36,7 +36,7 @@ public class ClipzoneTest extends TestCase {
   }
 
   public void testDeadzoneQuantity() {
-    Clipzone clipzone = new Clipzone(Clip.function(Quantity.of(RationalScalar.HALF, "m"), Quantity.of(RationalScalar.of(5, 2), "m")));
+    Clipzone clipzone = new Clipzone(Clips.interval(Quantity.of(RationalScalar.HALF, "m"), Quantity.of(RationalScalar.of(5, 2), "m")));
     {
       Scalar result = clipzone.apply(Quantity.of(0.0, "m"));
       assertEquals(result, Quantity.of(0, "m"));

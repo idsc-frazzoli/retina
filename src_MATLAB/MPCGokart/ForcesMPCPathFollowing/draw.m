@@ -36,8 +36,8 @@ end
 %draw track
 if(1)
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
-points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
-   [leftline,middleline,rightline] = drawTrack(points(:,1:2),points(:,3));
+%points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+   [leftline,middleline,rightline] = drawTrack(points(:,1:2),points(:,3)+0.5);
    plot(leftline(:,1),leftline(:,2),'b')
    plot(rightline(:,1),rightline(:,2),'b')
 end

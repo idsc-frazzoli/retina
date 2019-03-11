@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.qty.Boole;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** immutable */
@@ -40,10 +40,10 @@ public class ManualControlAdapter implements ManualControlInterface {
       Tensor pair, //
       boolean isAutonomousPressed, //
       boolean isResetPressed) {
-    Clip.absoluteOne().requireInside(steerLeft);
-    Clip.unit().requireInside(breakStrength);
-    Clip.absoluteOne().requireInside(aheadAverage);
-    if (!pair.map(Clip.unit()).equals(pair))
+    Clips.absoluteOne().requireInside(steerLeft);
+    Clips.unit().requireInside(breakStrength);
+    Clips.absoluteOne().requireInside(aheadAverage);
+    if (!pair.map(Clips.unit()).equals(pair))
       throw TensorRuntimeException.of(pair);
     // ---
     this.steerLeft = steerLeft;

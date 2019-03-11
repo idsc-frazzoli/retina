@@ -4,6 +4,8 @@ package ch.ethz.idsc.gokart.offline.slam;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.Objects;
@@ -46,15 +48,19 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO contains redundancies with GokartMappingModule 
 public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListener, MPCBSplineTrackListener {
+  private static final File DIRECTORY = HomeDirectory.Pictures("log", "mapper");
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
-  private static final Scalar DELTA = Quantity.of(0.1, SI.SECOND);
+  private static final Scalar DELTA = Quantity.of(0.05, SI.SECOND);
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
@@ -86,6 +92,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThic);
+    // trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThin);
     trackLayoutInitialGuess = trackReconManagement.getTrackLayoutInitialGuess();
   }
 
@@ -99,16 +106,16 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       bayesianOccupancyGridThin.setPose(gokartPoseEvent.getPose());
       if (!trackReconManagement.isStartSet())
         trackReconManagement.setStart(gokartPoseEvent);
-      if (count++ > 5) {
-        Optional<MPCBSplineTrack> lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(0.05, SI.SECOND));
-        trackReconRender.mpcBSplineTrack(lastTrack);
-      }
     } else //
     if (channel.equals(CHANNEL_LIDAR))
       velodyneDecoder.lasers(byteBuffer);
     // ---
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(DELTA);
+      if (count++ > 1) {
+        Optional<MPCBSplineTrack> lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(0.05, SI.SECOND));
+        trackReconRender.mpcBSplineTrack(lastTrack);
+      }
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
       BufferedImage bufferedImage = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
       double zoom = 3;
@@ -117,15 +124,24 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
           { 0., -7.5 * zoom, 640 + 640 }, //
           { 0., 0., 1. }, //
       }));
+      final File file = new File(DIRECTORY, "fielddata" + count + ".csv");
+      Tensor lastTrack = trackReconManagement.getTrackData();
+      if (Objects.nonNull(lastTrack))
+        try {
+          Export.of(file, lastTrack.divide(Quantity.of(1, SI.METER)));
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       Graphics2D graphics = bufferedImage.createGraphics();
       ImageRender imageRender = ImageRender.of(predefinedMap.getImage(), predefinedMap.range());
       imageRender.render(geometricLayer, graphics);
       gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
-      // bayesianOccupancyGridThic.render(gl, graphics);
+      // bayesianOccupancyGridThic.render(geometricLayer, graphics);
       bayesianOccupancyGridThin.render(geometricLayer, graphics);
       gokartRender.render(geometricLayer, graphics);
       trackReconRender.render(geometricLayer, graphics);
-      trackLayoutInitialGuess.render(geometricLayer, graphics);
+      // trackLayoutInitialGuess.render(geometricLayer, graphics);
       // ---
       bayesianOccupancyGridThin.genObstacleMap();
       bayesianOccupancyGridThic.genObstacleMap();

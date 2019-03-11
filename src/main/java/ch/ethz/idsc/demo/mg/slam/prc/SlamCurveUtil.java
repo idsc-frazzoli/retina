@@ -9,11 +9,12 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public enum SlamCurveUtil {
   ;
   /** curvature interval that the vehicle can drive */
-  private static final Clip CURVATURE_CLIP = Clip.function( //
+  private static final Clip CURVATURE_CLIP = Clips.interval( //
       Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax.negate()), //
       Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax));
 

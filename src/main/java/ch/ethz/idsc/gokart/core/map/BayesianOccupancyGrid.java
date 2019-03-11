@@ -32,6 +32,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.VectorQ;
+import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.sca.Ceiling;
@@ -420,5 +421,24 @@ public class BayesianOccupancyGrid implements RenderInterface, OccupancyGrid {
     translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
     translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
     return IdentityMatrix.of(3).dot(scaling).dot(translate);
+  }
+
+  @Override
+  public void clearStart(int startX, int startY, double orientation) {
+    Tensor rotation = RotationMatrix.of(orientation);
+    for (int ix = -1; ix < cellDimInv.number().doubleValue() * 12 * 2.0f; ix++) {
+      int fromy = (int) (-cellDimInv.number().doubleValue() * 3 * 2.0f);
+      int endy = -fromy;
+      for (int iy = fromy; iy <= endy; iy++) {
+        Tensor posVec = Tensors.vector(ix, iy);
+        Tensor rotPos = rotation.dot(posVec);
+        int posX = (int) (startX + rotPos.Get(0).number().intValue() / 2.0);
+        int posY = (int) (startY + rotPos.Get(1).number().intValue() / 2.0);
+        int idx = posY * dimx + posX;
+        if (posX >= 0 && posY >= 0 && posX < dimx && posY < dimy)
+          logOdds[idx] = 0;
+      }
+      setHset();
+    }
   }
 }

@@ -17,14 +17,14 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.Hue;
 import ch.ethz.idsc.tensor.lie.Rodrigues;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 class PerspectiveLidarRender extends LidarRender {
   private static final Scalar NUMERIC_ONE = DoubleScalar.of(1);
   // ---
   private final Viewport viewport = Viewport.create(240, 180);
   private final Tensor projection = //
-      ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clip.function(1, 100)).unmodifiable();
+      ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clips.interval(1, 100)).unmodifiable();
 
   public PerspectiveLidarRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);

@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class PiecewiseLinearFunction implements ScalarTensorFunction {
   /** @param knots vector
@@ -40,7 +41,7 @@ public class PiecewiseLinearFunction implements ScalarTensorFunction {
       return ceiling.getValue();
     if (Objects.isNull(ceiling))
       return floor.getValue();
-    Clip clip = Clip.function(floor.getKey(), ceiling.getKey());
+    Clip clip = Clips.interval(floor.getKey(), ceiling.getKey());
     Scalar lambda = clip.rescale(scalar);
     Interpolation interpolation = LinearInterpolation.of(Tensors.of(floor.getValue(), ceiling.getValue()));
     return interpolation.at(lambda);

@@ -15,10 +15,10 @@ import lcm.logging.LogPlayerConfig;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
     File file;
-    file = DatahakiLogFileLocator.file(GokartLogFile._20190308T162915_ad48d4dd);
+    file = DatahakiLogFileLocator.file(GokartLogFile._20190309T191245_885223b3);
     // file = new File("/media/datahaki/data/gokart/cuts/20190304/20190304T181143_05/log.lcm");
     // file = new File("/media/datahaki/media/ethz/gokart/topic/trackid", "changingtrack.lcm");
-    // file = new File("/media/datahaki/data/gokart/cuts/20190307/20190307T161708_11/log.lcm");
+    file = new File("/media/datahaki/data/gokart/cuts/20190309/20190309T201432_01/log.lcm");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
     logPlayerConfig.speed_denominator = 1;

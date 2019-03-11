@@ -1503,7 +1503,7 @@ public enum GokartLogFile implements LogFile {
   /** power steering test, slow and fast manual driving */
   _20190307T161708_086ad351,
   /***************************************************/
-  /* 2019-03-07 */
+  /* 2019-03-08 */
   /** manual driving fast straight */
   _20190308T145103_ad48d4dd,
   /** manual driving fast straight */
@@ -1512,6 +1512,32 @@ public enum GokartLogFile implements LogFile {
   _20190308T162915_ad48d4dd,
   /** manual driving fast curves */
   _20190308T163555_ad48d4dd,
+  /***************************************************/
+  /* 2019-03-09 */
+  /** manual driving tokyo drift with localization failure */
+  _20190309T115037_d527c4a8,
+  /** manual driving tokyo drift */
+  _20190309T134051_7b231074,
+  /** manual driving tokyo drift with localization failure */
+  _20190309T135141_a9dcd8dc,
+  /** swissloop drift doughnuts */
+  _20190309T160311_a9dcd8dc,
+  /** slow manual driving */
+  _20190309T171059_ed0b19fb,
+  /** slow manual driving */
+  _20190309T172802_ed0b19fb,
+  /** slow manual driving */
+  _20190309T173356_ed0b19fb,
+  /** mpc dynamic model */
+  _20190309T174349_ed0b19fb,
+  /** mpc dynamic model */
+  _20190309T181745_ed0b19fb,
+  /** mpc dynamic model */
+  _20190309T191245_885223b3,
+  /** swiss loop, mpc dynamic model */
+  _20190309T201432_885223b3,
+  /** swiss loop, mpc dynamic model */
+  _20190309T212714_c5c7a266,
   /***************************************************/
   ;
   // ---
