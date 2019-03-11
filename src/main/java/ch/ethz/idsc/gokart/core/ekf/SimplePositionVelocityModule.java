@@ -70,16 +70,17 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
         Quantity.of(intervalClockLidar.seconds(), SI.SECOND), //
         Quantity.of(0.03, SI.SECOND)); // 1/50 == 0.02 is nominal
     if (LidarLocalizationModule.TRACKING) {
+      // if (Scalars.lessThan(RealScalar.of(0.6), gokartPoseEvent.getQuality()))
+      // filteredPose = gokartPoseEvent.getPose();
       if (Objects.nonNull(lidar_prev)) {
         lastPosition = lidar_prev.getPose().extract(0, 2);
-        filteredPose = gokartPoseEvent.getPose();
         measurePose(gokartPoseEvent, delta_time);
       }
     } else
       filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
     // ---
     lidar_prev = LidarLocalizationModule.TRACKING // TODO magic const
-        && Scalars.lessThan(RealScalar.of(.2), gokartPoseEvent.getQuality()) //
+        && Scalars.lessThan(RealScalar.of(.3), gokartPoseEvent.getQuality()) //
             ? gokartPoseEvent
             : null;
   }
@@ -107,8 +108,8 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     lastPosition = position;
     // correct filtered Pose
     if (++countPrint % 50 == 0) {
-      Tensor pair = lieDifferences.pair(filteredPose, newPose);
-      System.out.println(pair);
+      // Tensor pair = lieDifferences.pair(filteredPose, newPose);
+      // System.out.println("d=" + pair.map(Round._4));
     }
     filteredPose = Se2Geodesic.INSTANCE.split(filteredPose, newPose, VelocityEstimationConfig.GLOBAL.poseCorrectionFactor);
   }
@@ -146,6 +147,8 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     Tensor currentVelocity = getVelocity();
     filteredPose = Se2CoveringIntegrator.INSTANCE.spin(filteredPose, currentVelocity.multiply(deltaT));
     filteredPose.set(MOD_DISTANCE, 2);
+    // if (countPrint % 1000 == 0)
+    // System.out.println("f=" + filteredPose.map(Round._4));
   }
 
   @Override // from VelocityEstimation
