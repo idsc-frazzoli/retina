@@ -63,4 +63,6 @@ public class MPCOptimizationConfig {
   public Scalar steeringReg = RealScalar.of(0.1);
   /** steering damping factor */
   public Scalar steerDamp = RealScalar.of(1);
+  /** specific MoI */
+  public Scalar specificMoI = RealScalar.of(0.5);
 }

@@ -9,11 +9,13 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ class MPCOptimizationParameterDynamic implements MPCOptimizationParameter {
-  public static final int LENGTH = 3 * 4;
+  public static final int LENGTH = 4 * 4;
   // ---
   private final Scalar speedLimit;
   private final Scalar maxxAcc;
   private final Scalar steeringReg;
+  //FIXME: units
+  private final Scalar specificMoI;
 
   // at the moment it is only for the speed limit
   public MPCOptimizationParameterDynamic(ByteBuffer byteBuffer) {
@@ -21,12 +23,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     speedLimit = Quantity.of(byteBuffer.getFloat(), SI.VELOCITY);
     maxxAcc = Quantity.of(byteBuffer.getFloat(), SI.ACCELERATION);
     steeringReg = Quantity.of(byteBuffer.getFloat(), SI.ONE);
+    specificMoI = Quantity.of(byteBuffer.getFloat(), SI.ONE);
   }
 
-  public MPCOptimizationParameterDynamic(Scalar speedLimit, Scalar maxxAcc, Scalar steeringReg) {
+  public MPCOptimizationParameterDynamic(Scalar speedLimit, Scalar maxxAcc, Scalar steeringReg, Scalar specificMoI) {
     this.maxxAcc = maxxAcc;
     this.speedLimit = speedLimit;
     this.steeringReg = steeringReg;
+    this.specificMoI = specificMoI;
   }
 
   @Override // from BufferInsertable
@@ -34,6 +38,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(speedLimit));
     byteBuffer.putFloat(Magnitude.ACCELERATION.toFloat(maxxAcc));
     byteBuffer.putFloat(Magnitude.ONE.toFloat(steeringReg));
+    byteBuffer.putFloat(Magnitude.ONE.toFloat(specificMoI));
   }
 
   @Override // from BufferInsertable

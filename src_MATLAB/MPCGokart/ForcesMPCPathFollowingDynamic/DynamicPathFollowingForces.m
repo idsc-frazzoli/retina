@@ -13,7 +13,8 @@ close all
 maxSpeed = 10;
 maxxacc = 4;
 steeringreg = 0.1;
-pointsO = 3;
+specificmoi = 0;
+pointsO = 4;
 pointsN = 10;
 splinestart = 1;
 nextsplinepoints = 0;
@@ -42,6 +43,8 @@ index.sb = index.nu+1;
 index.ps = 1;
 index.pax = 2;
 index.pbeta = 3;
+index.pmoi = 4;
+
 
 integrator_stepsize = 0.1;
 
@@ -49,7 +52,7 @@ model.N = 31;
 model.nvar = index.nv;
 model.neq = index.ns;
 
-model.eq = @(z,p) RK4( z(index.sb:end), z(1:index.nu), @(x,u,p)interstagedx(x,u), integrator_stepsize,p);
+model.eq = @(z,p) RK4( z(index.sb:end), z(1:index.nu), @(x,u,p)interstagedx(x,u,p), integrator_stepsize,p);
 model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 
 l = 1;
@@ -196,7 +199,7 @@ for i =1:tend
     
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,nextSplinePoints) , model.N ,1);
+    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints) , model.N ,1);
     %problem.all_parameters = zeros(22,1);
     problem.x0 = x0(:);
     %problem.x0 = rand(341,1);
@@ -216,7 +219,7 @@ for i =1:tend
     outputM = reshape(output.alldata,[model.nvar,model.N])';
     x0 = outputM';
     u = repmat(outputM(1,1:index.nu),eulersteps,1);
-    [xhist,time] = euler(@(x,u)interstagedx(x,u),xs,u,integrator_stepsize/eulersteps);
+    [xhist,time] = euler(@(x,u)interstagedx(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
     xs = xhist(end,:);
     xs
     history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
