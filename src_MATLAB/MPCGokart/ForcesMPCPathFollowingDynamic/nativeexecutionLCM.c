@@ -162,9 +162,9 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[i*pl+4+ip]=lastCRMsg.path.controlPoints[ip].pex;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+5+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
+			params.all_parameters[i*pl+4+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+6+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
+			params.all_parameters[i*pl+4+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
 	}
 	
 	//assume that this works
