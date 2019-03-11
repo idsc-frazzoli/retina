@@ -1,9 +1,9 @@
-function dx = interstagedx(x,u)
+function dx = interstagedx(x,u,p)
     addpath('../TireAnalysis');
     global index
     
     %just for the moment
-    Cf = 3.5;
+    Cf = p(index.pmoi);
     
     
     B1 = 12;

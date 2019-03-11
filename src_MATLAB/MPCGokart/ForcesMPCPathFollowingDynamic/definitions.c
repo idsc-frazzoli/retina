@@ -52,6 +52,7 @@ struct OptimizationParameter {
 	float speedLimit;
 	float maxxacc;
 	float steeringreg;
+	float specificmoi;
 };
 
 struct ControlAndStateMsg{
