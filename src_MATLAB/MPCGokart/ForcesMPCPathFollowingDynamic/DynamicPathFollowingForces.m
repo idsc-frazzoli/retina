@@ -13,7 +13,7 @@ close all
 maxSpeed = 10;
 maxxacc = 4;
 steeringreg = 0.1;
-specificmoi = 0;
+specificmoi = 0.5;
 pointsO = 4;
 pointsN = 10;
 splinestart = 1;
