@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
@@ -37,7 +38,7 @@ public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
       IZ[i] = (float) (Math.sin(theta) * VelodyneStatics.TO_METER);
     }
     System.out.println("Rays processed at theta = " + //
-            String.join("°, ", Arrays.stream(degrees()).map(String::valueOf).toArray(String[]::new)) + "°");
+            Arrays.stream(degrees()).map(Object::toString).collect(Collectors.joining("°, ")) + "°");
   }
 
   public Integer[] degrees() {

@@ -18,7 +18,7 @@ import java.util.Arrays;
 @Deprecated // only used for try out
 public class Vlp16Render extends LidarRender {
     private static final int LASERS = 16;
-    private final Scalar vlp16Height; // = SensorsConfig.vlp16Height
+    private final Scalar vlp16Height; // = SensorsConfig.GLOBAL.vlp16Height
     private final Tensor angles;
     private final Tensor distances;
 
@@ -27,9 +27,7 @@ public class Vlp16Render extends LidarRender {
         this.vlp16Height = Magnitude.METER.apply(vlp16Height);
         angles = Tensors.vector(i -> RealScalar.of(degree(i)), LASERS);
         distances = Tensor.of(angles.stream().filter(s -> Scalars.lessThan(RealScalar.ZERO, s.Get())) //
-                .map(s -> distance(s.Get().divide(RealScalar.of(180)).multiply(RealScalar.of(Math.PI)))));
-        System.out.println(distances);
-        System.out.println(angles);
+                .map(s -> distance(RealScalar.of(Math.toRadians(s.Get().number().doubleValue())))));
     }
 
     // from retina.lidar.vlp16.StaticHelper
@@ -43,6 +41,16 @@ public class Vlp16Render extends LidarRender {
 
     private Scalar distance(Scalar angle) {
         return Quantity.of(vlp16Height.divide(Tan.of(angle)), SI.METER);
+    }
+
+    /** @return lidar ray angles in degrees */
+    public Tensor angles() {
+        return angles.unmodifiable();
+    }
+
+    /** @return lidar ray radii in meter */
+    public Tensor distances() {
+        return distances.unmodifiable();
     }
 
     public Shape[] circles(GeometricLayer geometricLayer) {
