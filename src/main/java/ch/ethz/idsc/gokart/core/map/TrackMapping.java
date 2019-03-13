@@ -1,4 +1,4 @@
-// code by ynager, mheim
+// code by ynager, mheim, gjoel
 package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
