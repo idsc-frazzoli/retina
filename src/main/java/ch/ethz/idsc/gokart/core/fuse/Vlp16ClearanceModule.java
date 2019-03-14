@@ -14,7 +14,7 @@ import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmClient;
 import ch.ethz.idsc.owl.car.math.ClearanceTracker;
 import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
@@ -84,12 +84,12 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   private Optional<Scalar> contact = Optional.empty();
 
   @Override // from LidarSpacialListener
-  public final void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
+  public final void lidarSpacial(LidarXYZEvent lidarXYZEvent) {
     ClearanceTracker _clearanceTracker = clearanceTracker;
-    float x = lidarSpacialEvent.coords[0];
-    float z = lidarSpacialEvent.coords[2];
+    float x = lidarXYZEvent.coords[0];
+    float z = lidarXYZEvent.coords[2];
     if (spacialXZObstaclePredicate.isObstacle(x, z) && //
-        _clearanceTracker.isObstructed(lidarSpacialEvent.getXY()))
+        _clearanceTracker.isObstructed(lidarXYZEvent.getXY()))
       watchdog.notifyWatchdog();
   }
 

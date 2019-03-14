@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
@@ -60,8 +60,8 @@ public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
         coords[0] = radius * dx;
         coords[1] = radius * dy;
         coords[2] = IZ[laser] * distance;
-        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-        listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
+        LidarXYZEvent lidarXYZEvent = new LidarXYZEvent(usec, coords, intensity);
+        listeners.forEach(listener -> listener.lidarSpacial(lidarXYZEvent));
       }
     }
   }

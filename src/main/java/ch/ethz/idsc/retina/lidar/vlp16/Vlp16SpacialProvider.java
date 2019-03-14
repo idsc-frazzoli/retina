@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.lidar.vlp16;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
@@ -39,8 +39,8 @@ public class Vlp16SpacialProvider extends VelodyneSpacialProvider {
         coords[0] = radius * dx;
         coords[1] = radius * dy;
         coords[2] = IZ[laser] * distance;
-        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-        listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
+        LidarXYZEvent lidarXYZEvent = new LidarXYZEvent(usec, coords, intensity);
+        listeners.forEach(listener -> listener.lidarSpacial(lidarXYZEvent));
       }
     }
   }

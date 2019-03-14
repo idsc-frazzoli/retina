@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
@@ -78,8 +78,8 @@ import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
       float range = distance * VelodyneStatics.TO_METER_FLOAT; // convert to [m]
       coords[0] = range * dx;
       coords[1] = range * dy;
-      LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-      listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
+      LidarXYZEvent lidarXYZEvent = new LidarXYZEvent(usec, coords, intensity);
+      listeners.forEach(listener -> listener.lidarSpacial(lidarXYZEvent));
     }
   }
 }
