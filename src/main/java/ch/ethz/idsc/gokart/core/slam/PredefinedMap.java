@@ -51,7 +51,8 @@ public enum PredefinedMap implements LocalizationImage {
   DUBILAB_LOCALIZATION_20181128(7.5), //
   /** tents at parking position */
   // DUBILAB_LOCALIZATION_20190307(7.5), //
-  DUBILAB_LOCALIZATION_20190309(7.5), //
+  // DUBILAB_LOCALIZATION_20190309(7.5), //
+  DUBILAB_LOCALIZATION_20190314(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   private static final int TTL = 3;
@@ -142,6 +143,6 @@ public enum PredefinedMap implements LocalizationImage {
   }
 
   public static void main(String[] args) throws IOException {
-    ImageIO.write(DUBILAB_LOCALIZATION_20190309.bufferedImage, "png", HomeDirectory.file("20190309.png"));
+    ImageIO.write(DUBILAB_LOCALIZATION_20190314.bufferedImage, "png", HomeDirectory.file("20190314.png"));
   }
 }

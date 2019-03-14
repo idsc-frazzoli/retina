@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final Scalar speedLimit;
   private final Scalar maxxAcc;
   private final Scalar steeringReg;
-  //FIXME: units
+  // FIXME: units
   private final Scalar specificMoI;
 
   // at the moment it is only for the speed limit

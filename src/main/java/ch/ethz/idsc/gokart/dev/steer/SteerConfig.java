@@ -52,6 +52,7 @@ public class SteerConfig {
    * https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf
    * The reciprocal gives the minimum turning radius to be approx. 2.45[m]. */
   public Scalar turningRatioMax = Quantity.of(0.4082, "rad*m^-1");
+  public Scalar staticCompensation = Quantity.of(0.6, "SCT*SCE^-1");
 
   /***************************************************/
   /** @return voltage operating range of battery */
