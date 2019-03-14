@@ -43,7 +43,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
  * 
  * the cascade of affine transformation is
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
-public class BayesianOccupancyGrid implements RenderInterface, RayOccupancyGrid {
+public class BayesianOccupancyGrid implements RenderInterface, OccupancyGrid {
   private static final byte MASK_OCCUPIED = 0;
   private static final Color COLOR_OCCUPIED = Color.BLACK;
   // private static final Color COLOR_UNKNOWN = new Color(0xdd, 0xdd, 0xdd);
@@ -179,7 +179,6 @@ public class BayesianOccupancyGrid implements RenderInterface, RayOccupancyGrid 
    * 
    * @param pos 2D position of new lidar observation in gokart coordinates
    * @param type of observation either 0, or 1 */
-  @Override // from RayOccupancyGrid
   public void processObservation(Tensor pos, int type) {
     if (Objects.nonNull(gokart2world)) {
       Tensor cell = lidarToCell(pos);
@@ -233,7 +232,6 @@ public class BayesianOccupancyGrid implements RenderInterface, RayOccupancyGrid 
   /** set vehicle pose w.r.t world frame
    * 
    * @param pose vector of the form {px, py, heading} */
-  @Override // from RayOccupancyGrid
   public void setPose(Tensor pose) {
     gokart2world = GokartPoseHelper.toSE2Matrix(pose);
     lidar2cellLayer.popMatrix();
@@ -245,7 +243,6 @@ public class BayesianOccupancyGrid implements RenderInterface, RayOccupancyGrid 
   /***************************************************/
   /** clears current obstacle image and redraws all known obstacles */
   // TODO LHF this function should return, or update a region object created here, or provided from the outside!
-  @Override // from RayOccupancyGrid
   public synchronized void genObstacleMap() {
     imageGraphics.setColor(COLOR_UNKNOWN);
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());

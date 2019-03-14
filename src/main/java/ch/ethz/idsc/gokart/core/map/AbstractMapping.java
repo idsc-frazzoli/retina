@@ -14,11 +14,9 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 import java.awt.*;
 import java.nio.FloatBuffer;
@@ -35,7 +33,7 @@ public abstract class AbstractMapping implements //
   private final double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
   private final Vlp16SegmentProvider lidarSpacialProvider;
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-  private final RayOccupancyGrid rayOccupancyGrid;
+  private final BayesianOccupancyGrid bayesianOccupancyGrid;
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder(); // TODO needed? also contained in vlp16LcmHandler
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final SpacialXZObstaclePredicate predicate;
@@ -50,12 +48,12 @@ public abstract class AbstractMapping implements //
   private Tensor points3d_ferry = null;
   private final int waitMillis;
 
-  /* package */ AbstractMapping(RayOccupancyGrid rayOccupancyGrid, SpacialXZObstaclePredicate predicate, //
+  /* package */ AbstractMapping(BayesianOccupancyGrid bayesianOccupancyGrid, SpacialXZObstaclePredicate predicate, //
                                 int max_alt, int waitMillis) {
     lidarSpacialProvider = new Vlp16SegmentProvider(offset, max_alt);
     this.predicate = predicate;
     this.waitMillis = waitMillis;
-    this.rayOccupancyGrid = rayOccupancyGrid;
+    this.bayesianOccupancyGrid = bayesianOccupancyGrid;
     // ---
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -85,7 +83,7 @@ public abstract class AbstractMapping implements //
   }
 
   public void prepareMap() {
-    rayOccupancyGrid.genObstacleMap();
+    bayesianOccupancyGrid.genObstacleMap();
   }
 
   @Override // from LidarRayBlockListener
@@ -108,10 +106,10 @@ public abstract class AbstractMapping implements //
       if (Objects.nonNull(points) && Objects.nonNull(gokartPoseEvent)) {
         points3d_ferry = null;
         // TODO pose quality is not considered yet
-        rayOccupancyGrid.setPose(gokartPoseEvent.getPose());
+        bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
         for (Tensor point : points) { // point x, y, z
           boolean isObstacle = predicate.isObstacle(point); // only x and z are used
-          rayOccupancyGrid.processObservation( //
+          bayesianOccupancyGrid.processObservation( //
               point,
               isObstacle ? 1 : 0);
         }
@@ -126,7 +124,7 @@ public abstract class AbstractMapping implements //
 
   @Override // from Region
   public boolean isMember(Tensor element) {
-    return rayOccupancyGrid.isMember(element);
+    return bayesianOccupancyGrid.isMember(element);
   }
 
   @Override // from GokartPoseListener
@@ -136,26 +134,26 @@ public abstract class AbstractMapping implements //
 
   @Override //  from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    rayOccupancyGrid.render(geometricLayer, graphics);
+    bayesianOccupancyGrid.render(geometricLayer, graphics);
   }
 
   @Override // from OccupancyGrid
   public Tensor getGridSize() {
-    return rayOccupancyGrid.getGridSize();
+    return bayesianOccupancyGrid.getGridSize();
   }
 
   @Override // from OccupancyGrid
   public boolean isCellOccupied(int x, int y) {
-    return rayOccupancyGrid.isCellOccupied(x, y);
+    return bayesianOccupancyGrid.isCellOccupied(x, y);
   }
 
   @Override // from OccupancyGrid
   public Tensor getTransform() {
-    return rayOccupancyGrid.getTransform();
+    return bayesianOccupancyGrid.getTransform();
   }
 
   @Override // from OccupancyGrid
   public void clearStart(int startX, int startY, double orientation) {
-    rayOccupancyGrid.clearStart(startX, startY, orientation);
+    bayesianOccupancyGrid.clearStart(startX, startY, orientation);
   }
 }

@@ -64,7 +64,7 @@ public class Vlp16Render extends LidarRender {
         }).toArray(Shape[]::new);
     }
 
-    @Override //  from LidarRenderer
+    @Override //  from LidarRender
     public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
         geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
         graphics.setColor(Color.ORANGE);
