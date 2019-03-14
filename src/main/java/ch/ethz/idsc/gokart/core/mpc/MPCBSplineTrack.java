@@ -12,7 +12,6 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
 public class MPCBSplineTrack implements MPCPreviewableTrack {
   private static final Scalar ONE = RealScalar.of(1.0);
-  private static final Scalar HALF = RealScalar.of(0.5);
 
   /** @param points_xyr matrix with dimension n x 3
    * @param radiusOffset
@@ -34,11 +33,11 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
   // TODO JPH optimize
   @Override
   public MPCPathParameter getPathParameterPreview(int previewSize, Tensor position, Scalar padding) {
-    return getPathParameterPreview(previewSize, position, padding, ONE);
+    return getPathParameterPreview(previewSize, position, padding, ONE, ONE);
   }
 
   @Override
-  public MPCPathParameter getPathParameterPreview(int previewSize, Tensor position, Scalar padding, Scalar QPFactor) {
+  public MPCPathParameter getPathParameterPreview(int previewSize, Tensor position, Scalar padding, Scalar QPFactor, Scalar qpLimit) {
     // test if this function is fast enough to be called many times (it should be)
     Scalar pathProgress = bSplineTrack.getNearestPathProgress(position);
     // round down
@@ -56,7 +55,7 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
       Scalar localProgress = RealScalar.of(i).subtract(QPOffset).divide(RealScalar.of(previewSize));
       Scalar localQPFactor;
       if (!QPFactor.equals(ONE))
-        localQPFactor = Max.of(HALF, QPFactor.multiply(localProgress).add(ONE.subtract(localProgress)));
+        localQPFactor = Max.of(qpLimit, QPFactor.multiply(localProgress).add(ONE.subtract(localProgress)));
       else
         localQPFactor = ONE;
       vector.set(scalar -> Ramp.FUNCTION.apply(((Scalar) scalar).subtract(padding).multiply(localQPFactor)), 2);

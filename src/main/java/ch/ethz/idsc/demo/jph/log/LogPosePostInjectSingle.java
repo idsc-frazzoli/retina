@@ -13,8 +13,8 @@ import ch.ethz.idsc.gokart.offline.slam.VoidScatterImage;
   ;
   public static void in(File folder) throws Exception {
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
-    final File target = new File(folder, StaticHelper.FILENAME);
-    if (target.isFile()) {
+    final File post_lcm = new File(folder, StaticHelper.POST_LCM);
+    if (post_lcm.isFile()) {
       // System.err.println("delete " + target);
       // target.delete();
       // System.out.println("skip " + folder);
@@ -23,13 +23,13 @@ import ch.ethz.idsc.gokart.offline.slam.VoidScatterImage;
           new LidarGyroPoseEstimator(gokartLogInterface, VoidScatterImage.INSTANCE);
       LogPosePostInject logPosePostInject = new LogPosePostInject();
       lidarGyroPoseEstimator.offlineLocalize.addListener(logPosePostInject);
-      logPosePostInject.process(gokartLogInterface.file(), target, lidarGyroPoseEstimator);
+      logPosePostInject.process(gokartLogInterface.file(), post_lcm, lidarGyroPoseEstimator);
     }
-    if (target.isFile()) {
-      final File source = new File(folder, "log.lcm");
-      if (source.isFile() && source.length() <= target.length()) {
-        source.delete();
-        System.out.println("remove " + source);
+    if (post_lcm.isFile()) {
+      final File source = new File(folder, StaticHelper.LOG_LCM);
+      if (source.isFile() && source.length() <= post_lcm.length()) {
+        // source.delete();
+        // System.out.println("remove " + source);
       }
     }
   }

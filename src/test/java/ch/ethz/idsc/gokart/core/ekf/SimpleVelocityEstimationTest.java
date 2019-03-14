@@ -1,6 +1,8 @@
 package ch.ethz.idsc.gokart.core.ekf;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -14,7 +16,7 @@ import junit.framework.TestCase;
 
 public class SimpleVelocityEstimationTest extends TestCase {
   public void testSimple() {
-    VelocityEstimationConfig.GLOBAL.correctionFactor = Quantity.of(0.9, SI.ONE);
+    VelocityEstimationConfig.GLOBAL.velocityCorrectionFactor = Quantity.of(0.9, SI.ONE);
     Scalar accUnit = Quantity.of(1, SI.ACCELERATION);
     Scalar deltaT = Quantity.of(0.01, SI.SECOND);
     Scalar deltaTl = Quantity.of(0.1, SI.SECOND);
@@ -29,9 +31,9 @@ public class SimpleVelocityEstimationTest extends TestCase {
         Scalar accY = RandomVariate.of(distr).multiply(accUnit);
         estimation.measureAcceleration(Tensors.of(accX, accY), rotVelocity, deltaT);
       }
-      estimation.measurePose(originPos, deltaTl);
+      estimation.measurePose(GokartPoseEvents.getPoseEvent(originPos, RealScalar.ONE), deltaTl);
     }
-    System.out.println(estimation.velocity);
-    assertTrue(Scalars.lessThan(Norm._2.of(estimation.velocity), Quantity.of(0.2, SI.VELOCITY)));
+    System.out.println(estimation.filteredVelocity);
+    assertTrue(Scalars.lessThan(Norm._2.of(estimation.filteredVelocity), Quantity.of(0.2, SI.VELOCITY)));
   }
 }

@@ -4,9 +4,6 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
@@ -21,7 +18,6 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
@@ -30,13 +26,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /* package */ class SimpleDynamicMPCStateEstimationProvider extends MPCStateEstimationProvider {
   private final SimplePositionVelocityModule simpleVelocityEstimation = //
       ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
-  private Scalar Ux = Quantity.of(0, SI.VELOCITY);
-  // assumed to be zero here (Kinematic controller cannot do anything with this information
-  private Scalar Uy = Quantity.of(0, SI.VELOCITY);
-  private Scalar orientation = RealScalar.of(0);
-  private Scalar dotOrientation = Quantity.of(0, SI.PER_SECOND);
-  private Scalar XPosition = Quantity.of(0, SI.METER);
-  private Scalar YPosition = Quantity.of(0, SI.METER);
   private Scalar w2L = Quantity.of(0, SI.PER_SECOND);
   private Scalar w2R = Quantity.of(0, SI.PER_SECOND);
   private Scalar s = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
@@ -69,16 +58,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       }
     }
   };
-  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-  private final GokartPoseListener gokartPoseListener = new GokartPoseListener() {
-    @Override
-    public void getEvent(GokartPoseEvent getEvent) {
-      Tensor pose = getEvent.getPose();
-      XPosition = pose.Get(0);
-      YPosition = pose.Get(1);
-      orientation = pose.Get(2);
-    }
-  };
 
   protected SimpleDynamicMPCStateEstimationProvider(Timing timing) {
     super(timing);
@@ -87,22 +66,22 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   @Override
   public GokartState getState() {
     // check if there was an update since the creation of the last gokart state
-    if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate))
-      Ux = simpleVelocityEstimation.getVelocity().Get(0);
-    Uy = simpleVelocityEstimation.getVelocity().Get(1);
-    dotOrientation = simpleVelocityEstimation.getVelocity().Get(2);
-    lastGokartState = new GokartState( //
-        getTime(), //
-        Ux, //
-        Uy, //
-        dotOrientation, //
-        XPosition, //
-        YPosition, //
-        orientation, //
-        w2L, //
-        w2R, //
-        s, //
-        bTemp);
+    if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate)) {
+      Tensor velocity = simpleVelocityEstimation.getVelocity();
+      Tensor pose = simpleVelocityEstimation.getPose();
+      lastGokartState = new GokartState( //
+          getTime(), //
+          velocity.Get(0), //
+          velocity.Get(1), //
+          velocity.Get(2), //
+          pose.Get(0), //
+          pose.Get(1), //
+          pose.Get(2), //
+          w2L, //
+          w2R, //
+          s, //
+          bTemp);
+    }
     return lastGokartState;
   }
 
@@ -111,8 +90,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     LinmotSocket.INSTANCE.addGetListener(linmotGetListener);
     SteerSocket.INSTANCE.addGetListener(steerGetListener);
     RimoSocket.INSTANCE.addGetListener(rimoGetListener);
-    gokartPoseLcmClient.addListener(gokartPoseListener);
-    gokartPoseLcmClient.startSubscriptions();
   }
 
   @Override
@@ -120,6 +97,5 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     LinmotSocket.INSTANCE.removeGetListener(linmotGetListener);
     SteerSocket.INSTANCE.removeGetListener(steerGetListener);
     RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
-    gokartPoseLcmClient.stopSubscriptions();
   }
 }

@@ -16,7 +16,7 @@ public class MPCOptimizationConfig {
   public Scalar maxAcceleration = Quantity.of(30, SI.ACCELERATION);
   /** The lower limit for the Go-kart speed */
   @FieldSubdivide(start = "0f[m*s^-1]", end = "1[m*s^-1]", intervals = 10)
-  public Scalar minSpeed = Quantity.of(0.5, SI.VELOCITY);
+  public Scalar minSpeed = Quantity.of(1, SI.VELOCITY);
   /** The limit for the Go-kart speed */
   @FieldSubdivide(start = "4f[m*s^-1]", end = "10[m*s^-1]", intervals = 6)
   public Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
@@ -25,7 +25,7 @@ public class MPCOptimizationConfig {
   public Scalar maxLatAcc = Quantity.of(6.25, SI.ACCELERATION);
   /** The limit for the Go-kart lateral acceleration */
   @FieldSubdivide(start = "3f[m*s^-2]", end = "15[m*s^-2]", intervals = 48)
-  public Scalar maxLonAcc = Quantity.of(4.0, SI.ACCELERATION);
+  public Scalar maxLonAcc = Quantity.of(5.0, SI.ACCELERATION);
   /** The maximum corrected acceleration value for the front axle (to avoid understeering) */
   @FieldSubdivide(start = "3f[m*s^-2]", end = "15[m*s^-2]", intervals = 48)
   public Scalar latAccLim = Quantity.of(5, SI.ACCELERATION);
@@ -45,16 +45,24 @@ public class MPCOptimizationConfig {
   /** The wait time after a successful optimization */
   public Scalar updateDelay = Quantity.of(0.0, SI.SECOND);
   /** Steering anti-lag */
-  public Scalar steerAntiLag = Quantity.of(0.2, SI.SECOND);
+  public Scalar steerAntiLag = Quantity.of(0.0, SI.SECOND);
   /** Braking anti-lag */
-  public Scalar brakingAntiLag = Quantity.of(0.1, SI.SECOND);
+  public Scalar brakingAntiLag = Quantity.of(0.05, SI.SECOND);
   /** Padding */
   @FieldSubdivide(start = "0f[m]", end = "2[m]", intervals = 20)
-  public Scalar padding = Quantity.of(0.8, SI.METER);
-  @FieldSubdivide(start = "0f", end = "1", intervals = 10)
+  public Scalar padding = Quantity.of(0.5, SI.METER);
+  @FieldSubdivide(start = "-5f", end = "1", intervals = 50)
   public Scalar qpFactor = RealScalar.of(0);
+  @FieldSubdivide(start = "0f", end = "1", intervals = 10)
+  public Scalar qpLimit = RealScalar.of(0.9);
   /** How much does mpc underestimate the braking */
   public Scalar brakeMultiplicator = RealScalar.of(1);
   /** How much does mpc underestimate the steering */
-  public Scalar steerMultiplicator = RealScalar.of(1.2);
+  public Scalar steerMultiplicator = RealScalar.of(1);
+  /** steering regularization in MPC optimization */
+  public Scalar steeringReg = RealScalar.of(0.1);
+  /** steering damping factor */
+  public Scalar steerDamp = RealScalar.of(1);
+  /** specific MoI */
+  public Scalar specificMoI = RealScalar.of(0.5);
 }

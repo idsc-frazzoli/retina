@@ -77,6 +77,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       htmlUtf8.appendln("<p><small>report generated: " + new Date() + "</small>");
       htmlUtf8.appendln("<h2>Steering</h2>");
       htmlUtf8.appendln("<img src='plot/status.png'/><br/><br/>");
+      // htmlUtf8.appendln("<img src='plot/status_diff.png'/><br/><br/>");
       htmlUtf8.appendln("<img src='plot/steerget.png'/><br/><br/>");
       htmlUtf8.appendln("<h2>Rear Wheel Motors</h2>");
       htmlUtf8.appendln("<img src='plot/rimoput.png'/><br/><br/>");
@@ -103,6 +104,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       htmlUtf8.appendln("<img src='plot/labjackAdc.png'/><br/><br/>");
     }
     exportStatus();
+    // exportStatusDiff();
     exportSteerGet();
     exportRimoPut();
     exportRimoGet();
@@ -145,6 +147,20 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("calibrated (0 = straight)");
     }
     exportListPlot("status.png", visualSet);
+  }
+
+  public void exportStatusDiff() throws IOException {
+    VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(128));
+    visualSet.setPlotLabel("power steering position differences");
+    visualSet.setAxesLabelX("time [s]");
+    visualSet.setAxesLabelY("power steering position [n.a.]");
+    {
+      Tensor tensor = map.get(SteerGetChannel.INSTANCE);
+      Tensor pos_diff = Differences.of(tensor.get(Tensor.ALL, 8));
+      Tensor domain = tensor.get(Tensor.ALL, 0).extract(0, pos_diff.length());
+      visualSet.add(domain, pos_diff).setLabel("raw");
+    }
+    exportListPlot("status_diff.png", visualSet);
   }
 
   public void exportSteerGet() throws IOException {
@@ -231,8 +247,11 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.setAxesLabelY("acceleration [m*s^-2]");
     Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
     Tensor domain = tensor.get(Tensor.ALL, 0);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
+    // if (!Tensors.isEmpty(domain))
+    {
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
+    }
     exportListPlot("vmu931acc.png", visualSet);
   }
 
@@ -244,11 +263,14 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     {
       Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
-      Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
-      Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
-      Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
-      visualSet.add(domain.extract(0, smoothX.length()), smoothX).setLabel("x (forward)");
-      visualSet.add(domain.extract(0, smoothY.length()), smoothY).setLabel("y (left)");
+      // if (!Tensors.isEmpty(domain))
+      {
+        Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
+        Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
+        Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
+        visualSet.add(domain.extract(0, smoothX.length()), smoothX).setLabel("x (forward)");
+        visualSet.add(domain.extract(0, smoothY.length()), smoothY).setLabel("y (left)");
+      }
     }
     exportListPlot("vmu931accSmooth.png", visualSet);
   }
@@ -305,7 +327,11 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
       }
       {
         Tensor vmu931 = map.get(Vmu931ImuVehicleChannel.INSTANCE);
-        visualSet.add(vmu931.get(Tensor.ALL, 0), vmu931.get(Tensor.ALL, 4)).setLabel("from VMU931");
+        Tensor vmu931_domain = vmu931.get(Tensor.ALL, 0);
+        // if (!Tensors.isEmpty(vmu931_domain))
+        {
+          visualSet.add(vmu931_domain, vmu931.get(Tensor.ALL, 4)).setLabel("from VMU931");
+        }
       }
       exportListPlot("vmu931gyro.png", visualSet);
     }

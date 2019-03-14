@@ -21,6 +21,7 @@ public class TrackReconRender implements RenderInterface, MPCBSplineTrackListene
 
   @Override // from MPCBSplineTrackListener
   public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
+    System.out.println(optional.isPresent());
     trackRender.setTrack(optional.map(MPCBSplineTrack::bSplineTrack).orElse(null));
   }
 }

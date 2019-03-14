@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.img.ImageResize;
 import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public enum GokartLcmImage {
   ;
@@ -27,22 +28,22 @@ public enum GokartLcmImage {
       tensor.append(ImageResize.nearest(auton.map(ColorDataGradients.COPPER), FX, 1));
     }
     {
-      Clip clip = Clip.function(0.5, 1);
+      Clip clip = Clips.interval(0.5, 1);
       Tensor poseq = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2poseq()).map(clip::rescale));
       tensor.append(ImageResize.nearest(poseq.map(ColorDataGradients.AVOCADO), FX, 1));
     }
     {
-      Clip clip = Clip.function(-0.7, 0.7);
+      Clip clip = Clips.interval(-0.7, 0.7);
       Tensor steer = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2steer()).map(clip::rescale));
       tensor.append(ImageResize.nearest(steer.map(ColorDataGradients.THERMOMETER), FX, 1));
     }
     {
-      Clip clip = Clip.function(-1, +1);
+      Clip clip = Clips.interval(-1, +1);
       Tensor gyroz = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2gyroz()).map(clip::rescale));
       tensor.append(ImageResize.nearest(gyroz.map(ColorDataGradients.THERMOMETER), FX, 1));
     }
     {
-      Clip clip = Clip.function(0, 40);
+      Clip clip = Clips.interval(0, 40);
       Tensor speed = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2speed()).map(clip::rescale));
       tensor.append(ImageResize.nearest(speed.map(ColorDataGradients.CLASSIC), FX, 1));
     }

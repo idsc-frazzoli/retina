@@ -27,10 +27,10 @@ public class RimoThrustManualModule extends GuideManualModule<RimoPutEvent> {
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
-    Scalar pair = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0);
-    // Scalar pair = joystick.getAheadPair_Unit().Get(1); // entry in [0, 1]
-    pair = pair.multiply(ManualConfig.GLOBAL.torqueLimit);
-    short arms_raw = Magnitude.ARMS.toShort(pair); // confirm that units are correct
+    // ahead value may be negative
+    Scalar ahead = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0) //
+        .multiply(ManualConfig.GLOBAL.torqueLimit);
+    short arms_raw = Magnitude.ARMS.toShort(ahead);
     return Optional.of(RimoPutHelper.operationTorque( //
         (short) -arms_raw, // sign left invert
         (short) +arms_raw // sign right id

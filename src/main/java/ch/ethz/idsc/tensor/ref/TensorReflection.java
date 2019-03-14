@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public enum TensorReflection {
   ;
@@ -34,7 +35,7 @@ public enum TensorReflection {
   public static Optional<Clip> of(FieldClip fieldClip) {
     if (Objects.nonNull(fieldClip))
       try {
-        return Optional.of(Clip.function( //
+        return Optional.of(Clips.interval( //
             Scalars.fromString(fieldClip.min()), //
             Scalars.fromString(fieldClip.max())));
       } catch (Exception exception) {

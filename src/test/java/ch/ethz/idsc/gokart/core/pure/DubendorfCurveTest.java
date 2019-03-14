@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.red.ScalarSummaryStatistics;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class DubendorfCurveTest extends TestCase {
@@ -24,7 +25,7 @@ public class DubendorfCurveTest extends TestCase {
         .map(Scalar::number) //
         .mapToDouble(Number::doubleValue).summaryStatistics();
     // changed from 0.1 to 0.05 for eight demoday curve
-    Clip clip = Clip.function(0.05, 0.4);
+    Clip clip = Clips.interval(0.05, 0.4);
     clip.requireInside(RealScalar.of(dss.getMin()));
     clip.requireInside(RealScalar.of(dss.getMax()));
   }
@@ -39,7 +40,7 @@ public class DubendorfCurveTest extends TestCase {
     ScalarSummaryStatistics sss = Differences.of(curve).stream() //
         .map(Norm._2::ofVector).collect(ScalarSummaryStatistics.collector());
     // changed from 0.1 to 0.05 for eight demoday curve
-    Clip clip = Clip.function(0.05, 0.4);
+    Clip clip = Clips.interval(0.05, 0.4);
     clip.requireInside(sss.getMin());
     clip.requireInside(sss.getMax());
   }

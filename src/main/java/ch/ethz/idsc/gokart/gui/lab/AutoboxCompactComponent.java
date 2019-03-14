@@ -45,16 +45,17 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable {
-  private static final Clip CLIP_DEG_C = Clip.function( //
+  private static final Clip CLIP_DEG_C = Clips.interval( //
       Quantity.of(+20, NonSI.DEGREE_CELSIUS), //
       Quantity.of(100, NonSI.DEGREE_CELSIUS));
-  private static final Clip CLIP_GYROZ = Clip.function( //
+  private static final Clip CLIP_GYROZ = Clips.interval( //
       Quantity.of(-1, SI.PER_SECOND), //
       Quantity.of(+1, SI.PER_SECOND));
-  private static final Clip CLIP_AHEAD = Clip.absoluteOne();
+  private static final Clip CLIP_AHEAD = Clips.absoluteOne();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();

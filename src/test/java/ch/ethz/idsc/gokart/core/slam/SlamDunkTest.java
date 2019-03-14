@@ -23,6 +23,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 /** the test matches 3 consecutive lidar scans to the dubendorf hangar map
@@ -58,7 +59,7 @@ public class SlamDunkTest extends TestCase {
     };
     OfflineLogPlayer.process(GokartLogAdapterTest.SIMPLE.file(), offlineLogListener);
     assertEquals(offlineLocalize.skipped.length(), 1);
-    Clip clip = Clip.function(0.35, 1);
+    Clip clip = Clips.interval(0.35, 1);
     Tensor table = tb.toTable();
     assertEquals(table.map(clip), table);
     System.out.println(table);

@@ -24,14 +24,16 @@ import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
-import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedPredictiveTorqueVectoringManualModule;
+import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualGroupModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
+import ch.ethz.idsc.gokart.core.man.UltimateTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
@@ -82,19 +84,19 @@ enum RunTabbedTaskGui {
       Vmu931LcmServerModule.class, // vmu931 imu
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
-      GokartPoseLcmModule.class, // publishes pose
       GokartTimestampModule.class, //
       LoggerModule.class, //
       LabjackU3LcmModule.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
-      Vlp16PassiveSlowing.class, //
-      LidarLocalizationModule.class, //
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
+      Vlp16PassiveSlowing.class, //
+      SimplePositionVelocityModule.class, //
+      GokartPoseLcmModule.class, // publishes pose
+      LidarLocalizationModule.class, //
       ManualResetModule.class, //
-      DavisImuTrackerModule.class, //
-      SimplePositionVelocityModule.class
+      DavisImuTrackerModule.class //
   // AutonomySafetyModule.class // <- dead man switch
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
@@ -109,9 +111,10 @@ enum RunTabbedTaskGui {
       GokartVoiceOutputs.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
+      UltimateTorqueVectoringModule.class, //
       RimoThrustManualModule.class, //
+      DriftThrustManualModule.class, //
       ImprovedNormalizedTorqueVectoringManualModule.class, //
-      ImprovedNormalizedPredictiveTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
       ManualGroupModule.class, //
       SysidSignalsModule.class, //
@@ -119,6 +122,7 @@ enum RunTabbedTaskGui {
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       MPCKinematicDrivingModule.class, //
+      MPCDynamicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       FigureTiresAModule.class, //

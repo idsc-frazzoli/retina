@@ -43,7 +43,7 @@ public final class BSplineTrack implements TrackInterface {
     numPoints = points_xyr.length();
     points_xy = Tensor.of(points_xyr.stream().map(Extract2D.FUNCTION));
     points_r = points_xyr.get(Tensor.ALL, 2);
-    effPoints = numPoints + (closed ? 0 : -1);
+    effPoints = numPoints + (closed ? 0 : -2);
     // prepare lookup
     posX = new float[(int) (effPoints / LOOKUP_RES)];
     posY = new float[(int) (effPoints / LOOKUP_RES)];

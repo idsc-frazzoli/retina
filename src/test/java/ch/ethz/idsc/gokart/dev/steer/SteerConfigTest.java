@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class SteerConfigTest extends TestCase {
@@ -42,7 +43,7 @@ public class SteerConfigTest extends TestCase {
 
   public void testConversion() {
     Scalar radius = UnitSystem.SI().apply(SteerConfig.GLOBAL.turningRatioMax.reciprocal());
-    Clip clip = Clip.function(Quantity.of(2.4, SI.METER), Quantity.of(2.5, SI.METER));
+    Clip clip = Clips.interval(Quantity.of(2.4, SI.METER), Quantity.of(2.5, SI.METER));
     assertTrue(clip.isInside(radius));
   }
 
@@ -56,7 +57,7 @@ public class SteerConfigTest extends TestCase {
     // encoder == 0.7536487192653976[SCE]
     // our simple, linear steering model tells us an encoder value outside the max range
     // conclusion: we should build a more accurate model that maps [encoder <-> effective steering angle]
-    Clip clip = Clip.function(Quantity.of(0.5, SteerPutEvent.UNIT_ENCODER), Quantity.of(0.8, SteerPutEvent.UNIT_ENCODER));
+    Clip clip = Clips.interval(Quantity.of(0.5, SteerPutEvent.UNIT_ENCODER), Quantity.of(0.8, SteerPutEvent.UNIT_ENCODER));
     assertTrue(clip.isInside(encoder));
   }
 }

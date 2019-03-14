@@ -43,5 +43,6 @@ import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
   // ---
   static final File CUTS = new File("/media/datahaki/data/gokart/cuts");
   static final File DEST = new File("/media/datahaki/data/gokart/dynamics");
-  static final String FILENAME = "post.lcm";
+  static final String LOG_LCM = "log.lcm";
+  static final String POST_LCM = "post.lcm";
 }

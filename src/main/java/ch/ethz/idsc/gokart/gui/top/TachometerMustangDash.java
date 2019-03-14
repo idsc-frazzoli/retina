@@ -27,6 +27,7 @@ import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -51,14 +52,14 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     }
     ScalarUnaryOperator scalarUnaryOperator = QuantityMagnitude.SI().in(Unit.of("km*h^-1"));
     Scalar speed = scalarUnaryOperator.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
-    Clip clip = Clip.function(0, 60);
+    Clip clip = Clips.interval(0, 60);
     speed = clip.apply(speed);
     final int steps = speed.multiply(RealScalar.of(1)).number().intValue();
     int count = 0;
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.025)));
     for (Tensor _a : Subdivide.of(2, -2, 12 * 6)) {
       Scalar angle = _a.Get();
-      Tensor rgba = ColorDataGradients.BONE.apply(Clip.unit().apply(RealScalar.of(0.3 + (steps - count) * 0.01)));
+      Tensor rgba = ColorDataGradients.BONE.apply(Clips.unit().apply(RealScalar.of(0.3 + (steps - count) * 0.01)));
       Color color = ColorFormat.toColor(rgba);
       // color = new Color(color.getGreen(),color.getBlue(),color.getRed(),128+64);
       graphics.setColor(color);

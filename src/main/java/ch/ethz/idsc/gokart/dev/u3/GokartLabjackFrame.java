@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public final class GokartLabjackFrame implements ManualControlInterface {
@@ -26,7 +27,7 @@ public final class GokartLabjackFrame implements ManualControlInterface {
    * ranges from {-0.075455[V], 5.11837[V]}.
    * the lower bound is deliberately increased so that the lower bound
    * is insensitive to noise or minor activations of the throttle foot pedal. */
-  private static final Clip THROTTLE_CLIP = Clip.function(0.1, 5);
+  private static final Clip THROTTLE_CLIP = Clips.interval(0.1, 5);
   private static final int THROTTLE_INDEX = 2;
   private static final float AUTONOMOUS_BUTTON_TRESHOLD = 2f;
   private static final int AUTONOMOUS_BUTTON_INDEX = 3;

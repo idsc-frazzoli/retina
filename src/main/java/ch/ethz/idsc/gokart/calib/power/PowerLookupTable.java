@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /** to ensure that the maximum motor torque is actually applied */
 public class PowerLookupTable {
@@ -25,10 +26,10 @@ public class PowerLookupTable {
   // ---
   // min and max values for lookup tables
   // TODO magic const in config class
-  private static final Clip CLIP_VEL = Clip.function( //
+  private static final Clip CLIP_VEL = Clips.interval( //
       Quantity.of(-10, SI.VELOCITY), //
       Quantity.of(+10, SI.VELOCITY));
-  private static final Clip CLIP_ACC = Clip.function( //
+  private static final Clip CLIP_ACC = Clips.interval( //
       Quantity.of(-2, SI.ACCELERATION), //
       Quantity.of(+2, SI.ACCELERATION));
   private static final int RES = 1000;
@@ -133,7 +134,7 @@ public class PowerLookupTable {
    * @return the resulting acceleration [m/s^2] */
   public Scalar getNormalizedAcceleration(Scalar power, Scalar velocity) {
     Tensor minMaxAcc = getMinMaxAcceleration(velocity);
-    Scalar clippedPower = Clip.absoluteOne().apply(power);
+    Scalar clippedPower = Clips.absoluteOne().apply(power);
     Tensor keypoints = Tensors.of(minMaxAcc.Get(0), Quantity.of(0, SI.ACCELERATION), minMaxAcc.Get(1));
     return LinearInterpolation.of(keypoints).At(clippedPower.add(RealScalar.ONE));
   }
@@ -148,7 +149,7 @@ public class PowerLookupTable {
   public Scalar getNormalizedAccelerationTorqueCentered(Scalar power, Scalar velocity) {
     Tensor minMaxAcc = getMinMaxAcceleration(velocity);
     Scalar torqueFreeAcc = getAcceleration(Quantity.of(0, NonSI.ARMS), velocity);
-    Scalar clippedPower = Clip.absoluteOne().apply(power);
+    Scalar clippedPower = Clips.absoluteOne().apply(power);
     Tensor keypoints = Tensors.of(minMaxAcc.Get(0), torqueFreeAcc, minMaxAcc.Get(1));
     return LinearInterpolation.of(keypoints).At(clippedPower.add(RealScalar.ONE));
   }
