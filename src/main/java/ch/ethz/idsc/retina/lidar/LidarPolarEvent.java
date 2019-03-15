@@ -9,8 +9,7 @@ public class LidarPolarEvent extends LidarSpacialEvent {
 
   /** @param usec timestamp of event in [us]
    * @param coords spacial coordinates in [rad] (azimuth, elevation) resp. [m] (distance)
-   * @param intensity intensity of reflection [0, 1, ..., 255] 255 == most intensive return
-   */
+   * @param intensity intensity of reflection [0, 1, ..., 255] 255 == most intensive return */
   public LidarPolarEvent(int usec, float[] coords, byte intensity) {
     super(usec, coords, intensity);
   }
