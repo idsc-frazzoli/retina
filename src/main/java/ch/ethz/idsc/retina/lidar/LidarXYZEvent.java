@@ -18,6 +18,6 @@ public class LidarXYZEvent extends LidarSpacialEvent {
   }
 
   public Tensor getXY() {
-    return Tensors.of(Quantity.of(coords[0], SI.METER), Quantity.of(coords[1], SI.METER));
+    return Tensors.vector(coords[0], coords[1]);
   }
 }
