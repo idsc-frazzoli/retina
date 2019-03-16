@@ -107,32 +107,8 @@ public class SensorsConfig {
   /***************************************************/
   /** .
    * ante 20190408: the vmu931 was mounted on the gokart with xyz aligned with the gokart coordinate system
-   * post 20190408: the vmu931 is mounted rotated around U axis with 180[deg]
-   * 
-   * @param vmu931ImuFrame
-   * @return vector of length 2 of acceleration in gokart coordinates */
+   * post 20190408: the vmu931 is mounted rotated around U axis with 180[deg] */
   public static PlanarVmu931Imu getPlanarVmu931Imu() {
     return FlippedPlanarVmu931Imu.INSTANCE;
   }
-  // Tensor vmu931AccXY(Vmu931ImuFrame vmu931ImuFrame) {
-  // return vmu931AccXY(vmu931ImuFrame.accXY());
-  // }
-  //
-  // /* package */ Tensor vmu931AccXY(Tensor accRawXY) {
-  // // return accRawXY.copy(); // ante 20190208)
-  // return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate()); // post [20190208
-  // }
-  //
-  // /** see description above
-  // *
-  // * @param vmu931ImuFrame
-  // * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
-  // public Scalar vmu931GyroZ(Vmu931ImuFrame vmu931ImuFrame) {
-  // return vmu931GyroZ(vmu931ImuFrame.gyroZ());
-  // }
-  //
-  // /* package */ Scalar vmu931GyroZ(Scalar gyroZ) {
-  // // return gyroZ; // ante 20190208)
-  // return gyroZ.negate(); // post [20190208
-  // }
 }

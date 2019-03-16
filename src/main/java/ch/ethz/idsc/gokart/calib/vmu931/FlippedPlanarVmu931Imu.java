@@ -10,22 +10,22 @@ import ch.ethz.idsc.tensor.Tensors;
 public enum FlippedPlanarVmu931Imu implements PlanarVmu931Imu {
   INSTANCE;
   // ---
-  @Override
+  @Override // from PlanarVmu931Imu
   public Tensor vmu931AccXY(Vmu931ImuFrame vmu931ImuFrame) {
     return vmu931AccXY(vmu931ImuFrame.accXY());
   }
 
-  @Override
-  public Tensor vmu931AccXY(Tensor accRawXY) {
-    return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate()); // post [20190208
+  @Override // from PlanarVmu931Imu
+  public Tensor vmu931AccXY(Tensor accXY) {
+    return Tensors.of(accXY.Get(1).negate(), accXY.Get(0).negate()); // post [20190208
   }
 
-  @Override
+  @Override // from PlanarVmu931Imu
   public Scalar vmu931GyroZ(Vmu931ImuFrame vmu931ImuFrame) {
     return vmu931GyroZ(vmu931ImuFrame.gyroZ());
   }
 
-  @Override
+  @Override // from PlanarVmu931Imu
   public Scalar vmu931GyroZ(Scalar gyroZ) {
     return gyroZ.negate(); // post [20190208
   }

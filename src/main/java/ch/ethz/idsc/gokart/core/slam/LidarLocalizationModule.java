@@ -42,7 +42,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
   private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
-  private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry();
+  private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
   private final Thread thread = new Thread(this);

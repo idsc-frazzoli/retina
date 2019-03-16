@@ -9,22 +9,22 @@ import ch.ethz.idsc.tensor.Tensor;
 public enum NativePlanarVmu931Imu implements PlanarVmu931Imu {
   INSTANCE;
   // ---
-  @Override
+  @Override // from PlanarVmu931Imu
   public Tensor vmu931AccXY(Vmu931ImuFrame vmu931ImuFrame) {
     return vmu931AccXY(vmu931ImuFrame.accXY());
   }
 
-  @Override
-  public Tensor vmu931AccXY(Tensor accRawXY) {
-    return accRawXY.copy();
+  @Override // from PlanarVmu931Imu
+  public Tensor vmu931AccXY(Tensor accXY) {
+    return accXY.copy();
   }
 
-  @Override
+  @Override // from PlanarVmu931Imu
   public Scalar vmu931GyroZ(Vmu931ImuFrame vmu931ImuFrame) {
     return vmu931GyroZ(vmu931ImuFrame.gyroZ());
   }
 
-  @Override
+  @Override // from PlanarVmu931Imu
   public Scalar vmu931GyroZ(Scalar gyroZ) {
     return gyroZ;
   }
