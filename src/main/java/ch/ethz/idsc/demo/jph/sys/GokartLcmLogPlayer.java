@@ -21,7 +21,7 @@ import lcm.logging.LogPlayerConfig;
     file = new File("/media/datahaki/data/gokart/cuts/20190314/20190314T154544_18/post.lcm");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
-    logPlayerConfig.speed_denominator = 1;
+    logPlayerConfig.speed_denominator = 8;
     LogPlayer logPlayer = LogPlayer.create(logPlayerConfig);
     WindowConfiguration windowConfiguration = //
         AppCustomization.load(GokartLcmLogPlayer.class, new WindowConfiguration());

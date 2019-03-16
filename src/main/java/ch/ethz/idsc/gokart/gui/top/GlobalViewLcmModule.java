@@ -47,7 +47,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   // "/dubilab/polygonregion/walkable/20190307.csv" //
   );
   // ---
-  protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
+  private final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();

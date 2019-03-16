@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
-import java.awt.event.ActionListener;
 import java.util.Objects;
 
 import javax.swing.JButton;
@@ -23,12 +22,14 @@ import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class ViewLcmFrame extends TimerFrame {
-  private final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
+  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
+  // ---
   private final LidarLocalizationModule lidarLocalizationModule = //
       ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   final JButton jButtonMapCreate = GuiConfig.GLOBAL.createButton("map create");
   final JButton jButtonMapUpdate = GuiConfig.GLOBAL.createButton("map update");
-  private final ActionListener actionListener = actionEvent -> {
+
+  private void setPose() {
     Tensor model2pixel = geometricComponent.getModel2Pixel();
     Tensor state = lidarLocalizationModule.getPose(); // {x[m], y[m], angle}
     Tensor pose = GokartPoseHelper.toSE2Matrix(state);
@@ -37,27 +38,21 @@ public class ViewLcmFrame extends TimerFrame {
     System.out.println("pose=" + newState.map(Round._5));
     lidarLocalizationModule.setPose(newState, RealScalar.ONE);
     geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
-  };
+  }
 
   public ViewLcmFrame() {
     if (Objects.nonNull(lidarLocalizationModule)) {
       {
-        JButton jButton = GuiConfig.GLOBAL.createButton("1 set");
-        jButton.addActionListener(actionListener);
+        JButton jButton = GuiConfig.GLOBAL.createButton("snap");
+        jButton.addActionListener(actionEvent -> {
+          setPose();
+          lidarLocalizationModule.flagSnap();
+          setPose();
+        });
         jToolBar.add(jButton);
       }
       {
-        JButton jButton = GuiConfig.GLOBAL.createButton("2 snap");
-        jButton.addActionListener(actionEvent -> lidarLocalizationModule.flagSnap());
-        jToolBar.add(jButton);
-      }
-      {
-        JButton jButton = GuiConfig.GLOBAL.createButton("3 set (again)");
-        jButton.addActionListener(actionListener);
-        jToolBar.add(jButton);
-      }
-      {
-        JToggleButton jToggleButton = GuiConfig.GLOBAL.createToggleButton("4 track");
+        JToggleButton jToggleButton = GuiConfig.GLOBAL.createToggleButton("track");
         jToggleButton.setSelected(lidarLocalizationModule.isTracking());
         jToggleButton.addActionListener(actionEvent -> lidarLocalizationModule.setTracking(jToggleButton.isSelected()));
         jToolBar.add(jToggleButton);
