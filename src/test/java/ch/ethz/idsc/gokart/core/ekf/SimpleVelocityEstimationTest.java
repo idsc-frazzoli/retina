@@ -33,7 +33,7 @@ public class SimpleVelocityEstimationTest extends TestCase {
       }
       estimation.measurePose(GokartPoseEvents.getPoseEvent(originPos, RealScalar.ONE), deltaTl);
     }
-    System.out.println(estimation.filteredVelocity);
-    assertTrue(Scalars.lessThan(Norm._2.of(estimation.filteredVelocity), Quantity.of(0.2, SI.VELOCITY)));
+    System.out.println(estimation.local_filteredVelocity);
+    assertTrue(Scalars.lessThan(Norm._2.of(estimation.local_filteredVelocity), Quantity.of(0.2, SI.VELOCITY)));
   }
 }

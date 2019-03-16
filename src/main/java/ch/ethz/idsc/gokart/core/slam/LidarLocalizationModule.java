@@ -5,6 +5,7 @@ import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.ekf.PositionVelocityEstimation;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
@@ -13,9 +14,12 @@ import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
@@ -31,13 +35,16 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements //
-    LidarRayBlockListener, DavisImuFrameListener, Runnable, MappedPoseInterface {
+    LidarRayBlockListener, DavisImuFrameListener, Runnable, MappedPoseInterface, Vmu931ImuFrameListener, PositionVelocityEstimation {
   private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+  private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
   private final Thread thread = new Thread(this);
@@ -72,6 +79,9 @@ public class LidarLocalizationModule extends AbstractModule implements //
     davisImuLcmClient.addListener(this);
     davisImuLcmClient.startSubscriptions();
     // ---
+    vmu931ImuLcmClient.addListener(this);
+    vmu931ImuLcmClient.startSubscriptions();
+    // ---
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -91,6 +101,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
     thread.interrupt();
     vlp16LcmHandler.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();
+    vmu931ImuLcmClient.stopSubscriptions();
   }
 
   @Override // from LidarRayBlockListener
@@ -116,26 +127,36 @@ public class LidarLocalizationModule extends AbstractModule implements //
   }
 
   /***************************************************/
+  private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.01, SI.SECOND));
+  private int vmuTime_prev = 0;
+
+  @Override // from Vmu931ImuFrameListener
+  public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
+    Tensor acc = SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame);
+    Scalar gyro = SensorsConfig.GLOBAL.vmu931GyroZ(vmu931ImuFrame);
+    int time = vmu931ImuFrame.timestamp_ms();
+    Scalar timeDelta = CLIP_TIME.apply(Quantity.of((time - vmuTime_prev) * 1e-3, SI.SECOND));
+    vmuTime_prev = time;
+    // measureAcceleration(acc, gyro, time));
+  }
+
+  /***************************************************/
   @Override // from Runnable
   public void run() {
     while (isLaunched) {
       Tensor points = points2d_ferry;
       if (Objects.nonNull(points)) {
         points2d_ferry = null;
-        // Tensor state = bestPose.copy();
-        // gokartPoseOdometry.getPose(); // {x[m], y[m], angle[]}
         lidarGyroLocalization.setState(bestPose);
         Optional<SlamResult> optional = lidarGyroLocalization.handle(gyroZ, points);
         if (optional.isPresent()) {
           SlamResult slamResult = optional.get();
           // OUT={37.85[m], 38.89[m], -0.5658221}
-          //
           setPose(slamResult.getTransform(), slamResult.getMatchRatio());
         } else
           // TODO check is the code below is sufficient
           // TODO create module with rank safety that prohibits autonomous driving
           // ... with bad pose quality (similar to autonomous button pressed)
-          // gokartPoseOdometry.
           setPose(bestPose, RealScalar.ZERO);
       } else
         try {
@@ -161,5 +182,11 @@ public class LidarLocalizationModule extends AbstractModule implements //
   @Override // from MappedPoseInterface
   public GokartPoseEvent getPoseEvent() {
     throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Tensor getVelocity() {
+    // return filteredVelocity.copy().append(angularVelocity);
+    return null;
   }
 }
