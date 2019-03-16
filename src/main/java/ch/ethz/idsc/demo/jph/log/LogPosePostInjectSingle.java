@@ -9,17 +9,17 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.pose.LogPosePostInject;
 import ch.ethz.idsc.gokart.offline.slam.LidarGyroOfflineLocalize;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeWrap;
-import ch.ethz.idsc.gokart.offline.slam.ScatterImage;
 import ch.ethz.idsc.gokart.offline.slam.VoidScatterImage;
+import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ enum LogPosePostInjectSingle {
   ;
-  public static OfflineLocalizeWrap of(GokartLogInterface gokartLogInterface, ScatterImage scatterImage) {
+  public static OfflineLocalizeWrap of(Tensor pose) {
     return new OfflineLocalizeWrap(new LidarGyroOfflineLocalize( //
         LocalizationConfig.getPredefinedMap().getImageExtruded(), //
-        gokartLogInterface.pose(), //
+        pose, //
         LocalizationConfig.offlineSe2MultiresGrids(4), //
-        scatterImage));
+        VoidScatterImage.INSTANCE));
   }
 
   public static void in(File folder) throws Exception {
@@ -30,7 +30,7 @@ import ch.ethz.idsc.gokart.offline.slam.VoidScatterImage;
       // target.delete();
       // System.out.println("skip " + folder);
     } else {
-      OfflineLocalizeWrap lidarGyroPoseEstimator = of(gokartLogInterface, VoidScatterImage.INSTANCE);
+      OfflineLocalizeWrap lidarGyroPoseEstimator = of(gokartLogInterface.pose());
       LogPosePostInject logPosePostInject = new LogPosePostInject();
       lidarGyroPoseEstimator.offlineLocalize.addListener(logPosePostInject);
       logPosePostInject.process(gokartLogInterface.file(), post_lcm, lidarGyroPoseEstimator);

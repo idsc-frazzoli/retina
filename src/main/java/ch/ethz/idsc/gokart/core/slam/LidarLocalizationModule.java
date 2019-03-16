@@ -38,8 +38,6 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
    * containing the cross-section of the static geometry
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
-  // private GeodesicCausal1Filter gc1f = null;
-  // = new GeodesicCausal1Filter(Se2Geodesic.INSTANCE, RealScalar.of(0.85), p, q);
 
   @Override // from AbstractModule
   protected void first() {
@@ -82,15 +80,8 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
       if (Objects.nonNull(points)) {
         points2d_ferry = null;
         Tensor state = gokartPoseOdometry.getPose(); // {x[m],y[m],angle[]}
-        // if (gc1f==null) {
-        // Tensor p = GokartPoseHelper.toUnitless(state);
-        // gc1f = new GeodesicCausal1Filter(Se2Geodesic.INSTANCE, RealScalar.of(0.85), p, p);
-        // }
-        // System.out.println("tracking");
         lidarGyroLocalization.setState(state);
-        // Stopwatch stopwatch = Stopwatch.started();
         Optional<SlamResult> optional = lidarGyroLocalization.handle(points);
-        // double duration = stopwatch.display_seconds();
         if (optional.isPresent()) {
           SlamResult slamResult = optional.get();
           // OUT={37.85[m], 38.89[m], -0.5658221}
@@ -102,8 +93,7 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
           gokartPoseOdometry.setPose(state, RealScalar.ZERO);
       } else
         try {
-          // sleep is interrupted once data arrives
-          Thread.sleep(2000);
+          Thread.sleep(2000); // is interrupted once data arrives
         } catch (Exception exception) {
           // ---
         }

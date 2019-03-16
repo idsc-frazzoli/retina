@@ -11,6 +11,7 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -50,6 +51,9 @@ public class SensorsConfig {
   public final Scalar vlp16Height = Quantity.of(1.1558, SI.METER);
   /** number of rotations per second */
   public final Scalar vlp16_rate = Quantity.of(20, SI.PER_SECOND);
+  /** relative zero is value in the interval [0, 1] */
+  public final Scalar vlp16_relativeZero = DoubleScalar.of(0.75);
+  // ---
   public final Scalar davis_imu_rate = Quantity.of(1000, SI.PER_SECOND);
   // TODO the location of the frustum is not final
   public final Tensor davis_frustum = Tensors.fromString("{0[m],7[m]}");

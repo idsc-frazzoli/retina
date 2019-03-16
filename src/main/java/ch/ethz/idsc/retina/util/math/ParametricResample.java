@@ -31,7 +31,7 @@ public class ParametricResample implements Serializable {
   }
 
   /** @param points sequence of lidar points in ccw- or cw-direction
-   * @return list of points grouped by connectivity and resampled equidistantly */
+   * @return points grouped by connectivity and resampled equidistantly */
   public ResampleResult apply(Tensor points) {
     Tensor dista = Tensor.of(points.stream().map(Norm._2::ofVector)); // distance of points from origin
     Tensor diffs = Differences.of(points); // displacement vectors

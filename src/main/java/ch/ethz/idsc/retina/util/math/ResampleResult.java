@@ -1,14 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
@@ -16,17 +13,16 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 public class ResampleResult {
-  // TODO JPH magic constant specific to gokart !
-  private static final Scalar OFFSET = DoubleScalar.of(0.75);
-  // ---
   private final Interpolation interpolation;
   private final List<Tensor> list;
-  private final int numel;
+  private final Clip clip;
 
+  /** @param points
+   * @param list */
   public ResampleResult(Tensor points, List<Tensor> list) {
     interpolation = LinearInterpolation.of(points);
     this.list = list;
-    numel = points.length();
+    clip = Clips.interval(0, points.length());
   }
 
   public List<Tensor> getParameters() {
@@ -34,24 +30,18 @@ public class ResampleResult {
   }
 
   public List<Tensor> getPoints() {
-    return list.stream().map(vector -> vector.map(interpolation::at)).collect(Collectors.toList());
+    return list.stream() //
+        .map(vector -> vector.map(interpolation::at)) //
+        .collect(Collectors.toList());
   }
 
-  public List<Tensor> getPointsSpin(Scalar rate) {
-    Clip clip = Clips.interval(0, numel);
-    List<Tensor> result = new ArrayList<>();
-    for (Tensor vector : list) {
-      Tensor entry = Tensors.empty();
-      for (Tensor _param : vector) {
-        Scalar param = (Scalar) _param;
-        Tensor point = interpolation.at(param);
-        // TODO rescale introduces error because it assumes regular sampling along the circle
-        Scalar angle = clip.rescale(param).subtract(OFFSET).multiply(rate);
-        Tensor matrix = RotationMatrix.of(angle);
-        entry.append(matrix.dot(point));
-      }
-      result.add(entry);
-    }
-    return result;
+  /** @param relativeZero in the interval [0, 1]
+   * @param rate unitless
+   * @return */
+  public List<Tensor> getPointsSpin(Scalar relativeZero, Scalar rate) {
+    // TODO JPH rescale introduces error because it assumes regular sampling along the circle
+    return list.stream() //
+        .map(vector -> vector.map(param -> RotationMatrix.of(clip.rescale(param).subtract(relativeZero).multiply(rate)).dot(interpolation.at(param)))) //
+        .collect(Collectors.toList());
   }
 }

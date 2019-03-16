@@ -73,4 +73,8 @@ public class SensorsConfigTest extends TestCase {
   public void testVmu931GyroZ() {
     assertEquals(SensorsConfig.GLOBAL.vmu931GyroZ(RealScalar.of(2)), RealScalar.of(-2));
   }
+
+  public void testvlp16_relativeZero() {
+    Clips.interval(0.7, 0.8).requireInside(SensorsConfig.GLOBAL.vlp16_relativeZero);
+  }
 }
