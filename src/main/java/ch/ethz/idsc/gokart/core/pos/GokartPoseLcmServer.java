@@ -3,9 +3,11 @@ package ch.ethz.idsc.gokart.core.pos;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.retina.util.Refactor;
 
 /** owner of odometry tracker instance that is corrected by lidar
  * {@link GokartPoseLcmModule} */
+@Refactor
 public enum GokartPoseLcmServer {
   INSTANCE;
   // ---

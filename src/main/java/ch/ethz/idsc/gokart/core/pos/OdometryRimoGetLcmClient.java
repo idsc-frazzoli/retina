@@ -6,10 +6,12 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
+import ch.ethz.idsc.retina.util.Refactor;
 
 /** listens to {@link RimoGetEvent}s and passes them to
  * the {@link GokartPoseOdometry} */
 // TODO architecture not ideal: should listen directly to socket?
+@Refactor
 /* package */ class OdometryRimoGetLcmClient extends BinaryLcmClient {
   public final GokartPoseOdometry gokartPoseOdometry;
 

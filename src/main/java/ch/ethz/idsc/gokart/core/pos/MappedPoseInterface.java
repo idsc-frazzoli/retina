@@ -9,6 +9,6 @@ public interface MappedPoseInterface extends GokartPoseInterface {
    * @param quality value in the interval [0, 1] */
   void setPose(Tensor pose, Scalar quality);
 
-  // TODO document!
+  // TODO JPH @Deprecated
   GokartPoseEvent getPoseEvent();
 }

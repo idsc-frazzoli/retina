@@ -5,9 +5,11 @@ import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
@@ -33,7 +35,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements //
-    LidarRayBlockListener, DavisImuFrameListener, Runnable {
+    LidarRayBlockListener, DavisImuFrameListener, Runnable, MappedPoseInterface {
   private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
@@ -48,15 +50,19 @@ public class LidarLocalizationModule extends AbstractModule implements //
    * containing the cross-section of the static geometry
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
+  private Tensor bestPose = Tensors.fromString("{0[m], 0[m], 0}");
 
+  /** @return */
   public boolean isTracking() {
     return tracking;
   }
 
-  public void setTracking(boolean selected) {
-    tracking = selected;
+  /** @param tracking */
+  public void setTracking(boolean tracking) {
+    this.tracking = tracking;
   }
 
+  /** flag snap */
   public void flagSnap() {
     flagSnap = true;
   }
@@ -100,8 +106,8 @@ public class LidarLocalizationModule extends AbstractModule implements //
   }
 
   /***************************************************/
-  // TODO JPH magic const (1 - 0.003)^50 == 0.860514
-  private GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.003));
+  // TODO JPH magic const (1 - 0.03)^50 == 0.218065
+  private GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.03));
   private Scalar gyroZ = Quantity.of(0.0, SI.PER_SECOND);
 
   @Override // from DavisImuFrameListener
@@ -116,18 +122,21 @@ public class LidarLocalizationModule extends AbstractModule implements //
       Tensor points = points2d_ferry;
       if (Objects.nonNull(points)) {
         points2d_ferry = null;
-        Tensor state = gokartPoseOdometry.getPose(); // {x[m], y[m], angle[]}
-        lidarGyroLocalization.setState(state);
+        // Tensor state = bestPose.copy();
+        // gokartPoseOdometry.getPose(); // {x[m], y[m], angle[]}
+        lidarGyroLocalization.setState(bestPose);
         Optional<SlamResult> optional = lidarGyroLocalization.handle(gyroZ, points);
         if (optional.isPresent()) {
           SlamResult slamResult = optional.get();
           // OUT={37.85[m], 38.89[m], -0.5658221}
-          gokartPoseOdometry.setPose(slamResult.getTransform(), slamResult.getMatchRatio());
+          //
+          setPose(slamResult.getTransform(), slamResult.getMatchRatio());
         } else
           // TODO check is the code below is sufficient
           // TODO create module with rank safety that prohibits autonomous driving
           // ... with bad pose quality (similar to autonomous button pressed)
-          gokartPoseOdometry.setPose(state, RealScalar.ZERO);
+          // gokartPoseOdometry.
+          setPose(bestPose, RealScalar.ZERO);
       } else
         try {
           Thread.sleep(2000); // is interrupted once data arrives
@@ -135,5 +144,22 @@ public class LidarLocalizationModule extends AbstractModule implements //
           // ---
         }
     }
+  }
+
+  /***************************************************/
+  @Override // from GokartPoseInterface
+  public Tensor getPose() {
+    return bestPose.copy();
+  }
+
+  @Override // from MappedPoseInterface
+  public void setPose(Tensor pose, Scalar quality) {
+    bestPose = pose.copy();
+    gokartPoseOdometry.setPose(pose, quality);
+  }
+
+  @Override // from MappedPoseInterface
+  public GokartPoseEvent getPoseEvent() {
+    throw new UnsupportedOperationException();
   }
 }

@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.sophus.group.LieDifferences;
@@ -34,6 +35,7 @@ import ch.ethz.idsc.tensor.sca.Mod;
 
 // TODO MH cleanup comments/unused code
 // TODO JPH refactor
+@Refactor
 public class SimplePositionVelocityModule extends AbstractModule implements //
     Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
   private static final Scalar MIN_DRIFT_VELOCITY = Quantity.of(1, SI.VELOCITY);

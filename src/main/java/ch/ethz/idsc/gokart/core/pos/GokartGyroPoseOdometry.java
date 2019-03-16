@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.math.StateSpaceModels;
 import ch.ethz.idsc.owl.math.flow.Flow;
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -19,6 +20,7 @@ import ch.ethz.idsc.tensor.sca.N;
  * and uses low-pass signal of gyro measurement for vehicle turn rate.
  * 
  * This combination was found to be superior over pure wheel odometry. */
+@Refactor
 /* package */ class GokartGyroPoseOdometry extends GokartPoseOdometry {
   public static GokartPoseOdometry create(Tensor state) {
     return new GokartGyroPoseOdometry(state);

@@ -19,11 +19,10 @@ public class SideLcmModule extends AbstractModule {
       AppCustomization.load(getClass(), new WindowConfiguration());
   private MappedPoseInterface gokartPoseInterface = GokartPoseLocal.INSTANCE;
 
-  protected void setGokartPoseInterface(MappedPoseInterface gokartPoseInterface) {
-    this.gokartPoseInterface = gokartPoseInterface;
-    viewLcmFrame.setGokartPoseInterface(gokartPoseInterface);
-  }
-
+  // protected void setGokartPoseInterface(MappedPoseInterface gokartPoseInterface) {
+  // this.gokartPoseInterface = gokartPoseInterface;
+  // viewLcmFrame.setGokartPoseInterface(gokartPoseInterface);
+  // }
   @Override // from AbstractModule
   protected void first() {
     {
