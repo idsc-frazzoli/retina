@@ -13,8 +13,6 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -33,13 +31,9 @@ import ch.ethz.idsc.tensor.sca.N;
 public class LidarGyroOfflineLocalize extends OfflineLocalize {
   private static final Scalar LIDAR_RATE = Quantity.of(20, SI.PER_SECOND);
   private static final int MIN_POINTS = LocalizationConfig.GLOBAL.min_points.number().intValue();
-  private static final int FAN = 4;
-  // TODO JPH provide constructor with parameters, max speed, max rate, lidar rate, and fan resolution
-  private static final Se2MultiresGrids SE2MULTIRESGRIDS = new Se2MultiresGrids( //
-      RealScalar.of(0.8 / FAN), //
-      Magnitude.ONE.apply(Quantity.of(9.0 / FAN, NonSI.DEGREE_ANGLE)), //
-      FAN, //
-      4);
+  // private static final int FAN = 4;
+  // // TODO JPH provide constructor with parameters, max speed, max rate, lidar rate, and fan resolution
+  private final Se2MultiresGrids se2MultiresGrids;
   /** 3x3 transformation matrix of lidar to center of rear axle */
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final ScatterImage scatterImage;
@@ -47,8 +41,9 @@ public class LidarGyroOfflineLocalize extends OfflineLocalize {
   /** @param map_image
    * @param pose {x[m], y[m], angle}
    * @param scatterImage */
-  public LidarGyroOfflineLocalize(BufferedImage map_image, Tensor pose, ScatterImage scatterImage) {
+  public LidarGyroOfflineLocalize(BufferedImage map_image, Tensor pose, Se2MultiresGrids SE2MULTIRESGRIDS, ScatterImage scatterImage) {
     super(map_image, pose);
+    this.se2MultiresGrids = SE2MULTIRESGRIDS;
     this.scatterImage = scatterImage;
   }
 
@@ -72,7 +67,7 @@ public class LidarGyroOfflineLocalize extends OfflineLocalize {
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);
       Timing timing = Timing.started();
-      SlamResult slamResult = SlamDunk.of(SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
+      SlamResult slamResult = SlamDunk.of(se2MultiresGrids, geometricLayer, scattered, slamScore);
       double duration = timing.seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = lidar.dot(pre_delta).dot(Inverse.of(lidar));

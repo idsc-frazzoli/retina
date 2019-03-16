@@ -39,15 +39,26 @@ public class LocalizationConfig {
   public final Scalar resampleDs = Quantity.of(0.4, SI.METER);
 
   /***************************************************/
-  /**
-   * 
-   */
+  /** @return grid for localization in real-time */
   public Se2MultiresGrids createSe2MultiresGrids() {
     return new Se2MultiresGrids( //
         Magnitude.METER.apply(gridShift), //
         Magnitude.ONE.apply(gridAngle), //
         gridFan.number().intValue(), //
         gridLevels.number().intValue());
+  }
+
+  /** Hint: function strictly only for post-processing!
+   * search grid is too fine for use in realtime.
+   * 
+   * @param fan
+   * @return */
+  public static Se2MultiresGrids offlineSe2MultiresGrids(int fan) {
+    return new Se2MultiresGrids( //
+        RealScalar.of(0.8 / fan), //
+        Magnitude.ONE.apply(Quantity.of(9.0 / fan, NonSI.DEGREE_ANGLE)), //
+        fan, //
+        4);
   }
 
   /** the VLP-16 is tilted by 0.04[rad] around the y-axis.
