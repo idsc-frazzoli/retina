@@ -33,6 +33,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
@@ -130,7 +131,6 @@ public class LidarLocalizationModule extends AbstractModule implements //
   }
 
   /***************************************************/
-  /***************************************************/
   @Override // from Runnable
   public void run() {
     while (isLaunched) {
@@ -172,6 +172,15 @@ public class LidarLocalizationModule extends AbstractModule implements //
   @Override // from MappedPoseInterface
   public GokartPoseEvent getPoseEvent() {
     throw new UnsupportedOperationException();
+  }
+
+  /** function called when operator initializes pose
+   * 
+   * @param pose */
+  public void resetPose(Tensor pose) {
+    System.out.println("reset pose=" + pose.map(Round._5));
+    vmu931Odometry.inertialOdometry.resetPose(pose);
+    setPose(pose, RealScalar.ONE);
   }
 
   @Override
