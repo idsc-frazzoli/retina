@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -27,6 +26,7 @@ import ch.ethz.idsc.tensor.sca.N;
  * 
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class LidarGyroOfflineLocalize extends OfflineLocalize {
+  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
   private static final int MIN_POINTS = LocalizationConfig.GLOBAL.min_points.number().intValue();
   // ---
   /** 3x3 transformation matrix of lidar to center of rear axle */
@@ -57,7 +57,7 @@ public class LidarGyroOfflineLocalize extends OfflineLocalize {
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
     if (MIN_POINTS < sum) {
-      GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
+      GeometricLayer geometricLayer = GeometricLayer.of(MODEL2PIXEL_INITIAL);
       Tensor rotate = Se2Utils.toSE2Matrix(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate));
       model = model.dot(rotate);
       geometricLayer.pushMatrix(model);

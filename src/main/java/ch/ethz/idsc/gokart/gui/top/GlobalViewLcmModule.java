@@ -19,11 +19,11 @@ public class GlobalViewLcmModule extends ViewLcmModule {
   }
 
   public static void standalone() throws Exception {
+    ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
     globalViewLcmModule.first();
     globalViewLcmModule.viewLcmFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     // ---
-    ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     globalViewLcmModule.viewLcmFrame.jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {

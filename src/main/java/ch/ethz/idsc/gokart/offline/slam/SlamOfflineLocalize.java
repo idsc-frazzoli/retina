@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.gui.top.ViewLcmFrame;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -23,6 +22,7 @@ import ch.ethz.idsc.tensor.sca.N;
 
 /** localization using only lidar */
 public class SlamOfflineLocalize extends OfflineLocalize {
+  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
   private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
@@ -47,7 +47,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
     if (min_points < sum) {
-      GeometricLayer geometricLayer = GeometricLayer.of(ViewLcmFrame.MODEL2PIXEL_INITIAL);
+      GeometricLayer geometricLayer = GeometricLayer.of(MODEL2PIXEL_INITIAL);
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);
       Timing timing = Timing.started();

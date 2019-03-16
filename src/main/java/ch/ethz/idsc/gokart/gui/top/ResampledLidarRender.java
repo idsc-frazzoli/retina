@@ -13,7 +13,6 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
-import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -81,5 +80,4 @@ public class ResampledLidarRender extends LidarRender {
 
   public final ActionListener action_mapCreate = e -> flagMapCreate = true;
   public final ActionListener action_mapUpdate = e -> flagMapUpdate = true;
-  public final ActionListener action_snap = e -> LidarLocalizationModule.FLAGSNAP = true;
 }

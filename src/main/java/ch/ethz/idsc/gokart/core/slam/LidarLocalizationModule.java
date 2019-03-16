@@ -24,20 +24,31 @@ import ch.ethz.idsc.tensor.Tensors;
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements LidarRayBlockListener, Runnable {
-  // TODO JAN bad design
-  public static boolean TRACKING = false;
-  public static boolean FLAGSNAP = false;
-  // ---
   private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  public final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
+  private final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
+  private final Thread thread = new Thread(this);
+  // ---
+  private boolean tracking = false;
+  private boolean flagSnap = false;
   /** tear down flag to stop thread */
   private boolean isLaunched = true;
-  private final Thread thread = new Thread(this);
   /** points_ferry is null or a matrix with dimension Nx2
    * containing the cross-section of the static geometry
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
+
+  public boolean isTracking() {
+    return tracking;
+  }
+
+  public void setTracking(boolean selected) {
+    tracking = selected;
+  }
+
+  public void flagSnap() {
+    flagSnap = true;
+  }
 
   @Override // from AbstractModule
   protected void first() {
@@ -63,8 +74,8 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
 
   @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) { // receive 2D block event
-    if (FLAGSNAP || TRACKING) {
-      FLAGSNAP = false;
+    if (flagSnap || tracking) {
+      flagSnap = false;
       FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
       points2d_ferry = Tensors.vector(i -> Tensors.of( //
           DoubleScalar.of(floatBuffer.get()), //

@@ -106,7 +106,6 @@ abstract class ViewLcmModule extends AbstractModule {
       viewLcmFrame.jButtonMapCreate.setEnabled(false);
       viewLcmFrame.jButtonMapUpdate.addActionListener(resampledLidarRender.action_mapUpdate);
       viewLcmFrame.jButtonMapUpdate.setEnabled(resampledLidarRender.updatedMap.nonEmpty());
-      viewLcmFrame.jButtonSnap.addActionListener(resampledLidarRender.action_snap);
       // resampledLidarRender.trackSupplier = () -> viewLcmFrame.jToggleButton.isSelected();
       resampledLidarRender.setPointSize(2);
       resampledLidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);

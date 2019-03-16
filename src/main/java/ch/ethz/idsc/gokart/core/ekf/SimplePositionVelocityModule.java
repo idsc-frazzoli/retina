@@ -1,13 +1,10 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.ekf;
 
-import java.util.Objects;
-
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.data.IntervalClock;
@@ -69,20 +66,23 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     Scalar delta_time = Min.of( //
         Quantity.of(intervalClockLidar.seconds(), SI.SECOND), //
         Quantity.of(0.03, SI.SECOND)); // 1/50 == 0.02 is nominal
-    if (LidarLocalizationModule.TRACKING) {
-      // if (Scalars.lessThan(RealScalar.of(0.6), gokartPoseEvent.getQuality()))
-      // filteredPose = gokartPoseEvent.getPose();
-      if (Objects.nonNull(lidar_prev)) {
-        lastPosition = lidar_prev.getPose().extract(0, 2);
-        measurePose(gokartPoseEvent, delta_time);
-      }
-    } else
-      filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+    // FIXME JPH LOCAL
+    // if (LidarLocalizationModule.TRACKING) {
+    // // if (Scalars.lessThan(RealScalar.of(0.6), gokartPoseEvent.getQuality()))
+    // // filteredPose = gokartPoseEvent.getPose();
+    // if (Objects.nonNull(lidar_prev)) {
+    // lastPosition = lidar_prev.getPose().extract(0, 2);
+    // measurePose(gokartPoseEvent, delta_time);
+    // }
+    // } else
+    filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
     // ---
-    lidar_prev = LidarLocalizationModule.TRACKING // TODO magic const
-        && Scalars.lessThan(RealScalar.of(.3), gokartPoseEvent.getQuality()) //
-            ? gokartPoseEvent
-            : null;
+    lidar_prev = // FIXME JPH LOCAL
+        // LidarLocalizationModule.TRACKING // TODO magic const
+        // && Scalars.lessThan(RealScalar.of(.3), gokartPoseEvent.getQuality()) //
+        // ? gokartPoseEvent
+        // :
+        null;
   }
 
   private static LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
