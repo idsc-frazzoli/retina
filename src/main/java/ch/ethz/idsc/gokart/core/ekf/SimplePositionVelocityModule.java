@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.ekf;
 
+import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -38,6 +39,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   // ---
+  private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
@@ -52,8 +54,8 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
 
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    Tensor local_acc = SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame);
-    Scalar gyro = SensorsConfig.GLOBAL.vmu931GyroZ(vmu931ImuFrame);
+    Tensor local_acc = planarVmu931Imu.vmu931AccXY(vmu931ImuFrame);
+    Scalar gyro = planarVmu931Imu.vmu931GyroZ(vmu931ImuFrame);
     int currentTime = vmu931ImuFrame.timestamp_ms();
     Scalar time = Quantity.of((currentTime - lastVmuTime) * 1e-3, SI.SECOND);
     lastVmuTime = currentTime;

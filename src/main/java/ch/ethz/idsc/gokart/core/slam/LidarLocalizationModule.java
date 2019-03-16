@@ -18,8 +18,6 @@ import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
-import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
-import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
@@ -35,17 +33,16 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Clip;
-import ch.ethz.idsc.tensor.sca.Clips;
 
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements //
     LidarRayBlockListener, DavisImuFrameListener, Runnable, MappedPoseInterface, //
-    Vmu931ImuFrameListener, PositionVelocityEstimation {
+    PositionVelocityEstimation {
   private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
+  private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
   private final Thread thread = new Thread(this);
@@ -80,7 +77,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
     davisImuLcmClient.addListener(this);
     davisImuLcmClient.startSubscriptions();
     // ---
-    vmu931ImuLcmClient.addListener(this);
+    vmu931ImuLcmClient.addListener(vmu931Odometry);
     vmu931ImuLcmClient.startSubscriptions();
     // ---
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
@@ -133,19 +130,6 @@ public class LidarLocalizationModule extends AbstractModule implements //
   }
 
   /***************************************************/
-  private static final Clip VMU931_CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.01, SI.SECOND));
-  private int vmu931_timestamp_ms = 0;
-  private final InertialOdometry inertialOdometry = new InertialOdometry();
-
-  @Override // from Vmu931ImuFrameListener
-  public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    Tensor local_acc = SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame);
-    Scalar gyro = SensorsConfig.GLOBAL.vmu931GyroZ(vmu931ImuFrame);
-    Scalar deltaT = VMU931_CLIP_TIME.apply(Quantity.of((vmu931ImuFrame.timestamp_ms() - vmu931_timestamp_ms) * 1e-3, SI.SECOND));
-    vmu931_timestamp_ms = vmu931ImuFrame.timestamp_ms();
-    inertialOdometry.integrateImu(local_acc, gyro, deltaT);
-  }
-
   /***************************************************/
   @Override // from Runnable
   public void run() {
@@ -192,6 +176,6 @@ public class LidarLocalizationModule extends AbstractModule implements //
 
   @Override
   public Tensor getVelocity() {
-    return inertialOdometry.getVelocity();
+    return vmu931Odometry.inertialOdometry.getVelocity();
   }
 }

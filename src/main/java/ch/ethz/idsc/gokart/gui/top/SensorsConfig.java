@@ -1,11 +1,12 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import ch.ethz.idsc.gokart.calib.vmu931.FlippedPlanarVmu931Imu;
+import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -110,25 +111,28 @@ public class SensorsConfig {
    * 
    * @param vmu931ImuFrame
    * @return vector of length 2 of acceleration in gokart coordinates */
-  public Tensor vmu931AccXY(Vmu931ImuFrame vmu931ImuFrame) {
-    return vmu931AccXY(vmu931ImuFrame.accXY());
+  public static PlanarVmu931Imu getPlanarVmu931Imu() {
+    return FlippedPlanarVmu931Imu.INSTANCE;
   }
-
-  /* package */ Tensor vmu931AccXY(Tensor accRawXY) {
-    // return accRawXY.copy(); // ante 20190208)
-    return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate()); // post [20190208
-  }
-
-  /** see description above
-   * 
-   * @param vmu931ImuFrame
-   * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
-  public Scalar vmu931GyroZ(Vmu931ImuFrame vmu931ImuFrame) {
-    return vmu931GyroZ(vmu931ImuFrame.gyroZ());
-  }
-
-  /* package */ Scalar vmu931GyroZ(Scalar gyroZ) {
-    // return gyroZ; // ante 20190208)
-    return gyroZ.negate(); // post [20190208
-  }
+  // Tensor vmu931AccXY(Vmu931ImuFrame vmu931ImuFrame) {
+  // return vmu931AccXY(vmu931ImuFrame.accXY());
+  // }
+  //
+  // /* package */ Tensor vmu931AccXY(Tensor accRawXY) {
+  // // return accRawXY.copy(); // ante 20190208)
+  // return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate()); // post [20190208
+  // }
+  //
+  // /** see description above
+  // *
+  // * @param vmu931ImuFrame
+  // * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
+  // public Scalar vmu931GyroZ(Vmu931ImuFrame vmu931ImuFrame) {
+  // return vmu931GyroZ(vmu931ImuFrame.gyroZ());
+  // }
+  //
+  // /* package */ Scalar vmu931GyroZ(Scalar gyroZ) {
+  // // return gyroZ; // ante 20190208)
+  // return gyroZ.negate(); // post [20190208
+  // }
 }

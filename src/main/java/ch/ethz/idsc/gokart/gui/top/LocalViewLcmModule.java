@@ -55,7 +55,7 @@ public class LocalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
     // ---
     vmu931ImuLcmClient.addListener(vmu931ImuFrame -> accelerationRender.setAccelerationXY( //
-        SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame)));
+        SensorsConfig.getPlanarVmu931Imu().vmu931AccXY(vmu931ImuFrame)));
     // ---
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
