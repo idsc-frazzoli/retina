@@ -17,9 +17,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
@@ -35,7 +33,6 @@ import ch.ethz.idsc.tensor.sca.Mod;
 @Refactor
 public class SimplePositionVelocityModule extends AbstractModule implements //
     Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
-  private static final Scalar MIN_DRIFT_VELOCITY = Quantity.of(1, SI.VELOCITY);
   private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   // ---
@@ -147,14 +144,8 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     return local_filteredVelocity.copy().append(angularVelocity);
   }
 
-  public Tensor getXYVelocity() {
+  public Tensor getVelocityXY() {
     return local_filteredVelocity.copy();
-  }
-
-  public Scalar getDrift() {
-    if (Scalars.lessThan(local_filteredVelocity.Get(0), MIN_DRIFT_VELOCITY))
-      return RealScalar.ZERO;
-    return local_filteredVelocity.Get(1).divide(local_filteredVelocity.Get(0));
   }
 
   /** @return "s^-1" */

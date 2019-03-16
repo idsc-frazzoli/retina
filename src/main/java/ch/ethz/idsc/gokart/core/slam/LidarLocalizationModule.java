@@ -105,11 +105,6 @@ public class LidarLocalizationModule extends AbstractModule implements //
 
   @Override // from LidarRayBlockListener
   public synchronized void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) { // receive 2D block event
-    if (flagSnap) {
-      // filteredPose = bestPose.copy();
-      // local_filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
-      // vmu931_gyroZ = Quantity.of(0, SI.PER_SECOND);
-    }
     if (flagSnap || tracking) {
       flagSnap = false;
       FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;

@@ -51,7 +51,7 @@ import ch.ethz.idsc.tensor.sca.N;
         : simplePositionVelocityModule.getGyroVelocity();
     Tensor x = Objects.isNull(simplePositionVelocityModule) //
         ? Tensors.of(speedL.add(speedR).multiply(HALF), RealScalar.ZERO, rate)
-        : simplePositionVelocityModule.getXYVelocity().append(rate);
+        : simplePositionVelocityModule.getVelocityXY().append(rate);
     return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, N.DOUBLE.of(x));
   }
 }

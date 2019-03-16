@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
+import ch.ethz.idsc.gokart.core.slam.DriftRatio;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringClip;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
@@ -50,7 +51,8 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> {
     Scalar delta = deltaClip.of(gyroZ.multiply(ManualConfig.GLOBAL.torquePerGyro));
     if (Objects.isNull(simpleVelocityEstimation))
       return Optional.empty();
-    Scalar overDrift = Ramp.of(Abs.of(simpleVelocityEstimation.getDrift()).subtract(ManualConfig.GLOBAL.driftAvoidStart));
+    Scalar drift = DriftRatio.of(simpleVelocityEstimation.getVelocityXY());
+    Scalar overDrift = Ramp.of(Abs.of(drift).subtract(ManualConfig.GLOBAL.driftAvoidStart));
     Scalar driftfactor = Ramp.of(RealScalar.ONE.subtract(overDrift.multiply(ManualConfig.GLOBAL.driftAvoidRamp)));
     delta = driftfactor.multiply(delta);
     Tensor power = TorqueVectoringClip.of(ahead.add(delta), ahead.subtract(delta)) //
