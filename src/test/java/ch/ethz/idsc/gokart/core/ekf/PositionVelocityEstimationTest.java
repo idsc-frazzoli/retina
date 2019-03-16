@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.ekf;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
@@ -14,7 +15,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 import junit.framework.TestCase;
 
-public class SimpleVelocityEstimationTest extends TestCase {
+public class PositionVelocityEstimationTest extends TestCase {
   public void testSimple() {
     VelocityEstimationConfig.GLOBAL.velocityCorrectionFactor = Quantity.of(0.9, SI.ONE);
     Scalar accUnit = Quantity.of(1, SI.ACCELERATION);
@@ -29,7 +30,7 @@ public class SimpleVelocityEstimationTest extends TestCase {
       for (int ii = 0; ii < 10; ii++) {
         Scalar accX = RandomVariate.of(distr).multiply(accUnit);
         Scalar accY = RandomVariate.of(distr).multiply(accUnit);
-        estimation.measureAcceleration(Tensors.of(accX, accY), rotVelocity, deltaT);
+        estimation.integrateImu(Tensors.of(accX, accY), rotVelocity, deltaT);
       }
       estimation.measurePose(GokartPoseEvents.getPoseEvent(originPos, RealScalar.ONE), deltaTl);
     }

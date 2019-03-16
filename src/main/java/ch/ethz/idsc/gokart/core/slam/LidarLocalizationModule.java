@@ -41,7 +41,8 @@ import ch.ethz.idsc.tensor.sca.Clips;
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements //
-    LidarRayBlockListener, DavisImuFrameListener, Runnable, MappedPoseInterface, Vmu931ImuFrameListener, PositionVelocityEstimation {
+    LidarRayBlockListener, DavisImuFrameListener, Runnable, MappedPoseInterface, //
+    Vmu931ImuFrameListener, PositionVelocityEstimation {
   private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
@@ -105,7 +106,12 @@ public class LidarLocalizationModule extends AbstractModule implements //
   }
 
   @Override // from LidarRayBlockListener
-  public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) { // receive 2D block event
+  public synchronized void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) { // receive 2D block event
+    if (flagSnap) {
+      // filteredPose = bestPose.copy();
+      // local_filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+      // vmu931_gyroZ = Quantity.of(0, SI.PER_SECOND);
+    }
     if (flagSnap || tracking) {
       flagSnap = false;
       FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
@@ -118,26 +124,26 @@ public class LidarLocalizationModule extends AbstractModule implements //
 
   /***************************************************/
   // TODO JPH magic const (1 - 0.03)^50 == 0.218065
-  private GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.03));
-  private Scalar gyroZ = Quantity.of(0.0, SI.PER_SECOND);
+  private GeodesicIIR1Filter davis_gyroZ_filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.03));
+  private Scalar davis_gyroZ = Quantity.of(0.0, SI.PER_SECOND);
 
   @Override // from DavisImuFrameListener
   public void imuFrame(DavisImuFrame davisImuFrame) {
-    gyroZ = geodesicIIR1Filter.apply(SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame)).Get();
+    davis_gyroZ = davis_gyroZ_filter.apply(SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame)).Get();
   }
 
   /***************************************************/
-  private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.01, SI.SECOND));
-  private int vmuTime_prev = 0;
+  private static final Clip VMU931_CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.01, SI.SECOND));
+  private int vmu931_timestamp_ms = 0;
+  private final InertialOdometry inertialOdometry = new InertialOdometry();
 
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    Tensor acc = SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame);
+    Tensor local_acc = SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame);
     Scalar gyro = SensorsConfig.GLOBAL.vmu931GyroZ(vmu931ImuFrame);
-    int time = vmu931ImuFrame.timestamp_ms();
-    Scalar timeDelta = CLIP_TIME.apply(Quantity.of((time - vmuTime_prev) * 1e-3, SI.SECOND));
-    vmuTime_prev = time;
-    // measureAcceleration(acc, gyro, time));
+    Scalar deltaT = VMU931_CLIP_TIME.apply(Quantity.of((vmu931ImuFrame.timestamp_ms() - vmu931_timestamp_ms) * 1e-3, SI.SECOND));
+    vmu931_timestamp_ms = vmu931ImuFrame.timestamp_ms();
+    inertialOdometry.integrateImu(local_acc, gyro, deltaT);
   }
 
   /***************************************************/
@@ -148,7 +154,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
       if (Objects.nonNull(points)) {
         points2d_ferry = null;
         lidarGyroLocalization.setState(bestPose);
-        Optional<SlamResult> optional = lidarGyroLocalization.handle(gyroZ, points);
+        Optional<SlamResult> optional = lidarGyroLocalization.handle(davis_gyroZ, points);
         if (optional.isPresent()) {
           SlamResult slamResult = optional.get();
           // OUT={37.85[m], 38.89[m], -0.5658221}
@@ -186,7 +192,6 @@ public class LidarLocalizationModule extends AbstractModule implements //
 
   @Override
   public Tensor getVelocity() {
-    // return filteredVelocity.copy().append(angularVelocity);
-    return null;
+    return inertialOdometry.getVelocity();
   }
 }

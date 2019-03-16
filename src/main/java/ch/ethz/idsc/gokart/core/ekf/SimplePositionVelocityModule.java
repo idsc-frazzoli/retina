@@ -36,6 +36,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
   private static final Scalar MIN_DRIFT_VELOCITY = Quantity.of(1, SI.VELOCITY);
   private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
+  private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   // ---
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -56,7 +57,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
     int currentTime = vmu931ImuFrame.timestamp_ms();
     Scalar time = Quantity.of((currentTime - lastVmuTime) * 1e-3, SI.SECOND);
     lastVmuTime = currentTime;
-    measureAcceleration(local_acc, gyro, CLIP_TIME.apply(time));
+    integrateImu(local_acc, gyro, CLIP_TIME.apply(time));
   }
 
   @Override // from GokartPoseListener
@@ -117,7 +118,6 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   private static Tensor getCompensationRotationMatrix(Scalar orientation) {
     return RotationMatrix.of(orientation.negate());
   }
-
   /** take new acceleration measurement into account
    * 
    * @param accelerations {x[m/s^2], y[m/s^2]}
@@ -125,26 +125,19 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   // void measureAcceleration(Tensor accelerations, Scalar angularVelocity) {
   // measureAcceleration(accelerations, angularVelocity, Quantity.of(intervalClockIMU.seconds(), SI.SECOND));
   // }
-  private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
 
   /** take new acceleration measurement into account
    * 
-   * @param local_acc {x[m/s^2], y[m/s^2]}
-   * @param gyro {x[1/s]}
+   * @param local_acc {x[m*s^-2], y[m*s^-2]}
+   * @param gyro with unit [s^-1]
    * @param deltaT [s] */
-  /* package for testing */
-  void measureAcceleration(Tensor local_acc, Scalar gyro, Scalar deltaT) {
+  /* package */ void integrateImu(Tensor local_acc, Scalar gyro, Scalar deltaT) {
     this.angularVelocity = (Scalar) RnGeodesic.INSTANCE.split(angularVelocity, gyro, VelocityEstimationConfig.GLOBAL.rotFilter);
-    Scalar rdt = gyro.multiply(deltaT);
     // transform old system (compensate for rotation)
-    // System.out.println("Acc: "+accelerations);
-    local_filteredVelocity = RotationMatrix.of(rdt.negate()).dot(local_filteredVelocity).add(local_acc.multiply(deltaT));
+    local_filteredVelocity = RotationMatrix.of(gyro.multiply(deltaT).negate()).dot(local_filteredVelocity).add(local_acc.multiply(deltaT));
     // integrate pose
-    Tensor currentVelocity = getVelocity();
-    filteredPose = Se2CoveringIntegrator.INSTANCE.spin(filteredPose, currentVelocity.multiply(deltaT));
+    filteredPose = Se2CoveringIntegrator.INSTANCE.spin(filteredPose, getVelocity().multiply(deltaT));
     filteredPose.set(MOD_DISTANCE, 2);
-    // if (countPrint % 1000 == 0)
-    // System.out.println("f=" + filteredPose.map(Round._4));
   }
 
   @Override // from PositionVelocityEstimation
