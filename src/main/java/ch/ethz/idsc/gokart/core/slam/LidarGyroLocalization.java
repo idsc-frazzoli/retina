@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.slam;
 import java.util.List;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.ImageScore;
@@ -45,11 +44,12 @@ public class LidarGyroLocalization {
 
   /** call {@link #setState(Tensor)} before invoking {@link #handle(Tensor)}
    * 
+   * @param gyroZ with unit "s^-1"
    * @param points
    * @return */
-  Optional<SlamResult> handle(Tensor points) {
+  Optional<SlamResult> handle(Scalar gyroZ, Tensor points) {
     Tensor model = _model;
-    Scalar rate = DavisImuTracker.INSTANCE.getGyroZ().divide(lidarRate);
+    Scalar rate = gyroZ.divide(lidarRate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getResample() //
         .apply(points).getPointsSpin(SensorsConfig.GLOBAL.vlp16_relativeZero, rate);
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));

@@ -8,23 +8,34 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
+import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
-public class LidarLocalizationModule extends AbstractModule implements LidarRayBlockListener, Runnable {
+public class LidarLocalizationModule extends AbstractModule implements //
+    LidarRayBlockListener, DavisImuFrameListener, Runnable {
   private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
+  private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
   private final Thread thread = new Thread(this);
@@ -52,6 +63,9 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
 
   @Override // from AbstractModule
   protected void first() {
+    davisImuLcmClient.addListener(this);
+    davisImuLcmClient.startSubscriptions();
+    // ---
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -70,6 +84,7 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     isLaunched = false;
     thread.interrupt();
     vlp16LcmHandler.stopSubscriptions();
+    davisImuLcmClient.stopSubscriptions();
   }
 
   @Override // from LidarRayBlockListener
@@ -84,15 +99,26 @@ public class LidarLocalizationModule extends AbstractModule implements LidarRayB
     }
   }
 
+  /***************************************************/
+  // TODO JPH magic const (1 - 0.003)^50 == 0.860514
+  private GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.003));
+  private Scalar gyroZ = Quantity.of(0.0, SI.PER_SECOND);
+
+  @Override // from DavisImuFrameListener
+  public void imuFrame(DavisImuFrame davisImuFrame) {
+    gyroZ = geodesicIIR1Filter.apply(SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame)).Get();
+  }
+
+  /***************************************************/
   @Override // from Runnable
   public void run() {
     while (isLaunched) {
       Tensor points = points2d_ferry;
       if (Objects.nonNull(points)) {
         points2d_ferry = null;
-        Tensor state = gokartPoseOdometry.getPose(); // {x[m],y[m],angle[]}
+        Tensor state = gokartPoseOdometry.getPose(); // {x[m], y[m], angle[]}
         lidarGyroLocalization.setState(state);
-        Optional<SlamResult> optional = lidarGyroLocalization.handle(points);
+        Optional<SlamResult> optional = lidarGyroLocalization.handle(gyroZ, points);
         if (optional.isPresent()) {
           SlamResult slamResult = optional.get();
           // OUT={37.85[m], 38.89[m], -0.5658221}
