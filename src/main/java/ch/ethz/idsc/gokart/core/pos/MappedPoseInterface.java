@@ -8,7 +8,4 @@ public interface MappedPoseInterface extends GokartPoseInterface {
   /** @param pose vector of length 3 for instance {37.85[m], 38.89[m], -0.5658221}
    * @param quality value in the interval [0, 1] */
   void setPose(Tensor pose, Scalar quality);
-
-  // TODO JPH @Deprecated
-  GokartPoseEvent getPoseEvent();
 }

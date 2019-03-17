@@ -7,19 +7,13 @@ import ch.ethz.idsc.tensor.Tensor;
 public class GokartPoseContainer implements MappedPoseInterface {
   private Tensor pose;
 
-  @Override
+  @Override // from GokartPoseInterface
   public Tensor getPose() {
     return pose;
   }
 
-  @Override
+  @Override // from MappedPoseInterface
   public void setPose(Tensor pose, Scalar quality) {
     this.pose = pose;
-  }
-
-  @Override
-  public GokartPoseEvent getPoseEvent() {
-    // TODO Auto-generated method stub
-    return null;
   }
 }
