@@ -17,6 +17,8 @@ import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
@@ -37,14 +39,13 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
-import ch.ethz.idsc.tensor.sca.Round;
 
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements //
-    LidarRayBlockListener, DavisImuFrameListener, Runnable, GokartPoseInterface, //
-    PositionVelocityEstimation {
-  private static final Clip QUALITY_CLIP = Clips.interval(0.6, 1);
+    LidarRayBlockListener, DavisImuFrameListener, Vmu931ImuFrameListener, //
+    Runnable, GokartPoseInterface, PositionVelocityEstimation {
+  private static final Clip QUALITY_CLIP = Clips.interval(0.6, 0.8);
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   // ---
@@ -85,7 +86,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
     davisImuLcmClient.addListener(this);
     davisImuLcmClient.startSubscriptions();
     // ---
-    vmu931ImuLcmClient.addListener(vmu931Odometry);
+    vmu931ImuLcmClient.addListener(this);
     vmu931ImuLcmClient.startSubscriptions();
     // ---
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
@@ -132,6 +133,11 @@ public class LidarLocalizationModule extends AbstractModule implements //
     davis_gyroZ = davis_gyroZ_filter.apply(SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame)).Get();
   }
 
+  @Override // from Vmu931ImuFrameListener
+  public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
+    vmu931Odometry.vmu931ImuFrame(vmu931ImuFrame);
+  }
+
   /***************************************************/
   @Override // from Runnable
   public void run() {
@@ -151,21 +157,25 @@ public class LidarLocalizationModule extends AbstractModule implements //
 
   private SlamResult prevResult = null;
 
-  private void fit(Tensor points) {
+  public void fit(Tensor points) {
     Optional<SlamResult> optional = lidarGyroLocalization.handle(getPose(), davis_gyroZ, points);
     if (optional.isPresent()) {
       SlamResult slamResult = optional.get();
       quality = slamResult.getMatchRatio();
       Scalar rescale = QUALITY_CLIP.rescale(quality);
+      // rescale = RealScalar.ONE;
       vmu931Odometry.inertialOdometry.blendPose(slamResult.getTransform(), rescale);
       if (Objects.nonNull(prevResult)) {
-        Tensor velXY = LIE_DIFFERENCES.pair(prevResult.getTransform(), slamResult.getTransform()) //
-            .extract(0, 2).multiply(SensorsConfig.GLOBAL.vlp16_rate);
+        Tensor velXY = LIE_DIFFERENCES.pair( //
+            slamResult.getTransform(), //
+            prevResult.getTransform() //
+        ) //
+            .extract(0, 2).negate().multiply(SensorsConfig.GLOBAL.vlp16_rate);
         // System.out.println("---");
         // System.out.println(vmu931Odometry.inertialOdometry.getVelocity().map(Round._4));
         // System.out.println(velXY.map(Round._4));
         // TODO JPH/MH magic const
-        vmu931Odometry.inertialOdometry.blendVelocity(velXY, RealScalar.of(0.01));
+        vmu931Odometry.inertialOdometry.blendVelocity(velXY, RealScalar.of(0.1));
       }
       prevResult = slamResult;
     } else {
@@ -188,7 +198,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
    * 
    * @param pose */
   public void resetPose(Tensor pose) {
-    System.out.println("reset pose=" + pose.map(Round._5));
+    // System.out.println("reset pose=" + pose.map(Round._5));
     vmu931Odometry.inertialOdometry.resetPose(pose);
     quality = RealScalar.ONE;
     prevResult = null;

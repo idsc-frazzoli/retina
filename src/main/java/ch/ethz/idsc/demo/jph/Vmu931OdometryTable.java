@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-public class Vmu931OdometryTable implements OfflineTableSupplier {
+/* package */ class Vmu931OdometryTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
 
