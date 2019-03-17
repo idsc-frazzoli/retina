@@ -106,7 +106,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   public static void main(String[] args) throws IOException {
     File dest = new File("/media/datahaki/data/gokart/localization/20190314");
     File root = new File("/media/datahaki/data/gokart/cuts/20190314");
-    List<File> list = Stream.of(root.listFiles()).sorted().limit(5).collect(Collectors.toList());
+    List<File> list = Stream.of(root.listFiles()).sorted().skip(2).limit(1).collect(Collectors.toList());
     for (File folder : list) {
       System.out.println(folder.getName());
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder, "post.lcm");

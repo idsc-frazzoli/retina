@@ -24,6 +24,7 @@ import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.util.data.DelayedQueue;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
@@ -46,7 +47,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 public class LidarLocalizationModule extends AbstractModule implements //
     LidarRayBlockListener, DavisImuFrameListener, Vmu931ImuFrameListener, //
     Runnable, GokartPoseInterface, PositionVelocityEstimation {
-  private static final Clip QUALITY_CLIP = Clips.interval(0.6, 0.8);
+  private static final Clip QUALITY_CLIP = Clips.interval(0.5, 0.8);
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   private static final LidarGyroLocalization LIDAR_GYRO_LOCALIZATION = //
@@ -135,9 +136,15 @@ public class LidarLocalizationModule extends AbstractModule implements //
     davis_gyroZ = davis_gyroZ_filter.apply(SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame)).Get();
   }
 
+  DelayedQueue<Vmu931ImuFrame> delayedQueue = new DelayedQueue<>(0);
+
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    vmu931Odometry.vmu931ImuFrame(vmu931ImuFrame);
+    Optional<Vmu931ImuFrame> optional = delayedQueue.push(vmu931ImuFrame);
+    if (optional.isPresent()) {
+      vmu931Odometry.vmu931ImuFrame(optional.get());
+    } else
+      System.out.println("skip");
   }
 
   /***************************************************/
@@ -176,7 +183,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
         // System.out.println(vmu931Odometry.inertialOdometry.getVelocity().map(Round._4));
         // System.out.println(velXY.map(Round._4));
         // TODO JPH/MH magic const
-        vmu931Odometry.inertialOdometry.blendVelocity(velXY, RealScalar.of(0.1));
+        vmu931Odometry.inertialOdometry.blendVelocity(velXY, RealScalar.of(0.2));
       }
       prevResult = slamResult;
     } else {
