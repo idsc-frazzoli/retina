@@ -35,7 +35,7 @@ import ch.ethz.idsc.gokart.core.man.UltimateTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
+import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
@@ -93,8 +93,8 @@ enum RunTabbedTaskGui {
       LinmotSafetyModule.class, //
       Vlp16PassiveSlowing.class, //
       SimplePositionVelocityModule.class, //
-      GokartPoseLcmModule.class, // publishes pose
       LidarLocalizationModule.class, //
+      PoseLcmServerModule.class, // publishes pose
       ManualResetModule.class, //
       DavisImuTrackerModule.class //
   // AutonomySafetyModule.class // <- dead man switch

@@ -7,10 +7,9 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.ekf.PositionVelocityEstimation;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
@@ -38,9 +37,9 @@ import ch.ethz.idsc.tensor.sca.Round;
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements //
-    LidarRayBlockListener, DavisImuFrameListener, Runnable, MappedPoseInterface, //
+    LidarRayBlockListener, DavisImuFrameListener, Runnable, GokartPoseInterface, //
     PositionVelocityEstimation {
-  private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
+  // private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
@@ -57,6 +56,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
   private Tensor bestPose = Tensors.fromString("{0[m], 0[m], 0}");
+  private Scalar quality = RealScalar.ZERO;
 
   /** @return */
   public boolean isTracking() {
@@ -158,15 +158,16 @@ public class LidarLocalizationModule extends AbstractModule implements //
     return bestPose.copy();
   }
 
-  @Override // from MappedPoseInterface
-  public void setPose(Tensor pose, Scalar quality) {
+  private void setPose(Tensor pose, Scalar quality) {
+    // TODO
     bestPose = pose.copy();
-    gokartPoseOdometry.setPose(pose, quality);
+    // gokartPoseOdometry.setPose(pose, quality);
   }
 
-  @Override // from MappedPoseInterface
-  public GokartPoseEvent getPoseEvent() {
-    throw new UnsupportedOperationException();
+  //
+  // @Override // from MappedPoseInterface
+  public GokartPoseEvent createPoseEvent() {
+    return GokartPoseEvents.getPoseEvent(getPose(), quality);
   }
 
   /** function called when operator initializes pose

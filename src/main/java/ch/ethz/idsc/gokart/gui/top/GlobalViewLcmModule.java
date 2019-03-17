@@ -11,9 +11,9 @@ import java.util.List;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
@@ -77,7 +77,7 @@ public class GlobalViewLcmModule extends AbstractModule {
 
   @Override // from AbstractModule
   public void first() {
-    final MappedPoseInterface mappedPoseInterface = viewLcmFrame.mappedPoseInterface();
+    final GokartPoseInterface gokartPoseInterface = viewLcmFrame.gokartPoseInterface();
     viewLcmFrame.geometricComponent.setButtonDrag(MouseEvent.BUTTON1);
     {
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
@@ -90,13 +90,13 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
-      GokartPathRender gokartPathRender = new GokartPathRender(mappedPoseInterface);
+      GokartPathRender gokartPathRender = new GokartPathRender(gokartPoseInterface);
       gokartStatusLcmClient.addListener(gokartPathRender.gokartStatusListener);
       viewLcmFrame.geometricComponent.addRenderInterface(gokartPathRender);
     }
     // ---
     {
-      ResampledLidarRender resampledLidarRender = new ResampledLidarRender(mappedPoseInterface);
+      ResampledLidarRender resampledLidarRender = new ResampledLidarRender(gokartPoseInterface);
       resampledLidarRender.updatedMap.setCrop(CROP_REGION);
       viewLcmFrame.jButtonMapCreate.addActionListener(resampledLidarRender.action_mapCreate);
       viewLcmFrame.jButtonMapCreate.setEnabled(false);
@@ -125,7 +125,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     {
-      GokartRender gokartRender = new GokartRender(mappedPoseInterface, VEHICLE_MODEL);
+      GokartRender gokartRender = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);

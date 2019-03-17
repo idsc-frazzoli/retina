@@ -6,8 +6,9 @@ import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.util.Refactor;
 
 /** owner of odometry tracker instance that is corrected by lidar
- * {@link GokartPoseLcmModule} */
+ * {@link PoseLcmServerModule} */
 @Refactor
+@Deprecated
 public enum GokartPoseLcmServer {
   INSTANCE;
   // ---

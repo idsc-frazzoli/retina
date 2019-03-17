@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class GokartPoseLcmModuleTest extends TestCase {
   public void testSimple() throws Exception {
-    GokartPoseLcmModule gplm = new GokartPoseLcmModule();
+    PoseLcmServerModule gplm = new PoseLcmServerModule();
     gplm.first();
     gplm.runAlgo();
     gplm.last();
@@ -16,7 +16,7 @@ public class GokartPoseLcmModuleTest extends TestCase {
 
   public void testPeriod() throws Exception {
     ScalarUnaryOperator TO_MILLI_SECONDS = QuantityMagnitude.SI().in("ms");
-    GokartPoseLcmModule gplm = new GokartPoseLcmModule();
+    PoseLcmServerModule gplm = new PoseLcmServerModule();
     Scalar value = TO_MILLI_SECONDS.apply(gplm.getPeriod());
     assertEquals(value.number().longValue(), 20);
   }

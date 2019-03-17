@@ -7,9 +7,9 @@ import javax.swing.JButton;
 import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.sys.GuiConfig;
@@ -61,7 +61,7 @@ import ch.ethz.idsc.tensor.mat.LinearSolve;
     geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL); // undo drag by user
   }
 
-  MappedPoseInterface mappedPoseInterface() {
+  GokartPoseInterface gokartPoseInterface() {
     return Objects.isNull(lidarLocalizationModule) //
         ? GokartPoseLocal.INSTANCE
         : lidarLocalizationModule;
