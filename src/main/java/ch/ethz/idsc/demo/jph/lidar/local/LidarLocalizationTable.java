@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
@@ -74,7 +77,8 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     if (channel.equals(GokartPoseChannel.INSTANCE.channel()))
       prev_poseEvent = new GokartPoseEvent(byteBuffer);
     else //
-    if (channel.equals(GokartPosePostChannel.INSTANCE.channel()) && Objects.nonNull(prev_poseEvent)) {
+    if (channel.equals(GokartPosePostChannel.INSTANCE.channel()) && //
+        Objects.nonNull(prev_poseEvent)) {
       GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       tableBuilder.appendRow( //
           Magnitude.SECOND.apply(time), //
@@ -102,13 +106,13 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   public static void main(String[] args) throws IOException {
     File dest = new File("/media/datahaki/data/gokart/localization/20190314");
     File root = new File("/media/datahaki/data/gokart/cuts/20190314");
-    for (File folder : root.listFiles()) {
+    List<File> list = Stream.of(root.listFiles()).sorted().limit(5).collect(Collectors.toList());
+    for (File folder : list) {
       System.out.println(folder.getName());
-      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
-      File file = new File(folder, "post.lcm");
+      GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder, "post.lcm");
       LidarLocalizationTable lidarLocalizationTable = new LidarLocalizationTable();
       lidarLocalizationTable.lidarLocalizationModule.resetPose(gokartLogInterface.pose());
-      OfflineLogPlayer.process(file, lidarLocalizationTable);
+      OfflineLogPlayer.process(gokartLogInterface.file(), lidarLocalizationTable);
       Export.of(new File(dest, folder.getName() + ".csv.gz"), lidarLocalizationTable.getTable().map(CsvFormat.strict()));
     }
   }

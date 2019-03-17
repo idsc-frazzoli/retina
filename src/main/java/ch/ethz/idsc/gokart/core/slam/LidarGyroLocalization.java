@@ -18,7 +18,13 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 
 /** localization algorithm described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
-public class LidarGyroLocalization {
+/* package */ class LidarGyroLocalization {
+  public static LidarGyroLocalization of(PredefinedMap predefinedMap) {
+    return new LidarGyroLocalization( //
+        predefinedMap.getModel2Pixel(), //
+        ImageScore.of(predefinedMap.getImageExtruded()));
+  }
+
   private final Se2MultiresGrids se2MultiresGrids = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
   /** 3x3 transformation matrix of lidar to center of rear axle */
@@ -29,11 +35,10 @@ public class LidarGyroLocalization {
   // ---
   private final Tensor model2pixel;
   private final SlamScore slamScore;
-  // ---
 
-  public LidarGyroLocalization(PredefinedMap predefinedMap) {
-    model2pixel = predefinedMap.getModel2Pixel();
-    slamScore = ImageScore.of(predefinedMap.getImageExtruded());
+  public LidarGyroLocalization(Tensor model2pixel, SlamScore slamScore) {
+    this.model2pixel = model2pixel;
+    this.slamScore = slamScore;
   }
 
   /** call {@link #setState(Tensor)} before invoking {@link #handle(Tensor)}

@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pos;
 
-import ch.ethz.idsc.gokart.core.slam.LidarGyroLocalization;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -84,11 +83,6 @@ public class LocalizationConfig {
   /** @return predefined map with static geometry for lidar based localization */
   public static PredefinedMap getPredefinedMap() {
     return PredefinedMap.DUBILAB_LOCALIZATION_20190314; // without tents
-  }
-
-  /** @return new instance of LidarGyroLocalization method */
-  public static LidarGyroLocalization getLidarGyroLocalization() {
-    return new LidarGyroLocalization(getPredefinedMap());
   }
 
   public static PredefinedMap getPredefinedMapObstacles() {

@@ -42,18 +42,20 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
+// TODO JPH split class in two classes
 public class LidarLocalizationModule extends AbstractModule implements //
     LidarRayBlockListener, DavisImuFrameListener, Vmu931ImuFrameListener, //
     Runnable, GokartPoseInterface, PositionVelocityEstimation {
   private static final Clip QUALITY_CLIP = Clips.interval(0.6, 0.8);
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
+  private static final LidarGyroLocalization LIDAR_GYRO_LOCALIZATION = //
+      LidarGyroLocalization.of(LocalizationConfig.getPredefinedMap());
   // ---
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-  private final LidarGyroLocalization lidarGyroLocalization = LocalizationConfig.getLidarGyroLocalization();
   private final Thread thread = new Thread(this);
   // ---
   private boolean tracking = false;
@@ -158,7 +160,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
   private SlamResult prevResult = null;
 
   public void fit(Tensor points) {
-    Optional<SlamResult> optional = lidarGyroLocalization.handle(getPose(), davis_gyroZ, points);
+    Optional<SlamResult> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), davis_gyroZ, points);
     if (optional.isPresent()) {
       SlamResult slamResult = optional.get();
       quality = slamResult.getMatchRatio();
@@ -167,10 +169,9 @@ public class LidarLocalizationModule extends AbstractModule implements //
       vmu931Odometry.inertialOdometry.blendPose(slamResult.getTransform(), rescale);
       if (Objects.nonNull(prevResult)) {
         Tensor velXY = LIE_DIFFERENCES.pair( //
-            slamResult.getTransform(), //
-            prevResult.getTransform() //
-        ) //
-            .extract(0, 2).negate().multiply(SensorsConfig.GLOBAL.vlp16_rate);
+            prevResult.getTransform(), //
+            slamResult.getTransform()) //
+            .extract(0, 2).multiply(SensorsConfig.GLOBAL.vlp16_rate);
         // System.out.println("---");
         // System.out.println(vmu931Odometry.inertialOdometry.getVelocity().map(Round._4));
         // System.out.println(velXY.map(Round._4));
