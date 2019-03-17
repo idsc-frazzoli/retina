@@ -15,9 +15,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class PoseLcmServerModule extends AbstractClockedModule {
   private static final Scalar PERIOD = Quantity.of(50, SI.PER_SECOND).reciprocal();
   // ---
+  private static final BinaryBlobPublisher BINARY_BLOB_PUBLISHER = new BinaryBlobPublisher(GokartLcmChannel.POSE_LIDAR);
+  // ---
   private final LidarLocalizationModule lidarLocalizationModule = //
       ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
-  private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.POSE_LIDAR);
 
   @Override // from AbstractModule
   protected void first() {
@@ -31,8 +32,11 @@ public class PoseLcmServerModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    GokartPoseEvent gokartPoseEvent = lidarLocalizationModule.createPoseEvent();
-    binaryBlobPublisher.accept(gokartPoseEvent.asArray());
+    publish(lidarLocalizationModule.createPoseEvent());
+  }
+
+  public static void publish(GokartPoseEvent gokartPoseEvent) {
+    BINARY_BLOB_PUBLISHER.accept(gokartPoseEvent.asArray());
   }
 
   @Override // from AbstractClockedModule

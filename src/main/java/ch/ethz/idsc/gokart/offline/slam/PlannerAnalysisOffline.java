@@ -9,9 +9,8 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
@@ -45,8 +44,7 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
   private final RenderInterface renderInterface = //
       new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255)).setWaypoints(waypoints);
   private final TrajectoryRender trajectoryRender = new TrajectoryRender();
-  private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
-  private final MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
+  private final MappedPoseInterface gokartPoseInterface = new GokartPoseContainer();
   private final Scalar delta = Quantity.of(0.1, SI.SECOND);
   // ---
   private GokartPoseEvent gpe;

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
+import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.dev.AllGunsBlazing;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
@@ -36,7 +36,7 @@ public class GokartTrajectoryModuleTest extends TestCase {
     GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule();
     gokartTrajectoryModule.first();
     {
-      GokartPoseLcmServer.INSTANCE.publish( //
+      PoseLcmServerModule.publish( //
           GokartPoseEvents.getPoseEvent(Tensors.fromString("{36.8[m], 44.2[m], 0.8}"), RealScalar.ONE));
       RimoLcmServer.INSTANCE.getEvent( //
           RimoGetEvents.create(500, 500));
@@ -89,7 +89,7 @@ public class GokartTrajectoryModuleTest extends TestCase {
     {
       RimoLcmServer.INSTANCE.getEvent( //
           RimoGetEvents.create(-900, -900));
-      GokartPoseLcmServer.INSTANCE.publish( //
+      PoseLcmServerModule.publish( //
           GokartPoseEvents.getPoseEvent(Tensors.fromString("{31.8[m], 38.2[m], 0.8}"), RealScalar.ONE));
       Thread.sleep(1000);
       gokartTrajectoryModule.runAlgo();
