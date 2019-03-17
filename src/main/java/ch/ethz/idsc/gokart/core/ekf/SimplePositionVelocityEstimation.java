@@ -4,16 +4,13 @@ package ch.ethz.idsc.gokart.core.ekf;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
@@ -31,14 +28,12 @@ import ch.ethz.idsc.tensor.sca.Mod;
 // TODO MH cleanup comments/unused code
 // TODO JPH refactor
 @Refactor
-public class SimplePositionVelocityModule extends AbstractModule implements //
+public class SimplePositionVelocityEstimation implements //
     Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
   private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   // ---
   private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
-  private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
-  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
   private Tensor lastPosition = null;
   private Scalar angularVelocity = Quantity.of(0, SI.PER_SECOND);
@@ -151,21 +146,6 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   /** @return "s^-1" */
   public Scalar getGyroVelocity() {
     return angularVelocity;
-  }
-
-  @Override
-  protected void first() {
-    vmu931ImuLcmClient.addListener(this);
-    gokartPoseLcmClient.addListener(this);
-    // ---
-    vmu931ImuLcmClient.startSubscriptions();
-    gokartPoseLcmClient.startSubscriptions();
-  }
-
-  @Override
-  protected void last() {
-    vmu931ImuLcmClient.stopSubscriptions();
-    gokartPoseLcmClient.stopSubscriptions();
   }
 
   @Override

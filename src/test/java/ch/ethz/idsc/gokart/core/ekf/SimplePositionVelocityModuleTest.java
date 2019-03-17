@@ -11,8 +11,8 @@ import junit.framework.TestCase;
 
 public class SimplePositionVelocityModuleTest extends TestCase {
   public void testSimple() {
-    SimplePositionVelocityModule simplePositionVelocityModule = new SimplePositionVelocityModule();
-    simplePositionVelocityModule.first();
+    SimplePositionVelocityEstimation simplePositionVelocityModule = new SimplePositionVelocityEstimation();
+    // simplePositionVelocityModule.first();
     assertEquals(simplePositionVelocityModule.getPose(), Tensors.fromString("{0[m], 0[m], 0}"));
     simplePositionVelocityModule.integrateImu(Tensors.fromString("{1[m*s^-2],0[m*s^-2]}"), Quantity.of(0, SI.PER_SECOND), Quantity.of(1, SI.SECOND));
     assertEquals(simplePositionVelocityModule.local_filteredVelocity, Tensors.fromString("{1[m*s^-1], 0[m*s^-1]}"));
@@ -31,6 +31,6 @@ public class SimplePositionVelocityModuleTest extends TestCase {
     Sign.requirePositive(pose.Get(2));
     // {1.3729232285780566[m], -0.9003163161571061[m], 0.7853981633974483}
     // System.out.println(simplePositionVelocityModule.getPose());
-    simplePositionVelocityModule.last();
+    // simplePositionVelocityModule.last();
   }
 }

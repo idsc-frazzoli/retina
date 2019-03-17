@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
@@ -24,8 +24,8 @@ import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ class SimpleDynamicMPCStateEstimationProvider extends MPCStateEstimationProvider {
-  private final SimplePositionVelocityModule simpleVelocityEstimation = //
-      ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
+  private final LidarLocalizationModule lidarLocalizationModule = //
+      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private Scalar w2L = Quantity.of(0, SI.PER_SECOND);
   private Scalar w2R = Quantity.of(0, SI.PER_SECOND);
   private Scalar s = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
@@ -67,8 +67,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   public GokartState getState() {
     // check if there was an update since the creation of the last gokart state
     if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate)) {
-      Tensor velocity = simpleVelocityEstimation.getVelocity();
-      Tensor pose = simpleVelocityEstimation.getPose();
+      Tensor velocity = lidarLocalizationModule.getVelocity();
+      Tensor pose = lidarLocalizationModule.getPose();
       lastGokartState = new GokartState( //
           getTime(), //
           velocity.Get(0), //

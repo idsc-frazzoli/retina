@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.brake.SelfCalibratingBrakeFunction;
-import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
@@ -26,8 +26,8 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   // private final MPCActiveCompensationLearning activeCompensationLearning = MPCActiveCompensationLearning.getInstance();
   private final SelfCalibratingBrakeFunction selfCalibratingBrakeFunction = new SelfCalibratingBrakeFunction();
   private final Vmu931ImuLcmClient vmu931imuLcmClient = new Vmu931ImuLcmClient();
-  private final SimplePositionVelocityModule simpleVelocityEstimation = //
-      ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
+  private final LidarLocalizationModule lidarLocalizationModule = //
+      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
 
   @Override // from MPCBraking
   Scalar getBraking(Scalar time) {
@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
         .multiply(MPCOptimizationConfig.GLOBAL.brakeMultiplicator);
     // System.out.println(braking);
     // self calibration
-    Scalar gokartSpeed = simpleVelocityEstimation.getVelocity().Get(0);
+    Scalar gokartSpeed = lidarLocalizationModule.getVelocity().Get(0);
     Scalar realBraking = currentAcceleration.negate();
     selfCalibratingBrakeFunction.correctBraking(braking, realBraking, gokartSpeed, wheelSpeed);
     BrakeCalibrationRender.calibrationValue = selfCalibratingBrakeFunction.getBrakeFadeFactor(); // TODO JPH

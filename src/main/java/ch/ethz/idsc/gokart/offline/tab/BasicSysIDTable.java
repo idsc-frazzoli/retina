@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.offline.tab;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
-import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
+import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityEstimation;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
@@ -31,7 +31,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 public class BasicSysIDTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
-  private final SimplePositionVelocityModule velocityModule = new SimplePositionVelocityModule();
+  private final SimplePositionVelocityEstimation velocityModule = new SimplePositionVelocityEstimation();
   private final SteerColumnTracker steerTracker = new SteerColumnTracker();
   private Scalar lastTime = Quantity.of(0, SI.SECOND);
   private Scalar steerPosition = Quantity.of(0, "SCE");

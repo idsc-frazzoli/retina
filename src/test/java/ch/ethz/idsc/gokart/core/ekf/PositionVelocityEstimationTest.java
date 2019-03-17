@@ -22,7 +22,7 @@ public class PositionVelocityEstimationTest extends TestCase {
     Scalar deltaT = Quantity.of(0.01, SI.SECOND);
     Scalar deltaTl = Quantity.of(0.1, SI.SECOND);
     Distribution distr = NormalDistribution.of(0, 10);
-    SimplePositionVelocityModule estimation = new SimplePositionVelocityModule();
+    SimplePositionVelocityEstimation estimation = new SimplePositionVelocityEstimation();
     Tensor originPos = Tensors.of(//
         Quantity.of(0, SI.METER), Quantity.of(0, SI.METER), Quantity.of(0, SI.ONE));
     Scalar rotVelocity = Quantity.of(0, SI.PER_SECOND);

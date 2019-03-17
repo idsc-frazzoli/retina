@@ -13,7 +13,6 @@ import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
-import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
@@ -92,7 +91,6 @@ enum RunTabbedTaskGui {
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
       Vlp16PassiveSlowing.class, //
-      SimplePositionVelocityModule.class, //
       LidarLocalizationModule.class, //
       PoseLcmServerModule.class, // publishes pose
       ManualResetModule.class, //
