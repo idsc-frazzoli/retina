@@ -25,13 +25,17 @@ import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.group.LieDifferences;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
+import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
+import ch.ethz.idsc.sophus.group.Se2Group;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -40,6 +44,10 @@ import ch.ethz.idsc.tensor.sca.Round;
 public class LidarLocalizationModule extends AbstractModule implements //
     LidarRayBlockListener, DavisImuFrameListener, Runnable, GokartPoseInterface, //
     PositionVelocityEstimation {
+  private static final Clip QUALITY_CLIP = Clips.interval(0.6, 1);
+  private static final LieDifferences LIE_DIFFERENCES = //
+      new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
+  // ---
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
@@ -141,18 +149,28 @@ public class LidarLocalizationModule extends AbstractModule implements //
     }
   }
 
+  private SlamResult prevResult = null;
+
   private void fit(Tensor points) {
-    lidarGyroLocalization.setState(getPose());
-    Optional<SlamResult> optional = lidarGyroLocalization.handle(davis_gyroZ, points);
+    Optional<SlamResult> optional = lidarGyroLocalization.handle(getPose(), davis_gyroZ, points);
     if (optional.isPresent()) {
       SlamResult slamResult = optional.get();
       quality = slamResult.getMatchRatio();
-      Scalar rescale = Clips.interval(0.5, 0.8).rescale(quality);
-      // System.out.println(rescale);
+      Scalar rescale = QUALITY_CLIP.rescale(quality);
       vmu931Odometry.inertialOdometry.blendPose(slamResult.getTransform(), rescale);
-      // TODO blend velocity
+      if (Objects.nonNull(prevResult)) {
+        Tensor velXY = LIE_DIFFERENCES.pair(prevResult.getTransform(), slamResult.getTransform()) //
+            .extract(0, 2).multiply(SensorsConfig.GLOBAL.vlp16_rate);
+        // System.out.println("---");
+        // System.out.println(vmu931Odometry.inertialOdometry.getVelocity().map(Round._4));
+        // System.out.println(velXY.map(Round._4));
+        // TODO JPH/MH magic const
+        vmu931Odometry.inertialOdometry.blendVelocity(velXY, RealScalar.of(0.01));
+      }
+      prevResult = slamResult;
     } else {
       quality = Clips.unit().apply(quality.subtract(RealScalar.of(0.05)));
+      prevResult = null;
     }
   }
 
@@ -173,6 +191,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
     System.out.println("reset pose=" + pose.map(Round._5));
     vmu931Odometry.inertialOdometry.resetPose(pose);
     quality = RealScalar.ONE;
+    prevResult = null;
   }
 
   @Override

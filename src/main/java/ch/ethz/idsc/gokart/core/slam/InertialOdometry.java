@@ -1,4 +1,4 @@
-// code by jph
+// code by mh, jph
 package ch.ethz.idsc.gokart.core.slam;
 
 import ch.ethz.idsc.gokart.core.ekf.PositionVelocityEstimation;
@@ -54,14 +54,14 @@ public class InertialOdometry implements PositionVelocityEstimation {
     return localVelocityXY.copy().append(gyroZ);
   }
 
-  /** @param velXY
-   * @param scalar */
+  /** @param velXY {velx[m*s^-1], vely[m*s^-1]}
+   * @param scalar in the interval [0, 1] */
   synchronized void blendVelocity(Tensor velXY, Scalar scalar) {
     localVelocityXY = RnGeodesic.INSTANCE.split(localVelocityXY, velXY, scalar);
   }
 
-  /** @param pose
-   * @param scalar */
+  /** @param pose {x[m], y[m], angle[]}
+   * @param scalar in the interval [0, 1] */
   synchronized void blendPose(Tensor pose, Scalar scalar) {
     this.pose = Se2Geodesic.INSTANCE.split(this.pose, pose, scalar);
     pose.set(MOD_DISTANCE, 2);

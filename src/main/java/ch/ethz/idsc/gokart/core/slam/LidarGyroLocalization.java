@@ -30,25 +30,20 @@ public class LidarGyroLocalization {
   private final Tensor model2pixel;
   private final SlamScore slamScore;
   // ---
-  private Tensor _model = null;
 
   public LidarGyroLocalization(PredefinedMap predefinedMap) {
     model2pixel = predefinedMap.getModel2Pixel();
     slamScore = ImageScore.of(predefinedMap.getImageExtruded());
   }
 
-  /** @param state {x[m], y[m], angle} */
-  void setState(Tensor state) {
-    _model = GokartPoseHelper.toSE2Matrix(state);
-  }
-
   /** call {@link #setState(Tensor)} before invoking {@link #handle(Tensor)}
    * 
+   * @param pose {x[m], y[m], angle}
    * @param gyroZ with unit "s^-1"
    * @param points
    * @return */
-  Optional<SlamResult> handle(Scalar gyroZ, Tensor points) {
-    Tensor model = _model;
+  Optional<SlamResult> handle(Tensor pose, Scalar gyroZ, Tensor points) {
+    Tensor model = GokartPoseHelper.toSE2Matrix(pose);
     Scalar rate = gyroZ.divide(lidarRate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getResample() //
         .apply(points).getPointsSpin(SensorsConfig.GLOBAL.vlp16_relativeZero, rate);
