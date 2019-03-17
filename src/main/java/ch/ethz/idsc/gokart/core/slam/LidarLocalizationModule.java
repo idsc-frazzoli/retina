@@ -32,6 +32,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** match the most recent lidar scan to static geometry of a pre-recorded map
@@ -39,7 +40,6 @@ import ch.ethz.idsc.tensor.sca.Round;
 public class LidarLocalizationModule extends AbstractModule implements //
     LidarRayBlockListener, DavisImuFrameListener, Runnable, GokartPoseInterface, //
     PositionVelocityEstimation {
-  // private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
@@ -55,7 +55,6 @@ public class LidarLocalizationModule extends AbstractModule implements //
    * containing the cross-section of the static geometry
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
-  private Tensor bestPose = Tensors.fromString("{0[m], 0[m], 0}");
   private Scalar quality = RealScalar.ZERO;
 
   /** @return */
@@ -132,17 +131,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
       Tensor points = points2d_ferry;
       if (Objects.nonNull(points)) {
         points2d_ferry = null;
-        lidarGyroLocalization.setState(bestPose);
-        Optional<SlamResult> optional = lidarGyroLocalization.handle(davis_gyroZ, points);
-        if (optional.isPresent()) {
-          SlamResult slamResult = optional.get();
-          // OUT={37.85[m], 38.89[m], -0.5658221}
-          setPose(slamResult.getTransform(), slamResult.getMatchRatio());
-        } else
-          // TODO check is the code below is sufficient
-          // TODO create module with rank safety that prohibits autonomous driving
-          // ... with bad pose quality (similar to autonomous button pressed)
-          setPose(bestPose, RealScalar.ZERO);
+        fit(points);
       } else
         try {
           Thread.sleep(2000); // is interrupted once data arrives
@@ -152,20 +141,27 @@ public class LidarLocalizationModule extends AbstractModule implements //
     }
   }
 
+  private void fit(Tensor points) {
+    lidarGyroLocalization.setState(getPose());
+    Optional<SlamResult> optional = lidarGyroLocalization.handle(davis_gyroZ, points);
+    if (optional.isPresent()) {
+      SlamResult slamResult = optional.get();
+      quality = slamResult.getMatchRatio();
+      Scalar rescale = Clips.interval(0.5, 0.8).rescale(quality);
+      // System.out.println(rescale);
+      vmu931Odometry.inertialOdometry.blendPose(slamResult.getTransform(), rescale);
+      // TODO blend velocity
+    } else {
+      quality = Clips.unit().apply(quality.subtract(RealScalar.of(0.05)));
+    }
+  }
+
   /***************************************************/
   @Override // from GokartPoseInterface
   public Tensor getPose() {
-    return bestPose.copy();
+    return vmu931Odometry.inertialOdometry.getPose();
   }
 
-  private void setPose(Tensor pose, Scalar quality) {
-    // TODO
-    bestPose = pose.copy();
-    // gokartPoseOdometry.setPose(pose, quality);
-  }
-
-  //
-  // @Override // from MappedPoseInterface
   public GokartPoseEvent createPoseEvent() {
     return GokartPoseEvents.getPoseEvent(getPose(), quality);
   }
@@ -176,7 +172,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
   public void resetPose(Tensor pose) {
     System.out.println("reset pose=" + pose.map(Round._5));
     vmu931Odometry.inertialOdometry.resetPose(pose);
-    setPose(pose, RealScalar.ONE);
+    quality = RealScalar.ONE;
   }
 
   @Override
