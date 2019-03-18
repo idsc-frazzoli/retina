@@ -64,6 +64,6 @@ public class InertialOdometry implements PositionVelocityEstimation {
    * @param scalar in the interval [0, 1] */
   synchronized void blendPose(Tensor pose, Scalar scalar) {
     this.pose = Se2Geodesic.INSTANCE.split(this.pose, pose, scalar);
-    pose.set(MOD_DISTANCE, 2);
+    this.pose.set(MOD_DISTANCE, 2);
   }
 }

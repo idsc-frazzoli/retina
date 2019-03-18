@@ -68,12 +68,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     // check if there was an update since the creation of the last gokart state
     if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate)) {
       Tensor velocity = lidarLocalizationModule.getVelocity();
+      Scalar gyroZfiltered = lidarLocalizationModule.getGyroZFiltered();
       Tensor pose = lidarLocalizationModule.getPose();
       lastGokartState = new GokartState( //
           getTime(), //
           velocity.Get(0), //
           velocity.Get(1), //
-          velocity.Get(2), //
+          gyroZfiltered, // unfiltered: velocity.Get(2)
           pose.Get(0), //
           pose.Get(1), //
           pose.Get(2), //

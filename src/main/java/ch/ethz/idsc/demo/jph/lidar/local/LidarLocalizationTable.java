@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -19,11 +20,9 @@ import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
-import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
@@ -49,6 +48,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final LidarLocalizationModule lidarLocalizationModule = new LidarLocalizationModule();
   private final TableBuilder tableBuilder = new TableBuilder();
+  private final TableBuilder tableBuilderOdometry = new TableBuilder();
   // ---
   private GokartPoseEvent prev_poseEvent = null;
 
@@ -65,12 +65,21 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(DavisImuChannel.INSTANCE.channel()))
-      lidarLocalizationModule.imuFrame(new DavisImuFrame(byteBuffer));
-    else //
-    if (channel.equals(Vmu931ImuChannel.INSTANCE.channel()))
+    // if (channel.equals(DavisImuChannel.INSTANCE.channel()))
+    // lidarLocalizationModule.imuFrame(new DavisImuFrame(byteBuffer));
+    // else //
+    if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
       lidarLocalizationModule.vmu931ImuFrame(new Vmu931ImuFrame(byteBuffer));
-    else //
+      // lidarLocalizationModule.getPose(), //
+      Tensor velocity = lidarLocalizationModule.getVelocity();
+      tableBuilderOdometry.appendRow( //
+          Magnitude.SECOND.apply(time), //
+          GokartPoseHelper.toUnitless(lidarLocalizationModule.getPose()), //
+          velocity.extract(0, 2).map(Magnitude.VELOCITY), //
+          velocity.Get(2).map(Magnitude.PER_SECOND), //
+          lidarLocalizationModule.getGyroZFiltered().map(Magnitude.PER_SECOND) //
+      );
+    } else //
     if (channel.equals(CHANNEL_LIDAR))
       velodyneDecoder.lasers(byteBuffer);
     else //
@@ -114,6 +123,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       lidarLocalizationTable.lidarLocalizationModule.resetPose(gokartLogInterface.pose());
       OfflineLogPlayer.process(gokartLogInterface.file(), lidarLocalizationTable);
       Export.of(new File(dest, folder.getName() + ".csv.gz"), lidarLocalizationTable.getTable().map(CsvFormat.strict()));
+      Export.of(new File(dest, folder.getName() + "_odom.csv.gz"), lidarLocalizationTable.tableBuilderOdometry.toTable().map(CsvFormat.strict()));
     }
   }
 }
