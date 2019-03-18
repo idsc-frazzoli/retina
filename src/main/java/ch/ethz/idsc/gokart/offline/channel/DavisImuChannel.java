@@ -14,9 +14,11 @@ import ch.ethz.idsc.tensor.Tensors;
 public enum DavisImuChannel implements SingleChannelInterface {
   INSTANCE;
   // ---
+  private static final String CHANNEL = DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
+
   @Override // from SingleChannelInterface
   public String channel() {
-    return DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
+    return CHANNEL;
   }
 
   @Override // from SingleChannelInterface

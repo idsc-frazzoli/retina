@@ -1,32 +1,22 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.ekf;
 
-import java.util.Objects;
-
+import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.sophus.group.LieDifferences;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
-import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
 import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
-import ch.ethz.idsc.sophus.group.Se2Group;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.lie.Cross;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -37,55 +27,58 @@ import ch.ethz.idsc.tensor.sca.Mod;
 
 // TODO MH cleanup comments/unused code
 // TODO JPH refactor
-public class SimplePositionVelocityModule extends AbstractModule implements //
+@Refactor
+public class SimplePositionVelocityEstimation implements //
     Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
-  private static final Scalar MIN_DRIFT_VELOCITY = Quantity.of(1, SI.VELOCITY);
   private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
+  private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   // ---
-  private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
-  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-  private final IntervalClock intervalClockLidar = new IntervalClock();
+  private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
+  private final IntervalClock intervalClock = new IntervalClock();
   private Tensor lastPosition = null;
   private Scalar angularVelocity = Quantity.of(0, SI.PER_SECOND);
   private int lastVmuTime = 0;
   /* package for testing */
-  Tensor filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+  Tensor local_filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
   Tensor filteredPose = GokartPoseHelper.attachUnits(Tensors.vector(0, 0, 0));
   // private long lastReset = 0;
   private GokartPoseEvent lidar_prev = null;
 
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    Tensor acc = SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame);
-    Scalar gyro = SensorsConfig.GLOBAL.vmu931GyroZ(vmu931ImuFrame);
+    Tensor local_acc = planarVmu931Imu.vmu931AccXY(vmu931ImuFrame);
+    Scalar gyro = planarVmu931Imu.vmu931GyroZ(vmu931ImuFrame);
     int currentTime = vmu931ImuFrame.timestamp_ms();
     Scalar time = Quantity.of((currentTime - lastVmuTime) * 1e-3, SI.SECOND);
     lastVmuTime = currentTime;
-    measureAcceleration(acc, gyro, CLIP_TIME.apply(time));
+    integrateImu(local_acc, gyro, CLIP_TIME.apply(time));
   }
 
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     Scalar delta_time = Min.of( //
-        Quantity.of(intervalClockLidar.seconds(), SI.SECOND), //
+        Quantity.of(intervalClock.seconds(), SI.SECOND), //
         Quantity.of(0.03, SI.SECOND)); // 1/50 == 0.02 is nominal
-    if (LidarLocalizationModule.TRACKING) {
-      // if (Scalars.lessThan(RealScalar.of(0.6), gokartPoseEvent.getQuality()))
-      // filteredPose = gokartPoseEvent.getPose();
-      if (Objects.nonNull(lidar_prev)) {
-        lastPosition = lidar_prev.getPose().extract(0, 2);
-        measurePose(gokartPoseEvent, delta_time);
-      }
-    } else
-      filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+    // FIXME JPH LOCAL
+    // if (LidarLocalizationModule.TRACKING) {
+    // // if (Scalars.lessThan(RealScalar.of(0.6), gokartPoseEvent.getQuality()))
+    // // filteredPose = gokartPoseEvent.getPose();
+    // if (Objects.nonNull(lidar_prev)) {
+    // lastPosition = lidar_prev.getPose().extract(0, 2);
+    // measurePose(gokartPoseEvent, delta_time);
+    // }
+    // } else
+    local_filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
     // ---
-    lidar_prev = LidarLocalizationModule.TRACKING // TODO magic const
-        && Scalars.lessThan(RealScalar.of(.3), gokartPoseEvent.getQuality()) //
-            ? gokartPoseEvent
-            : null;
+    lidar_prev = // FIXME JPH LOCAL
+        // LidarLocalizationModule.TRACKING // TODO magic const
+        // && Scalars.lessThan(RealScalar.of(.3), gokartPoseEvent.getQuality()) //
+        // ? gokartPoseEvent
+        // :
+        null;
   }
 
-  private static LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
+  // private static LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   int countPrint = 0;
 
   /** take new lidar pose into account
@@ -101,7 +94,7 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
       Tensor lidarSpeed = getCompensationRotationMatrix(orientation) //
           .dot(differenceToLast) //
           .divide(deltaT);
-      filteredVelocity = RnGeodesic.INSTANCE.split(filteredVelocity, lidarSpeed, VelocityEstimationConfig.GLOBAL.velocityCorrectionFactor);
+      local_filteredVelocity = RnGeodesic.INSTANCE.split(local_filteredVelocity, lidarSpeed, VelocityEstimationConfig.GLOBAL.velocityCorrectionFactor);
       // System.out.println("new factor: "+newFactor+" delta T: "+deltaT);
       // System.out.println("pose: "+pose+" Velocity: "+ velocity);
     }
@@ -119,7 +112,6 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   private static Tensor getCompensationRotationMatrix(Scalar orientation) {
     return RotationMatrix.of(orientation.negate());
   }
-
   /** take new acceleration measurement into account
    * 
    * @param accelerations {x[m/s^2], y[m/s^2]}
@@ -127,63 +119,33 @@ public class SimplePositionVelocityModule extends AbstractModule implements //
   // void measureAcceleration(Tensor accelerations, Scalar angularVelocity) {
   // measureAcceleration(accelerations, angularVelocity, Quantity.of(intervalClockIMU.seconds(), SI.SECOND));
   // }
-  private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
 
   /** take new acceleration measurement into account
    * 
-   * @param accelerations {x[m/s^2], y[m/s^2]}
-   * @param angularVelocity {x[1/s]}
+   * @param local_acc {x[m*s^-2], y[m*s^-2]}
+   * @param gyro with unit [s^-1]
    * @param deltaT [s] */
-  /* package for testing */
-  void measureAcceleration(Tensor accelerations, Scalar angularVelocity, Scalar deltaT) {
-    this.angularVelocity = (Scalar) RnGeodesic.INSTANCE.split(this.angularVelocity, angularVelocity, VelocityEstimationConfig.GLOBAL.rotFilter);
-    Scalar rdt = angularVelocity.multiply(deltaT);
+  /* package */ void integrateImu(Tensor local_acc, Scalar gyro, Scalar deltaT) {
+    this.angularVelocity = (Scalar) RnGeodesic.INSTANCE.split(angularVelocity, gyro, VelocityEstimationConfig.GLOBAL.rotFilter);
     // transform old system (compensate for rotation)
-    Tensor vel = filteredVelocity.add(Cross.of(filteredVelocity).multiply(rdt.negate()));
-    // Tensors.of(vx, vy);
-    // System.out.println("Acc: "+accelerations);
-    this.filteredVelocity = vel.add(accelerations.multiply(deltaT));
+    local_filteredVelocity = RotationMatrix.of(gyro.multiply(deltaT).negate()).dot(local_filteredVelocity).add(local_acc.multiply(deltaT));
     // integrate pose
-    Tensor currentVelocity = getVelocity();
-    filteredPose = Se2CoveringIntegrator.INSTANCE.spin(filteredPose, currentVelocity.multiply(deltaT));
+    filteredPose = Se2CoveringIntegrator.INSTANCE.spin(filteredPose, getVelocity().multiply(deltaT));
     filteredPose.set(MOD_DISTANCE, 2);
-    // if (countPrint % 1000 == 0)
-    // System.out.println("f=" + filteredPose.map(Round._4));
   }
 
-  @Override // from VelocityEstimation
+  @Override // from PositionVelocityEstimation
   public Tensor getVelocity() {
-    return filteredVelocity.copy().append(angularVelocity);
+    return local_filteredVelocity.copy().append(angularVelocity);
   }
 
-  public Tensor getXYVelocity() {
-    return filteredVelocity.copy();
-  }
-
-  public Scalar getDrift() {
-    if (Scalars.lessThan(filteredVelocity.Get(0), MIN_DRIFT_VELOCITY))
-      return RealScalar.ZERO;
-    return filteredVelocity.Get(1).divide(filteredVelocity.Get(0));
+  public Tensor getVelocityXY() {
+    return local_filteredVelocity.copy();
   }
 
   /** @return "s^-1" */
   public Scalar getGyroVelocity() {
     return angularVelocity;
-  }
-
-  @Override
-  protected void first() {
-    vmu931ImuLcmClient.addListener(this);
-    gokartPoseLcmClient.addListener(this);
-    // ---
-    vmu931ImuLcmClient.startSubscriptions();
-    gokartPoseLcmClient.startSubscriptions();
-  }
-
-  @Override
-  protected void last() {
-    vmu931ImuLcmClient.stopSubscriptions();
-    gokartPoseLcmClient.stopSubscriptions();
   }
 
   @Override

@@ -28,11 +28,6 @@ public class GokartPoseLcmLidar implements MappedPoseInterface, GokartPoseListen
     throw new RuntimeException();
   }
 
-  @Override // from MappedPoseInterface
-  public GokartPoseEvent getPoseEvent() {
-    return gokartPoseEvent;
-  }
-
   @Override // from GokartPoseListener
   public final void getEvent(GokartPoseEvent gokartPoseEvent) {
     this.gokartPoseEvent = gokartPoseEvent;

@@ -31,8 +31,8 @@ import ch.ethz.idsc.tensor.sca.Round;
     File folder = new File(StaticHelper.DEST, cut.getName().substring(0, 8)); // date e.g. 20190208
     folder.mkdir();
     File target = new File(folder, cut.getName());
-    // if (target.isDirectory())
-    // return Optional.empty();
+    if (target.isDirectory())
+      return Optional.empty();
     // ---
     target.mkdir();
     Map<SingleChannelInterface, OfflineTableSupplier> map = StaticHelper.SINGLE_CHANNEL_INTERFACES.stream() //

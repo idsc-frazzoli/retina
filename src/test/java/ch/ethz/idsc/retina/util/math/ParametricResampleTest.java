@@ -27,8 +27,12 @@ public class ParametricResampleTest extends TestCase {
     List<Tensor> list = uniformResample.apply(points);
     List<Tensor> pnts = resampleResult.getPoints();
     assertEquals(list.size(), pnts.size());
-    for (int index = 0; index < list.size(); ++index)
-      assertTrue(Chop._10.close(list.get(index), pnts.get(index)));
+    List<Tensor> spin = resampleResult.getPointsSpin(RealScalar.ZERO, RealScalar.ZERO);
+    assertEquals(list.size(), spin.size());
+    for (int index = 0; index < list.size(); ++index) {
+      Chop._10.requireClose(list.get(index), pnts.get(index));
+      Chop._10.requireClose(list.get(index), spin.get(index));
+    }
   }
 
   public void testDistances() {
@@ -55,12 +59,16 @@ public class ParametricResampleTest extends TestCase {
     List<Tensor> list = uniformResample.apply(points);
     List<Tensor> pnts = resampleResult.getPoints();
     assertEquals(list.size(), pnts.size());
-    for (int index = 0; index < list.size(); ++index)
-      assertTrue(Chop._10.close(list.get(index), pnts.get(index)));
+    List<Tensor> spin = resampleResult.getPointsSpin(RealScalar.ZERO, RealScalar.ZERO);
+    assertEquals(list.size(), spin.size());
+    for (int index = 0; index < list.size(); ++index) {
+      Chop._10.requireClose(list.get(index), pnts.get(index));
+      Chop._10.requireClose(list.get(index), spin.get(index));
+    }
     assertEquals(pnts.size(), 1);
     Tensor seq = pnts.get(0);
     Tensor ys = Tensor.of(seq.stream().map(r -> r.Get(1)));
     Tensor cs = Range.of(0, seq.length()).multiply(ds);
-    assertTrue(Chop._10.close(ys, cs));
+    Chop._10.requireClose(ys, cs);
   }
 }

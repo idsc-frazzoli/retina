@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
@@ -29,7 +30,8 @@ public class MPCExpectationRender implements RenderInterface, RimoGetListener {
   private Scalar currentMPCAcc = Quantity.of(-4, SI.ONE);
   private final IntervalClock rimoClock = new IntervalClock();
   private Scalar lastTangentSpeed = Quantity.of(0, SI.VELOCITY);
-  private final GeodesicIIR1Filter accelerationFilter = //
+  /** acceleration filter */
+  private final GeodesicIIR1Filter geodesicIIR1Filter = //
       new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(.1));
 
   public MPCExpectationRender(Tensor xya) {
@@ -65,6 +67,6 @@ public class MPCExpectationRender implements RenderInterface, RimoGetListener {
         .subtract(lastTangentSpeed)//
         .divide(Quantity.of(rimoClock.seconds(), SI.SECOND));
     lastTangentSpeed = currentTangentSpeed;
-    currentRimoAcc = (Scalar) accelerationFilter.apply(acceleration);
+    currentRimoAcc = (Scalar) geodesicIIR1Filter.apply(acceleration);
   }
 }

@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
@@ -36,9 +36,9 @@ public class LocalViewLcmModule extends AbstractModule {
   private final MPCExpectationRender mpcExpectationRender = new MPCExpectationRender(MINOR);
   private final TimerFrame timerFrame = new TimerFrame();
   private final AccelerationRender accelerationRender = new AccelerationRender(MINOR, 100);
-  private final SimplePositionVelocityModule simpleVelocityEstimation = //
-      ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
-  private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(simpleVelocityEstimation, MINOR);
+  private final LidarLocalizationModule lidarLocalizationModule = //
+      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
+  private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(lidarLocalizationModule, MINOR);
   private final BrakeCalibrationRender brakeCalibrationRender = new BrakeCalibrationRender(MINORRIGHT);
   private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
   private final WindowConfiguration windowConfiguration = //
@@ -55,7 +55,7 @@ public class LocalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
     // ---
     vmu931ImuLcmClient.addListener(vmu931ImuFrame -> accelerationRender.setAccelerationXY( //
-        SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame)));
+        SensorsConfig.getPlanarVmu931Imu().vmu931AccXY(vmu931ImuFrame)));
     // ---
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     timerFrame.geometricComponent.addRenderInterface(gokartRender);
