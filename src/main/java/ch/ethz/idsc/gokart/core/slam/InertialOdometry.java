@@ -28,6 +28,11 @@ public class InertialOdometry implements PositionVelocityEstimation {
     this.pose = pose.copy();
   }
 
+  /** sets velocity to {0[m*s^-2], 0[m*s^-2]} */
+  synchronized void resetVelocity() {
+    localVelocityXY = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+  }
+
   /** take new acceleration measurement into account
    * 
    * @param local_accXY {x[m*s^-2], y[m*s^-2]}
