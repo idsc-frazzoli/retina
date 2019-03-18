@@ -13,20 +13,19 @@ import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class ReferenceTrajectory {
-  
   public static Tensor of(String trackName, int steps, int skip) throws InterruptedException, IOException {
-    Tensor trackData = Import.of(HomeDirectory.Documents("TrackID",trackName)).multiply(Quantity.of(1, SI.METER));
+    Tensor trackData = Import.of(HomeDirectory.Documents("TrackID", trackName)).multiply(Quantity.of(1, SI.METER));
     MPCBSplineTrack track = new MPCBSplineTrack(trackData, true);
     return of(track, steps, skip);
   }
-  
+
   public static Tensor of(MPCPreviewableTrack track, int steps, int skip) throws InterruptedException {
     Tensor positions = Tensors.empty();
     LcmMPCControlClient lcmMPCControlClient = LcmMPCControlClient.dynamic();
     lcmMPCControlClient.switchToExternalStart();
     lcmMPCControlClient.start();
     GokartState gokartState;
-    Tensor pose =  track.getStartPose();
+    Tensor pose = track.getStartPose();
     // 44.2575 51.6983
     gokartState = new GokartState(//
         0, //
@@ -46,8 +45,8 @@ public class ReferenceTrajectory {
     lcmMPCControlClient.publishOptimizationParameter(optimizationParameterDynamic);
     // lcmMPCControlClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
     Tensor position = gokartState.getCenterPosition();
-    MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0.5, SI.METER), Quantity.of(-0.5, SI.ONE),
-        RealScalar.of(0.7));
+    MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0.5, SI.METER),
+        Quantity.of(-0.5, SI.ONE), RealScalar.of(0.7));
     lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
     for (int i = 0; i < steps; i++) {
       Thread.sleep(200);
