@@ -2,8 +2,10 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.gokart.core.map.BSplineTrack;
+import ch.ethz.idsc.sophus.planar.ArcTan2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Max;
@@ -69,5 +71,13 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
 
   public BSplineTrack bSplineTrack() {
     return bSplineTrack;
+  }
+
+  @Override
+  public Tensor getStartPose() {
+    Tensor pos = bSplineTrack.getPositionXY(RealScalar.ZERO);
+    Tensor dir = bSplineTrack.getDirectionXY(RealScalar.ZERO);
+    Scalar angle = ArcTan2D.of(dir);
+    return pos.append(angle);
   }
 }
