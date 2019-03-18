@@ -117,7 +117,6 @@ hold off
 %%
 %look at back axle grip
 figure
-title('frontaxle')
 hold on
 minAx = -0.4;
 maxAx = 0.4;
@@ -131,6 +130,8 @@ scatter(fsa(sel),-sayf(sel)./(fsc(sel)),'b');
 scatter(-fsa(sel),sayf(sel)./(fsc(sel)),'b');
 %scatter(-vy(selb)./vx(selb),say(selb),'r');
 %scatter(vy(selb)./vx(selb),-say(selb),'r');
+xlabel('front axle slip angle [1]');
+ylabel('specific lateral force [N/kg]');
 
 B = 5;
 D = 1*9.81;
@@ -154,5 +155,6 @@ for i = 1:mm
     pfy(i) = magic(isa(i),B1,C1,D1);
 end
 
-plot(isa,pfy, 'r')
+plot(isa,pfy, '--k')
+print('frontaxlemodel','-dpng','-r600')
 hold off

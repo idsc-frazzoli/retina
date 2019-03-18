@@ -31,11 +31,12 @@ yl = ylim;
 %show track width spline
 figure
 hold on
-xlabel('control point')
+daspect([0.5 1 1])
+xlabel('control points')
 ylabel('track width [m]')
 [leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),0,startpoints);
-plot(leftline(:,1),leftline(:,2),'b')
-plot(rightline(:,1),rightline(:,2),'b')
+plot(leftline(:,1),leftline(:,2),'b','LineWidth',1)
+plot(rightline(:,1),rightline(:,2),'b','LineWidth',1)
 plot(middleline(:,1),middleline(:,2),'--r','LineWidth',2)
 %plot([points(:,1);points(1,1)],[points(:,2);points(1,2)], '-ks')
 plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'ks') 
@@ -53,8 +54,8 @@ hold on
 set(gca,'visible','off')
 daspect([1 1 1])
 [leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),1,startpoints);
-plot(leftline(:,1),leftline(:,2),'b')
-plot(rightline(:,1),rightline(:,2),'b')
+plot(leftline(:,1),leftline(:,2),'b','LineWidth',1)
+plot(rightline(:,1),rightline(:,2),'b','LineWidth',1)
 plot(middleline(:,1),middleline(:,2),'--r','LineWidth',2)
 %plot([points(:,1);points(1,1)],[points(:,2);points(1,2)], '-ks')
 plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'-ks') 
@@ -72,8 +73,8 @@ hold on
 set(gca,'visible','off')
 daspect([1 1 1])
 [leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),1,startpoints);
-plot(leftline(:,1),leftline(:,2),'b')
-plot(rightline(:,1),rightline(:,2),'b')
+plot(leftline(:,1),leftline(:,2),'b','LineWidth',1)
+plot(rightline(:,1),rightline(:,2),'b','LineWidth',1)
 plot(middleline(:,1),middleline(:,2),'--r','LineWidth',2)
 plot([points(:,1);points(1,1)],[points(:,2);points(1,2)], '-ks')
 %plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'-ks') 
@@ -92,8 +93,8 @@ daspect([1 1 1])
 [leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),1,startpoints);
 [trackm,~]=size(leftline);
 tracksel=1*trackm/m:1:5*trackm/m;
-plot(leftline(tracksel,1),leftline(tracksel,2),'b')
-plot(rightline(tracksel,1),rightline(tracksel,2),'b')
+plot(leftline(tracksel,1),leftline(tracksel,2),'b','LineWidth',1)
+plot(rightline(tracksel,1),rightline(tracksel,2),'b','LineWidth',1)
 plot(middleline(tracksel,1),middleline(tracksel,2),'--r','LineWidth',2)
 plot(points(pointsel,1),points(pointsel,2), '-ks')
 %plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'-ks') 
@@ -110,8 +111,8 @@ hold on
 set(gca,'visible','off')
 daspect([1 1 1])
 [leftline,middleline,rightline, wl, llc,rlc] = drawTrack(points(:,1:2),points(:,3),1,startpoints);
-plot(leftline(:,1),leftline(:,2),'b')
-plot(rightline(:,1),rightline(:,2),'b')
+plot([leftline(:,1);leftline(1,1)],[leftline(:,2);leftline(1,2)],'b','LineWidth',1)
+plot([rightline(:,1);rightline(1,1)],[rightline(:,2);rightline(1,2)],'b','LineWidth',1)
 plot(middleline(:,1),middleline(:,2),'--r','LineWidth',2)
 %plot([points(:,1);points(1,1)],[points(:,2);points(1,2)], '-ks')
 %plot([wl(:,1)'; wl(:,3)'], [wl(:,2)'; wl(:,4)'],'-ks') 
@@ -119,3 +120,7 @@ plot(middleline(:,1),middleline(:,2),'--r','LineWidth',2)
 %plot(rlc(:,1),rlc(:,2),'-k');
 hold off
 print('finished','-dpng','-r600')
+fig = gcf;
+fig.PaperUnits = 'inches';
+fig.PaperPosition = [0 0 100 100];
+print('finishedzoomable','-dpng','-r600')
