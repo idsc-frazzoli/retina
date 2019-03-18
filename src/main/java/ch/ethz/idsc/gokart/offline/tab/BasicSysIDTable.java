@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.offline.tab;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
-import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
+import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityEstimation;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
@@ -31,7 +31,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 public class BasicSysIDTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
-  private final SimplePositionVelocityModule velocityModule = new SimplePositionVelocityModule();
+  private final SimplePositionVelocityEstimation velocityModule = new SimplePositionVelocityEstimation();
   private final SteerColumnTracker steerTracker = new SteerColumnTracker();
   private Scalar lastTime = Quantity.of(0, SI.SECOND);
   private Scalar steerPosition = Quantity.of(0, "SCE");
@@ -50,9 +50,9 @@ public class BasicSysIDTable implements OfflineTableSupplier {
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
           RealScalar.of(vmu931ImuFrame.timestamp_ms()), //
-          velocityModule.getXYVelocity().map(Magnitude.VELOCITY).map(Round._5), //
+          velocityModule.getVelocityXY().map(Magnitude.VELOCITY).map(Round._5), //
           velocityModule.getGyroVelocity().map(Magnitude.PER_SECOND).map(Round._5), //
-          SensorsConfig.GLOBAL.vmu931AccXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), //
+          SensorsConfig.getPlanarVmu931Imu().vmu931AccXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), //
           RealScalar.of(steerPosition.number().floatValue()), //
           powerPair.map(Magnitude.ARMS).map(Round._5), //
           powerAccelerationLeft.map(Magnitude.ACCELERATION).map(Round._5), //

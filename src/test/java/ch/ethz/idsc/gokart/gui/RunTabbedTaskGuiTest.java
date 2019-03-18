@@ -12,7 +12,7 @@ import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmModule;
+import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
@@ -52,7 +52,7 @@ public class RunTabbedTaskGuiTest extends TestCase {
         Vlp16LcmServerModule.class, //
         AutoboxLcmServerModule.class, //
         GokartStatusLcmModule.class, //
-        GokartPoseLcmModule.class, //
+        PoseLcmServerModule.class, //
         LoggerModule.class, //
         // GenericXboxPadLcmServerModule.class, //
         LabjackU3LcmModule.class, //

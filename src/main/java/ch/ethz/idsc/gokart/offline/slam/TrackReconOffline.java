@@ -21,9 +21,8 @@ import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmServer;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseOdometry;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
@@ -63,8 +62,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   private static final Scalar DELTA = Quantity.of(0.05, SI.SECOND);
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  private final GokartPoseOdometry gokartPoseOdometry = GokartPoseLcmServer.INSTANCE.getGokartPoseOdometry();
-  private final MappedPoseInterface gokartPoseInterface = gokartPoseOdometry;
+  private final MappedPoseInterface gokartPoseInterface = new GokartPoseContainer();
   private final GokartRender gokartRender = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
   private final SpacialXZObstaclePredicate predicate = TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final Consumer<BufferedImage> consumer;

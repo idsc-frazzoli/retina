@@ -18,10 +18,10 @@ import lcm.logging.LogPlayerConfig;
     file = DatahakiLogFileLocator.file(GokartLogFile._20190309T191245_885223b3);
     // file = new File("/media/datahaki/data/gokart/cuts/20190304/20190304T181143_05/log.lcm");
     // file = new File("/media/datahaki/media/ethz/gokart/topic/trackid", "changingtrack.lcm");
-    file = new File("/media/datahaki/data/gokart/cuts/20190309/20190309T201432_01/log.lcm");
+    file = new File("/media/datahaki/data/gokart/cuts/20190314/20190314T154544_18/post.lcm");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
-    logPlayerConfig.speed_denominator = 1;
+    logPlayerConfig.speed_denominator = 8;
     LogPlayer logPlayer = LogPlayer.create(logPlayerConfig);
     WindowConfiguration windowConfiguration = //
         AppCustomization.load(GokartLcmLogPlayer.class, new WindowConfiguration());

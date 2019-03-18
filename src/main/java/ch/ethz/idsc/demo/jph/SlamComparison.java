@@ -39,7 +39,10 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
       // ---
       ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
       scatterImage = new WallScatterImage(predefinedMap);
-      OfflineLocalize offlineLocalize = new LidarGyroOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
+      OfflineLocalize offlineLocalize = new LidarGyroOfflineLocalize( //
+          predefinedMap.getImageExtruded(), gokartLogInterface.pose(), //
+          LocalizationConfig.offlineSe2MultiresGrids(4), //
+          scatterImage);
       OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
       OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
       Export.of(HomeDirectory.file(folder.getName() + ".csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));

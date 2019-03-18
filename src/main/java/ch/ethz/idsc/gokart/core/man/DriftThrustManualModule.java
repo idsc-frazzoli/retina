@@ -4,8 +4,9 @@ package ch.ethz.idsc.gokart.core.man;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.ekf.SimplePositionVelocityModule;
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
+import ch.ethz.idsc.gokart.core.slam.DriftRatio;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringClip;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
@@ -25,8 +26,8 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
 /** class was designed to exaggerate rotation of gokart */
 public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> {
-  private final SimplePositionVelocityModule simpleVelocityEstimation = //
-      ModuleAuto.INSTANCE.getInstance(SimplePositionVelocityModule.class);
+  private final LidarLocalizationModule lidarLocalizationModule = //
+      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
 
   @Override // from AbstractModule
   void protected_first() {
@@ -48,9 +49,10 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> {
     // ahead value may be negative
     Scalar ahead = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0);
     Scalar delta = deltaClip.of(gyroZ.multiply(ManualConfig.GLOBAL.torquePerGyro));
-    if (Objects.isNull(simpleVelocityEstimation))
+    if (Objects.isNull(lidarLocalizationModule))
       return Optional.empty();
-    Scalar overDrift = Ramp.of(Abs.of(simpleVelocityEstimation.getDrift()).subtract(ManualConfig.GLOBAL.driftAvoidStart));
+    Scalar drift = DriftRatio.of(lidarLocalizationModule.getVelocity());
+    Scalar overDrift = Ramp.of(Abs.of(drift).subtract(ManualConfig.GLOBAL.driftAvoidStart));
     Scalar driftfactor = Ramp.of(RealScalar.ONE.subtract(overDrift.multiply(ManualConfig.GLOBAL.driftAvoidRamp)));
     delta = driftfactor.multiply(delta);
     Tensor power = TorqueVectoringClip.of(ahead.add(delta), ahead.subtract(delta)) //
