@@ -39,7 +39,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /** produces a high resolution image with lidar obstacles */
 public class ObstacleAggregate implements OfflineLogListener, LidarSpacialListener {
-  public static final Tensor MODEL2PIXEL = Tensors.fromString("{{50,0,-1000},{0,-50,3000},{0,0,1}}");
+  // public static final Tensor MODEL2PIXEL = Tensors.fromString("{{50,0,-1000},{0,-50,3000},{0,0,1}}");
+  public static final Tensor MODEL2PIXEL = Tensors.fromString("{{43.158339, 41.68162, -2423}, {41.681623, -43.15833, 685}, {0.0, 0.0, 1.0}}").unmodifiable();
   private static final SpacialXZObstaclePredicate SPACIAL_XZ = //
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private static final String CHANNEL_LIDAR = //
@@ -54,13 +55,15 @@ public class ObstacleAggregate implements OfflineLogListener, LidarSpacialListen
 
   public ObstacleAggregate(Tensor pose) {
     this.pose = pose;
-    bufferedImage = new BufferedImage(2000, 2000, BufferedImage.TYPE_INT_ARGB);
+    bufferedImage = new BufferedImage(1920, 1080, BufferedImage.TYPE_INT_ARGB);
     graphics = bufferedImage.createGraphics();
     graphics.setColor(Color.BLACK);
+    graphics.setColor(Color.WHITE);
     graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
     lidarSpacialProvider.addListener(this);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
-    graphics.setColor(new Color(255, 255, 255, 16));
+    // graphics.setColor(new Color(255, 255, 255, 16));
+    graphics.setColor(new Color(0, 0, 0, 16));
   }
 
   @Override

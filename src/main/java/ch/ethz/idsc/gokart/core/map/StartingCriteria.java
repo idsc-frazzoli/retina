@@ -33,7 +33,7 @@ public enum StartingCriteria {
     return isInFront(position, standartPosition(), standartDirection());
   }
 
-  public static boolean getLineTrigger(Tensor position, Tensor lastPosition) {
-    return isInFrontOfStandartLine(position) && !isInFrontOfStandartLine(lastPosition);
+  public static boolean getLineTrigger(Tensor lastPosition, Tensor position) {
+    return !isInFrontOfStandartLine(lastPosition) && isInFrontOfStandartLine(position);
   }
 }

@@ -11,9 +11,9 @@ public class StartingCriteriaTest extends TestCase {
   public void testSimple() {
     Tensor newPos = Tensors.vector(20, 20).multiply(Quantity.of(1, SI.METER));
     Tensor oldPos = Tensors.vector(50, 40).multiply(Quantity.of(1, SI.METER));
-    assertTrue(StartingCriteria.getLineTrigger(newPos, oldPos));
-    assertTrue(!StartingCriteria.getLineTrigger(newPos, newPos));
-    assertTrue(!StartingCriteria.getLineTrigger(oldPos, oldPos));
-    assertTrue(!StartingCriteria.getLineTrigger(oldPos, newPos));
+    assertFalse(StartingCriteria.getLineTrigger(newPos, oldPos));
+    assertFalse(StartingCriteria.getLineTrigger(newPos, newPos));
+    assertFalse(StartingCriteria.getLineTrigger(oldPos, oldPos));
+    assertTrue(StartingCriteria.getLineTrigger(oldPos, newPos));
   }
 }

@@ -46,14 +46,14 @@ public class LapSegmenter implements OfflineLogListener {
   }
 
   public static void main(String[] args) throws IOException {
-    File folder = new File("/media/datahaki/data/gokart/cuts/20190318/20190318T142605_09");
+    File folder = new File("/media/datahaki/data/gokart/cuts/20190318/20190318T142605_08");
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
     LapSegmenter lapSegmenter = new LapSegmenter(gokartLogInterface.pose());
     OfflineLogPlayer.process(gokartLogInterface.file(), lapSegmenter);
     new LcmLogFileCutter(gokartLogInterface.file(), lapSegmenter.navigableMap) {
       @Override
       public File filename(int index) {
-        return new File("/home/datahaki/laps", String.format("s%02d.lcm", index));
+        return new File("/home/datahaki/laps", String.format("r%02d.lcm", index));
       }
     };
   }
