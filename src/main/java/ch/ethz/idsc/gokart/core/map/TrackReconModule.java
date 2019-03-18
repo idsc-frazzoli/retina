@@ -169,7 +169,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   public void computeTrack() {
     trackReconManagement.computeTrack();
   }
-  
+
   /** export track */
   public void exportTrack() {
     trackReconManagement.exportTrack();

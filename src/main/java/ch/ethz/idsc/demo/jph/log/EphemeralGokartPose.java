@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /* package */ enum EphemeralGokartPose {
   ;
   public static void main(String[] args) throws IOException {
-    File root = new File(StaticHelper.CUTS, "20190304");
+    File root = new File(StaticHelper.CUTS, "20190308");
     for (File folder : root.listFiles())
       if (folder.isDirectory()) {
         File file = new File(folder, StaticHelper.POST_LCM);
@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
           OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(GokartPosePostChannel.INSTANCE);
           OfflineLogPlayer.process(file, offlineTableSupplier);
           Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
-          File dest = HomeDirectory.file("Projects/ephemeral/src/main/resources/dubilab/app/pose/20190304");
+          File dest = HomeDirectory.file("Projects/ephemeral/src/main/resources/dubilab/app/pose", root.getName());
           dest.mkdir();
           Export.of(new File(dest, folder.getName() + ".csv"), tensor);
         } else

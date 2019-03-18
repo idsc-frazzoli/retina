@@ -65,12 +65,8 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    // if (channel.equals(DavisImuChannel.INSTANCE.channel()))
-    // lidarLocalizationModule.imuFrame(new DavisImuFrame(byteBuffer));
-    // else //
     if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
       lidarLocalizationModule.vmu931ImuFrame(new Vmu931ImuFrame(byteBuffer));
-      // lidarLocalizationModule.getPose(), //
       Tensor velocity = lidarLocalizationModule.getVelocity();
       tableBuilderOdometry.appendRow( //
           Magnitude.SECOND.apply(time), //
