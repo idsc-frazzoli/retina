@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.batik.css.engine.SystemColorSupport;
-
 import ch.ethz.idsc.gokart.core.map.TrackRefinement.TrackConstraint;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -65,11 +63,11 @@ public class TrackReconManagement {
   public void computeTrack() {
     trackDataXYR = null;
   }
-  
+
   public void exportTrack() {
-    if(Objects.nonNull(trackDataXYR)) {
+    if (Objects.nonNull(trackDataXYR)) {
       try {
-        Export.of(HomeDirectory.Documents("TrackID","track_"+SystemTimestamp.asString()), trackDataXYR.map(Magnitude.METER));
+        Export.of(HomeDirectory.Documents("TrackID", "track_" + SystemTimestamp.asString() + ".csv"), trackDataXYR.map(Magnitude.METER));
       } catch (IOException e) {
         e.printStackTrace();
       }
