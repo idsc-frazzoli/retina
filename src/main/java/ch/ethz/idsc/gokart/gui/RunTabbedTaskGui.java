@@ -23,6 +23,7 @@ import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
+import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
@@ -94,14 +95,15 @@ enum RunTabbedTaskGui {
       LidarLocalizationModule.class, //
       PoseLcmServerModule.class, // publishes pose
       ManualResetModule.class, //
-      DavisImuTrackerModule.class //
+      DavisImuTrackerModule.class, //
+      Vmu931CalibrationWatchdog.class //
   // AutonomySafetyModule.class // <- dead man switch
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
+      AutoboxCompactModule.class, // initialize actuation
       AutoboxIntrospectionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       TrackReconModule.class, //
-      AutoboxCompactModule.class, // initialize actuation
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
       SeesLcmModule.class, //

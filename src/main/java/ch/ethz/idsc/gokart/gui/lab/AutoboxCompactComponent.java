@@ -12,6 +12,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
 import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
+import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -116,7 +117,10 @@ import ch.ethz.idsc.tensor.sca.Round;
       }
       {
         JButton jButton = new JButton("calibration");
-        jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestCalibration());
+        jButton.addActionListener(actionEvent -> {
+          vmu931LcmServerModule.requestCalibration();
+          Vmu931CalibrationWatchdog.requiresCalibration = false;
+        });
         jToolBar.add(jButton);
       }
     }
