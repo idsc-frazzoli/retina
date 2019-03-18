@@ -2,12 +2,12 @@ motorlim = [0.5 0.5 0.5];
 underlim = [1 1 0.5];
 usable = [0.5 1 0.5];
 
-sideaxis = 8;
-highaxis = 4.25;
+sideaxis = 11.5;
+highaxis = 5.5;
 longshift = 0.5;
 torquesteerpenalty = 0.7;
 maxacc = 1.9;
-understeerlimit = 5;
+understeerlimit = 9.5;
 tveffect = 1.5;
 close all
 %Back wheels only
