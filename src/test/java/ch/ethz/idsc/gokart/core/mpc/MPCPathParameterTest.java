@@ -57,11 +57,11 @@ public class MPCPathParameterTest extends TestCase {
     // Tensor ctrR = QuantityTensor.of(Tensors.vector(1,1,1,1,1,1), SI.METER);
     MPCBSplineTrack mpcbSplineTrack = new MPCBSplineTrack(Transpose.of(Tensors.of(ctrX, ctrY, ctrR)), true);
     MPCPathParameter mpcPathParameter0 = mpcbSplineTrack.getPathParameterPreview(6, Tensors.vector(1, 4).multiply(Quantity.of(1, SI.METER)),
-        Quantity.of(0, SI.METER), RealScalar.of(0.1),RealScalar.of(0.1));
+        Quantity.of(0, SI.METER), RealScalar.of(0.1), RealScalar.of(0.1));
     MPCPathParameter mpcPathParameter1 = mpcbSplineTrack.getPathParameterPreview(6, Tensors.vector(1.1, 4.1).multiply(Quantity.of(1, SI.METER)),
-        Quantity.of(0, SI.METER), RealScalar.of(0.1),RealScalar.of(0.1));
+        Quantity.of(0, SI.METER), RealScalar.of(0.1), RealScalar.of(0.1));
     MPCPathParameter mpcPathParameter2 = mpcbSplineTrack.getPathParameterPreview(6, Tensors.vector(1.2, 4.2).multiply(Quantity.of(1, SI.METER)),
-        Quantity.of(0, SI.METER), RealScalar.of(0.1),RealScalar.of(0.1));
+        Quantity.of(0, SI.METER), RealScalar.of(0.1), RealScalar.of(0.1));
     // mpcPathParameter
     Tensor R0 = mpcPathParameter0.getControlPointsR();
     System.out.println(mpcPathParameter0.getProgressOnPath());
