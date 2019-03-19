@@ -26,6 +26,7 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
   }
 
   /** get the predicted positions
+   * 
    * @return predicted X- and Y-position in tensor */
   public Tensor getPositions() {
     // avoid race conditions

@@ -61,6 +61,7 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
       MPCControlUpdateListener mpcControlUpdateListener = new MPCControlUpdateListener() {
         @Override
         void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+          // TODO MH default behavior, no need to override function
           this.cns = controlAndPredictionSteps;
           System.out.println("control update");
         }

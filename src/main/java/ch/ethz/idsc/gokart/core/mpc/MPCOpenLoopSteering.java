@@ -9,11 +9,11 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /* package */ class MPCOpenLoopSteering extends MPCSteering {
+  private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
   // TODO MH not used
   private MPCStateEstimationProvider mpcStateProvider;
-  private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
 
-  @Override
+  @Override // from MPCSteering
   Optional<Tensor> getSteering(Scalar time) {
     Scalar controlTime = time.add(mpcOptimizationConfig.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
@@ -28,6 +28,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
   @Override
   public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+    // TODO MH default behavior, no need to override function
     cns = controlAndPredictionSteps;
   }
 
