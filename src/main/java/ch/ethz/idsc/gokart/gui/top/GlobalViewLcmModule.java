@@ -81,8 +81,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     viewLcmFrame.geometricComponent.setButtonDrag(MouseEvent.BUTTON1);
     {
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
-      RenderInterface renderInterface = //
-          new BufferedImageRender(predefinedMap.getImage());
+      RenderInterface renderInterface = new BufferedImageRender(predefinedMap.getImage());
       viewLcmFrame.geometricComponent.addRenderInterface(renderInterface);
     }
     {
@@ -90,7 +89,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
-      GokartPathRender gokartPathRender = new GokartPathRender(gokartPoseInterface);
+      ExtrudedFootprintRender gokartPathRender = new ExtrudedFootprintRender(gokartPoseInterface);
       gokartStatusLcmClient.addListener(gokartPathRender.gokartStatusListener);
       viewLcmFrame.geometricComponent.addRenderInterface(gokartPathRender);
     }

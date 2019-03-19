@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.video;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +15,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /* package */ enum TrackDrivingTables {
   ;
   public static void main(String[] args) throws IOException {
-    File folder = new File("/media/datahaki/data/ethz/export_azure");
-    File dest = HomeDirectory.file("track_azure");
+    File folder = new File("/home/datahaki/laps");
+    File dest = HomeDirectory.file("track_putty");
     dest.mkdir();
     for (File file : folder.listFiles()) {
       String title = file.getName();

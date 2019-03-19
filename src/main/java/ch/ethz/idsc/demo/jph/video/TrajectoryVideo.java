@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.video;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
