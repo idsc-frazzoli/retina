@@ -76,9 +76,9 @@ public class OfflinePlannerModule extends AbstractClockedModule implements Gokar
       timerFrame.geometricComponent.addRenderInterface(trackReconManagement.getTrackLayoutInitialGuess());
     }
     {
-      GokartPathRender gokartPathRender = new GokartPathRender(gokartPoseLcmLidar);
-      gokartStatusLcmClient.addListener(gokartPathRender.gokartStatusListener);
-      timerFrame.geometricComponent.addRenderInterface(gokartPathRender);
+      ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender(gokartPoseLcmLidar);
+      gokartStatusLcmClient.addListener(extrudedFootprintRender.gokartStatusListener);
+      timerFrame.geometricComponent.addRenderInterface(extrudedFootprintRender);
     }
     {
       gokartPoseLcmLidar.gokartPoseLcmClient.addListener(poseTrailRender);
