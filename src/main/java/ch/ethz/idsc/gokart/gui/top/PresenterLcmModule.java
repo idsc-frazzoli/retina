@@ -12,11 +12,14 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
+import ch.ethz.idsc.gokart.core.map.SightLineMapping;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
+import ch.ethz.idsc.gokart.core.perc.PolarObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
@@ -69,9 +72,15 @@ public class PresenterLcmModule extends AbstractModule {
       ModuleAuto.INSTANCE.getInstance(GokartTrajectoryModule.class);
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
+  private final SightLineMapping sightLineMapping = //
+          new SightLineMapping(SafetyConfig.GLOBAL.createPolarObstaclePredicate(), 200);
 
   @Override // from AbstractModule
   protected void first() {
+    {
+      timerFrame.geometricComponent.addRenderInterface(sightLineMapping);
+      sightLineMapping.start();
+    }
     {
       ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
@@ -236,6 +245,7 @@ public class PresenterLcmModule extends AbstractModule {
     vlp16LcmHandler.stopSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
     davisLcmClient.stopSubscriptions();
+    sightLineMapping.stop();
   }
 
   public static void main(String[] args) throws Exception {
