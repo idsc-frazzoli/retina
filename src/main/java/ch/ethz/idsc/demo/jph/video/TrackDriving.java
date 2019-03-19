@@ -17,6 +17,7 @@ import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -35,10 +36,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
 /* package */ class TrackDriving implements RenderInterface {
-  private static final ColorDataIndexed COLOR_DATA_INDEXED1 = ColorDataLists._063.cyclic().deriveWithAlpha(128);
-  private static final ColorDataIndexed COLOR_DATA_INDEXED2 = COLOR_DATA_INDEXED1.deriveWithAlpha(32);
+  private static final ColorDataIndexed COLOR_DATA_INDEXED = ColorDataLists._063.cyclic().deriveWithAlpha(128);
+  private static final ColorDataIndexed COLOR_DATA_INDEXED_32 = COLOR_DATA_INDEXED.deriveWithAlpha(32);
+  private static final ColorDataIndexed COLOR_DATA_INDEXED_64 = COLOR_DATA_INDEXED.deriveWithAlpha(64);
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor FOOTPRINT = VEHICLE_MODEL.footprint();
+  private static final Tensor COG = Tensors.vector(0.46, 0);
   // ---
   private final Tensor tensor;
   private final int id;
@@ -83,17 +86,21 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     Tensor row = row(render_index);
     Tensor xya = row.extract(10, 13); // unitless
     {
-      PathRender pathRender = new PathRender(COLOR_DATA_INDEXED1.getColor(id), 1.5f);
-      Tensor points = Tensor.of(tensor.stream().skip(offset).limit(render_index).map(v -> v.extract(10, 12)));
+      PathRender pathRender = new PathRender(COLOR_DATA_INDEXED_64.getColor(id), 1.5f);
+      Tensor points = Tensor.of(tensor.stream().skip(offset).limit(render_index) //
+          .map(v -> v.extract(10, 13)) //
+          .map(Se2Bijection::new) //
+          .map(Se2Bijection::forward) //
+          .map(tuo -> tuo.apply(COG)));
       pathRender.setCurve(points, false).render(geometricLayer, graphics);
     }
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     {
       Path2D path2d = geometricLayer.toPath2D(FOOTPRINT);
       path2d.closePath();
-      graphics.setColor(COLOR_DATA_INDEXED2.getColor(id));
+      graphics.setColor(COLOR_DATA_INDEXED_32.getColor(id));
       graphics.fill(path2d);
-      graphics.setColor(COLOR_DATA_INDEXED1.getColor(id));
+      graphics.setColor(COLOR_DATA_INDEXED.getColor(id));
       graphics.draw(path2d);
     }
     {

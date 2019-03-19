@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ class MPCPredictionRender implements MPCControlUpdateInterface, RenderInterface {
+public class MPCPredictionRender implements MPCControlUpdateInterface, RenderInterface {
   // ---
   // TODO JPH/MH the units of scale are ignored -> remove unit of scale
   private static final Scalar SCALE = Quantity.of(0.3, SI.METER);

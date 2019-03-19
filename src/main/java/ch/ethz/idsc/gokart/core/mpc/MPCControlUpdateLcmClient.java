@@ -13,7 +13,8 @@ public class MPCControlUpdateLcmClient extends SimpleLcmClient<MPCControlUpdateI
 
   @Override // from SimpleLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
-    ControlAndPredictionStepsMessage controlAndPredictionStepsMessage = new ControlAndPredictionStepsMessage(byteBuffer);
+    ControlAndPredictionStepsMessage controlAndPredictionStepsMessage = //
+        new ControlAndPredictionStepsMessage(byteBuffer);
     for (MPCControlUpdateInterface listener : listeners)
       listener.getControlAndPredictionSteps(controlAndPredictionStepsMessage.controlAndPredictionSteps);
   }

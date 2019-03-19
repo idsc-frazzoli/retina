@@ -13,7 +13,7 @@ import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import idsc.BinaryBlob;
 
-// TODO JPH/MH split class into listener and publisher
+// TODO JPH/MH split class into client(MPCControlUpdateLcmClient) and publisher
 /* package */ abstract class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
   public static LcmMPCControlClient kinematic() {
     return new LcmMPCControlClient("") {
