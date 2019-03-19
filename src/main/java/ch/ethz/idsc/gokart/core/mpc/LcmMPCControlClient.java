@@ -13,6 +13,7 @@ import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import idsc.BinaryBlob;
 
+// TODO JPH/MH split class into listener and publisher
 /* package */ abstract class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
   public static LcmMPCControlClient kinematic() {
     return new LcmMPCControlClient("") {
@@ -44,6 +45,11 @@ import idsc.BinaryBlob;
     controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs" + appendix);
     optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op" + appendix);
   }
+
+  /** @param mpcOptimizationParameter
+   * @param mpcNativeSession
+   * @return */
+  abstract BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession);
 
   @Override
   public void start() {
@@ -88,14 +94,12 @@ import idsc.BinaryBlob;
     optimizationParameterPublisher.accept(binaryBlob);
   }
 
-  abstract BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession);
-
-  public void registerControlUpdateLister(MPCControlUpdateListener listener) {
+  public final void registerControlUpdateLister(MPCControlUpdateListener listener) {
     listeners.add(listener);
   }
 
-  @Override
-  protected void messageReceived(ByteBuffer byteBuffer) {
+  @Override // from BinaryLcmClient
+  protected final void messageReceived(ByteBuffer byteBuffer) {
     // get new message
     ControlAndPredictionStepsMessage cns = new ControlAndPredictionStepsMessage(byteBuffer);
     // System.out.println(cns.controlAndPredictionSteps.steps[0]);

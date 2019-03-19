@@ -47,5 +47,8 @@ public abstract class BinaryLcmClient implements LcmClientInterface, LCMSubscrib
     }
   }
 
+  /** callback function
+   * 
+   * @param byteBuffer with content of lcm message; encoding set to little endian */
   protected abstract void messageReceived(ByteBuffer byteBuffer);
 }

@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 
-/* package */ abstract class MPCControlUpdateListener implements StartAndStoppable {
+/* package */ abstract class MPCControlUpdateListener implements MPCControlUpdateInterface, StartAndStoppable {
   /* package */ ControlAndPredictionSteps cns = null;
   // TODO MH document that keeping istep outside the function is intended
   private int istep = 0;
@@ -41,7 +41,8 @@ import ch.ethz.idsc.tensor.Scalars;
   }
 
   // TODO ideally this function should be final
-  void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+  @Override
+  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
     this.cns = controlAndPredictionSteps;
   }
 

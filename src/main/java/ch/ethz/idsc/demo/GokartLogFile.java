@@ -1591,8 +1591,8 @@ public enum GokartLogFile implements LogFile {
   /** mpc */
   _20190314T175917_c3c5a0db,
   /***************************************************/
-  /* 2019-03-18
-   * /** mpc */
+  /* 2019-03-18 */
+  /** mpc */
   _20190318T111729_2f26ff8b,
   /** mpc challenging track */
   _20190318T114748_eace07e4,
