@@ -171,7 +171,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
       SlamResult slamResult = optional.get();
       quality = slamResult.getMatchRatio();
       boolean matchOk = Scalars.lessThan(RealScalar.of(.7), quality);
-      System.out.println("flagSnap=" + flagSnap);
+      // System.out.println("flagSnap=" + flagSnap);
       if (matchOk || flagSnap) {
         // blend pose
         Scalar blend = flagSnap //
