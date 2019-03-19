@@ -30,31 +30,31 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
    * @return predicted X- and Y-position in tensor */
   public Tensor getPositions() {
     // avoid race conditions
-    if (Objects.nonNull(cns)) {
-      ControlAndPredictionSteps localCNS = cns;
-      // TODO use stream notation
-      Tensor positions = Tensors.empty();
-      for (int i = 0; i < localCNS.steps.length; ++i)
-        // TODO make member function in GokartState
-        positions.append(//
-            Tensors.of( //
-                localCNS.steps[i].gokartState.getX(), //
-                localCNS.steps[i].gokartState.getY()));
-      return positions;
-    }
-    return Tensors.empty();
+    return Objects.isNull(cns) //
+        ? Tensors.empty()
+        : toPositions(cns);
+  }
+
+  public static Tensor toPositions(ControlAndPredictionSteps controlAndPredictionSteps) {
+    Tensor positions = Tensors.empty();
+    for (int i = 0; i < controlAndPredictionSteps.steps.length; ++i)
+      positions.append( //
+          Tensors.of( //
+              controlAndPredictionSteps.steps[i].gokartState.getX(), //
+              controlAndPredictionSteps.steps[i].gokartState.getY()));
+    return positions;
   }
 
   /** get the acceleration at prediction steps */
   public Tensor getAccelerations() {
-    if (Objects.nonNull(cns)) {
-      ControlAndPredictionSteps localCNS = cns;
-      Tensor accelerations = Tensors.empty();
-      for (int i = 0; i < localCNS.steps.length; i++)
-        accelerations.append(localCNS.steps[i].gokartControl.getaB());
-      return accelerations;
-    }
-    return Tensors.empty();
+    return Objects.isNull(cns) ? Tensors.empty() : toAccelerations(cns);
+  }
+
+  public static Tensor toAccelerations(ControlAndPredictionSteps controlAndPredictionSteps) {
+    Tensor accelerations = Tensors.empty();
+    for (int i = 0; i < controlAndPredictionSteps.steps.length; i++)
+      accelerations.append(controlAndPredictionSteps.steps[i].gokartControl.getaB());
+    return accelerations;
   }
 
   public Boolean mpcAvailable() {
@@ -75,23 +75,23 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
 
   /** get the poses at steps in {x,y,a} */
   public Tensor getXYA() {
-    if (Objects.nonNull(cns)) {
-      ControlAndPredictionSteps localCNS = cns;
-      Tensor orientations = Tensors.empty();
-      for (int i = 0; i < localCNS.steps.length; i++) {
-        // TODO make member function in GokartState
-        Scalar X = RealScalar.of(localCNS.steps[i].gokartState.getX().number().doubleValue());
-        Scalar Y = RealScalar.of(localCNS.steps[i].gokartState.getY().number().doubleValue());
-        orientations.append(//
-            Tensors.of(//
-                X, //
-                Y, //
-                localCNS.steps[i].gokartState.getPsi()//
-            ));
-      }
-      return orientations;
+    return Objects.isNull(cns) //
+        ? Tensors.empty()
+        : toXYA(cns);
+  }
+
+  public static Tensor toXYA(ControlAndPredictionSteps controlAndPredictionSteps) {
+    Tensor orientations = Tensors.empty();
+    for (int i = 0; i < controlAndPredictionSteps.steps.length; i++) {
+      Scalar X = RealScalar.of(controlAndPredictionSteps.steps[i].gokartState.getX().number().doubleValue());
+      Scalar Y = RealScalar.of(controlAndPredictionSteps.steps[i].gokartState.getY().number().doubleValue());
+      orientations.append( //
+          Tensors.of( //
+              X, //
+              Y, //
+              controlAndPredictionSteps.steps[i].gokartState.getPsi()));
     }
-    return Tensors.empty();
+    return orientations;
   }
 
   @Override

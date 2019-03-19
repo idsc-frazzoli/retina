@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
-/* package */ class ControlAndPredictionSteps implements BufferInsertable {
+public class ControlAndPredictionSteps implements BufferInsertable {
   final ControlAndPredictionStep[] steps;
 
   public ControlAndPredictionSteps(ControlAndPredictionStep[] controlAndPredictionSteps) {

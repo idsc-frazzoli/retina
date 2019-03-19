@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
+import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
@@ -54,6 +55,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
       TrajectoryLcmClient.xyat(), //
       TrajectoryLcmClient.xyavt());
@@ -63,6 +65,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
+  private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
   public final TrackReconRender trackReconRender = new TrackReconRender();
 
   /** @param curve may be null */
@@ -117,7 +120,10 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
     viewLcmFrame.geometricComponent.addRenderInterface(trackReconRender);
-    viewLcmFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
+    {
+      mpcControlUpdateLcmClient.addListener(lcmMPCPredictionRender);
+      viewLcmFrame.geometricComponent.addRenderInterface(lcmMPCPredictionRender);
+    }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
       trajectoryLcmClients.forEach(trajectoryLcmClient -> trajectoryLcmClient.addListener(trajectoryRender));
@@ -145,6 +151,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     davisImuLcmClient.startSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
     gokartPoseLcmClient.startSubscriptions();
+    mpcControlUpdateLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), viewLcmFrame.jFrame);
     viewLcmFrame.configCoordinateOffset(400, 500);
@@ -175,6 +182,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     davisImuLcmClient.stopSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
     gokartPoseLcmClient.stopSubscriptions();
+    mpcControlUpdateLcmClient.stopSubscriptions();
     // ---
     viewLcmFrame.close();
   }
