@@ -65,7 +65,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
-  private final LcmMPCPredictionRender lcmMPCPredictionRender = new LcmMPCPredictionRender();
+  private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
   public final TrackReconRender trackReconRender = new TrackReconRender();
 
   /** @param curve may be null */
@@ -120,8 +120,6 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
     viewLcmFrame.geometricComponent.addRenderInterface(trackReconRender);
-    // TODO JPH/MH
-    viewLcmFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
     {
       mpcControlUpdateLcmClient.addListener(lcmMPCPredictionRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lcmMPCPredictionRender);
