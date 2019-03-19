@@ -75,7 +75,7 @@ public enum PredefinedMap implements LocalizationImage {
     Tensor tensor = ImageRegions.grayscale(ResourceData.of(string));
     bufferedImage = ImageFormat.of(tensor);
     this.size = bufferedImage.getWidth();
-    extrudedImage = ImageFormat.of(ImageEdges.extrusion(tensor, TTL));
+    extrudedImage = ExtrudedImageCache.of(name(), () -> ImageFormat.of(ImageEdges.extrusion(tensor, TTL)));
     imageRegion = new ImageRegion(tensor, range(), false);
     // ---
     if (bufferedImage.getHeight() != size)

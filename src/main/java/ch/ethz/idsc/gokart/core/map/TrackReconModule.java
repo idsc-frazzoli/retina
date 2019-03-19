@@ -35,7 +35,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public final class TrackReconModule extends AbstractClockedModule implements GokartPoseListener {
   /** TODO JPH magic const */
-  private static final Scalar PERIOD = Quantity.of(0.5, SI.SECOND);
+  private static final Scalar PERIOD = Quantity.of(1, SI.SECOND);
   private static final RenderInterface GRID_RENDER = new GridRender(Subdivide.of(0, 100, 10));
   static final Tensor HANGAR_MODEL2PIXEL = Tensors.fromString("{{7.5*2,0,-400},{0,-7.5*2,1050},{0,0,1}}");
   // ---
@@ -86,6 +86,11 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     {
       JButton jButton = new JButton("compute track");
       jButton.addActionListener(actionEvent -> computeTrack());
+      timerFrame.jToolBar.add(jButton);
+    }
+    {
+      JButton jButton = new JButton("export track");
+      jButton.addActionListener(actionEvent -> exportTrack());
       timerFrame.jToolBar.add(jButton);
     }
     {
@@ -163,6 +168,11 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   /** reset track */
   public void computeTrack() {
     trackReconManagement.computeTrack();
+  }
+
+  /** export track */
+  public void exportTrack() {
+    trackReconManagement.exportTrack();
   }
 
   // public void setMode(TrackReconMode trackReconMode) {

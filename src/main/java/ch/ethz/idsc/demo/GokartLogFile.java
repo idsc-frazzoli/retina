@@ -1570,19 +1570,42 @@ public enum GokartLogFile implements LogFile {
    * manual driving */
   _20190311T173809_da0bb9b9,
   /***************************************************/
-  /* 2019-03-14 */
-  /** */
-  _20190314T113126_396b512b,
-  /** */
+  /* 2019-03-14
+   * dust proof wall was installed */
+  /** manual driving, no localization */
   _20190314T113402_396b512b,
-  /** */
+  /** manual driving, no localization */
   _20190314T114500_086ad351,
-  /** */
-  _20190314T115433_cec49cde,
-  /** */
+  /** manual driving, no localization */
   _20190314T115655_cec49cde,
-  /** */
-  _20190314T135434_cec49cde,;
+  /** slow manual driving collecting data for map update */
+  _20190314T135434_cec49cde,
+  /** mpc wet floor */
+  _20190314T143253_382aafe0,
+  /** power steering proportional to angle */
+  _20190314T150851_c3c5a0db,
+  /** mpc */
+  _20190314T154544_c3c5a0db,
+  /** mpc */
+  _20190314T174957_c3c5a0db,
+  /** mpc */
+  _20190314T175917_c3c5a0db,
+  /***************************************************/
+  /* 2019-03-18
+   * /** mpc */
+  _20190318T111729_2f26ff8b,
+  /** mpc challenging track */
+  _20190318T114748_eace07e4,
+  /** manual driving challenging track */
+  _20190318T120437_eace07e4,
+  /** slow and fast manual driving */
+  _20190318T141147_9a9329f5,
+  /** mpc and slow manual driving */
+  _20190318T141608_9a9329f5,
+  /** mpc and manual driving */
+  _20190318T142605_9a9329f5,
+  /***************************************************/
+  ;
   // ---
   @Override // from LogFile
   public String getFilename() {

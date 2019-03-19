@@ -27,15 +27,15 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-/** draw blue lines of prediction of traces of gokart */
-// TODO JPH/MH need better class name
-public class GokartPathRender extends AbstractGokartRender {
-  public Color color = new Color(0, 0, 255, 128);
+/** draw blue lines of prediction of traces of gokart
+ * extruded footprint */
+public class ExtrudedFootprintRender extends AbstractGokartRender {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  private GokartStatusEvent gokartStatusEvent;
+  public Color color = new Color(0, 0, 255, 128);
 
-  public GokartPathRender(GokartPoseInterface gokartPoseInterface) {
+  public ExtrudedFootprintRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
   }
 

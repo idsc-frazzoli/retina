@@ -12,6 +12,7 @@ import ch.ethz.idsc.owl.data.BoundedLinkedList;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -19,9 +20,12 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
+/** renders (x, y) part of pose sequence as path.
+ * only the latest 100 poses are considered */
 public class PoseTrailRender implements GokartPoseListener, RenderInterface {
   private static final Stroke STROKE_DEFAULT = new BasicStroke();
   private static final Color COLOR = new Color(0, 192, 192);
+  private static final Scalar WIDTH_METER = Quantity.of(0.1, SI.METER);
   // ---
   private static final int MAX_SIZE = 100;
   private static final Scalar THRESHOLD_ADD = Quantity.of(0.3, SI.METER);
@@ -54,7 +58,7 @@ public class PoseTrailRender implements GokartPoseListener, RenderInterface {
       tensor = Tensor.of(boundedLinkedList.stream());
     }
     GraphicsUtil.setQualityHigh(graphics);
-    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.1)));
+    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(Magnitude.METER.toDouble(WIDTH_METER))));
     graphics.setColor(COLOR);
     graphics.draw(geometricLayer.toPath2D(tensor));
     graphics.setStroke(STROKE_DEFAULT);

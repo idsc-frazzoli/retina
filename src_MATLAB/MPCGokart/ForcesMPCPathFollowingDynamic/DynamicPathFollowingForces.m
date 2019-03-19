@@ -11,9 +11,9 @@ clear all
 close all
 
 maxSpeed = 10;
-maxxacc = 4;
-steeringreg = 0.1;
-specificmoi = 0.5;
+maxxacc = 5;
+steeringreg = 0.02;
+specificmoi = 0.3;
 pointsO = 4;
 pointsN = 10;
 splinestart = 1;
@@ -82,8 +82,8 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));
     
-points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
-%points = getPoints('/wildpoints.csv');
+%points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+points = getPoints('/wildpoints.csv');
 points(:,3)=points(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
 %points = [0,40,40,5,0;0,0,10,9,10]';
@@ -135,7 +135,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 100;
+tend = 1000;
 eulersteps = 10;
 planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]

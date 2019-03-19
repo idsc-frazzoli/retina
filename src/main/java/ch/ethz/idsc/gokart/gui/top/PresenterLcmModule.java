@@ -96,7 +96,7 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
     }
     {
-      GokartPathRender gokartPathRender = new GokartPathRender(gokartPoseLcmLidar);
+      ExtrudedFootprintRender gokartPathRender = new ExtrudedFootprintRender(gokartPoseLcmLidar);
       gokartStatusLcmClient.addListener(gokartPathRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(gokartPathRender);
     }

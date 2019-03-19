@@ -1,16 +1,18 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import ch.ethz.idsc.gokart.calib.vmu931.FlippedPlanarVmu931Imu;
+import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -50,6 +52,9 @@ public class SensorsConfig {
   public final Scalar vlp16Height = Quantity.of(1.1558, SI.METER);
   /** number of rotations per second */
   public final Scalar vlp16_rate = Quantity.of(20, SI.PER_SECOND);
+  /** relative zero is value in the interval [0, 1] */
+  public final Scalar vlp16_relativeZero = DoubleScalar.of(0.75);
+  // ---
   public final Scalar davis_imu_rate = Quantity.of(1000, SI.PER_SECOND);
   // TODO the location of the frustum is not final
   public final Tensor davis_frustum = Tensors.fromString("{0[m],7[m]}");
@@ -102,29 +107,8 @@ public class SensorsConfig {
   /***************************************************/
   /** .
    * ante 20190408: the vmu931 was mounted on the gokart with xyz aligned with the gokart coordinate system
-   * post 20190408: the vmu931 is mounted rotated around U axis with 180[deg]
-   * 
-   * @param vmu931ImuFrame
-   * @return vector of length 2 of acceleration in gokart coordinates */
-  public Tensor vmu931AccXY(Vmu931ImuFrame vmu931ImuFrame) {
-    return vmu931AccXY(vmu931ImuFrame.accXY());
-  }
-
-  /* package */ Tensor vmu931AccXY(Tensor accRawXY) {
-    // return accRawXY.copy(); // ante 20190208)
-    return Tensors.of(accRawXY.Get(1).negate(), accRawXY.Get(0).negate()); // post [20190208
-  }
-
-  /** see description above
-   * 
-   * @param vmu931ImuFrame
-   * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
-  public Scalar vmu931GyroZ(Vmu931ImuFrame vmu931ImuFrame) {
-    return vmu931GyroZ(vmu931ImuFrame.gyroZ());
-  }
-
-  /* package */ Scalar vmu931GyroZ(Scalar gyroZ) {
-    // return gyroZ; // ante 20190208)
-    return gyroZ.negate(); // post [20190208
+   * post 20190408: the vmu931 is mounted rotated around U axis with 180[deg] */
+  public static PlanarVmu931Imu getPlanarVmu931Imu() {
+    return FlippedPlanarVmu931Imu.INSTANCE;
   }
 }

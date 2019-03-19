@@ -10,16 +10,16 @@ import ch.ethz.idsc.tensor.Tensor;
 
 public enum GokartPoseEvents {
   ;
-  /** @param state {x[m], y[m], alpha}
+  /** @param pose {x[m], y[m], alpha}
    * @param quality in the interval [0, 1]
    * @return */
-  public static GokartPoseEvent getPoseEvent(Tensor state, Scalar quality) {
+  public static GokartPoseEvent getPoseEvent(Tensor pose, Scalar quality) {
     byte[] array = new byte[GokartPoseEvent.LENGTH];
     ByteBuffer byteBuffer = ByteBuffer.wrap(array);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    byteBuffer.putDouble(Magnitude.METER.toDouble(state.Get(0)));
-    byteBuffer.putDouble(Magnitude.METER.toDouble(state.Get(1)));
-    byteBuffer.putDouble(Magnitude.ONE.toDouble(state.Get(2)));
+    byteBuffer.putDouble(Magnitude.METER.toDouble(pose.Get(0)));
+    byteBuffer.putDouble(Magnitude.METER.toDouble(pose.Get(1)));
+    byteBuffer.putDouble(Magnitude.ONE.toDouble(pose.Get(2)));
     byteBuffer.putFloat(Magnitude.ONE.toFloat(quality));
     byteBuffer.flip();
     return new GokartPoseEvent(byteBuffer);

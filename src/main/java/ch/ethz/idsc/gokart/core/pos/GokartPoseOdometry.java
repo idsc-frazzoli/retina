@@ -8,7 +8,6 @@ import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.tensor.DoubleScalar;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -25,8 +24,6 @@ public abstract class GokartPoseOdometry implements MappedPoseInterface, RimoGet
   // ---
   final Scalar dt = RimoSocket.getGetPeriod(); // 1/250[s]
   Tensor state;
-  /** initial quality value == 0 */
-  private Scalar quality = RealScalar.ZERO;
 
   GokartPoseOdometry(Tensor state) {
     this.state = state.copy();
@@ -43,16 +40,10 @@ public abstract class GokartPoseOdometry implements MappedPoseInterface, RimoGet
   }
 
   @Override
-  public final GokartPoseEvent getPoseEvent() {
-    return GokartPoseEvents.getPoseEvent(state, quality);
-  }
-
-  @Override
   public final synchronized void setPose(Tensor pose, Scalar quality) {
     // TODO this is not good design: odometry should always be consistent integration of wheels!
     // other entities may track different poses
     state = pose.copy();
-    this.quality = quality;
   }
 
   final synchronized void step(Tensor angularRate_Y_pair) {

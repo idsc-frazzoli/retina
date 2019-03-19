@@ -11,18 +11,13 @@ public enum GokartPoseLocal implements MappedPoseInterface {
   // ---
   private static final Tensor IDENTITY = Tensors.fromString("{0[m], 0[m], 0}").unmodifiable();
 
-  @Override
+  @Override // from GokartPoseInterface
   public Tensor getPose() {
     return IDENTITY;
   }
 
-  @Override
+  @Override // from MappedPoseInterface
   public void setPose(Tensor pose, Scalar quality) {
     throw TensorRuntimeException.of(pose, quality);
-  }
-
-  @Override
-  public GokartPoseEvent getPoseEvent() {
-    throw new RuntimeException();
   }
 }

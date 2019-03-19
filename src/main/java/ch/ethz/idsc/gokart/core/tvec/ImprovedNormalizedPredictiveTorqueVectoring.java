@@ -21,7 +21,8 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
   public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
     geodesicIIR1Filter = new GeodesicIIR1Filter( //
-        RnGeodesic.INSTANCE, torqueVectoringConfig.rollingAverageRatio, ROLLING_AVERAGE_VALUE);
+        RnGeodesic.INSTANCE, //
+        torqueVectoringConfig.rollingAverageRatio /* ROLLING_AVERAGE_VALUE */ );
   }
 
   @Override // from ImprovedNormalizedTorqueVectoring

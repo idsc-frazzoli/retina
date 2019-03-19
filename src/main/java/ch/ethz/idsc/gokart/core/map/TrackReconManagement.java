@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.map;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -9,11 +10,15 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.map.TrackRefinement.TrackConstraint;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -57,6 +62,17 @@ public class TrackReconManagement {
    * but keeps start position */
   public void computeTrack() {
     trackDataXYR = null;
+  }
+
+  public void exportTrack() {
+    if (Objects.nonNull(trackDataXYR))
+      try {
+        File folder = HomeDirectory.Documents("TrackID");
+        folder.mkdir();
+        Export.of(new File(folder, "track_" + SystemTimestamp.asString() + ".csv"), trackDataXYR.map(Magnitude.METER));
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
   }
 
   public boolean isStartSet() {
