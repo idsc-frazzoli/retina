@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 
 public class SteerMappingTest extends TestCase {
   private static final List<SteerMapping> STEER_MAPPINGS = Arrays.asList( //
-      LinearSteerMapping.instance(), CubicSteerMapping.approximation_1());
+      LinearSteerMapping.instance(), CubicSteerMapping.approximation());
 
   public void testAdvancedFormulaCenter() {
     for (SteerMapping steerMapping : STEER_MAPPINGS) {

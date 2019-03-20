@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.fuse;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
@@ -10,13 +11,22 @@ import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
-/** overwrites steering and Rimo command if designated joystick button is not pushed
+/** overwrites steering and Rimo command if designated
+ * joystick/autonomous mode button is not pressed
  * 
  * The put providers are implemented as anonymous classes */
 public final class AutonomySafetyModule extends AbstractModule {
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  final AutonomySafetyRimo autonomySafetyRimo = new AutonomySafetyRimo(() -> isAutonomousPressed());
-  final AutonomySafetySteer autonomySafetySteer = new AutonomySafetySteer(() -> isAutonomousPressed());
+  final AutonomySafetyRimo autonomySafetyRimo = new AutonomySafetyRimo(this::isAutonomousPressed);
+  final AutonomySafetySteer autonomySafetySteer = new AutonomySafetySteer(this::isAutonomousPressed);
+  private final ManualControlProvider manualControlProvider;
+
+  public AutonomySafetyModule() {
+    this(ManualConfig.GLOBAL.createProvider());
+  }
+
+  public AutonomySafetyModule(ManualControlProvider manualControlProvider) {
+    this.manualControlProvider = Objects.requireNonNull(manualControlProvider);
+  }
 
   @Override // from AbstractModule
   protected void first() {

@@ -17,8 +17,7 @@ import ch.ethz.idsc.tensor.red.Mean;
   // ---
   /** the number of 20 means that the estimate is computed
    * as the mean over the last 20 gyro measurements */
-  // TODO JPH why 20?
-  private final Tensor gyroZ = Array.of(l -> Quantity.of(0.0, SI.PER_SECOND), 20);
+  private final Tensor gyroZ = Array.of(l -> Quantity.of(0.0, SI.PER_SECOND), 50);
   private int index = 0;
   private int framecount = 0;
 
