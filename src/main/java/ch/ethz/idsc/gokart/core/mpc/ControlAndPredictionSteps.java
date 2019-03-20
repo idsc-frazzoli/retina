@@ -2,8 +2,10 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
+import java.util.stream.Stream;
 
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
+import ch.ethz.idsc.tensor.Tensor;
 
 public class ControlAndPredictionSteps implements BufferInsertable {
   final ControlAndPredictionStep[] steps;
@@ -28,5 +30,18 @@ public class ControlAndPredictionSteps implements BufferInsertable {
   @Override // from BufferInsertable
   public int length() {
     return ControlAndPredictionStep.LENGTH * steps.length;
+  }
+
+  /***************************************************/
+  public Tensor toPositions() {
+    return Tensor.of(Stream.of(steps) //
+        .map(ControlAndPredictionStep::gokartState) //
+        .map(GokartState::getPosition));
+  }
+
+  public Tensor toAccelerations() {
+    return Tensor.of(Stream.of(steps) //
+        .map(ControlAndPredictionStep::gokartControl) //
+        .map(GokartControl::getaB)); //
   }
 }

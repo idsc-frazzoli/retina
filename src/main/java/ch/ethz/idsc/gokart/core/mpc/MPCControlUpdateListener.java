@@ -21,18 +21,18 @@ import ch.ethz.idsc.tensor.Scalars;
     // condition always holds: cns.steps.length == 30
     if (Objects.isNull(cns) || //
         cns.steps.length == 0 || //
-        Scalars.lessThan(MPCNative.OPEN_LOOP_TIME, time.subtract(cns.steps[0].gokartState.getTime())))
+        Scalars.lessThan(MPCNative.OPEN_LOOP_TIME, time.subtract(cns.steps[0].gokartState().getTime())))
       return null;
     istep = Math.min(istep, cns.steps.length - 1);
     while (istep > 0 //
         && Scalars.lessThan( //
             time, //
-            cns.steps[istep].gokartState.getTime()))
+            cns.steps[istep].gokartState().getTime()))
       --istep;
     // ---
     while (istep + 1 < cns.steps.length //
         && Scalars.lessThan( //
-            cns.steps[istep + 1].gokartState.getTime(), //
+            cns.steps[istep + 1].gokartState().getTime(), //
             time))
       ++istep;
     // ---
@@ -53,6 +53,6 @@ import ch.ethz.idsc.tensor.Scalars;
   final Scalar getTimeSinceLastStep(Scalar time) {
     if (Objects.isNull(cns))
       return null;
-    return time.subtract(getStep(time).gokartState.getTime());
+    return time.subtract(getStep(time).gokartState().getTime());
   }
 }
