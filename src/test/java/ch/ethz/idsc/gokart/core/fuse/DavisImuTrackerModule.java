@@ -23,7 +23,6 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
 
   public DavisImuTrackerModule() {
     davisImuLcmClient.addListener(this);
-    davisImuLcmClient.addListener(DavisImuTracker.INSTANCE);
   }
 
   @Override // from AbstractModule

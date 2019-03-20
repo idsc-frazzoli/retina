@@ -63,14 +63,23 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
   @Override // from GuideJoystickModule
   final Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
+    return Optional.of(derive( //
+        steerColumnInterface, //
+        Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
+        lidarLocalizationModule.getGyroZFiltered()));
+  }
+
+  /** @param steerColumnInterface
+   * @param power unitless in the interval [-1, 1]
+   * @param gyroZ
+   * @return */
+  final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Scalar gyroZ) {
     Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
     // why isn't theta rad/m?
-    Scalar power = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0); // unitless in the interval [-1, 1]
     // compute wanted motor torques / no-slip behavior (sorry Jan for corrective factor)
     Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip
-    Scalar gyroZ = lidarLocalizationModule.getGyroZFiltered(); // unit s^-1
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
     // ---
     Tensor powers = torqueVectoringInterface.powers( //
@@ -80,10 +89,10 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
     short arms_rawL = Magnitude.ARMS.toShort(torquesARMS.Get(0));
     short arms_rawR = Magnitude.ARMS.toShort(torquesARMS.Get(1));
     // System.out.println("arms_rawl: " + arms_rawL + " arms_rawr " + arms_rawR);
-    return Optional.of(RimoPutHelper.operationTorque( //
+    return RimoPutHelper.operationTorque( //
         (short) -arms_rawL, // sign left invert
         (short) +arms_rawR // sign right id
-    ));
+    );
   }
 
   @Override // from RimoGetListener

@@ -5,7 +5,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
-/* package */ class VelocityEstimationConfig {
+public class VelocityEstimationConfig {
   public static final VelocityEstimationConfig GLOBAL = AppResources.load(new VelocityEstimationConfig());
   // ---
   /** How much does the computed velocity from lidar correct the integrated velocity */
