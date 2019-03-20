@@ -5,8 +5,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringInterface;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
@@ -36,7 +36,10 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
     implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final TorqueVectoringInterface torqueVectoringInterface;
-  private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
+  private final Vlp16PassiveSlowing vlp16PassiveSlowing = //
+      ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
+  private final LidarLocalizationModule lidarLocalizationModule = //
+      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   // ---
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
@@ -67,7 +70,7 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
     // compute wanted motor torques / no-slip behavior (sorry Jan for corrective factor)
     Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip
-    Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ(); // unit s^-1
+    Scalar gyroZ = lidarLocalizationModule.getGyroZFiltered(); // unit s^-1
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
     // ---
     Tensor powers = torqueVectoringInterface.powers( //

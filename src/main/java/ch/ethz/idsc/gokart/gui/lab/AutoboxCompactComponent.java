@@ -206,12 +206,12 @@ import ch.ethz.idsc.tensor.sca.Round;
           }
         }
         {
-          Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();
-          Scalar rescaled = CLIP_GYROZ.rescale(gyroZ);
-          Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(rescaled));
+          // Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();
+          // Scalar rescaled = CLIP_GYROZ.rescale(gyroZ);
+          // Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(rescaled));
           String text = "#=" + DavisImuTracker.INSTANCE.getFramecount();
-          jTF_davis240c.setText(text + " " + gyroZ);
-          jTF_davis240c.setBackground(color);
+          jTF_davis240c.setText(text); // + " " + gyroZ
+          // jTF_davis240c.setBackground(color);
         }
         { // pose coordinates
           String string = Objects.nonNull(gokartPoseEvent) //

@@ -14,7 +14,6 @@ import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
@@ -94,8 +93,7 @@ enum RunTabbedTaskGui {
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
       PoseLcmServerModule.class, // publishes pose
-      ManualResetModule.class, //
-      DavisImuTrackerModule.class //
+      ManualResetModule.class //
   // AutonomySafetyModule.class // <- dead man switch
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //

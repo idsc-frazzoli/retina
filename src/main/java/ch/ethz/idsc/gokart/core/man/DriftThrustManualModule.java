@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.man;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.slam.DriftRatio;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringClip;
@@ -24,7 +23,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
-/** class was designed to exaggerate rotation of gokart */
+/** class was designed to exaggerate rotation of gokart
+ * outcome of the experiment:
+ * https://www.youtube.com/watch?v=zcBImlS0sE4 */
 public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> {
   private final LidarLocalizationModule lidarLocalizationModule = //
       ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
@@ -45,7 +46,7 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> {
   @Override // from GuideJoystickModule
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
-    Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ(); // unit s^-1
+    Scalar gyroZ = lidarLocalizationModule.getGyroZFiltered();
     // ahead value may be negative
     Scalar ahead = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0);
     Scalar delta = deltaClip.of(gyroZ.multiply(ManualConfig.GLOBAL.torquePerGyro));
