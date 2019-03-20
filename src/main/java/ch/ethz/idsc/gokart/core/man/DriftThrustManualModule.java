@@ -43,21 +43,18 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> {
 
   /***************************************************/
   @Override // from GuideJoystickModule
-  Optional<RimoPutEvent> control( //
-      SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
-    return Optional.of(derive(manualControlInterface, //
+  Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
+    return Optional.of(derive( //
+        Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
         lidarLocalizationModule.getGyroZFiltered(), //
         DriftRatio.of(lidarLocalizationModule.getVelocity())));
   }
 
-  /** @param manualControlInterface
-   * @param gyroZ
+  /** @param ahead in the interval [-1, 1]
+   * @param gyroZ with unit s^-1
    * @param driftRatio unitless
    * @return */
-  RimoPutEvent derive( //
-      ManualControlInterface manualControlInterface, Scalar gyroZ, Scalar driftRatio) {
-    // ahead value may be negative
-    Scalar ahead = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0);
+  /* package */ RimoPutEvent derive(Scalar ahead, Scalar gyroZ, Scalar driftRatio) {
     Scalar delta = DELTA_CLIP.of(gyroZ.multiply(ManualConfig.GLOBAL.torquePerGyro));
     Scalar overDrift = Ramp.of(Abs.of(driftRatio).subtract(ManualConfig.GLOBAL.driftAvoidStart));
     Scalar driftfactor = Ramp.of(RealScalar.ONE.subtract(overDrift.multiply(ManualConfig.GLOBAL.driftAvoidRamp)));
