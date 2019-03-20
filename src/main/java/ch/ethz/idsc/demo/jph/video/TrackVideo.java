@@ -55,7 +55,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         // if (csvFile.isFile())
         {
           TrackDriving trackDriving = new TrackDriving(Import.of(csvFile), id++);
-          trackDriving.setDriver(csvFile.getName().startsWith("r") ? "tg" : "mh");
+          trackDriving.setDriver(csvFile.getName().startsWith("s") ? "mh" : "tg");
           // System.out.println(trackDriving.row(0));
           list.add(trackDriving);
         }
@@ -66,7 +66,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_3BYTE_BGR);
     Graphics2D graphics = bufferedImage.createGraphics();
     GraphicsUtil.setQualityHigh(graphics);
-    PathRender pathRender = new PathRender(new Color(64, 255, 64, 128),
+    PathRender pathRender = new PathRender(new Color(115, 167, 115, 64),
         new BasicStroke(6f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] { 10.0f }, 0.0f));
     Tensor optimal = Import.of(new File(src, "opt/onelap.csv"));
     RenderInterface ri = pathRender.setCurve(optimal, true);
