@@ -13,6 +13,7 @@ public class LidarSectorProvider implements LidarRayDataListener {
   static final int ROTATIONAL_INIT = 0;
   // ---
   private final int sectorWidth;
+  private final double sectorWidthRad;
   private final List<LidarRotationListener> listeners = new LinkedList<>();
   private int usec;
   private int rotational_last = ROTATIONAL_INIT;
@@ -23,7 +24,8 @@ public class LidarSectorProvider implements LidarRayDataListener {
     int sec = sectors;
     while (azimuthResolution % sec != 0)
       ++sec;
-    System.out.println("sector width = " + (360. / sec) + "°");
+    sectorWidthRad = 2 * Math.PI / sec;
+    System.out.println("sector width = " + Math.toDegrees(sectorWidthRad) + "°");
     sectorWidth = azimuthResolution / sec;
   }
 
@@ -44,5 +46,9 @@ public class LidarSectorProvider implements LidarRayDataListener {
       listeners.forEach(listener -> listener.lidarRotation(lidarRotationEvent));
     }
     rotational_last = rot;
+  }
+
+  public double getSectorWidthRad() {
+    return sectorWidthRad;
   }
 }

@@ -16,6 +16,8 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.*;
+import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.sca.Abs;
 import ch.ethz.idsc.tensor.sca.Cos;
 import ch.ethz.idsc.tensor.sca.Sin;
 
@@ -50,7 +52,7 @@ public class SightLineMapping implements //
      * containing the cross-section of the static geometry
      * with the horizontal plane at height of the lidar */
     private Tensor pointsPolar_ferry = null;
-    private final Set<Tensor> pointsPolar = new TreeSet<>(Comparator.comparingDouble(point -> point.Get(0).number().doubleValue()));
+    private final TreeSet<Tensor> pointsPolar = new TreeSet<>(Comparator.comparingDouble(point -> point.Get(0).number().doubleValue()));
     private TreeMap<Scalar, Tensor> freeSpace = new TreeMap<>();
 
     public SightLineMapping(PolarObstaclePredicate predicate, int waitMillis) {
@@ -135,8 +137,9 @@ public class SightLineMapping implements //
             geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
             geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16));
             // ---
+            Tensor polygon;
             synchronized (pointsPolar) {
-                Tensor polygon = Tensor.of(pointsPolar.stream().map(point -> {
+                polygon = Tensor.of(pointsPolar.stream().map(point -> {
                     Scalar azimuth = point.Get(0);
                     Scalar elevation = point.Get(1);
                     Scalar radius = point.Get(2);
@@ -149,14 +152,20 @@ public class SightLineMapping implements //
                     graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 2, 2);
                     return lidarCoords.extract(0, 2);
                 }));
-                Path2D path2D = geometricLayer.toPath2D(polygon);
-                path2D.closePath();
-                graphics.setColor(new Color(0, 255, 0, 16));
-                graphics.fill(path2D);
-                graphics.setColor(new Color(0, 255, 0, 64));
-                graphics.draw(path2D);
+                // ---
+                double first = pointsPolar.first().Get(0).number().doubleValue();
+                double last = pointsPolar.last().Get(0).number().doubleValue();
+                if (Math.abs(last - first) < lidarSectorProvider.getSectorWidthRad())
+                    polygon.append(Array.zeros(2)); // add origin to close sector
+                // ---
                 pointsPolar.clear();
             }
+            Path2D path2D = geometricLayer.toPath2D(polygon);
+            path2D.closePath();
+            graphics.setColor(new Color(0, 255, 0, 16));
+            graphics.fill(path2D);
+            graphics.setColor(new Color(0, 255, 0, 64));
+            graphics.draw(path2D);
             // ---
             geometricLayer.popMatrix();
             geometricLayer.popMatrix();
