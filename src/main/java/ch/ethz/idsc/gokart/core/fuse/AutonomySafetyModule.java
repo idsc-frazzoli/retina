@@ -34,9 +34,9 @@ public final class AutonomySafetyModule extends AbstractModule {
 
   private boolean isAutonomousPressed() {
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
-    if (optional.isPresent()) { // is joystick button "autonomous" pressed?
-      ManualControlInterface gokartJoystickInterface = optional.get();
-      return gokartJoystickInterface.isAutonomousPressed();
+    if (optional.isPresent()) {
+      ManualControlInterface manualControlInterface = optional.get();
+      return manualControlInterface.isAutonomousPressed(); // is button "autonomous" pressed?
     }
     return false;
   }

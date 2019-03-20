@@ -4,6 +4,8 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
+import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateInterface;
 import ch.ethz.idsc.gokart.core.mpc.MPCInformationProvider;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -15,22 +17,23 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ enum MPCPredictionRender implements RenderInterface {
-  INSTANCE;
+public class MPCPredictionRender implements MPCControlUpdateInterface, RenderInterface {
   // ---
-  private static final MPCInformationProvider MPC_INFORMATION_PROVIDER = MPCInformationProvider.getInstance();
   // TODO JPH/MH the units of scale are ignored -> remove unit of scale
   private static final Scalar SCALE = Quantity.of(0.3, SI.METER);
+  private ControlAndPredictionSteps _controlAndPredictionSteps;
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    Tensor positions = MPC_INFORMATION_PROVIDER.getPositions();
+    ControlAndPredictionSteps controlAndPredictionSteps = _controlAndPredictionSteps;
+    Tensor positions = MPCInformationProvider.toPositions(controlAndPredictionSteps);
     if (!Tensors.isEmpty(positions)) {
       graphics.setColor(Color.GREEN);
       graphics.draw(geometricLayer.toPath2D(positions)); // draw positions as path
       // acceleration visualization
-      Tensor accelerations = MPC_INFORMATION_PROVIDER.getAccelerations();
-      Tensor poses = MPC_INFORMATION_PROVIDER.getXYA();
+      Tensor accelerations = MPCInformationProvider.toAccelerations(controlAndPredictionSteps);
+      // MPC_INFORMATION_PROVIDER.getAccelerations();
+      Tensor poses = MPCInformationProvider.toXYA(controlAndPredictionSteps);
       for (int i = 0; i < accelerations.length(); ++i) {
         geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(poses.get(i)));
         Color color = Scalars.lessThan(accelerations.Get(i), Quantity.of(0, SI.ACCELERATION)) //
@@ -49,5 +52,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         geometricLayer.popMatrix();
       }
     }
+  }
+
+  @Override // from MPCControlUpdateInterface
+  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+    this._controlAndPredictionSteps = controlAndPredictionSteps;
   }
 }
