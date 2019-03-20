@@ -84,6 +84,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   }
 
   int render_index;
+  private boolean extrusion;
 
   public void setRenderIndex(int render_index) {
     this.render_index = render_index;
@@ -93,7 +94,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     Tensor row = row(render_index);
     Tensor xya = row.extract(10, 13); // unitless
-    {
+    if (extrusion) {
       gokartPoseContainer.setPose(GokartPoseHelper.attachUnits(xya), RealScalar.ONE);
       extrudedFootprintRender.gokartStatusListener.getEvent(new GokartStatusEvent(row.Get(8).number().floatValue()));
       extrudedFootprintRender.render(geometricLayer, graphics);
@@ -168,5 +169,9 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
   public Scalar timeFor(int index) {
     return row(index).Get(0).subtract(row(0).Get(0));
+  }
+
+  public void setExtrusion(boolean extrusion) {
+    this.extrusion = extrusion;
   }
 }
