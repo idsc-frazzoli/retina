@@ -47,8 +47,8 @@ import ch.ethz.idsc.tensor.sca.Mod;
 
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    Tensor local_acc = planarVmu931Imu.vmu931AccXY(vmu931ImuFrame);
-    Scalar gyro = planarVmu931Imu.vmu931GyroZ(vmu931ImuFrame);
+    Tensor local_acc = planarVmu931Imu.accXY(vmu931ImuFrame);
+    Scalar gyro = planarVmu931Imu.gyroZ(vmu931ImuFrame);
     int currentTime = vmu931ImuFrame.timestamp_ms();
     Scalar time = Quantity.of((currentTime - lastVmuTime) * 1e-3, SI.SECOND);
     lastVmuTime = currentTime;
