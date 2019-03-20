@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateInterface;
@@ -18,20 +19,25 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class MPCPredictionRender implements MPCControlUpdateInterface, RenderInterface {
-  // ---
   // TODO JPH/MH the units of scale are ignored -> remove unit of scale
   private static final Scalar SCALE = Quantity.of(0.3, SI.METER);
+  // ---
   private ControlAndPredictionSteps _controlAndPredictionSteps;
+
+  @Override // from MPCControlUpdateInterface
+  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+    this._controlAndPredictionSteps = controlAndPredictionSteps;
+  }
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     ControlAndPredictionSteps controlAndPredictionSteps = _controlAndPredictionSteps;
-    Tensor positions = MPCInformationProvider.toPositions(controlAndPredictionSteps);
-    if (!Tensors.isEmpty(positions)) {
+    if (Objects.nonNull(controlAndPredictionSteps)) {
+      Tensor positions = controlAndPredictionSteps.toPositions();
       graphics.setColor(Color.GREEN);
       graphics.draw(geometricLayer.toPath2D(positions)); // draw positions as path
       // acceleration visualization
-      Tensor accelerations = MPCInformationProvider.toAccelerations(controlAndPredictionSteps);
+      Tensor accelerations = controlAndPredictionSteps.toAccelerations();
       // MPC_INFORMATION_PROVIDER.getAccelerations();
       Tensor poses = MPCInformationProvider.toXYA(controlAndPredictionSteps);
       for (int i = 0; i < accelerations.length(); ++i) {
@@ -52,10 +58,5 @@ public class MPCPredictionRender implements MPCControlUpdateInterface, RenderInt
         geometricLayer.popMatrix();
       }
     }
-  }
-
-  @Override // from MPCControlUpdateInterface
-  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
-    this._controlAndPredictionSteps = controlAndPredictionSteps;
   }
 }

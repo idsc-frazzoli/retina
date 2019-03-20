@@ -1,9 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.man;
 
-import java.util.Optional;
-
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.ManualControlAdapter;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
@@ -19,11 +16,8 @@ public class DriftThrustManualModuleTest extends TestCase {
   public void testSimple() {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
-    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.1, SI.PER_SECOND));
-    Optional<RimoPutEvent> optional = driftThrustManualModule.control(null, ManualControlAdapter.PASSIVE);
-    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
-    assertTrue(optional.isPresent());
-    RimoPutEvent rimoPutEvent = optional.get();
+    RimoPutEvent rimoPutEvent = driftThrustManualModule.derive( //
+        ManualControlAdapter.PASSIVE, Quantity.of(0.1, SI.PER_SECOND), RealScalar.ZERO);
     short torqueRawL = rimoPutEvent.putTireL.getTorqueRaw();
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
     assertEquals(torqueRawL, 463);
@@ -34,11 +28,8 @@ public class DriftThrustManualModuleTest extends TestCase {
   public void testRapid() {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
-    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(1.0, SI.PER_SECOND));
-    Optional<RimoPutEvent> optional = driftThrustManualModule.control(null, ManualControlAdapter.PASSIVE);
-    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
-    assertTrue(optional.isPresent());
-    RimoPutEvent rimoPutEvent = optional.get();
+    RimoPutEvent rimoPutEvent = driftThrustManualModule.derive( //
+        ManualControlAdapter.PASSIVE, Quantity.of(1.0, SI.PER_SECOND), RealScalar.ZERO);
     short torqueRawL = rimoPutEvent.putTireL.getTorqueRaw();
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
     assertEquals(torqueRawL, ManualConfig.GLOBAL.torqueLimit.number().shortValue());
@@ -49,11 +40,8 @@ public class DriftThrustManualModuleTest extends TestCase {
   public void testZero() {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
-    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
-    Optional<RimoPutEvent> optional = driftThrustManualModule.control(null, ManualControlAdapter.PASSIVE);
-    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
-    assertTrue(optional.isPresent());
-    RimoPutEvent rimoPutEvent = optional.get();
+    RimoPutEvent rimoPutEvent = driftThrustManualModule.derive( //
+        ManualControlAdapter.PASSIVE, Quantity.of(0.0, SI.PER_SECOND), RealScalar.ZERO);
     short torqueRawL = rimoPutEvent.putTireL.getTorqueRaw();
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
     assertEquals(torqueRawL, 0);
@@ -64,13 +52,10 @@ public class DriftThrustManualModuleTest extends TestCase {
   public void testForward() {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
-    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
     ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.ZERO, RealScalar.ZERO, RealScalar.of(0.3), Tensors.vector(0, 0.3), false, false);
-    Optional<RimoPutEvent> optional = driftThrustManualModule.control(null, manualControlInterface);
-    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
-    assertTrue(optional.isPresent());
-    RimoPutEvent rimoPutEvent = optional.get();
+    RimoPutEvent rimoPutEvent = driftThrustManualModule.derive( //
+        manualControlInterface, Quantity.of(0.0, SI.PER_SECOND), RealScalar.ZERO);
     short torqueRawL = rimoPutEvent.putTireL.getTorqueRaw();
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
     assertEquals(torqueRawL, -694);
@@ -81,13 +66,10 @@ public class DriftThrustManualModuleTest extends TestCase {
   public void testForwardRotate() {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
-    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.2, SI.PER_SECOND));
     ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.ZERO, RealScalar.ZERO, RealScalar.of(0.3), Tensors.vector(0, 0.3), false, false);
-    Optional<RimoPutEvent> optional = driftThrustManualModule.control(null, manualControlInterface);
-    DavisImuTracker.INSTANCE.setGyroZ(Quantity.of(0.0, SI.PER_SECOND));
-    assertTrue(optional.isPresent());
-    RimoPutEvent rimoPutEvent = optional.get();
+    RimoPutEvent rimoPutEvent = driftThrustManualModule.derive( //
+        manualControlInterface, Quantity.of(0.2, SI.PER_SECOND), RealScalar.ZERO);
     short torqueRawL = rimoPutEvent.putTireL.getTorqueRaw();
     short torqueRawR = rimoPutEvent.putTireR.getTorqueRaw();
     assertEquals(torqueRawL, +231);

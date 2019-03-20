@@ -7,6 +7,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.math.flow.Flow;
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -19,7 +20,9 @@ import ch.ethz.idsc.tensor.Tensor;
 // TODO probably better to implement GokartPoseInterface instead of MappedPoseInterface -->
 // no setPose() method is required.
 // TODO add method that provides "delta_pose" for a variable dt
-public abstract class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener {
+@Refactor
+// not in use
+/* package */ abstract class GokartPoseOdometry implements MappedPoseInterface, RimoGetListener {
   static final Scalar HALF = DoubleScalar.of(0.5);
   // ---
   final Scalar dt = RimoSocket.getGetPeriod(); // 1/250[s]

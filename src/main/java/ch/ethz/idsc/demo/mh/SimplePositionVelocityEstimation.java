@@ -1,7 +1,8 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.ekf;
+package ch.ethz.idsc.demo.mh;
 
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
+import ch.ethz.idsc.gokart.core.ekf.PositionVelocityEstimation;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
@@ -28,7 +29,7 @@ import ch.ethz.idsc.tensor.sca.Mod;
 // TODO MH cleanup comments/unused code
 // TODO JPH refactor
 @Refactor
-public class SimplePositionVelocityEstimation implements //
+/* package */ class SimplePositionVelocityEstimation implements //
     Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
   private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());

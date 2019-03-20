@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.fuse;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
-import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -13,8 +12,7 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 
-@Refactor
-public enum DavisImuTracker implements DavisImuFrameListener {
+/* package */ enum DavisImuTracker implements DavisImuFrameListener {
   INSTANCE;
   // ---
   /** the number of 20 means that the estimate is computed
