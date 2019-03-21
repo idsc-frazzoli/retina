@@ -12,8 +12,8 @@ import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
+import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
@@ -27,10 +27,8 @@ import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
-import ch.ethz.idsc.gokart.core.man.ManualGroupModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
-import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.man.UltimateTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
@@ -91,12 +89,11 @@ enum RunTabbedTaskGui {
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
+      Vmu931CalibrationWatchdog.class, //
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
       PoseLcmServerModule.class, // publishes pose
-      ManualResetModule.class, //
-      DavisImuTrackerModule.class, //
-      Vmu931CalibrationWatchdog.class //
+      ManualResetModule.class //
   // AutonomySafetyModule.class // <- dead man switch
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
@@ -116,9 +113,10 @@ enum RunTabbedTaskGui {
       DriftThrustManualModule.class, //
       ImprovedNormalizedTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
-      ManualGroupModule.class, //
-      SysidSignalsModule.class, //
-      PowerSteeringModule.class //
+      PowerSteeringModule.class, //
+      AntilockBrakeModule.class
+  // ManualGroupModule.class, //
+  // SysidSignalsModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       MPCKinematicDrivingModule.class, //

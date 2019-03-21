@@ -55,7 +55,8 @@ import ch.ethz.idsc.tensor.sca.Round;
         // if (csvFile.isFile())
         {
           TrackDriving trackDriving = new TrackDriving(Import.of(csvFile), id++);
-          trackDriving.setDriver(csvFile.getName().startsWith("r") ? "tg" : "mh");
+          trackDriving.setDriver(csvFile.getName().startsWith("s") ? "mh" : "tg");
+          trackDriving.setExtrusion(false);
           // System.out.println(trackDriving.row(0));
           list.add(trackDriving);
         }
@@ -66,7 +67,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_3BYTE_BGR);
     Graphics2D graphics = bufferedImage.createGraphics();
     GraphicsUtil.setQualityHigh(graphics);
-    PathRender pathRender = new PathRender(new Color(64, 255, 64, 128),
+    PathRender pathRender = new PathRender(new Color(115, 167, 115, 64),
         new BasicStroke(6f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] { 10.0f }, 0.0f));
     Tensor optimal = Import.of(new File(src, "opt/onelap.csv"));
     RenderInterface ri = pathRender.setCurve(optimal, true);
@@ -82,8 +83,8 @@ import ch.ethz.idsc.tensor.sca.Round;
         // Tensors.fromString( //
         // "{{42.82962839003549, 42.01931617686636, -2924.9980200038317}, {42.01931617686636, -42.8296, 575.4392}, {0, 0, 1}}");
         GeometricLayer geometricLayer = GeometricLayer.of(model2pixel);
-        ri.render(geometricLayer, graphics);
-        {
+        // ri.render(geometricLayer, graphics);
+        if (false) {
           Entry<Scalar, ControlAndPredictionSteps> floorEntry = navigableMap.floorEntry(Quantity.of(time, SI.SECOND));
           if (Objects.nonNull(floorEntry)) {
             ControlAndPredictionSteps controlAndPredictionSteps = floorEntry.getValue();
@@ -99,7 +100,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.setColor(Color.LIGHT_GRAY);
         graphics.drawString(String.format("time:%7s[s]", time.map(Round._3)), 0, 25);
         mp4.append(bufferedImage);
-        if (index == 20000)
+        if (index == 10000)
           break;
       }
     }

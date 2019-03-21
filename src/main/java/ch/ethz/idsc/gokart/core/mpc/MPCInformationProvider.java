@@ -32,31 +32,14 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
     // avoid race conditions
     return Objects.isNull(cns) //
         ? Tensors.empty()
-        : toPositions(cns);
-  }
-
-  public static Tensor toPositions(ControlAndPredictionSteps controlAndPredictionSteps) {
-    Tensor positions = Tensors.empty();
-    if (Objects.nonNull(controlAndPredictionSteps)) {
-    for (ControlAndPredictionStep step : controlAndPredictionSteps.steps)
-      positions.append( //
-          Tensors.of( //
-                  step.gokartState.getX(), //
-                  step.gokartState.getY()));
-    }
-    return positions;
+        : cns.toPositions();
   }
 
   /** get the acceleration at prediction steps */
   public Tensor getAccelerations() {
-    return Objects.isNull(cns) ? Tensors.empty() : toAccelerations(cns);
-  }
-
-  public static Tensor toAccelerations(ControlAndPredictionSteps controlAndPredictionSteps) {
-    Tensor accelerations = Tensors.empty();
-    for (ControlAndPredictionStep step : controlAndPredictionSteps.steps)
-      accelerations.append(step.gokartControl.getaB());
-    return accelerations;
+    return Objects.isNull(cns) //
+        ? Tensors.empty()
+        : cns.toAccelerations();
   }
 
   public Boolean mpcAvailable() {
@@ -65,13 +48,13 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
 
   public Scalar getFirstWantedAcceleration() {
     if (Objects.nonNull(cns))
-      return cns.steps[0].gokartControl.getaB();
+      return cns.steps[0].gokartControl().getaB();
     return NO_ACCELERATION;
   }
 
   public Scalar getFirstWantedSteering() {
     if (Objects.nonNull(cns))
-      return cns.steps[0].gokartState.getS();
+      return cns.steps[0].gokartState().getS();
     return NO_STEERING;
   }
 
@@ -85,13 +68,13 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
   public static Tensor toXYA(ControlAndPredictionSteps controlAndPredictionSteps) {
     Tensor orientations = Tensors.empty();
     for (ControlAndPredictionStep step : controlAndPredictionSteps.steps) {
-      Scalar X = RealScalar.of(step.gokartState.getX().number().doubleValue());
-      Scalar Y = RealScalar.of(step.gokartState.getY().number().doubleValue());
+      Scalar X = RealScalar.of(step.gokartState().getX().number().doubleValue());
+      Scalar Y = RealScalar.of(step.gokartState().getY().number().doubleValue());
       orientations.append( //
           Tensors.of( //
               X, //
               Y, //
-              step.gokartState.getPsi()));
+              step.gokartState().getPsi()));
     }
     return orientations;
   }

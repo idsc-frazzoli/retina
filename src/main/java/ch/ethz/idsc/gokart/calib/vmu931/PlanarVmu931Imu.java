@@ -11,13 +11,13 @@ import ch.ethz.idsc.tensor.Tensor;
 public interface PlanarVmu931Imu {
   /** @param vmu931ImuFrame
    * @return vector of length 2 of acceleration in gokart coordinates */
-  Tensor vmu931AccXY(Vmu931ImuFrame vmu931ImuFrame);
+  Tensor accXY(Vmu931ImuFrame vmu931ImuFrame);
 
-  Tensor vmu931AccXY(Tensor accXY);
+  Tensor accXY(Tensor accXY);
 
   /** @param vmu931ImuFrame
    * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
-  Scalar vmu931GyroZ(Vmu931ImuFrame vmu931ImuFrame);
+  Scalar gyroZ(Vmu931ImuFrame vmu931ImuFrame);
 
-  Scalar vmu931GyroZ(Scalar gyroZ);
+  Scalar gyroZ(Scalar gyroZ);
 }

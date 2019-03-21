@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.calib.brake;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class BrakeFunctionConfigTest extends TestCase {
@@ -11,5 +12,9 @@ public class BrakeFunctionConfigTest extends TestCase {
     assertEquals(QuantityUnit.of(BrakeFunctionConfig.GLOBAL.speedThreshold), SI.VELOCITY);
     assertEquals(QuantityUnit.of(BrakeFunctionConfig.GLOBAL.lockupRatio), SI.ONE);
     assertEquals(QuantityUnit.of(BrakeFunctionConfig.GLOBAL.geodesicFilterAlpha), SI.ONE);
+  }
+
+  public void testRange() {
+    Clips.unit().requireInside(BrakeFunctionConfig.GLOBAL.geodesicFilterAlpha);
   }
 }

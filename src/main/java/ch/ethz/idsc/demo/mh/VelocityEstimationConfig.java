@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.ekf;
+package ch.ethz.idsc.demo.mh;
 
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
