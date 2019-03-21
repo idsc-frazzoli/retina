@@ -12,6 +12,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.*;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16PolarProvider;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Transform;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -140,13 +141,7 @@ public class SightLineMapping implements //
             Tensor polygon;
             synchronized (pointsPolar) {
                 polygon = Tensor.of(pointsPolar.stream().map(point -> {
-                    Scalar azimuth = point.Get(0);
-                    Scalar elevation = point.Get(1);
-                    Scalar radius = point.Get(2);
-                    Tensor lidarCoords = Tensors.of( //
-                            radius.multiply(Cos.of(elevation)).multiply(Cos.of(azimuth)).negate(), // TODO find error causing need to negate
-                            radius.multiply(Cos.of(elevation)).multiply(Sin.of(azimuth)), //
-                            radius.multiply(Sin.of(elevation)));
+                    Tensor lidarCoords = Vlp16Transform.PolarToCartesian.of(point);
                     graphics.setColor(Color.RED);
                     Point2D point2D = geometricLayer.toPoint2D(lidarCoords);
                     graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 2, 2);
