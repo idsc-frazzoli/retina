@@ -60,14 +60,4 @@ import ch.ethz.idsc.tensor.sca.Tan;
         Max.of(NOACCELERATION, wantedAcceleration), //
         gyroZ));
   }
-
-  @Override
-  public void start() {
-    // TODO MH document why empty
-  }
-
-  @Override
-  public void stop() {
-    // TODO MH document why empty
-  }
 }
