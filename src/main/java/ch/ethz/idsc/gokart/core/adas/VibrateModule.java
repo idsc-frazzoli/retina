@@ -44,13 +44,19 @@ public class VibrateModule extends AbstractModule implements SteerPutProvider {
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
-    double frequency = SteerConfig.GLOBAL.VibrationFrequency.number().doubleValue();
-    double amplitude = SteerConfig.GLOBAL.VibrationAmplitude.number().doubleValue();
-    double time = timing.seconds();
     if (steerColumnTracker.isCalibratedAndHealthy()) {
-      Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
+      return SteerEvent(manualControlProvider.getManualControl());
+    }
+    return Optional.empty();
+  }
+
+  public Optional<SteerPutEvent> SteerEvent(Optional<ManualControlInterface> optional) {
+    if (optional.isPresent()) {
       ManualControlInterface gokartJoystickInterface = optional.get();
       if (gokartJoystickInterface.isAutonomousPressed()) {
+        double frequency = SteerConfig.GLOBAL.VibrationFrequency.number().doubleValue();
+        double amplitude = SteerConfig.GLOBAL.VibrationAmplitude.number().doubleValue();
+        double time = timing.seconds();
         double radian = (2 * Math.PI) * frequency * time;
         return Optional.of(SteerPutEvent.createOn(Quantity.of((float) Math.sin(radian) * amplitude, "SCT")));
       }
