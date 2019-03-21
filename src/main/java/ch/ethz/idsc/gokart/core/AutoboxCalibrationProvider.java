@@ -5,6 +5,8 @@ import ch.ethz.idsc.gokart.dev.steer.SteerCalibrationProvider;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.data.DataEvent;
 
+/** common base class to perform calibration tasks that require
+ * a sequence of actuator commands over a period of time. */
 public abstract class AutoboxCalibrationProvider<PE extends DataEvent> extends AutoboxScheduledProvider<PE> {
   @Override // from PutProvider
   public final ProviderRank getProviderRank() {

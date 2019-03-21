@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.fuse;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
-import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -13,14 +12,12 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 
-@Refactor
-public enum DavisImuTracker implements DavisImuFrameListener {
+/* package */ enum DavisImuTracker implements DavisImuFrameListener {
   INSTANCE;
   // ---
   /** the number of 20 means that the estimate is computed
    * as the mean over the last 20 gyro measurements */
-  // TODO JPH why 20?
-  private final Tensor gyroZ = Array.of(l -> Quantity.of(0.0, SI.PER_SECOND), 20);
+  private final Tensor gyroZ = Array.of(l -> Quantity.of(0.0, SI.PER_SECOND), 50);
   private int index = 0;
   private int framecount = 0;
 

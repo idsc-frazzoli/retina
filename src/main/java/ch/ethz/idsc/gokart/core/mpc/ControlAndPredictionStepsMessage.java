@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
-/* package */ class ControlAndPredictionStepsMessage extends MPCNativeMessage {
+public class ControlAndPredictionStepsMessage extends MPCNativeMessage {
   public final ControlAndPredictionSteps controlAndPredictionSteps;
 
   public ControlAndPredictionStepsMessage(ControlAndPredictionSteps controlAndPredictionSteps, MPCNativeSession mpcNativeSession) {

@@ -4,8 +4,8 @@ package ch.ethz.idsc.gokart.calib.brake;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
-public final class StaticBrakeFunction extends AbstractBrakeFunction {
-  public static final StaticBrakeFunction INSTANCE = new StaticBrakeFunction();
+public class StaticBrakeFunction extends AbstractBrakeFunction {
+  public static final AbstractBrakeFunction INSTANCE = new StaticBrakeFunction();
   // ---
   private static final Scalar ONE = RealScalar.of(1.0);
 

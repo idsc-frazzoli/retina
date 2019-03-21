@@ -10,22 +10,22 @@ public enum NativePlanarVmu931Imu implements PlanarVmu931Imu {
   INSTANCE;
   // ---
   @Override // from PlanarVmu931Imu
-  public Tensor vmu931AccXY(Vmu931ImuFrame vmu931ImuFrame) {
-    return vmu931AccXY(vmu931ImuFrame.accXY());
+  public Tensor accXY(Vmu931ImuFrame vmu931ImuFrame) {
+    return accXY(vmu931ImuFrame.accXY());
   }
 
   @Override // from PlanarVmu931Imu
-  public Tensor vmu931AccXY(Tensor accXY) {
+  public Tensor accXY(Tensor accXY) {
     return accXY.copy();
   }
 
   @Override // from PlanarVmu931Imu
-  public Scalar vmu931GyroZ(Vmu931ImuFrame vmu931ImuFrame) {
-    return vmu931GyroZ(vmu931ImuFrame.gyroZ());
+  public Scalar gyroZ(Vmu931ImuFrame vmu931ImuFrame) {
+    return gyroZ(vmu931ImuFrame.gyroZ());
   }
 
   @Override // from PlanarVmu931Imu
-  public Scalar vmu931GyroZ(Scalar gyroZ) {
+  public Scalar gyroZ(Scalar gyroZ) {
     return gyroZ;
   }
 }

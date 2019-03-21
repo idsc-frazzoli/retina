@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** the davis imu watchdog detects the absence of {@link DavisImuFrame}
  * for instance when the connection to the Davis240C camera fails. */
-public class DavisImuTrackerModule extends EmergencyModule<RimoPutEvent> implements DavisImuFrameListener {
+/* package */ class DavisImuTrackerModule extends EmergencyModule<RimoPutEvent> implements DavisImuFrameListener {
   /** duration of tolerated absence of imu measurements */
   private static final double TIMEOUT_S = 0.5;
   // ---
@@ -23,7 +23,6 @@ public class DavisImuTrackerModule extends EmergencyModule<RimoPutEvent> impleme
 
   public DavisImuTrackerModule() {
     davisImuLcmClient.addListener(this);
-    davisImuLcmClient.addListener(DavisImuTracker.INSTANCE);
   }
 
   @Override // from AbstractModule

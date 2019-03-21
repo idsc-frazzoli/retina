@@ -5,6 +5,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutTire;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutTires;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 
@@ -15,8 +16,8 @@ import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
  * sdo message (9 bytes) */
 /* package */ class RimoPutFields {
   final SpinnerLabel<Word> spinnerLabelCmd = new SpinnerLabel<>();
-  final SliderExt sliderExtVel = SliderExt.wrap(new JSlider(RimoPutTire.MIN_SPEED, RimoPutTire.MAX_SPEED, 0));
-  final SliderExt sliderExtTrq = SliderExt.wrap(new JSlider(RimoPutTire.MIN_TORQUE, RimoPutTire.MAX_TORQUE, 0));
+  final SliderExt sliderExtVel = SliderExt.wrap(new JSlider(RimoPutTires.MIN_SPEED, RimoPutTires.MAX_SPEED, 0));
+  final SliderExt sliderExtTrq = SliderExt.wrap(new JSlider(RimoPutTires.MIN_TORQUE, RimoPutTires.MAX_TORQUE, 0));
   final SpinnerLabel<Word> spinnerLabelTrigger = new SpinnerLabel<>();
   final JTextField jTextfieldSdoCommand = new JTextField(5);
   final JTextField jTextfieldSdoMainIndex = new JTextField(8);

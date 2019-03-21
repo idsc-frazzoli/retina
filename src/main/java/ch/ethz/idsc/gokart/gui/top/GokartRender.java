@@ -9,8 +9,8 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
@@ -27,6 +27,7 @@ import ch.ethz.idsc.retina.joystick.JoystickEvent;
 import ch.ethz.idsc.retina.joystick.JoystickListener;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -54,6 +55,8 @@ public class GokartRender extends AbstractGokartRender {
   public final JoystickListener joystickListener = getEvent -> joystickEvent = getEvent;
   // ---
   public final GokartAngularSlip gokartAngularSlip = new GokartAngularSlip(SteerConfig.GLOBAL.getSteerMapping());
+  private final LidarLocalizationModule lidarLocalizationModule = //
+      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   // ---
   private final Tensor TIRE_FRONT;
   private final Tensor TIRE_REAR;
@@ -156,8 +159,8 @@ public class GokartRender extends AbstractGokartRender {
           graphics.fill(geometricLayer.toPath2D(index < 2 ? TIRE_FRONT : TIRE_REAR));
           geometricLayer.popMatrix();
         }
-        {
-          Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ(); // unit s^-1
+        if (Objects.nonNull(lidarLocalizationModule)) {
+          Scalar gyroZ = lidarLocalizationModule.getGyroZFiltered(); // unit s^-1
           Scalar angularSlip = gokartAngularSlip.getAngularSlip(gokartStatusEvent, gyroZ);
           Tensor alongX = axisAlignedBox.alongX(Magnitude.PER_SECOND.apply(angularSlip).negate());
           Path2D path = geometricLayer.toPath2D(alongX);

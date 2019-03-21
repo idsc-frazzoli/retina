@@ -1,12 +1,13 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.ekf;
+package ch.ethz.idsc.demo.mh;
 
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
+import ch.ethz.idsc.gokart.core.ekf.PositionVelocityEstimation;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.Refactor;
@@ -20,21 +21,21 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Mod;
 
-// TODO MH cleanup comments/unused code
-// TODO JPH refactor
+/** functionality is not used anymore
+ * functionality is superseded by {@link LidarLocalizationModule} */
 @Refactor
-public class SimplePositionVelocityEstimation implements //
+/* package */ class SimplePositionVelocityEstimation implements //
     Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
+  // TODO MH cleanup comments/unused code
   private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   // ---
   private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
-  private final IntervalClock intervalClock = new IntervalClock();
+  // private final IntervalClock intervalClock = new IntervalClock();
   private Tensor lastPosition = null;
   private Scalar angularVelocity = Quantity.of(0, SI.PER_SECOND);
   private int lastVmuTime = 0;
@@ -42,12 +43,12 @@ public class SimplePositionVelocityEstimation implements //
   Tensor local_filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
   Tensor filteredPose = GokartPoseHelper.attachUnits(Tensors.vector(0, 0, 0));
   // private long lastReset = 0;
-  private GokartPoseEvent lidar_prev = null;
+  // private GokartPoseEvent lidar_prev = null;
 
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    Tensor local_acc = planarVmu931Imu.vmu931AccXY(vmu931ImuFrame);
-    Scalar gyro = planarVmu931Imu.vmu931GyroZ(vmu931ImuFrame);
+    Tensor local_acc = planarVmu931Imu.accXY(vmu931ImuFrame);
+    Scalar gyro = planarVmu931Imu.gyroZ(vmu931ImuFrame);
     int currentTime = vmu931ImuFrame.timestamp_ms();
     Scalar time = Quantity.of((currentTime - lastVmuTime) * 1e-3, SI.SECOND);
     lastVmuTime = currentTime;
@@ -56,10 +57,9 @@ public class SimplePositionVelocityEstimation implements //
 
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
-    Scalar delta_time = Min.of( //
-        Quantity.of(intervalClock.seconds(), SI.SECOND), //
-        Quantity.of(0.03, SI.SECOND)); // 1/50 == 0.02 is nominal
-    // FIXME JPH LOCAL
+    // Scalar delta_time = Min.of( //
+    // Quantity.of(intervalClock.seconds(), SI.SECOND), //
+    // Quantity.of(0.03, SI.SECOND)); // 1/50 == 0.02 is nominal
     // if (LidarLocalizationModule.TRACKING) {
     // // if (Scalars.lessThan(RealScalar.of(0.6), gokartPoseEvent.getQuality()))
     // // filteredPose = gokartPoseEvent.getPose();
@@ -70,12 +70,12 @@ public class SimplePositionVelocityEstimation implements //
     // } else
     local_filteredVelocity = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
     // ---
-    lidar_prev = // FIXME JPH LOCAL
-        // LidarLocalizationModule.TRACKING // TODO magic const
-        // && Scalars.lessThan(RealScalar.of(.3), gokartPoseEvent.getQuality()) //
-        // ? gokartPoseEvent
-        // :
-        null;
+    // lidar_prev = //
+    // LidarLocalizationModule.TRACKING //
+    // && Scalars.lessThan(RealScalar.of(.3), gokartPoseEvent.getQuality()) //
+    // ? gokartPoseEvent
+    // :
+    // null;
   }
 
   // private static LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
@@ -88,7 +88,6 @@ public class SimplePositionVelocityEstimation implements //
     Tensor newPose = gokartPoseEvent.getPose();
     Tensor position = newPose.extract(0, 2);
     Scalar orientation = newPose.Get(2);
-    // TODO JPH how do we do this without null
     if (lastPosition != null) {
       Tensor differenceToLast = position.subtract(lastPosition);
       Tensor lidarSpeed = getCompensationRotationMatrix(orientation) //

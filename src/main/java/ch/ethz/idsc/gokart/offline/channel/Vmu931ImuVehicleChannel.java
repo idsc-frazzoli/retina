@@ -32,7 +32,7 @@ public enum Vmu931ImuVehicleChannel implements SingleChannelInterface {
     Vmu931ImuFrame vmu931ImuFrame = new Vmu931ImuFrame(byteBuffer);
     return Tensors.of( //
         RealScalar.of(vmu931ImuFrame.timestamp_ms()), //
-        planarVmu931Imu.vmu931AccXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._8), //
-        planarVmu931Imu.vmu931GyroZ(vmu931ImuFrame).map(Magnitude.PER_SECOND).map(Round._8));
+        planarVmu931Imu.accXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._8), //
+        planarVmu931Imu.gyroZ(vmu931ImuFrame).map(Magnitude.PER_SECOND).map(Round._8));
   }
 }

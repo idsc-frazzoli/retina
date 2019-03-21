@@ -21,8 +21,9 @@ public class SelfCalibratingBrakeFunctionTest extends TestCase {
     Scalar realSpeed = Quantity.of(5, SI.VELOCITY);
     SelfCalibratingBrakeFunction correctingBrakingFunction = new SelfCalibratingBrakeFunction();
     // SelfCalibratingBrakingFunctionConfig.GLOBAL.geodesicFilterAlpha = RealScalar.of(0.1);
-    StaticBrakeFunction brakingFunction = StaticBrakeFunction.INSTANCE;
-    for (int i = 0; i < 1000; i++) {
+    AbstractBrakeFunction brakingFunction = StaticBrakeFunction.INSTANCE;
+    int count = 0;
+    while (true) {
       // simulate step
       Scalar brakePos = correctingBrakingFunction.getNeededBrakeActuation(brakeDeceleration);
       // System.out.println("brakepos: "+brakePos);
@@ -30,8 +31,9 @@ public class SelfCalibratingBrakeFunctionTest extends TestCase {
       correctingBrakingFunction.correctBraking(brakeDeceleration, realBrakeDeceleration, realSpeed, realSpeed);
       // System.out.println("wanted braking: " + brakeDeceleration + "/realBraking: "+realBrakeDeceleration);
       // System.out.println("brake fade: " + correctingBrakingFunction.getBrakeFadeFactor());
-      if (i == 999) {
+      if (++count == 1000) {
         assertTrue(Chop._03.close(brakeDeceleration, realBrakeDeceleration));
+        break;
       }
     }
   }

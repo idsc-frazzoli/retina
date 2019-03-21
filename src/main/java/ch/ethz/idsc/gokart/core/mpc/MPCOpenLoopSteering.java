@@ -20,10 +20,10 @@ import ch.ethz.idsc.tensor.Tensors;
     if (Objects.isNull(cnpStep))
       return Optional.empty();
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
-    Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl.getudotS());
+    Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl().getudotS());
     return Optional.of(Tensors.of( //
-        cnpStep.gokartState.getS().add(rampUp), //
-        cnpStep.gokartControl.getudotS()));
+        cnpStep.gokartState().getS().add(rampUp), //
+        cnpStep.gokartControl().getudotS()));
   }
 
   @Override

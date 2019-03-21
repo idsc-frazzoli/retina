@@ -26,8 +26,8 @@ public class Vmu931Odometry implements Vmu931ImuFrameListener {
     Scalar deltaT = VMU931_CLIP_TIME.apply(Quantity.of((vmu931ImuFrame.timestamp_ms() - vmu931_timestamp_ms) * 1e-3, SI.SECOND));
     vmu931_timestamp_ms = vmu931ImuFrame.timestamp_ms();
     inertialOdometry.integrateImu( //
-        planarVmu931Imu.vmu931AccXY(vmu931ImuFrame), //
-        planarVmu931Imu.vmu931GyroZ(vmu931ImuFrame), //
+        planarVmu931Imu.accXY(vmu931ImuFrame), //
+        planarVmu931Imu.gyroZ(vmu931ImuFrame), //
         deltaT);
   }
 }

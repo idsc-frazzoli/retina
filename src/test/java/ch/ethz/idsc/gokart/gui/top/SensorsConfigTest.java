@@ -67,14 +67,14 @@ public class SensorsConfigTest extends TestCase {
    * in the XY plane, this corresponds to a mirror operation */
   public void testVmu931AccXY() {
     PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
-    Tensor matrix = Tensor.of(IdentityMatrix.of(2).stream().map(planarVmu931Imu::vmu931AccXY));
+    Tensor matrix = Tensor.of(IdentityMatrix.of(2).stream().map(planarVmu931Imu::accXY));
     assertEquals(Det.of(matrix), RealScalar.ONE.negate());
-    assertEquals(planarVmu931Imu.vmu931AccXY(Tensors.vector(1, 2)), Tensors.vector(-2, -1));
+    assertEquals(planarVmu931Imu.accXY(Tensors.vector(1, 2)), Tensors.vector(-2, -1));
   }
 
   public void testVmu931GyroZ() {
     PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
-    assertEquals(planarVmu931Imu.vmu931GyroZ(RealScalar.of(2)), RealScalar.of(-2));
+    assertEquals(planarVmu931Imu.gyroZ(RealScalar.of(2)), RealScalar.of(-2));
   }
 
   public void testvlp16_relativeZero() {

@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.VelodyneLocalizationChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
-import ch.ethz.idsc.gokart.offline.tab.BasicSysIDTable;
 import ch.ethz.idsc.gokart.offline.tab.LinmotPassiveStatusTable;
 import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
 import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;

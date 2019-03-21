@@ -8,8 +8,8 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
 /* package */ class ControlAndPredictionStep implements BufferInsertable {
   public static final int LENGTH = GokartControl.LENGTH + GokartState.LENGTH;
   // ---
-  final GokartControl gokartControl;
-  final GokartState gokartState;
+  private final GokartControl gokartControl;
+  private final GokartState gokartState;
 
   public ControlAndPredictionStep(GokartControl gokartControl, GokartState gokartState) {
     this.gokartControl = gokartControl;
@@ -35,5 +35,13 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
   @Override
   public String toString() {
     return "cns:\n" + gokartControl.toString() + gokartState.toString();
+  }
+
+  public GokartState gokartState() {
+    return gokartState;
+  }
+
+  public GokartControl gokartControl() {
+    return gokartControl;
   }
 }

@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -206,12 +205,12 @@ import ch.ethz.idsc.tensor.sca.Round;
           }
         }
         {
-          Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();
-          Scalar rescaled = CLIP_GYROZ.rescale(gyroZ);
-          Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(rescaled));
-          String text = "#=" + DavisImuTracker.INSTANCE.getFramecount();
-          jTF_davis240c.setText(text + " " + gyroZ);
-          jTF_davis240c.setBackground(color);
+          // Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();
+          // Scalar rescaled = CLIP_GYROZ.rescale(gyroZ);
+          // Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(rescaled));
+          // String text = "#=" + DavisImuTracker.INSTANCE.getFramecount();
+          // jTF_davis240c.setText(text); // + " " + gyroZ
+          // jTF_davis240c.setBackground(color);
         }
         { // pose coordinates
           String string = Objects.nonNull(gokartPoseEvent) //

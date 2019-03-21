@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class ManualResetModule extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
 
-  @Override
+  @Override // from AbstractClockedModule
   protected void runAlgo() {
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     if (optional.isPresent()) {
@@ -28,17 +28,17 @@ public class ManualResetModule extends AbstractClockedModule {
     }
   }
 
-  @Override
+  @Override // from AbstractClockedModule
   protected void first() {
     manualControlProvider.start();
   }
 
-  @Override
+  @Override // from AbstractClockedModule
   protected void last() {
     manualControlProvider.stop();
   }
 
-  @Override
+  @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
     return Quantity.of(0.1, SI.SECOND);
   }

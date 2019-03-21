@@ -7,8 +7,8 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 
 public class Vmu931CalibrationWatchdog extends EmergencyModule<RimoPutEvent> {
-  // TODO JPH not good style
-  public static boolean requiresCalibration = false;
+  // TODO JPH not good style. information should be retrieved from vmu931 server/device!
+  public static boolean requiresCalibration = true;
 
   @Override // from AbstractModule
   protected void first() {

@@ -12,6 +12,8 @@ public enum DriftRatio {
   ;
   private static final Scalar MIN_DRIFT_VELOCITY = Quantity.of(0.5, SI.VELOCITY);
 
+  /** @param velocityXY
+   * @return unitless */
   public static Scalar of(Tensor velocityXY) {
     return Scalars.lessThan(velocityXY.Get(0).abs(), MIN_DRIFT_VELOCITY) //
         ? RealScalar.ZERO

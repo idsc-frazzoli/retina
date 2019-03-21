@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /* package */ enum TrackDrivingTables {
   ;
   public static void main(String[] args) throws IOException {
-    File folder = new File("/home/datahaki/laps");
+    File folder = new File("/home/datahaki/track_putty/source");
     File dest = HomeDirectory.file("track_putty");
     dest.mkdir();
     for (File file : folder.listFiles()) {

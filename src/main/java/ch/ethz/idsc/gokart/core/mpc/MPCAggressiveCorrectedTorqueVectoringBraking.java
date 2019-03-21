@@ -38,7 +38,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar min = (Scalar) Mean.of(minmax);
     // Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.control.getaB().negate().add(min));
-    Scalar braking = Ramp.FUNCTION.apply(cnsStep.gokartControl.getaB().negate()) //
+    Scalar braking = Ramp.FUNCTION.apply(cnsStep.gokartControl().getaB().negate()) //
         .multiply(MPCOptimizationConfig.GLOBAL.brakeMultiplicator);
     // System.out.println(braking);
     // self calibration
@@ -71,7 +71,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
   @Override
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    currentAcceleration = SensorsConfig.getPlanarVmu931Imu().vmu931AccXY(vmu931ImuFrame).Get(0);
+    currentAcceleration = SensorsConfig.getPlanarVmu931Imu().accXY(vmu931ImuFrame).Get(0);
   }
 
   private Scalar wheelSpeed = Quantity.of(0, SI.VELOCITY);

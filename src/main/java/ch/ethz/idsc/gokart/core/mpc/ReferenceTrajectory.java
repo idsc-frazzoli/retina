@@ -52,14 +52,14 @@ public class ReferenceTrajectory {
       Thread.sleep(200);
       System.out.println("send request");
       if (Objects.nonNull(lcmMPCControlClient.lastcns)) {
-        gokartState = lcmMPCControlClient.lastcns.steps[skip].gokartState;
+        gokartState = lcmMPCControlClient.lastcns.steps[skip].gokartState();
         // System.out.println(gokartState.getS());
         position = gokartState.getCenterPosition();
         positions.append(position);
-        Scalar changeRate = lcmMPCControlClient.lastcns.steps[0].gokartControl.getudotS();
-        Scalar rampupVale = lcmMPCControlClient.lastcns.steps[0].gokartState.getS()//
+        Scalar changeRate = lcmMPCControlClient.lastcns.steps[0].gokartControl().getudotS();
+        Scalar rampupVale = lcmMPCControlClient.lastcns.steps[0].gokartState().getS()//
             .add(changeRate.multiply(Quantity.of(0.1, SI.SECOND)));
-        Scalar betaDiff = lcmMPCControlClient.lastcns.steps[1].gokartState.getS().subtract(rampupVale);
+        Scalar betaDiff = lcmMPCControlClient.lastcns.steps[1].gokartState().getS().subtract(rampupVale);
         System.out.println("should be zero: " + betaDiff);
         mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER), RealScalar.of(1),
             RealScalar.of(0.5));

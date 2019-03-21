@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutTires;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -44,14 +45,13 @@ public class LookupTableRimoThrustManualModule extends GuideManualModule<RimoPut
     // get current
     Scalar current = powerLookupTable.getNeededCurrent(wantedAcceleration, meanTangentSpeed);
     short arms_raw = Magnitude.ARMS.toShort(current); // confirm that units are correct
-    if (arms_raw < -2316 || 2316 < arms_raw) { // TODO magic const, not final design
-      System.err.println("out of range: arms_raw=" + arms_raw);
-      return Optional.empty();
-    }
-    return Optional.of(RimoPutHelper.operationTorque( //
-        (short) -arms_raw, // sign left invert
-        (short) +arms_raw // sign right id
-    ));
+    if (RimoPutTires.isTorqueValid(arms_raw))
+      return Optional.of(RimoPutHelper.operationTorque( //
+          (short) -arms_raw, // sign left invert
+          (short) +arms_raw // sign right id
+      ));
+    System.err.println("out of range: arms_raw=" + arms_raw);
+    return Optional.empty();
   }
 
   @Override // from RimoGetListener
