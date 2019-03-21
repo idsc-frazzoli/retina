@@ -17,46 +17,41 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class PIDSteer implements SteerPutProvider, StartAndStoppable {
+  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  private final SteerPositionControl steerPositionController = new SteerPositionControl();
 
-	private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
-	private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-	private final SteerPositionControl steerPositionController = new SteerPositionControl();
+  @Override
+  public ProviderRank getProviderRank() {
+    return ProviderRank.AUTONOMOUS;
+  }
 
-	@Override
-	public ProviderRank getProviderRank() {
-		return ProviderRank.AUTONOMOUS;
-	}
+  @Override
+  public Optional<SteerPutEvent> putEvent() {
+    if (steerColumnInterface.isSteerColumnCalibrated()) {
+      Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+      Scalar desPos = steerMapping.getSCEfromAngle(angle);
+      Scalar difference = desPos.subtract(currAngle);
+      Scalar torqueCmd = steerPositionController.iterate(difference);
+      return Optional.of(SteerPutEvent.createOn(torqueCmd));
+    }
+    return Optional.empty();
+  }
 
-	@Override
-	public Optional<SteerPutEvent> putEvent() {
-		if (steerColumnInterface.isSteerColumnCalibrated()) {
-			Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-			Scalar desPos = steerMapping.getSCEfromAngle(angle);
-			Scalar difference = desPos.subtract(currAngle);
-			Scalar torqueCmd = steerPositionController.iterate(difference);
-			return Optional.of(SteerPutEvent.createOn(torqueCmd));
-		}
-		return Optional.empty();
-	}
+  @Override
+  public void start() {
+    SteerSocket.INSTANCE.addPutProvider(this);
+    ;
+  }
 
-	@Override
-	public void start() {
-		SteerSocket.INSTANCE.addPutProvider(this);
-		;
+  @Override
+  public void stop() {
+    SteerSocket.INSTANCE.removePutProvider(this);
+  }
 
-	}
+  private Scalar angle = Quantity.of(0.0, SIDerived.RADIAN);
 
-	@Override
-	public void stop() {
-		SteerSocket.INSTANCE.removePutProvider(this);
-
-	}
-
-	private Scalar angle = Quantity.of(0.0, SIDerived.RADIAN);
-
-	public void setHeading(Scalar angle) {
-		this.angle = angle;
-
-	}
-
+  public void setHeading(Scalar angle) {
+    this.angle = angle;
+  }
 }

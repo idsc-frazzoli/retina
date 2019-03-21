@@ -14,10 +14,8 @@ import lcm.logging.LogPlayerConfig;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
     File file;
-    
     // file = new File("/media/datahaki/media/ethz/gokart/topic/localization/20181211T153939_3/log.lcm");
     // file = new File("/media/datahaki/media/ethz/gokart/topic/trackid", "changingtrack.lcm");
-    
     file = new File("/home/maximilien/Downloads/20190215T150920_380160a9.lcm.00");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
