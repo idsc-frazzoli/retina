@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
  * 
  * the purpose of the class is to carry out the math for the simple obstacle check method
  * and filter out points that belong to the floor */
+@Deprecated
 public class PolarObstaclePredicate implements SpacialObstaclePredicate {
   private final float min;
   private final float max;

@@ -20,7 +20,6 @@ import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
-import ch.ethz.idsc.gokart.core.perc.PolarObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
@@ -76,7 +75,7 @@ public class PresenterLcmModule extends AbstractModule {
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   private final SightLineMapping sightLineMapping = //
-          new SightLineMapping(SafetyConfig.GLOBAL.createPolarObstaclePredicate(), 200);
+          new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), 200);
 
   @Override // from AbstractModule
   protected void first() {

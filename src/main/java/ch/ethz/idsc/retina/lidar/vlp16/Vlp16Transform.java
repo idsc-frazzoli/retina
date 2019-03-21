@@ -1,6 +1,7 @@
 // code by gjoel
 package ch.ethz.idsc.retina.lidar.vlp16;
 
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -20,6 +21,7 @@ public enum Vlp16Transform {
          * @return Tensor x, y, z in [m] */
         @Override
         public Tensor of(Scalar azimuth, Scalar elevation, Scalar radius) {
+            azimuth = azimuth.negate().add(offset);
             /* according to manual
             return Tensors.of( //
                     radius.multiply(Cos.of(elevation)).multiply(Sin.of(azimuth)), //
@@ -27,7 +29,7 @@ public enum Vlp16Transform {
                     radius.multiply(Sin.of(elevation)));
             */
             return Tensors.of( //
-                    radius.multiply(Cos.of(elevation)).multiply(Cos.of(azimuth)).negate(), //
+                    radius.multiply(Cos.of(elevation)).multiply(Cos.of(azimuth)), //
                     radius.multiply(Cos.of(elevation)).multiply(Sin.of(azimuth)), //
                     radius.multiply(Sin.of(elevation)));
         }
@@ -47,11 +49,13 @@ public enum Vlp16Transform {
                     Norm._2.of(Tensors.of(x, y, z)));
             */
             return Tensors.of( //
-                    Mod.function(2 * Math.PI).of(ArcTan.of(x.negate(), y)), //
+                    Mod.function(2 * Math.PI).of(offset.subtract(ArcTan.of(x, y))), //
                     ArcTan.of(Norm._2.of(Tensors.of(x, y)), z), //
                     Norm._2.of(Tensors.of(x, y, z)));
         }
     };
+
+    private static Scalar offset = SensorsConfig.GLOBAL.vlp16_twist;
 
     public Tensor of(Tensor vector) {
         return of(vector.Get(0), vector.Get(1), vector.Get(2));

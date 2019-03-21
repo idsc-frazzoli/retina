@@ -76,6 +76,7 @@ public class SafetyConfig {
     return new SimpleSpacialObstaclePredicate(vlp16_ZClip(), SensorsConfig.GLOBAL.vlp16_incline);
   }
 
+  @Deprecated
   public PolarObstaclePredicate createPolarObstaclePredicate() {
     return new PolarObstaclePredicate(vlp16_ZClip(), SensorsConfig.GLOBAL.vlp16_incline);
   }

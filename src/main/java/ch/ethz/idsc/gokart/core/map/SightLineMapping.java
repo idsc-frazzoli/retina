@@ -1,7 +1,7 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.map;
 
-import ch.ethz.idsc.gokart.core.perc.PolarObstaclePredicate;
+import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -41,7 +41,7 @@ public class SightLineMapping implements //
     private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
     private final Thread thread = new Thread(this);
     private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
-    private final PolarObstaclePredicate predicate;
+    private final SpacialXZObstaclePredicate predicate;
     private final int waitMillis;
     // ---
     private GokartPoseEvent gokartPoseEvent;
@@ -53,7 +53,7 @@ public class SightLineMapping implements //
     private final TreeSet<Tensor> pointsPolar = new TreeSet<>(Comparator.comparingDouble(point -> point.Get(0).number().doubleValue()));
     private TreeMap<Scalar, Tensor> freeSpace = new TreeMap<>();
 
-    public SightLineMapping(PolarObstaclePredicate predicate, int waitMillis) {
+    public SightLineMapping(SpacialXZObstaclePredicate predicate, int waitMillis) {
         this.predicate = predicate;
         this.waitMillis = waitMillis;
         // ---
@@ -110,7 +110,7 @@ public class SightLineMapping implements //
                     Scalar azimuth = point.Get(0);
                     if (!freeSpace.containsKey(azimuth))
                         freeSpace.put(azimuth, Tensors.vector(azimuth.number(), 0, HORIZON));
-                    if (predicate.isObstacle(point)) {
+                    if (predicate.isObstacle(Vlp16Transform.PolarToCartesian.of(point))) {
                         Scalar distance = point.Get(2);
                         if (Scalars.lessThan(distance, freeSpace.get(azimuth).Get(2)))
                             freeSpace.put(azimuth, point);
