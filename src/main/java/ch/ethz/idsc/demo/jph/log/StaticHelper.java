@@ -16,6 +16,7 @@ import ch.ethz.idsc.gokart.offline.channel.RimoPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
 import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
+import ch.ethz.idsc.gokart.offline.channel.Vlp16RayChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
 import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 
@@ -33,6 +34,7 @@ import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
       LinmotPutVehicleChannel.INSTANCE, //
       LinmotGetVehicleChannel.INSTANCE, //
       DavisDvsChannel.INSTANCE, //
+      Vlp16RayChannel.INSTANCE, //
       Vmu931ImuVehicleChannel.INSTANCE, //
       LabjackAdcChannel.INSTANCE //
   );
@@ -41,5 +43,6 @@ import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
   // ---
   static final File CUTS = new File("/media/datahaki/data/gokart/cuts");
   static final File DEST = new File("/media/datahaki/data/gokart/dynamics");
-  static final String FILENAME = "post.lcm";
+  static final String LOG_LCM = "log.lcm";
+  static final String POST_LCM = "post.lcm";
 }

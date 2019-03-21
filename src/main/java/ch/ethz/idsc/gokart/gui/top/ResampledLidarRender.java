@@ -11,9 +11,8 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
-import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -25,8 +24,8 @@ public class ResampledLidarRender extends LidarRender {
   private boolean flagMapUpdate = false;
   public final UpdatedMap updatedMap = new UpdatedMap();
 
-  public ResampledLidarRender(MappedPoseInterface mappedPoseInterface) {
-    super(mappedPoseInterface);
+  public ResampledLidarRender(GokartPoseInterface gokartPoseInterface) {
+    super(gokartPoseInterface);
   }
 
   @Override // from AbstractGokartRender
@@ -81,5 +80,4 @@ public class ResampledLidarRender extends LidarRender {
 
   public final ActionListener action_mapCreate = e -> flagMapCreate = true;
   public final ActionListener action_mapUpdate = e -> flagMapUpdate = true;
-  public final ActionListener action_snap = e -> LidarLocalizationModule.FLAGSNAP = true;
 }

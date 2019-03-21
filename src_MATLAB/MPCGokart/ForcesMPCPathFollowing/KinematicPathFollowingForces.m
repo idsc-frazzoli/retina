@@ -15,7 +15,7 @@ maxyacc = 8;
 latacclim = 6;
 rotacceffect  = 2;
 torqueveceffect = 3;
-brakeeffect = 0;
+brakeeffect = 0; 
 pointsO = 7;
 pointsN = 10;
 splinestart = 1;
@@ -81,10 +81,13 @@ model.hl = [-inf;-inf;-inf;-inf;-inf;-inf];
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));
     
-points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+%points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+points = getPoints('/wildpoints.csv');
+points(:,3)=points(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
 %points = [0,40,40,5,0;0,0,10,9,10]';
 trajectorytimestep = integrator_stepsize;
+solvetimes = [];
 %[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 model.npar = pointsO + 3*pointsN;
 for i=1:model.N
@@ -123,8 +126,8 @@ model.lb(index.s)=0;
 %model.lb = [-inf, -5, -0.1, -inf, -inf,  -inf, 0,-0.45,0,-inf];  % simple lower bounds 
 codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
-codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
-codeoptions.optlevel = 3;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions.printlevel = 1; % Use printlevel = 2 to print progress (but not for timings)
+codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
@@ -132,8 +135,9 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 100;
+tend = 1000;
 eulersteps = 10;
+planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]
 %[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
 fpoints = points(1:2,1:2);
@@ -150,6 +154,7 @@ xs(index.beta-index.nu)=0;
 xs(index.s-index.nu)=0.01;
 %xs(index.braketemp-index.nu)=40;
 history = zeros(tend*eulersteps,model.nvar+1);
+splinepointhist = zeros(tend,pointsN*3+1);
 plansx = [];
 plansy = [];
 planss = [];
@@ -183,14 +188,14 @@ for i =1:tend
     ip = splinestart;
     [nkp, ~] = size(points);
     nextSplinePoints = zeros(pointsN,3);
-    for i=1:pointsN
+    for ii=1:pointsN
        while ip>nkp
             ip = ip -nkp;
        end
-       nextSplinePoints(i,:)=points(ip,:);
+       nextSplinePoints(ii,:)=points(ip,:);
        ip = ip + 1;
     end
-    
+    splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
     problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,maxyacc,latacclim,rotacceffect,torqueveceffect, brakeeffect,nextSplinePoints) , model.N ,1);
@@ -200,6 +205,7 @@ for i =1:tend
     
     % solve mpc
     [output,exitflag,info] = MPCPathFollowing(problem);
+    solvetimes(end+1)=info.solvetime;
     if(exitflag==0)
        a = 1; 
     end
@@ -217,7 +223,7 @@ for i =1:tend
     xs
     history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
     planc = planc + 1;
-    if(planc>10)
+    if(planc>planintervall)
        planc = 1; 
        plansx = [plansx; outputM(:,index.x)'];
        plansy = [plansy; outputM(:,index.y)'];

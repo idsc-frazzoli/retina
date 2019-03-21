@@ -9,13 +9,13 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class CubicSteerMappingTest extends TestCase {
   public void testAdvancedFormulaCenter() {
-    SteerMapping steerMapping = CubicSteerMapping.approximation_1();
+    SteerMapping steerMapping = CubicSteerMapping.approximation();
     Scalar angle = steerMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, Quantity.of(0, "SCE")));
     assertEquals(angle, RealScalar.ZERO);
@@ -24,29 +24,29 @@ public class CubicSteerMappingTest extends TestCase {
   }
 
   public void testAdvancedFormulaSign() {
-    SteerMapping steerMapping = CubicSteerMapping.approximation_1();
+    SteerMapping steerMapping = CubicSteerMapping.approximation();
     Scalar sceIn = Quantity.of(0.1, "SCE");
     Scalar angle = steerMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, sceIn));
     assertTrue(Sign.isPositive(angle));
-    Clip.function(.08, .15).requireInside(angle);
+    Clips.interval(.08, .15).requireInside(angle);
     Scalar sce = steerMapping.getSCEfromAngle(angle);
     assertTrue(Scalars.lessThan(sce.subtract(sceIn).abs(), Quantity.of(0.01, "SCE")));
   }
 
   public void testAdvancedFormulaNegative() {
-    SteerMapping steerMapping = CubicSteerMapping.approximation_1();
+    SteerMapping steerMapping = CubicSteerMapping.approximation();
     Scalar sceIn = Quantity.of(-0.7, "SCE");
     Scalar angle = steerMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, sceIn));
     assertTrue(Sign.isNegative(angle));
-    Clip.function(-.5, -.4).requireInside(angle);
+    Clips.interval(-.5, -.4).requireInside(angle);
     Scalar sce = steerMapping.getSCEfromAngle(angle);
     assertTrue(Scalars.lessThan(sce.subtract(sceIn).abs(), Quantity.of(0.05, "SCE")));
   }
 
   public void testSceError() {
-    SteerMapping steerMapping = CubicSteerMapping.approximation_1();
+    SteerMapping steerMapping = CubicSteerMapping.approximation();
     Scalar max = Quantity.of(0, "SCE");
     for (Tensor s : Subdivide.of(-0.68847, 0.68847, 100)) {
       Scalar sceIn = Quantity.of(s.Get(), "SCE");
@@ -58,7 +58,7 @@ public class CubicSteerMappingTest extends TestCase {
   }
 
   public void testAngleError() {
-    SteerMapping steerMapping = CubicSteerMapping.approximation_1();
+    SteerMapping steerMapping = CubicSteerMapping.approximation();
     Scalar max = RealScalar.ZERO;
     for (Tensor s : Subdivide.of(-0.45, 0.45, 100)) {
       Scalar angleIn = s.Get();

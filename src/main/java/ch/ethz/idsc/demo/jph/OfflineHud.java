@@ -21,7 +21,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AccumulatedEventRender;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.gokart.gui.top.GokartPathRender;
+import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.TrigonometryRender;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
@@ -68,7 +68,7 @@ public class OfflineHud implements OfflineLogListener {
   final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   final AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
   final TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
-  final GokartPathRender pathRender = new GokartPathRender(gokartPoseInterface);
+  final ExtrudedFootprintRender pathRender = new ExtrudedFootprintRender(gokartPoseInterface);
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rimoGetEvent;
@@ -153,6 +153,7 @@ public class OfflineHud implements OfflineLogListener {
     } catch (Exception exception) {
       exception.printStackTrace();
     }
+    // TODO JPH flow does not make sense
     System.exit(0);
   }
 

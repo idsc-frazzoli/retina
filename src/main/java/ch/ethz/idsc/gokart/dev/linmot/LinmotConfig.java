@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /** parameters for brake configuration and emergency brake maneuver
  * 
@@ -39,11 +40,11 @@ public class LinmotConfig {
 
   /***************************************************/
   public Clip temperatureOperationClip() {
-    return Clip.function(windingTempCold, windingTempGlow);
+    return Clips.interval(windingTempCold, windingTempGlow);
   }
 
   public Clip temperatureHardwareClip() {
-    return Clip.function(windingTempCold, windingTempFire);
+    return Clips.interval(windingTempCold, windingTempFire);
   }
 
   public boolean isTemperatureOperationSafe(Scalar temperature) {
@@ -62,5 +63,5 @@ public class LinmotConfig {
 
   /** bounds established using experimentation */
   // TODO make 20000 configurable
-  public static final Clip NOMINAL_POSITION_DELTA = Clip.function(-20000, 20000);
+  public static final Clip NOMINAL_POSITION_DELTA = Clips.interval(-20000, 20000);
 }

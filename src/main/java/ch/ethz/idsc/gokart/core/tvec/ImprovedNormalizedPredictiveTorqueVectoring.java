@@ -7,26 +7,22 @@ import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormalizedTorqueVectoring {
   private static final double MIN_DT = 0.000001;
-  /** ratio:
-   * 0 means 100% old value
-   * 1 means 100% new value
-   * 0.5 means average */
-  private static final Scalar ROLLING_AVERAGE_RATIO = RealScalar.of(0.5); // good data expected
   private static final Scalar ROLLING_AVERAGE_VALUE = Quantity.of(0.0, SI.ANGULAR_ACCELERATION);
   // ---
   private final IntervalClock intervalClock = new IntervalClock();
-  private final GeodesicIIR1Filter geodesicIIR1Filter = //
-      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, ROLLING_AVERAGE_RATIO, ROLLING_AVERAGE_VALUE);
+  private final GeodesicIIR1Filter geodesicIIR1Filter;
 
   public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
+    geodesicIIR1Filter = new GeodesicIIR1Filter( //
+        RnGeodesic.INSTANCE, //
+        torqueVectoringConfig.rollingAverageRatio /* ROLLING_AVERAGE_VALUE */ );
   }
 
   @Override // from ImprovedNormalizedTorqueVectoring

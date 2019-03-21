@@ -18,5 +18,8 @@ import ch.ethz.idsc.tensor.Tensor;
    * @param padding the padding added to the side of the track [m]
    * @param qpFactor the quadratic process factor [1] (redefinition possible)
    * @return resulting MPC path parameter to be sent to MPC */
-  MPCPathParameter getPathParameterPreview(int previewSize, Tensor position, Scalar padding, Scalar qpFactor);
+  MPCPathParameter getPathParameterPreview(int previewSize, Tensor position, Scalar padding, Scalar qpFactor, Scalar qpLimit);
+
+  /** @return the pose at the start of the track */
+  Tensor getStartPose();
 }

@@ -11,7 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
+import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -45,16 +45,17 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable {
-  private static final Clip CLIP_DEG_C = Clip.function( //
+  private static final Clip CLIP_DEG_C = Clips.interval( //
       Quantity.of(+20, NonSI.DEGREE_CELSIUS), //
       Quantity.of(100, NonSI.DEGREE_CELSIUS));
-  private static final Clip CLIP_GYROZ = Clip.function( //
+  private static final Clip CLIP_GYROZ = Clips.interval( //
       Quantity.of(-1, SI.PER_SECOND), //
       Quantity.of(+1, SI.PER_SECOND));
-  private static final Clip CLIP_AHEAD = Clip.absoluteOne();
+  private static final Clip CLIP_AHEAD = Clips.absoluteOne();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
@@ -115,7 +116,10 @@ import ch.ethz.idsc.tensor.sca.Round;
       }
       {
         JButton jButton = new JButton("calibration");
-        jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestCalibration());
+        jButton.addActionListener(actionEvent -> {
+          vmu931LcmServerModule.requestCalibration();
+          Vmu931CalibrationWatchdog.requiresCalibration = false;
+        });
         jToolBar.add(jButton);
       }
     }
@@ -201,12 +205,12 @@ import ch.ethz.idsc.tensor.sca.Round;
           }
         }
         {
-          Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();
-          Scalar rescaled = CLIP_GYROZ.rescale(gyroZ);
-          Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(rescaled));
-          String text = "#=" + DavisImuTracker.INSTANCE.getFramecount();
-          jTF_davis240c.setText(text + " " + gyroZ);
-          jTF_davis240c.setBackground(color);
+          // Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ();
+          // Scalar rescaled = CLIP_GYROZ.rescale(gyroZ);
+          // Color color = ColorFormat.toColor(ColorDataGradients.THERMOMETER.apply(rescaled));
+          // String text = "#=" + DavisImuTracker.INSTANCE.getFramecount();
+          // jTF_davis240c.setText(text); // + " " + gyroZ
+          // jTF_davis240c.setBackground(color);
         }
         { // pose coordinates
           String string = Objects.nonNull(gokartPoseEvent) //

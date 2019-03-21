@@ -11,6 +11,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /** @see SafetyConfig */
 public class TrackReconConfig {
@@ -27,7 +28,7 @@ public class TrackReconConfig {
   /***************************************************/
   /** @return */
   private Clip vlp16_ZClip() {
-    return Clip.function( //
+    return Clips.interval( //
         Magnitude.METER.apply(vlp16_ZLo), //
         Magnitude.METER.apply(vlp16_ZHi));
   }

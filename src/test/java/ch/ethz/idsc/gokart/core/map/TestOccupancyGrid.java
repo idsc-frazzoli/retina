@@ -47,4 +47,9 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
         element.Get(0).number().intValue(), //
         element.Get(1).number().intValue());
   }
+
+  @Override
+  public void clearStart(int startX, int startY, double orientation) {
+    // TODO Auto-generated method stub
+  }
 }

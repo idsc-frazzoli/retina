@@ -5,8 +5,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringInterface;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
@@ -31,12 +31,15 @@ import ch.ethz.idsc.tensor.sca.Tan;
  * {@link SimpleTorqueVectoringManualModule}
  * {@link ImprovedTorqueVectoringManualModule}
  * {@link ImprovedNormalizedTorqueVectoringManualModule}
- * {@link ImprovedNormalizedPredictiveTorqueVectoringManualModule} */
+ * {@link UltimateTorqueVectoringModule} */
 abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEvent> //
     implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final TorqueVectoringInterface torqueVectoringInterface;
-  private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
+  private final Vlp16PassiveSlowing vlp16PassiveSlowing = //
+      ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
+  private final LidarLocalizationModule lidarLocalizationModule = //
+      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   // ---
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
@@ -60,14 +63,23 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
   @Override // from GuideJoystickModule
   final Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
+    return Optional.of(derive( //
+        steerColumnInterface, //
+        Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
+        lidarLocalizationModule.getGyroZFiltered()));
+  }
+
+  /** @param steerColumnInterface
+   * @param power unitless in the interval [-1, 1]
+   * @param gyroZ
+   * @return */
+  final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Scalar gyroZ) {
     Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
     // why isn't theta rad/m?
-    Scalar power = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0); // unitless in the interval [-1, 1]
     // compute wanted motor torques / no-slip behavior (sorry Jan for corrective factor)
     Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip
-    Scalar gyroZ = DavisImuTracker.INSTANCE.getGyroZ(); // unit s^-1
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
     // ---
     Tensor powers = torqueVectoringInterface.powers( //
@@ -77,10 +89,10 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
     short arms_rawL = Magnitude.ARMS.toShort(torquesARMS.Get(0));
     short arms_rawR = Magnitude.ARMS.toShort(torquesARMS.Get(1));
     // System.out.println("arms_rawl: " + arms_rawL + " arms_rawr " + arms_rawR);
-    return Optional.of(RimoPutHelper.operationTorque( //
+    return RimoPutHelper.operationTorque( //
         (short) -arms_rawL, // sign left invert
         (short) +arms_rawR // sign right id
-    ));
+    );
   }
 
   @Override // from RimoGetListener

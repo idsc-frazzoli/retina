@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
-import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCAbstractDrivingModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import lcm.logging.LogPlayer;
@@ -30,6 +30,6 @@ import lcm.logging.LogPlayerConfig;
     // ModuleAuto.INSTANCE.runOne(GlobalViewLcmModule.class);
     ModuleAuto.INSTANCE.runOne(TrackReconModule.class);
     // ModuleAuto.INSTANCE.runOne(PresenterLcmModule.class);
-    ModuleAuto.INSTANCE.runOne(MPCKinematicDrivingModule.class);
+    ModuleAuto.INSTANCE.runOne(MPCAbstractDrivingModule.class);
   }
 }

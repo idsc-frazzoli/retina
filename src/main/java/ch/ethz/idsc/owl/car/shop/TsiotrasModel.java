@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /** specifications of vehicle taken from:
  * Time-Optimal Vehicle Posture Control to Mitigate Unavoidable
@@ -92,8 +92,8 @@ public class TsiotrasModel extends DefaultCarModel {
   @SuppressWarnings("unused")
   @Override
   public CarControl createControl(Tensor u) {
-    Clip.absoluteOne().requireInside(u.Get(0));
-    Clip.unit().requireInside(u.Get(3));
+    Clips.absoluteOne().requireInside(u.Get(0));
+    Clips.unit().requireInside(u.Get(3));
     // ---
     Scalar delta = u.Get(0).multiply(maxDelta).multiply(carSteering.factor);
     Scalar brake = u.Get(1).multiply(maxPress);

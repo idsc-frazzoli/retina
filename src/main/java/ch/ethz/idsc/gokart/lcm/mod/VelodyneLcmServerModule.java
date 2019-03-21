@@ -3,34 +3,34 @@ package ch.ethz.idsc.gokart.lcm.mod;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmServer;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmServers;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
-abstract class VelodyneLcmServerModule extends AbstractModule {
-  private VelodyneLcmServer velodyneLcmServer = null;
+/* package */ abstract class VelodyneLcmServerModule extends AbstractModule {
   private final VelodyneModel velodyneModel;
   private final String channel;
+  // ---
+  private StartAndStoppable startAndStoppable = null;
 
   public VelodyneLcmServerModule(VelodyneModel velodyneModel, String channel) {
     this.velodyneModel = velodyneModel;
     this.channel = channel;
   }
 
-  @Override
-  protected void first() {
-    int portRay = VelodyneStatics.RAY_DEFAULT_PORT;
-    int portPos = VelodyneStatics.POS_DEFAULT_PORT;
-    velodyneLcmServer = new VelodyneLcmServer(velodyneModel, channel, portRay, portPos);
-    velodyneLcmServer.start();
+  @Override // from AbstractModule
+  protected final void first() {
+    startAndStoppable = VelodyneLcmServers.ray(velodyneModel, channel, VelodyneStatics.RAY_DEFAULT_PORT);
+    startAndStoppable.start();
   }
 
-  @Override
-  protected void last() {
-    if (Objects.nonNull(velodyneLcmServer)) {
-      velodyneLcmServer.stop();
-      velodyneLcmServer = null;
+  @Override // from AbstractModule
+  protected final void last() {
+    if (Objects.nonNull(startAndStoppable)) {
+      startAndStoppable.stop();
+      startAndStoppable = null;
     }
   }
 }

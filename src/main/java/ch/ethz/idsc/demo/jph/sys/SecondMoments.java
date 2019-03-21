@@ -12,14 +12,14 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.Eigensystem;
 import ch.ethz.idsc.tensor.mat.SquareMatrixQ;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 class SecondMoments {
   public static SecondMoments add(SecondMoments sm1, SecondMoments sm2) {
     Scalar mass = sm1.mass.add(sm2.mass);
-    Scalar index = Clip.function(RealScalar.ZERO, mass).rescale(sm2.mass);
+    Scalar index = Clips.interval(RealScalar.ZERO, mass).rescale(sm2.mass);
     Tensor center = LinearInterpolation.of(Tensors.of(sm1.center, sm2.center)).at(index);
     Tensor is1 = Inertias.shift(sm1.inertia, sm1.mass, sm1.center.subtract(center));
     Tensor is2 = Inertias.shift(sm2.inertia, sm2.mass, sm2.center.subtract(center));

@@ -9,11 +9,13 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;
 import lcm.logging.LogEventWriter;
 
+// TODO JPH class design: the actions should not happen in the constructor
 public abstract class LcmLogFileCutter {
   private final List<File> list = new LinkedList<>();
 
@@ -43,12 +45,14 @@ public abstract class LcmLogFileCutter {
         }
         while (true) {
           Event event = log.readNext();
-          try {
-            new BinaryBlob(event.data);
-            logEventWriter.write(event);
-          } catch (Exception exception) {
-            exception.printStackTrace();
-          }
+          if (!event.channel.equals(GokartLcmChannel.LCM_SELF_TEST))
+            try {
+              new BinaryBlob(event.data);
+              logEventWriter.write(event);
+            } catch (Exception exception) {
+              System.err.println("problem in channel:\n" + event.channel);
+              exception.printStackTrace();
+            }
           if (hi <= event.eventNumber)
             break;
         }

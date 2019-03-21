@@ -48,7 +48,13 @@ Navigation
 
 ![gokart_mpc](https://user-images.githubusercontent.com/4012178/52276469-9d063e80-2952-11e9-8ce8-9f652238a0d8.png)
 
-MPC [outside](https://www.youtube.com/watch?v=B0QmMS1Dp8E), [inside](https://www.youtube.com/watch?v=N_GqjWpRkR4) view
+Kin. MPC [outside](https://www.youtube.com/watch?v=B0QmMS1Dp8E), [inside](https://www.youtube.com/watch?v=N_GqjWpRkR4)
+
+<td>
+
+![dynamic_mpc](https://user-images.githubusercontent.com/4012178/54411184-c4d58880-46ee-11e9-8703-cff85af1bc55.png)
+
+Dyn. MPC [outside](https://www.youtube.com/watch?v=59E95E_RkH8), [inside](https://www.youtube.com/watch?v=t42Yd-1C9iM)
 
 </tr>
 </table>

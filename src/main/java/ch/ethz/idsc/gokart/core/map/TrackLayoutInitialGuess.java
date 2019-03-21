@@ -334,6 +334,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   public void update(int startX, int startY, double startorientation, Tensor gokartPosition) {
     // position if map
     Tensor curPos = null;
+    route = null;
     if (Objects.nonNull(gokartPosition))
       curPos = getPixelPosition(gokartPosition);
     if (initialize(startX, startY, startorientation, curPos, false)) {
@@ -341,38 +342,45 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       // check if we can reach target
       if (reachable(dijkstraTarget)) // we can reach target;
       {
-        System.out.println("target found");
+        System.out.println("direct route found");
         closed = true;
         route = dijkstraTarget.getRoute();
       } else {
-        System.out.println("target not found");
+        System.out.println("direct round not found");
         closed = false;
         actualTarget = getFarthestCell();
         LinkedList<Cell> routeFromStart = actualTarget.getRoute();
-        route = routeFromStart;
+        // route = routeFromStart;
         // can we reach gokart?
-        /* if (reachable(dijkstraGokartBack)) {
-         * System.out.println("start->gokart found. Expanding beyond gokart");
-         * route = routeFromStart;
-         * } else {
-         * // search from gokart toward
-         * System.out.println("searching from gokart towards starting line");
-         * boolean targetAvailable = initialise(startX, startY, startorientation, curPos, true);
-         * if (targetAvailable)
-         * processDijkstra();
-         * if (targetAvailable && reachable(dijkstraTarget)) {
-         * // found way from gokart
-         * route = dijkstraTarget.getRoute();
-         * route.addAll(routeFromStart);
-         * } else {
-         * System.out.println("no route found to gokart");
-         * route = routeFromStart;
-         * }
-         * } */
+        if (reachable(dijkstraGokartBack)) {
+          System.out.println("start->gokart found. Expanding beyond gokart");
+          route = routeFromStart;
+        } else {
+          // search from gokart toward
+          System.out.println("searching from gokart towards starting line");
+          boolean targetAvailable = initialize(startX, startY, startorientation, curPos, true);
+          if (targetAvailable)
+            processDijkstra();
+          if (targetAvailable && reachable(dijkstraTarget)) {
+            // found way from gokart
+            route = dijkstraTarget.getRoute();
+            System.out.println("found gokart->target->farthest point");
+            route.addAll(routeFromStart);
+          } else {
+            System.out.println("no route found to gokart (we are lost)");
+            // route = routeFromStart;
+          }
+        }
       }
     } else {
       System.out.println("Target not available.");
     }
+  }
+
+  public int getRouteLength() {
+    if (Objects.nonNull(route))
+      return route.size();
+    return 0;
   }
 
   private static boolean reachable(Cell target) {
@@ -393,14 +401,17 @@ public class TrackLayoutInitialGuess implements RenderInterface {
    * @param controlPointResolution
    * @return matrix of dimension n x 2 */
   Optional<Tensor> getControlPointGuess(Scalar spacing, Scalar controlPointResolution) {
+    Scalar halfspacing = RealScalar.of(0.5).multiply(spacing);
     Tensor wantedPositionsXY = Tensors.empty();
     // Tensor wantedPositionsY = Tensors.empty();
     Tensor lastPosition = route.getFirst().getPos();
+    Tensor endPosition = route.getLast().getPos();
     positionalSupports = new LinkedList<>();
     for (Cell cell : route) {
       Tensor pos = cell.getPos();
       Tensor dist = pos.subtract(lastPosition);
-      if (Scalars.lessThan(spacing, Norm._2.of(dist))) {
+      Tensor enddist = pos.subtract(endPosition);
+      if (Scalars.lessThan(spacing, Norm._2.of(dist)) && Scalars.lessThan(halfspacing, Norm._2.of(enddist))) {
         lastPosition = pos;
         wantedPositionsXY.append(Extract2D.FUNCTION.apply(pos));
         // wantedPositionsY.append(pos.Get(1));

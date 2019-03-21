@@ -13,7 +13,8 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 enum QuickStartGui {
   ;
   public static void main(String[] args) {
-    WindowConfiguration wc = AppCustomization.load(QuickStartGui.class, new WindowConfiguration());
+    WindowConfiguration windowConfiguration = //
+        AppCustomization.load(QuickStartGui.class, new WindowConfiguration());
     ModuleAuto.INSTANCE.runAll(RunTabbedTaskGui.MODULES_DEV);
     TabbedTaskGui taskTabGui = new TabbedTaskGui(RunTabbedTaskGui.PROPERTIES);
     // ---
@@ -22,7 +23,7 @@ enum QuickStartGui {
     taskTabGui.tab("aut", RunTabbedTaskGui.MODULES_AUT);
     taskTabGui.tab("fuse", RunTabbedTaskGui.MODULES_FUSE);
     taskTabGui.tab("lab", RunTabbedTaskGui.MODULES_LAB);
-    wc.attach(QuickStartGui.class, taskTabGui.jFrame);
+    windowConfiguration.attach(QuickStartGui.class, taskTabGui.jFrame);
     taskTabGui.jFrame.setVisible(true);
   }
 }

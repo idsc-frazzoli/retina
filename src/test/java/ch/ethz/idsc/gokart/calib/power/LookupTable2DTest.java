@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class LookupTable2DTest extends TestCase {
@@ -30,7 +31,7 @@ public class LookupTable2DTest extends TestCase {
     for (int i0 = 0; i0 < n2; ++i0)
       for (int i1 = 0; i1 < n2; ++i1)
         table[i0][i1] = RealScalar.of(random.nextFloat());
-    LookupTable2D lookupTable = new LookupTable2D(table, Clip.absoluteOne(), Clip.absoluteOne());
+    LookupTable2D lookupTable = new LookupTable2D(table, Clips.absoluteOne(), Clips.absoluteOne());
     final File file = new File("testLookupTable.object");
     assertFalse(file.exists());
     Export.object(file, lookupTable);
@@ -53,8 +54,8 @@ public class LookupTable2DTest extends TestCase {
         function, //
         DimN, //
         DimN, //
-        Clip.function(-0.3, 1.2), //
-        Clip.function(-0.7, 3.1));
+        Clips.interval(-0.3, 1.2), //
+        Clips.interval(-0.7, 3.1));
     Random rand = new Random();
     for (int count = 0; count < testN; ++count) {
       Scalar x = RealScalar.of(rand.nextFloat());
@@ -76,13 +77,13 @@ public class LookupTable2DTest extends TestCase {
         Scalar::add, //
         DimN, //
         DimN, //
-        Clip.function(-0.3, 1.2), //
-        Clip.function(-0.7, 3.1));
+        Clips.interval(-0.3, 1.2), //
+        Clips.interval(-0.7, 3.1));
     LookupTable2D inverseLookupTable = lookupTable2D.getInverseLookupTableBinarySearch(//
         Scalar::add, //
         0, DimN, //
         DimN, //
-        Clip.function(-5, 5), Chop._03);
+        Clips.interval(-5, 5), Chop._03);
     Random rand = new Random();
     for (int count = 0; count < testN; ++count) {
       Scalar x = RealScalar.of(rand.nextFloat());
@@ -109,14 +110,14 @@ public class LookupTable2DTest extends TestCase {
         Scalar::add, //
         DimN, //
         DimN, //
-        Clip.function(-0.3, 1.2), //
-        Clip.function(-0.7, 3.1));
+        Clips.interval(-0.3, 1.2), //
+        Clips.interval(-0.7, 3.1));
     LookupTable2D inverseLookupTable = lookUpTable2D.getInverseLookupTableBinarySearch(//
         Scalar::add, //
         1, //
         DimN, //
         DimN, //
-        Clip.function(-5, 5), Chop._03);
+        Clips.interval(-5, 5), Chop._03);
     Random rand = new Random();
     for (int count = 0; count < testN; ++count) {
       Scalar x = RealScalar.of(rand.nextFloat());
@@ -137,10 +138,10 @@ public class LookupTable2DTest extends TestCase {
     final int DimN = 250;
     // higher limit because of scaling of output [-2300, 2300]
     final Scalar inversionLimit = Quantity.of(2, NonSI.ARMS);
-    final Clip pClip = Clip.function( //
+    final Clip pClip = Clips.interval( //
         Quantity.of(-2300, NonSI.ARMS), //
         Quantity.of(+2300, NonSI.ARMS));
-    final Clip vClip = Clip.function( //
+    final Clip vClip = Clips.interval( //
         Quantity.of(-10, SI.VELOCITY), //
         Quantity.of(+10, SI.VELOCITY));
     final int testN = 100;
@@ -155,7 +156,7 @@ public class LookupTable2DTest extends TestCase {
         0, //
         DimN, //
         DimN, //
-        Clip.function( //
+        Clips.interval( //
             Quantity.of(-2, SI.ACCELERATION), //
             Quantity.of(+2, SI.ACCELERATION)),
         Chop._03);

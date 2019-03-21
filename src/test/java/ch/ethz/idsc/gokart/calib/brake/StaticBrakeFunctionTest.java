@@ -6,14 +6,14 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class StaticBrakeFunctionTest extends TestCase {
   public void testBrakingAccel() {
     Scalar scalar = StaticBrakeFunction.INSTANCE.getDeceleration(Quantity.of(0.03, "m"));
     // System.out.println("HERE=" + scalar);
-    Clip.function(Quantity.of(1.25, "m*s^-2"), Quantity.of(1.30, "m*s^-2")).requireInside(scalar);
+    Clips.interval(Quantity.of(1.25, "m*s^-2"), Quantity.of(1.30, "m*s^-2")).requireInside(scalar);
   }
 
   public void testBrakingAccelZero() {
@@ -60,15 +60,15 @@ public class StaticBrakeFunctionTest extends TestCase {
     // only important that it does not crash here
     Scalar brakepos1 = StaticBrakeFunction.INSTANCE.getNeededBrakeActuation(Quantity.of(1, SI.ACCELERATION));
     // System.out.println(brakepos1);
-    Clip.function(Quantity.of(0.025, "m"), Quantity.of(0.030, "m")).requireInside(brakepos1);
+    Clips.interval(Quantity.of(0.025, "m"), Quantity.of(0.030, "m")).requireInside(brakepos1);
     Scalar brakepos2 = StaticBrakeFunction.INSTANCE.getNeededBrakeActuation(Quantity.of(2, SI.ACCELERATION));
-    Clip.function(Quantity.of(0.030, "m"), Quantity.of(0.035, "m")).requireInside(brakepos2);
+    Clips.interval(Quantity.of(0.030, "m"), Quantity.of(0.035, "m")).requireInside(brakepos2);
     Scalar brakepos3 = StaticBrakeFunction.INSTANCE.getNeededBrakeActuation(Quantity.of(3, SI.ACCELERATION));
-    Clip.function(Quantity.of(0.035, "m"), Quantity.of(0.037, "m")).requireInside(brakepos3);
+    Clips.interval(Quantity.of(0.035, "m"), Quantity.of(0.037, "m")).requireInside(brakepos3);
     Scalar brakepos4 = StaticBrakeFunction.INSTANCE.getNeededBrakeActuation(Quantity.of(30, SI.ACCELERATION));
-    Clip.function(Quantity.of(0.140, "m"), Quantity.of(0.150, "m")).requireInside(brakepos4);
+    Clips.interval(Quantity.of(0.140, "m"), Quantity.of(0.150, "m")).requireInside(brakepos4);
     Scalar brakepos5 = StaticBrakeFunction.INSTANCE.getNeededBrakeActuation(Quantity.of(50, SI.ACCELERATION));
-    Clip.function(Quantity.of(0.220, "m"), Quantity.of(0.235, "m")).requireInside(brakepos5);
+    Clips.interval(Quantity.of(0.220, "m"), Quantity.of(0.235, "m")).requireInside(brakepos5);
   }
 
   public void testGetRelative() {

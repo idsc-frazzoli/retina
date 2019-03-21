@@ -56,7 +56,7 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
       DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  private final OfflineLocalize offlineLocalize;
+  public final OfflineLocalize offlineLocalize;
   private DavisImuFrame davisImuFrame;
   private RimoGetEvent rimoGetEvent;
   private RimoPutEvent rimoPutEvent;
@@ -66,7 +66,6 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
 
   public OfflineLocalizeWrap(OfflineLocalize offlineLocalize) {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-    // LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
     LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();

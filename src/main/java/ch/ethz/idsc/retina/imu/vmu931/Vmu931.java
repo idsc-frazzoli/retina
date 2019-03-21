@@ -49,10 +49,12 @@ public class Vmu931 implements Runnable {
     System.out.println("requested status");
   }
 
+  // TODO DUBILAB document what sensor replies
   public void requestSelftest() {
     serialPortWrap.write(Vmu931Statics.requestSelftest());
   }
 
+  // TODO DUBILAB document what sensor replies
   public void requestCalibration() {
     serialPortWrap.write(Vmu931Statics.requestCalibration());
   }

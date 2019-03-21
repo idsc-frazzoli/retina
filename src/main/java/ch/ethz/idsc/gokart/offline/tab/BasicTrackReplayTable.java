@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
@@ -76,8 +75,7 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
           Objects.isNull(rimoPutEvent) || //
           Objects.isNull(gokartStatusEvent))
         return;
-      GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
-      Tensor xya = GokartPoseHelper.toUnitless(gpe.getPose());
+      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
       Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
       Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
       Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
@@ -90,10 +88,7 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
           davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.PER_SECOND), //
           SteerPutEvent.ENCODER.apply(gokartStatusEvent.getSteerColumnEncoderCentered()), //
           linmotGetEvent.getActualPosition().map(Magnitude.METER).map(Round._6), //
-          gpe.asVector().map(Round._6), //
-          xya.extract(0, 2).map(Round._3), //
-          xya.Get(2).map(Round._6), //
-          gpe.getQuality() //
+          gokartPoseEvent.asVector().map(Round._6) //
       );
     }
   }

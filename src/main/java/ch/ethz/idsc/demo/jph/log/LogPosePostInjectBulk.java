@@ -6,7 +6,7 @@ import java.io.File;
 /* package */ enum LogPosePostInjectBulk {
   ;
   public static void main(String[] args) throws Exception {
-    final File root = new File(StaticHelper.CUTS, "20190211");
+    final File root = new File(StaticHelper.CUTS, "20190318");
     for (File folder : root.listFiles())
       if (folder.isDirectory()) {
         System.out.println(folder);

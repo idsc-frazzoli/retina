@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -16,6 +17,7 @@ import ch.ethz.idsc.tensor.mat.Det;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
@@ -55,7 +57,7 @@ public class SensorsConfigTest extends TestCase {
     byteBuffer.flip();
     DavisImuFrame davisImuFrame = new DavisImuFrame(byteBuffer);
     Scalar gyroZ = SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame);
-    Clip clip = Clip.function( //
+    Clip clip = Clips.interval( //
         Quantity.of(-0.56, SI.PER_SECOND), //
         Quantity.of(-0.50, SI.PER_SECOND));
     clip.requireInside(gyroZ);
@@ -64,12 +66,18 @@ public class SensorsConfigTest extends TestCase {
   /** post 20190208: the sensor is flipped upside down and rotated by 90[deg]
    * in the XY plane, this corresponds to a mirror operation */
   public void testVmu931AccXY() {
-    Tensor matrix = Tensor.of(IdentityMatrix.of(2).stream().map(SensorsConfig.GLOBAL::vmu931AccXY));
+    PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
+    Tensor matrix = Tensor.of(IdentityMatrix.of(2).stream().map(planarVmu931Imu::accXY));
     assertEquals(Det.of(matrix), RealScalar.ONE.negate());
-    assertEquals(SensorsConfig.GLOBAL.vmu931AccXY(Tensors.vector(1, 2)), Tensors.vector(-2, -1));
+    assertEquals(planarVmu931Imu.accXY(Tensors.vector(1, 2)), Tensors.vector(-2, -1));
   }
 
   public void testVmu931GyroZ() {
-    assertEquals(SensorsConfig.GLOBAL.vmu931GyroZ(RealScalar.of(2)), RealScalar.of(-2));
+    PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
+    assertEquals(planarVmu931Imu.gyroZ(RealScalar.of(2)), RealScalar.of(-2));
+  }
+
+  public void testvlp16_relativeZero() {
+    Clips.interval(0.7, 0.8).requireInside(SensorsConfig.GLOBAL.vlp16_relativeZero);
   }
 }

@@ -6,6 +6,12 @@ import java.nio.ByteOrder;
 
 public enum RimoGetEvents {
   ;
+  private static final RimoGetEvent MOTIONLESS = create(0, 0);
+
+  public static RimoGetEvent motionless() {
+    return MOTIONLESS;
+  }
+
   /** Example:
    * input of rateL == 1000, rateR == 1000 corresponds to a tangent speed of 2[m*s^-1]
    * 

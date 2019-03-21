@@ -14,14 +14,15 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class OfflineLogPlayerTest extends TestCase {
   public void testFromFile() throws IOException {
-    Clip clipX = Clip.function(Quantity.of(8.3, "deg"), Quantity.of(8.4, "deg"));
-    Clip clipY = Clip.function(Quantity.of(47.2, "deg"), Quantity.of(47.3, "deg"));
-    Clip clipMeterX = Clip.function(Quantity.of(2671166, "m"), Quantity.of(2671196, "m"));
-    Clip clipMeterY = Clip.function(Quantity.of(1232902, "m"), Quantity.of(1232942, "m"));
+    Clip clipX = Clips.interval(Quantity.of(8.3, "deg"), Quantity.of(8.4, "deg"));
+    Clip clipY = Clips.interval(Quantity.of(47.2, "deg"), Quantity.of(47.3, "deg"));
+    Clip clipMeterX = Clips.interval(Quantity.of(2671166, "m"), Quantity.of(2671196, "m"));
+    Clip clipMeterY = Clips.interval(Quantity.of(1232902, "m"), Quantity.of(1232942, "m"));
     File file = new File("src/test/resources/localization", "vlp16.center.pos.lcm");
     assertTrue(file.isFile());
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();

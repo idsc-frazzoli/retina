@@ -7,23 +7,31 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TensorProperties;
 
 public class GokartLogAdapter implements GokartLogInterface {
+  public static GokartLogInterface of(File folder, String name) {
+    return new GokartLogAdapter(folder, name);
+  }
+
   public static GokartLogInterface of(File folder) {
-    return new GokartLogAdapter(folder);
+    return of(folder, "log.lcm");
   }
 
   // ---
   private final File folder;
+  private final String name;
   private final GokartLogConfig gokartLogConfig = new GokartLogConfig();
 
-  private GokartLogAdapter(File folder) {
+  private GokartLogAdapter(File folder, String name) {
     this.folder = folder;
-    TensorProperties.wrap(gokartLogConfig) //
-        .tryLoad(new File(folder, "GokartLogConfig.properties"));
+    this.name = name;
+    File file = new File(folder, GokartLogConfig.class.getSimpleName() + ".properties");
+    if (!file.isFile())
+      System.err.println("warning");
+    TensorProperties.wrap(gokartLogConfig).tryLoad(file);
   }
 
   @Override // from GokartLogInterface
   public File file() {
-    return new File(folder, "log.lcm");
+    return new File(folder, name);
   }
 
   @Override // from GokartLogInterface

@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.slam;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class SlamResult {
   private final Tensor tensor;
@@ -13,7 +13,7 @@ public class SlamResult {
    * @param ratio in the interval [0, 1] */
   public SlamResult(Tensor tensor, Scalar ratio) {
     this.tensor = tensor;
-    this.ratio = Clip.unit().requireInside(ratio);
+    this.ratio = Clips.unit().requireInside(ratio);
   }
 
   public Tensor getTransform() {

@@ -1455,6 +1455,7 @@ public enum GokartLogFile implements LogFile {
   /** manual driving, mpc */
   _20190211T172719_e8f75c95,
   /***************************************************/
+  /* 2019-02-14 */
   /** mpc */
   _20190214T141704_24d542f6,
   /** mpc */
@@ -1467,6 +1468,142 @@ public enum GokartLogFile implements LogFile {
   _20190214T171441_ad628347,
   /** mpc */
   _20190214T173709_380160a9,
+  /***************************************************/
+  /* 2019-02-15 */
+  /** mpc */
+  _20190215T113351_380160a9,
+  /** manual driving */
+  _20190215T135130_380160a9,
+  /** mpc */
+  _20190215T135406_380160a9,
+  /** manual driving */
+  _20190215T143502_380160a9,
+  /** mpc */
+  _20190215T144054_380160a9,
+  /** mpc */
+  _20190215T144349_380160a9,
+  /** mpc */
+  _20190215T150920_380160a9,
+  /** mpc */
+  _20190215T152744_380160a9,
+  /** mpc */
+  _20190215T154532_380160a9,
+  /***************************************************/
+  /* 2019-03-04 */
+  /** slow manual driving */
+  _20190304T151610_380160a9,
+  /** fast manual driving, localization failure */
+  _20190304T181143_e8ec1e35,
+  /***************************************************/
+  /* 2019-03-07 */
+  /** slow manual driving */
+  _20190307T105648_e8ec1e35,
+  /** track recon and pure pursuit */
+  _20190307T110429_e8ec1e35,
+  /** power steering test, slow and fast manual driving */
+  _20190307T161708_086ad351,
+  /***************************************************/
+  /* 2019-03-08 */
+  /** manual driving fast straight */
+  _20190308T145103_ad48d4dd,
+  /** manual driving fast straight */
+  _20190308T145247_ad48d4dd,
+  /** manual driving fast curves */
+  _20190308T162915_ad48d4dd,
+  /** manual driving fast curves */
+  _20190308T163555_ad48d4dd,
+  /***************************************************/
+  /* 2019-03-09 */
+  /** manual driving tokyo drift with localization failure */
+  _20190309T115037_d527c4a8,
+  /** manual driving tokyo drift */
+  _20190309T134051_7b231074,
+  /** manual driving tokyo drift with localization failure */
+  _20190309T135141_a9dcd8dc,
+  /** swissloop drift doughnuts */
+  _20190309T160311_a9dcd8dc,
+  /** slow manual driving */
+  _20190309T171059_ed0b19fb,
+  /** slow manual driving */
+  _20190309T172802_ed0b19fb,
+  /** slow manual driving */
+  _20190309T173356_ed0b19fb,
+  /** mpc dynamic model */
+  _20190309T174349_ed0b19fb,
+  /** mpc dynamic model */
+  _20190309T181745_ed0b19fb,
+  /** mpc dynamic model */
+  _20190309T191245_885223b3,
+  /** swiss loop, mpc dynamic model */
+  _20190309T201432_885223b3,
+  /** swiss loop, mpc dynamic model */
+  _20190309T212714_c5c7a266,
+  /***************************************************/
+  /* 2019-03-10 */
+  /** mpc */
+  _20190310T151604_3e1a6ce8,
+  /** mpc */
+  _20190310T171601_6b2a14e5,
+  /** mpc */
+  _20190310T173552_6b2a14e5,
+  /** mpc */
+  _20190310T175648_6b2a14e5,
+  /** mpc */
+  _20190310T195505_67e7ec8d,
+  /** mpc */
+  _20190310T203926_67e7ec8d,
+  /** swiss loop drift */
+  _20190310T220933_67e7ec8d,
+  /***************************************************/
+  /* 2019-03-11 */
+  /** swiss loop drift */
+  _20190311T102715_67e7ec8d,
+  /** trajectory planning */
+  _20190311T134617_35a37055,
+  /** swiss loop drift */
+  _20190311T143335_35a37055,
+  /** slow manual driving */
+  _20190311T153709_cec49cde,
+  /** mpc simple track */
+  _20190311T164018_da0bb9b9,
+  /** mpc challenging track
+   * manual driving */
+  _20190311T173809_da0bb9b9,
+  /***************************************************/
+  /* 2019-03-14
+   * dust proof wall was installed */
+  /** manual driving, no localization */
+  _20190314T113402_396b512b,
+  /** manual driving, no localization */
+  _20190314T114500_086ad351,
+  /** manual driving, no localization */
+  _20190314T115655_cec49cde,
+  /** slow manual driving collecting data for map update */
+  _20190314T135434_cec49cde,
+  /** mpc wet floor */
+  _20190314T143253_382aafe0,
+  /** power steering proportional to angle */
+  _20190314T150851_c3c5a0db,
+  /** mpc */
+  _20190314T154544_c3c5a0db,
+  /** mpc */
+  _20190314T174957_c3c5a0db,
+  /** mpc */
+  _20190314T175917_c3c5a0db,
+  /***************************************************/
+  /* 2019-03-18 */
+  /** mpc */
+  _20190318T111729_2f26ff8b,
+  /** mpc challenging track */
+  _20190318T114748_eace07e4,
+  /** manual driving challenging track */
+  _20190318T120437_eace07e4,
+  /** slow and fast manual driving */
+  _20190318T141147_9a9329f5,
+  /** mpc and slow manual driving */
+  _20190318T141608_9a9329f5,
+  /** mpc and manual driving */
+  _20190318T142605_9a9329f5,
   /***************************************************/
   ;
   // ---

@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.jph.log;
 import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,14 +23,17 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ enum DynamicsConversion {
   ;
-  public static File single(File cut) {
-    File file = new File(cut, StaticHelper.FILENAME);
+  public static Optional<File> single(File cut) {
+    File file = new File(cut, StaticHelper.POST_LCM);
     if (!file.isFile())
       throw new RuntimeException("" + file);
     // ---
     File folder = new File(StaticHelper.DEST, cut.getName().substring(0, 8)); // date e.g. 20190208
     folder.mkdir();
     File target = new File(folder, cut.getName());
+    if (target.isDirectory())
+      return Optional.empty();
+    // ---
     target.mkdir();
     Map<SingleChannelInterface, OfflineTableSupplier> map = StaticHelper.SINGLE_CHANNEL_INTERFACES.stream() //
         .collect(Collectors.toMap(Function.identity(), SingleChannelTable::of));
@@ -56,10 +60,6 @@ import ch.ethz.idsc.tensor.sca.Round;
     } catch (Exception exception) {
       exception.printStackTrace();
     }
-    return target;
-  }
-
-  public static void main(String[] args) {
-    single(new File(StaticHelper.CUTS, "_20190208/20190208T145312_04"));
+    return Optional.of(target);
   }
 }

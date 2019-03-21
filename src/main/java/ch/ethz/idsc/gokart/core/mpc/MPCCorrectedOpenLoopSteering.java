@@ -16,15 +16,16 @@ import ch.ethz.idsc.tensor.Tensors;
 
   @Override
   Optional<Tensor> getSteering(Scalar time) {
+    Scalar dotFactor = MPCOptimizationConfig.GLOBAL.steerDamp;
     Scalar controlTime = time.add(config.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
     if (Objects.isNull(cnpStep))
       return Optional.empty();
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
-    Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl.getudotS());
+    Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl().getudotS());
     return Optional.of(Tensors.of( //
-        cnpStep.gokartState.getS().add(rampUp), //
-        cnpStep.gokartControl.getudotS())//
+        cnpStep.gokartState().getS().add(rampUp), //
+        cnpStep.gokartControl().getudotS().multiply(dotFactor))//
         .multiply(MPCOptimizationConfig.GLOBAL.steerMultiplicator));
   }
 
@@ -40,6 +41,7 @@ import ch.ethz.idsc.tensor.Tensors;
   // }
   @Override
   public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
+    // TODO MH default behavior, no need to override function
     cns = controlAndPredictionSteps;
   }
 

@@ -6,7 +6,6 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
-import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -15,8 +14,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 
+// TODO MH document all getter functions!
 /* package */ class GokartControl implements BufferInsertable, OfflineVectorInterface {
-  public static final int LENGTH = 20;
+  static final int LENGTH = 20;
   private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
   // ---
   private final float uL;
@@ -24,7 +24,6 @@ import ch.ethz.idsc.tensor.qty.Unit;
   private final float udotS;
   private final float uB;
   private final float aB;
-  private final boolean directMotorControl;
 
   public GokartControl(float uL, float uR, float udotS, float uB) {
     this.uL = uL;
@@ -32,7 +31,6 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.udotS = udotS;
     this.uB = uB;
     this.aB = 0;
-    this.directMotorControl = true;
   }
 
   public GokartControl(float aB, float udotS) {
@@ -41,15 +39,14 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.udotS = udotS;
     this.uB = 0;
     this.aB = aB;
-    this.directMotorControl = false;
   }
 
   public Scalar getuL() {
-    return Quantity.of(uL, NonSI.ARMS);
+    return Quantity.of(uL, SI.ACCELERATION);
   }
 
   public Scalar getuR() {
-    return Quantity.of(uR, NonSI.ARMS);
+    return Quantity.of(uR, SI.ACCELERATION);
   }
 
   public Scalar getudotS() {
@@ -70,10 +67,9 @@ import ch.ethz.idsc.tensor.qty.Unit;
     udotS = byteBuffer.getFloat();
     uB = byteBuffer.getFloat();
     aB = byteBuffer.getFloat();
-    directMotorControl = Math.signum(aB) == 0;
   }
 
-  @Override
+  @Override // from BufferInsertable
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putFloat(uL);
     byteBuffer.putFloat(uR);
@@ -82,21 +78,18 @@ import ch.ethz.idsc.tensor.qty.Unit;
     byteBuffer.putFloat(aB);
   }
 
-  @Override
+  @Override // from BufferInsertable
   public int length() {
     return LENGTH;
   }
 
   @Override
   public Tensor asVector() {
-    if (directMotorControl)
-      return Tensors.of(//
-          getuL(), //
-          getuR(), //
-          getudotS(), //
-          getuB());
     return Tensors.of(//
+        getuL(), //
+        getuR(), //
         getudotS(), //
+        getuB(), //
         getaB());
   }
 

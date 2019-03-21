@@ -10,19 +10,46 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
 import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
+import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import idsc.BinaryBlob;
 
-/* package */ class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
+// TODO JPH/MH split class into client(MPCControlUpdateLcmClient) and publisher
+/* package */ abstract class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
+  public static LcmMPCControlClient kinematic() {
+    return new LcmMPCControlClient("") {
+      @Override
+      BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
+        return new MPCOptimizationParameterMessageKinematic(mpcOptimizationParameter, mpcNativeSession);
+      }
+    };
+  }
+
+  public static LcmMPCControlClient dynamic() {
+    return new LcmMPCControlClient(".d") {
+      @Override
+      BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
+        return new MPCOptimizationParameterMessageDynamic(mpcOptimizationParameter, mpcNativeSession);
+      }
+    };
+  }
+
   private final List<MPCControlUpdateListener> listeners = new CopyOnWriteArrayList<>();
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
-  private final BinaryBlobPublisher controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs");
-  private final BinaryBlobPublisher optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op");
+  private final BinaryBlobPublisher controlRequestPublisher;
+  private final BinaryBlobPublisher optimizationParameterPublisher;
   // TODO design no good. lastcns should not be public. use member function instead
-  public ControlAndPredictionSteps lastcns = null;
+  /* package for testing */ ControlAndPredictionSteps lastcns = null;
 
-  public LcmMPCControlClient() {
+  private LcmMPCControlClient(String appendix) {
     super(GokartLcmChannel.MPC_FORCES_CNS);
+    controlRequestPublisher = new BinaryBlobPublisher("mpc.forces.gs" + appendix);
+    optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op" + appendix);
   }
+
+  /** @param mpcOptimizationParameter
+   * @param mpcNativeSession
+   * @return */
+  abstract BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession);
 
   @Override
   public void start() {
@@ -58,29 +85,21 @@ import idsc.BinaryBlob;
     mpcNativeSession.switchToExternalStart();
   }
 
-  /* public void publishPathParameter(MPCPathParameter mpcPathParameter) {
-   * MPCPathParameterMessage mpcPathParameterMessage = new MPCPathParameterMessage(mpcPathParameter, mpcNativeSession);
-   * BinaryBlob binaryBlob = BinaryBlobs.create(mpcPathParameterMessage.length());
-   * ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
-   * byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-   * mpcPathParameterMessage.insert(byteBuffer);
-   * pathParameterPublisher.accept(binaryBlob);
-   * } */
   public void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {
-    MPCOptimizationParameterMessage mpcOptimizationParameterMessage = new MPCOptimizationParameterMessage(mpcOptimizationParameter, mpcNativeSession);
-    BinaryBlob binaryBlob = BinaryBlobs.create(mpcOptimizationParameterMessage.length());
+    BufferInsertable bufferInsertable = from(mpcOptimizationParameter, mpcNativeSession);
+    BinaryBlob binaryBlob = BinaryBlobs.create(bufferInsertable.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    mpcOptimizationParameterMessage.insert(byteBuffer);
+    bufferInsertable.insert(byteBuffer);
     optimizationParameterPublisher.accept(binaryBlob);
   }
 
-  public void registerControlUpdateLister(MPCControlUpdateListener listener) {
+  public final void registerControlUpdateLister(MPCControlUpdateListener listener) {
     listeners.add(listener);
   }
 
-  @Override
-  protected void messageReceived(ByteBuffer byteBuffer) {
+  @Override // from BinaryLcmClient
+  protected final void messageReceived(ByteBuffer byteBuffer) {
     // get new message
     ControlAndPredictionStepsMessage cns = new ControlAndPredictionStepsMessage(byteBuffer);
     // System.out.println(cns.controlAndPredictionSteps.steps[0]);
