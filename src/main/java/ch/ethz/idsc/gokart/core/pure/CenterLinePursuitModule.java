@@ -21,7 +21,7 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
   private static final int RESOLUTION = 200;
   // ---
   private final TrackReconModule trackReconModule = ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  private final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
+  private final CurvePurePursuitModule curvePurePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
   @Override
@@ -31,12 +31,12 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
     else
       System.err.println("did not subscribe to track info !!!");
     // ---
-    purePursuitModule.launch();
+    curvePurePursuitModule.launch();
   }
 
   @Override
   protected void last() {
-    purePursuitModule.terminate();
+    curvePurePursuitModule.terminate();
     // ---
     if (Objects.nonNull(trackReconModule))
       trackReconModule.listenersRemove(this);
@@ -53,7 +53,7 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
     } else {
       System.out.println("center line no waypoints");
     }
-    purePursuitModule.setCurve(Optional.ofNullable(curve));
+    curvePurePursuitModule.setCurve(Optional.ofNullable(curve));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(curve);
   }
