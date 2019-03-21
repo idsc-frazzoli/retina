@@ -147,6 +147,7 @@ public class SightLineMapping implements //
                     graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 2, 2);
                     return lidarCoords.extract(0, 2);
                 }));
+                // TODO apply filter? median, min, ...
                 // ---
                 double first = pointsPolar.first().Get(0).number().doubleValue();
                 double last = pointsPolar.last().Get(0).number().doubleValue();
