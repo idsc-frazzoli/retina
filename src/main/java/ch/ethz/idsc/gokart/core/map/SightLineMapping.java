@@ -18,9 +18,6 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.*;
 import ch.ethz.idsc.tensor.alg.Array;
-import ch.ethz.idsc.tensor.sca.Abs;
-import ch.ethz.idsc.tensor.sca.Cos;
-import ch.ethz.idsc.tensor.sca.Sin;
 
 import java.awt.*;
 import java.awt.geom.Path2D;
@@ -138,24 +135,13 @@ public class SightLineMapping implements //
             geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
             geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16));
             // ---
-            Tensor polygon;
-            synchronized (pointsPolar) {
-                polygon = Tensor.of(pointsPolar.stream().map(point -> {
-                    Tensor lidarCoords = Vlp16Transform.PolarToCartesian.of(point);
-                    graphics.setColor(Color.RED);
-                    Point2D point2D = geometricLayer.toPoint2D(lidarCoords);
-                    graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 2, 2);
-                    return lidarCoords.extract(0, 2);
-                }));
-                // TODO apply filter? median, min, ...
-                // ---
-                double first = pointsPolar.first().Get(0).number().doubleValue();
-                double last = pointsPolar.last().Get(0).number().doubleValue();
-                if (Math.abs(last - first) < lidarSectorProvider.getSectorWidthRad())
-                    polygon.append(Array.zeros(2)); // add origin to close sector
-                // ---
-                pointsPolar.clear();
-            }
+            Tensor polygon = polygon();
+            // TODO apply filter? median, min, ...
+            graphics.setColor(Color.RED);
+            polygon.forEach(point -> {
+                Point2D point2D = geometricLayer.toPoint2D(point);
+                graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 2, 2);
+            });
             Path2D path2D = geometricLayer.toPath2D(polygon);
             path2D.closePath();
             graphics.setColor(new Color(0, 255, 0, 16));
@@ -166,5 +152,21 @@ public class SightLineMapping implements //
             geometricLayer.popMatrix();
             geometricLayer.popMatrix();
         }
+    }
+
+    protected Tensor polygon() {
+        Tensor polygon;
+        synchronized (pointsPolar) {
+            polygon = Tensor.of(pointsPolar.stream().map(point -> //
+                    Vlp16Transform.PolarToCartesian.of(point).extract(0, 2)));
+            // ---
+            double first = pointsPolar.first().Get(0).number().doubleValue();
+            double last = pointsPolar.last().Get(0).number().doubleValue();
+            if (Math.abs(last - first) < lidarSectorProvider.getSectorWidthRad())
+                polygon.append(Array.zeros(2)); // add origin to close sector
+            // ---
+            pointsPolar.clear();
+        }
+        return polygon;
     }
 }
