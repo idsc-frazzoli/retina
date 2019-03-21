@@ -54,9 +54,11 @@ public class SteerConfig {
   public Scalar turningRatioMax = Quantity.of(0.4082, "rad*m^-1");
   /** Value to amplify the Input in the PowerSteeringModule */
   public Scalar staticCompensation = Quantity.of(0.6, "SCT*SCE^-1");
+  public Scalar dynamicCompensation = Quantity.of(0.6, "SCT");
+  public Scalar dynamicCompensationBoundary = Quantity.of(0.6, "SCT");
   /** Values for Vibration Mode */
-  public Scalar VibrationAmplitude = RealScalar.of(0.05);
-  public Scalar VibrationFrequency = RealScalar.of(120);
+  public Scalar VibrationAmplitude = RealScalar.of(0.4);
+  public Scalar VibrationFrequency = RealScalar.of(12);
 
   /***************************************************/
   /** @return voltage operating range of battery */
