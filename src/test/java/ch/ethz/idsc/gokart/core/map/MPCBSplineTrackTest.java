@@ -1,13 +1,13 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.map;
 
+import ch.ethz.idsc.demo.travis.TravisUserName;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.io.Timing;
-import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityTensor;
 import junit.framework.TestCase;
@@ -22,7 +22,7 @@ public class MPCBSplineTrackTest extends TestCase {
     mpcbSplineTrack.getPathParameterPreview(5, Tensors.vector(0, 3).multiply(Quantity.of(1, SI.METER)), Quantity.of(0, SI.METER));
     long duration = timing.nanoSeconds();
     System.out.println(duration);
-    long limit = UserName.is("travis") ? 20_500_000 : 400_000;
+    long limit = TravisUserName.whoami() ? 20_500_000 : 400_000;
     assertTrue(duration < limit);
   }
 }

@@ -36,14 +36,4 @@ import ch.ethz.idsc.tensor.Tensors;
   public void setStateEstimationProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
   }
-
-  @Override
-  public void start() {
-    // TODO MH comment if empty is the right implementation
-  }
-
-  @Override
-  public void stop() {
-    // TODO MH comment if empty is the right implementation
-  }
 }
