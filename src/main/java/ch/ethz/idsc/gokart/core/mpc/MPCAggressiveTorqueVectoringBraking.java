@@ -32,11 +32,11 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
   @Override
   public void start() {
-    // TODO MH document that empty implementation is desired
+    // ---
   }
 
   @Override
   public void stop() {
-    // TODO MH document that empty implementation is desired
+    // ---
   }
 }

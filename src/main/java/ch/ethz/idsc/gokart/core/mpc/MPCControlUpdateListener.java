@@ -3,11 +3,10 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 
-/* package */ abstract class MPCControlUpdateListener implements MPCControlUpdateInterface, StartAndStoppable {
+/* package */ abstract class MPCControlUpdateListener implements MPCControlUpdateInterface {
   /* package */ ControlAndPredictionSteps cns = null;
   // TODO MH document that keeping istep outside the function is intended
   private int istep = 0;
