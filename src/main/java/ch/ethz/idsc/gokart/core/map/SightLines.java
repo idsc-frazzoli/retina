@@ -25,12 +25,15 @@ import java.awt.geom.Point2D;
 import java.nio.FloatBuffer;
 import java.util.*;
 
+// TODO results only look satisfying due to aggregation over multiple rotations
+// TODO take into account lidar blind spots (left, right)
+
 /** class interprets sensor data from lidar */
 public class SightLines implements //
         StartAndStoppable, LidarRayBlockListener, GokartPoseListener, RenderInterface, Runnable {
     // TODO check rationale behind constant 10000!
     private static final int LIDAR_SAMPLES = 10000;
-    private final int SECTORS = 72;
+    private static final int SECTORS = 72;
     private static final int HORIZON = 50; // in meters
     // ---
     private final LidarPolarFiringCollector lidarPolarFiringCollector = //
@@ -41,6 +44,9 @@ public class SightLines implements //
     private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
     private final Thread thread = new Thread(this);
     private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
+    private final TreeMap<Scalar, Tensor> freeSpace = new TreeMap<>();
+    private final TreeSet<Tensor> pointsPolar = //
+            new TreeSet<>(Comparator.comparingDouble(point -> point.Get(0).number().doubleValue()));
     private final SpacialXZObstaclePredicate predicate;
     private final int waitMillis;
     // ---
@@ -50,8 +56,6 @@ public class SightLines implements //
      * containing the cross-section of the static geometry
      * with the horizontal plane at height of the lidar */
     private Tensor pointsPolar_ferry = null;
-    private final TreeSet<Tensor> pointsPolar = new TreeSet<>(Comparator.comparingDouble(point -> point.Get(0).number().doubleValue()));
-    private TreeMap<Scalar, Tensor> freeSpace = new TreeMap<>();
 
     public SightLines(SpacialXZObstaclePredicate predicate, int waitMillis) {
         this.predicate = predicate;
@@ -130,12 +134,12 @@ public class SightLines implements //
     }
 
     @Override // from RenderInterface
-    public final void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
         if (Objects.nonNull(gokartPoseEvent)) {
             geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
             geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16));
             // ---
-            Tensor polygon = polygon();
+            Tensor polygon = polygon(); // TODO make polygon creation independent of render
             // TODO apply filter? median, min, ...
             graphics.setColor(Color.RED);
             polygon.forEach(point -> {
@@ -154,7 +158,7 @@ public class SightLines implements //
         }
     }
 
-    protected Tensor polygon() {
+    private Tensor polygon() {
         Tensor polygon;
         synchronized (pointsPolar) {
             polygon = Tensor.of(pointsPolar.stream().map(point -> //

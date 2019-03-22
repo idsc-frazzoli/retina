@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
@@ -136,7 +137,7 @@ public class SightLineOccupancyGrid implements RenderInterface, OccupancyGrid {
     private void obstacles(Tensor polygon) {
         imageGraphics.setColor(COLOR_OCCUPIED);
         polygon.forEach(point -> {
-            if (!point.equals(Tensors.vector(0, 0))) {
+            if (!point.equals(Array.zeros(2))) {
                 Point2D point2D = lidar2cellLayer.toPoint2D(point);
                 Ellipse2D sphere = new Ellipse2D.Double(point2D.getX(), point2D.getY(), //
                         2 * obsPixelRadius, 2 * obsPixelRadius);
