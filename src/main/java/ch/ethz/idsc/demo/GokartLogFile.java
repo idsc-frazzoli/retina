@@ -1134,7 +1134,7 @@ public enum GokartLogFile implements LogFile {
   _20181127T143921_35b19382,
   /** autonomous figure 8, manual driving */
   _20181127T162138_35b19382,
-  /** TODO JPH */
+  /** trajectory planning */
   _20181127T172938_35b19382,
   /***************************************************/
   /* 2018-11-28 demo day */
@@ -1604,6 +1604,18 @@ public enum GokartLogFile implements LogFile {
   _20190318T141608_9a9329f5,
   /** mpc and manual driving */
   _20190318T142605_9a9329f5,
+  /***************************************************/
+  /* 2019-03-21 */
+  /** slow manual driving */
+  _20190321T111128_19a9d2bb,
+  /** power steering test
+   * localization inactive */
+  _20190321T114452_79067bba,
+  /** data collection for mapping challenge
+   * with moving obstacles and various speeds */
+  _20190321T144129_140b9727,
+  /** power steering test */
+  _20190321T152149_140b9727,
   /***************************************************/
   ;
   // ---

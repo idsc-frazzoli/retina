@@ -7,6 +7,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import ch.ethz.idsc.demo.travis.TravisUserName;
+import ch.ethz.idsc.tensor.io.ResourceData;
 import junit.framework.TestCase;
 
 public class VoiceOutputModuleTest extends TestCase {
@@ -20,6 +21,13 @@ public class VoiceOutputModuleTest extends TestCase {
           Thread.sleep(10);
         }
       gokartVoiceOutputs.last();
+    }
+  }
+
+  public void testResources() {
+    for (VoiceOutput voiceOutput : VoiceOutput.values()) {
+      assertNotNull(ResourceData.class.getResourceAsStream(voiceOutput.resource()));
+      // voiceOutput.resource();
     }
   }
 }
