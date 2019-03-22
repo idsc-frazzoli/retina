@@ -1,6 +1,9 @@
-// code by mh
+// code by mh, jph
+// https://stackoverflow.com/questions/2792977/do-i-need-to-close-an-audio-clip
+// https://stackoverflow.com/questions/5529754/java-io-ioexception-mark-reset-not-supported
 package ch.ethz.idsc.gokart.core.sound;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +45,7 @@ public class VoiceOutputModule extends AbstractClockedModule {
     if (map.containsKey(voiceOutput))
       map.get(voiceOutput).close(); // mandatory close otherwise memory leak
     map.put(voiceOutput, StaticHelper.play(AudioSystem.getAudioInputStream( //
-        ResourceData.class.getResourceAsStream(voiceOutput.resource()))));
+        new BufferedInputStream(ResourceData.class.getResourceAsStream(voiceOutput.resource())))));
   }
 
   @Override // from AbstractModule
