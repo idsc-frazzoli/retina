@@ -26,7 +26,7 @@ import java.nio.FloatBuffer;
 import java.util.*;
 
 /** class interprets sensor data from lidar */
-public class SightLineMapping implements //
+public class SightLines implements //
         StartAndStoppable, LidarRayBlockListener, GokartPoseListener, RenderInterface, Runnable {
     // TODO check rationale behind constant 10000!
     private static final int LIDAR_SAMPLES = 10000;
@@ -53,7 +53,7 @@ public class SightLineMapping implements //
     private final TreeSet<Tensor> pointsPolar = new TreeSet<>(Comparator.comparingDouble(point -> point.Get(0).number().doubleValue()));
     private TreeMap<Scalar, Tensor> freeSpace = new TreeMap<>();
 
-    public SightLineMapping(SpacialXZObstaclePredicate predicate, int waitMillis) {
+    public SightLines(SpacialXZObstaclePredicate predicate, int waitMillis) {
         this.predicate = predicate;
         this.waitMillis = waitMillis;
         // ---

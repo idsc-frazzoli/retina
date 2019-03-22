@@ -13,7 +13,7 @@ import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
-import ch.ethz.idsc.gokart.core.map.SightLineMapping;
+import ch.ethz.idsc.gokart.core.map.SightLines;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
@@ -74,14 +74,14 @@ public class PresenterLcmModule extends AbstractModule {
       ModuleAuto.INSTANCE.getInstance(GokartTrajectoryModule.class);
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  private final SightLineMapping sightLineMapping = //
-          new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), 200);
+  private final SightLines sightLines = //
+          new SightLines(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), 200);
 
   @Override // from AbstractModule
   protected void first() {
     {
-      timerFrame.geometricComponent.addRenderInterface(sightLineMapping);
-      sightLineMapping.start();
+      timerFrame.geometricComponent.addRenderInterface(sightLines);
+      sightLines.start();
     }
     {
       ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
@@ -251,7 +251,7 @@ public class PresenterLcmModule extends AbstractModule {
     vlp16LcmHandler.stopSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
     davisLcmClient.stopSubscriptions();
-    sightLineMapping.stop();
+    sightLines.stop();
     mpcControlUpdateLcmClient.stopSubscriptions();
   }
 
