@@ -11,11 +11,11 @@ import ch.ethz.idsc.tensor.Tensor;
 
 public enum GokartPoseEvents {
   ;
-  private static final GokartPoseEvent MOTIONLESS = create(GokartPoseLocal.INSTANCE.getPose(), RealScalar.ZERO);
+  private static final GokartPoseEvent MOTIONLESS_0 = create(GokartPoseLocal.INSTANCE.getPose(), RealScalar.ZERO);
 
-  /** @return motionless */
-  public static GokartPoseEvent motionless() {
-    return MOTIONLESS;
+  /** @return motionless with pose quality == 0 */
+  public static GokartPoseEvent motionlessUninitialized() {
+    return MOTIONLESS_0;
   }
 
   /** @param pose {x[m], y[m], alpha}

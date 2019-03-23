@@ -53,13 +53,13 @@ import idsc.BinaryBlob;
   abstract BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession);
 
   @Override // from StartAndStoppable
-  public void start() {
+  public final void start() {
     startSubscriptions();
     mpcNativeSession.first();
   }
 
   @Override // from StartAndStoppable
-  public void stop() {
+  public final void stop() {
     mpcNativeSession.last();
     stopSubscriptions();
   }
@@ -67,7 +67,7 @@ import idsc.BinaryBlob;
   /** send gokart state which starts the mpc optimization with the newest state
    * 
    * @param gokartState the newest available gokart state */
-  public void publishControlRequest(GokartState gokartState, MPCPathParameter mpcPathParameter) {
+  public final void publishControlRequest(GokartState gokartState, MPCPathParameter mpcPathParameter) {
     ControlRequestMessage gokartStateMessage = new ControlRequestMessage(gokartState, mpcPathParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(gokartStateMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
@@ -77,16 +77,16 @@ import idsc.BinaryBlob;
   }
 
   /** switch to testing binary that send back test data has to be called before first */
-  public void switchToTest() {
+  public final void switchToTest() {
     mpcNativeSession.switchToTest();
   }
 
   /** switch to mode where binary is no automatically starting */
-  public void switchToExternalStart() {
+  public final void switchToExternalStart() {
     mpcNativeSession.switchToExternalStart();
   }
 
-  public void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {
+  public final void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {
     BufferInsertable bufferInsertable = from(mpcOptimizationParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(bufferInsertable.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
@@ -95,7 +95,7 @@ import idsc.BinaryBlob;
     optimizationParameterPublisher.accept(binaryBlob);
   }
 
-  public final void registerControlUpdateLister(MPCControlUpdateListener listener) {
+  public final void addControlUpdateListener(MPCControlUpdateListener listener) {
     listeners.add(listener);
   }
 

@@ -198,6 +198,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
     return gyroZ_filtered;
   }
 
+  /***************************************************/
   /** Hint: only use function during post-processing.
    * DO NOT use function during operation of the gokart
    * 

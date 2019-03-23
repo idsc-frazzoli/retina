@@ -17,6 +17,12 @@ public class GokartPoseEventsTest extends TestCase {
     assertEquals(gokartPoseEvent.asVector(), Tensors.vector(1, 2, 3, 1, 0, 0, 0));
   }
 
+  public void testMotionless() {
+    GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+    assertTrue(gokartPoseEvent.hasVelocity());
+    assertEquals(gokartPoseEvent.asVector(), Tensors.vector(0, 0, 0, 0, 0, 0, 0));
+  }
+
   public void testExtended() {
     GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create( //
         Tensors.fromString("{1[m], 2[m], 3}"), RealScalar.ONE, //

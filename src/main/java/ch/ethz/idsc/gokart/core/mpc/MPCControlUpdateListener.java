@@ -6,7 +6,7 @@ import java.util.Objects;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 
-/* package */ abstract class MPCControlUpdateListener implements MPCControlUpdateInterface {
+/* package */ class MPCControlUpdateListener implements MPCControlUpdateInterface {
   /* package */ ControlAndPredictionSteps cns = null;
   // TODO MH document that keeping istep outside the function is intended
   private int istep = 0;
@@ -39,8 +39,8 @@ import ch.ethz.idsc.tensor.Scalars;
     return cns.steps[istep];
   }
 
-  // TODO ideally this function should be final
-  @Override
+  // TODO MH/JPH ideally this function should be final
+  @Override // from MPCControlUpdateInterface
   public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
     this.cns = controlAndPredictionSteps;
   }
@@ -48,7 +48,7 @@ import ch.ethz.idsc.tensor.Scalars;
   /** the time that passed after the last step
    * 
    * @param query time in unit [s]
-   * @return time passed since that last step in unit [s] */
+   * @return time passed since that last step in unit [s], or null */
   final Scalar getTimeSinceLastStep(Scalar time) {
     if (Objects.isNull(cns))
       return null;

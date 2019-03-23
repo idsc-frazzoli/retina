@@ -46,14 +46,14 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
      * Quantity.of(5, SI.ACCELERATION), Quantity.of(10, SI.ACCELERATION),
      * Quantity.); */
     lcmMPCControlClient.publishOptimizationParameter(optimizationParameterDynamic);
-    lcmMPCControlClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
+    lcmMPCControlClient.addControlUpdateListener(MPCInformationProvider.getInstance());
     DubendorfTrack track = DubendorfTrack.CHICANE;
     MPCSimpleBraking mpcSimpleBraking = new MPCSimpleBraking();
     MPCOpenLoopSteering mpcOpenLoopSteering = new MPCOpenLoopSteering();
     MPCTorqueVectoringPower mpcTorqueVectoringPower = new MPCTorqueVectoringPower(new FakeNewsEstimator(Timing.started()), mpcOpenLoopSteering);
-    lcmMPCControlClient.registerControlUpdateLister(mpcSimpleBraking);
-    lcmMPCControlClient.registerControlUpdateLister(mpcOpenLoopSteering);
-    lcmMPCControlClient.registerControlUpdateLister(mpcTorqueVectoringPower);
+    lcmMPCControlClient.addControlUpdateListener(mpcSimpleBraking);
+    lcmMPCControlClient.addControlUpdateListener(mpcOpenLoopSteering);
+    lcmMPCControlClient.addControlUpdateListener(mpcTorqueVectoringPower);
     Tensor position = gokartState.getCenterPosition();
     MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER), RealScalar.ZERO,
         RealScalar.ZERO);

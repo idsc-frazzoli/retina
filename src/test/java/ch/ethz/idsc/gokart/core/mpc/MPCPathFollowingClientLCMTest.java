@@ -67,7 +67,7 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
           System.out.println("control update");
         }
       };
-      lcmMPCControlClient.registerControlUpdateLister(mpcControlUpdateListener);
+      lcmMPCControlClient.addControlUpdateListener(mpcControlUpdateListener);
       DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
       Tensor position = Tensors.of(gokartState.getX(), gokartState.getY());
       MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER));

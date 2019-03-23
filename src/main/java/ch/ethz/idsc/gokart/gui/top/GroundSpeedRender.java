@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.alg.Array;
   private static final Scalar SCALE = RealScalar.of(0.1);
   // ---
   private final Tensor xya;
-  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionless();
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
 
   public GroundSpeedRender(Tensor xya) {
     this.xya = xya;
