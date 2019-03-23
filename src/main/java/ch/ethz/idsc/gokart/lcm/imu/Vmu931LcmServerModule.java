@@ -70,4 +70,9 @@ public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Liste
   public void requestSelftest() {
     vmu931.requestSelftest();
   }
+
+  /** @return */
+  public boolean isCalibrated() {
+    return vmu931.isCalibrated();
+  }
 }

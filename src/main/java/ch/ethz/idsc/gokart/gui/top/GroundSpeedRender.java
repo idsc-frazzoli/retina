@@ -5,9 +5,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.ekf.PositionVelocityEstimation;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -18,24 +19,26 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 
-/* package */ class GroundSpeedRender implements RenderInterface {
+/* package */ class GroundSpeedRender implements GokartPoseListener, RenderInterface {
   private static final Stroke STROKE_DEFAULT = new BasicStroke();
   private static final Tensor ORIGIN = Array.zeros(2);
   private static final Scalar SCALE = RealScalar.of(0.1);
   // ---
-  private final PositionVelocityEstimation positionVelocityEstimation;
   private final Tensor xya;
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionless();
 
-  public GroundSpeedRender(PositionVelocityEstimation positionVelocityEstimation, Tensor xya) {
-    this.positionVelocityEstimation = positionVelocityEstimation;
+  public GroundSpeedRender(Tensor xya) {
     this.xya = xya;
+  }
+
+  @Override // from GokartPoseListener
+  public void getEvent(GokartPoseEvent gokartPoseEvent) {
+    this.gokartPoseEvent = gokartPoseEvent;
   }
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.isNull(positionVelocityEstimation))
-      return;
-    Tensor line = Tensors.of(ORIGIN, positionVelocityEstimation.getVelocity().multiply(SCALE));
+    Tensor line = Tensors.of(ORIGIN, gokartPoseEvent.getVelocityXY().multiply(SCALE));
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     graphics.setColor(Color.BLUE);
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.03)));

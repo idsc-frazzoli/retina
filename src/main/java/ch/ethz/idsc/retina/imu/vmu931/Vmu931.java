@@ -22,6 +22,7 @@ public class Vmu931 implements Runnable {
   private static final int SIZE_MIN = 4;
   /***************************************************/
   private final Set<Vmu931Channel> set = EnumSet.noneOf(Vmu931Channel.class);
+  private final Set<Vmu931Reply> replies = EnumSet.noneOf(Vmu931Reply.class);
   private final byte[] data = new byte[256];
   // ---
   private final Vmu931_DPS dps;
@@ -49,13 +50,16 @@ public class Vmu931 implements Runnable {
     System.out.println("requested status");
   }
 
-  // TODO DUBILAB document what sensor replies
   public void requestSelftest() {
+    replies.remove(Vmu931Reply.SELFTEST);
     serialPortWrap.write(Vmu931Statics.requestSelftest());
   }
 
-  // TODO DUBILAB document what sensor replies
+  /** triggers calibration which blocks measurement readout,
+   * writes "Calibration started.", and terminates then
+   * writes "Calibration completed." */
   public void requestCalibration() {
+    replies.remove(Vmu931Reply.CALIBRATION);
     serialPortWrap.write(Vmu931Statics.requestCalibration());
   }
 
@@ -91,10 +95,11 @@ public class Vmu931 implements Runnable {
               if (serialPortWrap.peek(data, size)) {
                 int term = data[size - 1];
                 if (term == MESSAGE_TEXT_END) {
-                  String string = new String(data, 3, size - 4); //
-                  // Self-test started.
-                  // Test passed. Your device works fine.
-                  System.out.println("vmu931:[" + string.trim() + "]");
+                  // string is trimmed because the reply usually terminates with two newline chars
+                  final String string = new String(data, 3, size - 4).trim();
+                  // TODO JPH/DUBILAB remove printout once tested
+                  System.out.println("vmu931:[" + string + "]");
+                  Vmu931Reply.match(string, replies::add);
                   serialPortWrap.advance(size);
                 } else
                   serialPortWrap.advance(1);
@@ -211,5 +216,9 @@ public class Vmu931 implements Runnable {
     isLaunched = false;
     serialPortWrap.close();
     thread.interrupt();
+  }
+
+  public boolean isCalibrated() {
+    return replies.contains(Vmu931Reply.CALIBRATION);
   }
 }
