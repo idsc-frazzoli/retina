@@ -24,4 +24,21 @@ public enum GokartPoseEvents {
     byteBuffer.flip();
     return new GokartPoseEvent(byteBuffer);
   }
+
+  public static GokartPoseEvent getPoseEvent(Tensor pose, Scalar quality, Tensor velXY, Scalar gyroZ) {
+    byte[] array = new byte[GokartPoseEvent.LENGTH];
+    ByteBuffer byteBuffer = ByteBuffer.wrap(array);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.putDouble(Magnitude.METER.toDouble(pose.Get(0)));
+    byteBuffer.putDouble(Magnitude.METER.toDouble(pose.Get(1)));
+    byteBuffer.putDouble(Magnitude.ONE.toDouble(pose.Get(2)));
+    byteBuffer.putFloat(Magnitude.ONE.toFloat(quality));
+    // ---
+    byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(velXY.Get(0)));
+    byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(velXY.Get(1)));
+    // ---
+    byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(gyroZ));
+    byteBuffer.flip();
+    return new GokartPoseEvent(byteBuffer);
+  }
 }

@@ -60,7 +60,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       w2L = getEvent.getTireL.getAngularRate_Y();
       w2R = getEvent.getTireR.getAngularRate_Y();
       // also get gyroZ (don't need to update at every step)
-      dotOrientation = lidarLocalizationModule.getGyroZFiltered();
+      dotOrientation = lidarLocalizationModule.getGyroZ();
       lastUpdate = getTime();
     }
   };

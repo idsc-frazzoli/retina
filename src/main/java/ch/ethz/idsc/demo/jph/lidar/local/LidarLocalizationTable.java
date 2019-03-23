@@ -67,13 +67,13 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
       lidarLocalizationModule.vmu931ImuFrame(new Vmu931ImuFrame(byteBuffer));
-      Tensor velocity = lidarLocalizationModule.getVelocity();
+      // TODO JPH provide access to unfiltered gyroZ!
       tableBuilderOdometry.appendRow( //
           Magnitude.SECOND.apply(time), //
           GokartPoseHelper.toUnitless(lidarLocalizationModule.getPose()), //
-          velocity.extract(0, 2).map(Magnitude.VELOCITY), //
-          velocity.Get(2).map(Magnitude.PER_SECOND), //
-          lidarLocalizationModule.getGyroZFiltered().map(Magnitude.PER_SECOND) //
+          lidarLocalizationModule.getVelocityXY().map(Magnitude.VELOCITY), //
+          lidarLocalizationModule.getGyroZ().map(Magnitude.PER_SECOND), //
+          lidarLocalizationModule.getGyroZ().map(Magnitude.PER_SECOND) //
       );
     } else //
     if (channel.equals(CHANNEL_LIDAR))

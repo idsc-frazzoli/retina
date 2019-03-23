@@ -46,8 +46,8 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> {
   Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
     return Optional.of(derive( //
         Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
-        lidarLocalizationModule.getGyroZFiltered(), //
-        DriftRatio.of(lidarLocalizationModule.getVelocity())));
+        lidarLocalizationModule.getGyroZ(), //
+        DriftRatio.of(lidarLocalizationModule.getVelocityXY())));
   }
 
   /** @param ahead in the interval [-1, 1]

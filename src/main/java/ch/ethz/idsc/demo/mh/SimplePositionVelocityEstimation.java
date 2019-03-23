@@ -2,10 +2,10 @@
 package ch.ethz.idsc.demo.mh;
 
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
-import ch.ethz.idsc.gokart.core.ekf.PositionVelocityEstimation;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.pos.PoseVelocityInterface;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.sca.Mod;
  * functionality is superseded by {@link LidarLocalizationModule} */
 @Refactor
 /* package */ class SimplePositionVelocityEstimation implements //
-    Vmu931ImuFrameListener, GokartPoseListener, PositionVelocityEstimation {
+    Vmu931ImuFrameListener, GokartPoseListener, PoseVelocityInterface {
   // TODO MH cleanup comments/unused code
   private static final Clip CLIP_TIME = Clips.interval(Quantity.of(0, SI.SECOND), Quantity.of(0.1, SI.SECOND));
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
@@ -129,26 +129,27 @@ import ch.ethz.idsc.tensor.sca.Mod;
     // transform old system (compensate for rotation)
     local_filteredVelocity = RotationMatrix.of(gyro.multiply(deltaT).negate()).dot(local_filteredVelocity).add(local_acc.multiply(deltaT));
     // integrate pose
-    filteredPose = Se2CoveringIntegrator.INSTANCE.spin(filteredPose, getVelocity().multiply(deltaT));
+    filteredPose = Se2CoveringIntegrator.INSTANCE.spin(filteredPose, getVelocityAll().multiply(deltaT));
     filteredPose.set(MOD_DISTANCE, 2);
   }
 
-  @Override // from PositionVelocityEstimation
-  public Tensor getVelocity() {
+  // @Override // from PositionVelocityEstimation
+  public Tensor getVelocityAll() {
     return local_filteredVelocity.copy().append(angularVelocity);
   }
 
+  @Override
   public Tensor getVelocityXY() {
     return local_filteredVelocity.copy();
-  }
-
-  /** @return "s^-1" */
-  public Scalar getGyroVelocity() {
-    return angularVelocity;
   }
 
   @Override
   public Tensor getPose() {
     return filteredPose.copy();
+  }
+
+  @Override
+  public Scalar getGyroZ() {
+    return angularVelocity;
   }
 }

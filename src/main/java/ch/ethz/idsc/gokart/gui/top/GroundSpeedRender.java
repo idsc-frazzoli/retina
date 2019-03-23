@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.ekf.PositionVelocityEstimation;
+import ch.ethz.idsc.gokart.core.pos.PoseVelocityInterface;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -23,10 +23,10 @@ import ch.ethz.idsc.tensor.alg.Array;
   private static final Tensor ORIGIN = Array.zeros(2);
   private static final Scalar SCALE = RealScalar.of(0.1);
   // ---
-  private final PositionVelocityEstimation positionVelocityEstimation;
+  private final PoseVelocityInterface positionVelocityEstimation;
   private final Tensor xya;
 
-  public GroundSpeedRender(PositionVelocityEstimation positionVelocityEstimation, Tensor xya) {
+  public GroundSpeedRender(PoseVelocityInterface positionVelocityEstimation, Tensor xya) {
     this.positionVelocityEstimation = positionVelocityEstimation;
     this.xya = xya;
   }
@@ -35,7 +35,7 @@ import ch.ethz.idsc.tensor.alg.Array;
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (Objects.isNull(positionVelocityEstimation))
       return;
-    Tensor line = Tensors.of(ORIGIN, positionVelocityEstimation.getVelocity().multiply(SCALE));
+    Tensor line = Tensors.of(ORIGIN, positionVelocityEstimation.getVelocityXY().multiply(SCALE));
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     graphics.setColor(Color.BLUE);
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.03)));

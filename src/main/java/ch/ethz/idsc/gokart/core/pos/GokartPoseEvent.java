@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** class design is similar to {@link GokartStatusEvent}
  * 
  * an instance of {@link GokartPoseEvent} is immutable */
-public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
+public class GokartPoseEvent extends DataEvent implements PoseVelocityInterface {
   static final int LENGTH = 8 * 3 + 4;
   // ---
   // TODO isGlobal() info and getQuality() -> 0...1 of tracking
@@ -23,6 +23,9 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
   private final double y;
   private final double angle;
   private final float quality;
+  private final float vx;
+  private final float vy;
+  private final float omega;
 
   /** @param byteBuffer */
   public GokartPoseEvent(ByteBuffer byteBuffer) {
@@ -30,9 +33,18 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
     y = byteBuffer.getDouble();
     angle = byteBuffer.getDouble();
     quality = byteBuffer.getFloat();
+    if (0 == byteBuffer.remaining()) {
+      vx = 0;
+      vy = 0;
+      omega = 0;
+    } else {
+      vx = byteBuffer.getFloat();
+      vy = byteBuffer.getFloat();
+      omega = byteBuffer.getFloat();
+    }
   }
 
-  @Override // from DataEvent
+  @Override // from BufferInsertable
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putDouble(x);
     byteBuffer.putDouble(y);
@@ -40,7 +52,7 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
     byteBuffer.putFloat(quality);
   }
 
-  @Override // from DataEvent
+  @Override // from BufferInsertable
   public int length() {
     return LENGTH;
   }
@@ -51,6 +63,19 @@ public class GokartPoseEvent extends DataEvent implements GokartPoseInterface {
         Quantity.of(x, SI.METER), //
         Quantity.of(y, SI.METER), //
         DoubleScalar.of(angle));
+  }
+
+  @Override
+  public Tensor getVelocityXY() {
+    return Tensors.of( //
+        Quantity.of(vx, SI.VELOCITY), //
+        Quantity.of(vy, SI.VELOCITY) //
+    );
+  }
+
+  @Override
+  public Scalar getGyroZ() {
+    return Quantity.of(omega, SI.PER_SECOND);
   }
 
   /** @return value in the interval [0, 1] where

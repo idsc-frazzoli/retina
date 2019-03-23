@@ -160,7 +160,7 @@ public class GokartRender extends AbstractGokartRender {
           geometricLayer.popMatrix();
         }
         if (Objects.nonNull(lidarLocalizationModule)) {
-          Scalar gyroZ = lidarLocalizationModule.getGyroZFiltered(); // unit s^-1
+          Scalar gyroZ = lidarLocalizationModule.getGyroZ(); // unit s^-1
           Scalar angularSlip = gokartAngularSlip.getAngularSlip(gokartStatusEvent, gyroZ);
           Tensor alongX = axisAlignedBox.alongX(Magnitude.PER_SECOND.apply(angularSlip).negate());
           Path2D path = geometricLayer.toPath2D(alongX);

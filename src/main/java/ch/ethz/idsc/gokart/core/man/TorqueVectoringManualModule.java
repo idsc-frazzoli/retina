@@ -66,7 +66,7 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
     return Optional.of(derive( //
         steerColumnInterface, //
         Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
-        lidarLocalizationModule.getGyroZFiltered()));
+        lidarLocalizationModule.getGyroZ()));
   }
 
   /** @param steerColumnInterface

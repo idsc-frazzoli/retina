@@ -5,11 +5,10 @@ import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.ekf.PositionVelocityEstimation;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.pos.PoseVelocityInterface;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
@@ -33,7 +32,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clips;
 
@@ -41,14 +39,12 @@ import ch.ethz.idsc.tensor.sca.Clips;
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 // TODO JPH split class in two classes
 public class LidarLocalizationModule extends AbstractModule implements //
-    LidarRayBlockListener, Vmu931ImuFrameListener, //
-    Runnable, GokartPoseInterface, PositionVelocityEstimation {
+    LidarRayBlockListener, Vmu931ImuFrameListener, Runnable, PoseVelocityInterface {
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   private static final LidarGyroLocalization LIDAR_GYRO_LOCALIZATION = //
       LidarGyroLocalization.of(LocalizationConfig.getPredefinedMap());
   // ---
-  // private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
@@ -119,31 +115,18 @@ public class LidarLocalizationModule extends AbstractModule implements //
   }
 
   /***************************************************/
-  // TODO JPH magic const
-  private GeodesicIIR1Filter gyroZ_filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.1));
+  /** the constant 0.1 was established in post-processing
+   * with mh and jph to filter out spikes in the gyroZ signal */
+  private GeodesicIIR1Filter geodesicIIR1Filter = //
+      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.1));
   private Scalar gyroZ_filtered = Quantity.of(0.0, SI.PER_SECOND);
-  private final Tensor gyroZ_array = Array.of(l -> Quantity.of(0.0, SI.PER_SECOND), 50);
-  private int index = 0;
-
-  /** @return */
-  Scalar getGyroZfiltered() {
-    return gyroZ_filtered;
-  }
 
   // DelayedQueue<Vmu931ImuFrame> delayedQueue = new DelayedQueue<>(0);
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    // Optional<Vmu931ImuFrame> optional = delayedQueue.push(vmu931ImuFrame);
-    // if (optional.isPresent()) {
-    // vmu931Odometry.vmu931ImuFrame(optional.get());
-    // } else
-    // System.out.println("skip");
     vmu931Odometry.vmu931ImuFrame(vmu931ImuFrame);
-    Scalar vmu931_gyroZ = vmu931Odometry.inertialOdometry.getVelocity().Get(2);
-    gyroZ_filtered = gyroZ_filter.apply(vmu931_gyroZ).Get();
-    gyroZ_array.set(vmu931_gyroZ, index);
-    ++index;
-    index %= gyroZ_array.length();
+    Scalar vmu931_gyroZ = vmu931Odometry.inertialOdometry.getGyroZ();
+    gyroZ_filtered = geodesicIIR1Filter.apply(vmu931_gyroZ).Get();
   }
 
   /***************************************************/
@@ -166,17 +149,17 @@ public class LidarLocalizationModule extends AbstractModule implements //
   private SlamResult prevResult = null;
 
   public void fit(Tensor points) {
-    Optional<SlamResult> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), getGyroZfiltered(), points);
+    Optional<SlamResult> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), getGyroZ(), points);
     if (optional.isPresent()) {
       SlamResult slamResult = optional.get();
       quality = slamResult.getMatchRatio();
-      boolean matchOk = Scalars.lessThan(RealScalar.of(.7), quality);
+      boolean matchOk = Scalars.lessThan(RealScalar.of(0.7), quality);
       // System.out.println("flagSnap=" + flagSnap);
       if (matchOk || flagSnap) {
         // blend pose
         Scalar blend = flagSnap //
             ? RealScalar.of(1)
-            : RealScalar.of(0.1);
+            : RealScalar.of(0.1); // TODO JPH magic const
         vmu931Odometry.inertialOdometry.blendPose(slamResult.getTransform(), blend);
         if (Objects.nonNull(prevResult)) {
           // blend velocity
@@ -185,8 +168,6 @@ public class LidarLocalizationModule extends AbstractModule implements //
               slamResult.getTransform()) //
               .extract(0, 2).multiply(SensorsConfig.GLOBAL.vlp16_rate);
           // System.out.println("---");
-          // System.out.println(vmu931Odometry.inertialOdometry.getVelocity().map(Round._4));
-          // System.out.println(velXY.map(Round._4));
           // TODO JPH/MH magic const
           vmu931Odometry.inertialOdometry.blendVelocity(velXY, RealScalar.of(0.01));
         }
@@ -206,8 +187,18 @@ public class LidarLocalizationModule extends AbstractModule implements //
     return vmu931Odometry.inertialOdometry.getPose();
   }
 
+  @Override // from PoseVelocityInterface
+  public Tensor getVelocityXY() {
+    return vmu931Odometry.inertialOdometry.getVelocityXY();
+  }
+
+  @Override // from PoseVelocityInterface
+  public Scalar getGyroZ() {
+    return gyroZ_filtered;
+  }
+
   public GokartPoseEvent createPoseEvent() {
-    return GokartPoseEvents.getPoseEvent(getPose(), quality);
+    return GokartPoseEvents.getPoseEvent(getPose(), quality, getVelocityXY(), getGyroZ());
   }
 
   /** function called when operator initializes pose
@@ -218,15 +209,5 @@ public class LidarLocalizationModule extends AbstractModule implements //
     vmu931Odometry.inertialOdometry.resetPose(pose);
     quality = RealScalar.ONE;
     prevResult = null;
-  }
-
-  @Override
-  public Tensor getVelocity() {
-    return vmu931Odometry.inertialOdometry.getVelocity();
-  }
-
-  /** @return with unit s^-1 */
-  public Scalar getGyroZFiltered() {
-    return gyroZ_filtered;
   }
 }
