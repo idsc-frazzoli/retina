@@ -5,8 +5,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /** base class for all data that is sent and received between the autobox and the pc */
-public abstract class DataEvent implements BufferInsertable, OfflineVectorInterface {
+public abstract class DataEvent implements DataEventInterface {
   /** @return byte array with content of this data event */
+  @Override
   public final byte[] asArray() {
     byte[] data = new byte[length()];
     ByteBuffer byteBuffer = ByteBuffer.wrap(data);

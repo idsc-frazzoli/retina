@@ -19,7 +19,7 @@ public enum GokartPoseChannel implements SingleChannelInterface {
 
   @Override // from SingleChannelTable
   public Tensor row(ByteBuffer byteBuffer) {
-    GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+    GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
     return GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).map(Round._6).append(gokartPoseEvent.getQuality().map(Round._3));
   }
 }

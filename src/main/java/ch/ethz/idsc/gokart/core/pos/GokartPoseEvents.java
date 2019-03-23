@@ -11,7 +11,6 @@ import ch.ethz.idsc.tensor.Tensor;
 
 public enum GokartPoseEvents {
   ;
-  private static final int LENGTH = 8 * 3 + 4;
   private static final GokartPoseEvent MOTIONLESS = create(GokartPoseLocal.INSTANCE.getPose(), RealScalar.ZERO);
 
   /** @return motionless */
@@ -23,9 +22,11 @@ public enum GokartPoseEvents {
    * @param quality in the interval [0, 1]
    * @return */
   public static GokartPoseEvent create(Tensor pose, Scalar quality) {
-    ByteBuffer byteBuffer = header(LENGTH, pose, quality);
-    byteBuffer.flip();
-    return new GokartPoseEvent(byteBuffer);
+    return create( //
+        pose, //
+        quality, //
+        GokartPoseEventV1.VELOCITY_ZERO, //
+        GokartPoseEventV1.GYROZ_ZERO);
   }
 
   /** @param pose {x[m], y[m], alpha}
@@ -34,7 +35,7 @@ public enum GokartPoseEvents {
    * @param gyroZ with unit "s^-1"
    * @return */
   public static GokartPoseEvent create(Tensor pose, Scalar quality, Tensor velocityXY, Scalar gyroZ) {
-    ByteBuffer byteBuffer = header(GokartPoseEvent.LENGTH, pose, quality);
+    ByteBuffer byteBuffer = header(GokartPoseEventV2.LENGTH, pose, quality);
     // ---
     byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(velocityXY.Get(0)));
     byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(velocityXY.Get(1)));
@@ -42,7 +43,7 @@ public enum GokartPoseEvents {
     byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(gyroZ));
     // ---
     byteBuffer.flip();
-    return new GokartPoseEvent(byteBuffer);
+    return GokartPoseEvent.of(byteBuffer);
   }
 
   private static ByteBuffer header(int length, Tensor pose, Scalar quality) {

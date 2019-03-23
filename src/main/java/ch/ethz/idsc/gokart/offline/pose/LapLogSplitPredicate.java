@@ -23,7 +23,7 @@ public class LapLogSplitPredicate implements LogSplitPredicate {
 
   @Override // from LogSplitPredicate
   public boolean split(Scalar time, String channel, ByteBuffer byteBuffer) {
-    Tensor pose_next = new GokartPoseEvent(byteBuffer).getPose();
+    Tensor pose_next = GokartPoseEvent.of(byteBuffer).getPose();
     boolean split = getLineTrigger(pose_prev.extract(0, 2), pose_next.extract(0, 2));
     pose_prev = pose_next;
     return split;
