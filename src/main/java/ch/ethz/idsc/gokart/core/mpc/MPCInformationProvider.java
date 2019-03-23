@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** singleton instance */
-public class MPCInformationProvider extends MPCControlUpdateListener {
+public class MPCInformationProvider extends MPCControlUpdateCapture {
   private final static MPCInformationProvider INSTANCE = new MPCInformationProvider();
   private final static Scalar NO_ACCELERATION = Quantity.of(0, SI.ACCELERATION);
   private final static Scalar NO_STEERING = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);

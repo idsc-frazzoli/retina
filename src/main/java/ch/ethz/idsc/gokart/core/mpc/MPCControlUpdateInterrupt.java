@@ -1,7 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-/* package */ class MPCControlUpdateInterrupt extends MPCControlUpdateListener {
+/* package */ class MPCControlUpdateInterrupt implements MPCControlUpdateListener {
   private final Thread thread;
 
   public MPCControlUpdateInterrupt(Thread thread) {
@@ -9,8 +9,7 @@ package ch.ethz.idsc.gokart.core.mpc;
   }
 
   @Override // from MPCControlUpdateListener
-  public final void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
-    super.getControlAndPredictionSteps(controlAndPredictionSteps);
+  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
     thread.interrupt();
   }
 }

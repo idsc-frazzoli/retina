@@ -27,12 +27,6 @@ import ch.ethz.idsc.tensor.Tensors;
   }
 
   @Override
-  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
-    // TODO MH default behavior, no need to override function
-    cns = controlAndPredictionSteps;
-  }
-
-  @Override
   public void setStateEstimationProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
   }
