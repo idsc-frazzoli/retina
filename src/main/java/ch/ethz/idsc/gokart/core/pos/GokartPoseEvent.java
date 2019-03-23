@@ -13,7 +13,9 @@ public interface GokartPoseEvent extends DataEventInterface, PoseVelocityInterfa
    * post 20190323: gokart pose event includes velocity and gyro
    * 
    * implementation is compatible with messages from all log files.
-   * when velocity is not available, velocity and gyro are returned to be zero. */
+   * when velocity is not available, velocity and gyro are returned to be zero.
+   * 
+   * @return */
   static GokartPoseEvent of(ByteBuffer byteBuffer) {
     return byteBuffer.remaining() == GokartPoseEventV1.LENGTH //
         ? new GokartPoseEventV1(byteBuffer)
@@ -25,6 +27,6 @@ public interface GokartPoseEvent extends DataEventInterface, PoseVelocityInterfa
    * 1 represents perfect pose quality */
   Scalar getQuality();
 
-  /** @return whether implementation has velocity defined */
+  /** @return whether velocity and gyro were set during the creation of the message */
   boolean hasVelocity();
 }

@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class GokartPoseEventV2 extends GokartPoseEventV1 {
   static final int LENGTH = 8 * 3 + 4 + 4 * 3;
@@ -53,6 +54,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override // from OfflineVectorInterface
   public Tensor asVector() {
-    return Join.of(super.asVector(), Tensors.vector(ux, uy, omega));
+    return Join.of(super.asVector(), Tensors.vector(ux, uy, omega).map(Round._6));
   }
 }

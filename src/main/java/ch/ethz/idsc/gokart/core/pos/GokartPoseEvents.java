@@ -35,7 +35,13 @@ public enum GokartPoseEvents {
    * @param gyroZ with unit "s^-1"
    * @return */
   public static GokartPoseEvent create(Tensor pose, Scalar quality, Tensor velocityXY, Scalar gyroZ) {
-    ByteBuffer byteBuffer = header(GokartPoseEventV2.LENGTH, pose, quality);
+    byte[] array = new byte[GokartPoseEventV2.LENGTH];
+    ByteBuffer byteBuffer = ByteBuffer.wrap(array);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.putDouble(Magnitude.METER.toDouble(pose.Get(0)));
+    byteBuffer.putDouble(Magnitude.METER.toDouble(pose.Get(1)));
+    byteBuffer.putDouble(Magnitude.ONE.toDouble(pose.Get(2)));
+    byteBuffer.putFloat(Magnitude.ONE.toFloat(quality));
     // ---
     byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(velocityXY.Get(0)));
     byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(velocityXY.Get(1)));
@@ -43,17 +49,6 @@ public enum GokartPoseEvents {
     byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(gyroZ));
     // ---
     byteBuffer.flip();
-    return GokartPoseEvent.of(byteBuffer);
-  }
-
-  private static ByteBuffer header(int length, Tensor pose, Scalar quality) {
-    byte[] array = new byte[length];
-    ByteBuffer byteBuffer = ByteBuffer.wrap(array);
-    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    byteBuffer.putDouble(Magnitude.METER.toDouble(pose.Get(0)));
-    byteBuffer.putDouble(Magnitude.METER.toDouble(pose.Get(1)));
-    byteBuffer.putDouble(Magnitude.ONE.toDouble(pose.Get(2)));
-    byteBuffer.putFloat(Magnitude.ONE.toFloat(quality));
-    return byteBuffer;
+    return new GokartPoseEventV2(byteBuffer);
   }
 }

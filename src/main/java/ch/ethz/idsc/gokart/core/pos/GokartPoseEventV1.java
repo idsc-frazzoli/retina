@@ -6,10 +6,12 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class GokartPoseEventV1 extends DataEvent implements GokartPoseEvent {
   static final int LENGTH = 8 * 3 + 4;
@@ -74,6 +76,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override // from OfflineVectorInterface
   public Tensor asVector() {
-    return Tensors.vector(x, y, angle, quality);
+    return Tensors.vector(x, y, angle).map(Round._6).append(RealScalar.of(quality).map(Round._3));
   }
 }
