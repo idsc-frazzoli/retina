@@ -81,7 +81,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     lcmMPCControlClient.addControlUpdateListener(mpcSteering);
     lcmMPCControlClient.addControlUpdateListener(mpcPower);
     lcmMPCControlClient.addControlUpdateListener(mpcBraking);
-    lcmMPCControlClient.addControlUpdateListener(MPCInformationProvider.getInstance());
+    // lcmMPCControlClient.addControlUpdateListener(MPCInformationProvider.getInstance());
     // lcmMPCPathFollowingClient.registerControlUpdateLister(MPCActiveCompensationLearning.getInstance());
     // state estimation provider
     mpcBraking.setStateEstimationProvider(mpcStateEstimationProvider);

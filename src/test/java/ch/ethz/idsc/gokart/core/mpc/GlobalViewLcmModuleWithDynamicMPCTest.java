@@ -46,7 +46,6 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
      * Quantity.of(5, SI.ACCELERATION), Quantity.of(10, SI.ACCELERATION),
      * Quantity.); */
     lcmMPCControlClient.publishOptimizationParameter(optimizationParameterDynamic);
-    lcmMPCControlClient.addControlUpdateListener(MPCInformationProvider.getInstance());
     DubendorfTrack track = DubendorfTrack.CHICANE;
     MPCSimpleBraking mpcSimpleBraking = new MPCSimpleBraking();
     MPCOpenLoopSteering mpcOpenLoopSteering = new MPCOpenLoopSteering();

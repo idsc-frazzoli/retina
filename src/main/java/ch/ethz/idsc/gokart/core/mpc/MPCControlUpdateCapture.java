@@ -3,10 +3,16 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ class MPCControlUpdateCapture implements MPCControlUpdateListener {
+public class MPCControlUpdateCapture implements MPCControlUpdateListener {
+  // TODO MH/JPH initialize cns with zero structure to avoid null checks
   /* package */ ControlAndPredictionSteps cns = null;
   // TODO MH document that keeping istep outside the function is intended
   private int istep = 0;
@@ -52,5 +58,41 @@ import ch.ethz.idsc.tensor.Scalars;
     if (Objects.isNull(cns))
       return null;
     return time.subtract(getStep(time).gokartState().getTime());
+  }
+
+  private final static Scalar NO_ACCELERATION = Quantity.of(0, SI.ACCELERATION);
+  private final static Scalar NO_STEERING = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
+
+  /** get the predicted positions
+   * 
+   * @return predicted X- and Y-position in tensor */
+  public final Tensor getPositions() {
+    // avoid race conditions
+    return Objects.isNull(cns) //
+        ? Tensors.empty()
+        : cns.toPositions();
+  }
+
+  /** get the acceleration at prediction steps */
+  public final Tensor getAccelerations() {
+    return Objects.isNull(cns) //
+        ? Tensors.empty()
+        : cns.toAccelerations();
+  }
+
+  public final boolean mpcAvailable() {
+    return Objects.nonNull(cns);
+  }
+
+  public final Scalar getFirstWantedAcceleration() {
+    if (Objects.nonNull(cns))
+      return cns.steps[0].gokartControl().getaB();
+    return NO_ACCELERATION;
+  }
+
+  public final Scalar getFirstWantedSteering() {
+    if (Objects.nonNull(cns))
+      return cns.steps[0].gokartState().getS();
+    return NO_STEERING;
   }
 }
