@@ -40,6 +40,15 @@ import ch.ethz.idsc.tensor.sca.Clips;
 // TODO JPH split class in two classes
 public class LidarLocalizationModule extends AbstractModule implements //
     LidarRayBlockListener, Vmu931ImuFrameListener, Runnable, PoseVelocityInterface {
+  /** the constant 0.1 was established in post-processing
+   * with mh and jph to filter out spikes in the gyroZ signal */
+  private static final Scalar IIR1_FILTER_GYROZ = RealScalar.of(0.1);
+  private static final Scalar QUALITY_MIN = RealScalar.of(0.7);
+  private static final Scalar QUALITY_DECR = RealScalar.of(0.05);
+  private static final Scalar BLEND_POSE = RealScalar.of(0.1);
+  private static final Scalar BLEND_VELOCITY = RealScalar.of(0.01);
+  // ---
+  private static final Scalar _1 = DoubleScalar.of(1);
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   private static final LidarGyroLocalization LIDAR_GYRO_LOCALIZATION = //
@@ -59,10 +68,8 @@ public class LidarLocalizationModule extends AbstractModule implements //
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
   private Scalar quality = RealScalar.ZERO;
-  /** the constant 0.1 was established in post-processing
-   * with mh and jph to filter out spikes in the gyroZ signal */
   private GeodesicIIR1Filter geodesicIIR1Filter = //
-      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.1));
+      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, IIR1_FILTER_GYROZ);
   private Scalar gyroZ_vmu931 = Quantity.of(0.0, SI.PER_SECOND);
   private Scalar gyroZ_filtered = Quantity.of(0.0, SI.PER_SECOND);
 
@@ -121,7 +128,6 @@ public class LidarLocalizationModule extends AbstractModule implements //
   }
 
   /***************************************************/
-  // DelayedQueue<Vmu931ImuFrame> delayedQueue = new DelayedQueue<>(0);
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
     vmu931Odometry.vmu931ImuFrame(vmu931ImuFrame);
@@ -153,13 +159,10 @@ public class LidarLocalizationModule extends AbstractModule implements //
     if (optional.isPresent()) {
       SlamResult slamResult = optional.get();
       quality = slamResult.getMatchRatio();
-      boolean matchOk = Scalars.lessThan(RealScalar.of(0.7), quality);
-      // System.out.println("flagSnap=" + flagSnap);
+      boolean matchOk = Scalars.lessThan(QUALITY_MIN, quality);
       if (matchOk || flagSnap) {
         // blend pose
-        Scalar blend = flagSnap //
-            ? RealScalar.of(1)
-            : RealScalar.of(0.1); // TODO JPH magic const
+        Scalar blend = flagSnap ? _1 : BLEND_POSE;
         vmu931Odometry.inertialOdometry.blendPose(slamResult.getTransform(), blend);
         if (Objects.nonNull(prevResult)) {
           // blend velocity
@@ -167,16 +170,14 @@ public class LidarLocalizationModule extends AbstractModule implements //
               prevResult.getTransform(), //
               slamResult.getTransform()) //
               .extract(0, 2).multiply(SensorsConfig.GLOBAL.vlp16_rate);
-          // System.out.println("---");
-          // TODO JPH/MH magic const
-          vmu931Odometry.inertialOdometry.blendVelocity(velXY, RealScalar.of(0.01));
+          vmu931Odometry.inertialOdometry.blendVelocity(velXY, BLEND_VELOCITY);
         }
         prevResult = slamResult;
         flagSnap = false;
       } else
         prevResult = null;
     } else {
-      quality = Clips.unit().apply(quality.subtract(RealScalar.of(0.05)));
+      quality = Clips.unit().apply(quality.subtract(QUALITY_DECR));
       prevResult = null;
     }
   }
@@ -197,6 +198,10 @@ public class LidarLocalizationModule extends AbstractModule implements //
     return gyroZ_filtered;
   }
 
+  /** Hint: only use function during post-processing.
+   * DO NOT use function during operation of the gokart
+   * 
+   * @return unfiltered gyroZ value with unit "s^-1" */
   public Scalar getGyroZ_vmu931() {
     return gyroZ_vmu931;
   }
@@ -211,7 +216,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
   public void resetPose(Tensor pose) {
     // System.out.println("reset pose=" + pose.map(Round._5));
     vmu931Odometry.inertialOdometry.resetPose(pose);
-    quality = RealScalar.ONE;
+    quality = _1;
     prevResult = null;
   }
 }
