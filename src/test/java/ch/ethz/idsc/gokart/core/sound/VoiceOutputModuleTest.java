@@ -18,7 +18,7 @@ public class VoiceOutputModuleTest extends TestCase {
       for (int index = 0; index < 100; ++index)
         for (VoiceOutput voiceOutput : VoiceOutput.values()) {
           gokartVoiceOutputs.say(voiceOutput);
-          Thread.sleep(10);
+          Thread.sleep(2);
         }
       gokartVoiceOutputs.last();
     }

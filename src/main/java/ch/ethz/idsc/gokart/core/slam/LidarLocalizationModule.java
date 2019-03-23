@@ -59,6 +59,12 @@ public class LidarLocalizationModule extends AbstractModule implements //
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
   private Scalar quality = RealScalar.ZERO;
+  /** the constant 0.1 was established in post-processing
+   * with mh and jph to filter out spikes in the gyroZ signal */
+  private GeodesicIIR1Filter geodesicIIR1Filter = //
+      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.1));
+  private Scalar gyroZ_vmu931 = Quantity.of(0.0, SI.PER_SECOND);
+  private Scalar gyroZ_filtered = Quantity.of(0.0, SI.PER_SECOND);
 
   /** @return */
   public boolean isTracking() {
@@ -115,18 +121,12 @@ public class LidarLocalizationModule extends AbstractModule implements //
   }
 
   /***************************************************/
-  /** the constant 0.1 was established in post-processing
-   * with mh and jph to filter out spikes in the gyroZ signal */
-  private GeodesicIIR1Filter geodesicIIR1Filter = //
-      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.1));
-  private Scalar gyroZ_filtered = Quantity.of(0.0, SI.PER_SECOND);
-
   // DelayedQueue<Vmu931ImuFrame> delayedQueue = new DelayedQueue<>(0);
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
     vmu931Odometry.vmu931ImuFrame(vmu931ImuFrame);
-    Scalar vmu931_gyroZ = vmu931Odometry.inertialOdometry.getGyroZ();
-    gyroZ_filtered = geodesicIIR1Filter.apply(vmu931_gyroZ).Get();
+    gyroZ_vmu931 = vmu931Odometry.inertialOdometry.getGyroZ();
+    gyroZ_filtered = geodesicIIR1Filter.apply(gyroZ_vmu931).Get();
   }
 
   /***************************************************/
@@ -197,8 +197,12 @@ public class LidarLocalizationModule extends AbstractModule implements //
     return gyroZ_filtered;
   }
 
+  public Scalar getGyroZ_vmu931() {
+    return gyroZ_vmu931;
+  }
+
   public GokartPoseEvent createPoseEvent() {
-    return GokartPoseEvents.getPoseEvent(getPose(), quality, getVelocityXY(), getGyroZ());
+    return GokartPoseEvents.create(getPose(), quality, getVelocityXY(), getGyroZ());
   }
 
   /** function called when operator initializes pose

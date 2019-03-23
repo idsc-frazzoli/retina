@@ -133,22 +133,21 @@ import ch.ethz.idsc.tensor.sca.Mod;
     filteredPose.set(MOD_DISTANCE, 2);
   }
 
-  // @Override // from PositionVelocityEstimation
   public Tensor getVelocityAll() {
     return local_filteredVelocity.copy().append(angularVelocity);
   }
 
-  @Override
-  public Tensor getVelocityXY() {
-    return local_filteredVelocity.copy();
-  }
-
-  @Override
+  @Override // from GokartPoseInterface
   public Tensor getPose() {
     return filteredPose.copy();
   }
 
-  @Override
+  @Override // from PoseVelocityInterface
+  public Tensor getVelocityXY() {
+    return local_filteredVelocity.copy();
+  }
+
+  @Override // from PoseVelocityInterface
   public Scalar getGyroZ() {
     return angularVelocity;
   }

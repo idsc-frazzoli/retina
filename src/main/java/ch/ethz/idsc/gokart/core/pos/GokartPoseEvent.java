@@ -16,15 +16,21 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * 
  * an instance of {@link GokartPoseEvent} is immutable */
 public class GokartPoseEvent extends DataEvent implements PoseVelocityInterface {
-  static final int LENGTH = 8 * 3 + 4;
+  /** .
+   * ante 20190323: gokart pose event did not contain velocity and gyro
+   * post 20190323: gokart pose event includes velocity and gyro
+   * 
+   * implementation is compatible with messages from all log files.
+   * when velocity is not available, velocity and gyro are returned to be zero. */
+  static final int LENGTH = 8 * 3 + 4 + 4 * 3;
   // ---
-  // TODO isGlobal() info and getQuality() -> 0...1 of tracking
   private final double x;
   private final double y;
   private final double angle;
   private final float quality;
-  private final float vx;
-  private final float vy;
+  private final boolean hasVelocity;
+  private final float ux;
+  private final float uy;
   private final float omega;
 
   /** @param byteBuffer */
@@ -33,14 +39,15 @@ public class GokartPoseEvent extends DataEvent implements PoseVelocityInterface 
     y = byteBuffer.getDouble();
     angle = byteBuffer.getDouble();
     quality = byteBuffer.getFloat();
-    if (0 == byteBuffer.remaining()) {
-      vx = 0;
-      vy = 0;
-      omega = 0;
-    } else {
-      vx = byteBuffer.getFloat();
-      vy = byteBuffer.getFloat();
+    hasVelocity = 0 < byteBuffer.remaining();
+    if (hasVelocity) {
+      ux = byteBuffer.getFloat();
+      uy = byteBuffer.getFloat();
       omega = byteBuffer.getFloat();
+    } else {
+      ux = 0;
+      uy = 0;
+      omega = 0;
     }
   }
 
@@ -50,6 +57,9 @@ public class GokartPoseEvent extends DataEvent implements PoseVelocityInterface 
     byteBuffer.putDouble(y);
     byteBuffer.putDouble(angle);
     byteBuffer.putFloat(quality);
+    byteBuffer.putFloat(ux);
+    byteBuffer.putFloat(uy);
+    byteBuffer.putFloat(omega);
   }
 
   @Override // from BufferInsertable
@@ -65,15 +75,15 @@ public class GokartPoseEvent extends DataEvent implements PoseVelocityInterface 
         DoubleScalar.of(angle));
   }
 
-  @Override
+  @Override // from PoseVelocityInterface
   public Tensor getVelocityXY() {
     return Tensors.of( //
-        Quantity.of(vx, SI.VELOCITY), //
-        Quantity.of(vy, SI.VELOCITY) //
+        Quantity.of(ux, SI.VELOCITY), //
+        Quantity.of(uy, SI.VELOCITY) //
     );
   }
 
-  @Override
+  @Override // from PoseVelocityInterface
   public Scalar getGyroZ() {
     return Quantity.of(omega, SI.PER_SECOND);
   }
@@ -87,6 +97,10 @@ public class GokartPoseEvent extends DataEvent implements PoseVelocityInterface 
 
   @Override // from OfflineVectorInterface
   public Tensor asVector() {
-    return Tensors.vector(x, y, angle, quality);
+    return Tensors.vector(x, y, angle, quality, ux, uy, omega);
+  }
+
+  public boolean hasVelocity() {
+    return hasVelocity;
   }
 }

@@ -37,8 +37,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private Scalar Uy = Quantity.of(0, SI.VELOCITY);
   private Scalar orientation = RealScalar.of(0);
   private Scalar dotOrientation = Quantity.of(0, SI.PER_SECOND);
-  private Scalar XPosition = Quantity.of(0, SI.METER);
-  private Scalar YPosition = Quantity.of(0, SI.METER);
+  private Scalar xPosition = Quantity.of(0, SI.METER);
+  private Scalar yPosition = Quantity.of(0, SI.METER);
   private Scalar w2L = Quantity.of(0, SI.PER_SECOND);
   private Scalar w2R = Quantity.of(0, SI.PER_SECOND);
   private Scalar s = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
@@ -80,8 +80,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     @Override
     public void getEvent(GokartPoseEvent getEvent) {
       Tensor pose = getEvent.getPose();
-      XPosition = pose.Get(0);
-      YPosition = pose.Get(1);
+      xPosition = pose.Get(0);
+      yPosition = pose.Get(1);
       orientation = pose.Get(2);
     }
   };
@@ -99,8 +99,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           Ux, //
           Uy, //
           dotOrientation, //
-          XPosition, //
-          YPosition, //
+          xPosition, //
+          yPosition, //
           orientation, //
           w2L, //
           w2R, //

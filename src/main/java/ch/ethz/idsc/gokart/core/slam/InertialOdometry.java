@@ -60,6 +60,11 @@ public class InertialOdometry implements PoseVelocityInterface {
     return localVelocityXY.copy();
   }
 
+  @Override // from PoseVelocityInterface
+  public Scalar getGyroZ() {
+    return gyroZ;
+  }
+
   /** @param velXY {velx[m*s^-1], vely[m*s^-1]}
    * @param scalar in the interval [0, 1] */
   synchronized void blendVelocity(Tensor velXY, Scalar scalar) {
@@ -71,10 +76,5 @@ public class InertialOdometry implements PoseVelocityInterface {
   synchronized void blendPose(Tensor pose, Scalar scalar) {
     this.pose = Se2Geodesic.INSTANCE.split(this.pose, pose, scalar);
     this.pose.set(MOD_DISTANCE, 2);
-  }
-
-  @Override
-  public Scalar getGyroZ() {
-    return gyroZ;
   }
 }

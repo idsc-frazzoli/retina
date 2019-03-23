@@ -54,7 +54,9 @@ public class Vmu931 implements Runnable {
     serialPortWrap.write(Vmu931Statics.requestSelftest());
   }
 
-  // TODO DUBILAB document what sensor replies
+  /** triggers calibration which blocks measurement readout,
+   * writes "Calibration started.", and terminates then
+   * writes "Calibration completed." */
   public void requestCalibration() {
     serialPortWrap.write(Vmu931Statics.requestCalibration());
   }

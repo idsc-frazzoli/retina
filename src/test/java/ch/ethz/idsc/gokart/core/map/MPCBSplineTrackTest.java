@@ -22,7 +22,7 @@ public class MPCBSplineTrackTest extends TestCase {
     mpcbSplineTrack.getPathParameterPreview(5, Tensors.vector(0, 3).multiply(Quantity.of(1, SI.METER)), Quantity.of(0, SI.METER));
     long duration = timing.nanoSeconds();
     System.out.println(duration);
-    long limit = TravisUserName.whoami() ? 20_500_000 : 400_000;
+    long limit = TravisUserName.whoami() ? 20_500_000 : 3_400_000;
     assertTrue(duration < limit);
   }
 }

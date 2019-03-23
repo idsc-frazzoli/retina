@@ -73,7 +73,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
           GokartPoseHelper.toUnitless(lidarLocalizationModule.getPose()), //
           lidarLocalizationModule.getVelocityXY().map(Magnitude.VELOCITY), //
           lidarLocalizationModule.getGyroZ().map(Magnitude.PER_SECOND), //
-          lidarLocalizationModule.getGyroZ().map(Magnitude.PER_SECOND) //
+          lidarLocalizationModule.getGyroZ_vmu931().map(Magnitude.PER_SECOND) //
       );
     } else //
     if (channel.equals(CHANNEL_LIDAR))
