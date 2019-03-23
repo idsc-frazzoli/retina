@@ -10,11 +10,12 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
 import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import idsc.BinaryBlob;
 
 // TODO JPH/MH split class into client(MPCControlUpdateLcmClient) and publisher
-/* package */ abstract class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
+/* package */ abstract class LcmMPCControlClient extends BinaryLcmClient implements StartAndStoppable {
   public static LcmMPCControlClient kinematic() {
     return new LcmMPCControlClient("") {
       @Override
