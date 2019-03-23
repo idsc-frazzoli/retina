@@ -19,9 +19,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final Scalar torqueVecEffect;
   private final Scalar brakeEffect;
 
-  // at the moment it is only for the speed limit
   public MPCOptimizationParameterKinematic(ByteBuffer byteBuffer) {
-    // dummy constructor
     speedLimit = Quantity.of(byteBuffer.getFloat(), SI.VELOCITY);
     xAccLimit = Quantity.of(byteBuffer.getFloat(), SI.ACCELERATION);
     yAccLimit = Quantity.of(byteBuffer.getFloat(), SI.ACCELERATION);
@@ -30,17 +28,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         SI.ACCELERATION.add(SI.ANGULAR_ACCELERATION.negate()));
     torqueVecEffect = Quantity.of(byteBuffer.getFloat(), SI.ACCELERATION);
     brakeEffect = Quantity.of(byteBuffer.getFloat(), SI.ONE);
-  }
-
-  public MPCOptimizationParameterKinematic(Scalar speedLimit) {
-    this(speedLimit, Quantity.of(5, SI.ACCELERATION), Quantity.of(5, SI.ACCELERATION));
-  }
-
-  public MPCOptimizationParameterKinematic(Scalar speedLimit, Scalar xAccLimit, Scalar yAccLimit) {
-    this(speedLimit, xAccLimit, yAccLimit, //
-        Quantity.of(10, SI.ACCELERATION), //
-        Quantity.of(0, SI.ACCELERATION.add(SI.ANGULAR_ACCELERATION.negate())), //
-        Quantity.of(0, SI.ACCELERATION), Quantity.of(0, SI.ONE));
   }
 
   public MPCOptimizationParameterKinematic(Scalar speedLimit, Scalar xAccLimit, Scalar yAccLimit, //
@@ -68,5 +55,15 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   @Override // from BufferInsertable
   public int length() {
     return LENGTH;
+  }
+
+  @Override // from MPCOptimizationParameter
+  public Scalar speedLimit() {
+    return speedLimit;
+  }
+
+  @Override // from MPCOptimizationParameter
+  public Scalar xAccLimit() {
+    return xAccLimit;
   }
 }

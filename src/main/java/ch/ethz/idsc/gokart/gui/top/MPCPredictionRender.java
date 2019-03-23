@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateInterface;
-import ch.ethz.idsc.gokart.core.mpc.MPCInformationProvider;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -38,15 +38,15 @@ public class MPCPredictionRender implements MPCControlUpdateInterface, RenderInt
       graphics.draw(geometricLayer.toPath2D(positions)); // draw positions as path
       // acceleration visualization
       Tensor accelerations = controlAndPredictionSteps.toAccelerations();
-      // MPC_INFORMATION_PROVIDER.getAccelerations();
-      Tensor poses = MPCInformationProvider.toXYA(controlAndPredictionSteps);
-      for (int i = 0; i < accelerations.length(); ++i) {
-        geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(poses.get(i)));
-        Color color = Scalars.lessThan(accelerations.Get(i), Quantity.of(0, SI.ACCELERATION)) //
+      Tensor poses = controlAndPredictionSteps.toXYA();
+      for (int index = 0; index < accelerations.length(); ++index) {
+        Tensor pose = GokartPoseHelper.toUnitless(poses.get(index));
+        geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(pose));
+        Color color = Scalars.lessThan(accelerations.Get(index), Quantity.of(0, SI.ACCELERATION)) //
             ? Color.RED
             : Color.GREEN;
         graphics.setColor(color);
-        Scalar acc = accelerations.Get(i);
+        Scalar acc = accelerations.Get(index);
         // TODO JPH/MH use Magnitude.ACC.toDouble...
         Tensor start = Tensors.vector(-acc.number().doubleValue() * 0.8, acc.number().doubleValue());
         Tensor mid = Tensors.vector(0, 0);

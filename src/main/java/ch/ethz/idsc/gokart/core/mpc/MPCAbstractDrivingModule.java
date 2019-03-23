@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
@@ -22,7 +23,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   private final TrackReconModule trackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   public final LcmMPCControlClient lcmMPCControlClient;
-  final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
+  private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
   // private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
@@ -37,7 +38,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   private final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
   private Optional<MPCBSplineTrack> mpcBSplineTrack = Optional.empty();
   private final MPCPreviewableTrack track;
-  final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   final MPCRimoProvider mpcRimoProvider;
   private final MPCSteerProvider mpcSteerProvider;
   final MPCLinmotProvider mpcLinmotProvider;
@@ -88,10 +89,15 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     mpcSteering.setStateEstimationProvider(mpcStateEstimationProvider);
   }
 
-  abstract MPCOptimizationParameter createOptimizationParameter();
+  /** @param mpcOptimizationConfig non-null
+   * @param optional
+   * @return */
+  abstract MPCOptimizationParameter createOptimizationParameter( //
+      MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional);
 
   private final void requestControl() {
-    MPCOptimizationParameter mpcOptimizationParameter = createOptimizationParameter();
+    MPCOptimizationParameter mpcOptimizationParameter = //
+        createOptimizationParameter(mpcOptimizationConfig, manualControlProvider.getManualControl());
     lcmMPCControlClient.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
     GokartState state = mpcStateEstimationProvider.getState();

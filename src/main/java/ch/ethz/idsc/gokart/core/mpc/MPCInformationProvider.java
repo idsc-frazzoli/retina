@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -56,26 +55,5 @@ public class MPCInformationProvider extends MPCControlUpdateListener {
     if (Objects.nonNull(cns))
       return cns.steps[0].gokartState().getS();
     return NO_STEERING;
-  }
-
-  /** get the poses at steps in {x,y,a} */
-  public Tensor getXYA() {
-    return Objects.isNull(cns) //
-        ? Tensors.empty()
-        : toXYA(cns);
-  }
-
-  public static Tensor toXYA(ControlAndPredictionSteps controlAndPredictionSteps) {
-    Tensor orientations = Tensors.empty();
-    for (int i = 0; i < controlAndPredictionSteps.steps.length; i++) {
-      Scalar X = RealScalar.of(controlAndPredictionSteps.steps[i].gokartState().getX().number().doubleValue());
-      Scalar Y = RealScalar.of(controlAndPredictionSteps.steps[i].gokartState().getY().number().doubleValue());
-      orientations.append( //
-          Tensors.of( //
-              X, //
-              Y, //
-              controlAndPredictionSteps.steps[i].gokartState().getPsi()));
-    }
-    return orientations;
   }
 }
