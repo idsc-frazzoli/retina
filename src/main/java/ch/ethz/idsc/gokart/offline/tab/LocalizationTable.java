@@ -64,7 +64,7 @@ public class LocalizationTable implements OfflineTableSupplier {
       // System.out.println(vpe.nmea());
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gpe = new GokartPoseEvent(byteBuffer);
+      gpe = GokartPoseEvent.of(byteBuffer);
     } else //
     if (channel.equals(DAVIS)) {
       dif = new DavisImuFrame(byteBuffer);

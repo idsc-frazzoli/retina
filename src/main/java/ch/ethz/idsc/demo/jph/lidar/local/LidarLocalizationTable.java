@@ -79,11 +79,11 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       velodyneDecoder.lasers(byteBuffer);
     else //
     if (channel.equals(GokartPoseChannel.INSTANCE.channel()))
-      prev_poseEvent = new GokartPoseEvent(byteBuffer);
+      prev_poseEvent = GokartPoseEvent.of(byteBuffer);
     else //
     if (channel.equals(GokartPosePostChannel.INSTANCE.channel()) && //
         Objects.nonNull(prev_poseEvent)) {
-      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       tableBuilder.appendRow( //
           Magnitude.SECOND.apply(time), //
           prev_poseEvent.asVector(), //

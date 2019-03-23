@@ -129,7 +129,7 @@ Dyn. MPC [outside](https://www.youtube.com/watch?v=59E95E_RkH8), [inside](https:
 
 ## Contributors
 
-Jan Hakenberg, Mario Gini, Yannik Nager, Valentina Cavinato, Marc Heim
+Jan Hakenberg, Mario Gini, Yannik Nager, Valentina Cavinato, Marc Heim, Joel Gaechter, Antonia Mosberger, Maximilien Picquet
 
 ## Press Coverage
 

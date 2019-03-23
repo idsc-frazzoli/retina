@@ -20,10 +20,10 @@ public class FirstLogMessageTest extends TestCase {
         gokartLogInterface.file(), //
         GokartPoseChannel.INSTANCE.channel());
     assertTrue(optional.isPresent());
-    GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(optional.get());
+    GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(optional.get());
     Chop._12.requireClose(gokartPoseEvent.getPose(), Tensors.fromString("{36.76454127060236[m], 42.98864352708994[m], 1.6236701887263347}"));
     Chop._12.requireClose(gokartPoseEvent.getQuality(), RealScalar.of(0.7207760810852051));
-    assertEquals(gokartPoseEvent.asVector().length(), 7);
+    assertEquals(gokartPoseEvent.asVector().length(), 4);
     Tensor velocityXY = gokartPoseEvent.getVelocityXY();
     assertEquals(velocityXY.length(), 2);
     assertTrue(Chop.NONE.allZero(velocityXY));

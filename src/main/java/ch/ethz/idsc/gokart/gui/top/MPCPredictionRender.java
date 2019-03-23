@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
-import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateInterface;
+import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MPCPredictionRender implements MPCControlUpdateInterface, RenderInterface {
+public class MPCPredictionRender implements MPCControlUpdateListener, RenderInterface {
   // TODO JPH/MH the units of scale are ignored -> remove unit of scale
   private static final Scalar SCALE = Quantity.of(0.3, SI.METER);
   // ---

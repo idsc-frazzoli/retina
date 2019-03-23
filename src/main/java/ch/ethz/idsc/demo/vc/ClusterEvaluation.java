@@ -50,7 +50,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
               vlp16LcmHandler.velodyneDecoder.lasers(byteBuffer);
             else //
             if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-              GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
+              GokartPoseEvent gpe = GokartPoseEvent.of(byteBuffer);
               clusterEvaluationListener.setPose(gpe.getPose());
             }
           }

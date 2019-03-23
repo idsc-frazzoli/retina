@@ -42,7 +42,7 @@ public class GokartPoseEventTest extends TestCase {
     byteBuffer.putDouble(5.0);
     byteBuffer.putFloat(0.6f);
     byteBuffer.flip();
-    GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
+    GokartPoseEvent gpe = GokartPoseEvent.of(byteBuffer);
     assertEquals(gpe.getPose(), Tensors.fromString("{2[m],4[m],5}"));
     assertEquals(gpe.getQuality(), RealScalar.of(0.6f));
     Arrays.equals(array, gpe.asArray());
@@ -54,7 +54,7 @@ public class GokartPoseEventTest extends TestCase {
     byte[] array = gokartPoseEvent.asArray();
     ByteBuffer byteBuffer = ByteBuffer.wrap(array);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    GokartPoseEvent gpe = new GokartPoseEvent(byteBuffer);
+    GokartPoseEvent gpe = GokartPoseEvent.of(byteBuffer);
     assertEquals(gpe.getPose(), pose);
     assertEquals(gpe.getQuality(), RealScalar.of(.7f));
   }

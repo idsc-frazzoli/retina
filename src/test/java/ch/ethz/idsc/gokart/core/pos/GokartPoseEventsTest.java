@@ -13,8 +13,14 @@ public class GokartPoseEventsTest extends TestCase {
         Tensors.fromString("{1[m], 2[m], 3}"), RealScalar.ONE);
     assertEquals(gokartPoseEvent.getVelocityXY(), Tensors.fromString("{0[m*s^-1],0[m*s^-1]}"));
     assertEquals(gokartPoseEvent.getGyroZ(), Quantity.of(0, SI.PER_SECOND));
-    assertFalse(gokartPoseEvent.hasVelocity());
+    assertTrue(gokartPoseEvent.hasVelocity());
     assertEquals(gokartPoseEvent.asVector(), Tensors.vector(1, 2, 3, 1, 0, 0, 0));
+  }
+
+  public void testMotionless() {
+    GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+    assertTrue(gokartPoseEvent.hasVelocity());
+    assertEquals(gokartPoseEvent.asVector(), Tensors.vector(0, 0, 0, 0, 0, 0, 0));
   }
 
   public void testExtended() {

@@ -59,22 +59,15 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
       MPCOptimizationParameterKinematic optimizationParameter = TestHelper.optimizationParameterKinematic( //
           Quantity.of(10, SI.VELOCITY), Quantity.of(5, SI.ACCELERATION), Quantity.of(5, SI.ACCELERATION));
       lcmMPCControlClient.publishOptimizationParameter(optimizationParameter);
-      MPCControlUpdateListener mpcControlUpdateListener = new MPCControlUpdateListener() {
-        @Override
-        public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
-          // TODO MH default behavior, no need to override function
-          this.cns = controlAndPredictionSteps;
-          System.out.println("control update");
-        }
-      };
-      lcmMPCControlClient.registerControlUpdateLister(mpcControlUpdateListener);
+      MPCControlUpdateCapture mpcControlUpdateCapture = new MPCControlUpdateCapture();
+      lcmMPCControlClient.addControlUpdateListener(mpcControlUpdateCapture);
       DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
       Tensor position = Tensors.of(gokartState.getX(), gokartState.getY());
       MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER));
       lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
       Thread.sleep(100);// should even work with 30ms
-      System.out.println(mpcControlUpdateListener.cns);
-      assertNotNull(mpcControlUpdateListener.cns);
+      System.out.println(mpcControlUpdateCapture.cns);
+      assertNotNull(mpcControlUpdateCapture.cns);
       lcmMPCControlClient.stop();
     } catch (Exception e) {
       e.printStackTrace();

@@ -61,14 +61,14 @@ import ch.ethz.idsc.tensor.sca.Round;
     } else //
     if (channel.equals(GokartLcmChannel.POSE_POST)) {
       isPosePostAvailable = true;
-      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       Scalar step = time.subtract(lastTime);
       velocityModule.measurePose(gokartPoseEvent, step);
       lastTime = time;
       System.out.println("pose time: " + time.number().doubleValue());
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR) && !isPosePostAvailable) {
-      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       Scalar step = time.subtract(lastTime);
       velocityModule.measurePose(gokartPoseEvent, step);
       lastTime = time;
