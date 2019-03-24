@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui;
+package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

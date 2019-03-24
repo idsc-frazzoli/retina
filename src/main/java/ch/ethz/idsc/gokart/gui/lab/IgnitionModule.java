@@ -1,31 +1,36 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.lab;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-/** AutoboxCompactModule facilitates the initialization of the actuators and the
- * monitoring of the manual control providers and sensors vital for the operation
- * 
- * module first tested on 20180427 */
-public class AutoboxCompactModule extends AutoboxAbstractModule {
+public class IgnitionModule extends AutoboxAbstractModule {
   private final AutoboxCompactComponent autoboxCompactComponent = new AutoboxCompactComponent();
+  private final AutoboxIntrospectionComponent autoboxIntrospectionComponent = new AutoboxIntrospectionComponent();
 
-  @Override // from AbstractModule
+  @Override
   protected void protected_first(Timer timer, JFrame jFrame) {
     autoboxCompactComponent.start();
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
         autoboxCompactComponent.update();
+        autoboxIntrospectionComponent.update();
       }
-    }, 100, 50);
+    }, 100, 100);
     // ---
-    jFrame.setContentPane(autoboxCompactComponent.getScrollPane());
+    JPanel jPanel = new JPanel(new BorderLayout());
+    jPanel.add(autoboxCompactComponent.getScrollPane(), BorderLayout.CENTER);
+    autoboxIntrospectionComponent.jPanel.setPreferredSize(new Dimension(200, 4 * 36));
+    jPanel.add(autoboxIntrospectionComponent.jPanel, BorderLayout.SOUTH);
+    jFrame.setContentPane(jPanel);
     jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
@@ -36,6 +41,6 @@ public class AutoboxCompactModule extends AutoboxAbstractModule {
   }
 
   public static void main(String[] args) throws Exception {
-    standalone(new AutoboxCompactModule());
+    standalone(new IgnitionModule());
   }
 }
