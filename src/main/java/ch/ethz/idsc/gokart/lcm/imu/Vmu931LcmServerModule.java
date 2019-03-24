@@ -30,14 +30,12 @@ public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Liste
     vmu931 = new Vmu931(PORT, //
         EnumSet.of(Vmu931Channel.ACCELEROMETER, Vmu931Channel.GYROSCOPE), //
         Vmu931_DPS._250, Vmu931_G._16, this);
-    System.out.println("first() leave");
   }
 
   @Override // from AbstractModule
   protected void last() {
     if (Objects.nonNull(vmu931))
       vmu931.close();
-    System.out.println("last() leave");
   }
 
   @Override // from Vmu931Listener
