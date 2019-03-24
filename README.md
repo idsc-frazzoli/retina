@@ -3,7 +3,7 @@
 Software to operate the go-kart in autonomous and manual modes.
 The performance of the go-kart hardware and software are documented in [reports](doc/reports.md).
 
-> The code in the repository operates a heavy and fast robot that may endanger living creatures. We follow best practices and coding standards to protect from avoidable errors. See [development_guidelines](doc/development_guidelines.md)
+> The code in the repository operates a heavy and fast robot that may endanger living creatures. We follow best practices and coding standards to protect from avoidable errors - see [development_guidelines](doc/development_guidelines.md).
 
 ## Gallery Autonomous Driving
 
@@ -40,12 +40,6 @@ Navigation
 <tr>
 <td>
 
-![purepursuit](https://user-images.githubusercontent.com/4012178/51901763-bdfdeb00-23b8-11e9-8132-0c36099ea08e.jpg)
-
-[Pure pursuit, also reverse](https://www.youtube.com/watch?v=H0qwudAnM48)
-
-<td>
-
 ![gokart_mpc](https://user-images.githubusercontent.com/4012178/52276469-9d063e80-2952-11e9-8ce8-9f652238a0d8.png)
 
 Kin. MPC [outside](https://www.youtube.com/watch?v=B0QmMS1Dp8E), [inside](https://www.youtube.com/watch?v=N_GqjWpRkR4)
@@ -65,10 +59,6 @@ The student projects are supervised by Andrea Censi, Jacopo Tani, Alessandro Zan
 The software architect is Jan Hakenberg.
 The gokart is operated at Innovation Park Duebendorf since December 2017.
 
-### 2017
-
-* Edo Jelavic (PhD): PID controller for steering, P controller for speed control
-
 ### 2018
 
 * Mario Gini (MT): simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt; reliable waypoint extraction and following
@@ -78,10 +68,10 @@ The gokart is operated at Innovation Park Duebendorf since December 2017.
 
 ### 2019
 
+* Michael von Bueren (MT): simulation of gokart dynamics
 * Joel Gaechter (MT): precise mapping
 * Antonia Mosberger (BT): power steering
 * Maximilien Picquet (SP): PID controller for trajectory following
-* Michael von Bueren (MT): simulation of gokart dynamics
 
 ## Gallery Manual Driving
 
