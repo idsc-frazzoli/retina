@@ -36,6 +36,7 @@ public class Vmu931 implements Runnable {
   /** @param serialPort open
    * @param set
    * @param vmu931_DPS */
+  // TODO JPH api change: do not open device in constructor
   public Vmu931(String port, Set<Vmu931Channel> set, Vmu931_DPS vmu931_DPS, Vmu931_G vmu931_G, Vmu931Listener vmu931Listener) {
     this.set.addAll(set);
     this.dps = vmu931_DPS;

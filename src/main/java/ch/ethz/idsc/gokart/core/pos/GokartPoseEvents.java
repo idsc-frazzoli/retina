@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
+/** generates instances of GokartPoseEventV2 */
 public enum GokartPoseEvents {
   ;
   private static final GokartPoseEvent MOTIONLESS_0 = create(GokartPoseLocal.INSTANCE.getPose(), RealScalar.ZERO);
