@@ -59,15 +59,29 @@ Dyn. MPC [outside](https://www.youtube.com/watch?v=59E95E_RkH8), [inside](https:
 </tr>
 </table>
 
-## Features
+## Student Projects
 
-* simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt, reliable waypoint extraction and following
-* lidar-based localization enhanced with odometry and gyro
-* bayesian occupancy grid
-* track reconnaissance
-* torque vectoring
-* synthesis of engine sound
-* offline processing of log data
+The student projects are supervised by Andrea Censi, Jacopo Tani, Alessandro Zanardi, and Jan Hakenberg.
+The software architect is Jan Hakenberg.
+The gokart is operated at Innovation Park Duebendorf since December 2017.
+
+### 2017
+
+* Edo Jelavic (PhD): PID controller for steering, P controller for speed control
+
+### 2018
+
+* Mario Gini (MT): simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt; reliable waypoint extraction and following
+* Yannik Nager (MT): bayesian occupancy grid; trajectory planning
+* Valentina Cavinato (SP): tracking of moving obstacles
+* Marc Heim (MT): calibration of steering, motors, braking; torque vectoring; track reconnaissance; model predictive contouring control; synthesis of engine sound
+
+### 2019
+
+* Joel Gaechter (MT): precise mapping
+* Antonia Mosberger (BT): power steering
+* Maximilien Picquet (SP): PID controller for trajectory following
+* Michael von Bueren (MT): simulation of gokart dynamics
 
 ## Gallery Manual Driving
 
@@ -94,42 +108,7 @@ Dyn. MPC [outside](https://www.youtube.com/watch?v=59E95E_RkH8), [inside](https:
 
 ## Go-kart Operation
 
-![gokart_operation](https://user-images.githubusercontent.com/4012178/52531841-22f00400-2d1c-11e9-8fd7-92d6217b35e3.png)
-
-### Actuation
-
-<table>
-  <tr><th>Priority<th>Module<th>Purpose<th>Rimo<th>Steer<th>Linmot<th>Misc</tr>
-  <tr><td>Hardware<td>LinmotFireFighter<td>prevent brake hardware damage<th><th><th>X<th></tr>
-  <tr><td>Emergency<td>LinmotCoolingModule<td>no acceleration while temperature of linmot critical<th>X<th><th><th></tr>
-  <tr><td>Emergency<td>MiscEmergencyModule<td>no acceleration with steering battery low<th>X<th><th><th></tr>
-  <tr><td>Emergency<td>SteerEmergencyModule<td>no acceleration with uncalibrated steering<th>X<th><th><th></tr>
-  <tr><td>Emergency<td>Vlp16ClearanceModule<td>no acceleration towards a close obstacle<th>X<th><th><th></tr>
-  <tr><td>Emergency<td>EmergencyBrakeProvider<td>brake maneuver based on obstacle in path<th><th><th>X<th></tr>
-  <tr><td>Emergency<td>LinmotTakeoverModule<td>switch linmot to passive when driver pushes brake pedal<th><th><th>X<th></tr>
-  <tr><td>Emergency<td>DeadManSwitchModule<td>brake if driver doesn't use joystick and gokart is above certain speed<th><th><th>X<th></tr>
-  <tr><td>Calibration<td>SteerCalibrationProvider<td>execute steering calibration procedure, duration ~5[s]<th><th>X<th><th></tr>
-  <tr><td>Calibration<td>LinmotCalibrationProvider<td>execute calibration of brake, duration ~4[s]<th><th><th>X<th></tr>
-  <tr><td>Calibration<td>MiscIgnitionProvider<td>ACK of communication problem to microautobox by human operator, duration 0.3[s]<th><th><th><th>X</tr>
-  <tr><td>Manual<td>RimoTorqueJoystickModule<td>torque control by joystick<th>X<th><th><th></tr>
-  <tr><td>Manual<td>SteerJoystickModule<td>steering control by joystick<th><th>X<th><th></tr>
-  <tr><td>Manual<td>LinmotJoystickModule<td>braking by joystick<th><th><th>X<th></tr>
-  <tr><td>Testing<td>RimoComponent<td>interaction with motors in GUI<th>X<th><th><th></tr>
-  <tr><td>Testing<td>SteerComponent<td>interaction with steering in GUI<th><th>X<th><th></tr>
-  <tr><td>Testing<td>LinmotComponent<td>interaction with brake in GUI<th><th><th>X<th></tr>
-  <tr><td>Testing<td>MiscComponent<td>interaction with misc in GUI<th><th><th><th>X</tr>
-  <tr><td>Safety<td>LinmotSafetyModule<td>no acceleration with brake disabled<th>X<th><th><th></tr>
-  <tr><td>Autonomous<td>PurePursuitRimo<td>control of speed during pure pursuit trajectory following<th>X<th><th><th></tr>
-  <tr><td>Autonomous<td>PurePursuitSteer<td>steering during pure pursuit<th><th>X<th><th></tr>
-  <tr><td>Fallback<td>RimoPutFallback<td>zero torque on motors<th>X<th><th><th></tr>
-  <tr><td>Fallback<td>SteerPutFallback<td>zero torque on steering column<th><th>X<th><th></tr>
-  <tr><td>Fallback<td>LinmotPutFallback<td>maintain operation in home position<th><th><th>X<th></tr>
-  <tr><td>Fallback<td>MiscPutFallback<td>normal operation, all LEDs off<th><th><th><th>X</tr>
-</table>
-
-## Contributors
-
-Jan Hakenberg, Mario Gini, Yannik Nager, Valentina Cavinato, Marc Heim, Joel Gaechter, Antonia Mosberger, Maximilien Picquet
+![gokart_operation](https://user-images.githubusercontent.com/4012178/54883114-371e3980-4e62-11e9-9ffd-4d152ffe1609.png)
 
 ## Press Coverage
 
