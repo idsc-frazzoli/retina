@@ -17,6 +17,7 @@ public class PIDController extends PIDControllerModule implements GokartPoseList
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   GokartPoseEvent gokartPoseEvent = null;
   private Optional<Tensor> optionalCurve = Optional.empty();
+  // private Scalar previousAngleError = RealScalar.ZERO;
 
   public PIDController(PIDTuningParams tuningParams) {
     super(tuningParams);
@@ -52,9 +53,9 @@ public class PIDController extends PIDControllerModule implements GokartPoseList
 
   public static Tensor trajAngle(Tensor curve, Tensor point) {
     int index = closest(curve, point);
-    int nextIndex = index+1;
-    if (nextIndex >= curve.length()) // TODO MCP Write this clearlier
-    	nextIndex = 0;
+    int nextIndex = index + 1;
+    if (nextIndex > curve.length()) // TODO MCP Write this clearlier
+      nextIndex = 0;
     return ArcTan.of(curve.Get(nextIndex).subtract(curve.Get(index)));
   }
 
@@ -62,26 +63,28 @@ public class PIDController extends PIDControllerModule implements GokartPoseList
   protected Optional<Scalar> deriveHeading() {
     GokartPoseEvent gokartPoseEvent = this.gokartPoseEvent;
     if (Objects.nonNull(gokartPoseEvent) && optionalCurve.isPresent()) {
-      Tensor pose = gokartPoseEvent.getPose();
-      Tensor angle = pose.get(2);
+      Scalar angle = (Scalar) gokartPoseEvent.getPose().get(2);
       Tensor position = gokartPoseEvent.getPose().extract(0, 2);
-      Tensor curve = optionalCurve.get();
       // find closest points on trajectory and angle
-      Tensor closest = curve.get(closest(curve, position));
-      Tensor trajAngle = trajAngle(curve, position);
+      Tensor closest = optionalCurve.get().get(closest(optionalCurve.get(), gokartPoseEvent.getPose().extract(0, 2)));
+      Tensor trajAngle = trajAngle(optionalCurve.get(), gokartPoseEvent.getPose().extract(0, 2));
       // measure error
-      Tensor pErrorAngle = angle.subtract(trajAngle);
-      Tensor pErrorPose = position.subtract(closest);
-      Scalar iErrorAngle;
-      Scalar iErrorPose;
-      Scalar dErrorPose;
-      Scalar dErrorAngle;
+      Scalar errorPose = Norm._2.of(position.subtract(closest));
+      Scalar errorAngle = angle.subtract(trajAngle);
+      Scalar iErrorAngle = errorAngle.multiply(PIDTuningParams.GLOBAL.updatePeriod);
+      // Scalar dErrorAngle = errorAngle.subtract(previousAngleError);
+      // set previous error
+      // setPreviousError(errorAngle);
       // angle output
-      Tensor pTermPose = pErrorPose.multiply(PIDTuningParams.GLOBAL.pGainPose);
-      Tensor pTermAngle = pErrorAngle.multiply(PIDTuningParams.GLOBAL.pGain);
-      Scalar angleOut = (Scalar) pErrorPose.add(pTermAngle);
+      Scalar pTermPose = errorPose.multiply(PIDTuningParams.GLOBAL.pGainPose);
+      Scalar pTermAngle = errorAngle.multiply(PIDTuningParams.GLOBAL.pGain);
+      Scalar iTermAngle = iErrorAngle.multiply(PIDTuningParams.GLOBAL.iGain);
+      Scalar angleOut = pTermPose.add(pTermAngle).add(iTermAngle);
       return Optional.of(angleOut);
     }
     return Optional.empty();
   }
+  // private void setPreviousError(Tensor errorAngle) {
+  // previousAngleError = (Scalar) errorAngle;
+  // }
 }
