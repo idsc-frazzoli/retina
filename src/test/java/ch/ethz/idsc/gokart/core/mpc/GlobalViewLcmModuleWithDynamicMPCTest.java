@@ -16,10 +16,14 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
   GokartState gokartState;
 
   public void testSimple() throws Exception {
-    LcmMPCControlClient lcmMPCControlClient = LcmMPCControlClient.dynamic();
+    MPCRequestPublisher mpcRequestPublisher = MPCRequestPublisher.dynamic();
+    MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
+    MPCControlUpdateCapture mpcControlUpdateCapture = new MPCControlUpdateCapture();
+    mpcControlUpdateLcmClient.addListener(mpcControlUpdateCapture);
+    mpcControlUpdateLcmClient.startSubscriptions();
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
-    lcmMPCControlClient.switchToExternalStart();
-    lcmMPCControlClient.start();
+    mpcRequestPublisher.switchToExternalStart();
+    mpcRequestPublisher.start();
     globalViewLcmModule.first();
     // 44.2575 51.6983
     gokartState = new GokartState(//
@@ -45,29 +49,29 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
      * Quantity.of(20, SI.VELOCITY), //
      * Quantity.of(5, SI.ACCELERATION), Quantity.of(10, SI.ACCELERATION),
      * Quantity.); */
-    lcmMPCControlClient.publishOptimizationParameter(optimizationParameterDynamic);
+    mpcRequestPublisher.publishOptimizationParameter(optimizationParameterDynamic);
     DubendorfTrack track = DubendorfTrack.CHICANE;
     MPCSimpleBraking mpcSimpleBraking = new MPCSimpleBraking();
     MPCOpenLoopSteering mpcOpenLoopSteering = new MPCOpenLoopSteering();
     MPCTorqueVectoringPower mpcTorqueVectoringPower = new MPCTorqueVectoringPower(new FakeNewsEstimator(Timing.started()), mpcOpenLoopSteering);
-    lcmMPCControlClient.addControlUpdateListener(mpcSimpleBraking);
-    lcmMPCControlClient.addControlUpdateListener(mpcOpenLoopSteering);
-    lcmMPCControlClient.addControlUpdateListener(mpcTorqueVectoringPower);
+    mpcControlUpdateLcmClient.addListener(mpcSimpleBraking);
+    mpcControlUpdateLcmClient.addListener(mpcOpenLoopSteering);
+    mpcControlUpdateLcmClient.addListener(mpcTorqueVectoringPower);
     Tensor position = gokartState.getCenterPosition();
     MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER), RealScalar.ZERO,
         RealScalar.ZERO);
-    lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
+    mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
     Thread.sleep(1000);
     for (int i = 0; i < 200; i++) {
       System.out.println("send request");
-      if (Objects.nonNull(lcmMPCControlClient.lastcns)) {
-        gokartState = lcmMPCControlClient.lastcns.steps[3].gokartState();
+      if (Objects.nonNull(mpcControlUpdateCapture.cns)) {
+        gokartState = mpcControlUpdateCapture.cns.steps[3].gokartState();
         // System.out.println(gokartState.getS());
         position = gokartState.getCenterPosition();
-        Scalar changeRate = lcmMPCControlClient.lastcns.steps[0].gokartControl().getudotS();
-        Scalar rampupVale = lcmMPCControlClient.lastcns.steps[0].gokartState().getS()//
+        Scalar changeRate = mpcControlUpdateCapture.cns.steps[0].gokartControl().getudotS();
+        Scalar rampupVale = mpcControlUpdateCapture.cns.steps[0].gokartState().getS()//
             .add(changeRate.multiply(Quantity.of(0.1, SI.SECOND)));
-        Scalar betaDiff = lcmMPCControlClient.lastcns.steps[1].gokartState().getS().subtract(rampupVale);
+        Scalar betaDiff = mpcControlUpdateCapture.cns.steps[1].gokartState().getS().subtract(rampupVale);
         System.out.println("should be zero: " + betaDiff);
         // TODO do this with the correct unit
         // assertTrue(Chop._07.close(betaDiff, "zero");
@@ -75,16 +79,17 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
         mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER), RealScalar.of(1),
             RealScalar.of(0.5));
         System.out.println("progressstart: " + mpcPathParameter.getProgressOnPath());
-        lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
+        mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
         Thread.sleep(100);
-        System.out.println("Braking value: " + mpcSimpleBraking.getBraking(lcmMPCControlClient.lastcns.steps[0].gokartState().getTime()));
-        System.out.println("steering value: " + mpcOpenLoopSteering.getSteering(lcmMPCControlClient.lastcns.steps[0].gokartState().getTime()));
-        System.out.println("power value: " + mpcTorqueVectoringPower.getPower(lcmMPCControlClient.lastcns.steps[0].gokartState().getTime()));
+        System.out.println("Braking value: " + mpcSimpleBraking.getBraking(mpcControlUpdateCapture.cns.steps[0].gokartState().getTime()));
+        System.out.println("steering value: " + mpcOpenLoopSteering.getSteering(mpcControlUpdateCapture.cns.steps[0].gokartState().getTime()));
+        System.out.println("power value: " + mpcTorqueVectoringPower.getPower(mpcControlUpdateCapture.cns.steps[0].gokartState().getTime()));
         System.out.println("time value: " + gokartState.getTime());
       } else
         System.err.println("lastcns null");
     }
     globalViewLcmModule.last();
-    lcmMPCControlClient.stop();
+    mpcRequestPublisher.stop();
+    mpcControlUpdateLcmClient.stopSubscriptions();
   }
 }

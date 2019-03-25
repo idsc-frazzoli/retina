@@ -10,12 +10,12 @@ import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCKinematicDrivingModule extends MPCAbstractDrivingModule {
   public MPCKinematicDrivingModule() {
-    super(LcmMPCControlClient.kinematic(), Timing.started());
+    super(MPCRequestPublisher.kinematic(), Timing.started());
   }
 
   // for testing only
   MPCKinematicDrivingModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
-    super(LcmMPCControlClient.kinematic(), mpcStateEstimationProvider, timing, track);
+    super(MPCRequestPublisher.kinematic(), mpcStateEstimationProvider, timing, track);
   }
 
   @Override // from MPCAbstractDrivingModule
