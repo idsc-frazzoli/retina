@@ -43,11 +43,15 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     GraphicsUtil.setQualityHigh(graphics);
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
+    geometricLayer.pushMatrix(GroundSpeedRender.DIAGONAL);
     graphics.setColor(Color.DARK_GRAY);
-    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.02)));
+    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.2)));
     for (Tensor _a : Subdivide.of(-2, 2, 12)) {
       Scalar angle = _a.Get();
-      Path2D path2d = geometricLayer.toPath2D(Tensors.of(AngleVector.of(angle), AngleVector.of(angle).multiply(RealScalar.of(1.1))));
+      Tensor vector = AngleVector.of(angle);
+      Path2D path2d = geometricLayer.toPath2D(Tensors.of( //
+          vector.multiply(RealScalar.of(10.5)), //
+          vector.multiply(RealScalar.of(11.8))));
       graphics.draw(path2d);
     }
     ScalarUnaryOperator scalarUnaryOperator = QuantityMagnitude.SI().in(Unit.of("km*h^-1"));
@@ -56,16 +60,18 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     speed = clip.apply(speed);
     final int steps = speed.multiply(RealScalar.of(1)).number().intValue();
     int count = 0;
-    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.025)));
+    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.3)));
     for (Tensor _a : Subdivide.of(2, -2, 12 * 6)) {
       Scalar angle = _a.Get();
       Tensor rgba = ColorDataGradients.BONE.apply(Clips.unit().apply(RealScalar.of(0.3 + (steps - count) * 0.01)));
       Color color = ColorFormat.toColor(rgba);
       // color = new Color(color.getGreen(),color.getBlue(),color.getRed(),128+64);
       graphics.setColor(color);
+      Tensor vector = AngleVector.of(angle);
       Path2D path2d = geometricLayer.toPath2D(Tensors.of( //
-          AngleVector.of(angle).multiply(RealScalar.of(0.7)), //
-          AngleVector.of(angle).multiply(RealScalar.of(0.95))));
+          vector.multiply(RealScalar.of(10.8)), //
+          vector.multiply(RealScalar.of(11.7) //
+          )));
       graphics.draw(path2d);
       count++;
       if (steps < count)
@@ -80,6 +86,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       int stringWidth = fontMetrics.stringWidth(string);
       graphics.drawString(string, (float) point2d.getX() - stringWidth / 2, (float) point2d.getY());
     }
+    geometricLayer.popMatrix();
     geometricLayer.popMatrix();
     GraphicsUtil.setQualityDefault(graphics);
     graphics.setStroke(new BasicStroke());
