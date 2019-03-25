@@ -21,7 +21,8 @@ import ch.ethz.idsc.tensor.Tensors;
 public class LocalViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor POSE = Tensors.fromString("{0[m],0[m],0}").unmodifiable();
-  private static final Tensor MINOR = Tensors.vector(0, -2.5, 0);
+  private static final Tensor MINOR_ACC = Tensors.vector(0, -2.5, 0);
+  private static final Tensor MINOR_VEL = Tensors.vector(0.8, -5.5, 0);
   private static final Tensor MINORRIGHT = Tensors.vector(0, -3.5, 0);
   static final Tensor MODEL2PIXEL = Tensors.fromString("{{0,-100,200},{-100,0,300},{0,0,1}}").unmodifiable();
   // ---
@@ -49,17 +50,17 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     {
-      AccelerationRender accelerationRender = new AccelerationRender(MINOR, 100);
+      AccelerationRender accelerationRender = new AccelerationRender(MINOR_ACC, 100);
       vmu931ImuLcmClient.addListener(accelerationRender);
       timerFrame.geometricComponent.addRenderInterface(accelerationRender);
     }
     {
-      GroundSpeedRender groundSpeedRender = new GroundSpeedRender(MINOR, 50);
+      GroundSpeedRender groundSpeedRender = new GroundSpeedRender(MINOR_VEL, 50);
       gokartPoseLcmClient.addListener(groundSpeedRender);
       timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
     }
     {
-      MPCExpectationRender mpcExpectationRender = new MPCExpectationRender(MINOR);
+      MPCExpectationRender mpcExpectationRender = new MPCExpectationRender(MINOR_ACC);
       rimoGetLcmClient.addListener(mpcExpectationRender);
       timerFrame.geometricComponent.addRenderInterface(mpcExpectationRender);
     }

@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.imu.vmu931;
 
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fazecast.jSerialComm.SerialPort;
@@ -25,26 +26,31 @@ public class Vmu931 implements Runnable {
   private final Set<Vmu931Reply> replies = EnumSet.noneOf(Vmu931Reply.class);
   private final byte[] data = new byte[256];
   // ---
+  private final String port;
   private final Vmu931_DPS dps;
   private final Vmu931_G resolution_g;
   private final Vmu931Listener vmu931Listener;
-  private final SerialPortWrap serialPortWrap;
-  private final Thread thread;
+  private final Thread thread = new Thread(this);
+  private SerialPortWrap serialPortWrap;
   private boolean isLaunched = true;
   private boolean isConfigured = false;
 
-  /** @param serialPort open
+  /** @param port
    * @param set
-   * @param vmu931_DPS */
-  // TODO JPH api change: do not open device in constructor
+   * @param vmu931_DPS
+   * @param vmu931_G
+   * @param vmu931Listener */
   public Vmu931(String port, Set<Vmu931Channel> set, Vmu931_DPS vmu931_DPS, Vmu931_G vmu931_G, Vmu931Listener vmu931Listener) {
+    this.port = port;
     this.set.addAll(set);
     this.dps = vmu931_DPS;
     this.resolution_g = vmu931_G;
     this.vmu931Listener = vmu931Listener;
+  }
+
+  public void open() {
     SerialPort serialPort = SerialPorts.create(port);
     serialPortWrap = new SerialPortWrap(serialPort);
-    thread = new Thread(this);
     thread.start();
     // ---
     requestStatus();
@@ -215,7 +221,8 @@ public class Vmu931 implements Runnable {
 
   public void close() {
     isLaunched = false;
-    serialPortWrap.close();
+    if (Objects.nonNull(serialPortWrap))
+      serialPortWrap.close();
     thread.interrupt();
   }
 
