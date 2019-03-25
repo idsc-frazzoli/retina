@@ -38,6 +38,7 @@ public class TrackReconManagement {
   private int width = 0;
   private int height = 0;
   private int count = 0;
+  private int shortestRoute = 1000;
   private double startOrientation = 0;
   private boolean closedTrack = false;
   private boolean newSolutionNeeded = false;
@@ -174,7 +175,7 @@ public class TrackReconManagement {
       System.out.println(++count);
       // refine
       System.out.println("refine");
-      Tensor newTrackDataXYR = trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 1, closedTrack, constraints);
+      Tensor newTrackDataXYR = trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 3, closedTrack, constraints);
       if (Objects.nonNull(newTrackDataXYR))
         trackDataXYR = newTrackDataXYR;
       else
