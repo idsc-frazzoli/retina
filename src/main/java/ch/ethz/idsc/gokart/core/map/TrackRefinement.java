@@ -144,10 +144,10 @@ public class TrackRefinement {
     this.occupancyGrid = occupancyGrid;
   }
 
-  private static final Scalar gdRadiusGrowth = Quantity.of(0.007, SI.METER);
-  private static final Scalar gdRegularizer = RealScalar.of(0.0007);
-  private static final Scalar gdLimits = RealScalar.of(0.8);
-  private static final Scalar gdRadius = RealScalar.of(0.8);
+  private static final Scalar gdRadiusGrowth = Quantity.of(0.07, SI.METER);
+  private static final Scalar gdRegularizer = RealScalar.of(0.007);
+  private static final Scalar gdLimits = RealScalar.of(1);
+  private static final Scalar gdRadius = RealScalar.of(1);
   private static final TensorUnaryOperator REGULARIZATION_CYCLIC = Regularization2Step.cyclic(RnGeodesic.INSTANCE, gdRegularizer);
   private static final TensorUnaryOperator REGULARIZATION_STRING = Regularization2Step.string(RnGeodesic.INSTANCE, gdRegularizer);
 

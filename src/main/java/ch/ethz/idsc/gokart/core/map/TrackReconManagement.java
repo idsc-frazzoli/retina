@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO JPH/MH manage unused variables
 public class TrackReconManagement {
-  private static final Scalar RADIUS_OFFSET = Quantity.of(0.7, SI.METER);
+  private static final Scalar RADIUS_OFFSET = Quantity.of(0.5, SI.METER);
   private static final Scalar SPACING = RealScalar.of(1.5); // TODO should be meters
   private static final Scalar CP_RESOLUTION = RealScalar.of(0.5);
   // ---
@@ -129,7 +129,7 @@ public class TrackReconManagement {
              * } */
             Tensor newTrackDataXYR = trackRefinement.getRefinedTrack( //
                 Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER)))), //
-                RealScalar.of(8), 100, closedTrack, constraints);
+                RealScalar.of(8), 10, closedTrack, constraints);
             if (Objects.nonNull(newTrackDataXYR)) {
               trackDataXYR = newTrackDataXYR;
               newSolutionNeeded = false;
@@ -154,19 +154,19 @@ public class TrackReconManagement {
         } else {
           // we have a partial track
           // check if route is long enough
-          /* if (trackLayoutInitialGuess.getRouteLength() > 2) {
-           * Optional<Tensor> optional = trackLayoutInitialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
-           * if (optional.isPresent()) {
-           * Tensor ctrpointsXY = optional.get();
-           * Tensor newTrackDataXYR = Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER))));
-           * System.out.println("open track");
-           * newTrackDataXYR = trackRefinement.getRefinedTrack( //
-           * newTrackDataXYR, //
-           * RealScalar.of(8), 20, closedTrack, constraints);
-           * if (Objects.nonNull(newTrackDataXYR))
-           * trackDataXYR = newTrackDataXYR;
-           * }
-           * } */
+          if (trackLayoutInitialGuess.getRouteLength() > 2) {
+            Optional<Tensor> optional = trackLayoutInitialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
+            if (optional.isPresent()) {
+              Tensor ctrpointsXY = optional.get();
+              Tensor newTrackDataXYR = Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER))));
+              System.out.println("open track");
+              newTrackDataXYR = trackRefinement.getRefinedTrack( //
+                  newTrackDataXYR, //
+                  RealScalar.of(8), 10, closedTrack, constraints);
+              if (Objects.nonNull(newTrackDataXYR))
+                trackDataXYR = newTrackDataXYR;
+            }
+          }
         }
       }
     } else //
@@ -174,7 +174,7 @@ public class TrackReconManagement {
       System.out.println(++count);
       // refine
       System.out.println("refine");
-      Tensor newTrackDataXYR = trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 30, closedTrack, constraints);
+      Tensor newTrackDataXYR = trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 1, closedTrack, constraints);
       if (Objects.nonNull(newTrackDataXYR))
         trackDataXYR = newTrackDataXYR;
       else

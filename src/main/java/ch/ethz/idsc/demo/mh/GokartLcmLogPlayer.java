@@ -34,7 +34,7 @@ import lcm.logging.LogPlayerConfig;
     // gokartMappingModule.start();
     // ModuleAuto.INSTANCE.runOne(GyroOfflineLocalize.class);
     // ModuleAuto.INSTANCE.runOne(GlobalViewLcmModule.class);
-    ModuleAuto.INSTANCE.runOne(PresenterLcmModule.class);
-    ModuleAuto.INSTANCE.runOne(LocalViewLcmModule.class);
+    //ModuleAuto.INSTANCE.runOne(PresenterLcmModule.class);
+    //ModuleAuto.INSTANCE.runOne(LocalViewLcmModule.class);
   }
 }
