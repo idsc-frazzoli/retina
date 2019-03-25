@@ -37,7 +37,7 @@ public class MappingConfig {
    * the safety margin accounts not only for the half-width of the gokart
    * but also the corner cutting behavior of the pure pursuit */
   public Scalar obsRadius = Quantity.of(1.3, SI.METER);
-  public final Scalar trackDrivingObsRadius = Quantity.of(1, SI.METER);
+  public final Scalar trackDrivingObsRadius = Quantity.of(0.8, SI.METER);
   /** Cell dimension of a single grid cell in [m] */
   public final Scalar cellDim = Quantity.of(0.2, SI.METER);
   public Boolean alongLine = false;
