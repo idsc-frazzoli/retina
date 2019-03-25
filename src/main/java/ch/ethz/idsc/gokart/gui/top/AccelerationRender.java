@@ -17,10 +17,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
-import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 /* package */ class AccelerationRender extends CrosshairRender implements Vmu931ImuFrameListener {
-  private static final Tensor DIAGONAL = DiagonalMatrix.of(.15, .15, 1);
   private static final Scalar FILTER = RealScalar.of(0.02);
   // ---
   private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
@@ -28,7 +26,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
   private final Tensor xya;
 
   public AccelerationRender(Tensor xya, int limit) {
-    super(limit, ColorDataGradients.BONE, Tensors.vector(2, 4));
+    super(limit, ColorDataGradients.BONE, Tensors.vector(5, 10, 15));
     this.xya = xya;
   }
 
@@ -43,7 +41,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     graphics.setColor(Color.GRAY);
-    geometricLayer.pushMatrix(DIAGONAL);
+    geometricLayer.pushMatrix(GroundSpeedRender.DIAGONAL);
     super.render(geometricLayer, graphics);
     geometricLayer.popMatrix();
     geometricLayer.popMatrix();

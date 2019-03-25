@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -20,9 +21,9 @@ import ch.ethz.idsc.tensor.Tensors;
 
 public class LocalViewLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
-  private static final Tensor POSE = Tensors.fromString("{0[m],0[m],0}").unmodifiable();
-  private static final Tensor MINOR_ACC = Tensors.vector(0, -2.5, 0);
-  private static final Tensor MINOR_VEL = Tensors.vector(0.8, -5.5, 0);
+  private static final Tensor POSE = Tensors.fromString("{0[m],-3[m],0}").unmodifiable();
+  private static final Tensor MINOR_ACC = Tensors.vector(0.8, -0.0, 0);
+  private static final Tensor MINOR_VEL = Tensors.vector(0.8, -6.0, 0);
   private static final Tensor MINORRIGHT = Tensors.vector(0, -3.5, 0);
   static final Tensor MODEL2PIXEL = Tensors.fromString("{{0,-100,200},{-100,0,300},{0,0,1}}").unmodifiable();
   // ---
@@ -50,6 +51,11 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     {
+      VelocityIndicatorRender velocityIndicatorRender = new VelocityIndicatorRender(GokartPoseHelper.toUnitless(POSE));
+      rimoGetLcmClient.addListener(velocityIndicatorRender);
+      timerFrame.geometricComponent.addRenderInterface(velocityIndicatorRender);
+    }
+    {
       AccelerationRender accelerationRender = new AccelerationRender(MINOR_ACC, 100);
       vmu931ImuLcmClient.addListener(accelerationRender);
       timerFrame.geometricComponent.addRenderInterface(accelerationRender);
@@ -69,7 +75,7 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(brakeCalibrationRender);
     }
     {
-      TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(Tensors.vector(1, -2.5, 0));
+      TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(MINOR_VEL);
       rimoGetLcmClient.addListener(tachometerMustangDash);
       timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);
     }
