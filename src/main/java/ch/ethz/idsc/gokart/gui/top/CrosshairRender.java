@@ -10,7 +10,6 @@ import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.owl.data.BoundedLinkedList;
 import ch.ethz.idsc.owl.gui.ColorLookup;
-import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -28,7 +27,7 @@ public class CrosshairRender implements RenderInterface {
   // private static final Tensor LINE_X = Tensors.fromString("{{-1,0},{0.5,0}}");
   // private static final Tensor LINE_Y = Tensors.fromString("{{0,-1},{0,1}}");
   private static final Tensor POLYGON = CirclePoints.of(8).multiply(RealScalar.of(0.3));
-  private static final Tensor CIRCLE = CirclePoints.of(22);
+  private static final Tensor CIRCLE = CirclePoints.of(28);
   private static final Stroke STROKE_DEFAULT = new BasicStroke();
   private static final Tensor ORIGIN = Array.zeros(2);
   // ---
@@ -82,17 +81,5 @@ public class CrosshairRender implements RenderInterface {
         ++count;
       }
     }
-    graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.03)));
-    // Tensor velocityXY = gokartPoseEvent.getVelocityXY();
-    {
-      GraphicsUtil.setQualityHigh(graphics);
-      // graphics.setColor(Color.DARK_GRAY);
-      // graphics.drawString("vel=" + velocityXY.map(Round._2), 0, 20);
-      // Tensor line = Tensors.of(ORIGIN, velocityXY);
-      graphics.setColor(Color.BLUE);
-      // graphics.draw(geometricLayer.toPath2D(line));
-      GraphicsUtil.setQualityDefault(graphics);
-    }
-    graphics.setStroke(STROKE_DEFAULT);
   }
 }

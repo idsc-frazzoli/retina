@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 /* package */ class GroundSpeedRender extends CrosshairRender implements GokartPoseListener {
   private static final Stroke STROKE_DEFAULT = new BasicStroke();
   private static final Tensor ORIGIN = Array.zeros(2);
-  private static final Tensor DIAGONAL = DiagonalMatrix.of(.15, .15, 1);
+  static final Tensor DIAGONAL = DiagonalMatrix.of(.12, .12, 1);
   // ---
   private final Tensor xya;
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
@@ -43,10 +43,10 @@ import ch.ethz.idsc.tensor.sca.Round;
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     geometricLayer.pushMatrix(DIAGONAL);
+    GraphicsUtil.setQualityHigh(graphics);
     super.render(geometricLayer, graphics);
     Tensor velocityXY = gokartPoseEvent.getVelocityXY();
     {
-      GraphicsUtil.setQualityHigh(graphics);
       graphics.setColor(Color.DARK_GRAY);
       graphics.drawString("vel=" + velocityXY.map(Round._2), 0, 20);
       // ---
