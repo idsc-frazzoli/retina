@@ -39,7 +39,7 @@ public class PIDControllerTest extends TestCase {
       Scalar heading = pidController.pidSteer.getHeading();
       System.out.println(heading);
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(.1, SI.METER), RealScalar.ZERO, heading.divide(RealScalar.of(10))));
-    System.out.println(pose);
+      System.out.println(pose);
     }
   }
 }

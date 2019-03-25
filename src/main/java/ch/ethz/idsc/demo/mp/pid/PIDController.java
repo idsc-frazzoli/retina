@@ -62,7 +62,7 @@ public class PIDController extends PIDControllerModule implements GokartPoseList
       Scalar pTermPose = errorPose.multiply(PIDTuningParams.GLOBAL.pGainPose);
       Scalar pTermAngle = errorAngle.multiply(PIDTuningParams.GLOBAL.pGain);
       Scalar iTermAngle = iErrorAngle.multiply(PIDTuningParams.GLOBAL.iGain);
-      iTermAngle = RealScalar.ZERO;
+      iTermAngle = RealScalar.ONE;
       Scalar angleOut = pTermPose.add(pTermAngle).add(iTermAngle);
       return Optional.of(angleOut);
     }
