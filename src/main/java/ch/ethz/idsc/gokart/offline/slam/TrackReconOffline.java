@@ -138,11 +138,11 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       // bayesianOccupancyGridThic.render(geometricLayer, graphics);
       bayesianOccupancyGridThin.render(geometricLayer, graphics);
       gokartRender.render(geometricLayer, graphics);
-      trackReconRender.render(geometricLayer, graphics);
-      // trackLayoutInitialGuess.render(geometricLayer, graphics);
+      //trackReconRender.render(geometricLayer, graphics);
+      trackLayoutInitialGuess.render(geometricLayer, graphics);
       // ---
       bayesianOccupancyGridThin.genObstacleMap();
-      bayesianOccupancyGridThic.genObstacleMap();
+      //bayesianOccupancyGridThic.genObstacleMap();
       consumer.accept(bufferedImage);
     }
   }

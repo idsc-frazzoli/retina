@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   ;
   public static void main(String[] args) {
     try {
-      Tensor ref = ReferenceTrajectory.of("track_20190318T143816.csv",300,1);
+      Tensor ref = ReferenceTrajectory.of("track_20190318T143816.csv",1000,1);
       System.out.println(ref);
       Export.of(HomeDirectory.Documents("ReferenceTrajectory","traj.csv"), ref.map(Magnitude.METER));
     } catch (InterruptedException | IOException e) {
