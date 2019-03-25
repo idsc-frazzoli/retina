@@ -52,7 +52,10 @@ public class PIDController extends PIDControllerModule implements GokartPoseList
 
   public static Tensor trajAngle(Tensor curve, Tensor point) {
     int index = closest(curve, point);
-    return ArcTan.of(curve.Get(index + 1).subtract(curve.Get(index)));
+    int nextIndex = index+1;
+    if (nextIndex >= curve.length()) // TODO MCP Write this clearlier
+    	nextIndex = 0;
+    return ArcTan.of(curve.Get(nextIndex).subtract(curve.Get(index)));
   }
 
   @Override
