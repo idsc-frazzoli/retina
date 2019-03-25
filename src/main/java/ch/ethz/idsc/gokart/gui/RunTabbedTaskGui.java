@@ -46,12 +46,12 @@ import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
-import ch.ethz.idsc.gokart.core.sound.GokartVoiceOutputs;
+import ch.ethz.idsc.gokart.core.sound.VoiceOutputModule;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
 import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
-import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
+import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
@@ -98,15 +98,14 @@ enum RunTabbedTaskGui {
   // AutonomySafetyModule.class // <- dead man switch
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
-      AutoboxCompactModule.class, // initialize actuation
-      AutoboxIntrospectionModule.class, // actuation monitoring
+      IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       TrackReconModule.class, //
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
       SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      GokartVoiceOutputs.class //
+      VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       UltimateTorqueVectoringModule.class, //

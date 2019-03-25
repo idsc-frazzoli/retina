@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.SimpleLcmClient;
 
-public class MPCControlUpdateLcmClient extends SimpleLcmClient<MPCControlUpdateInterface> {
+public class MPCControlUpdateLcmClient extends SimpleLcmClient<MPCControlUpdateListener> {
   public MPCControlUpdateLcmClient() {
     super(GokartLcmChannel.MPC_FORCES_CNS);
   }
@@ -15,7 +15,7 @@ public class MPCControlUpdateLcmClient extends SimpleLcmClient<MPCControlUpdateI
   protected void messageReceived(ByteBuffer byteBuffer) {
     ControlAndPredictionStepsMessage controlAndPredictionStepsMessage = //
         new ControlAndPredictionStepsMessage(byteBuffer);
-    for (MPCControlUpdateInterface listener : listeners)
+    for (MPCControlUpdateListener listener : listeners)
       listener.getControlAndPredictionSteps(controlAndPredictionStepsMessage.controlAndPredictionSteps);
   }
 }

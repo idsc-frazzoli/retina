@@ -57,6 +57,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     return RealScalar.of(uB);
   }
 
+  /** @return quantity with unit "m*s^-2" */
   public Scalar getaB() {
     return Quantity.of(aB, SI.ACCELERATION);
   }

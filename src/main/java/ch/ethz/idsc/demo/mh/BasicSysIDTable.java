@@ -50,7 +50,7 @@ import ch.ethz.idsc.tensor.sca.Round;
           time.map(Magnitude.SECOND).map(Round._6), //
           RealScalar.of(vmu931ImuFrame.timestamp_ms()), //
           velocityModule.getVelocityXY().map(Magnitude.VELOCITY).map(Round._5), //
-          velocityModule.getGyroVelocity().map(Magnitude.PER_SECOND).map(Round._5), //
+          velocityModule.getGyroZ().map(Magnitude.PER_SECOND).map(Round._5), //
           SensorsConfig.getPlanarVmu931Imu().accXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), //
           RealScalar.of(steerPosition.number().floatValue()), //
           powerPair.map(Magnitude.ARMS).map(Round._5), //
@@ -61,14 +61,14 @@ import ch.ethz.idsc.tensor.sca.Round;
     } else //
     if (channel.equals(GokartLcmChannel.POSE_POST)) {
       isPosePostAvailable = true;
-      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       Scalar step = time.subtract(lastTime);
       velocityModule.measurePose(gokartPoseEvent, step);
       lastTime = time;
       System.out.println("pose time: " + time.number().doubleValue());
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR) && !isPosePostAvailable) {
-      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       Scalar step = time.subtract(lastTime);
       velocityModule.measurePose(gokartPoseEvent, step);
       lastTime = time;
