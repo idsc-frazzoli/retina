@@ -31,14 +31,14 @@ public class PIDControllerTest extends TestCase {
     pidController.setCurve(Optional.ofNullable(curve));
     System.out.println(curve);
     pidController.first();
-    Tensor pose = Tensors.fromString("{39[m], 48[m], 1}");
+    Tensor pose = Tensors.fromString("{30[m], 30[m], 1}");
     for (int index = 0; index < 100; index++) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
       pidController.getEvent(gokartPoseEvent);
       pidController.runAlgo();
       Scalar heading = pidController.pidSteer.getHeading();
       System.out.println(heading);
-      pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(.1, SI.METER), RealScalar.ZERO, heading.divide(RealScalar.of(10))));
+      pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, heading.divide(RealScalar.of(10))));
       System.out.println(pose);
     }
   }

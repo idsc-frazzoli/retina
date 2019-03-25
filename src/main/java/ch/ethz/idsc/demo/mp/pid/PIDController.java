@@ -50,7 +50,7 @@ public class PIDController extends PIDControllerModule implements GokartPoseList
       Tensor poseXY = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).extract(0, 2);
       // find closest points on trajectory and angle
       Tensor closest = curve.get(CurveHelper.closest(curve, poseXY));
-      Scalar trajAngle = (Scalar) CurveHelper.trajAngle(curve, poseXY); // TODO Improve scalar assignment
+      Scalar trajAngle = (Scalar) CurveHelper.trajAngle(curve, poseXY); // TODO MCP Improve scalar assignment
       // measure error
       Scalar errorPose = Quantity.of(Norm._2.between(poseXY, closest),SI.METER);
       Scalar errorAngle = angle.subtract(trajAngle);

@@ -30,7 +30,7 @@ public class PIDSteer implements SteerPutProvider, StartAndStoppable {
   public Optional<SteerPutEvent> putEvent() {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-      Scalar desPos = steerMapping.getSCEfromAngle(angle);
+      Scalar desPos = steerMapping.getSCEfromAngle(heading);
       Scalar difference = desPos.subtract(currAngle);
       Scalar torqueCmd = steerPositionController.iterate(difference);
       return Optional.of(SteerPutEvent.createOn(torqueCmd));
@@ -49,13 +49,13 @@ public class PIDSteer implements SteerPutProvider, StartAndStoppable {
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 
-  private Scalar angle = Quantity.of(0.0, SIDerived.RADIAN);
+  private Scalar heading = Quantity.of(0.0, SIDerived.RADIAN);
 
-  public void setHeading(Scalar angle) {
-    this.angle = angle;
+  public void setHeading(Scalar heading) {
+    this.heading = heading;
   }
 
   public Scalar getHeading() {
-    return angle;
+    return heading;
   }
 }
