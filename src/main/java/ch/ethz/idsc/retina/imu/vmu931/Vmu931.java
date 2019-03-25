@@ -45,7 +45,7 @@ public class Vmu931 implements Runnable {
     this.set.addAll(set);
     this.dps = vmu931_DPS;
     this.resolution_g = vmu931_G;
-    this.vmu931Listener = vmu931Listener;
+    this.vmu931Listener = Objects.requireNonNull(vmu931Listener);
   }
 
   public void open() {
@@ -104,8 +104,7 @@ public class Vmu931 implements Runnable {
                 if (term == MESSAGE_TEXT_END) {
                   // string is trimmed because the reply usually terminates with two newline chars
                   final String string = new String(data, 3, size - 4).trim();
-                  // TODO JPH/DUBILAB remove printout once tested
-                  System.out.println("vmu931:[" + string + "]");
+                  // System.out.println("vmu931:[" + string + "]");
                   Vmu931Reply.match(string, replies::add);
                   serialPortWrap.advance(size);
                 } else

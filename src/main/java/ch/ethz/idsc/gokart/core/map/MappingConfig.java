@@ -66,23 +66,20 @@ public class MappingConfig {
     return lambda.number().doubleValue();
   }
 
+  private static final Tensor LBOUNDS = Tensors.vector(20, 20);
+  private static final Tensor RANGE = Tensors.vector(35, 35);
+
   /** @return Dubilab specific BayesianOccupancyGrid */
   public BayesianOccupancyGrid createBayesianOccupancyGrid() {
-    Tensor lbounds = Tensors.vector(15, 15);
-    Tensor range = Tensors.vector(55, 55);
-    return BayesianOccupancyGrid.of(lbounds, range, cellDim, obsRadius);
+    return BayesianOccupancyGrid.of(LBOUNDS, RANGE, cellDim, obsRadius);
   }
 
   public BayesianOccupancyGrid createTrackFittingBayesianOccupancyGrid() {
-    Tensor lbounds = Tensors.vector(15, 15);
-    Tensor range = Tensors.vector(55, 55);
-    return BayesianOccupancyGrid.of(lbounds, range, cellDim, trackDrivingObsRadius, true);
+    return BayesianOccupancyGrid.of(LBOUNDS, RANGE, cellDim, trackDrivingObsRadius, true);
   }
 
   /** @return dubilab specific BayesianOccupancyGrid */
   public BayesianOccupancyGrid createThinBayesianOccupancyGrid() {
-    Tensor lbounds = Tensors.vector(15, 15);
-    Tensor range = Tensors.vector(55, 55);
-    return BayesianOccupancyGrid.of(lbounds, range, cellDim, Quantity.of(0, SI.METER), true);
+    return BayesianOccupancyGrid.of(LBOUNDS, RANGE, cellDim, Quantity.of(0, SI.METER), true);
   }
 }

@@ -34,6 +34,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   };
   // ---
   private Optional<Tensor> optionalCurve = Optional.empty();
+  private boolean closed = true;
   GokartPoseEvent gokartPoseEvent = null;
 
   public CurvePurePursuitModule(PursuitConfig pursuitConfig) {
@@ -78,12 +79,13 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   // right now, "curve" does not have "m" as unit but entries are unitless.
   /** @param pose
    * @return */
-  private Optional<Scalar> getRatio(Tensor pose) {
+  private synchronized Optional<Scalar> getRatio(Tensor pose) {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent())
       return CurvePurePursuitHelper.getRatio( //
           pose, //
           optionalCurve.get(), //
+          closed, //
           isForward, //
           pursuitConfig.lookAheadMeter());
     System.err.println("no curve in pure pursuit");
@@ -91,8 +93,13 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   }
 
   /** @param curve world frame coordinates */
-  public final void setCurve(Optional<Tensor> curve) {
+  public synchronized final void setCurve(Optional<Tensor> curve) {
+    setCurve(curve, true);
+  }
+
+  public synchronized final void setCurve(Optional<Tensor> curve, boolean closed) {
     optionalCurve = curve;
+    this.closed = closed;
   }
 
   @Override // from GokartPoseListener
