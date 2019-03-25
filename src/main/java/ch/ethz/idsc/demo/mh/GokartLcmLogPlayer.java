@@ -4,10 +4,7 @@ package ch.ethz.idsc.demo.mh;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
-import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import lcm.logging.LogPlayer;
@@ -34,7 +31,7 @@ import lcm.logging.LogPlayerConfig;
     // gokartMappingModule.start();
     // ModuleAuto.INSTANCE.runOne(GyroOfflineLocalize.class);
     // ModuleAuto.INSTANCE.runOne(GlobalViewLcmModule.class);
-    //ModuleAuto.INSTANCE.runOne(PresenterLcmModule.class);
-    //ModuleAuto.INSTANCE.runOne(LocalViewLcmModule.class);
+    // ModuleAuto.INSTANCE.runOne(PresenterLcmModule.class);
+    // ModuleAuto.INSTANCE.runOne(LocalViewLcmModule.class);
   }
 }

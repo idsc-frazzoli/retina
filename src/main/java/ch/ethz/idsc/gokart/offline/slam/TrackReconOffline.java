@@ -133,7 +133,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       ImageRender imageRender = ImageRender.of(predefinedMap.getImage(), predefinedMap.range());
       imageRender.render(geometricLayer, graphics);
       gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
-      //bayesianOccupancyGridThic.render(geometricLayer, graphics);
+      // bayesianOccupancyGridThic.render(geometricLayer, graphics);
       bayesianOccupancyGridThin.render(geometricLayer, graphics);
       gokartRender.render(geometricLayer, graphics);
       trackReconRender.render(geometricLayer, graphics);
