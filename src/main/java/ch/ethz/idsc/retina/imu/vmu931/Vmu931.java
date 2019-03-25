@@ -45,7 +45,7 @@ public class Vmu931 implements Runnable {
     this.set.addAll(set);
     this.dps = vmu931_DPS;
     this.resolution_g = vmu931_G;
-    this.vmu931Listener = vmu931Listener;
+    this.vmu931Listener = Objects.requireNonNull(vmu931Listener);
   }
 
   public void open() {

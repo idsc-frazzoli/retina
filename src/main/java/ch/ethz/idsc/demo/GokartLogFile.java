@@ -1626,6 +1626,16 @@ public enum GokartLogFile implements LogFile {
   _20190325T083437_be8261a9,
   /** steer torque to angle experiment */
   _20190325T112618_cfdd7814,
+  /** short driving */
+  _20190325T134326_583c4e95,
+  /** manual and mpc driving */
+  _20190325T135103_583c4e95,
+  /** manual and mpc driving */
+  _20190325T140608_583c4e95,
+  /** fast manual driving */
+  _20190325T141033_583c4e95,
+  /** test of pid trajectory following */
+  _20190325T144606_47d5c461,
   /***************************************************/
   ;
   // ---

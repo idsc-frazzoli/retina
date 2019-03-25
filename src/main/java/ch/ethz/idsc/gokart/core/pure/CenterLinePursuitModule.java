@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.map.BSplineTrack;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
@@ -47,13 +48,16 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
   @Override // from MPCBSplineTrackListener
   public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
     Tensor curve = null;
+    boolean closed = true;
     if (optional.isPresent()) {
-      curve = optional.get().bSplineTrack().getLineMiddle(RESOLUTION).map(Magnitude.METER);
-      System.out.println("updated curve " + Dimensions.of(curve));
+      BSplineTrack bSplineTrack = optional.get().bSplineTrack();
+      curve = bSplineTrack.getLineMiddle(RESOLUTION).map(Magnitude.METER);
+      closed = bSplineTrack.isClosed();
+      System.out.println("updated curve " + Dimensions.of(curve) + " closed=" + closed);
     } else {
       System.out.println("center line no waypoints");
     }
-    curvePurePursuitModule.setCurve(Optional.ofNullable(curve));
+    curvePurePursuitModule.setCurve(Optional.ofNullable(curve), closed);
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(curve);
   }
