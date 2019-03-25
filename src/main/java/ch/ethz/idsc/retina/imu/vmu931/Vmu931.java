@@ -104,8 +104,7 @@ public class Vmu931 implements Runnable {
                 if (term == MESSAGE_TEXT_END) {
                   // string is trimmed because the reply usually terminates with two newline chars
                   final String string = new String(data, 3, size - 4).trim();
-                  // TODO JPH/DUBILAB remove printout once tested
-                  System.out.println("vmu931:[" + string + "]");
+                  // System.out.println("vmu931:[" + string + "]");
                   Vmu931Reply.match(string, replies::add);
                   serialPortWrap.advance(size);
                 } else
