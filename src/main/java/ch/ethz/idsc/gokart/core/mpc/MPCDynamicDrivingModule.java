@@ -24,25 +24,26 @@ public class MPCDynamicDrivingModule extends MPCAbstractDrivingModule {
   }
 
   @Override // from MPCAbstractDrivingModule
-  MPCOptimizationParameter createOptimizationParameter() {
-    Scalar maxSpeed = mpcOptimizationConfig.maxSpeed;
-    Scalar minSpeed = mpcOptimizationConfig.minSpeed;
-    Scalar maxxAcc = mpcOptimizationConfig.maxLonAcc;
-    Scalar steeringReg = mpcOptimizationConfig.steeringReg;
-    Scalar specificMoI = mpcOptimizationConfig.specificMoI;
-    Scalar mpcMaxSpeed = minSpeed;
-    Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
-    if (optional.isPresent()) { // is joystick button "autonomoRus" pressed?
-      ManualControlInterface actualJoystick = optional.get();
-      Scalar forward = actualJoystick.getAheadPair_Unit().Get(1);
-      mpcMaxSpeed = maxSpeed.multiply(forward);
-      mpcMaxSpeed = Max.of(minSpeed, mpcMaxSpeed);
-      // maxSpeed = Quantity.of(1, SI.VELOCITY);
-      // System.out.println("got joystick speed value: " + maxSpeed);
-    }
-    // send message with max speed
-    // optimization parameters will have more values in the future
-    // MPCOptimizationParameter mpcOptimizationParameter = new MPCOptimizationParameter(maxSpeed, maxXacc, maxYacc);
-    return new MPCOptimizationParameterDynamic(mpcMaxSpeed, maxxAcc, steeringReg, specificMoI);
+  MPCOptimizationParameterDynamic createOptimizationParameter( //
+      MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
+    return optimizationParameter(mpcOptimizationConfig, optional);
+  }
+
+  static MPCOptimizationParameterDynamic optimizationParameter( //
+      MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
+    final Scalar maxSpeed = mpcOptimizationConfig.maxSpeed;
+    final Scalar minSpeed = mpcOptimizationConfig.minSpeed;
+    final Scalar mpcMaxSpeed;
+    if (optional.isPresent()) {
+      ManualControlInterface manualControlInterface = optional.get();
+      Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
+      mpcMaxSpeed = Max.of(minSpeed, maxSpeed.multiply(forward));
+    } else
+      mpcMaxSpeed = minSpeed; // fallback speed value
+    return new MPCOptimizationParameterDynamic( //
+        mpcMaxSpeed, //
+        mpcOptimizationConfig.maxLonAcc, //
+        mpcOptimizationConfig.steeringReg, //
+        mpcOptimizationConfig.specificMoI);
   }
 }

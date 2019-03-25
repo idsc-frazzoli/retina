@@ -5,7 +5,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.Scalar;
 
 // TODO MH is it necessary to MPCStateProviderClient
-/* package */ abstract class MPCBraking extends MPCControlUpdateListener implements //
+/* package */ abstract class MPCBraking extends MPCControlUpdateCapture implements //
     MPCStateProviderClient, StartAndStoppable {
   /** @param time
    * @return relative brake position in the interval [0, 1] */

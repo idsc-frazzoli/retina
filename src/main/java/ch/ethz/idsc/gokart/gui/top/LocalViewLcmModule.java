@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.gui.top;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
-import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
@@ -15,7 +14,6 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -33,41 +31,49 @@ public class LocalViewLcmModule extends AbstractModule {
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
-  private final MPCExpectationRender mpcExpectationRender = new MPCExpectationRender(MINOR);
+  // ---
   private final TimerFrame timerFrame = new TimerFrame();
-  private final AccelerationRender accelerationRender = new AccelerationRender(MINOR, 100);
-  private final LidarLocalizationModule lidarLocalizationModule = //
-      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
-  private final GroundSpeedRender groundSpeedRender = new GroundSpeedRender(lidarLocalizationModule, MINOR);
-  private final BrakeCalibrationRender brakeCalibrationRender = new BrakeCalibrationRender(MINORRIGHT);
-  private final GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() {
-    gokartPoseLcmClient.startSubscriptions();
-    rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
-    rimoGetLcmClient.addListener(mpcExpectationRender);
-    rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
-    linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
-    gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
-    rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
-    // ---
-    vmu931ImuLcmClient.addListener(vmu931ImuFrame -> accelerationRender.setAccelerationXY( //
-        SensorsConfig.getPlanarVmu931Imu().accXY(vmu931ImuFrame)));
-    // ---
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
-    timerFrame.geometricComponent.addRenderInterface(gokartRender);
-    timerFrame.geometricComponent.addRenderInterface(accelerationRender);
-    timerFrame.geometricComponent.addRenderInterface(gokartRender);
-    timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
-    timerFrame.geometricComponent.addRenderInterface(mpcExpectationRender);
-    timerFrame.geometricComponent.addRenderInterface(brakeCalibrationRender);
-    TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(Tensors.vector(1, -2.5, 0));
-    rimoGetLcmClient.addListener(tachometerMustangDash);
-    timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);
+    {
+      GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
+      rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
+      rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
+      rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
+      linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
+      gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
+      timerFrame.geometricComponent.addRenderInterface(gokartRender);
+    }
+    {
+      AccelerationRender accelerationRender = new AccelerationRender(MINOR, 100);
+      vmu931ImuLcmClient.addListener(accelerationRender);
+      timerFrame.geometricComponent.addRenderInterface(accelerationRender);
+    }
+    {
+      GroundSpeedRender groundSpeedRender = new GroundSpeedRender(MINOR, 50);
+      gokartPoseLcmClient.addListener(groundSpeedRender);
+      timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
+    }
+    {
+      MPCExpectationRender mpcExpectationRender = new MPCExpectationRender(MINOR);
+      rimoGetLcmClient.addListener(mpcExpectationRender);
+      timerFrame.geometricComponent.addRenderInterface(mpcExpectationRender);
+    }
+    {
+      BrakeCalibrationRender brakeCalibrationRender = new BrakeCalibrationRender(MINORRIGHT);
+      timerFrame.geometricComponent.addRenderInterface(brakeCalibrationRender);
+    }
+    {
+      TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(Tensors.vector(1, -2.5, 0));
+      rimoGetLcmClient.addListener(tachometerMustangDash);
+      timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);
+    }
     // ---
+    gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();

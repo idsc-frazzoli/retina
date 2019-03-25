@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
@@ -18,11 +19,12 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 
-public abstract class MPCAbstractDrivingModule extends AbstractModule implements MPCBSplineTrackListener, Runnable {
+public abstract class MPCAbstractDrivingModule extends AbstractModule implements //
+    MPCBSplineTrackListener, Runnable {
   private final TrackReconModule trackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  public final LcmMPCControlClient lcmMPCControlClient;
-  final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
+  private final LcmMPCControlClient lcmMPCControlClient;
+  private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
   // private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
@@ -31,16 +33,16 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final Thread thread = new Thread(this);
-  private boolean running = true;
-  // private final Timing timing;
-  // private boolean useTorqueVectoring;
   private final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
-  private Optional<MPCBSplineTrack> mpcBSplineTrack = Optional.empty();
   private final MPCPreviewableTrack track;
-  final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  final MPCRimoProvider mpcRimoProvider;
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   private final MPCSteerProvider mpcSteerProvider;
+  // ---
+  final MPCRimoProvider mpcRimoProvider;
   final MPCLinmotProvider mpcLinmotProvider;
+  // ---
+  private boolean running = true;
+  private Optional<MPCBSplineTrack> mpcBSplineTrack = Optional.empty();
 
   /** switch to testing binary that send back test data has to be called before first */
   public void switchToTest() {
@@ -49,8 +51,9 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
 
   /** create Module with standard estimator */
   MPCAbstractDrivingModule(LcmMPCControlClient lcmMPCControlClient, Timing timing) {
-    // using dynamic is not a mistake here:
-    this(lcmMPCControlClient, new SimpleDynamicMPCStateEstimationProvider(timing), timing, null);
+    this(lcmMPCControlClient, //
+        new SimpleDynamicMPCStateEstimationProvider(timing), // the use of "dynamic" is intended
+        timing, null);
   }
 
   /** Hint: constructor only for testing
@@ -73,14 +76,12 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     initModules();
   }
 
-  abstract MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering);
-
   private final void initModules() {
     // link mpc steering
-    lcmMPCControlClient.registerControlUpdateLister(mpcSteering);
-    lcmMPCControlClient.registerControlUpdateLister(mpcPower);
-    lcmMPCControlClient.registerControlUpdateLister(mpcBraking);
-    lcmMPCControlClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
+    lcmMPCControlClient.addControlUpdateListener(mpcSteering);
+    lcmMPCControlClient.addControlUpdateListener(mpcPower);
+    lcmMPCControlClient.addControlUpdateListener(mpcBraking);
+    // lcmMPCControlClient.addControlUpdateListener(MPCInformationProvider.getInstance());
     // lcmMPCPathFollowingClient.registerControlUpdateLister(MPCActiveCompensationLearning.getInstance());
     // state estimation provider
     mpcBraking.setStateEstimationProvider(mpcStateEstimationProvider);
@@ -88,19 +89,15 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     mpcSteering.setStateEstimationProvider(mpcStateEstimationProvider);
   }
 
-  abstract MPCOptimizationParameter createOptimizationParameter();
-
   private final void requestControl() {
-    MPCOptimizationParameter mpcOptimizationParameter = createOptimizationParameter();
+    MPCOptimizationParameter mpcOptimizationParameter = //
+        createOptimizationParameter(mpcOptimizationConfig, manualControlProvider.getManualControl());
     lcmMPCControlClient.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
     GokartState state = mpcStateEstimationProvider.getState();
     Tensor safetyRadiusPosition = state.getCenterPosition();
     MPCPathParameter mpcPathParameter = null;
     MPCPreviewableTrack liveTrack = mpcBSplineTrack.orElse(null);
-    // Objects.isNull(gokartTrackReconModule) //
-    // ? null
-    // : gokartTrackReconModule.getMPCBSplineTrack();
     Scalar padding = MPCOptimizationConfig.GLOBAL.padding;
     Scalar qpFactor = MPCOptimizationConfig.GLOBAL.qpFactor;
     Scalar qpLimit = MPCOptimizationConfig.GLOBAL.qpLimit;
@@ -115,7 +112,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
       System.out.println("no Track to drive on! :O");
   }
 
-  @Override
+  @Override // from AbstractModule
   protected final void first() {
     if (Objects.nonNull(trackReconModule))
       trackReconModule.listenersAdd(this);
@@ -124,32 +121,20 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     // ---
     lcmMPCControlClient.start();
     mpcStateEstimationProvider.first();
-    // MPCActiveCompensationLearning.getInstance().setActive(true);
     manualControlProvider.start();
     // ---
     SteerSocket.INSTANCE.addPutProvider(mpcSteerProvider);
-    // ---
     RimoSocket.INSTANCE.addPutProvider(mpcRimoProvider);
-    // ---
     LinmotSocket.INSTANCE.addPutProvider(mpcLinmotProvider);
     //
     mpcBraking.start();
-    // mpcSteering.start();
-    // mpcPower.start();
-    lcmMPCControlClient.registerControlUpdateLister(new MPCControlUpdateListenerWithAction() {
-      @Override
-      void doAction() {
-        // we got an update
-        // interupt
-        thread.interrupt();
-      }
-    });
+    lcmMPCControlClient.addControlUpdateListener(new MPCControlUpdateInterrupt(thread));
     thread.start();
     // ---
     System.out.println("Scheduling Timer: start");
   }
 
-  @Override
+  @Override // from AbstractModule
   protected final void last() {
     System.out.println("cancel timer: ending");
     running = false;
@@ -162,9 +147,6 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     RimoSocket.INSTANCE.removePutProvider(mpcRimoProvider);
     //
     mpcBraking.stop();
-    // mpcSteering.stop();
-    // mpcPower.stop();
-    // MPCActiveCompensationLearning.getInstance().setActive(false);
     // ---
     lcmMPCControlClient.stop();
     mpcStateEstimationProvider.last();
@@ -174,13 +156,14 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
       trackReconModule.listenersRemove(this);
   }
 
+  /***************************************************/
   @Override // from MPCBSplineTrackListener
   public final void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
     System.out.println("kinematic mpc bspline track, present=" + optional.isPresent());
     this.mpcBSplineTrack = optional;
   }
 
-  @Override
+  @Override // from Runnable
   public final void run() {
     while (running) {
       requestControl();
@@ -192,4 +175,16 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     }
     System.out.println("Thread terminated");
   }
+
+  /***************************************************/
+  /** @param mpcOptimizationConfig non-null
+   * @param optional
+   * @return */
+  abstract MPCOptimizationParameter createOptimizationParameter( //
+      MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional);
+
+  /** @param mpcStateEstimationProvider
+   * @param mpcSteering
+   * @return */
+  abstract MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering);
 }

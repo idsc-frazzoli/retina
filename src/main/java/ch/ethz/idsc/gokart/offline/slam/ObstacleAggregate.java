@@ -70,7 +70,7 @@ public class ObstacleAggregate implements OfflineLogListener, LidarSpacialListen
     if (channel.equals(GokartPosePostChannel.INSTANCE.channel()
     // GokartPoseChannel.INSTANCE.channel() //
     )) {
-      pose = new GokartPoseEvent(byteBuffer).getPose();
+      pose = GokartPoseEvent.of(byteBuffer).getPose();
       geometricLayer = new GeometricLayer(MODEL2PIXEL, Array.zeros(3));
       geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(pose));
       geometricLayer.pushMatrix(Se2Utils.toSE2Translation(SensorsConfig.GLOBAL.vlp16));

@@ -29,6 +29,13 @@ package ch.ethz.idsc.retina.imu.vmu931;
     return command(ID_STATUS);
   }
 
+  // Self-test started.
+  // Test passed. Your device works fine.
+  public static final String SELFTEST_STARTED = "Self-test started.";
+  public static final String SELFTEST_COMPLETED = "Test passed. Your device works fine.";
+  public static final String CALIBRATION_STARTED = "Calibration started.";
+  public static final String CALIBRATION_COMPLETED = "Calibration completed.";
+
   public static byte[] requestSelftest() {
     return command(ID_SELFTEST);
   }
