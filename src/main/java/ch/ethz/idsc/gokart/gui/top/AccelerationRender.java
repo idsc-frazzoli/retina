@@ -47,6 +47,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     graphics.setColor(Color.GRAY);
+    // TODO the drawing of axes is not appropriate here
     graphics.draw(geometricLayer.toPath2D(LINE_X));
     graphics.draw(geometricLayer.toPath2D(LINE_Y));
     geometricLayer.pushMatrix(DIAGONAL);

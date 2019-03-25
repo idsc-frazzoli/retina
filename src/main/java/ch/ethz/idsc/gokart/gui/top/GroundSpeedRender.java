@@ -17,20 +17,21 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
+import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
+import ch.ethz.idsc.tensor.sca.Round;
 
-// TODO DUBENDORF test
 /* package */ class GroundSpeedRender implements GokartPoseListener, RenderInterface {
-  private static final Tensor POLYGON = CirclePoints.of(8).multiply(RealScalar.of(.3));
+  private static final Tensor POLYGON = CirclePoints.of(8).multiply(RealScalar.of(0.3));
   private static final Stroke STROKE_DEFAULT = new BasicStroke();
   private static final Tensor ORIGIN = Array.zeros(2);
-  private static final Scalar SCALE = RealScalar.of(0.1);
+  // private static final Scalar SCALE = RealScalar.of(0.1);
+  private static final Tensor DIAGONAL = DiagonalMatrix.of(.1, .1, 1);
   // ---
   private final Tensor xya;
   private final BoundedLinkedList<Tensor> boundedLinkedList;
@@ -40,7 +41,7 @@ import ch.ethz.idsc.tensor.lie.CirclePoints;
   public GroundSpeedRender(Tensor xya, int limit) {
     this.xya = xya;
     boundedLinkedList = new BoundedLinkedList<>(limit);
-    colorDataIndexed = ColorLookup.decreasing(limit, ColorDataGradients.ALPINE).deriveWithAlpha(128);
+    colorDataIndexed = ColorLookup.decreasing(limit, ColorDataGradients.ALPINE).deriveWithAlpha(64);
   }
 
   @Override // from GokartPoseListener
@@ -54,6 +55,7 @@ import ch.ethz.idsc.tensor.lie.CirclePoints;
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
+    geometricLayer.pushMatrix(DIAGONAL);
     int count = 0;
     synchronized (boundedLinkedList) {
       for (Tensor velXY : boundedLinkedList) {
@@ -64,15 +66,19 @@ import ch.ethz.idsc.tensor.lie.CirclePoints;
         ++count;
       }
     }
-    graphics.setColor(Color.BLUE);
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.03)));
+    Tensor velocityXY = gokartPoseEvent.getVelocityXY();
     {
       GraphicsUtil.setQualityHigh(graphics);
-      Tensor line = Tensors.of(ORIGIN, gokartPoseEvent.getVelocityXY().multiply(SCALE));
+      graphics.setColor(Color.DARK_GRAY);
+      graphics.drawString("vel=" + velocityXY.map(Round._2), 0, 20);
+      Tensor line = Tensors.of(ORIGIN, velocityXY);
+      graphics.setColor(Color.BLUE);
       graphics.draw(geometricLayer.toPath2D(line));
       GraphicsUtil.setQualityDefault(graphics);
     }
     graphics.setStroke(STROKE_DEFAULT);
+    geometricLayer.popMatrix();
     geometricLayer.popMatrix();
   }
 }
