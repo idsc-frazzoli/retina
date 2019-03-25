@@ -1,5 +1,5 @@
-// code by jph
-package ch.ethz.idsc.gokart.core.pure;
+// code by mcp (used CenterLinePursuiteModule by jph as model)
+package ch.ethz.idsc.demo.mp.pid;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -14,30 +14,26 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 
-/** module requires the GokartTrackReconModule to provide the center line of an identified track */
-public class CenterLinePursuitModule extends AbstractModule implements MPCBSplineTrackListener {
-  /** in dubendorf resolution 100 yields points approx 0.5[m] apart.
-   * resolution = 200 results in a spacing of ~0.25[m] */
+/** module requires the GokartTrackReconModule to provide the center line of an
+ * identified track */
+public class PIDModule extends AbstractModule implements MPCBSplineTrackListener {
   private static final int RESOLUTION = 200;
-  // ---
   private final TrackReconModule trackReconModule = ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  private final CurvePurePursuitModule curvePurePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
+  private final PIDController pidController = new PIDController(PIDTuningParams.GLOBAL);
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
-  @Override
+  @Override // from abstractModule
   protected void first() {
     if (Objects.nonNull(trackReconModule))
       trackReconModule.listenersAdd(this);
     else
-      System.err.println("did not subscribe to track info !!!");
-    // ---
-    curvePurePursuitModule.launch();
+      System.err.println("no track info");
+    pidController.launch();
   }
 
-  @Override
+  @Override // from abstractModule
   protected void last() {
-    curvePurePursuitModule.terminate();
-    // ---
+    pidController.terminate();
     if (Objects.nonNull(trackReconModule))
       trackReconModule.listenersRemove(this);
     if (Objects.nonNull(globalViewLcmModule))
@@ -53,7 +49,7 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
     } else {
       System.out.println("center line no waypoints");
     }
-    curvePurePursuitModule.setCurve(Optional.ofNullable(curve));
+    pidController.setCurve(Optional.ofNullable(curve));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(curve);
   }
