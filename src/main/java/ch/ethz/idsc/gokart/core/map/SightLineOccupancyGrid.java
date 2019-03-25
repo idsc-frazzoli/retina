@@ -17,10 +17,10 @@ import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.sca.Ceiling;
+import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -33,16 +33,15 @@ public class SightLineOccupancyGrid implements RenderInterface, OccupancyGrid {
     /** @param lbounds vector of length 2
      * @param range effective size of grid in coordinate space
      * @param cellDim non-negative dimension of cell with unit SI.METER
-     * @param obstacleRadius with unit SI.METER
      * @return SightLineOccupancyGrid with grid dimensions ceil'ed to fit a whole number of cells per dimension */
-    public static SightLineOccupancyGrid of(Tensor lbounds, Tensor range, Scalar cellDim, Scalar obstacleRadius) {
+    public static SightLineOccupancyGrid of(Tensor lbounds, Tensor range, Scalar cellDim) {
         // sizeCeil is for instance {200[m^-1], 200[m^-1]}
         Tensor sizeCeil = Ceiling.of(range.divide(Sign.requirePositive(cellDim)));
         Tensor rangeCeil = sizeCeil.multiply(cellDim);
         Dimension dimension = new Dimension( //
                 Magnitude.PER_METER.toInt(sizeCeil.Get(0)), //
                 Magnitude.PER_METER.toInt(sizeCeil.Get(1)));
-        return new SightLineOccupancyGrid(lbounds, rangeCeil, dimension, obstacleRadius);
+        return new SightLineOccupancyGrid(lbounds, rangeCeil, dimension);
     }
 
     private static final byte MASK_OCCUPIED = 0;
@@ -57,15 +56,13 @@ public class SightLineOccupancyGrid implements RenderInterface, OccupancyGrid {
     private final byte[] imagePixels;
     private final Graphics2D imageGraphics;
     private final Tensor scaling;
-    private final Scalar obsDilationRadius;
-    private final double obsPixelRadius;
     // ---
     private GeometricLayer lidar2cellLayer;
     private GeometricLayer world2cellLayer;
     private Tensor lbounds;
     private Tensor gokart2world = null;
 
-    private SightLineOccupancyGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension, Scalar obstacleRadius) {
+    private SightLineOccupancyGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension) {
         VectorQ.requireLength(rangeCeil, 2);
         System.out.print("Grid range: " + rangeCeil + "\n");
         System.out.print("Grid size: " + dimension + "\n");
@@ -82,8 +79,6 @@ public class SightLineOccupancyGrid implements RenderInterface, OccupancyGrid {
         imageGraphics = obstacleImage.createGraphics();
         imageGraphics.setColor(COLOR_OCCUPIED);
         imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
-        obsDilationRadius = Magnitude.METER.apply(obstacleRadius);
-        obsPixelRadius = obsDilationRadius.multiply(cellDimInv).number().doubleValue();
         // ---
         Tensor grid2cell = DiagonalMatrix.of(cellDimInv, cellDimInv, RealScalar.ONE);
         Tensor world2grid = getWorld2grid();
@@ -111,7 +106,7 @@ public class SightLineOccupancyGrid implements RenderInterface, OccupancyGrid {
 
     /** set vehicle pose w.r.t world frame
      * @param pose vector of the form {px, py, heading} */
-    public void setPose(Tensor pose) {
+    public synchronized void setPose(Tensor pose) {
         gokart2world = GokartPoseHelper.toSE2Matrix(pose);
         lidar2cellLayer.popMatrix();
         lidar2cellLayer.popMatrix();
@@ -119,7 +114,23 @@ public class SightLineOccupancyGrid implements RenderInterface, OccupancyGrid {
         lidar2cellLayer.pushMatrix(lidar2gokart);
     }
 
-    public void updateMap(Tensor polygon) {
+    /** function is used as key
+     * @param pos vector of the form {px, py, ...}; only the first two entries are considered
+     * @return Tensor {pix, piy} */
+    private Tensor lidarToCell(Tensor pos) {
+        // TODO investigate if class with 2 int's is an attractive replacement as key type
+        return Floor.of(lidar2cellLayer.toVector(pos));
+    }
+
+    private int cellToIdx(Tensor cell) {
+        return cellToIdx(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
+    }
+
+    private int cellToIdx(int pix, int piy) {
+        return piy * dimX() + pix;
+    }
+
+    public synchronized void updateMap(Tensor polygon) {
         if (Objects.nonNull(gokart2world)) {
             freeSpace(polygon);
             obstacles(polygon);
@@ -138,10 +149,9 @@ public class SightLineOccupancyGrid implements RenderInterface, OccupancyGrid {
         imageGraphics.setColor(COLOR_OCCUPIED);
         polygon.forEach(point -> {
             if (!point.equals(Array.zeros(2))) {
-                Point2D point2D = lidar2cellLayer.toPoint2D(point);
-                Ellipse2D sphere = new Ellipse2D.Double(point2D.getX(), point2D.getY(), //
-                        2 * obsPixelRadius, 2 * obsPixelRadius);
-                imageGraphics.fill(sphere);
+                Tensor cell = lidarToCell(point);
+                if (isCellInGrid(cell))
+                    imagePixels[cellToIdx(cell)] = MASK_OCCUPIED;
             }
         });
     }
@@ -162,8 +172,8 @@ public class SightLineOccupancyGrid implements RenderInterface, OccupancyGrid {
         return gridSize;
     }
 
-    private int cellToIdx(int pix, int piy) {
-        return piy * dimX() + pix;
+    private boolean isCellInGrid(Tensor cell) {
+        return isCellInGrid(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
     }
 
     private boolean isCellInGrid(int pix, int piy) {
