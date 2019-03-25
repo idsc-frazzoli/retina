@@ -14,8 +14,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 
+// TODO MH document all getter functions!
 /* package */ class GokartControl implements BufferInsertable, OfflineVectorInterface {
-  public static final int LENGTH = 20;
+  static final int LENGTH = 20;
   private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
   // ---
   private final float uL;
@@ -56,6 +57,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     return RealScalar.of(uB);
   }
 
+  /** @return quantity with unit "m*s^-2" */
   public Scalar getaB() {
     return Quantity.of(aB, SI.ACCELERATION);
   }
@@ -68,7 +70,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     aB = byteBuffer.getFloat();
   }
 
-  @Override
+  @Override // from BufferInsertable
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putFloat(uL);
     byteBuffer.putFloat(uR);
@@ -77,7 +79,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     byteBuffer.putFloat(aB);
   }
 
-  @Override
+  @Override // from BufferInsertable
   public int length() {
     return LENGTH;
   }

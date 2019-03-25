@@ -48,7 +48,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
     // compute (negative) angular slip
     Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
-    Scalar wantedAcceleration = cnsStep.gokartControl.getaB();// when used in
+    Scalar wantedAcceleration = cnsStep.gokartControl().getaB();// when used in
     // get midpoint of powered acceleration range
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar midpoint = (Scalar) Mean.of(minmax);
@@ -59,15 +59,5 @@ import ch.ethz.idsc.tensor.sca.Tan;
         angularSlip, //
         Max.of(NOACCELERATION, wantedAcceleration), //
         gyroZ));
-  }
-
-  @Override
-  public void start() {
-    // TODO MH document why empty
-  }
-
-  @Override
-  public void stop() {
-    // TODO MH document why empty
   }
 }

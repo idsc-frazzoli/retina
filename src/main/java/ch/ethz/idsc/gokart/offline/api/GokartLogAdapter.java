@@ -24,6 +24,8 @@ public class GokartLogAdapter implements GokartLogInterface {
     this.folder = folder;
     this.name = name;
     File file = new File(folder, GokartLogConfig.class.getSimpleName() + ".properties");
+    if (!file.isFile())
+      System.err.println("warning");
     TensorProperties.wrap(gokartLogConfig).tryLoad(file);
   }
 

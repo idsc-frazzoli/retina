@@ -42,26 +42,12 @@ import ch.ethz.idsc.tensor.sca.Tan;
     // compute (negative) angular slip
     Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
     Scalar angularSlip = wantedRotationRate.subtract(gyroZ);
-    Scalar wantedAcceleration = cnsStep.gokartControl.getaB();// when used in
+    Scalar wantedAcceleration = cnsStep.gokartControl().getaB();// when used in
     return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(//
         expectedRotationPerMeterDriven, //
         tangentialSpeed, //
         angularSlip, //
         wantedAcceleration, //
         gyroZ));
-  }
-
-  // @Override // from MPCStateProviderClient
-  // public void setStateEstimationProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
-  // this.mpcStateEstimationProvider = mpcStateEstimationProvider;
-  // }
-  @Override
-  public void start() {
-    // TODO MH document that empty implementation is intended
-  }
-
-  @Override
-  public void stop() {
-    // TODO MH document that empty implementation is intended
   }
 }

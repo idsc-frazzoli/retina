@@ -49,7 +49,6 @@ public class SelfCalibratingBrakeFunction extends AbstractBrakeFunction {
     // System.out.println(expectedBrakingDeceleration + "/" + realBrakingDeceleration);
     if (!lockedUp && !tooSlow && !notEnoughBraking) {
       Scalar newCurveCorrectionFactor = realBrakingDeceleration.divide(expectedBrakingDeceleration).multiply(curveCorrectionFactor);
-      // curveCorrectionFactor = (Scalar) geodesicIIR1Filter.apply(newCurveCorrectionFactor);
       Scalar alpha = BrakeFunctionConfig.GLOBAL.geodesicFilterAlpha;
       curveCorrectionFactor = RnGeodesic.INSTANCE.split(curveCorrectionFactor, newCurveCorrectionFactor, alpha).Get();
       // System.out.println(curveCorrectionFactor);

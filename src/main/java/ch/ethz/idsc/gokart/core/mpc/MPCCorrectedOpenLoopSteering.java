@@ -22,10 +22,10 @@ import ch.ethz.idsc.tensor.Tensors;
     if (Objects.isNull(cnpStep))
       return Optional.empty();
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
-    Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl.getudotS());
+    Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl().getudotS());
     return Optional.of(Tensors.of( //
-        cnpStep.gokartState.getS().add(rampUp), //
-        cnpStep.gokartControl.getudotS().multiply(dotFactor))//
+        cnpStep.gokartState().getS().add(rampUp), //
+        cnpStep.gokartControl().getudotS().multiply(dotFactor))//
         .multiply(MPCOptimizationConfig.GLOBAL.steerMultiplicator));
   }
 
@@ -40,22 +40,7 @@ import ch.ethz.idsc.tensor.Tensors;
   // .multiply(mpcActiveCompensationLearning.steeringCorrection);
   // }
   @Override
-  public void getControlAndPredictionSteps(ControlAndPredictionSteps controlAndPredictionSteps) {
-    cns = controlAndPredictionSteps;
-  }
-
-  @Override
   public void setStateEstimationProvider(MPCStateEstimationProvider mpcstateProvider) {
     this.mpcStateProvider = mpcstateProvider;
-  }
-
-  @Override
-  public void start() {
-    // TODO MH document that empty implementation is desired
-  }
-
-  @Override
-  public void stop() {
-    // TODO MH document that empty implementation is desired
   }
 }

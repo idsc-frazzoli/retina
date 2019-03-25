@@ -65,30 +65,25 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
   @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    // if (channel.equals(DavisImuChannel.INSTANCE.channel()))
-    // lidarLocalizationModule.imuFrame(new DavisImuFrame(byteBuffer));
-    // else //
     if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
       lidarLocalizationModule.vmu931ImuFrame(new Vmu931ImuFrame(byteBuffer));
-      // lidarLocalizationModule.getPose(), //
-      Tensor velocity = lidarLocalizationModule.getVelocity();
       tableBuilderOdometry.appendRow( //
           Magnitude.SECOND.apply(time), //
           GokartPoseHelper.toUnitless(lidarLocalizationModule.getPose()), //
-          velocity.extract(0, 2).map(Magnitude.VELOCITY), //
-          velocity.Get(2).map(Magnitude.PER_SECOND), //
-          lidarLocalizationModule.getGyroZFiltered().map(Magnitude.PER_SECOND) //
+          lidarLocalizationModule.getVelocityXY().map(Magnitude.VELOCITY), //
+          lidarLocalizationModule.getGyroZ().map(Magnitude.PER_SECOND), //
+          lidarLocalizationModule.getGyroZ_vmu931().map(Magnitude.PER_SECOND) //
       );
     } else //
     if (channel.equals(CHANNEL_LIDAR))
       velodyneDecoder.lasers(byteBuffer);
     else //
     if (channel.equals(GokartPoseChannel.INSTANCE.channel()))
-      prev_poseEvent = new GokartPoseEvent(byteBuffer);
+      prev_poseEvent = GokartPoseEvent.of(byteBuffer);
     else //
     if (channel.equals(GokartPosePostChannel.INSTANCE.channel()) && //
         Objects.nonNull(prev_poseEvent)) {
-      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       tableBuilder.appendRow( //
           Magnitude.SECOND.apply(time), //
           prev_poseEvent.asVector(), //

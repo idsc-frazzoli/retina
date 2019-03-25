@@ -18,23 +18,13 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     ControlAndPredictionStep cnsStep = getStep(time);
     if (Objects.isNull(cnsStep))
       return Optional.empty();
-    Scalar braking = Ramp.FUNCTION.apply(cnsStep.gokartControl.getaB().negate());
+    Scalar braking = Ramp.FUNCTION.apply(cnsStep.gokartControl().getaB().negate());
     Scalar leftPower = powerLookupTable.getNeededCurrent(//
-        cnsStep.gokartControl.getuL().add(braking), //
-        cnsStep.gokartState.getUx());
+        cnsStep.gokartControl().getuL().add(braking), //
+        cnsStep.gokartState().getUx());
     Scalar rightPower = powerLookupTable.getNeededCurrent(//
-        cnsStep.gokartControl.getuR().add(braking), //
-        cnsStep.gokartState.getUx());
+        cnsStep.gokartControl().getuR().add(braking), //
+        cnsStep.gokartState().getUx());
     return Optional.of(Tensors.of(leftPower, rightPower));
-  }
-
-  @Override
-  public void start() {
-    // TODO MH document why empty
-  }
-
-  @Override
-  public void stop() {
-    // TODO MH document why empty
   }
 }

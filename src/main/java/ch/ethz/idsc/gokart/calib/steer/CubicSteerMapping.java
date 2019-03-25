@@ -11,13 +11,13 @@ import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 public class CubicSteerMapping implements SteerMapping {
-  /** DO NOT MODIFY CONSTANTS BUT CREATE SECOND VERSION */
-  private static final SteerMapping APPROXIMATION_1 = new CubicSteerMapping( //
+  /** DO NOT MODIFY CONSTANTS BUT CREATE SECOND VERSION IF NEEDED */
+  private static final SteerMapping INSTANCE = new CubicSteerMapping( //
       Quantity.of(+0.9189766407706671, "rad*SCE^-1"), Quantity.of(-0.5606503091815459, "rad*SCE^-3"), //
       Quantity.of(+0.9755773866318296, "SCE"), Quantity.of(+2.325797449027361, "SCE"));
 
-  public static SteerMapping approximation_1() {
-    return APPROXIMATION_1;
+  public static SteerMapping approximation() {
+    return INSTANCE;
   }
 
   // ---

@@ -12,8 +12,8 @@ import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
+import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTrackerModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
@@ -27,10 +27,8 @@ import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
-import ch.ethz.idsc.gokart.core.man.ManualGroupModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
-import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.man.UltimateTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
@@ -47,12 +45,12 @@ import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
-import ch.ethz.idsc.gokart.core.sound.GokartVoiceOutputs;
+import ch.ethz.idsc.gokart.core.sound.VoiceOutputModule;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
 import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
-import ch.ethz.idsc.gokart.gui.lab.AutoboxCompactModule;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
+import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
@@ -91,24 +89,22 @@ enum RunTabbedTaskGui {
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
+      Vmu931CalibrationWatchdog.class, //
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
       PoseLcmServerModule.class, // publishes pose
-      ManualResetModule.class, //
-      DavisImuTrackerModule.class, //
-      Vmu931CalibrationWatchdog.class //
+      ManualResetModule.class //
   // AutonomySafetyModule.class // <- dead man switch
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
-      AutoboxCompactModule.class, // initialize actuation
-      AutoboxIntrospectionModule.class, // actuation monitoring
+      IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       TrackReconModule.class, //
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
       SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      GokartVoiceOutputs.class //
+      VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       UltimateTorqueVectoringModule.class, //
@@ -116,9 +112,10 @@ enum RunTabbedTaskGui {
       DriftThrustManualModule.class, //
       ImprovedNormalizedTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
-      ManualGroupModule.class, //
-      SysidSignalsModule.class, //
-      PowerSteeringModule.class //
+      PowerSteeringModule.class, //
+      AntilockBrakeModule.class
+  // ManualGroupModule.class, //
+  // SysidSignalsModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       MPCKinematicDrivingModule.class, //

@@ -22,9 +22,9 @@ import ch.ethz.idsc.tensor.red.Max;
     ControlAndPredictionStep cnsStep = getStep(controlTime);
     if (Objects.isNull(cnsStep))
       return RealScalar.ZERO;
-    Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.gokartState.getUx());
+    Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.gokartState().getUx());
     Scalar min = minmax.Get(0);
-    Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.gokartControl.getaB().negate().add(min));
+    Scalar braking = Max.of(Quantity.of(0, SI.ACCELERATION), cnsStep.gokartControl().getaB().negate().add(min));
     // System.out.println(braking);
     return StaticBrakeFunction.INSTANCE.getRelativeBrakeActuation(braking);
   }
@@ -36,11 +36,11 @@ import ch.ethz.idsc.tensor.red.Max;
 
   @Override
   public void start() {
-    // TODO MH document that empty implementation is desired
+    // ---
   }
 
   @Override
   public void stop() {
-    // TODO MH document that empty implementation is desired
+    // ---
   }
 }

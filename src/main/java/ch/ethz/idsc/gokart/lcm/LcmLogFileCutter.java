@@ -15,6 +15,7 @@ import lcm.logging.Log;
 import lcm.logging.Log.Event;
 import lcm.logging.LogEventWriter;
 
+// TODO JPH class design: the actions should not happen in the constructor
 public abstract class LcmLogFileCutter {
   private final List<File> list = new LinkedList<>();
 

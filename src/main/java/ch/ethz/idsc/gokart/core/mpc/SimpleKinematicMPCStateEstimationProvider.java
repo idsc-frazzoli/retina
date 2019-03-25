@@ -3,10 +3,10 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.fuse.DavisImuTracker;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
@@ -21,6 +21,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -29,13 +30,15 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** only needed when no IMU/velocity estimation is available */
 /* package */ class SimpleKinematicMPCStateEstimationProvider extends MPCStateEstimationProvider {
+  private final LidarLocalizationModule lidarLocalizationModule = //
+      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private Scalar Ux = Quantity.of(0, SI.VELOCITY);
   // assumed to be zero here (Kinematic controller cannot do anything with this information
   private Scalar Uy = Quantity.of(0, SI.VELOCITY);
   private Scalar orientation = RealScalar.of(0);
   private Scalar dotOrientation = Quantity.of(0, SI.PER_SECOND);
-  private Scalar XPosition = Quantity.of(0, SI.METER);
-  private Scalar YPosition = Quantity.of(0, SI.METER);
+  private Scalar xPosition = Quantity.of(0, SI.METER);
+  private Scalar yPosition = Quantity.of(0, SI.METER);
   private Scalar w2L = Quantity.of(0, SI.PER_SECOND);
   private Scalar w2R = Quantity.of(0, SI.PER_SECOND);
   private Scalar s = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
@@ -57,7 +60,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       w2L = getEvent.getTireL.getAngularRate_Y();
       w2R = getEvent.getTireR.getAngularRate_Y();
       // also get gyroZ (don't need to update at every step)
-      dotOrientation = DavisImuTracker.INSTANCE.getGyroZ();
+      dotOrientation = lidarLocalizationModule.getGyroZ();
       lastUpdate = getTime();
     }
   };
@@ -77,8 +80,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     @Override
     public void getEvent(GokartPoseEvent getEvent) {
       Tensor pose = getEvent.getPose();
-      XPosition = pose.Get(0);
-      YPosition = pose.Get(1);
+      xPosition = pose.Get(0);
+      yPosition = pose.Get(1);
       orientation = pose.Get(2);
     }
   };
@@ -96,8 +99,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           Ux, //
           Uy, //
           dotOrientation, //
-          XPosition, //
-          YPosition, //
+          xPosition, //
+          yPosition, //
           orientation, //
           w2L, //
           w2R, //

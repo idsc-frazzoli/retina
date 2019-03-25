@@ -1,13 +1,11 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.map;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import org.apache.batik.css.engine.SystemColorSupport;
 
 import ch.ethz.idsc.gokart.core.map.TrackRefinement.TrackConstraint;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
@@ -65,15 +63,16 @@ public class TrackReconManagement {
   public void computeTrack() {
     trackDataXYR = null;
   }
-  
+
   public void exportTrack() {
-    if(Objects.nonNull(trackDataXYR)) {
+    if (Objects.nonNull(trackDataXYR))
       try {
-        Export.of(HomeDirectory.Documents("TrackID","track_"+SystemTimestamp.asString()), trackDataXYR.map(Magnitude.METER));
-      } catch (IOException e) {
-        e.printStackTrace();
+        File folder = HomeDirectory.Documents("TrackID");
+        folder.mkdir();
+        Export.of(new File(folder, "track_" + SystemTimestamp.asString() + ".csv"), trackDataXYR.map(Magnitude.METER));
+      } catch (Exception exception) {
+        exception.printStackTrace();
       }
-    }
   }
 
   public boolean isStartSet() {

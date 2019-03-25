@@ -1134,7 +1134,7 @@ public enum GokartLogFile implements LogFile {
   _20181127T143921_35b19382,
   /** autonomous figure 8, manual driving */
   _20181127T162138_35b19382,
-  /** TODO JPH */
+  /** trajectory planning */
   _20181127T172938_35b19382,
   /***************************************************/
   /* 2018-11-28 demo day */
@@ -1590,6 +1590,32 @@ public enum GokartLogFile implements LogFile {
   _20190314T174957_c3c5a0db,
   /** mpc */
   _20190314T175917_c3c5a0db,
+  /***************************************************/
+  /* 2019-03-18 */
+  /** mpc */
+  _20190318T111729_2f26ff8b,
+  /** mpc challenging track */
+  _20190318T114748_eace07e4,
+  /** manual driving challenging track */
+  _20190318T120437_eace07e4,
+  /** slow and fast manual driving */
+  _20190318T141147_9a9329f5,
+  /** mpc and slow manual driving */
+  _20190318T141608_9a9329f5,
+  /** mpc and manual driving */
+  _20190318T142605_9a9329f5,
+  /***************************************************/
+  /* 2019-03-21 */
+  /** slow manual driving */
+  _20190321T111128_19a9d2bb,
+  /** power steering test
+   * localization inactive */
+  _20190321T114452_79067bba,
+  /** data collection for mapping challenge
+   * with moving obstacles and various speeds */
+  _20190321T144129_140b9727,
+  /** power steering test */
+  _20190321T152149_140b9727,
   /***************************************************/
   ;
   // ---

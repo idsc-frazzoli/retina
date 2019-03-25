@@ -21,7 +21,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AccumulatedEventRender;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.gokart.gui.top.GokartPathRender;
+import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.TrigonometryRender;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
@@ -68,7 +68,7 @@ public class OfflineHud implements OfflineLogListener {
   final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   final AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
   final TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
-  final GokartPathRender pathRender = new GokartPathRender(gokartPoseInterface);
+  final ExtrudedFootprintRender pathRender = new ExtrudedFootprintRender(gokartPoseInterface);
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rimoGetEvent;
@@ -90,7 +90,7 @@ public class OfflineHud implements OfflineLogListener {
       gokartStatusEvent = new GokartStatusEvent(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gpe = new GokartPoseEvent(byteBuffer);
+      gpe = GokartPoseEvent.of(byteBuffer);
     } else //
     if (channel.equals("davis240c.overview.dvs")) {
       davisLcmClient.messageReceived(byteBuffer);

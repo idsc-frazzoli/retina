@@ -20,9 +20,6 @@ import ch.ethz.idsc.tensor.Tensor;
    * @return resulting MPC path parameter to be sent to MPC */
   MPCPathParameter getPathParameterPreview(int previewSize, Tensor position, Scalar padding, Scalar qpFactor, Scalar qpLimit);
 
-  /**
-   * 
-   * @return the pose at the start of the track
-   */
+  /** @return the pose at the start of the track */
   Tensor getStartPose();
-  }
+}

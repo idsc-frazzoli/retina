@@ -10,10 +10,12 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
 import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import idsc.BinaryBlob;
 
-/* package */ abstract class LcmMPCControlClient extends BinaryLcmClient implements MPCControlClient {
+// TODO JPH/MH split class into client(MPCControlUpdateLcmClient) and publisher
+/* package */ abstract class LcmMPCControlClient extends BinaryLcmClient implements StartAndStoppable {
   public static LcmMPCControlClient kinematic() {
     return new LcmMPCControlClient("") {
       @Override
@@ -45,14 +47,19 @@ import idsc.BinaryBlob;
     optimizationParameterPublisher = new BinaryBlobPublisher("mpc.forces.op" + appendix);
   }
 
-  @Override
-  public void start() {
+  /** @param mpcOptimizationParameter
+   * @param mpcNativeSession
+   * @return */
+  abstract BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession);
+
+  @Override // from StartAndStoppable
+  public final void start() {
     startSubscriptions();
     mpcNativeSession.first();
   }
 
-  @Override
-  public void stop() {
+  @Override // from StartAndStoppable
+  public final void stop() {
     mpcNativeSession.last();
     stopSubscriptions();
   }
@@ -60,7 +67,7 @@ import idsc.BinaryBlob;
   /** send gokart state which starts the mpc optimization with the newest state
    * 
    * @param gokartState the newest available gokart state */
-  public void publishControlRequest(GokartState gokartState, MPCPathParameter mpcPathParameter) {
+  public final void publishControlRequest(GokartState gokartState, MPCPathParameter mpcPathParameter) {
     ControlRequestMessage gokartStateMessage = new ControlRequestMessage(gokartState, mpcPathParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(gokartStateMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
@@ -70,16 +77,16 @@ import idsc.BinaryBlob;
   }
 
   /** switch to testing binary that send back test data has to be called before first */
-  public void switchToTest() {
+  public final void switchToTest() {
     mpcNativeSession.switchToTest();
   }
 
   /** switch to mode where binary is no automatically starting */
-  public void switchToExternalStart() {
+  public final void switchToExternalStart() {
     mpcNativeSession.switchToExternalStart();
   }
 
-  public void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {
+  public final void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {
     BufferInsertable bufferInsertable = from(mpcOptimizationParameter, mpcNativeSession);
     BinaryBlob binaryBlob = BinaryBlobs.create(bufferInsertable.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
@@ -88,17 +95,13 @@ import idsc.BinaryBlob;
     optimizationParameterPublisher.accept(binaryBlob);
   }
 
-  abstract BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession);
-
-  public void registerControlUpdateLister(MPCControlUpdateListener listener) {
+  public final void addControlUpdateListener(MPCControlUpdateListener listener) {
     listeners.add(listener);
   }
 
-  @Override
-  protected void messageReceived(ByteBuffer byteBuffer) {
-    // get new message
+  @Override // from BinaryLcmClient
+  protected final void messageReceived(ByteBuffer byteBuffer) {
     ControlAndPredictionStepsMessage cns = new ControlAndPredictionStepsMessage(byteBuffer);
-    // System.out.println(cns.controlAndPredictionSteps.steps[0]);
     for (MPCControlUpdateListener listener : listeners)
       listener.getControlAndPredictionSteps(cns.controlAndPredictionSteps);
     lastcns = cns.controlAndPredictionSteps;

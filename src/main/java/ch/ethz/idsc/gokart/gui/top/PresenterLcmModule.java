@@ -14,6 +14,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
+import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
@@ -61,9 +62,11 @@ public class PresenterLcmModule extends AbstractModule {
   private final ManualControlLcmClient manualControlLcmClient = new ManualControlLcmClient();
   private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
       TrajectoryLcmClient.xyat(), TrajectoryLcmClient.xyavt());
+  private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final GokartPoseLcmLidar gokartPoseLcmLidar = new GokartPoseLcmLidar();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
+  private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
   private final TrackReconRender trackReconRender = new TrackReconRender();
   private final GokartTrajectoryModule gokartTrajectoryModule = //
       ModuleAuto.INSTANCE.getInstance(GokartTrajectoryModule.class);
@@ -84,10 +87,9 @@ public class PresenterLcmModule extends AbstractModule {
         gokartTrackReconModule.listenersAdd(trackReconRender);
       }
       timerFrame.geometricComponent.addRenderInterface(trackReconRender);
-      timerFrame.geometricComponent.addRenderInterface(MPCPredictionRender.INSTANCE);
     }
     {
-      GokartPathRender gokartPathRender = new GokartPathRender(gokartPoseLcmLidar);
+      ExtrudedFootprintRender gokartPathRender = new ExtrudedFootprintRender(gokartPoseLcmLidar);
       gokartStatusLcmClient.addListener(gokartPathRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(gokartPathRender);
     }
@@ -177,6 +179,10 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     {
+      mpcControlUpdateLcmClient.addListener(lcmMPCPredictionRender);
+      timerFrame.geometricComponent.addRenderInterface(lcmMPCPredictionRender);
+    }
+    {
       GokartHudRender gokartHudRender = new GokartHudRender(gokartPoseLcmLidar);
       steerGetLcmClient.addListener(gokartHudRender.steerGetListener);
       timerFrame.geometricComponent.addRenderInterface(gokartHudRender);
@@ -193,6 +199,7 @@ public class PresenterLcmModule extends AbstractModule {
     vlp16LcmHandler.startSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
     davisLcmClient.startSubscriptions();
+    mpcControlUpdateLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.configCoordinateOffset(400, 500);
@@ -235,6 +242,7 @@ public class PresenterLcmModule extends AbstractModule {
     vlp16LcmHandler.stopSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
     davisLcmClient.stopSubscriptions();
+    mpcControlUpdateLcmClient.stopSubscriptions();
   }
 
   public static void main(String[] args) throws Exception {

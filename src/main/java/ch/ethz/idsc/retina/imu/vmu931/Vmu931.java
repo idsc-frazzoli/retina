@@ -22,6 +22,7 @@ public class Vmu931 implements Runnable {
   private static final int SIZE_MIN = 4;
   /***************************************************/
   private final Set<Vmu931Channel> set = EnumSet.noneOf(Vmu931Channel.class);
+  private final Set<Vmu931Reply> replies = EnumSet.noneOf(Vmu931Reply.class);
   private final byte[] data = new byte[256];
   // ---
   private final Vmu931_DPS dps;
@@ -35,6 +36,7 @@ public class Vmu931 implements Runnable {
   /** @param serialPort open
    * @param set
    * @param vmu931_DPS */
+  // TODO JPH api change: do not open device in constructor
   public Vmu931(String port, Set<Vmu931Channel> set, Vmu931_DPS vmu931_DPS, Vmu931_G vmu931_G, Vmu931Listener vmu931Listener) {
     this.set.addAll(set);
     this.dps = vmu931_DPS;
@@ -50,10 +52,15 @@ public class Vmu931 implements Runnable {
   }
 
   public void requestSelftest() {
+    replies.remove(Vmu931Reply.SELFTEST);
     serialPortWrap.write(Vmu931Statics.requestSelftest());
   }
 
+  /** triggers calibration which blocks measurement readout,
+   * writes "Calibration started.", and terminates then
+   * writes "Calibration completed." */
   public void requestCalibration() {
+    replies.remove(Vmu931Reply.CALIBRATION);
     serialPortWrap.write(Vmu931Statics.requestCalibration());
   }
 
@@ -89,10 +96,11 @@ public class Vmu931 implements Runnable {
               if (serialPortWrap.peek(data, size)) {
                 int term = data[size - 1];
                 if (term == MESSAGE_TEXT_END) {
-                  String string = new String(data, 3, size - 4); //
-                  // Self-test started.
-                  // Test passed. Your device works fine.
-                  System.out.println("vmu931:[" + string.trim() + "]");
+                  // string is trimmed because the reply usually terminates with two newline chars
+                  final String string = new String(data, 3, size - 4).trim();
+                  // TODO JPH/DUBILAB remove printout once tested
+                  System.out.println("vmu931:[" + string + "]");
+                  Vmu931Reply.match(string, replies::add);
                   serialPortWrap.advance(size);
                 } else
                   serialPortWrap.advance(1);
@@ -209,5 +217,9 @@ public class Vmu931 implements Runnable {
     isLaunched = false;
     serialPortWrap.close();
     thread.interrupt();
+  }
+
+  public boolean isCalibrated() {
+    return replies.contains(Vmu931Reply.CALIBRATION);
   }
 }
