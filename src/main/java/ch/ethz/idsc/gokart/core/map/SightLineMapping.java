@@ -1,5 +1,6 @@
 package ch.ethz.idsc.gokart.core.map;
 
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -12,6 +13,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16PolarProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 import java.awt.*;
 import java.util.Collection;
@@ -31,10 +33,20 @@ public class SightLineMapping extends AbstractSightLines implements OccupancyGri
     private final SightLineOccupancyGrid occupancyGrid = MappingConfig.GLOBAL.createSightLineOccupancyGrid();
     // ---
     private boolean isLaunched = true;
-    private final int waitMillis = 200;
+    private final int waitMillis;
 
-    public SightLineMapping(SpacialXZObstaclePredicate predicate) {
+    public static SightLineMapping defaultGokart() {
+        SightLineMapping sightLineMapping = //
+                new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(),200);
+        sightLineMapping.addBlindSpot(Tensors.vector(3., 3.4));
+        sightLineMapping.addBlindSpot(Tensors.vector(6.1, 0.2));
+        return sightLineMapping;
+    }
+
+    public SightLineMapping(SpacialXZObstaclePredicate predicate, int waitMillis) {
         super(predicate);
+        this.waitMillis = waitMillis;
+        // ---
         lidarPolarProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
         lidarPolarProvider.addListener(lidarPolarFiringCollector);
         lidarSectorProvider.addListener(lidarPolarFiringCollector);

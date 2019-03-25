@@ -64,8 +64,8 @@ public class SightLineOccupancyGrid implements RenderInterface, OccupancyGrid {
 
     private SightLineOccupancyGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension) {
         VectorQ.requireLength(rangeCeil, 2);
-        System.out.print("Grid range: " + rangeCeil + "\n");
-        System.out.print("Grid size: " + dimension + "\n");
+        System.out.println("Grid range: " + rangeCeil);
+        System.out.println("Grid size: " + dimension);
         this.lbounds = VectorQ.requireLength(lbounds, 2);
         gridSize = Tensors.vector(dimension.width, dimension.height).unmodifiable();
         cellDim = RadiusXY.requireSame(rangeCeil).divide(gridSize.Get(0));
@@ -141,7 +141,6 @@ public class SightLineOccupancyGrid implements RenderInterface, OccupancyGrid {
         imageGraphics.setColor(COLOR_FREE);
         Path2D path2D = lidar2cellLayer.toPath2D(polygon);
         path2D.closePath();
-        // TODO make are smaller by obstacle radius
         imageGraphics.fill(path2D);
     }
 

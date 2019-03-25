@@ -1,6 +1,7 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.map;
 
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -36,6 +37,13 @@ public class SightLines extends AbstractSightLines {
     // ---
     private boolean isLaunched = true;
     private final int waitMillis;
+
+    public static SightLines defaultGokart() {
+        SightLines sightLines = new SightLines(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), 200);
+        sightLines.addBlindSpot(Tensors.vector(3., 3.4));
+        sightLines.addBlindSpot(Tensors.vector(6.1, 0.2));
+        return sightLines;
+    }
 
     public SightLines(SpacialXZObstaclePredicate predicate, int waitMillis) {
         super(predicate);

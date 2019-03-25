@@ -10,6 +10,8 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Transform;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.tensor.*;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.opt.Pi;
+import ch.ethz.idsc.tensor.sca.Mod;
 
 import java.nio.FloatBuffer;
 import java.util.*;
@@ -20,6 +22,7 @@ import java.util.*;
     private static final int HORIZON = 50; // in meters
     // ---
     private Tensor pointsPolar_ferry = null;
+    private Tensor blindSpots = Tensors.empty();
     // ---
     protected final Thread thread = new Thread(this);
     protected final SpacialXZObstaclePredicate predicate;
@@ -57,12 +60,16 @@ import java.util.*;
         if (Objects.nonNull(points) && Objects.nonNull(gokartPoseEvent))
             for (Tensor point : points) { // point azimuth, elevation, radius
                 Scalar azimuth = point.Get(0);
-                if (!freeSpace.containsKey(azimuth))
-                    freeSpace.put(azimuth, Tensors.vector(azimuth.number(), 0, HORIZON));
-                if (predicate.isObstacle(Vlp16Transform.PolarToCartesian.of(point))) {
-                    Scalar distance = point.Get(2);
-                    if (Scalars.lessThan(distance, freeSpace.get(azimuth).Get(2)))
-                        freeSpace.put(azimuth, point);
+                if (!isBlind(azimuth)) {
+                    if (!freeSpace.containsKey(azimuth))
+                        freeSpace.put(azimuth, Tensors.vector(azimuth.number(), 0, HORIZON));
+                    if (predicate.isObstacle(Vlp16Transform.PolarToCartesian.of(point))) {
+                        Scalar distance = point.Get(2);
+                        if (Scalars.lessThan(distance, freeSpace.get(azimuth).Get(2)))
+                            freeSpace.put(azimuth, point);
+                    }
+                } else {
+                    freeSpace.put(azimuth, Tensors.of(azimuth, RealScalar.ZERO, RealScalar.ZERO));
                 }
             }
         return freeSpace.values();
@@ -75,5 +82,22 @@ import java.util.*;
 
     protected Tensor closeSector(Tensor polygon) {
         return polygon.append(Array.zeros(2)); // add origin to close sector
+    }
+
+    public void addBlindSpot(Tensor vector) {
+        blindSpots.append(vector.map(Mod.function(Pi.TWO)::of));
+    }
+
+    private boolean isBlind(Scalar azimuth) {
+        return blindSpots.stream().anyMatch(sector -> {
+            Scalar start = sector.Get(0);
+            Scalar end = sector.Get(1);
+            if (Scalars.lessEquals(start, end)) {
+                return Scalars.lessEquals(start, azimuth) && Scalars.lessEquals(azimuth, end);
+            } else {
+                return (Scalars.lessEquals(RealScalar.ZERO, azimuth) && Scalars.lessEquals(azimuth, end)) || //
+                        (Scalars.lessEquals(start, azimuth) && Scalars.lessEquals(azimuth, Pi.TWO));
+            }
+        });
     }
 }

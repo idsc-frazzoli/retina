@@ -44,10 +44,14 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.io.UserName;
+import ch.ethz.idsc.tensor.opt.Pi;
+import ch.ethz.idsc.tensor.sca.ArcTan;
 
 public class PresenterLcmModule extends AbstractModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
@@ -77,9 +81,8 @@ public class PresenterLcmModule extends AbstractModule {
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   // ---
-  private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
-  private final SightLineMapping sightLineMapping = new SightLineMapping(predicate);
-  private final SightLines sightLines = new SightLines(predicate, 200);
+  private final SightLineMapping sightLineMapping = SightLineMapping.defaultGokart();
+  private final SightLines sightLines = SightLines.defaultGokart();
 
   @Override // from AbstractModule
   protected void first() {

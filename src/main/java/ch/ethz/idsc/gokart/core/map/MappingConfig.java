@@ -87,8 +87,8 @@ public class MappingConfig {
   }
 
   public SightLineOccupancyGrid createSightLineOccupancyGrid() {
-    Tensor lbounds = Tensors.vector(15, 15);
-    Tensor range = Tensors.vector(55, 55);
+    Tensor lbounds = Tensors.vector(20, 20);
+    Tensor range = Tensors.vector(40, 40);
     return SightLineOccupancyGrid.of(lbounds, range, cellDim);
   }
 }

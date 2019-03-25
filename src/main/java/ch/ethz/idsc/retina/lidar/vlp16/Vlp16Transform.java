@@ -5,6 +5,7 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 import ch.ethz.idsc.tensor.sca.Cos;
@@ -49,7 +50,7 @@ public enum Vlp16Transform {
                     Norm._2.of(Tensors.of(x, y, z)));
             */
             return Tensors.of( //
-                    Mod.function(2 * Math.PI).of(offset.subtract(ArcTan.of(x, y))), //
+                    Mod.function(Pi.TWO).of(offset.subtract(ArcTan.of(x, y))), //
                     ArcTan.of(Norm._2.of(Tensors.of(x, y)), z), //
                     Norm._2.of(Tensors.of(x, y, z)));
         }
