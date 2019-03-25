@@ -2,12 +2,16 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.gokart.core.map.BSplineTrack;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.planar.ArcTan2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Normalize;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
@@ -53,18 +57,30 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
     if (currentIndex < 0)
       currentIndex += bSplineTrack.numPoints();
     for (int i = 0; i < previewSize; ++i) {
-      Tensor vector = bSplineTrack.combinedControlPoints().get(currentIndex);
-      Scalar localProgress = RealScalar.of(i).subtract(QPOffset).divide(RealScalar.of(previewSize));
-      Scalar localQPFactor;
-      if (!QPFactor.equals(_1))
-        localQPFactor = Max.of(qpLimit, QPFactor.multiply(localProgress).add(_1.subtract(localProgress)));
-      else
-        localQPFactor = _1;
-      vector.set(scalar -> Ramp.FUNCTION.apply(((Scalar) scalar).subtract(padding).multiply(localQPFactor)), 2);
-      matrix.append(vector);
-      ++currentIndex;
-      if (currentIndex >= bSplineTrack.numPoints())
-        currentIndex = 0;
+      if (!bSplineTrack.isClosed() && currentIndex >= bSplineTrack.numPoints()) {
+        int length = matrix.length();
+        Tensor secondlast = matrix.get(length - 2);
+        Tensor last = matrix.get(length - 1);
+        Tensor posDif = last.subtract(secondlast).extract(0, 2);
+        Tensor normDif = Normalize.with(Norm._2).apply(posDif);
+        Tensor newPos = last.extract(0, 2).add(normDif.multiply(Quantity.of(0.1, SI.METER)));
+        Tensor newRad = last.Get(2);
+        newPos.append(newRad);
+        matrix.append(newPos);
+      } else {
+        Tensor vector = bSplineTrack.combinedControlPoints().get(currentIndex);
+        Scalar localProgress = RealScalar.of(i).subtract(QPOffset).divide(RealScalar.of(previewSize));
+        Scalar localQPFactor;
+        if (!QPFactor.equals(_1))
+          localQPFactor = Max.of(qpLimit, QPFactor.multiply(localProgress).add(_1.subtract(localProgress)));
+        else
+          localQPFactor = _1;
+        vector.set(scalar -> Ramp.FUNCTION.apply(((Scalar) scalar).subtract(padding).multiply(localQPFactor)), 2);
+        matrix.append(vector);
+        ++currentIndex;
+        if (currentIndex >= bSplineTrack.numPoints())
+          currentIndex = 0;
+      }
     }
     return new MPCPathParameter(progressStart, matrix);
   }
