@@ -19,6 +19,10 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
    * @param distance for instance PursuitConfig.GLOBAL.lookAheadMeter()
    * @return ratio rate with interpretation rad*m^-1 */
   static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward, Scalar distance) {
+    return getRatio(pose, curve, true, isForward, distance);
+  }
+
+  static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean closed, boolean isForward, Scalar distance) {
     TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(toLocal));
     if (!isForward) { // if measured tangent speed is negative

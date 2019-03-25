@@ -20,7 +20,7 @@ public class TrackReconConfig {
   /** .
    * 20180226: changed from -1.0[m] to -0.90[m] because the sensor rack was lowered by ~8[cm]
    * 20181206: changed from -0.9[m] to -1.05[m] to detect a car tire flat on the ground as an obstacle */
-  public Scalar vlp16_ZLo = Quantity.of(-1.05, SI.METER);
+  public Scalar vlp16_ZLo = Quantity.of(-1.0, SI.METER);
   /** 20181206: changed from +0.1[m] to -0.1[m] because artifacts were observed when driving fast
    * cause probably by the arrangement of the lidar on the sensor rack */
   public Scalar vlp16_ZHi = Quantity.of(-0.10, SI.METER);

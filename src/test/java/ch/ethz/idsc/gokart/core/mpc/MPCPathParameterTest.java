@@ -49,7 +49,7 @@ public class MPCPathParameterTest extends TestCase {
     assertEquals(mpcPathParameter.getControlPointsY(), ctrY);
     assertEquals(mpcPathParameter.getControlPointsR(), ctrR);
   }
-  
+
   public void testQueryOpen() {
     Tensor ctrX = QuantityTensor.of(Tensors.vector(0, 1, 2, 6, 2, 10), SI.METER);
     Tensor ctrY = QuantityTensor.of(Tensors.vector(3, 4, 5, 7, 8, 9), SI.METER);
