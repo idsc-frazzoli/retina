@@ -45,6 +45,7 @@ index.pax = 2;
 index.pbeta = 3;
 index.pmoi = 4;
 
+solvetimes = [];
 
 integrator_stepsize = 0.1;
 
@@ -207,6 +208,7 @@ for i =1:tend
     % solve mpc
 
     [output,exitflag,info] = MPCPathFollowing(problem);
+    solvetimes(end+1)=info.solvetime;
     if(exitflag==0)
        a = 1; 
     end
