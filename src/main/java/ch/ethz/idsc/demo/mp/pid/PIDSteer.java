@@ -26,7 +26,7 @@ public class PIDSteer implements SteerPutProvider, StartAndStoppable {
     return ProviderRank.AUTONOMOUS;
   }
 
-  @Override
+  @Override //from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
@@ -38,13 +38,13 @@ public class PIDSteer implements SteerPutProvider, StartAndStoppable {
     return Optional.empty();
   }
 
-  @Override
+  @Override // from StartAndStoppable
   public void start() {
     SteerSocket.INSTANCE.addPutProvider(this);
     ;
   }
 
-  @Override
+  @Override // from StartAndStoppable
   public void stop() {
     SteerSocket.INSTANCE.removePutProvider(this);
   }
@@ -53,5 +53,9 @@ public class PIDSteer implements SteerPutProvider, StartAndStoppable {
 
   public void setHeading(Scalar angle) {
     this.angle = angle;
+  }
+
+  public Scalar getHeading() {
+    return angle;
   }
 }

@@ -6,9 +6,9 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
 
-abstract class PIDControllerModule extends AbstractClockedModule {
+public abstract class PIDControllerModule extends AbstractClockedModule {
   protected final PIDTuningParams tuningParams;
-  final PIDSteer pidSteer = new PIDSteer();
+  public final PIDSteer pidSteer = new PIDSteer();
 
   PIDControllerModule(PIDTuningParams tuningParams) {
     this.tuningParams = tuningParams;
@@ -21,20 +21,22 @@ abstract class PIDControllerModule extends AbstractClockedModule {
   protected abstract Optional<Scalar> deriveHeading();
 
   @Override // from AbstractClockedModule
-  protected void runAlgo() {
+  public void runAlgo() {
     Optional<Scalar> heading = deriveHeading();
     if (heading.isPresent())
       pidSteer.setHeading(heading.get());
   }
 
   @Override // from AbstractModule
-  protected void first() {
+  public
+  final void first() {
     protected_first();
     pidSteer.start();
   }
 
   @Override // from AbstractModule
-  protected void last() {
+  public
+  final void last() {
     pidSteer.stop();
     protected_last();
   }
