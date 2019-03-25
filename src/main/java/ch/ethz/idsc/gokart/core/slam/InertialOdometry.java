@@ -1,8 +1,8 @@
 // code by mh, jph
 package ch.ethz.idsc.gokart.core.slam;
 
-import ch.ethz.idsc.gokart.core.ekf.PositionVelocityEstimation;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.PoseVelocityInterface;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Mod;
 
 /** integrated unfiltered */
-public class InertialOdometry implements PositionVelocityEstimation {
+public class InertialOdometry implements PoseVelocityInterface {
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   // ---
   private Tensor pose = GokartPoseHelper.attachUnits(Tensors.vector(0, 0, 0));
@@ -45,7 +45,8 @@ public class InertialOdometry implements PositionVelocityEstimation {
     // update gyro
     this.gyroZ = gyroZ;
     // integrate pose
-    pose = Se2CoveringIntegrator.INSTANCE.spin(pose, getVelocity().multiply(deltaT));
+    Tensor dpose = localVelocityXY.copy().append(gyroZ);
+    pose = Se2CoveringIntegrator.INSTANCE.spin(pose, dpose.multiply(deltaT));
     pose.set(MOD_DISTANCE, 2);
   }
 
@@ -55,8 +56,13 @@ public class InertialOdometry implements PositionVelocityEstimation {
   }
 
   @Override // from PositionVelocityEstimation
-  public synchronized Tensor getVelocity() {
-    return localVelocityXY.copy().append(gyroZ);
+  public synchronized Tensor getVelocityXY() {
+    return localVelocityXY.copy();
+  }
+
+  @Override // from PoseVelocityInterface
+  public Scalar getGyroZ() {
+    return gyroZ;
   }
 
   /** @param velXY {velx[m*s^-1], vely[m*s^-1]}

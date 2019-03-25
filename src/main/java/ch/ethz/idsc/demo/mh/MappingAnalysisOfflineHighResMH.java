@@ -87,7 +87,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
       bayesianOccupancyGridThin.setPose(gokartPoseEvent.getPose());
       if (!trackReconManagement.isStartSet())

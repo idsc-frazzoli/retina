@@ -304,14 +304,17 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     return Quantity.of(dotPsi, SI.PER_SECOND);
   }
 
+  /** @return quantity with unit "m" */
   public Scalar getX() {
     return Quantity.of(X, SI.METER);
   }
 
+  /** @return quantity with unit "m" */
   public Scalar getY() {
     return Quantity.of(Y, SI.METER);
   }
 
+  /** @return heading of vehicle with interpretation in radians */
   public Scalar getPsi() {
     return RealScalar.of(Psi);
   }

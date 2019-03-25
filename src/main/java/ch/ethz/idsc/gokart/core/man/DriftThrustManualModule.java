@@ -3,8 +3,11 @@ package ch.ethz.idsc.gokart.core.man;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.DriftRatio;
-import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringClip;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
@@ -12,7 +15,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -25,20 +27,28 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 /** class was designed to exaggerate rotation of gokart
  * 
  * https://www.youtube.com/watch?v=zcBImlS0sE4 */
-public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> {
+public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> implements GokartPoseListener {
   private static final Clip DELTA_CLIP = Clips.absoluteOne();
   // ---
-  private final LidarLocalizationModule lidarLocalizationModule = //
-      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
+  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+
+  @Override // from GokartPoseListener
+  public void getEvent(GokartPoseEvent gokartPoseEvent) {
+    this.gokartPoseEvent = gokartPoseEvent;
+  }
 
   @Override // from AbstractModule
   void protected_first() {
+    gokartPoseLcmClient.addListener(this);
+    gokartPoseLcmClient.startSubscriptions();
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
   void protected_last() {
     RimoSocket.INSTANCE.removePutProvider(this);
+    gokartPoseLcmClient.stopSubscriptions();
   }
 
   /***************************************************/
@@ -46,8 +56,8 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> {
   Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
     return Optional.of(derive( //
         Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
-        lidarLocalizationModule.getGyroZFiltered(), //
-        DriftRatio.of(lidarLocalizationModule.getVelocity())));
+        gokartPoseEvent.getGyroZ(), //
+        DriftRatio.of(gokartPoseEvent.getVelocityXY())));
   }
 
   /** @param ahead in the interval [-1, 1]

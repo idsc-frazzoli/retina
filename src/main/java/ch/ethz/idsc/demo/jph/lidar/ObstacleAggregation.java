@@ -68,7 +68,7 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
       velodyneDecoder.lasers(byteBuffer);
     else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      GokartPoseInterface gokartPoseInterface = new GokartPoseEvent(byteBuffer);
+      GokartPoseInterface gokartPoseInterface = GokartPoseEvent.of(byteBuffer);
       geometricLayer = new GeometricLayer(MODEL2PIXEL, Array.zeros(3));
       geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseInterface.getPose()));
       geometricLayer.pushMatrix(LIDAR);

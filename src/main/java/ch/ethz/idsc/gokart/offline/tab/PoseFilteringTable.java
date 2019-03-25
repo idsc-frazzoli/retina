@@ -30,7 +30,7 @@ public class PoseFilteringTable implements OfflineTableSupplier {
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      GokartPoseEvent gokartPoseInterface = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseInterface = GokartPoseEvent.of(byteBuffer);
       Tensor pose = gokartPoseInterface.getPose();
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND), //

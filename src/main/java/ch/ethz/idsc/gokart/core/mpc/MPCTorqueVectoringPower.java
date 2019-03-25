@@ -50,14 +50,4 @@ import ch.ethz.idsc.tensor.sca.Tan;
         wantedAcceleration, //
         gyroZ));
   }
-
-  @Override
-  public void start() {
-    // TODO MH document that empty implementation is intended
-  }
-
-  @Override
-  public void stop() {
-    // TODO MH document that empty implementation is intended
-  }
 }

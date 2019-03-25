@@ -21,13 +21,13 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
     gokartState = new GokartState(byteBuffer);
   }
 
-  @Override
+  @Override // from BufferInsertable
   public void insert(ByteBuffer byteBuffer) {
     gokartControl.insert(byteBuffer);
     gokartState.insert(byteBuffer);
   }
 
-  @Override
+  @Override // from BufferInsertable
   public int length() {
     return LENGTH;
   }

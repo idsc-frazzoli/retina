@@ -75,7 +75,7 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
           Objects.isNull(rimoPutEvent) || //
           Objects.isNull(gokartStatusEvent))
         return;
-      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
       Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
       Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);

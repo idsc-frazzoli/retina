@@ -11,17 +11,15 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class DubendorfTrack extends MPCBSplineTrack {
+  private static final Scalar RADIUS_DEFAULT = Quantity.of(2.0, SI.METER);
+  // ---
   public static final DubendorfTrack HYPERLOOP_EIGHT = hyperloop_eight();
   public static final DubendorfTrack HYPERLOOP_EIGHT_REVERSE = hyperloop_eight_reverse();
   public static final DubendorfTrack CHICANE = chicane_track();
   public static final DubendorfTrack WAYPOINT_TRACK = waypoint_track();
 
-  private static Tensor getConstantRadius(int length, Scalar radius) {
-    // TODO use Tensors.vector(i->radius, length);
-    Tensor radiusCtrPoints = Tensors.empty();
-    for (int i = 0; i < length; ++i)
-      radiusCtrPoints.append(radius);
-    return radiusCtrPoints;
+  static Tensor getConstantRadius(Scalar radius, int length) {
+    return Tensors.vector(i -> radius, length);
   }
 
   private static DubendorfTrack hyperloop_eight() {
@@ -37,7 +35,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
       controlPointsY.append(y);
     }
     return new DubendorfTrack(Transpose.of(Tensors.of(controlPointsX, controlPointsY, //
-        getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)))));
+        getConstantRadius(RADIUS_DEFAULT, controlPoints.length()))));
   }
 
   private static DubendorfTrack hyperloop_eight_reverse() {
@@ -53,7 +51,7 @@ public class DubendorfTrack extends MPCBSplineTrack {
       controlPointsY.append(y);
     }
     return new DubendorfTrack(Transpose.of(Tensors.of(controlPointsX, controlPointsY, //
-        getConstantRadius(controlPoints.length(), Quantity.of(2, SI.METER)))));
+        getConstantRadius(RADIUS_DEFAULT, controlPoints.length()))));
   }
 
   /* Can't access data
@@ -139,7 +137,8 @@ public class DubendorfTrack extends MPCBSplineTrack {
     controlPointsY.append(Quantity.of(42.63, SI.METER));
     controlPointsY.append(Quantity.of(36.45, SI.METER));
     controlPointsY.append(Quantity.of(41.94, SI.METER));
-    return new DubendorfTrack(Transpose.of(Tensors.of(controlPointsX, controlPointsY, getConstantRadius(controlPointsX.length(), Quantity.of(2, SI.METER)))));
+    return new DubendorfTrack(Transpose.of( //
+        Tensors.of(controlPointsX, controlPointsY, getConstantRadius(RADIUS_DEFAULT, controlPointsX.length()))));
   }
 
   // ---

@@ -20,6 +20,7 @@ public class MPCOptimizationConfig {
   /** The limit for the Go-kart speed */
   @FieldSubdivide(start = "4f[m*s^-1]", end = "10[m*s^-1]", intervals = 6)
   public Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
+  // FIXME MH/JPH
   /** The limit for the Go-kart longitudonal acceleration */
   @FieldSubdivide(start = "3f[m*s^-2]", end = "15[m*s^-2]", intervals = 48)
   public Scalar maxLatAcc = Quantity.of(6.25, SI.ACCELERATION);
@@ -64,5 +65,6 @@ public class MPCOptimizationConfig {
   /** steering damping factor */
   public Scalar steerDamp = RealScalar.of(1);
   /** specific MoI */
+  // TODO MH/JPH units
   public Scalar specificMoI = RealScalar.of(0.5);
 }

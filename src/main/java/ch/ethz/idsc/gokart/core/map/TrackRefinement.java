@@ -202,7 +202,7 @@ public class TrackRefinement {
 
   // for debugging
   // TODO JPH/MH not used
-  private static final Scalar defaultRadius = Quantity.of(1, SI.METER);
+  private static final Scalar defaultRadius = Quantity.of(1.0, SI.METER);
   private List<Tensor> freeLines = new ArrayList<>();
 
   /** .
@@ -218,7 +218,9 @@ public class TrackRefinement {
       Tensor basisMatrix1Der, Scalar resolution, boolean closed) {
     // ---
     Tensor positionsXYR = basisMatrix.dot(points_xyr);
-    Tensor sideVectors = BSplineUtil.getSidewardsUnitVectors(points_xyr.get(Tensor.ALL, 0), points_xyr.get(Tensor.ALL, 1), basisMatrix1Der);
+    Tensor sideVectors = BSplineUtil.getSidewardsUnitVectors( //
+        Tensor.of(points_xyr.stream().map(Extract2D.FUNCTION)), //
+        basisMatrix1Der);
     Scalar stepsSize = Quantity.of(0.1, SI.METER);
     freeLines = new ArrayList<>();
     Tensor sideLimits = Tensors.vector(

@@ -149,7 +149,7 @@ public class GokartLcmLogCutter {
               System.out.println(file);
               Optional<ByteBuffer> optional = FirstLogMessage.of(file, GokartPoseChannel.INSTANCE.channel());
               if (optional.isPresent()) {
-                GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(optional.get());
+                GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(optional.get());
                 GokartLogConfig gokartLogConfig = new GokartLogConfig();
                 gokartLogConfig.pose = gokartPoseEvent.getPose().map(Round._7);
                 boolean save = TensorProperties.wrap(gokartLogConfig).trySave(config);

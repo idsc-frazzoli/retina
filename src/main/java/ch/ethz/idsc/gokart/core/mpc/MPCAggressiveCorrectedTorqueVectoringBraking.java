@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
         .multiply(MPCOptimizationConfig.GLOBAL.brakeMultiplicator);
     // System.out.println(braking);
     // self calibration
-    Scalar gokartSpeed = lidarLocalizationModule.getVelocity().Get(0);
+    Scalar gokartSpeed = lidarLocalizationModule.getVelocityXY().Get(0);
     Scalar realBraking = currentAcceleration.negate();
     selfCalibratingBrakeFunction.correctBraking(braking, realBraking, gokartSpeed, wheelSpeed);
     BrakeCalibrationRender.calibrationValue = selfCalibratingBrakeFunction.getBrakeFadeFactor(); // TODO JPH

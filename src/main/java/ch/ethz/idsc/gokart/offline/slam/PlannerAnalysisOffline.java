@@ -54,7 +54,7 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gpe = new GokartPoseEvent(byteBuffer);
+      gpe = GokartPoseEvent.of(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME)) {
       Tensor trajTensor = ArrayFloatBlob.decode(byteBuffer);

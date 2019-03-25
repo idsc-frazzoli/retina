@@ -32,7 +32,7 @@ public class PositionVelocityEstimationTest extends TestCase {
         Scalar accY = RandomVariate.of(distr).multiply(accUnit);
         estimation.integrateImu(Tensors.of(accX, accY), rotVelocity, deltaT);
       }
-      estimation.measurePose(GokartPoseEvents.getPoseEvent(originPos, RealScalar.ONE), deltaTl);
+      estimation.measurePose(GokartPoseEvents.create(originPos, RealScalar.ONE), deltaTl);
     }
     System.out.println(estimation.local_filteredVelocity);
     assertTrue(Scalars.lessThan(Norm._2.of(estimation.local_filteredVelocity), Quantity.of(0.2, SI.VELOCITY)));

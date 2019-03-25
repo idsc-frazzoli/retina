@@ -91,7 +91,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       // raster2speed.set(index, Max.of(raw, raster2speed.get(index)));
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      GokartPoseEvent gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       poseq = gokartPoseEvent.getQuality();
     } else //
     if (channel.equals(SteerLcmServer.CHANNEL_GET)) {

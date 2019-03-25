@@ -5,7 +5,6 @@ package ch.ethz.idsc.gokart.offline.slam;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.Objects;
@@ -99,7 +98,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gokartPoseEvent = new GokartPoseEvent(byteBuffer);
+      gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       bayesianOccupancyGridThic.setPose(gokartPoseEvent.getPose());
       bayesianOccupancyGridThin.setPose(gokartPoseEvent.getPose());
       if (!trackReconManagement.isStartSet())
@@ -127,9 +126,8 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       if (Objects.nonNull(lastTrack))
         try {
           Export.of(file, lastTrack.divide(Quantity.of(1, SI.METER)));
-        } catch (IOException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+        } catch (Exception exception) {
+          exception.printStackTrace();
         }
       Graphics2D graphics = bufferedImage.createGraphics();
       ImageRender imageRender = ImageRender.of(predefinedMap.getImage(), predefinedMap.range());

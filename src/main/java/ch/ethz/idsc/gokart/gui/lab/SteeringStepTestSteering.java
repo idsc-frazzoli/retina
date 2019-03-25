@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.Scalar;
 // TODO JPH/MH
 public class SteeringStepTestSteering implements SteerPutProvider {
   private boolean isActive = false;
-  private final SteerPositionControl steerPositionController = new SteerPositionControl();
+  private final SteerPositionControl steerPositionControl = new SteerPositionControl();
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private Scalar scalar;
   // private final Timing timing = Timing.started();
@@ -32,7 +32,7 @@ public class SteeringStepTestSteering implements SteerPutProvider {
       Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
       Scalar steering = RealScalar.ZERO;
       Scalar difference = steering.subtract(currAngle);
-      Scalar torqueCmd = steerPositionController.iterate(difference);
+      Scalar torqueCmd = steerPositionControl.iterate(difference);
       return Optional.of(SteerPutEvent.createOn(torqueCmd));
     }
     return Optional.empty();

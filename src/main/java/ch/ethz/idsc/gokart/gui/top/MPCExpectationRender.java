@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import ch.ethz.idsc.gokart.core.mpc.MPCInformationProvider;
+import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateCapture;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.owl.data.IntervalClock;
@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MPCExpectationRender implements RenderInterface, RimoGetListener {
+public class MPCExpectationRender extends MPCControlUpdateCapture implements RenderInterface, RimoGetListener {
   private static final Tensor DIAGONAL = DiagonalMatrix.of(.2, .1, 1);
   private static final Tensor MPCLINE = Tensors.fromString("{{0,0},{0,3}}");
   private static final Tensor RIMOLINE = Tensors.fromString("{{0,-3},{0,0}}");
@@ -40,7 +40,7 @@ public class MPCExpectationRender implements RenderInterface, RimoGetListener {
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    currentMPCAcc = MPCInformationProvider.getInstance().getFirstWantedAcceleration();
+    currentMPCAcc = getFirstWantedAcceleration();
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
     geometricLayer.pushMatrix(DIAGONAL);
     // rimo line

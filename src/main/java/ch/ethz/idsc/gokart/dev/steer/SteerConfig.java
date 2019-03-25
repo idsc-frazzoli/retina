@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
@@ -53,9 +54,12 @@ public class SteerConfig {
    * The reciprocal gives the minimum turning radius to be approx. 2.45[m]. */
   public Scalar turningRatioMax = Quantity.of(0.4082, "rad*m^-1");
   /** Value to amplify the Input in the PowerSteeringModule */
-  public Scalar staticCompensation = Quantity.of(0.6, "SCT*SCE^-1");
-  public Scalar dynamicCompensation = Quantity.of(0.6, "SCT");
-  public Scalar dynamicCompensationBoundary = Quantity.of(0.6, "SCT");
+  public Scalar staticCompensation = Quantity.of(0.75, "SCT*SCE^-1");
+  public Scalar dynamicCompensation = Quantity.of(90, "SCT");
+  public Scalar dynamicCompensationBoundary = Quantity.of(0.1, "SCT");
+  /** Constant Torque for Experiment */
+  @FieldSubdivide(start = "-7/10[SCT]", end = "7/10[SCT]", intervals = 14)
+  public Scalar constantTorque = Quantity.of(0, "SCT");
   /** Values for Vibration Mode */
   public Scalar VibrationAmplitude = RealScalar.of(0.4);
   public Scalar VibrationFrequency = RealScalar.of(12);

@@ -63,18 +63,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     super(timing);
   }
 
-  @Override
+  @Override // from MPCStateEstimationProvider
   public GokartState getState() {
     // check if there was an update since the creation of the last gokart state
     if (Objects.isNull(lastGokartState) || !lastGokartState.getTime().equals(lastUpdate)) {
-      Tensor velocity = lidarLocalizationModule.getVelocity();
-      Scalar gyroZfiltered = lidarLocalizationModule.getGyroZFiltered();
+      Tensor velocity = lidarLocalizationModule.getVelocityXY();
+      Scalar gyroZ = lidarLocalizationModule.getGyroZ(); // filtered
       Tensor pose = lidarLocalizationModule.getPose();
       lastGokartState = new GokartState( //
           getTime(), //
           velocity.Get(0), //
           velocity.Get(1), //
-          gyroZfiltered, // unfiltered: velocity.Get(2)
+          gyroZ, //
           pose.Get(0), //
           pose.Get(1), //
           pose.Get(2), //

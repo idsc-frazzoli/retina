@@ -27,14 +27,4 @@ import ch.ethz.idsc.tensor.sca.Ramp;
         cnsStep.gokartState().getUx());
     return Optional.of(Tensors.of(leftPower, rightPower));
   }
-
-  @Override
-  public void start() {
-    // TODO MH document why empty
-  }
-
-  @Override
-  public void stop() {
-    // TODO MH document why empty
-  }
 }

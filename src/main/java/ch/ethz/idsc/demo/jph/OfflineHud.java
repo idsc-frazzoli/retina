@@ -90,7 +90,7 @@ public class OfflineHud implements OfflineLogListener {
       gokartStatusEvent = new GokartStatusEvent(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gpe = new GokartPoseEvent(byteBuffer);
+      gpe = GokartPoseEvent.of(byteBuffer);
     } else //
     if (channel.equals("davis240c.overview.dvs")) {
       davisLcmClient.messageReceived(byteBuffer);

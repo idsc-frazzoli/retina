@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.Scalar;
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR))
-      gokartLidarPose.getEvent(new GokartPoseEvent(byteBuffer));
+      gokartLidarPose.getEvent(GokartPoseEvent.of(byteBuffer));
     else //
     if (channel.equals(CHANNEL_DVS))
       dvsLcmClient.messageReceived(byteBuffer);
