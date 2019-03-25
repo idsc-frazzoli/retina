@@ -54,12 +54,12 @@ import ch.ethz.idsc.tensor.sca.Round;
         DoubleScalar.of(angle));
   }
 
-  @Override
+  @Override // from GokartPoseEvent
   public final Scalar getQuality() {
     return DoubleScalar.of(quality);
   }
 
-  @Override
+  @Override // from GokartPoseEvent
   public final boolean hasVelocity() {
     return this instanceof GokartPoseEventV2;
   }

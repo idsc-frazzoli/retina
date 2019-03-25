@@ -23,7 +23,8 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     MPCBSplineTrackListener, Runnable {
   private final TrackReconModule trackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  private final LcmMPCControlClient lcmMPCControlClient;
+  private final MPCRequestPublisher mpcRequestPublisher;
+  private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
   // private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
@@ -46,12 +47,12 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
 
   /** switch to testing binary that send back test data has to be called before first */
   public void switchToTest() {
-    lcmMPCControlClient.switchToTest();
+    mpcRequestPublisher.switchToTest();
   }
 
   /** create Module with standard estimator */
-  MPCAbstractDrivingModule(LcmMPCControlClient lcmMPCControlClient, Timing timing) {
-    this(lcmMPCControlClient, //
+  MPCAbstractDrivingModule(MPCRequestPublisher mpcRequestPublisher, Timing timing) {
+    this(mpcRequestPublisher, //
         new SimpleDynamicMPCStateEstimationProvider(timing), // the use of "dynamic" is intended
         timing, null);
   }
@@ -62,9 +63,9 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
    * @param mpcStateEstimationProvider the custom estimator
    * @param timing that shows the same time that also was used for the custom estimator */
   MPCAbstractDrivingModule( //
-      LcmMPCControlClient lcmMPCControlClient, //
+      MPCRequestPublisher mpcRequestPublisher, //
       MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
-    this.lcmMPCControlClient = lcmMPCControlClient;
+    this.mpcRequestPublisher = mpcRequestPublisher;
     this.mpcStateEstimationProvider = mpcStateEstimationProvider;
     this.track = track;
     // link mpc steering
@@ -78,9 +79,9 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
 
   private final void initModules() {
     // link mpc steering
-    lcmMPCControlClient.addControlUpdateListener(mpcSteering);
-    lcmMPCControlClient.addControlUpdateListener(mpcPower);
-    lcmMPCControlClient.addControlUpdateListener(mpcBraking);
+    mpcControlUpdateLcmClient.addListener(mpcSteering);
+    mpcControlUpdateLcmClient.addListener(mpcPower);
+    mpcControlUpdateLcmClient.addListener(mpcBraking);
     // lcmMPCControlClient.addControlUpdateListener(MPCInformationProvider.getInstance());
     // lcmMPCPathFollowingClient.registerControlUpdateLister(MPCActiveCompensationLearning.getInstance());
     // state estimation provider
@@ -92,7 +93,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   private final void requestControl() {
     MPCOptimizationParameter mpcOptimizationParameter = //
         createOptimizationParameter(mpcOptimizationConfig, manualControlProvider.getManualControl());
-    lcmMPCControlClient.publishOptimizationParameter(mpcOptimizationParameter);
+    mpcRequestPublisher.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
     GokartState state = mpcStateEstimationProvider.getState();
     Tensor safetyRadiusPosition = state.getCenterPosition();
@@ -107,7 +108,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     if (Objects.nonNull(liveTrack))
       mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor, qpLimit);
     if (Objects.nonNull(mpcPathParameter))
-      lcmMPCControlClient.publishControlRequest(state, mpcPathParameter);
+      mpcRequestPublisher.publishControlRequest(state, mpcPathParameter);
     else
       System.out.println("no Track to drive on! :O");
   }
@@ -119,7 +120,8 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     else
       System.err.println("did not subscribe to track info !!!");
     // ---
-    lcmMPCControlClient.start();
+    mpcRequestPublisher.start();
+    mpcControlUpdateLcmClient.startSubscriptions();
     mpcStateEstimationProvider.first();
     manualControlProvider.start();
     // ---
@@ -128,7 +130,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     LinmotSocket.INSTANCE.addPutProvider(mpcLinmotProvider);
     //
     mpcBraking.start();
-    lcmMPCControlClient.addControlUpdateListener(new MPCControlUpdateInterrupt(thread));
+    mpcControlUpdateLcmClient.addListener(new MPCControlUpdateInterrupt(thread));
     thread.start();
     // ---
     System.out.println("Scheduling Timer: start");
@@ -148,7 +150,8 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     //
     mpcBraking.stop();
     // ---
-    lcmMPCControlClient.stop();
+    mpcRequestPublisher.stop();
+    mpcControlUpdateLcmClient.stopSubscriptions();
     mpcStateEstimationProvider.last();
     manualControlProvider.stop();
     // ---

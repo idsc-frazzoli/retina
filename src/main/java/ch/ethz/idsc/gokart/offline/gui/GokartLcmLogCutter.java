@@ -64,7 +64,8 @@ public class GokartLcmLogCutter {
         graphics.setColor(Color.WHITE);
         int piy = -2;
         int fx = GokartLcmImage.FX;
-        graphics.drawString("autonomous", 0, piy += fx);
+        graphics.drawString("auton. button", 0, piy += fx);
+        graphics.drawString("active steering", 0, piy += fx);
         graphics.drawString("pose quality", 0, piy += fx);
         graphics.drawString("steer", 0, piy += fx);
         graphics.drawString("gyro z", 0, piy += fx);

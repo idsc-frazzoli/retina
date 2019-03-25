@@ -24,22 +24,26 @@ public enum GokartLcmImage {
     Timing timing = Timing.started();
     Tensor tensor = Tensors.empty();
     {
-      Tensor auton = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2auton()));
-      tensor.append(ImageResize.nearest(auton.map(ColorDataGradients.COPPER), FX, 1));
+      Tensor auton = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2autoButton()));
+      tensor.append(ImageResize.nearest(auton.map(ColorDataGradients.AVOCADO), FX, 1));
+    }
+    {
+      Tensor stact = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2isSteerActive()));
+      tensor.append(ImageResize.nearest(stact.map(ColorDataGradients.COPPER), FX, 1));
     }
     {
       Clip clip = Clips.interval(0.5, 1);
-      Tensor poseq = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2poseq()).map(clip::rescale));
+      Tensor poseq = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2poseQuality()).map(clip::rescale));
       tensor.append(ImageResize.nearest(poseq.map(ColorDataGradients.AVOCADO), FX, 1));
     }
     {
       Clip clip = Clips.interval(-0.7, 0.7);
-      Tensor steer = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2steer()).map(clip::rescale));
+      Tensor steer = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2steerAngle()).map(clip::rescale));
       tensor.append(ImageResize.nearest(steer.map(ColorDataGradients.THERMOMETER), FX, 1));
     }
     {
       Clip clip = Clips.interval(-1, +1);
-      Tensor gyroz = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2gyroz()).map(clip::rescale));
+      Tensor gyroz = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2gyroZ()).map(clip::rescale));
       tensor.append(ImageResize.nearest(gyroz.map(ColorDataGradients.THERMOMETER), FX, 1));
     }
     {

@@ -10,12 +10,12 @@ import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCDynamicDrivingModule extends MPCAbstractDrivingModule {
   public MPCDynamicDrivingModule() {
-    super(LcmMPCControlClient.dynamic(), Timing.started());
+    super(MPCRequestPublisher.dynamic(), Timing.started());
   }
 
   // for testing only
   MPCDynamicDrivingModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
-    super(LcmMPCControlClient.dynamic(), mpcStateEstimationProvider, timing, track);
+    super(MPCRequestPublisher.dynamic(), mpcStateEstimationProvider, timing, track);
   }
 
   @Override // from MPCAbstractDrivingModule
