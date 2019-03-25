@@ -6,7 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
 
-public abstract class PIDControllerModule extends AbstractClockedModule {
+abstract class PIDControllerModule extends AbstractClockedModule {
   protected final PIDTuningParams tuningParams;
   final PIDSteer pidSteer = new PIDSteer();
 
