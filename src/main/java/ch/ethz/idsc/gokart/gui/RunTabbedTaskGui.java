@@ -11,6 +11,7 @@ import ch.ethz.idsc.demo.mg.slam.online.DavisSlamVisualModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
+import ch.ethz.idsc.demo.mp.pid.PIDModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
@@ -122,6 +123,7 @@ enum RunTabbedTaskGui {
       MPCDynamicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
+      PIDModule.class, //
       FigureTiresAModule.class, //
       FigureTiresBModule.class, //
       FigureEightModule.class, //

@@ -6,6 +6,7 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.mg.slam.config.DavisSlamCoreConfig;
 import ch.ethz.idsc.demo.mg.slam.config.DavisSlamPrcConfig;
+import ch.ethz.idsc.demo.mp.pid.PIDTuningParams;
 import ch.ethz.idsc.gokart.calib.brake.BrakeFunctionConfig;
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
@@ -46,6 +47,7 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
       MappingConfig.GLOBAL, //
       DavisSlamPrcConfig.GLOBAL, //
       DavisSlamCoreConfig.GLOBAL, //
+      PIDTuningParams.GLOBAL, //
       MPCActiveCompensationLearningConfig.GLOBAL, //
       BrakeFunctionConfig.GLOBAL);
 }
