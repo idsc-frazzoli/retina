@@ -3,7 +3,7 @@
 Software to operate the go-kart in autonomous and manual modes.
 The performance of the go-kart hardware and software are documented in [reports](doc/reports.md).
 
-> The code in the repository operates a heavy and fast robot that may endanger living creatures. We follow best practices and coding standards to protect from avoidable errors - see [development_guidelines](doc/development_guidelines.md).
+> The code in the repository operates a heavy and fast robot that may endanger living creatures. We follow best practices and coding standards to protect from avoidable errors - see [development guidelines](doc/development_guidelines.md).
 
 ## Gallery Autonomous Driving
 
@@ -56,7 +56,6 @@ Dyn. MPC [outside](https://www.youtube.com/watch?v=59E95E_RkH8), [inside](https:
 ## Student Projects
 
 The student projects are supervised by Andrea Censi, Jacopo Tani, Alessandro Zanardi, and Jan Hakenberg.
-The software architect is Jan Hakenberg.
 The gokart is operated at Innovation Park Duebendorf since December 2017.
 
 ### 2018
