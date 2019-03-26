@@ -117,6 +117,7 @@ public class SightLines extends AbstractSightLines {
         }
     }
 
+    /** @return Tensor containing the current polygon points in cartesian coordinates */
     private Tensor polygon() {
         Tensor polygon;
         synchronized (pointsPolar) {

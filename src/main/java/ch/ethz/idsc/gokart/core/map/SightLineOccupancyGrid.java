@@ -28,10 +28,15 @@ public class SightLineOccupancyGrid extends ImageGrid {
         return new SightLineOccupancyGrid(lbounds, rangeCeil, dimension);
     }
 
+    /** @param lbounds vector of length 2
+     * @param rangeCeil effective size of grid in coordinate space of the form {value, value}
+     * @param dimension of grid in cell space */
     private SightLineOccupancyGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension) {
         super(lbounds, rangeCeil, dimension);
     }
 
+    /** first clear visible free space and then redraw new obstacles
+     * @param polygon Tensor */
     public synchronized void updateMap(Tensor polygon) {
         if (Objects.nonNull(gokart2world)) {
             freeSpace(polygon);
@@ -39,6 +44,8 @@ public class SightLineOccupancyGrid extends ImageGrid {
         }
     }
 
+    /** clear visible free space
+     * @param polygon Tensor */
     private void freeSpace(Tensor polygon) {
         imageGraphics.setColor(COLOR_UNKNOWN);
         Path2D path2D = lidar2cellLayer.toPath2D(polygon);
@@ -46,6 +53,8 @@ public class SightLineOccupancyGrid extends ImageGrid {
         imageGraphics.fill(path2D);
     }
 
+    /** redraw new obstacles
+     * @param polygon Tensor */
     private void obstacles(Tensor polygon) {
         imageGraphics.setColor(COLOR_OCCUPIED);
         polygon.forEach(point -> {

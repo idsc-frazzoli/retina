@@ -18,6 +18,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import java.awt.*;
 import java.util.Collection;
 
+/** create an obstacle map based on lidar sight lines */
 public class SightLineMapping extends AbstractSightLines implements OccupancyGrid {
     // TODO check rationale behind constant 10000!
     private static final int LIDAR_SAMPLES = 10000;

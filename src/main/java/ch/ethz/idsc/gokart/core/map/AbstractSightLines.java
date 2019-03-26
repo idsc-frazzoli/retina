@@ -53,6 +53,7 @@ import java.util.*;
         gokartPoseEvent = getEvent;
     }
 
+    /** @return Collection</Tensor> of closest points per azimuth in pointsPolar_ferry */
     protected Collection<Tensor> getClosestPoints() {
         Tensor points = pointsPolar_ferry;
         TreeMap<Scalar, Tensor> freeSpace = new TreeMap<>();
@@ -74,19 +75,27 @@ import java.util.*;
         return freeSpace.values();
     }
 
+    /** @param pointsPolar Collection</Tensor>
+     * @return Tensor containing cartesian points */
     protected Tensor polygon(Collection<Tensor> pointsPolar) {
         return Tensor.of(pointsPolar.stream().map(point -> //
                 Vlp16Transform.PolarToCartesian.of(point).extract(0, 2)));
     }
 
+    /** close segment with origin to full sector
+     * @param polygon Tensor containing cartesian points
+     * @return Tensor containing cartesian points */
     protected Tensor closeSector(Tensor polygon) {
         return polygon.append(Array.zeros(2)); // add origin to close sector
     }
 
+    /** @param vector blind spot in azimuths [rad] */
     public void addBlindSpot(Tensor vector) {
         blindSpots.append(vector.map(Mod.function(Pi.TWO)::of));
     }
 
+    /** @param azimuth [rad]
+     * @return whether the azimuth is in a blind spot */
     private boolean isBlind(Scalar azimuth) {
         return blindSpots.stream().anyMatch(sector -> {
             Scalar start = sector.Get(0);

@@ -24,10 +24,7 @@ import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.sca.Ceiling;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-/** all pixels have the same amount of weight or clearance radius attached
- * 
- * the cascade of affine transformation is
- * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
+/** all pixels have the same amount of weight or clearance radius attached */
 public class BayesianOccupancyGrid extends ImageGrid {
 
   /** @param lbounds vector of length 2
@@ -108,7 +105,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
   }
 
   /** process a new lidar observation and update the occupancy map
-   * 
+   *
    * @param pos 2D position of new lidar observation in gokart coordinates
    * @param type of observation either 0, or 1 */
   public void processObservation(Tensor pos, int type) {
@@ -195,7 +192,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
   /***************************************************/
   /** Updates the grid lbounds. Grid range and size remain unchanged.
    * Overlapping segment is copied.
-   * 
+   *
    * @param lbounds */
   // TODO function not used yet
   public void setNewlBound(Tensor lbounds) {
@@ -218,7 +215,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
         // ---
         for (int i = 0; i < dimX(); i++)
           for (int j = 0; j < dimY(); j++) {
-            double logOdd = logOdds[j * dimX() + i];
+            double logOdd = logOdds[cellToIdx(i, j)];
             Tensor cell = Tensors.vector(i + ofsx, j + ofsy);
             if (isCellInGrid(cell)){
               logOddsNew[cellToIdx(cell)] = logOdd;
@@ -238,7 +235,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
       hset.clear();
       for (int i = 0; i < dimX(); i++)
         for (int j = 0; j < dimY(); j++) {
-          double logOdd = logOdds[j * dimX() + i];
+          double logOdd = logOdds[cellToIdx(i, j)];
           if (logOdd > L_THRESH)
             hset.add(Tensors.vector(i, j));
         }
@@ -251,7 +248,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
    * @param piy of cell to be updated
    * @param p_m_z probability in [0,1] that Cell is occupied given the current observation z */
   private void updateCellLogOdd(int pix, int piy, double p_m_z) {
-    int idx = piy * dimX() + pix;
+    int idx = cellToIdx(pix, piy);
     double logOddDelta = StaticHelper.pToLogOdd(p_m_z) + L_M_INV;
     logOdds[idx] = lambda * logOdds[idx] + logOddDelta;
     if (Double.isInfinite(logOdds[idx]))
@@ -265,9 +262,9 @@ public class BayesianOccupancyGrid extends ImageGrid {
   @Override // from OccupancyGrid
   public void clearStart(int startX, int startY, double orientation) {
     Tensor rotation = RotationMatrix.of(orientation);
+    int fromy = (int) (-cellDimInv.number().doubleValue() * 3 * 2.0f);
+    int endy = -fromy;
     for (int ix = -1; ix < cellDimInv.number().doubleValue() * 12 * 2.0f; ix++) {
-      int fromy = (int) (-cellDimInv.number().doubleValue() * 3 * 2.0f);
-      int endy = -fromy;
       for (int iy = fromy; iy <= endy; iy++) {
         Tensor posVec = Tensors.vector(ix, iy);
         Tensor rotPos = rotation.dot(posVec);

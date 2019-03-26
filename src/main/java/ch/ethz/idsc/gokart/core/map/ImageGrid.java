@@ -22,7 +22,14 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
+import java.util.function.Function;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
+/** base class for occupancy grid that is renderable into map
+ *
+ * the cascade of affine transformation is
+ * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
 /* package */ abstract class ImageGrid implements OccupancyGrid, RenderInterface {
     protected static final byte MASK_OCCUPIED = 0;
     protected static final Color COLOR_OCCUPIED = Color.BLACK;
@@ -42,6 +49,9 @@ import java.awt.image.WritableRaster;
     protected Tensor lbounds;
     protected Tensor gokart2world = null;
 
+    /** @param lbounds vector of length 2
+     * @param rangeCeil effective size of grid in coordinate space of the form {value, value}
+     * @param dimension of grid in cell space */
     /* package */ ImageGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension) {
         VectorQ.requireLength(rangeCeil, 2);
         System.out.println("Grid range: " + rangeCeil);
@@ -72,12 +82,20 @@ import java.awt.image.WritableRaster;
         world2cellLayer.pushMatrix(world2grid); // world to grid
     }
 
+    /** @return grid size in x direction */
     protected int dimX() {
         return gridSize.Get(0).number().intValue();
     }
 
+    /** @return grid size in y direction */
     protected int dimY() {
         return gridSize.Get(1).number().intValue();
+    }
+
+    /** @return Stream of all index combinations as Tensors */
+    protected Stream<Tensor> cells() {
+        return IntStream.range(0, dimX()).mapToObj(x -> IntStream.range(0, dimY()).mapToObj(y -> //
+                Tensors.vector(x, y))).flatMap(Function.identity());
     }
 
     protected Tensor getWorld2grid() {
@@ -112,10 +130,15 @@ import java.awt.image.WritableRaster;
         return Tensors.vector((int) point2D.getX(), (int) point2D.getY());
     }
 
+    /** @param cell Tensor {pix, piy}
+     * @return byte array index */
     protected int cellToIdx(Tensor cell) {
         return cellToIdx(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
     }
 
+    /** @param pix of cell
+     * @param piy of cell
+     * @return byte array index */
     protected int cellToIdx(int pix, int piy) {
         return piy * dimX() + pix;
     }
@@ -125,10 +148,15 @@ import java.awt.image.WritableRaster;
         return gridSize;
     }
 
+    /** @param cell Tensor {pix, piy}
+     * @return whether cell is in grid*/
     protected boolean isCellInGrid(Tensor cell) {
         return isCellInGrid(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
     }
 
+    /** @param pix of cell
+     * @param piy of cell
+     * @return whether cell is in grid*/
     protected boolean isCellInGrid(int pix, int piy) {
         return 0 <= pix && pix < dimX() && 0 <= piy && piy < dimY();
     }
