@@ -17,11 +17,10 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ public class GokartState implements OfflineVectorInterface, BufferInsertable {
+/* package */ class GokartState implements OfflineVectorInterface, BufferInsertable {
   public static final int LENGTH = 11 * Float.BYTES; // 11 * 4
-  // TODO full documentation
-  // not used yet:
-  // private static final Unit SCE = SteerPutEvent.UNIT_ENCODER;
+  private static final Scalar ZERO_DEGC = Quantity.of(0.0, NonSI.DEGREE_CELSIUS);
+  // ---
   private final static Scalar CENTER_OFFSET = ChassisGeometry.GLOBAL.xAxleRtoCoM;
   /** time in seconds from synchronized time point */
   private final float time;
@@ -48,7 +47,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   /** create GokartState
    * 
-   * @param time time in "s"
+   * @param time in "s"
    * @param Ux forward velocity in "m/s"
    * @param Uy lateral velocity (left is positive) in "m/s"
    * @param dotPsi rotation velicity in "1/s"
@@ -58,7 +57,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @param w2L left rear wheelspeed in "1/s"
    * @param w2R right rear wheelspeed in "1/s"
    * @param s wheel encoder position in "CSE" */
-  public GokartState(//
+  GokartState(//
       float time, //
       float Ux, //
       float Uy, //
@@ -69,22 +68,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       float w2L, //
       float w2R, //
       float s) {
-    this.time = time;
-    this.Ux = Ux;
-    this.Uy = Uy;
-    this.dotPsi = dotPsi;
-    this.X = X;
-    this.Y = Y;
-    this.Psi = Psi;
-    this.w2L = w2L;
-    this.w2R = w2R;
-    this.s = s;
-    this.bTemp = 0;
+    this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, 0f);
   }
 
   /** create GokartState
    * 
-   * @param time time in "s"
+   * @param time in "s"
    * @param Ux forward velocity in "m/s"
    * @param Uy lateral velocity (left is positive) in "m/s"
    * @param dotPsi rotation velicity in "1/s"
@@ -94,8 +83,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @param w2L left rear wheelspeed in "1/s"
    * @param w2R right rear wheelspeed in "1/s"
    * @param s wheel encoder position in "CSE"
-   * @param bTemp brake temperature in "°C" */
-  public GokartState(//
+   * @param bTemp brake temperature in "degC" */
+  public GokartState( //
       float time, //
       float Ux, //
       float Uy, //
@@ -132,7 +121,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @param w2L left rear wheelspeed in "1/s"
    * @param w2R right rear wheelspeed in "1/s"
    * @param s wheel encoder position in "CSE" */
-  public GokartState(//
+  public GokartState( //
       Scalar time, //
       Scalar Ux, //
       Scalar Uy, //
@@ -143,17 +132,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       Scalar w2L, //
       Scalar w2R, //
       Scalar s) {
-    this.time = Magnitude.SECOND.toFloat(time);
-    this.Ux = Magnitude.VELOCITY.toFloat(Ux);
-    this.Uy = Magnitude.VELOCITY.toFloat(Uy);
-    this.dotPsi = Magnitude.PER_SECOND.toFloat(dotPsi);
-    this.X = Magnitude.METER.toFloat(X);
-    this.Y = Magnitude.METER.toFloat(Y);
-    this.Psi = Magnitude.ONE.toFloat(Psi);
-    this.w2L = Magnitude.PER_SECOND.toFloat(w2L);
-    this.w2R = Magnitude.PER_SECOND.toFloat(w2R);
-    this.s = SteerPutEvent.ENCODER.apply(s).number().floatValue();
-    this.bTemp = 0;
+    this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, ZERO_DEGC);
   }
 
   /** create GokartState
@@ -169,7 +148,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @param w2R right rear wheelspeed in "1/s"
    * @param s wheel encoder position in "CSE"
    * @param bTemp brake temperature in "°C" */
-  public GokartState(//
+  public GokartState( //
       Scalar time, //
       Scalar Ux, //
       Scalar Uy, //
@@ -194,90 +173,23 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     this.bTemp = Magnitude.DEGREE_CELSIUS.toFloat(bTemp);
   }
 
-  /** create GokartState
+  /** constructor for input stream
+   * assume that the input stream contains 11 floats
    * 
-   * @param GokartStateTensor the tensor in the form:
-   * {time [s],
-   * Ux [m/s],
-   * Uy [m/s],
-   * dotPsi [1/s],
-   * X [m],
-   * Y [m],
-   * Psi [1],
-   * w2L [1/s],
-   * w2R [1/s],
-   * s [CSE],
-   * bTemp [°C]} */
-  public GokartState(Tensor GokartStateTensor) {
-    // TODO reuse constructors
-    // this(time, Ux, Uy, dotPsi, Ux, Uy, dotPsi, w2L, w2R, Psi)
-    time = Magnitude.SECOND.toFloat(GokartStateTensor.Get(0));
-    Ux = Magnitude.VELOCITY.toFloat(GokartStateTensor.Get(1));
-    Uy = Magnitude.VELOCITY.toFloat(GokartStateTensor.Get(2));
-    dotPsi = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(3));
-    X = Magnitude.METER.toFloat(GokartStateTensor.Get(4));
-    Y = Magnitude.METER.toFloat(GokartStateTensor.Get(5));
-    Psi = Magnitude.ONE.toFloat(GokartStateTensor.Get(6));
-    w2L = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(7));
-    w2R = Magnitude.PER_SECOND.toFloat(GokartStateTensor.Get(8));
-    s = SteerPutEvent.ENCODER.apply(GokartStateTensor.Get(9)).number().floatValue();
-    bTemp = Magnitude.DEGREE_CELSIUS.toFloat(GokartStateTensor.Get(10));
-  }
-
-  // constructor for input stream
+   * @param byteBuffer
+   * @throws Exception if insufficient bytes are available */
   public GokartState(ByteBuffer byteBuffer) {
-    // assume that the input stream contains 8 floats
-    // if not, IllegalArgumentException is raised
     time = byteBuffer.getFloat();
     Ux = byteBuffer.getFloat();
     Uy = byteBuffer.getFloat();
     dotPsi = byteBuffer.getFloat();
     X = byteBuffer.getFloat();
     Y = byteBuffer.getFloat();
-    /* //if you want to test the wrap around problem
-     * float PsiVal = byteBuffer.getFloat();
-     * while (PsiVal > Math.PI)
-     * {
-     * System.out.println("wraparound up!");
-     * PsiVal -= Math.PI * 2;
-     * }
-     * while (PsiVal < -Math.PI) {
-     * System.out.println("wraparound down!");
-     * PsiVal += Math.PI * 2;
-     * }
-     * 
-     * Psi = PsiVal; */
     Psi = byteBuffer.getFloat();
     w2L = byteBuffer.getFloat();
     w2R = byteBuffer.getFloat();
     s = byteBuffer.getFloat();
     bTemp = byteBuffer.getFloat();
-  }
-
-  @Override
-  public Tensor asVector() {
-    /* return Tensors.vector(//
-     * Ux, //
-     * Uy, //
-     * dotPsi, //
-     * X, //
-     * Y, //
-     * Psi, //
-     * w2L, //
-     * w2R,
-     * s); */
-    return Tensors.of( //
-        getTime(), //
-        getUx(), //
-        getUy(), //
-        getdotPsi(), //
-        getX(), //
-        getY(), //
-        getPsi(), //
-        getw2L(), //
-        getw2R(), //
-        getS(), //
-        getBTemp());
   }
 
   public Scalar getTime() {
@@ -294,10 +206,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   public Tensor getPosition() {
     return Tensors.of(getX(), getY());
-  }
-
-  public Tensor getCenterPosition() {
-    return getPosition().add(AngleVector.of(getPsi()).multiply(CENTER_OFFSET));
   }
 
   public Scalar getdotPsi() {
@@ -335,7 +243,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     return Quantity.of(bTemp, NonSI.DEGREE_CELSIUS);
   }
 
-  @Override
+  public Tensor getCenterPosition() {
+    return getPosition().add(AngleVector.of(getPsi()).multiply(CENTER_OFFSET));
+  }
+
+  @Override // from BufferInsertable
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putFloat(time); // 0
     byteBuffer.putFloat(Ux); // 4
@@ -350,13 +262,44 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     byteBuffer.putFloat(bTemp); // 40
   }
 
-  @Override
+  @Override // from BufferInsertable
   public int length() {
     return LENGTH;
   }
 
   @Override
   public String toString() {
-    return "State:\n" + asVector().toString() + "\n";
+    return "State:\n" + asVectorWithUnits() + "\n";
+  }
+
+  @Override // from OfflineVectorInterface
+  public Tensor asVector() {
+    return Tensors.vector(//
+        time, //
+        Ux, //
+        Uy, //
+        dotPsi, //
+        X, //
+        Y, //
+        Psi, //
+        w2L, //
+        w2R, //
+        s, //
+        bTemp);
+  }
+
+  Tensor asVectorWithUnits() {
+    return Tensors.of( //
+        getTime(), //
+        getUx(), //
+        getUy(), //
+        getdotPsi(), //
+        getX(), //
+        getY(), //
+        getPsi(), //
+        getw2L(), //
+        getw2R(), //
+        getS(), //
+        getBTemp());
   }
 }

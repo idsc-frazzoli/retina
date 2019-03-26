@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class GokartPoseEventV2 extends GokartPoseEventV1 {
-  static final int LENGTH = 8 * 3 + 4 + 4 * 3;
+  static final int LENGTH = GokartPoseEventV1.LENGTH + Float.BYTES * 3;
   // ---
   private final float ux;
   private final float uy;
