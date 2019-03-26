@@ -53,7 +53,6 @@ import java.util.*;
         gokartPoseEvent = getEvent;
     }
 
-    // TODO take into account lidar blind spots (left, right)
     protected Collection<Tensor> getClosestPoints() {
         Tensor points = pointsPolar_ferry;
         TreeMap<Scalar, Tensor> freeSpace = new TreeMap<>();
