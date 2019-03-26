@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class GokartPoseEventV1 extends DataEvent implements GokartPoseEvent {
-  static final int LENGTH = 8 * 3 + 4;
+  static final int LENGTH = Double.BYTES * 3 + Float.BYTES;
   static final Tensor VELOCITY_ZERO = Tensors.of( //
       Quantity.of(0.0, SI.VELOCITY), //
       Quantity.of(0.0, SI.VELOCITY)).unmodifiable();

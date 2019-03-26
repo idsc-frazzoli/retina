@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 
-public abstract class MPCAbstractDrivingModule extends AbstractModule implements //
+/* package */ abstract class MPCAbstractDrivingModule extends AbstractModule implements //
     MPCBSplineTrackListener, Runnable {
   private final TrackReconModule trackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
