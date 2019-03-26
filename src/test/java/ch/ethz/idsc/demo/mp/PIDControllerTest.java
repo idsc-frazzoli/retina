@@ -23,6 +23,7 @@ public class PIDControllerTest extends TestCase {
     pidController.first();
     pidController.runAlgo();
     pidController.last();
+    System.out.println("Test1 completed");
   }
 
   public void testHeading() {
@@ -31,15 +32,25 @@ public class PIDControllerTest extends TestCase {
     pidController.setCurve(Optional.ofNullable(curve));
     System.out.println(curve);
     pidController.first();
-    Tensor pose = Tensors.fromString("{30[m], 30[m], 1}");
+    Tensor pose = Tensors.fromString("{40[m], 30[m], 1}");
     for (int index = 0; index < 100; index++) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
       pidController.getEvent(gokartPoseEvent);
       pidController.runAlgo();
       Scalar heading = pidController.pidSteer.getHeading();
-      System.out.println(heading);
+      // System.out.println(heading);
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, heading.divide(RealScalar.of(10))));
-      System.out.println(pose);
+      // System.out.println(pose);
     }
+    System.out.println("Test2 completed");
+  }
+
+  public void testCurver() { // Not going trough this if function not starting with "test-"
+    Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL.stream().map(Extract2D.FUNCTION));
+    for (int index = 0; index < curve.length(); index++) {
+      System.out.println(curve.get(index));
+    }
+    System.out.println(curve.length());
+    System.out.println("Test3 completed");
   }
 }
