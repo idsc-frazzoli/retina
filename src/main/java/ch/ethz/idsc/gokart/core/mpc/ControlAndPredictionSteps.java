@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 
 public class ControlAndPredictionSteps implements BufferInsertable {
   final ControlAndPredictionStep[] steps;
@@ -37,7 +36,7 @@ public class ControlAndPredictionSteps implements BufferInsertable {
   public Tensor toPositions() {
     return Tensor.of(Stream.of(steps) //
         .map(ControlAndPredictionStep::gokartState) //
-        .map(GokartState::getPosition));
+        .map(GokartState::getPositionXY));
   }
 
   /** @return vector of quantities with unit "m*s^-2" */
@@ -51,9 +50,6 @@ public class ControlAndPredictionSteps implements BufferInsertable {
   public Tensor toXYA() {
     return Tensor.of(Stream.of(steps) //
         .map(ControlAndPredictionStep::gokartState) //
-        .map(gokartState -> Tensors.of( //
-            gokartState.getX(), //
-            gokartState.getY(), //
-            gokartState.getPsi())));
+        .map(GokartState::getPose));
   }
 }

@@ -13,6 +13,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.gokart.dev.u3.GokartLabjackFrame;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -51,14 +52,16 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   // ---
   private final File file;
   private final List<Integer> raster2event = new ArrayList<>();
-  private final TableBuilder raster2auton = new TableBuilder();
-  private final TableBuilder raster2poseq = new TableBuilder();
-  private final TableBuilder raster2steer = new TableBuilder();
+  private final TableBuilder raster2autoButton = new TableBuilder();
+  private final TableBuilder raster2isSteerActive = new TableBuilder();
+  private final TableBuilder raster2poseQuality = new TableBuilder();
+  private final TableBuilder raster2steerAngle = new TableBuilder();
   private final TableBuilder raster2speed = new TableBuilder();
-  private final TableBuilder raster2gyroz = new TableBuilder();
+  private final TableBuilder raster2gyroZ = new TableBuilder();
   // ---
   private int event_count;
   private Scalar auton = RealScalar.ZERO;
+  private Scalar stact = RealScalar.ZERO;
   private Scalar poseq = RealScalar.ZERO;
   private Scalar steer = RealScalar.ZERO;
   private Scalar gyroz = RealScalar.ZERO;
@@ -71,10 +74,11 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   private void append(int count) {
     raster2event.add(count);
-    raster2auton.appendRow(auton);
-    raster2poseq.appendRow(poseq);
-    raster2steer.appendRow(steer);
-    raster2gyroz.appendRow(gyroz);
+    raster2autoButton.appendRow(auton);
+    raster2isSteerActive.appendRow(stact);
+    raster2poseQuality.appendRow(poseq);
+    raster2steerAngle.appendRow(steer);
+    raster2gyroZ.appendRow(gyroz);
     raster2speed.appendRow(rates);
   }
 
@@ -96,13 +100,17 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     } else //
     if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
       SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
-      auton = Boole.of(steerGetEvent.isActive());
+      stact = Boole.of(steerGetEvent.isActive());
     } else //
     // if (channel.equals(GokartLcmChannel.JOYSTICK)) {
     // JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
     // ManualControlInterface manualControlInterface = (ManualControlInterface) joystickEvent;
     // auton = Boole.of(manualControlInterface.isAutonomousPressed());
     // } else //
+    if (channel.equals(GokartLcmChannel.LABJACK_U3_ADC)) {
+      GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(byteBuffer);
+      auton = Boole.of(gokartLabjackFrame.isAutonomousPressed());
+    } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
       SteerColumnInterface steerColumnInterface = new GokartStatusEvent(byteBuffer);
       steer = steerColumnInterface.isSteerColumnCalibrated() //
@@ -120,20 +128,24 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     return file;
   }
 
-  public Stream<Tensor> raster2auton() {
-    return raster2auton.stream();
+  public Stream<Tensor> raster2autoButton() {
+    return raster2autoButton.stream();
   }
 
-  public Stream<Tensor> raster2poseq() {
-    return raster2poseq.stream();
+  public Stream<Tensor> raster2isSteerActive() {
+    return raster2isSteerActive.stream();
   }
 
-  public Stream<Tensor> raster2steer() {
-    return raster2steer.stream();
+  public Stream<Tensor> raster2poseQuality() {
+    return raster2poseQuality.stream();
   }
 
-  public Stream<Tensor> raster2gyroz() {
-    return raster2gyroz.stream();
+  public Stream<Tensor> raster2steerAngle() {
+    return raster2steerAngle.stream();
+  }
+
+  public Stream<Tensor> raster2gyroZ() {
+    return raster2gyroZ.stream();
   }
 
   public Stream<Tensor> raster2speed() {

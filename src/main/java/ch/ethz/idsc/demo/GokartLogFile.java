@@ -1621,9 +1621,34 @@ public enum GokartLogFile implements LogFile {
   /** pure pursuit */
   _20190321T174352_b8d4b66a,
   /***************************************************/
-  /* 2019-03-25 */
+  /* 2019-03-25
+   * davis 240c is not detected */
   /** testing gokart pose event v2 */
   _20190325T083437_be8261a9,
+  /** steer torque to angle experiment */
+  _20190325T112618_cfdd7814,
+  /** short driving */
+  _20190325T134326_583c4e95,
+  /** manual and mpc driving */
+  _20190325T135103_583c4e95,
+  /** manual and mpc driving */
+  _20190325T140608_583c4e95,
+  /** fast manual driving */
+  _20190325T141033_583c4e95,
+  /** test of pid trajectory following */
+  _20190325T144606_47d5c461,
+  /** mpc with changing topology */
+  _20190325T163400_f5272f99,
+  /** slow mpc */
+  _20190325T170745_61639f01,
+  /** slow manual driving */
+  _20190325T171337_61639f01,
+  /** mpc with changing map */
+  _20190325T172211_61639f01,
+  /** mpc with changing map */
+  _20190325T172919_61639f01,
+  /** mpc */
+  _20190325T175100_61639f01,
   /***************************************************/
   ;
   // ---

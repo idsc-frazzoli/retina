@@ -37,7 +37,7 @@ public class MappingConfig {
    * the safety margin accounts not only for the half-width of the gokart
    * but also the corner cutting behavior of the pure pursuit */
   public Scalar obsRadius = Quantity.of(1.3, SI.METER);
-  public final Scalar trackDrivingObsRadius = Quantity.of(1, SI.METER);
+  public final Scalar trackDrivingObsRadius = Quantity.of(0.8, SI.METER);
   /** Cell dimension of a single grid cell in [m] */
   public final Scalar cellDim = Quantity.of(0.2, SI.METER);
   public Boolean alongLine = false;
@@ -66,23 +66,20 @@ public class MappingConfig {
     return lambda.number().doubleValue();
   }
 
+  private static final Tensor LBOUNDS = Tensors.vector(20, 20);
+  private static final Tensor RANGE = Tensors.vector(35, 35);
+
   /** @return Dubilab specific BayesianOccupancyGrid */
   public BayesianOccupancyGrid createBayesianOccupancyGrid() {
-    Tensor lbounds = Tensors.vector(15, 15);
-    Tensor range = Tensors.vector(55, 55);
-    return BayesianOccupancyGrid.of(lbounds, range, cellDim, obsRadius);
+    return BayesianOccupancyGrid.of(LBOUNDS, RANGE, cellDim, obsRadius);
   }
 
   public BayesianOccupancyGrid createTrackFittingBayesianOccupancyGrid() {
-    Tensor lbounds = Tensors.vector(15, 15);
-    Tensor range = Tensors.vector(55, 55);
-    return BayesianOccupancyGrid.of(lbounds, range, cellDim, trackDrivingObsRadius, true);
+    return BayesianOccupancyGrid.of(LBOUNDS, RANGE, cellDim, trackDrivingObsRadius, true);
   }
 
   /** @return dubilab specific BayesianOccupancyGrid */
   public BayesianOccupancyGrid createThinBayesianOccupancyGrid() {
-    Tensor lbounds = Tensors.vector(15, 15);
-    Tensor range = Tensors.vector(55, 55);
-    return BayesianOccupancyGrid.of(lbounds, range, cellDim, Quantity.of(0, SI.METER), true);
+    return BayesianOccupancyGrid.of(LBOUNDS, RANGE, cellDim, Quantity.of(0, SI.METER), true);
   }
 }

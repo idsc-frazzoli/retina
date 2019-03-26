@@ -88,7 +88,7 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
           davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.PER_SECOND), //
           SteerPutEvent.ENCODER.apply(gokartStatusEvent.getSteerColumnEncoderCentered()), //
           linmotGetEvent.getActualPosition().map(Magnitude.METER).map(Round._6), //
-          gokartPoseEvent.asVector().map(Round._6) //
+          gokartPoseEvent.asVector() //
       );
     }
   }

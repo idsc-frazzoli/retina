@@ -26,6 +26,11 @@ tdavis = Davis(:,1);
 tvmu = VMU(:,1);
 tvmu=tvmu/1000;
 tvmu=tvmu-tvmu(1);
+sel = tvmu > 360 & tvmu < 369;
+VMU = VMU(sel,:);
+tvmu = VMU(:,1);
+tvmu=tvmu/1000;
+tvmu=tvmu-tvmu(1);
 yacc = VMU(:,3);
 xacc = VMU(:,2);
 zacc = VMU(:,4);
@@ -44,9 +49,17 @@ dszacc = gaussfilter(dzacc,500);
 figure
 title('VMU');
 hold on
-plot(tvmu,sxacc)
-plot(tvmu,syacc)
-plot(tvmu,szacc)
+%plot(tvmu,sxacc)
+%plot(tvmu,syacc)
+%plot(tvmu,szacc)
+plot(tvmu,zacc,'Displayname','Z-axis')
+plot(tvmu,xacc,'Displayname', 'X-axis')
+plot(tvmu,yacc,'Displayname','Y-axis')
+xlabel('time [s]')
+ylabel('acceleration [m/s^2]')
+legend show
+legend('location','east')
+print('imuPrint','-dpng','-r600')
 %plot(tvmu,ygyr)
 hold off
 

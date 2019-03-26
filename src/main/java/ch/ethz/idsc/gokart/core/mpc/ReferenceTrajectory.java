@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.io.IOException;
@@ -12,7 +13,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class ReferenceTrajectory {
+public enum ReferenceTrajectory {
+  ;
   public static Tensor of(String trackName, int steps, int skip) throws InterruptedException, IOException {
     Tensor trackData = Import.of(HomeDirectory.Documents("TrackID", trackName)).multiply(Quantity.of(1, SI.METER));
     MPCBSplineTrack track = new MPCBSplineTrack(trackData, true);
@@ -21,9 +23,13 @@ public class ReferenceTrajectory {
 
   public static Tensor of(MPCPreviewableTrack track, int steps, int skip) throws InterruptedException {
     Tensor positions = Tensors.empty();
-    LcmMPCControlClient lcmMPCControlClient = LcmMPCControlClient.dynamic();
-    lcmMPCControlClient.switchToExternalStart();
-    lcmMPCControlClient.start();
+    MPCRequestPublisher mpcRequestPublisher = MPCRequestPublisher.dynamic();
+    MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
+    MPCControlUpdateCapture mpcControlUpdateCapture = new MPCControlUpdateCapture();
+    mpcControlUpdateLcmClient.addListener(mpcControlUpdateCapture);
+    mpcControlUpdateLcmClient.startSubscriptions();
+    mpcRequestPublisher.switchToExternalStart();
+    mpcRequestPublisher.start();
     GokartState gokartState;
     Tensor pose = track.getStartPose();
     // 44.2575 51.6983
@@ -42,33 +48,33 @@ public class ReferenceTrajectory {
         Quantity.of(10, SI.VELOCITY), //
         Quantity.of(4, SI.ACCELERATION), //
         Quantity.of(0.02, SI.ONE), Quantity.of(0.3, SI.ONE));
-    lcmMPCControlClient.publishOptimizationParameter(optimizationParameterDynamic);
+    mpcRequestPublisher.publishOptimizationParameter(optimizationParameterDynamic);
     // lcmMPCControlClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
     Tensor position = gokartState.getCenterPosition();
     MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0.5, SI.METER),
         Quantity.of(-0.5, SI.ONE), RealScalar.of(0.7));
-    lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
+    mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
     for (int i = 0; i < steps; i++) {
       Thread.sleep(200);
       System.out.println("send request");
-      if (Objects.nonNull(lcmMPCControlClient.lastcns)) {
-        gokartState = lcmMPCControlClient.lastcns.steps[skip].gokartState();
+      if (Objects.nonNull(mpcControlUpdateCapture.cns)) {
+        gokartState = mpcControlUpdateCapture.cns.steps[skip].gokartState();
         // System.out.println(gokartState.getS());
         position = gokartState.getCenterPosition();
         positions.append(position);
-        Scalar changeRate = lcmMPCControlClient.lastcns.steps[0].gokartControl().getudotS();
-        Scalar rampupVale = lcmMPCControlClient.lastcns.steps[0].gokartState().getS()//
+        Scalar changeRate = mpcControlUpdateCapture.cns.steps[0].gokartControl().getudotS();
+        Scalar rampupVale = mpcControlUpdateCapture.cns.steps[0].gokartState().getS()//
             .add(changeRate.multiply(Quantity.of(0.1, SI.SECOND)));
-        Scalar betaDiff = lcmMPCControlClient.lastcns.steps[1].gokartState().getS().subtract(rampupVale);
+        Scalar betaDiff = mpcControlUpdateCapture.cns.steps[1].gokartState().getS().subtract(rampupVale);
         System.out.println("should be zero: " + betaDiff);
         mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER), RealScalar.of(1),
             RealScalar.of(0.5));
         System.out.println("progressstart: " + mpcPathParameter.getProgressOnPath());
-        lcmMPCControlClient.publishControlRequest(gokartState, mpcPathParameter);
+        mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
       } else
         System.err.println("lastcns null");
     }
-    lcmMPCControlClient.stop();
+    mpcRequestPublisher.stop();
     return positions;
   }
 }
