@@ -52,7 +52,7 @@ public class PIDController extends PIDControllerModule implements GokartPoseList
       Tensor closest = curve.get(PIDCurveHelper.closest(curve, poseXY));
       Scalar trajAngle = (Scalar) PIDCurveHelper.trajAngle(curve, poseXY); // TODO MCP Improve scalar assignment
       // measure error
-      Scalar errorPose = Quantity.of(Norm._2.between(poseXY, closest),SI.METER);
+      Scalar errorPose = Quantity.of(Norm._2.between(poseXY, closest), SI.METER);
       Scalar errorAngle = angle.subtract(trajAngle);
       Scalar iErrorAngle = errorAngle.multiply(PIDTuningParams.GLOBAL.updatePeriod);
       // Scalar dErrorAngle = errorAngle.subtract(previousAngleError);

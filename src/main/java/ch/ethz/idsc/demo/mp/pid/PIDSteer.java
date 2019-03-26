@@ -26,7 +26,7 @@ public class PIDSteer implements SteerPutProvider, StartAndStoppable {
     return ProviderRank.AUTONOMOUS;
   }
 
-  @Override //from SteerPutProvider
+  @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();

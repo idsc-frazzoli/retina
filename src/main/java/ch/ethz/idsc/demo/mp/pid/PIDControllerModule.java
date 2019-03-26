@@ -28,15 +28,13 @@ public abstract class PIDControllerModule extends AbstractClockedModule {
   }
 
   @Override // from AbstractModule
-  public
-  final void first() {
+  public final void first() {
     protected_first();
     pidSteer.start();
   }
 
   @Override // from AbstractModule
-  public
-  final void last() {
+  public final void last() {
     pidSteer.stop();
     protected_last();
   }
