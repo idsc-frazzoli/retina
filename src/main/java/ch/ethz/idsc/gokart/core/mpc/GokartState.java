@@ -40,7 +40,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final float w2L;
   /** right rear wheel speed */
   private final float w2R;
-  /** steering state */
+  /** steering column encoder */
   private final float s;
   /** brake temperature */
   private final float bTemp;
@@ -50,13 +50,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @param time in "s"
    * @param Ux forward velocity in "m/s"
    * @param Uy lateral velocity (left is positive) in "m/s"
-   * @param dotPsi rotation velicity in "1/s"
+   * @param dotPsi rotation velocity in "1/s"
    * @param X X-position in "m"
    * @param Y Y-position in "m"
    * @param Psi orientation in "1"
-   * @param w2L left rear wheelspeed in "1/s"
-   * @param w2R right rear wheelspeed in "1/s"
-   * @param s wheel encoder position in "CSE" */
+   * @param w2L left rear wheel speed in "1/s"
+   * @param w2R right rear wheel speed in "1/s"
+   * @param s wheel encoder position in "SCE" */
   GokartState(//
       float time, //
       float Ux, //
@@ -76,13 +76,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @param time in "s"
    * @param Ux forward velocity in "m/s"
    * @param Uy lateral velocity (left is positive) in "m/s"
-   * @param dotPsi rotation velicity in "1/s"
+   * @param dotPsi rotation vel0city in "1/s"
    * @param X X-position in "m"
    * @param Y Y-position in "m"
    * @param Psi orientation in "1"
-   * @param w2L left rear wheelspeed in "1/s"
-   * @param w2R right rear wheelspeed in "1/s"
-   * @param s wheel encoder position in "CSE"
+   * @param w2L left rear wheel speed in "1/s"
+   * @param w2R right rear wheel speed in "1/s"
+   * @param s wheel encoder position in "SCE"
    * @param bTemp brake temperature in "degC" */
   public GokartState( //
       float time, //
@@ -114,13 +114,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @param time time in "s"
    * @param Ux forward velocity in "m/s"
    * @param Uy lateral velocity (left is positive) in "m/s"
-   * @param dotPsi rotation velicity in "1/s"
+   * @param dotPsi rotation velocity in "1/s"
    * @param X X-position in "m"
    * @param Y Y-position in "m"
    * @param Psi orientation in "1"
-   * @param w2L left rear wheelspeed in "1/s"
-   * @param w2R right rear wheelspeed in "1/s"
-   * @param s wheel encoder position in "CSE" */
+   * @param w2L left rear wheel speed in "1/s"
+   * @param w2R right rear wheel speed in "1/s"
+   * @param s wheel encoder position in "SCE" */
   public GokartState( //
       Scalar time, //
       Scalar Ux, //
@@ -140,14 +140,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * @param time time in "s"
    * @param Ux forward velocity in "m/s"
    * @param Uy lateral velocity (left is positive) in "m/s"
-   * @param dotPsi rotation velicity in "1/s"
+   * @param dotPsi rotation velocity in "1/s"
    * @param X X-position in "m"
    * @param Y Y-position in "m"
    * @param Psi orientation in "1"
-   * @param w2L left rear wheelspeed in "1/s"
-   * @param w2R right rear wheelspeed in "1/s"
-   * @param s wheel encoder position in "CSE"
-   * @param bTemp brake temperature in "°C" */
+   * @param w2L left rear wheel speed in "1/s"
+   * @param w2R right rear wheel speed in "1/s"
+   * @param s wheel encoder position in "SCE"
+   * @param bTemp brake temperature in "degC" */
   public GokartState( //
       Scalar time, //
       Scalar Ux, //
@@ -204,10 +204,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     return Quantity.of(Uy, SI.VELOCITY);
   }
 
-  public Tensor getPosition() {
-    return Tensors.of(getX(), getY());
-  }
-
   public Scalar getdotPsi() {
     return Quantity.of(dotPsi, SI.PER_SECOND);
   }
@@ -243,8 +239,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     return Quantity.of(bTemp, NonSI.DEGREE_CELSIUS);
   }
 
+  /** @return {x[m], y[m], psi} */
+  public Tensor getPose() {
+    return Tensors.of(getX(), getY(), getPsi());
+  }
+
+  /** @return {x[m], y[m]} */
+  public Tensor getPositionXY() {
+    return Tensors.of(getX(), getY());
+  }
+
   public Tensor getCenterPosition() {
-    return getPosition().add(AngleVector.of(getPsi()).multiply(CENTER_OFFSET));
+    return getPositionXY().add(AngleVector.of(getPsi()).multiply(CENTER_OFFSET));
   }
 
   @Override // from BufferInsertable

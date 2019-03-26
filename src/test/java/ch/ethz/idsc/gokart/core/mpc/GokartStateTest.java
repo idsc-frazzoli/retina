@@ -6,6 +6,7 @@ import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -86,5 +87,7 @@ public class GokartStateTest extends TestCase {
     assertEquals(gokartState1.asVector(), gokartState2.asVector());
     assertEquals(gokartState1.asVectorWithUnits(), gokartState2.asVectorWithUnits());
     assertEquals(gokartState1.asVector().length(), gokartState2.asVectorWithUnits().length());
+    assertEquals(gokartState1.getPose(), Tensors.fromString("{5[m], 6[m], 7}"));
+    assertEquals(gokartState1.getPositionXY(), Tensors.fromString("{5[m], 6[m]}"));
   }
 }
