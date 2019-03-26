@@ -3,11 +3,12 @@ package ch.ethz.idsc.demo.mp.pid;
 import java.util.Optional;
 
 import ch.ethz.idsc.sophus.planar.ArcTan2D;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Norm;
 
-enum CurveHelper {
+public enum PIDCurveHelper {
   ;
   /**
    * Returns position of the closest point on the curve to the current pose
@@ -15,17 +16,17 @@ enum CurveHelper {
    * @param pose
    * @return point
    */
-  static int closest(Tensor curve, Tensor pose) {
-    return ArgMin.of(Tensor.of(curve.stream().map(row -> Norm._2.between(row, pose))));
+  public static int closest(Tensor curve, Tensor pose) {
+    return ArgMin.of(Tensor.of(curve.stream().map(curvePoint -> Norm._2.between(curvePoint, pose))));
   }
 
   /**
    * Returns angle between two following points of the closest point on the curve to the current pose
    * @param curve
    * @param point
-   * @return
+   * @return angle
    */
-  static Tensor trajAngle(Tensor curve, Tensor point) {
+  public static Scalar trajAngle(Tensor curve, Tensor point) {
     int index = closest(curve, point);
     int nextIndex = index + 1;
     if (nextIndex > curve.length()) // TODO MCP Write this better

@@ -44,13 +44,13 @@ public class PIDController extends PIDControllerModule implements GokartPoseList
   @Override
   protected Optional<Scalar> deriveHeading() {
     GokartPoseEvent gokartPoseEvent = this.gokartPoseEvent;
-    if (Objects.nonNull(gokartPoseEvent) && optionalCurve.isPresent() && CurveHelper.bigEnough(optionalCurve)) {
+    if (Objects.nonNull(gokartPoseEvent) && optionalCurve.isPresent() && PIDCurveHelper.bigEnough(optionalCurve)) {
       Scalar angle = (Scalar) gokartPoseEvent.getPose().get(2);
       Tensor curve = optionalCurve.get();
       Tensor poseXY = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).extract(0, 2);
       // find closest points on trajectory and angle
-      Tensor closest = curve.get(CurveHelper.closest(curve, poseXY));
-      Scalar trajAngle = (Scalar) CurveHelper.trajAngle(curve, poseXY); // TODO MCP Improve scalar assignment
+      Tensor closest = curve.get(PIDCurveHelper.closest(curve, poseXY));
+      Scalar trajAngle = (Scalar) PIDCurveHelper.trajAngle(curve, poseXY); // TODO MCP Improve scalar assignment
       // measure error
       Scalar errorPose = Quantity.of(Norm._2.between(poseXY, closest),SI.METER);
       Scalar errorAngle = angle.subtract(trajAngle);

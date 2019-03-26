@@ -1,3 +1,4 @@
+//code by mcp
 package ch.ethz.idsc.demo.mp;
 
 import java.util.Optional;
@@ -23,7 +24,6 @@ public class PIDControllerTest extends TestCase {
     pidController.first();
     pidController.runAlgo();
     pidController.last();
-    System.out.println("Test1 completed");
   }
 
   public void testHeading() {
@@ -40,17 +40,17 @@ public class PIDControllerTest extends TestCase {
       Scalar heading = pidController.pidSteer.getHeading();
       // System.out.println(heading);
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, heading.divide(RealScalar.of(10))));
-      // System.out.println(pose);
+      System.out.println(pose);
+      
+      // TODO Solve issue with if gokart does multiple rotations (+pi factor)
     }
-    System.out.println("Test2 completed");
   }
 
-  public void testCurver() { // Not going trough this if function not starting with "test-"
+  public void testCurve() { // Not going trough this if function not starting with "test-"
     Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL.stream().map(Extract2D.FUNCTION));
     for (int index = 0; index < curve.length(); index++) {
-      System.out.println(curve.get(index));
+      // System.out.println(curve.get(index));
     }
-    System.out.println(curve.length());
-    System.out.println("Test3 completed");
+    // System.out.println(curve.length());
   }
 }
