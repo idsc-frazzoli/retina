@@ -51,7 +51,7 @@ import java.util.stream.Stream;
 
     /** @param lbounds vector of length 2
      * @param rangeCeil effective size of grid in coordinate space of the form {value, value}
-     * @param dimension of grid in cell space */
+     * @param dimension of grid in cell space */ // TODO might be better as tensor
     /* package */ ImageGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension) {
         VectorQ.requireLength(rangeCeil, 2);
         System.out.println("Grid range: " + rangeCeil);
