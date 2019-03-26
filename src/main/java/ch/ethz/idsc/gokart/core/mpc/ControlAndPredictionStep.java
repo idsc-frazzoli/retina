@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
 /* package */ class ControlAndPredictionStep implements BufferInsertable {
-  public static final int LENGTH = GokartControl.LENGTH + GokartState.LENGTH;
+  static final int LENGTH = GokartControl.LENGTH + GokartState.LENGTH;
   // ---
   private final GokartControl gokartControl;
   private final GokartState gokartState;

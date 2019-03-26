@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class DubendorfTrack extends MPCBSplineTrack {
+/* package */ class DubendorfTrack extends MPCBSplineTrack {
   private static final Scalar RADIUS_DEFAULT = Quantity.of(2.0, SI.METER);
   // ---
   public static final DubendorfTrack HYPERLOOP_EIGHT = hyperloop_eight();
