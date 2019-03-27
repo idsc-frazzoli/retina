@@ -1,6 +1,5 @@
+// code by mcp
 package ch.ethz.idsc.demo.mp.pid;
-
-import java.util.Optional;
 
 import ch.ethz.idsc.sophus.planar.ArcTan2D;
 import ch.ethz.idsc.tensor.Scalar;
@@ -8,20 +7,18 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Norm;
 
-public enum PIDCurveHelper {
+/* package */ enum PIDCurveHelper {
   ;
-  /** Returns position of the closest point on the curve to the current pose
-   * @param curve
+  /** @param curve
    * @param pose
-   * @return point */
+   * @return position of the closest point on the curve to the current pose */
   public static int closest(Tensor curve, Tensor pose) {
     return ArgMin.of(Tensor.of(curve.stream().map(curvePoint -> Norm._2.between(curvePoint, pose))));
   }
 
-  /** Returns angle between two following points of the closest point on the curve to the current pose
-   * @param curve
+  /** @param curve
    * @param point
-   * @return angle */
+   * @return angle between two following points of the closest point on the curve to the current pose */
   public static Scalar trajAngle(Tensor curve, Tensor point) {
     int index = closest(curve, point);
     int nextIndex = index + 1;
@@ -30,10 +27,9 @@ public enum PIDCurveHelper {
     return ArcTan2D.of(curve.get(nextIndex).subtract(curve.get(index)));
   }
 
-  /** Checkes if enough elements in curve
-   * @param optionalCurve
-   * @return */
-  static boolean bigEnough(Optional<Tensor> optionalCurve) {
-    return optionalCurve.get().length() > 1; // TODO MCP Write this better
+  /** @param optionalCurve
+   * @return if enough elements in curve */
+  static boolean bigEnough(Tensor optionalCurve) {
+    return optionalCurve.length() > 1; // TODO MCP Write this better
   }
 }

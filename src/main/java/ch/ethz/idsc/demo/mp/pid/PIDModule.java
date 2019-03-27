@@ -14,26 +14,26 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 
-/** module requires the GokartTrackReconModule to provide the center line of an
+/** module requires the TrackReconModule to provide the center line of an
  * identified track */
 public class PIDModule extends AbstractModule implements MPCBSplineTrackListener {
   private static final int RESOLUTION = 200;
   private final TrackReconModule trackReconModule = ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  private final PIDController pidController = new PIDController(PIDTuningParams.GLOBAL);
+  private final PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
-  @Override // from abstractModule
+  @Override // from AbstractModule
   protected void first() {
     if (Objects.nonNull(trackReconModule))
       trackReconModule.listenersAdd(this);
     else
       System.err.println("no track info");
-    pidController.launch();
+    pidControllerModule.launch();
   }
 
-  @Override // from abstractModule
+  @Override // from AbstractModule
   protected void last() {
-    pidController.terminate();
+    pidControllerModule.terminate();
     if (Objects.nonNull(trackReconModule))
       trackReconModule.listenersRemove(this);
     if (Objects.nonNull(globalViewLcmModule))
@@ -49,7 +49,7 @@ public class PIDModule extends AbstractModule implements MPCBSplineTrackListener
     } else {
       System.out.println("center line no waypoints");
     }
-    pidController.setCurve(Optional.ofNullable(curve));
+    pidControllerModule.setCurve(Optional.ofNullable(curve));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(curve);
   }
