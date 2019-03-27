@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 /* package */ enum DynamicsConversion {
   ;
   public static Optional<File> single(File cut) {
-    File file = new File(cut, StaticHelper.LOG_LCM);
+    File file = new File(cut, StaticHelper.POST_LCM);
     if (!file.isFile())
       throw new RuntimeException("" + file);
     // ---
