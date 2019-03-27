@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.io.File;
+import java.io.IOException;
+
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.sophus.curve.FourPointCurveSubdivision;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
@@ -8,6 +11,7 @@ import ch.ethz.idsc.sophus.group.Se2Geodesic;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Reverse;
+import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Nest;
@@ -36,6 +40,7 @@ public enum DubendorfCurve {
   // ---
   public static final Tensor TIRES_TRACK_A = tires_track_a();
   public static final Tensor TIRES_TRACK_B = tires_track_b();
+  public static final Tensor TRACK_OVAL = track_oval();
 
   /** CURVE "OVAL" IS USED IN TESTS
    * DONT MODIFY COORDINATES - INSTEAD CREATE A NEW CURVE */
@@ -115,5 +120,16 @@ public enum DubendorfCurve {
   private static Tensor tires_track_b() {
     Tensor poly = ResourceData.of("/dubilab/controlpoints/tires/20190117.csv");
     return project_se2_r2(Nest.of(SUBDIVISION_SE2, poly, 4)).unmodifiable();
+  }
+
+  private static Tensor track_oval() {
+    Tensor poly;
+    try {
+      poly = Import.of(new File("resources/track20190325.csv"));
+      return project_se2_r2(Nest.of(SUBDIVISION_SE2, poly, 4)).unmodifiable();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return Tensors.empty();
   }
 }

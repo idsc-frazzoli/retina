@@ -27,12 +27,12 @@ abstract class PurePursuitBase<PE> implements StartAndStoppable, PutProvider<PE>
     return status;
   }
 
-  @Override // from RimoPutProvider
+  @Override // from PutProvider
   public final ProviderRank getProviderRank() {
     return ProviderRank.AUTONOMOUS;
   }
 
-  @Override // from RimoPutProvider
+  @Override // from PutProvider
   public final Optional<PE> putEvent() {
     return private_putEvent(steerColumnInterface);
   }
