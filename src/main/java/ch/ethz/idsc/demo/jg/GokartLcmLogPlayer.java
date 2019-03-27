@@ -1,15 +1,13 @@
 // code by jph
 package ch.ethz.idsc.demo.jg;
 
-import ch.ethz.idsc.demo.GokartLogFile;
-import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
+import java.io.File;
+import java.io.IOException;
+
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
-
-import java.io.File;
-import java.io.IOException;
 
 /* package */ enum GokartLcmLogPlayer {
   ;

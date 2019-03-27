@@ -15,5 +15,4 @@ package ch.ethz.idsc.retina.lidar;
     this.coords = coords;
     this.intensity = intensity;
   }
-
 }

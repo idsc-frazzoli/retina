@@ -38,7 +38,7 @@ public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
       IZ[i] = (float) (Math.sin(theta) * VelodyneStatics.TO_METER);
     }
     System.out.println("Rays processed at theta = " + //
-            Arrays.stream(degrees()).map(Object::toString).collect(Collectors.joining("°, ")) + "°");
+        Arrays.stream(degrees()).map(Object::toString).collect(Collectors.joining("°, ")) + "°");
   }
 
   public Integer[] degrees() {

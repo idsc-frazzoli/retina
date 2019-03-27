@@ -40,5 +40,4 @@ public abstract class VelodynePolarProvider implements LidarRayDataListener {
   public final double getLimitLo() {
     return limit_lo * VelodyneStatics.TO_METER;
   }
-
 }

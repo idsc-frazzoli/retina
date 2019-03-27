@@ -1,15 +1,14 @@
 // code by jph, gjoel
 package ch.ethz.idsc.retina.lidar;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
-
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-// TODO could be integrated in LidarAngulrFiringCollector
+import ch.ethz.idsc.owl.data.GlobalAssert;
 
+// TODO could be integrated in LidarAngulrFiringCollector
 /** collects a lidar scan of a complete 360 rotation into a pointcloud consisting
  * of 3d points */
 public class LidarPolarFiringCollector implements LidarPolarListener, LidarRotationListener {

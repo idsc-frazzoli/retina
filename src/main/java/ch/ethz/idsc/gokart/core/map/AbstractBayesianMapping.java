@@ -1,14 +1,15 @@
 // code by ynager, mheim, gjoel
 package ch.ethz.idsc.gokart.core.map;
 
+import java.util.Objects;
+
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.retina.lidar.*;
+import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
+import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
-
-import java.util.Objects;
 
 /** class interprets sensor data from lidar */
 public abstract class AbstractBayesianMapping extends AbstractMapping<BayesianOccupancyGrid> {
@@ -19,7 +20,7 @@ public abstract class AbstractBayesianMapping extends AbstractMapping<BayesianOc
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
 
   /* package */ AbstractBayesianMapping(BayesianOccupancyGrid bayesianOccupancyGrid, //
-                                        SpacialXZObstaclePredicate predicate, int max_alt, int waitMillis) {
+      SpacialXZObstaclePredicate predicate, int max_alt, int waitMillis) {
     super(bayesianOccupancyGrid, predicate, waitMillis);
     lidarSpacialProvider = new Vlp16SegmentProvider(offset, max_alt);
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));

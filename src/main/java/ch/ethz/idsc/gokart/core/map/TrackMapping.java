@@ -5,6 +5,6 @@ package ch.ethz.idsc.gokart.core.map;
 public class TrackMapping extends AbstractBayesianMapping {
   public TrackMapping() {
     super(MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid(), //
-            TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), -6, 200);
+        TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), -6, 200);
   }
 }

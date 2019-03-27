@@ -26,7 +26,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
 /** all pixels have the same amount of weight or clearance radius attached */
 public class BayesianOccupancyGrid extends ImageGrid {
-
   /** @param lbounds vector of length 2
    * @param range effective size of grid in coordinate space
    * @param cellDim non-negative dimension of cell with unit SI.METER
@@ -216,7 +215,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
           for (int j = 0; j < dimY(); j++) {
             double logOdd = logOdds[cellToIdx(i, j)];
             Tensor cell = Tensors.vector(i + ofsx, j + ofsy);
-            if (isCellInGrid(cell)){
+            if (isCellInGrid(cell)) {
               logOddsNew[cellToIdx(cell)] = logOdd;
               if (logOdd > L_THRESH)
                 hset.add(cell);

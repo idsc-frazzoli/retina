@@ -7,6 +7,6 @@ import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 public class ObstacleMapping extends AbstractBayesianMapping {
   public ObstacleMapping() {
     super(MappingConfig.GLOBAL.createBayesianOccupancyGrid(), //
-            SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), -1, 1000);
+        SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), -1, 1000);
   }
 }

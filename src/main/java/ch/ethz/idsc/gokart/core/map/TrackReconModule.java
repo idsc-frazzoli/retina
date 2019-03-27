@@ -34,7 +34,6 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO does not shut down properly in TaskTabbedGui when not closed separately
-
 public final class TrackReconModule extends AbstractClockedModule implements GokartPoseListener {
   /** TODO JPH magic const */
   private static final Scalar PERIOD = Quantity.of(0.1, SI.SECOND);
