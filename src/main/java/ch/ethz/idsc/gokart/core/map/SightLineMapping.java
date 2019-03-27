@@ -4,13 +4,11 @@ package ch.ethz.idsc.gokart.core.map;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.*;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16PolarProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
-import java.awt.*;
 import java.util.Collection;
 
 /** create an obstacle map based on lidar sight lines */
@@ -72,10 +70,5 @@ public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
                 }
             }
         }
-    }
-
-    @Override // from RenderInterface
-    public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-        occupancyGrid.render(geometricLayer, graphics);
     }
 }
