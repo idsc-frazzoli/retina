@@ -11,24 +11,22 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** module requires the GokartTrackReconModule to provide the center line of an
- * identified track */
 public class PIDTestTrackModule extends AbstractModule {
-  private final PIDController pidController = new PIDController(PIDTuningParams.GLOBAL);
+  private final PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
-  @Override // from abstractModule
+  @Override // from AbstractModule
   public void first() {
     Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL.stream().map(Extract2D.FUNCTION));
-    pidController.setCurve(Optional.ofNullable(curve));
+    pidControllerModule.setCurve(Optional.ofNullable(curve));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(curve);
-    pidController.launch();
+    pidControllerModule.launch();
   }
 
-  @Override // from abstractModule
+  @Override // from AbstractModule
   public void last() {
-    pidController.terminate();
+    pidControllerModule.terminate();
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(null);
   }

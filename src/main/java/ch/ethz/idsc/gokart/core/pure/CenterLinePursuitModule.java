@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 
-/** module requires the GokartTrackReconModule to provide the center line of an identified track */
+/** module requires the TrackReconModule to provide the center line of an identified track */
 public class CenterLinePursuitModule extends AbstractModule implements MPCBSplineTrackListener {
   /** in dubendorf resolution 100 yields points approx 0.5[m] apart.
    * resolution = 200 results in a spacing of ~0.25[m] */
