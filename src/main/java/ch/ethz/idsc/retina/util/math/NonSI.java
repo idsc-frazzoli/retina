@@ -11,6 +11,7 @@ public enum NonSI {
   // ---
   public static final Unit MILLI_SECOND = Unit.of("ms");
   public static final Unit MICRO_SECOND = Unit.of("us");
+  public static final Unit MINUTE = Unit.of("min");
   // ---
   public static final Unit DEGREE_ANGLE = Unit.of("deg");
   // ---

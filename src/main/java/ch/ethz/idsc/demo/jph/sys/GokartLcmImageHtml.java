@@ -1,29 +1,37 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.sys;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.util.stream.Stream;
 
-enum GokartLcmImageHtml {
-  ;
-  public static void main(String[] args) throws FileNotFoundException {
-    StringBuilder sb = new StringBuilder();
-    sb.append("<html><body>\n");
-    for (File file : GokartLcmImageGenerator.DIRECTORY.listFiles()) {
-      String string = file.getName();
-      string = string.substring(0, string.length() - 4);
-      sb.append(String.format("<h3>%s</h3><img src='%s/%s'><br/><br/>\n", //
-          string, //
-          GokartLcmImageGenerator.DIRECTORY.getName(), //
-          file.getName()));
-    }
-    // System.out.println(sb);
+import ch.ethz.idsc.subare.util.HtmlUtf8;
+
+/* package */ class GokartLcmImageHtml implements AutoCloseable {
+  private final HtmlUtf8 htmlUtf8;
+
+  public GokartLcmImageHtml(File file) {
+    htmlUtf8 = HtmlUtf8.page(file);
+    htmlUtf8.appendln("<html><body>");
+  }
+
+  public void process(File file) {
+    String string = file.getName();
+    string = string.substring(0, string.length() - 4);
+    htmlUtf8.appendln(String.format("<h3>%s</h3><img src='%s/%s'><br/><br/>", //
+        string, //
+        GokartLcmImageGenerator.DIRECTORY.getName(), //
+        file.getName()));
+  }
+
+  public static void main(String[] args) throws Exception {
     File index = new File(GokartLcmImageGenerator.DIRECTORY.getParentFile(), "index.html");
-    try (PrintWriter printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(index)))) {
-      printWriter.print(sb.toString());
+    try (GokartLcmImageHtml gokartLcmImageHtml = new GokartLcmImageHtml(index)) {
+      Stream.of(GokartLcmImageGenerator.DIRECTORY.listFiles()).sorted().forEach(gokartLcmImageHtml::process);
     }
+  }
+
+  @Override
+  public void close() throws Exception {
+    htmlUtf8.close();
   }
 }

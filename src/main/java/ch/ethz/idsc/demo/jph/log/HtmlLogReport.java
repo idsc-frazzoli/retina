@@ -251,6 +251,23 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     {
       visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
       visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("z (up)");
+    }
+    exportListPlot("vmu931acc.png", visualSet);
+  }
+
+  public void exportVmu931gyro() throws IOException {
+    VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(64));
+    visualSet.setPlotLabel("VMU931 gyroscope");
+    visualSet.setAxesLabelX("time [s]");
+    visualSet.setAxesLabelY("gyroscope [s^-1]");
+    Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
+    Tensor domain = tensor.get(Tensor.ALL, 0);
+    // if (!Tensors.isEmpty(domain))
+    {
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("z (up)");
     }
     exportListPlot("vmu931acc.png", visualSet);
   }
@@ -268,8 +285,10 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
         Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
         Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
         Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
+        Tensor smoothZ = ListConvolve.of(mask, tensor.get(Tensor.ALL, 4));
         visualSet.add(domain.extract(0, smoothX.length()), smoothX).setLabel("x (forward)");
         visualSet.add(domain.extract(0, smoothY.length()), smoothY).setLabel("y (left)");
+        visualSet.add(domain.extract(0, smoothZ.length()), smoothZ).setLabel("z (up)");
       }
     }
     exportListPlot("vmu931accSmooth.png", visualSet);

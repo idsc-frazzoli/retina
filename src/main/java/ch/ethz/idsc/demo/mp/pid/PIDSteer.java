@@ -41,7 +41,6 @@ public class PIDSteer implements SteerPutProvider, StartAndStoppable {
   @Override
   public void start() {
     SteerSocket.INSTANCE.addPutProvider(this);
-    ;
   }
 
   @Override

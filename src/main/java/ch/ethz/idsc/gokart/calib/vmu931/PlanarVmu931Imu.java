@@ -16,8 +16,16 @@ public interface PlanarVmu931Imu {
   Tensor accXY(Tensor accXY);
 
   /** @param vmu931ImuFrame
+   * @return {accX[m*s^-2], accY[m*s^-2], accZ[m*s^-2]} */
+  Tensor acceleration(Vmu931ImuFrame vmu931ImuFrame);
+
+  /** @param vmu931ImuFrame
    * @return rotational rate around gokart Z axis quantity with unit [s^-1] */
   Scalar gyroZ(Vmu931ImuFrame vmu931ImuFrame);
 
   Scalar gyroZ(Scalar gyroZ);
+
+  /** @param vmu931ImuFrame
+   * @return {gyroX[s^-1], gyroY[s^-1], gyroZ[s^-1]} */
+  Tensor gyroscope(Vmu931ImuFrame vmu931ImuFrame);
 }

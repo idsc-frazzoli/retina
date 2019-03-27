@@ -30,8 +30,6 @@ import lcm.logging.LogEventWriter;
 
 /** changes pose messages based on given pose estimating interface */
 public class LogPosePostInject implements LocalizationResultListener {
-  // private static final String POST_POSE = ;
-  // ---
   private LocalizationResult localizationResult = null;
 
   public void process(File src, File dst, OfflineLogListener offlineLogListener) throws Exception {
