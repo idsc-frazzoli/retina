@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.map;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.*;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16PolarProvider;
@@ -15,24 +14,21 @@ import java.awt.*;
 import java.util.Collection;
 
 /** create an obstacle map based on lidar sight lines */
-public class SightLineMapping extends AbstractLidarMapping implements RenderInterface, OccupancyGrid {
+public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
     private final LidarPolarFiringCollector lidarPolarFiringCollector = //
             new LidarPolarFiringCollector(LIDAR_SAMPLES, 3);
     private final Vlp16PolarProvider lidarPolarProvider = new Vlp16PolarProvider();
     private final LidarSectorProvider lidarSectorProvider = //
             new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SightLineHandler.SECTORS);
-    private final SightLineOccupancyGrid occupancyGrid = MappingConfig.GLOBAL.createSightLineOccupancyGrid();
     private final ErodedMap map = ErodedMap.of(occupancyGrid, MappingConfig.GLOBAL.obsRadius);
-    // -----------------------------------------------------------------------------------------------------------------
     private final BlindSpots blindSpots;
-    // -----------------------------------------------------------------------------------------------------------------
 
     public static SightLineMapping defaultGokart() {
         return new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(),200);
     }
 
     public SightLineMapping(SpacialXZObstaclePredicate predicate, BlindSpots blindSpots, int waitMillis) {
-        super(predicate, waitMillis);
+        super(MappingConfig.GLOBAL.createSightLineOccupancyGrid(), predicate, waitMillis);
         this.blindSpots = blindSpots;
         // ---
         lidarPolarProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
@@ -43,29 +39,14 @@ public class SightLineMapping extends AbstractLidarMapping implements RenderInte
         vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSectorProvider);
     }
 
-    @Override // from OccupancyGrid
-    public Tensor getGridSize() {
-        return occupancyGrid.getGridSize();
+    // from AbstractMapping
+    public void prepareMap() {
+        map.genObstacleMap();
     }
 
-    @Override // from OccupancyGrid
-    public boolean isCellOccupied(int pix, int piy) {
-        return occupancyGrid.isCellOccupied(pix, piy);
-    }
-
-    @Override // from OccupancyGrid
-    public Tensor getTransform() {
-        return occupancyGrid.getTransform();
-    }
-
-    @Override // from OccupancyGrid
-    public void clearStart(int startX, int startY, double orientation) {
-        occupancyGrid.clearStart(startX, startY, orientation);
-    }
-
-    @Override // from OccupancyGrid
-    public boolean isMember(Tensor state) {
-        return occupancyGrid.isMember(state);
+    // from AbstractMapping
+    public ImageGrid getMap() {
+        return map;
     }
 
     @Override // from GokartPoseListener
@@ -93,17 +74,8 @@ public class SightLineMapping extends AbstractLidarMapping implements RenderInte
         }
     }
 
-    public void prepareMap() {
-        map.genObstacleMap();
-    }
-
-    public ImageGrid getMap() {
-        return map;
-    }
-
     @Override // from RenderInterface
     public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
         occupancyGrid.render(geometricLayer, graphics);
     }
-
 }

@@ -27,7 +27,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** class interprets sensor data from lidar */
-public class TrackMapping extends AbstractMapping {
+public class TrackMapping extends AbstractBayesianMapping {
   public TrackMapping() {
     super(MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid(), //
             TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), -6, 200);

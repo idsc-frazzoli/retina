@@ -10,6 +10,7 @@ public class BlindSpots {
 
     public static BlindSpots defaultGokart() {
         BlindSpots blindSpots = new BlindSpots();
+        // TODO determine exact values
         blindSpots.add(Tensors.vector(3., 3.4));
         blindSpots.add(Tensors.vector(6.1, 0.2));
         return blindSpots;

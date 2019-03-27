@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** class interprets sensor data from lidar */
-public class ObstacleMapping extends AbstractMapping {
+public class ObstacleMapping extends AbstractBayesianMapping {
   public ObstacleMapping() {
     super(MappingConfig.GLOBAL.createBayesianOccupancyGrid(), //
             SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), -1, 1000);

@@ -5,13 +5,13 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 
-/* package */ abstract class AbstractLidarMapping extends AbstractLidarProcessor implements GokartPoseListener {
+public abstract class AbstractLidarMapping extends AbstractLidarProcessor implements GokartPoseListener {
     private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
     protected GokartPoseEvent gokartPoseEvent;
     // ---
     protected final SpacialXZObstaclePredicate predicate;
 
-    public AbstractLidarMapping(SpacialXZObstaclePredicate predicate, int waitMillis) {
+    /* package */ AbstractLidarMapping(SpacialXZObstaclePredicate predicate, int waitMillis) {
         super(waitMillis);
         this.predicate = predicate;
         gokartPoseLcmClient.addListener(this);

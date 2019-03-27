@@ -27,9 +27,7 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
             new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SightLineHandler.SECTORS);
     private final TreeSet<Tensor> pointsPolar = //
             new TreeSet<>(Comparator.comparingDouble(point -> point.Get(0).number().doubleValue()));
-    // -----------------------------------------------------------------------------------------------------------------
     private final BlindSpots blindSpots;
-    // -----------------------------------------------------------------------------------------------------------------
 
     public static SightLines defaultGokart() {
         return new SightLines(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(), 200);
