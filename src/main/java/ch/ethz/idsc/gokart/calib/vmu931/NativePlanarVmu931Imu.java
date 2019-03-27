@@ -20,6 +20,11 @@ public enum NativePlanarVmu931Imu implements PlanarVmu931Imu {
   }
 
   @Override // from PlanarVmu931Imu
+  public Tensor acceleration(Vmu931ImuFrame vmu931ImuFrame) {
+    return vmu931ImuFrame.acceleration();
+  }
+
+  @Override // from PlanarVmu931Imu
   public Scalar gyroZ(Vmu931ImuFrame vmu931ImuFrame) {
     return gyroZ(vmu931ImuFrame.gyroZ());
   }
@@ -27,5 +32,10 @@ public enum NativePlanarVmu931Imu implements PlanarVmu931Imu {
   @Override // from PlanarVmu931Imu
   public Scalar gyroZ(Scalar gyroZ) {
     return gyroZ;
+  }
+
+  @Override // from PlanarVmu931Imu
+  public Tensor gyroscope(Vmu931ImuFrame vmu931ImuFrame) {
+    return vmu931ImuFrame.gyroscope();
   }
 }

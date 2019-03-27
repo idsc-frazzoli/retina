@@ -33,7 +33,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /* package */ class TachometerMustangDash implements RenderInterface, RimoGetListener {
   private final Tensor xya;
-  private RimoGetEvent rimoGetEvent = RimoGetEvents.create(0, 0);
+  private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
 
   public TachometerMustangDash(Tensor xya) {
     this.xya = xya;

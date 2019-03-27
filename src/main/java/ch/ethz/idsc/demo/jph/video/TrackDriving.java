@@ -125,6 +125,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     }
     graphics.setStroke(new BasicStroke(2.5f));
     {
+      // TODO JPH redundant to GokartRender -> extract
       final AxisAlignedBox axisAlignedBox = //
           new AxisAlignedBox(ChassisGeometry.GLOBAL.tireHalfWidthRear().multiply(RealScalar.of(.5)));
       double factor = 3E-4;
@@ -137,14 +138,9 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       for (int wheel = 0; wheel < 2; ++wheel) {
         Tensor vector = VEHICLE_MODEL.wheel(2 + wheel).lever();
         geometricLayer.pushMatrix(Se2Utils.toSE2Translation(vector.add(ofs[wheel])));
-        Path2D path = geometricLayer.toPath2D(axisAlignedBox.alongY(RealScalar.of(trq[0 + wheel])));
-        path.closePath();
-        graphics.fill(path);
+        graphics.fill(geometricLayer.toPath2D(axisAlignedBox.alongX(RealScalar.of(trq[0 + wheel]))));
         geometricLayer.popMatrix();
       }
-      // Scalar factor = row.Get(1).divide(RealScalar.of(4000));
-      // graphics.setColor(new Color(0, 0, 255, 128));
-      // graphics.draw(geometricLayer.toVector(Tensors.vector(1, 0), UnitVector.of(2, 0).multiply(factor)));
     }
     {
       Scalar factor = Ramp.FUNCTION.apply(row.Get(9).negate().subtract(RealScalar.of(0.02))).divide(RealScalar.of(-0.06));

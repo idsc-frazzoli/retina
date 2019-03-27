@@ -32,8 +32,6 @@ import ch.ethz.idsc.gokart.lcm.autobox.SteerGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
-import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
@@ -46,7 +44,6 @@ import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.io.UserName;
 
 public class PresenterLcmModule extends AbstractModule {
-  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   // TODO not generic
   private static final boolean SHOW_DAVIS = UserName.is("mario");
   // ---
@@ -142,7 +139,7 @@ public class PresenterLcmModule extends AbstractModule {
     // timerFrame.geometricComponent.addRenderInterface(lidarRender);
     // }
     {
-      GokartRender gokartRender = new GokartRender(gokartPoseLcmLidar, VEHICLE_MODEL);
+      GokartRender gokartRender = new GokartRender(gokartPoseLcmLidar);
       // joystickLcmClient.addListener(gokartRender.joystickListener);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);

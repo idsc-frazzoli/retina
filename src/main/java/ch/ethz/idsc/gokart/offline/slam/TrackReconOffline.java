@@ -30,8 +30,6 @@ import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
-import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.region.ImageRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
@@ -55,14 +53,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 // TODO contains redundancies with GokartMappingModule 
 public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListener, MPCBSplineTrackListener {
   private static final File DIRECTORY = HomeDirectory.Pictures("log", "mapper");
-  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private static final Scalar DELTA = Quantity.of(0.05, SI.SECOND);
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final MappedPoseInterface gokartPoseInterface = new GokartPoseContainer();
-  private final GokartRender gokartRender = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
+  private final GokartRender gokartRender = new GokartRender(gokartPoseInterface);
   private final SpacialXZObstaclePredicate predicate = TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final Consumer<BufferedImage> consumer;
   private final BayesianOccupancyGrid bayesianOccupancyGridThic;

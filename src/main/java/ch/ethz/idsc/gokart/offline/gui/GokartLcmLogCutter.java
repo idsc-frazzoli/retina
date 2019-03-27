@@ -27,6 +27,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -60,19 +61,21 @@ public class GokartLcmLogCutter {
     protected void paintComponent(Graphics graphics) {
       graphics.drawImage(bufferedImage, 0, 0, null);
       {
+        JViewport jViewport = jScrollPane.getViewport();
+        final int pix = jViewport.getViewPosition().x;
         graphics.setFont(FONT);
         graphics.setColor(Color.WHITE);
         int piy = -2;
         int fx = GokartLcmImage.FX;
-        graphics.drawString("auton. button", 0, piy += fx);
-        graphics.drawString("active steering", 0, piy += fx);
-        graphics.drawString("pose quality", 0, piy += fx);
-        graphics.drawString("steer", 0, piy += fx);
-        graphics.drawString("gyro z", 0, piy += fx);
-        graphics.drawString("tire L", 0, piy += fx);
-        graphics.drawString("tire R", 0, piy += fx);
+        graphics.drawString("auton. button", pix, piy += fx);
+        graphics.drawString("active steering", pix, piy += fx);
+        graphics.drawString("pose quality", pix, piy += fx);
+        graphics.drawString("steer", pix, piy += fx);
+        graphics.drawString("gyro z", pix, piy += fx);
+        graphics.drawString("tire L", pix, piy += fx);
+        graphics.drawString("tire R", pix, piy += fx);
       }
-      int ofsy = 20;
+      int ofsy = 28;
       synchronized (map) {
         for (Entry<Integer, Integer> entry : map.entrySet()) {
           int x0 = entry.getKey();
@@ -85,6 +88,7 @@ public class GokartLcmLogCutter {
       }
     }
   };
+  private final JScrollPane jScrollPane = new JScrollPane(jComponent, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
   private final MouseAdapter mouseListener = new MouseAdapter() {
     private Point pressed = null;
 
@@ -199,7 +203,6 @@ public class GokartLcmLogCutter {
     jComponent.setPreferredSize(new Dimension(bufferedImage.getWidth(), 0));
     jComponent.addMouseListener(mouseListener);
     jComponent.addMouseMotionListener(mouseListener);
-    JScrollPane jScrollPane = new JScrollPane(jComponent, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
     jScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
     jPanel.add(jScrollPane, BorderLayout.CENTER);
     jFrame.setContentPane(jPanel);

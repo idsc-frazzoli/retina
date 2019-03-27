@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.video;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -20,11 +19,9 @@ import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.gui.top.MPCPredictionRender;
 import ch.ethz.idsc.gokart.offline.slam.ObstacleAggregate;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
-import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
@@ -67,10 +64,10 @@ import ch.ethz.idsc.tensor.sca.Round;
     BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_3BYTE_BGR);
     Graphics2D graphics = bufferedImage.createGraphics();
     GraphicsUtil.setQualityHigh(graphics);
-    PathRender pathRender = new PathRender(new Color(115, 167, 115, 64),
-        new BasicStroke(6f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] { 10.0f }, 0.0f));
-    Tensor optimal = Import.of(new File(src, "opt/onelap.csv"));
-    RenderInterface ri = pathRender.setCurve(optimal, true);
+    // PathRender pathRender = new PathRender(new Color(115, 167, 115, 64),
+    // new BasicStroke(6f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] { 10.0f }, 0.0f));
+    // Tensor optimal = Import.of(new File(src, "opt/onelap.csv"));
+    // RenderInterface ri = pathRender.setCurve(optimal, true);
     MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
     try (Mp4AnimationWriter mp4 = new Mp4AnimationWriter(filename, dimension, snaps)) {
       for (int index = 0; index < max; ++index) {

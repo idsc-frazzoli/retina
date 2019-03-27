@@ -25,8 +25,6 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
-import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
@@ -42,7 +40,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
 public class GlobalViewLcmModule extends AbstractModule {
-  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor CROP_REGION = ResourceData.of( //
       "/dubilab/polygonregion/aerotain/20190309.csv" //
   // "/dubilab/polygonregion/walkable/20190307.csv" //
@@ -130,7 +127,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     {
-      GokartRender gokartRender = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
+      GokartRender gokartRender = new GokartRender(gokartPoseInterface);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);

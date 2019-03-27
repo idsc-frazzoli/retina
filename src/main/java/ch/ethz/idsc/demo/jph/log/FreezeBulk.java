@@ -6,13 +6,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* package */ enum DynamicsConversionBulk {
+/* package */ enum FreezeBulk {
   ;
   public static void main(String[] args) {
-    final File folder = new File(StaticHelper.CUTS, "20190321");
+    final File folder = new File("/media/datahaki/data/gokart/freeze");
     for (File cut : Stream.of(folder.listFiles()).sorted().collect(Collectors.toList())) {
       System.out.println(cut);
-      Optional<File> optional = DynamicsConversion.single(cut, StaticHelper.POST_LCM);
+      Optional<File> optional = DynamicsConversion.single(cut, StaticHelper.LOG_LCM);
       if (optional.isPresent())
         try {
           HtmlLogReport.generate(optional.get());
