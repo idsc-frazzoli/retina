@@ -1,10 +1,8 @@
-//code by mcp
-package ch.ethz.idsc.demo.mp;
+// code by mcp
+package ch.ethz.idsc.demo.mp.pid;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.demo.mp.pid.PIDController;
-import ch.ethz.idsc.demo.mp.pid.PIDTuningParams;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
@@ -18,26 +16,26 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
-public class PIDControllerTest extends TestCase {
+public class PIDControllerModuleTest extends TestCase {
   public void testFirstAlgoLast() {
-    PIDController pidController = new PIDController(PIDTuningParams.GLOBAL);
-    pidController.first();
-    pidController.runAlgo();
-    pidController.last();
+    PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
+    pidControllerModule.first();
+    pidControllerModule.runAlgo();
+    pidControllerModule.last();
   }
 
   public void testHeading() {
-    PIDController pidController = new PIDController(PIDTuningParams.GLOBAL);
+    PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
     Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL.stream().map(Extract2D.FUNCTION));
-    pidController.setCurve(Optional.ofNullable(curve));
+    pidControllerModule.setCurve(Optional.ofNullable(curve));
     System.out.println(curve);
-    pidController.first();
+    pidControllerModule.first();
     Tensor pose = Tensors.fromString("{40[m], 30[m], 1}");
     for (int index = 0; index < 100; index++) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
-      pidController.getEvent(gokartPoseEvent);
-      pidController.runAlgo();
-      Scalar heading = pidController.pidSteer.getHeading();
+      pidControllerModule.getEvent(gokartPoseEvent);
+      pidControllerModule.runAlgo();
+      Scalar heading = pidControllerModule.pidSteer.getHeading();
       // System.out.println(heading);
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, heading.divide(RealScalar.of(10))));
       System.out.println(pose);

@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class PIDSteer implements SteerPutProvider, StartAndStoppable {
+/* package */ class PIDSteer implements SteerPutProvider, StartAndStoppable {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
@@ -41,7 +41,6 @@ public class PIDSteer implements SteerPutProvider, StartAndStoppable {
   @Override // from StartAndStoppable
   public void start() {
     SteerSocket.INSTANCE.addPutProvider(this);
-    ;
   }
 
   @Override // from StartAndStoppable
@@ -51,11 +50,11 @@ public class PIDSteer implements SteerPutProvider, StartAndStoppable {
 
   private Scalar heading = Quantity.of(0.0, SIDerived.RADIAN);
 
-  public void setHeading(Scalar heading) {
+  /* package */ void setHeading(Scalar heading) {
     this.heading = heading;
   }
 
-  public Scalar getHeading() {
+  /* package */ Scalar getHeading() {
     return heading;
   }
 }
