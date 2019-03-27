@@ -22,10 +22,8 @@ public abstract class AbstractBayesianMapping extends AbstractMapping<BayesianOc
                                         SpacialXZObstaclePredicate predicate, int max_alt, int waitMillis) {
     super(bayesianOccupancyGrid, predicate, waitMillis);
     lidarSpacialProvider = new Vlp16SegmentProvider(offset, max_alt);
-    // ---
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
-    // ---
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     lidarAngularFiringCollector.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);

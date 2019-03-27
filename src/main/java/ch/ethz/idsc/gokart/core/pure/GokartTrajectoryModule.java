@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
+import ch.ethz.idsc.gokart.core.map.AbstractMapping;
+import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.map.ObstacleMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -95,7 +97,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
   final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
-  private final ObstacleMapping obstacleMapping = new ObstacleMapping();
+  private final AbstractMapping mapping = new ObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   private final Tensor waypoints = TrajectoryConfig.getWaypoints();
@@ -121,7 +123,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     ImageRegion imageRegion = predefinedMap.getImageRegion();
     // ---
     unionRegion = RegionUnion.wrap(Arrays.asList( //
-        Se2PointsVsRegions.line(x_samples, imageRegion), obstacleMapping));
+        Se2PointsVsRegions.line(x_samples, imageRegion), mapping.getMap()));
     plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
     // ---
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
@@ -131,13 +133,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       globalViewLcmModule.setWaypoints(waypoints);
   }
 
-  public ObstacleMapping obstacleMapping() {
-    return obstacleMapping;
+  public ImageGrid obstacleMapping() {
+    return mapping.getMap();
   }
 
   @Override // from AbstractClockedModule
   protected void first() {
-    obstacleMapping.start();
+    mapping.start();
     // ---
     gokartPoseLcmClient.addListener(gokartPoseListener);
     rimoGetLcmClient.addListener(rimoGetListener);
@@ -155,14 +157,14 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     gokartPoseLcmClient.stopSubscriptions();
     joystickLcmProvider.stop();
     // ---
-    obstacleMapping.stop();
+    mapping.stop();
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setWaypoints(null);
   }
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    obstacleMapping.prepareMap();
+    mapping.prepareMap();
     Scalar tangentSpeed_ = tangentSpeed;
     if (Objects.nonNull(gokartPoseEvent) && Objects.nonNull(tangentSpeed_)) {
       System.out.println("setup planner");
