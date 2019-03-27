@@ -4,31 +4,34 @@ import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.lidar.LidarPolarFiringCollector;
-import ch.ethz.idsc.retina.lidar.LidarSectorProvider;
-import ch.ethz.idsc.retina.lidar.VelodyneStatics;
+import ch.ethz.idsc.retina.lidar.*;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16PolarProvider;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 import java.awt.*;
+import java.nio.FloatBuffer;
 import java.util.Collection;
 
 /** create an obstacle map based on lidar sight lines */
-public class SightLineMapping extends AbstractSightLines implements OccupancyGrid {
+public class SightLineMapping implements //
+        StartAndStoppable, LidarRayBlockListener, GokartPoseListener, RenderInterface, Runnable, OccupancyGrid {
     // TODO check rationale behind constant 10000!
     private static final int LIDAR_SAMPLES = 10000;
-    private static final int SECTORS = 72;
     // ---
     private final LidarPolarFiringCollector lidarPolarFiringCollector = //
             new LidarPolarFiringCollector(LIDAR_SAMPLES, 3);
     private final Vlp16PolarProvider lidarPolarProvider = new Vlp16PolarProvider();
     private final LidarSectorProvider lidarSectorProvider = //
-            new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SECTORS);
+            new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SightLineHandler.SECTORS);
     private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
     private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
     private final SightLineOccupancyGrid occupancyGrid = MappingConfig.GLOBAL.createSightLineOccupancyGrid();
@@ -36,17 +39,25 @@ public class SightLineMapping extends AbstractSightLines implements OccupancyGri
     // ---
     private boolean isLaunched = true;
     private final int waitMillis;
+    // -----------------------------------------------------------------------------------------------------------------
+    /** pointsPolar_ferry is null or a matrix with dimension Nx3
+     * containing the cross-section of the static geometry
+     * with the horizontal plane at height of the lidar */
+    private Tensor pointsPolar_ferry = null;
+    private final BlindSpots blindSpots;
+    // ---
+    protected final Thread thread = new Thread(this);
+    protected final SpacialXZObstaclePredicate predicate;
+    protected GokartPoseEvent gokartPoseEvent;
+    // -----------------------------------------------------------------------------------------------------------------
 
     public static SightLineMapping defaultGokart() {
-        SightLineMapping sightLineMapping = //
-                new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(),200);
-        sightLineMapping.addBlindSpot(Tensors.vector(3., 3.4));
-        sightLineMapping.addBlindSpot(Tensors.vector(6.1, 0.2));
-        return sightLineMapping;
+        return new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(),200);
     }
 
-    public SightLineMapping(SpacialXZObstaclePredicate predicate, int waitMillis) {
-        super(predicate);
+    public SightLineMapping(SpacialXZObstaclePredicate predicate, BlindSpots blindSpots, int waitMillis) {
+        this.predicate = predicate;
+        this.blindSpots = blindSpots;
         this.waitMillis = waitMillis;
         // ---
         lidarPolarProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
@@ -57,6 +68,21 @@ public class SightLineMapping extends AbstractSightLines implements OccupancyGri
         vlp16LcmHandler.velodyneDecoder.addRayListener(lidarPolarProvider);
         vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSectorProvider);
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Override // from LidarRayBlockListener
+    public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
+        if (lidarRayBlockEvent.dimensions != 3)
+            throw new RuntimeException("dim=" + lidarRayBlockEvent.dimensions);
+        // ---
+        FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
+        pointsPolar_ferry = Tensors.vector(i -> Tensors.of( //
+                DoubleScalar.of(floatBuffer.get()), //
+                DoubleScalar.of(floatBuffer.get()), //
+                DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
+        thread.interrupt();
+    }
+    // -----------------------------------------------------------------------------------------------------------------
 
     @Override // from StartAndStoppable
     public void start() {
@@ -101,7 +127,7 @@ public class SightLineMapping extends AbstractSightLines implements OccupancyGri
 
     @Override // from GokartPoseListener
     public void getEvent(GokartPoseEvent getEvent) {
-        super.getEvent(getEvent);
+        gokartPoseEvent = getEvent;;
         occupancyGrid.setPose(getEvent.getPose());
         map.setPose(getEvent.getPose());
     }
@@ -109,10 +135,10 @@ public class SightLineMapping extends AbstractSightLines implements OccupancyGri
     @Override // from Runnable
     public void run() {
         while (isLaunched) {
-            Collection<Tensor> points = getClosestPoints();
+            Collection<Tensor> points = SightLineHandler.getClosestPoints(pointsPolar_ferry, predicate, blindSpots);
             if (!points.isEmpty()) {
-                Tensor polygon = polygon(points);
-                closeSector(polygon);
+                Tensor polygon = SightLineHandler.polygon(points);
+                SightLineHandler.closeSector(polygon);
                 occupancyGrid.updateMap(polygon);
             } else {
                 try {

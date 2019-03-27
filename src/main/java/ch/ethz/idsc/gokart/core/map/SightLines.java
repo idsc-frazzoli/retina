@@ -3,13 +3,17 @@ package ch.ethz.idsc.gokart.core.map;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.*;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16PolarProvider;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.*;
@@ -17,19 +21,20 @@ import ch.ethz.idsc.tensor.*;
 import java.awt.*;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.nio.FloatBuffer;
 import java.util.*;
 
 /** class interprets sensor data from lidar */
-public class SightLines extends AbstractSightLines {
+public class SightLines implements //
+        StartAndStoppable, LidarRayBlockListener, GokartPoseListener, RenderInterface, Runnable {
     // TODO check rationale behind constant 10000!
     private static final int LIDAR_SAMPLES = 10000;
-    private static final int SECTORS = 72;
     // ---
     private final LidarPolarFiringCollector lidarPolarFiringCollector = //
             new LidarPolarFiringCollector(LIDAR_SAMPLES, 3);
     private final Vlp16PolarProvider lidarPolarProvider = new Vlp16PolarProvider();
     private final LidarSectorProvider lidarSectorProvider = //
-            new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SECTORS);
+            new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SightLineHandler.SECTORS);
     private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
     private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
     private final TreeSet<Tensor> pointsPolar = //
@@ -37,16 +42,25 @@ public class SightLines extends AbstractSightLines {
     // ---
     private boolean isLaunched = true;
     private final int waitMillis;
+    // -----------------------------------------------------------------------------------------------------------------
+    /** pointsPolar_ferry is null or a matrix with dimension Nx3
+     * containing the cross-section of the static geometry
+     * with the horizontal plane at height of the lidar */
+    private Tensor pointsPolar_ferry = null;
+    private final BlindSpots blindSpots;
+    // ---
+    protected final Thread thread = new Thread(this);
+    protected final SpacialXZObstaclePredicate predicate;
+    protected GokartPoseEvent gokartPoseEvent;
+    // -----------------------------------------------------------------------------------------------------------------
 
     public static SightLines defaultGokart() {
-        SightLines sightLines = new SightLines(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), 200);
-        sightLines.addBlindSpot(Tensors.vector(3., 3.4));
-        sightLines.addBlindSpot(Tensors.vector(6.1, 0.2));
-        return sightLines;
+        return new SightLines(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(), 200);
     }
 
-    public SightLines(SpacialXZObstaclePredicate predicate, int waitMillis) {
-        super(predicate);
+    public SightLines(SpacialXZObstaclePredicate predicate, BlindSpots blindSpots, int waitMillis) {
+        this.predicate = predicate;
+        this.blindSpots = blindSpots;
         this.waitMillis = waitMillis;
         // ---
         lidarPolarProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
@@ -57,6 +71,26 @@ public class SightLines extends AbstractSightLines {
         vlp16LcmHandler.velodyneDecoder.addRayListener(lidarPolarProvider);
         vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSectorProvider);
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    @Override // from LidarRayBlockListener
+    public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
+        if (lidarRayBlockEvent.dimensions != 3)
+            throw new RuntimeException("dim=" + lidarRayBlockEvent.dimensions);
+        // ---
+        FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
+        pointsPolar_ferry = Tensors.vector(i -> Tensors.of( //
+                DoubleScalar.of(floatBuffer.get()), //
+                DoubleScalar.of(floatBuffer.get()), //
+                DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
+        thread.interrupt();
+    }
+
+    @Override // from GokartPoseListener
+    public void getEvent(GokartPoseEvent getEvent) {
+        gokartPoseEvent = getEvent;
+    }
+    // -----------------------------------------------------------------------------------------------------------------
 
     @Override // from StartAndStoppable
     public void start() {
@@ -77,7 +111,7 @@ public class SightLines extends AbstractSightLines {
     @Override // from Runnable
     public void run() {
         while (isLaunched) {
-            Collection<Tensor> points = getClosestPoints();
+            Collection<Tensor> points = SightLineHandler.getClosestPoints(pointsPolar_ferry, predicate, blindSpots);
             if (!points.isEmpty()) {
                 synchronized (pointsPolar) {
                     pointsPolar.addAll(points);
@@ -121,12 +155,12 @@ public class SightLines extends AbstractSightLines {
     private Tensor polygon() {
         Tensor polygon;
         synchronized (pointsPolar) {
-            polygon = polygon(pointsPolar);
+            polygon = SightLineHandler.polygon(pointsPolar);
             // ---
             double first = pointsPolar.first().Get(0).number().doubleValue();
             double last = pointsPolar.last().Get(0).number().doubleValue();
             if (Math.abs(last - first) < lidarSectorProvider.getSectorWidthRad())
-                closeSector(polygon);
+                SightLineHandler.closeSector(polygon);
             // ---
             pointsPolar.clear();
         }

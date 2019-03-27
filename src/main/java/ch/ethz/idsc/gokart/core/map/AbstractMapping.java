@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.*;
-import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -34,7 +33,6 @@ public abstract class AbstractMapping implements //
   private final Vlp16SegmentProvider lidarSpacialProvider;
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
   private final BayesianOccupancyGrid bayesianOccupancyGrid;
-  private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder(); // TODO needed? also contained in vlp16LcmHandler
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final SpacialXZObstaclePredicate predicate;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -59,8 +57,6 @@ public abstract class AbstractMapping implements //
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     // ---
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
-    velodyneDecoder.addRayListener(lidarSpacialProvider);
-    velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
     gokartPoseLcmClient.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
