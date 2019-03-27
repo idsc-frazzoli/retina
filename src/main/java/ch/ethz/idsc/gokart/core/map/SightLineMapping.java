@@ -32,6 +32,7 @@ public class SightLineMapping extends AbstractSightLines implements OccupancyGri
     private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
     private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
     private final SightLineOccupancyGrid occupancyGrid = MappingConfig.GLOBAL.createSightLineOccupancyGrid();
+    private final ErodedMap map = ErodedMap.of(occupancyGrid, MappingConfig.GLOBAL.obsRadius);
     // ---
     private boolean isLaunched = true;
     private final int waitMillis;
@@ -102,6 +103,7 @@ public class SightLineMapping extends AbstractSightLines implements OccupancyGri
     public void getEvent(GokartPoseEvent getEvent) {
         super.getEvent(getEvent);
         occupancyGrid.setPose(getEvent.getPose());
+        map.setPose(getEvent.getPose());
     }
 
     @Override // from Runnable
@@ -120,6 +122,14 @@ public class SightLineMapping extends AbstractSightLines implements OccupancyGri
                 }
             }
         }
+    }
+
+    public void prepareMap() {
+        map.genObstacleMap();
+    }
+
+    public ImageGrid getMap() {
+        return map;
     }
 
     @Override // from RenderInterface

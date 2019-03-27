@@ -1,6 +1,5 @@
 package ch.ethz.idsc.gokart.core.map;
 
-import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.*;
 
@@ -66,11 +65,5 @@ public class ErodedMap extends ImageGrid {
     @Override // from OccupancyGrid
     public void clearStart(int startX, int startY, double orientation) {
         // ---
-    }
-
-    @Override // from RenderInterface
-    public synchronized void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-        genObstacleMap();
-        super.render(geometricLayer, graphics);
     }
 }
