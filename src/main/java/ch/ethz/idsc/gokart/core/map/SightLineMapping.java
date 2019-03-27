@@ -15,7 +15,7 @@ import java.awt.*;
 import java.util.Collection;
 
 /** create an obstacle map based on lidar sight lines */
-public class SightLineMapping extends AbstractLidarProcessor implements RenderInterface, OccupancyGrid {
+public class SightLineMapping extends AbstractLidarMapping implements RenderInterface, OccupancyGrid {
     private final LidarPolarFiringCollector lidarPolarFiringCollector = //
             new LidarPolarFiringCollector(LIDAR_SAMPLES, 3);
     private final Vlp16PolarProvider lidarPolarProvider = new Vlp16PolarProvider();
@@ -25,7 +25,6 @@ public class SightLineMapping extends AbstractLidarProcessor implements RenderIn
     private final ErodedMap map = ErodedMap.of(occupancyGrid, MappingConfig.GLOBAL.obsRadius);
     // -----------------------------------------------------------------------------------------------------------------
     private final BlindSpots blindSpots;
-    protected final SpacialXZObstaclePredicate predicate;
     // -----------------------------------------------------------------------------------------------------------------
 
     public static SightLineMapping defaultGokart() {
@@ -33,8 +32,7 @@ public class SightLineMapping extends AbstractLidarProcessor implements RenderIn
     }
 
     public SightLineMapping(SpacialXZObstaclePredicate predicate, BlindSpots blindSpots, int waitMillis) {
-        super(waitMillis);
-        this.predicate = predicate;
+        super(predicate, waitMillis);
         this.blindSpots = blindSpots;
         // ---
         lidarPolarProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));

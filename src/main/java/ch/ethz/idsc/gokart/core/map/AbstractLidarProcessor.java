@@ -15,8 +15,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
 import java.nio.FloatBuffer;
 
-/* package */ abstract class AbstractLidarProcessor implements //
-        StartAndStoppable, LidarRayBlockListener, GokartPoseListener, Runnable {
+/* package */ abstract class AbstractLidarProcessor implements StartAndStoppable, LidarRayBlockListener, Runnable {
     // TODO check rationale behind constant 10000!
     protected static final int LIDAR_SAMPLES = 10000;
     // ---
@@ -24,23 +23,19 @@ import java.nio.FloatBuffer;
     protected boolean isLaunched = true;
     protected final int waitMillis;
     // ---
-    private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
     protected final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
     /** points_ferry is null or a matrix with dimension Nx3
      * containing the cross-section of the static geometry
      * with the horizontal plane at height of the lidar */
     protected Tensor points_ferry = null;
-    protected GokartPoseEvent gokartPoseEvent;
 
     public AbstractLidarProcessor(int waitMillis) {
         this.waitMillis = waitMillis;
-        gokartPoseLcmClient.addListener(this);
     }
 
     @Override // from StartAndStoppable
     public void start() {
         vlp16LcmHandler.startSubscriptions();
-        gokartPoseLcmClient.startSubscriptions();
         thread.start();
     }
 
@@ -49,7 +44,6 @@ import java.nio.FloatBuffer;
         isLaunched = false;
         thread.interrupt();
         vlp16LcmHandler.stopSubscriptions();
-        gokartPoseLcmClient.stopSubscriptions();
     }
 
     @Override // from LidarRayBlockListener
@@ -63,10 +57,5 @@ import java.nio.FloatBuffer;
                 DoubleScalar.of(floatBuffer.get()), //
                 DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
         thread.interrupt();
-    }
-
-    @Override // from GokartPoseListener
-    public void getEvent(GokartPoseEvent gokartPoseEvent) {
-        this.gokartPoseEvent = gokartPoseEvent;
     }
 }

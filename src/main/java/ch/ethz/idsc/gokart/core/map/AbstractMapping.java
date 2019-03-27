@@ -14,20 +14,18 @@ import java.awt.*;
 import java.util.Objects;
 
 /** class interprets sensor data from lidar */
-public abstract class AbstractMapping extends AbstractLidarProcessor implements OccupancyGrid, RenderInterface {
+public abstract class AbstractMapping extends AbstractLidarMapping implements OccupancyGrid, RenderInterface {
   private final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
   private final double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
   private final Vlp16SegmentProvider lidarSpacialProvider;
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
   private final BayesianOccupancyGrid bayesianOccupancyGrid;
-  private final SpacialXZObstaclePredicate predicate;
 
   /* package */ AbstractMapping(BayesianOccupancyGrid bayesianOccupancyGrid, SpacialXZObstaclePredicate predicate, //
                                 int max_alt, int waitMillis) {
-    super(waitMillis);
+    super(predicate, waitMillis);
     lidarSpacialProvider = new Vlp16SegmentProvider(offset, max_alt);
-    this.predicate = predicate;
     this.bayesianOccupancyGrid = bayesianOccupancyGrid;
     // ---
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
