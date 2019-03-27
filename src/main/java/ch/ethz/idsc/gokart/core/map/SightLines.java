@@ -4,9 +4,8 @@ package ch.ethz.idsc.gokart.core.map;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.*;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16PolarProvider;
@@ -20,64 +19,36 @@ import java.awt.geom.Point2D;
 import java.util.*;
 
 /** class interprets sensor data from lidar */
-public class SightLines extends AbstractSightLines {
-    // TODO check rationale behind constant 10000!
-    private static final int LIDAR_SAMPLES = 10000;
-    private static final int SECTORS = 72;
-    // ---
+public class SightLines extends AbstractLidarMapping implements RenderInterface {
     private final LidarPolarFiringCollector lidarPolarFiringCollector = //
             new LidarPolarFiringCollector(LIDAR_SAMPLES, 3);
     private final Vlp16PolarProvider lidarPolarProvider = new Vlp16PolarProvider();
     private final LidarSectorProvider lidarSectorProvider = //
-            new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SECTORS);
-    private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-    private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
+            new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SightLineHandler.SECTORS);
     private final TreeSet<Tensor> pointsPolar = //
             new TreeSet<>(Comparator.comparingDouble(point -> point.Get(0).number().doubleValue()));
-    // ---
-    private boolean isLaunched = true;
-    private final int waitMillis;
+    private final BlindSpots blindSpots;
 
     public static SightLines defaultGokart() {
-        SightLines sightLines = new SightLines(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), 200);
-        sightLines.addBlindSpot(Tensors.vector(3., 3.4));
-        sightLines.addBlindSpot(Tensors.vector(6.1, 0.2));
-        return sightLines;
+        return new SightLines(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(), 200);
     }
 
-    public SightLines(SpacialXZObstaclePredicate predicate, int waitMillis) {
-        super(predicate);
-        this.waitMillis = waitMillis;
+    public SightLines(SpacialXZObstaclePredicate predicate, BlindSpots blindSpots, int waitMillis) {
+        super(predicate, waitMillis);
+        this.blindSpots = blindSpots;
         // ---
         lidarPolarProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
         lidarPolarProvider.addListener(lidarPolarFiringCollector);
         lidarSectorProvider.addListener(lidarPolarFiringCollector);
         lidarPolarFiringCollector.addListener(this);
-        gokartPoseLcmClient.addListener(this);
         vlp16LcmHandler.velodyneDecoder.addRayListener(lidarPolarProvider);
         vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSectorProvider);
-    }
-
-    @Override // from StartAndStoppable
-    public void start() {
-        vlp16LcmHandler.startSubscriptions();
-        gokartPoseLcmClient.startSubscriptions();
-        thread.start();
-        isLaunched = true;
-    }
-
-    @Override // from StartAndStoppable
-    public void stop() {
-        isLaunched = false;
-        thread.interrupt();
-        vlp16LcmHandler.stopSubscriptions();
-        gokartPoseLcmClient.stopSubscriptions();
     }
 
     @Override // from Runnable
     public void run() {
         while (isLaunched) {
-            Collection<Tensor> points = getClosestPoints();
+            Collection<Tensor> points = SightLineHandler.getClosestPoints(points_ferry, predicate, blindSpots);
             if (!points.isEmpty()) {
                 synchronized (pointsPolar) {
                     pointsPolar.addAll(points);
@@ -121,12 +92,12 @@ public class SightLines extends AbstractSightLines {
     private Tensor polygon() {
         Tensor polygon;
         synchronized (pointsPolar) {
-            polygon = polygon(pointsPolar);
+            polygon = SightLineHandler.polygon(pointsPolar);
             // ---
             double first = pointsPolar.first().Get(0).number().doubleValue();
             double last = pointsPolar.last().Get(0).number().doubleValue();
             if (Math.abs(last - first) < lidarSectorProvider.getSectorWidthRad())
-                closeSector(polygon);
+                SightLineHandler.closeSector(polygon);
             // ---
             pointsPolar.clear();
         }

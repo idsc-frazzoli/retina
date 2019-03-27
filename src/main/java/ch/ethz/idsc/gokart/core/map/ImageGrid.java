@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  *
  * the cascade of affine transformation is
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
-/* package */ abstract class ImageGrid implements OccupancyGrid, RenderInterface {
+public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
     protected static final byte MASK_OCCUPIED = 0;
     protected static final Color COLOR_OCCUPIED = Color.BLACK;
     protected static final Color COLOR_UNKNOWN = Color.WHITE;

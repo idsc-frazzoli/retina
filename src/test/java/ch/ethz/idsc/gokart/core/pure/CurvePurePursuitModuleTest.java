@@ -25,10 +25,10 @@ public class CurvePurePursuitModuleTest extends TestCase {
   }
 
   public void testFirstLast() throws Exception {
-    CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
-    purePursuitModule.first();
-    purePursuitModule.runAlgo();
-    purePursuitModule.last();
+    CurvePurePursuitModule curvePurePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
+    curvePurePursuitModule.first();
+    curvePurePursuitModule.runAlgo();
+    curvePurePursuitModule.last();
   }
 
   public void testChopUnit() {

@@ -74,7 +74,7 @@ public class PresenterLcmModule extends AbstractModule {
       ModuleAuto.INSTANCE.getInstance(GokartTrajectoryModule.class);
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  // ---
+  // TODO probably remove again
   private final SightLineMapping sightLineMapping = SightLineMapping.defaultGokart();
   private final SightLines sightLines = SightLines.defaultGokart();
 

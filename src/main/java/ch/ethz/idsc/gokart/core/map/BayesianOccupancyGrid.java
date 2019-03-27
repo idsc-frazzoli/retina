@@ -206,7 +206,6 @@ public class BayesianOccupancyGrid extends ImageGrid {
       lidar2cellLayer.pushMatrix(getWorld2grid()); // updated world to grid
       double[] logOddsNew = new double[dimX() * dimY()];
       Arrays.fill(logOddsNew, StaticHelper.pToLogOdd(P_M));
-      double threshold = L_THRESH;
       synchronized (hset) {
         hset.clear();
         Tensor trans = lidarToCell(toPos(Tensors.vector(0, 0))); // calculate translation
@@ -219,7 +218,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
             Tensor cell = Tensors.vector(i + ofsx, j + ofsy);
             if (isCellInGrid(cell)){
               logOddsNew[cellToIdx(cell)] = logOdd;
-              if (logOdd > threshold)
+              if (logOdd > L_THRESH)
                 hset.add(cell);
             }
           }

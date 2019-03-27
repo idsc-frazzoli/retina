@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.perc.PolarObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
@@ -74,10 +73,5 @@ public class SafetyConfig {
    * @return */
   public SpacialXZObstaclePredicate createSpacialXZObstaclePredicate() {
     return new SimpleSpacialObstaclePredicate(vlp16_ZClip(), SensorsConfig.GLOBAL.vlp16_incline);
-  }
-
-  @Deprecated
-  public PolarObstaclePredicate createPolarObstaclePredicate() {
-    return new PolarObstaclePredicate(vlp16_ZClip(), SensorsConfig.GLOBAL.vlp16_incline);
   }
 }
