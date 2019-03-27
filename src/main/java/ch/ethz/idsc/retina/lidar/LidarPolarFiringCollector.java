@@ -1,4 +1,4 @@
-// code by jph
+// code by jph, gjoel
 package ch.ethz.idsc.retina.lidar;
 
 import java.nio.ByteBuffer;
@@ -8,11 +8,10 @@ import java.util.List;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
 
+// TODO could be integrated in LidarAngulrFiringCollector
 /** collects a lidar scan of a complete 360 rotation into a pointcloud consisting
- * of 3d, or 2d points
- * 
- * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
-public class LidarAngularFiringCollector implements LidarSpacialListener, LidarRotationListener {
+ * of 3d points */
+public class LidarPolarFiringCollector implements LidarPolarListener, LidarRotationListener {
   private final FloatBuffer floatBuffer;
   private final ByteBuffer byteBuffer;
   private final int limit;
@@ -20,10 +19,10 @@ public class LidarAngularFiringCollector implements LidarSpacialListener, LidarR
   private final int dimensions;
 
   /** the highway scene has 2304 * 32 * 3 == 221184 coordinates
-   * 
+   *
    * @param limit
    * @param dimensions */
-  public LidarAngularFiringCollector(int limit, int dimensions) {
+  public LidarPolarFiringCollector(int limit, int dimensions) {
     this.floatBuffer = FloatBuffer.wrap(new float[limit * dimensions]); // 2 because of x y;
     this.byteBuffer = ByteBuffer.wrap(new byte[limit]);
     this.limit = limit;
@@ -51,9 +50,9 @@ public class LidarAngularFiringCollector implements LidarSpacialListener, LidarR
     byteBuffer.position(0);
   }
 
-  @Override // from LidarSpacialListener
-  public void lidarSpacial(LidarXYZEvent lidarXYZEvent) {
-    floatBuffer.put(lidarXYZEvent.coords); // either 3, or 2 floats
-    byteBuffer.put(lidarXYZEvent.intensity);
+  @Override // from LidarPolarListener
+  public void lidarSpacial(LidarPolarEvent lidarPolarEvent) {
+    floatBuffer.put(lidarPolarEvent.coords);
+    byteBuffer.put(lidarPolarEvent.intensity);
   }
 }

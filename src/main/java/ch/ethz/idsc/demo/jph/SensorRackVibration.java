@@ -20,9 +20,9 @@ import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
@@ -73,8 +73,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private static final int ANGLE = 9000;
 
   @Override // from LidarSpacialListener
-  public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
-    float[] coords = lidarSpacialEvent.coords;
+  public void lidarSpacial(LidarXYZEvent lidarXYZEvent) {
+    float[] coords = lidarXYZEvent.coords;
     int azimuth = Math.round(coords[0]);
     if (ANGLE <= azimuth && azimuth < ANGLE + 1000) {
       if (fused) {

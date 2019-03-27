@@ -82,4 +82,10 @@ public class MappingConfig {
   public BayesianOccupancyGrid createThinBayesianOccupancyGrid() {
     return BayesianOccupancyGrid.of(LBOUNDS, RANGE, cellDim, Quantity.of(0, SI.METER), true);
   }
+
+  public SightLineOccupancyGrid createSightLineOccupancyGrid() {
+    Tensor lbounds = Tensors.vector(20, 20);
+    Tensor range = Tensors.vector(40, 40);
+    return SightLineOccupancyGrid.of(lbounds, range, cellDim);
+  }
 }

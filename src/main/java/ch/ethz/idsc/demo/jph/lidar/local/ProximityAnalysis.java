@@ -9,8 +9,8 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
@@ -40,8 +40,8 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   @Override // from LidarSpacialListener
-  public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
-    Tensor coords = Tensors.vectorFloat(lidarSpacialEvent.coords);
+  public void lidarSpacial(LidarXYZEvent lidarXYZEvent) {
+    Tensor coords = Tensors.vectorFloat(lidarXYZEvent.coords);
     if (Scalars.lessThan(Norm.INFINITY.ofVector(coords), THRESHOLD)) {
       Tensor key = Round.of(coords.multiply(PARTITION));
       if (map.containsKey(key))
