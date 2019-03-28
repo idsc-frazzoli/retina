@@ -13,18 +13,15 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** class interprets sensor data from lidar */
 public abstract class AbstractBayesianMapping extends AbstractMapping<BayesianOccupancyGrid> {
-  private final LidarAngularFiringCollector lidarAngularFiringCollector = //
-      new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
-  private final double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
-  private final Vlp16SegmentProvider lidarSpacialProvider;
-  private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
 
   /* package */ AbstractBayesianMapping(BayesianOccupancyGrid bayesianOccupancyGrid, //
       SpacialXZObstaclePredicate predicate, int max_alt, int waitMillis) {
     super(bayesianOccupancyGrid, predicate, waitMillis);
-    lidarSpacialProvider = new Vlp16SegmentProvider(offset, max_alt);
+    LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
+    Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), max_alt);
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
+    LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     lidarAngularFiringCollector.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
