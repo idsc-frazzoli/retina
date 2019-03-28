@@ -23,8 +23,12 @@ public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
   private final ErodedMap map = ErodedMap.of(occupancyGrid, MappingConfig.GLOBAL.obsRadius);
   private final BlindSpots blindSpots;
 
-  public static SightLineMapping defaultGokart() {
-    return new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(), 200);
+  public static SightLineMapping defaultObstacle() {
+    return new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(), 1000);
+  }
+
+  public static SightLineMapping defaultTrack() {
+    return new SightLineMapping(TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(), 200);
   }
 
   public SightLineMapping(SpacialXZObstaclePredicate predicate, BlindSpots blindSpots, int waitMillis) {

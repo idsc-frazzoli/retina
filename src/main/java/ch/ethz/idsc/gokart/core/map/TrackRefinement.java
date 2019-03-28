@@ -153,14 +153,7 @@ public class TrackRefinement {
 
   Tensor getRefinedTrack(Tensor points_xyr, Scalar resolution, int iterations, boolean closed, //
       List<TrackConstraint> constraints) {
-    int m;
-    try {
-      m = (int) (points_xyr.length() * resolution.number().doubleValue());
-    } catch (NullPointerException e) {
-      System.err.println("points_xyr:" + points_xyr);
-      System.err.println("resolution: " + resolution);
-      throw e;
-    }
+    int m = (int) (points_xyr.length() * resolution.number().doubleValue());
     int n = points_xyr.length();
     Tensor queryPositions;
     if (closed)
