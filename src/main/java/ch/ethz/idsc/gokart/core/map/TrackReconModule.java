@@ -57,7 +57,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
   public TrackReconModule() {
-    mapping = new TrackMapping();
+    mapping = SightLineMapping.defaultGokart(); // new TrackMapping();
     trackReconManagement = new TrackReconManagement(mapping.getMap());
   }
 

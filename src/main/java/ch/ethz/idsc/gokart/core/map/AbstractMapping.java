@@ -1,3 +1,4 @@
+// code by gjoel
 package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Graphics2D;
@@ -17,36 +18,38 @@ public abstract class AbstractMapping<T extends ImageGrid> extends AbstractLidar
   }
 
   @Override // from OccupancyGrid
-  public Tensor getGridSize() {
+  public final Tensor getGridSize() {
     return occupancyGrid.getGridSize();
   }
 
   @Override // from OccupancyGrid
-  public boolean isCellOccupied(int pix, int piy) {
+  public final boolean isCellOccupied(int pix, int piy) {
     return occupancyGrid.isCellOccupied(pix, piy);
   }
 
   @Override // from OccupancyGrid
-  public Tensor getTransform() {
+  public final Tensor getTransform() {
     return occupancyGrid.getTransform();
   }
 
   @Override // from OccupancyGrid
-  public void clearStart(int startX, int startY, double orientation) {
+  public final void clearStart(int startX, int startY, double orientation) {
     occupancyGrid.clearStart(startX, startY, orientation);
   }
 
   @Override // from OccupancyGrid
-  public boolean isMember(Tensor state) {
+  public final boolean isMember(Tensor state) {
     return occupancyGrid.isMember(state);
   }
 
   @Override // from RenderInterface
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  public final void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     occupancyGrid.render(geometricLayer, graphics);
   }
 
+  /** TODO JG document */
   public abstract void prepareMap();
 
+  /** TODO JG document */
   public abstract ImageGrid getMap();
 }

@@ -32,17 +32,19 @@ public abstract class AbstractBayesianMapping extends AbstractMapping<BayesianOc
   }
 
   // from AbstractMapping
-  public void prepareMap() {
+  @Override
+  public final void prepareMap() {
     occupancyGrid.genObstacleMap();
   }
 
   // from AbstractMapping
-  public BayesianOccupancyGrid getMap() {
+  @Override
+  public final BayesianOccupancyGrid getMap() {
     return occupancyGrid;
   }
 
   @Override
-  public void run() {
+  public final void run() {
     while (isLaunched) {
       Tensor points = points_ferry;
       if (Objects.nonNull(points) && Objects.nonNull(gokartPoseEvent)) {
