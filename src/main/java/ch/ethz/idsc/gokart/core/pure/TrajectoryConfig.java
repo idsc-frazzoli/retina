@@ -33,6 +33,7 @@ public class TrajectoryConfig {
   /** half angle of conic goal region */
   public Scalar coneHalfAngle = RealScalar.of(Math.PI / 10);
   public Tensor goalRadiusFactor = Tensors.vector(4, 4, 2);
+  public String waypoints = "/dubilab/waypoints/20190325.csv";
 
   /***************************************************/
   /** @param tangentSpeed with unit "m*s^-1"
@@ -49,10 +50,10 @@ public class TrajectoryConfig {
 
   /** @return matrix with dimensions N x 3
    * @throws Exception if waypoints cannot be retrieved from resources */
-  public static Tensor getWaypoints() {
+  public Tensor getWaypoints() {
     // oval shape
-    // return ResourceData.of("/dubilab/waypoints/20181126.csv").unmodifiable();
+    return ResourceData.of(waypoints).unmodifiable();
     // around tires
-    return ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").unmodifiable();
+    // return ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").unmodifiable();
   }
 }
