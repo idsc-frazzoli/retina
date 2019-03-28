@@ -106,23 +106,25 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final AbstractMapping mapping = SightLineMapping.defaultGokart(); // new ObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
-  private final Tensor waypoints = TrajectoryConfig.getWaypoints();
+  private final Tensor waypoints;
   private PlannerConstraint plannerConstraint;
   private final Tensor goalRadius;
   private Region<Tensor> unionRegion;
   private Scalar tangentSpeed = null;
   // TODO magic const redundant
-  private final CostFunction waypointCost = WaypointDistanceCost.of( //
-      Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), true, // 1 round of refinement
-      RealScalar.of(1), // width of virtual lane in model coordinates
-      RealScalar.of(7.5), // model2pixel conversion factor
-      new Dimension(640, 640)); // resolution of image
+  private final CostFunction waypointCost;
   /** arrives at 50[Hz] */
   private final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
   private final RimoGetListener rimoGetListener = //
       rimoGetEvent -> tangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
 
-  public GokartTrajectoryModule() {
+  public GokartTrajectoryModule(TrajectoryConfig trajectoryConfig) {
+    this.waypoints = trajectoryConfig.getWaypoints();
+    waypointCost = WaypointDistanceCost.of( //
+        Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), true, // 1 round of refinement
+        RealScalar.of(1), // width of virtual lane in model coordinates
+        RealScalar.of(7.5), // model2pixel conversion factor
+        new Dimension(640, 640)); // resolution of image
     MinMax minMax = MinMax.of(STANDARD.footprint());
     Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
@@ -137,6 +139,10 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     goalRadius = Tensors.of(goalRadius_xy, goalRadius_xy, goalRadius_theta);
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setWaypoints(waypoints);
+  }
+
+  public GokartTrajectoryModule() {
+    this(TrajectoryConfig.GLOBAL);
   }
 
   public ImageGrid obstacleMapping() {

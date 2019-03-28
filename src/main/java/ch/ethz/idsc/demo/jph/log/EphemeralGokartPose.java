@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /* package */ enum EphemeralGokartPose {
   ;
   public static void main(String[] args) throws IOException {
-    File root = new File(StaticHelper.CUTS, "20190308");
+    File root = new File(StaticHelper.CUTS, "20190321");
     for (File folder : root.listFiles())
       if (folder.isDirectory()) {
         File file = new File(folder, StaticHelper.POST_LCM);
