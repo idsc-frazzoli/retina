@@ -39,9 +39,11 @@ public abstract class AbstractClockedModule extends AbstractModule {
   @Override
   public final void launch() {
     first();
+    String s = getClass().getSimpleName();
     TimerTask timerTask = new TimerTask() {
       @Override
       public void run() {
+        // System.out.println("run algo "+s);
         runAlgo();
       }
     };
@@ -52,7 +54,8 @@ public abstract class AbstractClockedModule extends AbstractModule {
   public final void terminate() {
     // order of launch() reversed
     if (Objects.nonNull(timer))
-      timer.cancel();
+      System.out.println("timer canceled " + getClass().getSimpleName());
+    timer.cancel();
     last();
   }
 }
