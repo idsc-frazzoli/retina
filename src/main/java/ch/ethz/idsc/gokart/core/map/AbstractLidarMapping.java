@@ -1,3 +1,4 @@
+// code by gjoel
 package ch.ethz.idsc.gokart.core.map;
 
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
@@ -18,13 +19,13 @@ public abstract class AbstractLidarMapping extends AbstractLidarProcessor implem
   }
 
   @Override // from StartAndStoppable
-  public void start() {
+  public final void start() {
     gokartPoseLcmClient.startSubscriptions();
     super.start();
   }
 
   @Override // from StartAndStoppable
-  public void stop() {
+  public final void stop() {
     super.stop();
     gokartPoseLcmClient.stopSubscriptions();
   }

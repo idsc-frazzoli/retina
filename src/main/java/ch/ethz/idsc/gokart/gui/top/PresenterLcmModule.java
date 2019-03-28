@@ -12,8 +12,6 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.SightLineMapping;
-import ch.ethz.idsc.gokart.core.map.SightLines;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
@@ -77,16 +75,14 @@ public class PresenterLcmModule extends AbstractModule {
 
   @Override // from AbstractModule
   protected void first() {
-    /*
-    {
-      timerFrame.geometricComponent.addRenderInterface(sightLineMapping);
-      sightLineMapping.start();
-    }
-    {
-      timerFrame.geometricComponent.addRenderInterface(sightLines);
-      sightLines.start();
-    }
-    */
+    /* {
+     * timerFrame.geometricComponent.addRenderInterface(sightLineMapping);
+     * sightLineMapping.start();
+     * }
+     * {
+     * timerFrame.geometricComponent.addRenderInterface(sightLines);
+     * sightLines.start();
+     * } */
     {
       ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));

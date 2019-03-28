@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
-import ch.ethz.idsc.gokart.core.map.ObstacleMapping;
 import ch.ethz.idsc.gokart.core.map.SightLineMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;

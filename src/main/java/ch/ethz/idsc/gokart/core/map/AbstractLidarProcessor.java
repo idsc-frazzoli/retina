@@ -44,7 +44,7 @@ public abstract class AbstractLidarProcessor implements StartAndStoppable, Lidar
   }
 
   @Override // from LidarRayBlockListener
-  public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
+  public final void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     if (lidarRayBlockEvent.dimensions != 3)
       throw new RuntimeException("dim=" + lidarRayBlockEvent.dimensions);
     // ---

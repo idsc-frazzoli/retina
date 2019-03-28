@@ -40,11 +40,13 @@ public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
   }
 
   // from AbstractMapping
+  @Override
   public void prepareMap() {
     map.genObstacleMap();
   }
 
   // from AbstractMapping
+  @Override
   public ImageGrid getMap() {
     return map;
   }
