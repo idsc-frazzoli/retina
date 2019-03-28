@@ -17,6 +17,10 @@ import ch.ethz.idsc.tensor.sca.Clips;
  * https://www.youtube.com/watch?v=b_Sqy2TmKIk */
 public class LinmotConfig {
   public static final LinmotConfig GLOBAL = AppResources.load(new LinmotConfig());
+  // ---
+  public static final Clip CLIP_TEMPERATURE = Clips.interval( //
+      Quantity.of(+20, NonSI.DEGREE_CELSIUS), //
+      Quantity.of(100, NonSI.DEGREE_CELSIUS));
   /***************************************************/
   public final Scalar windingTempCold = Quantity.of(5, NonSI.DEGREE_CELSIUS);
   public final Scalar windingTempGlow = Quantity.of(85, NonSI.DEGREE_CELSIUS);

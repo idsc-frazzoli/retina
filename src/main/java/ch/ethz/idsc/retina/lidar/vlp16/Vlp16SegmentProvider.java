@@ -3,9 +3,11 @@ package ch.ethz.idsc.retina.lidar.vlp16;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
@@ -29,15 +31,18 @@ public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
     IR = new float[NUM_LASERS];
     IZ = new float[NUM_LASERS];
     lookup = new AngleVectorLookupFloat(VelodyneStatics.AZIMUTH_RESOLUTION, true, angle_offset);
-    System.out.println("Rays processed at theta = ");
     for (int i = 0; i < NUM_LASERS; i++) {
       int laser = laserList.get(i);
-      double theta = StaticHelper.degree(laser) * Math.PI / 180;
-      System.out.print(StaticHelper.degree(laser) + "°,");
+      double theta = Math.toRadians(StaticHelper.degree(laser));
       IR[i] = (float) (Math.cos(theta) * VelodyneStatics.TO_METER);
       IZ[i] = (float) (Math.sin(theta) * VelodyneStatics.TO_METER);
     }
-    System.out.println();
+    System.out.println("Rays processed at theta = " + //
+        Arrays.stream(degrees()).map(Object::toString).collect(Collectors.joining("°, ")) + "°");
+  }
+
+  public Integer[] degrees() {
+    return laserList.stream().map(StaticHelper::degree).toArray(Integer[]::new);
   }
 
   @Override // from LidarRayDataListener
@@ -55,8 +60,8 @@ public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
         coords[0] = radius * dx;
         coords[1] = radius * dy;
         coords[2] = IZ[laser] * distance;
-        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-        listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
+        LidarXYZEvent lidarXYZEvent = new LidarXYZEvent(usec, coords, intensity);
+        listeners.forEach(listener -> listener.lidarSpacial(lidarXYZEvent));
       }
     }
   }

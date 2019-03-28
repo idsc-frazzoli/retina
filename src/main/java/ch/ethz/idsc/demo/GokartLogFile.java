@@ -1567,7 +1567,8 @@ public enum GokartLogFile implements LogFile {
   /** mpc simple track */
   _20190311T164018_da0bb9b9,
   /** mpc challenging track
-   * manual driving */
+   * manual driving
+   * [abrupt log termination] */
   _20190311T173809_da0bb9b9,
   /***************************************************/
   /* 2019-03-14
@@ -1586,9 +1587,11 @@ public enum GokartLogFile implements LogFile {
   _20190314T150851_c3c5a0db,
   /** mpc */
   _20190314T154544_c3c5a0db,
-  /** mpc */
+  /** mpc
+   * [abrupt log termination] */
   _20190314T174957_c3c5a0db,
-  /** mpc */
+  /** mpc
+   * [abrupt log termination] */
   _20190314T175917_c3c5a0db,
   /***************************************************/
   /* 2019-03-18 */
@@ -1612,7 +1615,8 @@ public enum GokartLogFile implements LogFile {
    * localization inactive */
   _20190321T114452_79067bba,
   /** data collection for mapping challenge
-   * with moving obstacles and various speeds */
+   * with moving obstacles and various speeds
+   * [abrupt log termination] */
   _20190321T144129_140b9727,
   /** power steering test */
   _20190321T152149_140b9727,
@@ -1645,7 +1649,8 @@ public enum GokartLogFile implements LogFile {
   _20190325T171337_61639f01,
   /** mpc with changing map */
   _20190325T172211_61639f01,
-  /** mpc with changing map */
+  /** mpc with changing map
+   * [abrupt log termination] */
   _20190325T172919_61639f01,
   /** mpc */
   _20190325T175100_61639f01,

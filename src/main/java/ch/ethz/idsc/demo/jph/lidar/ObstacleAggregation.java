@@ -23,9 +23,9 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
@@ -77,8 +77,8 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
   }
 
   @Override // from LidarSpacialListener
-  public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
-    float[] coords = lidarSpacialEvent.coords;
+  public void lidarSpacial(LidarXYZEvent lidarXYZEvent) {
+    float[] coords = lidarXYZEvent.coords;
     if (SPACIAL_XZ.isObstacle(coords[0], coords[2]) && initialized) { // x z
       Point2D point2d = geometricLayer.toPoint2D(coords[0], coords[1]); // x y
       graphics.fillRect((int) point2d.getX(), (int) point2d.getY(), 1, 1);

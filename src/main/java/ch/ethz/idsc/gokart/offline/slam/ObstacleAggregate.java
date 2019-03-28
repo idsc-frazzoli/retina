@@ -24,9 +24,9 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
@@ -82,7 +82,7 @@ public class ObstacleAggregate implements OfflineLogListener, LidarSpacialListen
   }
 
   @Override // from LidarSpacialListener
-  public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
+  public void lidarSpacial(LidarXYZEvent lidarSpacialEvent) {
     float[] coords = lidarSpacialEvent.coords;
     if (SPACIAL_XZ.isObstacle(coords[0], coords[2])) { // x z
       Point2D point2d = geometricLayer.toPoint2D(coords[0], coords[1]); // x y

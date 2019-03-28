@@ -35,6 +35,7 @@ import ch.ethz.idsc.tensor.qty.Boole;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
+// TODO JPH the list here, in the image and the display in the cutter are redundant
 public class GokartLogFileIndexer implements OfflineLogListener {
   public static GokartLogFileIndexer create(File file) throws IOException {
     GokartLogFileIndexer lcmLogFileIndexer = new GokartLogFileIndexer(file);

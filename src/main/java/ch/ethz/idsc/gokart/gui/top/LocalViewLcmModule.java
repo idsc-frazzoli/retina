@@ -10,8 +10,6 @@ import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
-import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
@@ -20,7 +18,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public class LocalViewLcmModule extends AbstractModule {
-  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor POSE = Tensors.fromString("{0[m],-3[m],0}").unmodifiable();
   private static final Tensor MINOR_ACC = Tensors.vector(0.8, -0.0, 0);
   private static final Tensor MINOR_VEL = Tensors.vector(0.8, -6.0, 0);
@@ -42,7 +39,7 @@ public class LocalViewLcmModule extends AbstractModule {
   protected void first() {
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     {
-      GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
+      GokartRender gokartRender = new GokartRender(() -> POSE);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);

@@ -33,6 +33,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+// TODO does not shut down properly in TaskTabbedGui when not closed separately
 public final class TrackReconModule extends AbstractClockedModule implements GokartPoseListener {
   /** TODO JPH magic const */
   private static final Scalar PERIOD = Quantity.of(0.1, SI.SECOND);
@@ -42,7 +43,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   protected final TimerFrame timerFrame = new TimerFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final TrackMapping trackMapping;
+  private final AbstractMapping mapping;
   private final TrackReconManagement trackReconManagement;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
@@ -56,12 +57,12 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
   public TrackReconModule() {
-    trackMapping = new TrackMapping();
-    trackReconManagement = new TrackReconManagement(trackMapping);
+    mapping = SightLineMapping.defaultGokart(); // new TrackMapping();
+    trackReconManagement = new TrackReconManagement(mapping.getMap());
   }
 
-  public TrackMapping trackMapping() {
-    return trackMapping;
+  public ImageGrid trackMapping() {
+    return mapping.getMap();
   }
 
   @Override // from AbstractModule
@@ -69,7 +70,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     timerFrame.geometricComponent.setModel2Pixel(HANGAR_MODEL2PIXEL);
     {
       timerFrame.geometricComponent.addRenderInterfaceBackground(GRID_RENDER);
-      timerFrame.geometricComponent.addRenderInterface(trackMapping);
+      timerFrame.geometricComponent.addRenderInterface(mapping.getMap());
       listenersAdd(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(trackReconManagement.getTrackLayoutInitialGuess());
@@ -101,7 +102,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     }
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
-    trackMapping.start();
+    mapping.start();
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.jFrame.addWindowListener(new WindowAdapter() {
       @Override
@@ -114,7 +115,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   }
 
   private void private_windowClosed() {
-    trackMapping.stop();
+    mapping.stop();
     listenersRemove(trackReconRender);
     if (Objects.nonNull(globalViewLcmModule))
       listenersRemove(globalViewLcmModule.trackReconRender);
@@ -137,7 +138,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     double seconds = intervalClock.seconds(); // reset
     if (isActive) {
       if (trackReconManagement.isStartSet()) {
-        trackMapping.prepareMap();
+        mapping.prepareMap();
         lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
       } else
         System.out.println("no start set");

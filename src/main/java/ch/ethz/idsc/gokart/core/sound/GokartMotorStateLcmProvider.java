@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.red.Mean;
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   // ---
-  private RimoGetEvent rimoGetEvent = RimoGetEvents.create(0, 0);
+  private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private RimoPutEvent rimoPutEvent = RimoPutEvent.PASSIVE;
 
   public GokartMotorStateLcmProvider() {

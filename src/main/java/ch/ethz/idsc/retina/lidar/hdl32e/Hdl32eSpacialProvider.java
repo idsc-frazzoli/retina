@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.lidar.hdl32e;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
@@ -31,8 +31,8 @@ public class Hdl32eSpacialProvider extends VelodyneSpacialProvider {
         coords[0] = Hdl32eDevice.INSTANCE.IR[laser] * range * dx;
         coords[1] = Hdl32eDevice.INSTANCE.IR[laser] * range * dy;
         coords[2] = Hdl32eDevice.INSTANCE.IZ[laser] * range;
-        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-        listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
+        LidarXYZEvent lidarXYZEvent = new LidarXYZEvent(usec, coords, intensity);
+        listeners.forEach(listener -> listener.lidarSpacial(lidarXYZEvent));
       }
     }
   }

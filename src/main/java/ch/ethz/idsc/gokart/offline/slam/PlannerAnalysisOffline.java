@@ -20,8 +20,6 @@ import ch.ethz.idsc.gokart.gui.top.TrajectoryRender;
 import ch.ethz.idsc.gokart.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
-import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -38,8 +36,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class PlannerAnalysisOffline implements OfflineLogListener {
-  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
-  // ---
   private final Tensor waypoints = ResourceData.of("/dubilab/waypoints/20180425.csv");
   private final RenderInterface renderInterface = //
       new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255)).setWaypoints(waypoints);
@@ -70,7 +66,7 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
       BufferedImage image = scatterImage.getImage();
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
-      GokartRender gokartRender = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
+      GokartRender gokartRender = new GokartRender(gokartPoseInterface);
       trajectoryRender.render(geometricLayer, graphics);
       renderInterface.render(geometricLayer, graphics);
       gokartRender.render(geometricLayer, graphics);

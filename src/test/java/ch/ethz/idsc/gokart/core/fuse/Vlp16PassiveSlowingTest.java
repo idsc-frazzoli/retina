@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import junit.framework.TestCase;
 
 public class Vlp16PassiveSlowingTest extends TestCase {
@@ -28,38 +28,38 @@ public class Vlp16PassiveSlowingTest extends TestCase {
     coords[0] = 0;
     coords[1] = 0;
     coords[2] = 0;
-    vlp16ClearanceModule.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16ClearanceModule.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertFalse(vlp16ClearanceModule.putEvent().isPresent());
     // ---
     coords[0] = 0;
     coords[1] = 1;
     coords[2] = 0;
-    vlp16ClearanceModule.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16ClearanceModule.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertFalse(vlp16ClearanceModule.putEvent().isPresent());
     // ---
     coords[0] = 1;
     coords[1] = 1;
     coords[2] = 0;
-    vlp16ClearanceModule.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16ClearanceModule.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertFalse(vlp16ClearanceModule.putEvent().isPresent());
     // ---
     coords[0] = -1; // 1[m] along x axis in the back of the sensor
     coords[1] = 0;
     coords[2] = 0;
-    vlp16ClearanceModule.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16ClearanceModule.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertFalse(vlp16ClearanceModule.putEvent().isPresent());
     // ---
     coords[0] = 1; // 1[m] along x axis in front of the sensor
     coords[1] = 0;
     coords[2] = 0;
-    vlp16ClearanceModule.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16ClearanceModule.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertTrue(vlp16ClearanceModule.putEvent().isPresent());
     Thread.sleep(510);
     assertFalse(vlp16ClearanceModule.putEvent().isPresent());
     coords[0] = 1; // 1[m] along x axis in front of the sensor
     coords[1] = 0.2f;
     coords[2] = (float) -0.8;
-    vlp16ClearanceModule.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16ClearanceModule.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertTrue(vlp16ClearanceModule.putEvent().isPresent());
     Thread.sleep(510);
     assertFalse(vlp16ClearanceModule.putEvent().isPresent());
@@ -75,39 +75,39 @@ public class Vlp16PassiveSlowingTest extends TestCase {
     coords[0] = 0;
     coords[1] = 0;
     coords[2] = 0;
-    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16PassiveSlowing.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
     // ---
     coords[0] = 0;
     coords[1] = 1;
     coords[2] = 0;
-    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16PassiveSlowing.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
     // ---
     coords[0] = 1;
     coords[1] = 1;
     coords[2] = 0;
-    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16PassiveSlowing.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
     // ---
     coords[0] = -1; // 1[m] along x axis in the back of the sensor
     coords[1] = 0;
     coords[2] = 0;
-    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16PassiveSlowing.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
     // ---
     coords[0] = 1; // 1[m] along x axis in front of the sensor
     coords[1] = 0;
     coords[2] = 0;
     vlp16PassiveSlowing.bypassSafety();
-    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16PassiveSlowing.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
     Thread.sleep(510);
     coords[0] = 1; // 1[m] along x axis in front of the sensor
     coords[1] = 0.2f;
     coords[2] = (float) -0.8;
     assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
-    vlp16PassiveSlowing.lidarSpacial(new LidarSpacialEvent(123, coords, (byte) 12));
+    vlp16PassiveSlowing.lidarSpacial(new LidarXYZEvent(123, coords, (byte) 12));
     assertTrue(vlp16PassiveSlowing.putEvent().isPresent());
   }
 
