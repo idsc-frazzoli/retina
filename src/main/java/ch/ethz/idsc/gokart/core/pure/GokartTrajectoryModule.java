@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
-import ch.ethz.idsc.gokart.core.map.SightLineMapping;
+import ch.ethz.idsc.gokart.core.map.ObstacleMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -103,7 +103,8 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
   final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
-  private final AbstractMapping mapping = SightLineMapping.defaultGokart(); // new ObstacleMapping();
+  private final AbstractMapping mapping = //SightLineMapping.defaultGokart(); // 
+  new ObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   private final Tensor waypoints;
@@ -176,7 +177,11 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
+    System.out.println("entering...");
     mapping.prepareMap();
+    // System.out.println("running");
+    if (true)
+      return;
     Scalar tangentSpeed_ = tangentSpeed;
     if (Objects.nonNull(gokartPoseEvent) && Objects.nonNull(tangentSpeed_)) {
       System.out.println("setup planner");
@@ -198,9 +203,14 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       if (0 <= wpIdx && !head.isEmpty()) { // jan inserted check for non-empty
         Tensor goal = waypoints.get(wpIdx);
         // find a goal waypoint that is located beyond horizonDistance & does not lie within obstacle
+        int count = 0;
         while (Scalars.lessThan(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), TrajectoryConfig.GLOBAL.horizonDistance) || unionRegion.isMember(goal)) {
           wpIdx = (wpIdx + 1) % waypoints.length();
           goal = waypoints.get(wpIdx);
+          ++count;
+          if (waypoints.length() < count)
+            break;
+          // FIXME infinite while!
         }
         // System.out.format("goal index = " + wpIdx + ", distance = %.2f \n", SE2WRAP.distance(xya, goal).number().floatValue());
         int resolution = TrajectoryConfig.GLOBAL.controlResolution.number().intValue();

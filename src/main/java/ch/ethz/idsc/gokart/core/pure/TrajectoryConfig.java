@@ -3,6 +3,8 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.sophus.curve.BSpline1CurveSubdivision;
+import ch.ethz.idsc.sophus.group.Se2Geodesic;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -21,7 +23,7 @@ public class TrajectoryConfig {
   /** horizonDistance is unit-less because it entails all three: x, y, heading using Se2Wrap
    * post 20180904: changed horizonDistance from 8 to 10 so that the gokart plans through a gateway
    * post 20181025: changed horizonDistance to 12 */
-  public Scalar horizonDistance = RealScalar.of(12);
+  public Scalar horizonDistance = RealScalar.of(10);
   /** number of different steering angles for path planning
    * value has to be an integer */
   public Scalar controlResolution = RealScalar.of(9);
@@ -52,7 +54,8 @@ public class TrajectoryConfig {
    * @throws Exception if waypoints cannot be retrieved from resources */
   public Tensor getWaypoints() {
     // oval shape
-    return ResourceData.of(waypoints).unmodifiable();
+    
+    return new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE).cyclic(ResourceData.of(waypoints).unmodifiable());
     // around tires
     // return ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").unmodifiable();
   }
