@@ -170,8 +170,7 @@ public class TrackReconManagement {
           }
         }
       }
-    } else //
-    if (closedTrack) {
+    } else { // closedTrack == true
       System.out.println(++count);
       // refine
       System.out.println("refine");
