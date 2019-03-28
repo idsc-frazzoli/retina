@@ -6,13 +6,14 @@ function dx = interstagedx(x,u,p)
     Cf = p(index.pmoi);
     
     
-    B1 = 12;
-    C1 = 1.1;
-    D1 = 9.8;
 
-    B2 = 5;
+    B1 = 15;
+    C1 = 1.1;
+    D1 = 9.4;
+
+    B2 = 5.2;
     C2 = 1.4;
-    D2 = 10.5;
+    D2 = 10.4;
     param = [B1,C1,D1,B2,C2,D2,Cf];
 
     %[ab,dotbeta,ds,brake / x,y,theta,v,beta,s,braketemp]

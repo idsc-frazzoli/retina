@@ -63,7 +63,13 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     // files.add(HomeDirectory.file("20190211T100755_8b7a8047.lcm.00"));
     // files.add(HomeDirectory.file("sysidlog.lcm"));
     // files.add(HomeDirectory.file("motorSysID.lcm"));
-    files.add(HomeDirectory.file("understeerTest.lcm"));
+    //files.add(HomeDirectory.file("understeerTest.lcm"));
+    //files.add(HomeDirectory.file("newSysID1.lcm"));
+    //files.add(HomeDirectory.file("newSysID2.lcm"));
+    //files.add(HomeDirectory.file("newSysID3.lcm"));
+    files.add(HomeDirectory.file("newSysID4.lcm"));
+    files.add(HomeDirectory.file("newSysID5.lcm"));
+    files.add(HomeDirectory.file("newSysID6.lcm"));
     // files.add(new File("/media/datahaki/data/gokart/cuts/20190308/20190308T163555_01/post.lcm"));
     for (File inputFile : files)
       try {

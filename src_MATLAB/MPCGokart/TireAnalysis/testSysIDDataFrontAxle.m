@@ -14,11 +14,14 @@ end
 if(0)
     folders{end+1} = '/retina_out/20190128T141006/';
 end
-if(1)
+if(0)
     folders{end+1} = '/retina_out/sysidlog/';
 end
-if(1)
+if(0)
     folders{end+1} = '/retina_out/understeerTest/';
+end
+if(1)
+    folders{end+1} = '/retina_out/newSysID5.lcm/';
 end
 N = numel(folders);
 tic;
@@ -118,13 +121,13 @@ hold off
 %look at back axle grip
 figure
 hold on
-minAx = -0.4;
-maxAx = 0.4;
+minAx = -0.2;
+maxAx = 0.2;
 sela = sax>minAx & sax<maxAx & vx > 3;
 minAx = -3.6;
 maxAx = -3.4;
 selb = sax>minAx & sax<maxAx & vx > 3;
-sel = vx>3;
+sel = vx>3 & sela;
 magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
 scatter(fsa(sel),-sayf(sel)./(fsc(sel)),'b');
 scatter(-fsa(sel),sayf(sel)./(fsc(sel)),'b');
@@ -137,9 +140,9 @@ B = 5;
 D = 1*9.81;
 Ic = 1;
 
-B1 = 12;
+B1 = 15;
 C1 = 1.1;
-D1 = 9.8;
+D1 = 9.4;
 
 capfactor = @(taccx)(1-satfun((taccx/D)^2))^(1/2);
 simpleslip = @(VELY,VELX,taccx)-(1/capfactor(taccx))*VELY/(VELX+0.001);
