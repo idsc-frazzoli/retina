@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
-import ch.ethz.idsc.sophus.curve.BSpline1CurveSubdivision;
+import ch.ethz.idsc.sophus.curve.BSpline2CurveSubdivision;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -54,8 +54,7 @@ public class TrajectoryConfig {
    * @throws Exception if waypoints cannot be retrieved from resources */
   public Tensor getWaypoints() {
     // oval shape
-    
-    return new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE).cyclic(ResourceData.of(waypoints).unmodifiable());
+    return new BSpline2CurveSubdivision(Se2Geodesic.INSTANCE).cyclic(ResourceData.of(waypoints).unmodifiable());
     // around tires
     // return ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").unmodifiable();
   }
