@@ -171,7 +171,7 @@ public class TrackReconManagement {
         }
       }
     } else //
-    if (closedTrack) {
+    if (closedTrack && Objects.nonNull(trackDataXYR)) {
       System.out.println(++count);
       // refine
       System.out.println("refine");
