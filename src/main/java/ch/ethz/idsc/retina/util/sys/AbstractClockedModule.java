@@ -53,8 +53,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
   @Override
   public final void terminate() {
     // order of launch() reversed
-    if (Objects.nonNull(timer))
-      System.out.println("timer canceled " + getClass().getSimpleName());
+    System.out.println("timer canceled " + getClass().getSimpleName());
     timer.cancel();
     last();
   }

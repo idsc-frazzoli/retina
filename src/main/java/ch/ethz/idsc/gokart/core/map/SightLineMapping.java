@@ -15,11 +15,6 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** create an obstacle map based on lidar sight lines */
 public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
-  private final LidarPolarFiringCollector lidarPolarFiringCollector = //
-      new LidarPolarFiringCollector(LIDAR_SAMPLES, 3);
-  private final Vlp16PolarProvider lidarPolarProvider = new Vlp16PolarProvider();
-  private final LidarSectorProvider lidarSectorProvider = //
-      new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SightLineHandler.SECTORS);
   private final ErodedMap map = ErodedMap.of(occupancyGrid, MappingConfig.GLOBAL.obsRadius);
   private final BlindSpots blindSpots;
 
@@ -35,8 +30,11 @@ public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
     super(MappingConfig.GLOBAL.createSightLineOccupancyGrid(), predicate, waitMillis);
     this.blindSpots = blindSpots;
     // ---
+    LidarPolarFiringCollector lidarPolarFiringCollector = new LidarPolarFiringCollector(LIDAR_SAMPLES, 3);
+    Vlp16PolarProvider lidarPolarProvider = new Vlp16PolarProvider();
     lidarPolarProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
     lidarPolarProvider.addListener(lidarPolarFiringCollector);
+    LidarSectorProvider lidarSectorProvider = new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SightLineHandler.SECTORS);
     lidarSectorProvider.addListener(lidarPolarFiringCollector);
     lidarPolarFiringCollector.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarPolarProvider);
