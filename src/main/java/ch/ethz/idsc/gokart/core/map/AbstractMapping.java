@@ -47,9 +47,9 @@ public abstract class AbstractMapping<T extends ImageGrid> extends AbstractLidar
     occupancyGrid.render(geometricLayer, graphics);
   }
 
-  /** TODO JG document */
+  /** update map used in planning */
   public abstract void prepareMap();
 
-  /** TODO JG document */
+  /** get the map used in planning */
   public abstract ImageGrid getMap();
 }

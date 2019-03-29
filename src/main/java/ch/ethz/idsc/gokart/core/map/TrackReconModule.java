@@ -43,7 +43,8 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   protected final TimerFrame timerFrame = new TimerFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final AbstractMapping mapping;
+  private final AbstractMapping mapping = // SightLineMapping.defaultTrack();
+      new TrackMapping();
   private final TrackReconManagement trackReconManagement;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
@@ -57,7 +58,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
   public TrackReconModule() {
-    mapping = SightLineMapping.defaultGokart(); // new TrackMapping();
     trackReconManagement = new TrackReconManagement(mapping.getMap());
   }
 
