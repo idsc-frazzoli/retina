@@ -101,7 +101,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
   private final AbstractMapping mapping = // SightLineMapping.defaultObstacle();
-    new ObstacleMapping();
+      new ObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   private final Tensor waypoints;

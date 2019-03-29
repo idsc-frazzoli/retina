@@ -1655,6 +1655,26 @@ public enum GokartLogFile implements LogFile {
   /** mpc */
   _20190325T175100_61639f01,
   /***************************************************/
+  /* 2019-03-28 */
+  /** brief manual driving */
+  _20190328T112543_3b0b20b0,
+  /** brief manual driving */
+  _20190328T144659_e6dada55,
+  /** slow manual driving */
+  _20190328T145152_e6dada55,
+  /** trajectory planning */
+  _20190328T155002_ad28d651,
+  /** trajectory planning */
+  _20190328T162227_e084a72b,
+  /** kinematic mpc
+   * [abrupt log termination] */
+  _20190328T163118_558748f1,
+  /** manual driving with localization failure az, jg */
+  _20190328T164433_ad28d651,
+  /** mpc az jg
+   * manual driving jh */
+  _20190328T165416_558748f1,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
