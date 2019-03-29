@@ -78,7 +78,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     LidarAngularFiringCollector lidarAngularFiringCollector = //
         new LidarAngularFiringCollector(10000, 3);
     double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
-    LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -6);
+    LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -4);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
