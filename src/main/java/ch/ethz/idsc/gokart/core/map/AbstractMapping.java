@@ -13,7 +13,7 @@ public abstract class AbstractMapping<T extends ImageGrid> extends AbstractLidar
   // ---
   protected final T occupancyGrid;
 
-  /* package */ AbstractMapping(T occupancyGrid, SpacialXZObstaclePredicate spacialXZObstaclePredicate, int waitMillis) {
+  /* package */ AbstractMapping(SpacialXZObstaclePredicate spacialXZObstaclePredicate, int waitMillis, T occupancyGrid) {
     super(spacialXZObstaclePredicate, waitMillis);
     this.occupancyGrid = occupancyGrid;
   }

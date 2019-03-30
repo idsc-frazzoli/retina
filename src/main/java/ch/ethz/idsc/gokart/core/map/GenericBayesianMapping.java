@@ -18,25 +18,23 @@ import ch.ethz.idsc.tensor.Tensor;
 public class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGrid> {
   public static GenericBayesianMapping createTrackMapping() {
     return new GenericBayesianMapping( //
-        MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid(), //
         TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
-        200, -6);
+        200, MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid(), //
+        -6);
   }
 
   public static GenericBayesianMapping createObstacleMapping() {
     return new GenericBayesianMapping( //
-        MappingConfig.GLOBAL.createBayesianOccupancyGrid(), //
         SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
-        1000, -1);
+        1000, MappingConfig.GLOBAL.createBayesianOccupancyGrid(), -1);
   }
 
   // ---
   // TODO JG document parameters
   private GenericBayesianMapping( //
-      BayesianOccupancyGrid bayesianOccupancyGrid, //
       SpacialXZObstaclePredicate spacialXZObstaclePredicate, //
-      int waitMillis, int max_alt) {
-    super(bayesianOccupancyGrid, spacialXZObstaclePredicate, waitMillis);
+      int waitMillis, BayesianOccupancyGrid bayesianOccupancyGrid, int max_alt) {
+    super(spacialXZObstaclePredicate, waitMillis, bayesianOccupancyGrid);
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
     VelodyneSpacialProvider velodyneSpacialProvider = //
         new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), max_alt);

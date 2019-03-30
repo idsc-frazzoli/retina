@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /* package */ abstract class AbstractLidarProcessor implements StartAndStoppable, LidarRayBlockListener, Runnable {
   private final Thread thread = new Thread(this);
-  protected boolean isLaunched = true;
+  protected volatile boolean isLaunched = true;
   // ---
   protected final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   /** points_ferry is null or a matrix with dimension Nx3
