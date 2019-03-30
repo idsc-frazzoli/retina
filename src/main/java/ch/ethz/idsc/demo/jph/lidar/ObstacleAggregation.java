@@ -29,6 +29,7 @@ import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -36,6 +37,8 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
+// TODO JPH superseded by ObstacleAggregate
+@Refactor
 /* package */ class ObstacleAggregation implements OfflineLogListener, LidarSpacialListener {
   private static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.getPredefinedMap();
   private static final Tensor MODEL2PIXEL = PREDEFINED_MAP.getModel2Pixel();

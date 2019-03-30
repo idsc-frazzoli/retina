@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.gui.top.MPCPredictionRender;
-import ch.ethz.idsc.gokart.offline.slam.ObstacleAggregate;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
@@ -33,11 +32,12 @@ import ch.ethz.idsc.tensor.sca.Round;
   ;
   public static void main(String[] args) throws Exception {
     System.out.print("building index...");
-    NavigableMap<Scalar, ControlAndPredictionSteps> navigableMap = ControlAndPredictionIndex.build(HomeDirectory.file("track_putty/source/post.lcm"));
+    NavigableMap<Scalar, ControlAndPredictionSteps> navigableMap = //
+        ControlAndPredictionIndex.build(TrackDrivingTables.SINGLETON);
     System.out.println("done");
     /** Read in some option values and their defaults. */
     final int snaps = 50; // fps
-    final String filename = HomeDirectory.file("filename3.mp4").toString();
+    final String filename = HomeDirectory.file("filename1.mp4").toString();
     Dimension dimension = new Dimension(1920, 1080);
     // ---
     // File folder = new File("/media/datahaki/media/ethz/gokart/topic/track_red");
@@ -52,13 +52,13 @@ import ch.ethz.idsc.tensor.sca.Round;
         // if (csvFile.isFile())
         {
           TrackDriving trackDriving = new TrackDriving(Import.of(csvFile), id++);
-          trackDriving.setDriver(csvFile.getName().startsWith("s") ? "mh" : "tg");
+          trackDriving.setDriver(csvFile.getName().startsWith("mh") ? "mh" : "tg");
           trackDriving.setExtrusion(false);
           // System.out.println(trackDriving.row(0));
           list.add(trackDriving);
         }
       }
-    BufferedImage background = ImageIO.read(HomeDirectory.file("20190318T142605_05.png"));
+    BufferedImage background = ImageIO.read(VideoBackground.FILE);
     int max = list.stream().mapToInt(TrackDriving::maxIndex).max().getAsInt();
     // max = 500;
     BufferedImage bufferedImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_3BYTE_BGR);
@@ -76,12 +76,10 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.setColor(Color.WHITE);
         // graphics.fillRect(0, 0, dimension.width, dimension.height);
         graphics.drawImage(background, 0, 0, null);
-        Tensor model2pixel = ObstacleAggregate.MODEL2PIXEL;
-        // Tensors.fromString( //
-        // "{{42.82962839003549, 42.01931617686636, -2924.9980200038317}, {42.01931617686636, -42.8296, 575.4392}, {0, 0, 1}}");
+        Tensor model2pixel = VideoBackground.MODEL2PIXEL;
         GeometricLayer geometricLayer = GeometricLayer.of(model2pixel);
         // ri.render(geometricLayer, graphics);
-        if (false) {
+        if (true) {
           Entry<Scalar, ControlAndPredictionSteps> floorEntry = navigableMap.floorEntry(Quantity.of(time, SI.SECOND));
           if (Objects.nonNull(floorEntry)) {
             ControlAndPredictionSteps controlAndPredictionSteps = floorEntry.getValue();
@@ -97,7 +95,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.setColor(Color.LIGHT_GRAY);
         graphics.drawString(String.format("time:%7s[s]", time.map(Round._3)), 0, 25);
         mp4.append(bufferedImage);
-        if (index == 10000)
+        if (index == 100000)
           break;
       }
     }

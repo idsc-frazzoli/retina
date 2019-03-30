@@ -17,8 +17,8 @@ import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
@@ -44,7 +44,7 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
   private static final String CHANNEL_IMU = //
       DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   // ---
-  private DavisImuFrame davisImuFrame;
+  // private DavisImuFrame davisImuFrame;
   private RimoGetEvent rimoGetEvent;
   private RimoPutEvent rimoPutEvent;
   private LinmotGetEvent linmotGetEvent;
@@ -54,7 +54,7 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(CHANNEL_IMU)) {
-      davisImuFrame = new DavisImuFrame(byteBuffer);
+      // davisImuFrame = new DavisImuFrame(byteBuffer);
     } else //
     if (channel.equals(LinmotLcmServer.CHANNEL_GET))
       linmotGetEvent = new LinmotGetEvent(byteBuffer);
@@ -69,8 +69,8 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
       gokartStatusEvent = new GokartStatusEvent(byteBuffer);
     else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      if (Objects.isNull(davisImuFrame) || //
-          Objects.isNull(linmotGetEvent) || //
+      if (// Objects.isNull(davisImuFrame) || //
+      Objects.isNull(linmotGetEvent) || //
           Objects.isNull(rimoGetEvent) || //
           Objects.isNull(rimoPutEvent) || //
           Objects.isNull(gokartStatusEvent))
@@ -85,7 +85,8 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
           rates.map(Magnitude.PER_SECOND), //
           speed.map(Magnitude.VELOCITY), //
           rate.map(Magnitude.PER_SECOND), //
-          davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.PER_SECOND), //
+          // davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.PER_SECOND), //
+          RealScalar.ZERO, // FIXME JPH use vlp16
           SteerPutEvent.ENCODER.apply(gokartStatusEvent.getSteerColumnEncoderCentered()), //
           linmotGetEvent.getActualPosition().map(Magnitude.METER).map(Round._6), //
           gokartPoseEvent.asVector() //
