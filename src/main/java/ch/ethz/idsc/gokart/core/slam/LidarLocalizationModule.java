@@ -29,7 +29,6 @@ import ch.ethz.idsc.sophus.group.Se2Group;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -43,7 +42,6 @@ public class LidarLocalizationModule extends AbstractModule implements //
   /** the constant 0.1 was established in post-processing
    * with mh and jph to filter out spikes in the gyroZ signal */
   private static final Scalar IIR1_FILTER_GYROZ = RealScalar.of(0.1);
-  private static final Scalar QUALITY_MIN = RealScalar.of(0.7);
   private static final Scalar QUALITY_DECR = RealScalar.of(0.05);
   private static final Scalar BLEND_POSE = RealScalar.of(0.1);
   private static final Scalar BLEND_VELOCITY = RealScalar.of(0.01);
@@ -159,7 +157,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
     if (optional.isPresent()) {
       SlamResult slamResult = optional.get();
       quality = slamResult.getMatchRatio();
-      boolean matchOk = Scalars.lessThan(QUALITY_MIN, quality);
+      boolean matchOk = LocalizationConfig.GLOBAL.isQualityOk(quality);
       if (matchOk || flagSnap) {
         // blend pose
         Scalar blend = flagSnap ? _1 : BLEND_POSE;

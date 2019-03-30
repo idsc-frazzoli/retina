@@ -5,9 +5,11 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
+import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
@@ -36,13 +38,14 @@ public class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGri
       int waitMillis, int max_alt) {
     super(bayesianOccupancyGrid, spacialXZObstaclePredicate, waitMillis);
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
-    Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), max_alt);
-    lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
-    lidarSpacialProvider.addListener(lidarAngularFiringCollector);
+    VelodyneSpacialProvider velodyneSpacialProvider = //
+        new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), max_alt);
+    velodyneSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
+    velodyneSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     lidarAngularFiringCollector.addListener(this);
-    vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
+    vlp16LcmHandler.velodyneDecoder.addRayListener(velodyneSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
   }
 
@@ -62,9 +65,9 @@ public class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGri
   public final void run() {
     while (isLaunched) {
       Tensor points = points_ferry;
-      if (Objects.nonNull(points) && Objects.nonNull(gokartPoseEvent)) {
+      if (Objects.nonNull(points) && //
+          LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality())) {
         points_ferry = null;
-        // TODO pose quality is not considered yet
         occupancyGrid.setPose(gokartPoseEvent.getPose());
         for (Tensor point : points) { // point x, y, z
           boolean isObstacle = spacialXZObstaclePredicate.isObstacle(point); // only x and z are used
