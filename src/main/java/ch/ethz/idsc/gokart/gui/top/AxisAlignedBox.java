@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
 public class AxisAlignedBox {
   private static final Scalar HALF = RealScalar.of(0.5);
+  // ---
   private final Scalar pos;
   private final Scalar neg;
 

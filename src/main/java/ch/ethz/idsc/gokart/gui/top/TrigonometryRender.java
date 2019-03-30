@@ -4,9 +4,9 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
-import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
@@ -21,10 +21,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** renders point of rotation as small dot in plane */
-public class TrigonometryRender extends AbstractGokartRender {
+public class TrigonometryRender extends AbstractGokartRender implements GokartStatusListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
-  private GokartStatusEvent gokartStatusEvent;
+  private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
 
   public TrigonometryRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
@@ -32,7 +31,7 @@ public class TrigonometryRender extends AbstractGokartRender {
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
+    if (gokartStatusEvent.isSteerColumnCalibrated()) {
       final Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       Optional<Scalar> optional = TurningGeometry.offset_y(ChassisGeometry.GLOBAL.xAxleRtoF, angle);
       if (optional.isPresent()) { // draw point of rotation when assuming no slip
@@ -43,5 +42,10 @@ public class TrigonometryRender extends AbstractGokartRender {
         graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
       }
     }
+  }
+
+  @Override // from GokartStatusListener
+  public void getEvent(GokartStatusEvent getEvent) {
+    gokartStatusEvent = getEvent;
   }
 }
