@@ -15,7 +15,12 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.mat.Det;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
+import ch.ethz.idsc.tensor.pdf.Distribution;
+import ch.ethz.idsc.tensor.pdf.NormalDistribution;
+import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
@@ -79,5 +84,17 @@ public class SensorsConfigTest extends TestCase {
 
   public void testvlp16_relativeZero() {
     Clips.interval(0.7, 0.8).requireInside(SensorsConfig.GLOBAL.vlp16_relativeZero);
+  }
+
+  public void testUnits() {
+    TensorUnaryOperator toPolar = SensorsConfig.GLOBAL.vlp16ToPolarCoordinates();
+    TensorUnaryOperator fromPolar = SensorsConfig.GLOBAL.vlp16FromPolarCoordinates();
+    Distribution distribution = NormalDistribution.standard();
+    for (int count = 0; count < 100; ++count) {
+      Tensor xyz = RandomVariate.of(distribution, 3).multiply(Quantity.of(1, SI.METER));
+      Tensor tensor = toPolar.apply(xyz);
+      Tensor inv = fromPolar.apply(tensor);
+      Chop._12.requireClose(xyz, inv);
+    }
   }
 }

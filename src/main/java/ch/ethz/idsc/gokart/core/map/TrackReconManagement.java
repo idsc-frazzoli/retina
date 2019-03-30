@@ -174,9 +174,9 @@ public class TrackReconManagement {
       System.out.println(++count);
       // refine
       System.out.println("refine");
-      Tensor newTrackDataXYR = Objects.nonNull(trackDataXYR) ? //
-          trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 3, closedTrack, constraints) : //
-          null;
+      Tensor newTrackDataXYR = Objects.nonNull(trackDataXYR) //
+          ? trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 3, closedTrack, constraints) //
+          : null;
       if (Objects.nonNull(newTrackDataXYR))
         trackDataXYR = newTrackDataXYR;
       else
