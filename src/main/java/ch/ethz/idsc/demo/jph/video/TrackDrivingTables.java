@@ -18,8 +18,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   ;
   public static final File SINGLETON = new File("/media/datahaki/data/gokart/cuts/20190329/20190329T144049_03/log.lcm");
 
-  private static void single(File file, File dest_folder) throws IOException {
-    String title = file.getParentFile().getName();
+  private static void single(File file, File dest_folder, String title) throws IOException {
     OfflineTableSupplier offlineTableSupplier = new BasicTrackReplayTable();
     OfflineLogPlayer.process(file, offlineTableSupplier);
     Tensor table = offlineTableSupplier.getTable();
@@ -28,11 +27,19 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
         table.map(CsvFormat.strict()));
   }
 
-  public static void main(String[] args) throws IOException {
+  static void runSingle() throws IOException {
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(SINGLETON.getParentFile(), SINGLETON.getName());
     File dest_folder = HomeDirectory.file("track_putty");
     dest_folder.mkdir();
-    // for (File file : folder.listFiles())
-    single(gokartLogInterface.file(), dest_folder);
+    single(gokartLogInterface.file(), dest_folder, //
+        gokartLogInterface.file().getParentFile().getName());
+  }
+
+  public static void main(String[] args) throws IOException {
+    File folder = HomeDirectory.file("laps");
+    File dest_folder = HomeDirectory.file("track_putty");
+    dest_folder.mkdir();
+    for (File file : folder.listFiles())
+      single(file, dest_folder, file.getName());
   }
 }

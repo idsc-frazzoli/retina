@@ -50,7 +50,6 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   private final Tensor tensor;
   private final int id;
   private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-  boolean enableTrace = false;
   private final GokartPoseContainer gokartPoseContainer = new GokartPoseContainer();
   private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender(gokartPoseContainer);
 
@@ -68,6 +67,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     return tensor.length();
   }
 
+  /** @param name consisting of initials */
   public void setDriver(String name) {
     BufferedImage icon = ResourceData.bufferedImage("/image/driver/" + name + ".png");
     if (Objects.nonNull(icon))
@@ -76,7 +76,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       System.err.println("driver icon not found [" + name + "]");
   }
 
-  int render_index;
+  private int render_index;
   private boolean extrusion = true;
 
   public void setRenderIndex(int render_index) {

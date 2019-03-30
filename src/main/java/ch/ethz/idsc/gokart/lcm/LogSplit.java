@@ -31,6 +31,8 @@ public class LogSplit implements OfflineLogListener {
   }
 
   public NavigableMap<Integer, Integer> navigableMap() {
+    if (Objects.nonNull(lo))
+      navigableMap.put(lo, index - 1);
     return Collections.unmodifiableNavigableMap(navigableMap);
   }
 }
