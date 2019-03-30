@@ -27,7 +27,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   // "{{21.57529078604976, 20.84482735590282, -1091.4861896725226}, {20.84482735590282, -21.57529078604976, 364.92043391882794}, {0.0, 0.0, 1.0}}"));
   public static final Tensor MODEL2PIXEL = Tensors
       .fromString("{{36.67799433628459, 35.43620650503479, -1900.5265224432885}, {35.43620650503479, -36.67799433628459, 620.3647376620074}, {0.0, 0.0, 1.0}}");
-  public static final File FILE = HomeDirectory.Pictures("20190329T144049_00.png");
+  public static final File IMAGE_FILE = HomeDirectory.Pictures("20190329T144049_00.png");
 
   public static void main(String[] args) throws IOException {
     // File folder = new File("/media/datahaki/data/gokart/cuts/20190329/20190329T144049_00");
@@ -44,6 +44,6 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
         MODEL2PIXEL, //
         gokartLogInterface.pose());
     OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
-    ImageIO.write(bufferedImage, "png", FILE);
+    ImageIO.write(bufferedImage, "png", IMAGE_FILE);
   }
 }

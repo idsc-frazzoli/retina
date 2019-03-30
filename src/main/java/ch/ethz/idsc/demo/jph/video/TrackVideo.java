@@ -57,7 +57,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         list.add(trackDriving);
       }
     }
-    BufferedImage background = ImageIO.read(VideoBackground.FILE);
+    BufferedImage background = ImageIO.read(VideoBackground.IMAGE_FILE);
     int max = list.stream().mapToInt(TrackDriving::maxIndex).max().getAsInt();
     // max = 500;
     BufferedImage bufferedImage = new BufferedImage( //
