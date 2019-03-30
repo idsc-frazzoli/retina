@@ -1,3 +1,4 @@
+// code by gjoel
 package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Dimension;
@@ -10,12 +11,12 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public class ErodedMap extends ImageGrid {
+/* package */ class ErodedMap extends ImageGrid {
   /** @param imageGrid to be eroded
    * @param obstacleRadius with unit SI.METER
    * @return ErodedMap */
-  /* package */ static ErodedMap of(ImageGrid imageGrid, Scalar obstacleRadius) {
-    Tensor rangeCeil = imageGrid.gridSize.unmodifiable().multiply(imageGrid.cellDim);
+  public static ErodedMap of(ImageGrid imageGrid, Scalar obstacleRadius) {
+    Tensor rangeCeil = imageGrid.gridSize.multiply(imageGrid.cellDim);
     Dimension dimension = new Dimension(imageGrid.dimX(), imageGrid.dimY());
     return new ErodedMap(imageGrid, imageGrid.lbounds.unmodifiable(), rangeCeil, dimension, obstacleRadius);
   }
@@ -43,6 +44,7 @@ public class ErodedMap extends ImageGrid {
   public void genObstacleMap() {
     imageGraphics.setColor(COLOR_UNKNOWN);
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
+    // ---
     if (Scalars.lessEquals(obsDilationRadius, cellDim))
       this.imageGrid.cells().filter(this.imageGrid::isCellOccupied).forEach(cell -> //
       imagePixels[cellToIdx(cell)] = MASK_OCCUPIED);

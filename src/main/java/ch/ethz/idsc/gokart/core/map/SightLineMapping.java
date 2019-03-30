@@ -15,19 +15,20 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** create an obstacle map based on lidar sight lines */
 public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
-  private final ErodedMap map = ErodedMap.of(occupancyGrid, MappingConfig.GLOBAL.obsRadius);
-  private final BlindSpots blindSpots;
-
   public static SightLineMapping defaultObstacle() {
-    return new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(), 1000);
+    return new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), 1000, BlindSpots.defaultGokart());
   }
 
   public static SightLineMapping defaultTrack() {
-    return new SightLineMapping(TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(), 200);
+    return new SightLineMapping(TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), 200, BlindSpots.defaultGokart());
   }
 
-  public SightLineMapping(SpacialXZObstaclePredicate predicate, BlindSpots blindSpots, int waitMillis) {
-    super(MappingConfig.GLOBAL.createSightLineOccupancyGrid(), predicate, waitMillis);
+  // ---
+  private final ErodedMap map = ErodedMap.of(occupancyGrid, MappingConfig.GLOBAL.obsRadius);
+  private final BlindSpots blindSpots;
+
+  private SightLineMapping(SpacialXZObstaclePredicate predicate, int waitMillis, BlindSpots blindSpots) {
+    super(predicate, waitMillis, MappingConfig.GLOBAL.createSightLineOccupancyGrid());
     this.blindSpots = blindSpots;
     // ---
     LidarPolarFiringCollector lidarPolarFiringCollector = new LidarPolarFiringCollector(LIDAR_SAMPLES, 3);
@@ -63,7 +64,7 @@ public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
   @Override // from Runnable
   public void run() {
     while (isLaunched) {
-      Collection<Tensor> points = SightLineHandler.getClosestPoints(points_ferry, predicate, blindSpots);
+      Collection<Tensor> points = SightLineHandler.getClosestPoints(points_ferry, spacialXZObstaclePredicate, blindSpots);
       if (!points.isEmpty()) {
         Tensor polygon = SightLineHandler.polygon(points);
         SightLineHandler.closeSector(polygon);

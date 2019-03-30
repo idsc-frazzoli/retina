@@ -10,10 +10,11 @@ import ch.ethz.idsc.tensor.Tensor;
 
 public abstract class AbstractMapping<T extends ImageGrid> extends AbstractLidarMapping implements //
     OccupancyGrid, RenderInterface {
+  // ---
   protected final T occupancyGrid;
 
-  /* package */ AbstractMapping(T occupancyGrid, SpacialXZObstaclePredicate predicate, int waitMillis) {
-    super(predicate, waitMillis);
+  /* package */ AbstractMapping(SpacialXZObstaclePredicate spacialXZObstaclePredicate, int waitMillis, T occupancyGrid) {
+    super(spacialXZObstaclePredicate, waitMillis);
     this.occupancyGrid = occupancyGrid;
   }
 

@@ -7,12 +7,12 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.TreeSet;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -54,7 +54,7 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
   @Override // from Runnable
   public void run() {
     while (isLaunched) {
-      Collection<Tensor> points = SightLineHandler.getClosestPoints(points_ferry, predicate, blindSpots);
+      Collection<Tensor> points = SightLineHandler.getClosestPoints(points_ferry, spacialXZObstaclePredicate, blindSpots);
       if (!points.isEmpty()) {
         synchronized (pointsPolar) {
           pointsPolar.addAll(points);
@@ -71,7 +71,8 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.nonNull(gokartPoseEvent) && !pointsPolar.isEmpty()) {
+    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()) && //
+        !pointsPolar.isEmpty()) {
       geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
       geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16));
       // ---

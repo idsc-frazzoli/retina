@@ -12,23 +12,15 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public abstract class AbstractLidarProcessor implements StartAndStoppable, LidarRayBlockListener, Runnable {
-  // TODO check rationale behind constant 10000!
-  protected static final int LIDAR_SAMPLES = 10000;
-  // ---
+/* package */ abstract class AbstractLidarProcessor implements StartAndStoppable, LidarRayBlockListener, Runnable {
   private final Thread thread = new Thread(this);
-  protected boolean isLaunched = true;
-  protected final int waitMillis;
+  protected volatile boolean isLaunched = true;
   // ---
   protected final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   /** points_ferry is null or a matrix with dimension Nx3
    * containing the cross-section of the static geometry
    * with the horizontal plane at height of the lidar */
   protected Tensor points_ferry = null;
-
-  /* package */ AbstractLidarProcessor(int waitMillis) {
-    this.waitMillis = waitMillis;
-  }
 
   @Override // from StartAndStoppable
   public void start() {

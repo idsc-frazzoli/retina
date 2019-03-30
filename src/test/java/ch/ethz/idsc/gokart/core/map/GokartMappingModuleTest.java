@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 public class GokartMappingModuleTest extends TestCase {
   public void testSimple() {
-    ObstacleMapping gokartMappingModule = new ObstacleMapping();
+    GenericBayesianMapping gokartMappingModule = GenericBayesianMapping.createObstacleMapping();
     gokartMappingModule.start();
     gokartMappingModule.stop();
   }

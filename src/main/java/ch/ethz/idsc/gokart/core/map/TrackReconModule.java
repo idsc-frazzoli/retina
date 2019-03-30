@@ -44,7 +44,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final AbstractMapping mapping = // SightLineMapping.defaultTrack();
-      new TrackMapping();
+      GenericBayesianMapping.createTrackMapping();
   private final TrackReconManagement trackReconManagement;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();

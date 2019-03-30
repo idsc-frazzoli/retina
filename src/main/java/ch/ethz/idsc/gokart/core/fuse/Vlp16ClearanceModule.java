@@ -38,7 +38,6 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   // ---
   private final VelodyneLcmClient velodyneLcmClient;
   private final LidarSpacialProvider lidarSpacialProvider;
-  // TODO later use steerColumnTracker directly
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
