@@ -141,6 +141,8 @@ public class GokartRender extends AbstractGokartRender {
         graphics.fill(geometricLayer.toPath2D(index < 2 ? TIRE_FRONT : TIRE_REAR));
         geometricLayer.popMatrix();
       }
+      // Tensor pose = gokartPoseInterface.getPose();
+      // TODO JPH use of lidarLocalizationModule in display functionality is prohibited
       if (Objects.nonNull(lidarLocalizationModule)) {
         Scalar gyroZ = lidarLocalizationModule.getGyroZ(); // unit s^-1
         Scalar angularSlip = gokartAngularSlip.getAngularSlip(gokartStatusEvent, gyroZ);

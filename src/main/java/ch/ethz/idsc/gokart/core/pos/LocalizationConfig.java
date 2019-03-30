@@ -95,7 +95,6 @@ public class LocalizationConfig {
   }
 
   public static PredefinedMap getPredefinedMapObstacles() {
-    // FIXME JPH map outdated
-    return PredefinedMap.DUBILAB_OBSTACLES_20180703; // with container moved
+    return PredefinedMap.DUBILAB_OBSTACLES_20190314;
   }
 }

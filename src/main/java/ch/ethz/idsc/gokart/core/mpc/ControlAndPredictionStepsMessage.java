@@ -3,10 +3,9 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.util.data.BufferInsertable;
-
 public class ControlAndPredictionStepsMessage extends MPCNativeMessage {
-  public final ControlAndPredictionSteps controlAndPredictionSteps;
+  /** access to field controlAndPredictionSteps via function getPayload() */
+  private final ControlAndPredictionSteps controlAndPredictionSteps;
 
   public ControlAndPredictionStepsMessage(ControlAndPredictionSteps controlAndPredictionSteps, MPCNativeSession mpcNativeSession) {
     super(mpcNativeSession);
@@ -24,7 +23,7 @@ public class ControlAndPredictionStepsMessage extends MPCNativeMessage {
   }
 
   @Override // from MPCNativeMessage
-  BufferInsertable getPayload() {
+  public ControlAndPredictionSteps getPayload() {
     return controlAndPredictionSteps;
   }
 }

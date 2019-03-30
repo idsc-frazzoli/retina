@@ -1685,7 +1685,8 @@ public enum GokartLogFile implements LogFile {
   _20190329T142259_459f8e9a,
   /** mpc, localization failure */
   _20190329T143349_558748f1,
-  /** mpc, localization failure */
+  /** slow manual driving to scan map
+   * mpc, localization failure */
   _20190329T144049_558748f1,
   /** mpc, localization failure */
   _20190329T151406_558748f1,
