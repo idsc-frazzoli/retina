@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
@@ -30,20 +30,20 @@ import ch.ethz.idsc.tensor.sca.Sign;
 /** draw blue lines of prediction of traces of gokart
  * extruded footprint */
 public class ExtrudedFootprintRender extends AbstractGokartRender implements GokartStatusListener {
+  private static final StateIntegrator STATE_INTEGRATOR = FixedStateIntegrator.create( //
+      Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
+  // ---
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  // public final GokartStatusListener gokartStatusListener = getEvent -> ;
-  private GokartStatusEvent gokartStatusEvent;
+  private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
   public Color color = new Color(0, 0, 255, 128);
 
   public ExtrudedFootprintRender(GokartPoseInterface gokartPoseInterface) {
     super(gokartPoseInterface);
   }
 
-  @Override
+  @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
-      StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
-          Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
+    if (gokartStatusEvent.isSteerColumnCalibrated()) {
       // ---
       Scalar XAD = ChassisGeometry.GLOBAL.xAxleDistanceMeter(); // axle distance
       Scalar YHW = ChassisGeometry.GLOBAL.yHalfWidthMeter(); // half width
@@ -62,7 +62,7 @@ public class ExtrudedFootprintRender extends AbstractGokartRender implements Gok
       {
         final Flow flow_forward = singleton(RealScalar.ONE, angle);
         final Tensor center_forward = //
-            Tensor.of(stateIntegrator.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
+            Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_forward) {
@@ -77,7 +77,7 @@ public class ExtrudedFootprintRender extends AbstractGokartRender implements Gok
       {
         final Flow flow_reverse = singleton(RealScalar.ONE.negate(), angle);
         final Tensor center_reverse = //
-            Tensor.of(stateIntegrator.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
+            Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_reverse) {

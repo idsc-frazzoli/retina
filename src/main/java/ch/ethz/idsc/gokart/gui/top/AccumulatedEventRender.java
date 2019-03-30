@@ -50,7 +50,7 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
     jToggleButton.addActionListener(this);
   }
 
-  @Override
+  @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (!isSelected)
       return;
@@ -80,12 +80,12 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
       System.err.println("unexpected image dimensions");
   }
 
-  @Override
+  @Override // from TimedImageListener
   public void timedImage(TimedImageEvent timedImageEvent) {
     imageCopy.update(timedImageEvent.bufferedImage);
   }
 
-  @Override
+  @Override // from ActionListener
   public void actionPerformed(ActionEvent e) {
     isSelected = jToggleButton.isSelected();
   }

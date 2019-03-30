@@ -35,7 +35,7 @@ public class LocalViewLcmModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
-  @Override
+  @Override // from AbstractModule
   protected void first() {
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     {
@@ -89,7 +89,7 @@ public class LocalViewLcmModule extends AbstractModule {
     timerFrame.jFrame.setVisible(true);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     gokartPoseLcmClient.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();

@@ -120,7 +120,7 @@ public class OfflineHud implements OfflineLogListener {
           renderInterface.render(geometricLayer, graphics);
           geometricLayer.popMatrix();
         }
-        trigonometryRender.gokartStatusListener.getEvent(gokartStatusEvent);
+        trigonometryRender.getEvent(gokartStatusEvent);
         trigonometryRender.render(geometricLayer, graphics);
         extrudedFootprintRender.getEvent(gokartStatusEvent);
         extrudedFootprintRender.color = Color.CYAN;
