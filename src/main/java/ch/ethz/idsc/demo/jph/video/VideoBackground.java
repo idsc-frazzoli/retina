@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.jph.video;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -21,6 +22,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /** produces a high resolution image with lidar obstacles */
 /* package */ enum VideoBackground {
   ;
+  public static final Dimension DIMENSION = new Dimension(1920, 1080);
   // public static final Tensor MODEL2PIXEL = Tensors.fromString("{{50,0,-1000},{0,-50,3000},{0,0,1}}");
   // "{{21.57529078604976, 20.84482735590282, -1091.4861896725226}, {20.84482735590282, -21.57529078604976, 364.92043391882794}, {0.0, 0.0, 1.0}}"));
   public static final Tensor MODEL2PIXEL = Tensors
@@ -31,7 +33,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     // File folder = new File("/media/datahaki/data/gokart/cuts/20190329/20190329T144049_00");
     GokartLogInterface gokartLogInterface = //
         GokartLogAdapter.of(new File("/media/datahaki/data/gokart/cuts/20190329/20190329T144049_00"));
-    BufferedImage bufferedImage = new BufferedImage(1920, 1080, BufferedImage.TYPE_INT_ARGB);
+    BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = bufferedImage.createGraphics();
     graphics.setColor(Color.WHITE);
     graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());

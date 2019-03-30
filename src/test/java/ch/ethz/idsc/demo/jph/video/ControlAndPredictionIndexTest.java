@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 public class ControlAndPredictionIndexTest extends TestCase {
   public void testSimple() {
     try {
-      ControlAndPredictionIndex.build(HomeDirectory.file("does_not_exist.lcm"));
+      ControlAndPredictionStepsIndex.build(HomeDirectory.file("does_not_exist.lcm"));
       fail();
     } catch (Exception exception) {
       // ---
