@@ -1,7 +1,6 @@
 // code by swisstrolley+ and jph
 package ch.ethz.idsc.retina.util.sys;
 
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,12 +22,12 @@ public abstract class AbstractClockedModule extends AbstractModule {
 
   /** Initialization for user implementation.
    * Runs before runEventModule() is ever called. */
-  @Override
+  @Override // from AbstractModule
   protected abstract void first();
 
   /** Graceful closure for user implementation Runs after runEventModule() is
    * terminated for good. */
-  @Override
+  @Override // from AbstractModule
   protected abstract void last();
 
   /** Period between runClockedModule execution.
@@ -51,8 +50,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
   @Override
   public final void terminate() {
     // order of launch() reversed
-    if (Objects.nonNull(timer))
-      timer.cancel();
+    timer.cancel();
     last();
   }
 }

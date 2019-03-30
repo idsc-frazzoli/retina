@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.slam;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -71,7 +70,7 @@ public enum PredefinedMap implements LocalizationImage {
   /** @param meter_to_pixel for instance 1[m] may correspond to 7.5 pixel */
   private PredefinedMap(double meter_to_pixel) {
     this.scale = DoubleScalar.of(meter_to_pixel);
-    String string = String.format("/%s.png", name().replace('_', File.separatorChar).toLowerCase());
+    String string = String.format("/%s.png", name().replace('_', '/').toLowerCase());
     Tensor tensor = ImageRegions.grayscale(ResourceData.of(string));
     bufferedImage = ImageFormat.of(tensor);
     this.size = bufferedImage.getWidth();

@@ -63,6 +63,30 @@ print('imuPrint','-dpng','-r600')
 %plot(tvmu,ygyr)
 hold off
 
+%frequency response
+Fs = 1000;
+T = 1/Fs;
+L = numel(xacc);
+t = (0:L-1)*T;
+
+Y = fft(xacc-mean(xacc));
+P2 = abs(Y/L);
+%P2(P2>0.001)=0.001;
+P1 = P2(1:L/2+1);
+
+f = Fs*(0:(L/2))/L;
+P1s = gaussfilter(P1, 10);
+P1ss = gaussfilter(P1, 200);
+P1int = P1ss./f';
+P1intint = P1int./f';
+figure
+hold on
+area(f,P1s);
+xlabel('frequency (Hz)');
+ylabel('Amplitude [m/s^2]');
+print('imunoise','-dpng','-r600')
+hold off
+
 figure
 title('davis');
 hold on

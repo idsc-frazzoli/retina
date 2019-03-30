@@ -69,9 +69,20 @@ public class PresenterLcmModule extends AbstractModule {
       ModuleAuto.INSTANCE.getInstance(GokartTrajectoryModule.class);
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
+  // TODO probably remove again
+  // private final SightLineMapping sightLineMapping = SightLineMapping.defaultGokart();
+  // private final SightLines sightLines = SightLines.defaultGokart();
 
   @Override // from AbstractModule
   protected void first() {
+    /* {
+     * timerFrame.geometricComponent.addRenderInterface(sightLineMapping);
+     * sightLineMapping.start();
+     * }
+     * {
+     * timerFrame.geometricComponent.addRenderInterface(sightLines);
+     * sightLines.start();
+     * } */
     {
       ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
@@ -99,6 +110,7 @@ public class PresenterLcmModule extends AbstractModule {
       ParallelLidarRender lidarRender = new ParallelLidarRender(gokartPoseLcmLidar);
       lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
       lidarRender.setColor(new Color(0, 0, 128, 128));
+      lidarRender.setObstacleColor(new Color(128, 0, 128, 128));
       lidarRender.pointSize = 1;
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
@@ -239,6 +251,8 @@ public class PresenterLcmModule extends AbstractModule {
     vlp16LcmHandler.stopSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
     davisLcmClient.stopSubscriptions();
+    // sightLines.stop();
+    // sightLineMapping.stop();
     mpcControlUpdateLcmClient.stopSubscriptions();
   }
 

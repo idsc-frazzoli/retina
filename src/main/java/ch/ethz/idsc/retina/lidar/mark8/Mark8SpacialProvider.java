@@ -5,9 +5,9 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.util.math.AngleVectorLookupFloat;
 
 public class Mark8SpacialProvider implements LidarSpacialProvider {
@@ -63,8 +63,8 @@ public class Mark8SpacialProvider implements LidarSpacialProvider {
           coords[0] = IR[laser] * range * dx;
           coords[1] = IR[laser] * range * dy;
           coords[2] = IZ[laser] * range;
-          LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-          listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
+          LidarXYZEvent lidarXYZEvent = new LidarXYZEvent(usec, coords, intensity);
+          listeners.forEach(listener -> listener.lidarSpacial(lidarXYZEvent));
         }
       }
     }

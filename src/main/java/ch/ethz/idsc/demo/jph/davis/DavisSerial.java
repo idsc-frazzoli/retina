@@ -5,7 +5,7 @@ package ch.ethz.idsc.demo.jph.davis;
  * 
  * class exists for convenience to prevent typos when selecting the camera
  * device */
-/* package */ enum DavisSerial {
+public enum DavisSerial {
   FX2_02460010, // Julian
   FX2_02460045, // Jan
   FX2_02460038, // Ale

@@ -52,8 +52,8 @@ public class LidarAngularFiringCollector implements LidarSpacialListener, LidarR
   }
 
   @Override // from LidarSpacialListener
-  public void lidarSpacial(LidarSpacialEvent lidarSpacialEvent) {
-    floatBuffer.put(lidarSpacialEvent.coords); // either 3, or 2 floats
-    byteBuffer.put(lidarSpacialEvent.intensity);
+  public void lidarSpacial(LidarXYZEvent lidarXYZEvent) {
+    floatBuffer.put(lidarXYZEvent.coords); // either 3, or 2 floats
+    byteBuffer.put(lidarXYZEvent.intensity);
   }
 }
