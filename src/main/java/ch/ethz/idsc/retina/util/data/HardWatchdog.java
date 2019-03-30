@@ -6,7 +6,7 @@ package ch.ethz.idsc.retina.util.data;
  * functionality like on a micro controller
  * except that this watchdog does not notify an interrupt
  * but simply sets a flag to true.
- * Once set to true, the flag cannot be cleared.
+ * Once set to true, the flag is never cleared.
  * 
  * @see Watchdog */
 public final class HardWatchdog implements Watchdog {

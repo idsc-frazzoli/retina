@@ -6,6 +6,7 @@ package ch.ethz.idsc.retina.lidar;
   /** timestamp of event in [us] */
   public final int usec;
   /** spacial coordinates */
+  // TODO JPH prevent public access to coords
   public final float[] coords;
   /** intensity of reflection [0, 1, ..., 255] 255 == most intensive return */
   public final byte intensity;

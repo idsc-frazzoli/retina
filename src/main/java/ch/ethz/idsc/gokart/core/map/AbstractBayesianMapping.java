@@ -13,9 +13,11 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** class interprets sensor data from lidar */
 public abstract class AbstractBayesianMapping extends AbstractMapping<BayesianOccupancyGrid> {
-  /* package */ AbstractBayesianMapping(BayesianOccupancyGrid bayesianOccupancyGrid, //
-      SpacialXZObstaclePredicate predicate, int max_alt, int waitMillis) {
-    super(bayesianOccupancyGrid, predicate, waitMillis);
+  /* package */ AbstractBayesianMapping( //
+      BayesianOccupancyGrid bayesianOccupancyGrid, //
+      SpacialXZObstaclePredicate spacialXZObstaclePredicate, //
+      int max_alt, int waitMillis) {
+    super(bayesianOccupancyGrid, spacialXZObstaclePredicate, waitMillis);
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
     Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), max_alt);
     lidarSpacialProvider.setLimitLo(Magnitude.METER.toDouble(MappingConfig.GLOBAL.minDistance));
@@ -48,7 +50,7 @@ public abstract class AbstractBayesianMapping extends AbstractMapping<BayesianOc
         // TODO pose quality is not considered yet
         occupancyGrid.setPose(gokartPoseEvent.getPose());
         for (Tensor point : points) { // point x, y, z
-          boolean isObstacle = predicate.isObstacle(point); // only x and z are used
+          boolean isObstacle = spacialXZObstaclePredicate.isObstacle(point); // only x and z are used
           occupancyGrid.processObservation( //
               point, //
               isObstacle ? 1 : 0);

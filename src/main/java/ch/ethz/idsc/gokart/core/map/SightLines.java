@@ -54,7 +54,7 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
   @Override // from Runnable
   public void run() {
     while (isLaunched) {
-      Collection<Tensor> points = SightLineHandler.getClosestPoints(points_ferry, predicate, blindSpots);
+      Collection<Tensor> points = SightLineHandler.getClosestPoints(points_ferry, spacialXZObstaclePredicate, blindSpots);
       if (!points.isEmpty()) {
         synchronized (pointsPolar) {
           pointsPolar.addAll(points);
