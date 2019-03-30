@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.gui.top.MPCPredictionRender;
+import ch.ethz.idsc.gokart.gui.top.MPCPredictionSequenceRender;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
@@ -36,14 +37,15 @@ import ch.ethz.idsc.tensor.sca.Round;
     System.out.println("done");
     /** Read in some option values and their defaults. */
     final int snaps = 50; // fps
-    final String filename = HomeDirectory.file("filename1.mp4").toString();
+    final String string = TrackDrivingTables.SINGLETON.getParentFile().getName();
+    final String filename = HomeDirectory.file(string + ".mp4").toString();
     // ---
     // File folder = new File("/media/datahaki/media/ethz/gokart/topic/track_red");
     File src = HomeDirectory.file("track_putty");
     List<TrackDriving> list = new LinkedList<>();
     int id = 0;
     // for (File csvFile : src.listFiles())
-    File csvFile = new File("/home/datahaki/track_putty/20190328T165416_03.csv");
+    File csvFile = new File("/home/datahaki/track_putty/" + string + ".csv");
     if (csvFile.isFile()) {
       // GokartLogInterface gokartLogInterface = GokartLogAdapter.of(file);
       // String title = file.getName();
@@ -52,14 +54,13 @@ import ch.ethz.idsc.tensor.sca.Round;
       {
         TrackDriving trackDriving = new TrackDriving(Import.of(csvFile), id++);
         trackDriving.setDriver(csvFile.getName().startsWith("mh") ? "mh" : "tg");
-        trackDriving.setExtrusion(false);
+        trackDriving.setExtrusion(true);
         // System.out.println(trackDriving.row(0));
         list.add(trackDriving);
       }
     }
     BufferedImage background = ImageIO.read(VideoBackground.IMAGE_FILE);
-    int max = list.stream().mapToInt(TrackDriving::maxIndex).max().getAsInt();
-    // max = 500;
+    final int max = list.stream().mapToInt(TrackDriving::maxIndex).max().getAsInt();
     BufferedImage bufferedImage = new BufferedImage( //
         VideoBackground.DIMENSION.width, //
         VideoBackground.DIMENSION.height, //
@@ -70,8 +71,8 @@ import ch.ethz.idsc.tensor.sca.Round;
     // new BasicStroke(6f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] { 10.0f }, 0.0f));
     // Tensor optimal = Import.of(new File(src, "opt/onelap.csv"));
     // RenderInterface ri = pathRender.setCurve(optimal, true);
-    MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
-    try (Mp4AnimationWriter mp4 = new Mp4AnimationWriter(filename, VideoBackground.DIMENSION, snaps)) {
+    MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(30);
+    try (Mp4AnimationWriter mp4AnimationWriter = new Mp4AnimationWriter(filename, VideoBackground.DIMENSION, snaps)) {
       for (int index = 0; index < max; ++index) {
         System.out.println(index);
         Scalar time = list.get(0).timeFor(index);
@@ -85,6 +86,9 @@ import ch.ethz.idsc.tensor.sca.Round;
           Entry<Scalar, ControlAndPredictionSteps> floorEntry = navigableMap.floorEntry(Quantity.of(time, SI.SECOND));
           if (Objects.nonNull(floorEntry)) {
             ControlAndPredictionSteps controlAndPredictionSteps = floorEntry.getValue();
+            mpcPredictionSequenceRender.getControlAndPredictionSteps(controlAndPredictionSteps);
+            mpcPredictionSequenceRender.render(geometricLayer, graphics);
+            MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
             mpcPredictionRender.getControlAndPredictionSteps(controlAndPredictionSteps);
             mpcPredictionRender.render(geometricLayer, graphics);
           }
@@ -96,8 +100,8 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
         graphics.setColor(Color.LIGHT_GRAY);
         graphics.drawString(String.format("time:%7s[s]", time.map(Round._3)), 0, 25);
-        mp4.append(bufferedImage);
-        if (index == 10000)
+        mp4AnimationWriter.append(bufferedImage);
+        if (index == 100000)
           break;
       }
     }

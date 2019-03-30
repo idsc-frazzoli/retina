@@ -29,9 +29,9 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
 /** draw blue lines of prediction of traces of gokart
  * extruded footprint */
-public class ExtrudedFootprintRender extends AbstractGokartRender {
+public class ExtrudedFootprintRender extends AbstractGokartRender implements GokartStatusListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  // public final GokartStatusListener gokartStatusListener = getEvent -> ;
   private GokartStatusEvent gokartStatusEvent;
   public Color color = new Color(0, 0, 255, 128);
 
@@ -95,5 +95,10 @@ public class ExtrudedFootprintRender extends AbstractGokartRender {
   /* package for testing */ static Flow singleton(Scalar speed, Tensor rate) {
     return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, //
         N.DOUBLE.of(Tensors.of(speed, RealScalar.ZERO, rate.multiply(speed))));
+  }
+
+  @Override // from GokartStatusListener
+  public void getEvent(GokartStatusEvent getEvent) {
+    gokartStatusEvent = getEvent;
   }
 }

@@ -8,7 +8,6 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -27,7 +26,6 @@ import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.UnitVector;
@@ -51,7 +49,6 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   // ---
   private final Tensor tensor;
   private final int id;
-  private final int offset;
   private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
   boolean enableTrace = false;
   private final GokartPoseContainer gokartPoseContainer = new GokartPoseContainer();
@@ -60,19 +57,15 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   public TrackDriving(Tensor tensor, int id) {
     this.tensor = tensor;
     this.id = id;
-    offset = IntStream.range(0, tensor.length()) //
-        .filter(index -> Scalars.lessThan(RealScalar.of(1000), tensor.Get(index, 1))) //
-        .findFirst().getAsInt();
   }
 
   public Tensor row(int index) {
-    index += offset;
     index = Math.min(tensor.length() - 1, index);
     return tensor.get(index);
   }
 
   public int maxIndex() {
-    return tensor.length() - offset;
+    return tensor.length();
   }
 
   public void setDriver(String name) {
@@ -84,7 +77,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   }
 
   int render_index;
-  private boolean extrusion;
+  private boolean extrusion = true;
 
   public void setRenderIndex(int render_index) {
     this.render_index = render_index;
@@ -96,12 +89,12 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     Tensor xya = row.extract(10, 13); // unitless
     if (extrusion) {
       gokartPoseContainer.setPose(GokartPoseHelper.attachUnits(xya), RealScalar.ONE);
-      extrudedFootprintRender.gokartStatusListener.getEvent(new GokartStatusEvent(row.Get(8).number().floatValue()));
+      extrudedFootprintRender.getEvent(new GokartStatusEvent(row.Get(8).number().floatValue()));
       extrudedFootprintRender.render(geometricLayer, graphics);
     }
     {
       PathRender pathRender = new PathRender(COLOR_DATA_INDEXED_64.getColor(id), 1.5f);
-      Tensor points = Tensor.of(tensor.stream().skip(offset).limit(render_index) //
+      Tensor points = Tensor.of(tensor.stream().limit(render_index) //
           .map(v -> v.extract(10, 13)) //
           .map(Se2Bijection::new) //
           .map(Se2Bijection::forward) //
@@ -164,7 +157,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   }
 
   public Scalar timeFor(int index) {
-    return row(index).Get(0).subtract(row(0).Get(0));
+    return row(index).Get(0);
   }
 
   public void setExtrusion(boolean extrusion) {

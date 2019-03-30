@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   public static void main(String[] args) throws IOException {
     // File folder = new File("/media/datahaki/data/gokart/cuts/20190329/20190329T144049_00");
     GokartLogInterface gokartLogInterface = //
-        GokartLogAdapter.of(new File("/media/datahaki/data/gokart/cuts/20190329/20190329T144049_00"));
+        GokartLogAdapter.of(new File("/media/datahaki/data/gokart/cuts/20190328/20190328T165416_00"));
     BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = bufferedImage.createGraphics();
     graphics.setColor(Color.WHITE);

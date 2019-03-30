@@ -16,6 +16,9 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.Scalar;
 
 /* package */ class ControlAndPredictionStepsIndex implements OfflineLogListener {
+  /** @param file
+   * @return navigable map with quantity with unit [s] as key type
+   * @throws IOException */
   public static NavigableMap<Scalar, ControlAndPredictionSteps> build(File file) throws IOException {
     ControlAndPredictionStepsIndex controlAndPredictionIndex = new ControlAndPredictionStepsIndex();
     OfflineLogPlayer.process(file, controlAndPredictionIndex);
