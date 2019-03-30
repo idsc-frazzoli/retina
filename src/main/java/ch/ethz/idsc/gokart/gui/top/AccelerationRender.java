@@ -23,11 +23,13 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
   // ---
   private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
   private final GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, FILTER);
-  private final Tensor xya;
+  private final Tensor matrix;
 
+  /** @param xya vector of the form {x, y, a}
+   * @param limit */
   public AccelerationRender(Tensor xya, int limit) {
     super(limit, ColorDataGradients.BONE, Tensors.vector(5, 10, 15));
-    this.xya = xya;
+    matrix = Se2Utils.toSE2Matrix(xya).dot(GroundSpeedRender.DIAGONAL);
   }
 
   @Override // from Vmu931ImuFrameListener
@@ -39,11 +41,9 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
+    geometricLayer.pushMatrix(matrix);
     graphics.setColor(Color.GRAY);
-    geometricLayer.pushMatrix(GroundSpeedRender.DIAGONAL);
     super.render(geometricLayer, graphics);
-    geometricLayer.popMatrix();
     geometricLayer.popMatrix();
   }
 }

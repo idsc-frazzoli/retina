@@ -25,12 +25,12 @@ import ch.ethz.idsc.tensor.sca.Round;
   private static final Tensor ORIGIN = Array.zeros(2);
   static final Tensor DIAGONAL = DiagonalMatrix.of(.12, .12, 1);
   // ---
-  private final Tensor xya;
+  private final Tensor matrix;
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
 
   public GroundSpeedRender(Tensor xya, int limit) {
     super(limit, ColorDataGradients.ALPINE, Tensors.vector(5, 10));
-    this.xya = xya;
+    this.matrix = Se2Utils.toSE2Matrix(xya).dot(DIAGONAL);
   }
 
   @Override // from GokartPoseListener
@@ -41,8 +41,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
-    geometricLayer.pushMatrix(DIAGONAL);
+    geometricLayer.pushMatrix(matrix);
     GraphicsUtil.setQualityHigh(graphics);
     super.render(geometricLayer, graphics);
     Tensor velocityXY = gokartPoseEvent.getVelocityXY();
@@ -53,10 +52,9 @@ import ch.ethz.idsc.tensor.sca.Round;
       graphics.setColor(new Color(200, 67, 255));
       graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.25)));
       graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, velocityXY)));
-      GraphicsUtil.setQualityDefault(graphics);
     }
+    GraphicsUtil.setQualityDefault(graphics);
     graphics.setStroke(STROKE_DEFAULT);
-    geometricLayer.popMatrix();
     geometricLayer.popMatrix();
   }
 }
