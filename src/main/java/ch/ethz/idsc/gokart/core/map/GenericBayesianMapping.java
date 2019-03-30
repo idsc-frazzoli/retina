@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.map;
 
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
@@ -12,11 +13,27 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** class interprets sensor data from lidar */
-public abstract class AbstractBayesianMapping extends AbstractMapping<BayesianOccupancyGrid> {
-  /* package */ AbstractBayesianMapping( //
+public class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGrid> {
+  public static GenericBayesianMapping createTrackMapping() {
+    return new GenericBayesianMapping( //
+        MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid(), //
+        TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
+        200, -6);
+  }
+
+  public static GenericBayesianMapping createObstacleMapping() {
+    return new GenericBayesianMapping( //
+        MappingConfig.GLOBAL.createBayesianOccupancyGrid(), //
+        SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
+        1000, -1);
+  }
+
+  // ---
+  // TODO JG document parameters
+  private GenericBayesianMapping( //
       BayesianOccupancyGrid bayesianOccupancyGrid, //
       SpacialXZObstaclePredicate spacialXZObstaclePredicate, //
-      int max_alt, int waitMillis) {
+      int waitMillis, int max_alt) {
     super(bayesianOccupancyGrid, spacialXZObstaclePredicate, waitMillis);
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
     Vlp16SegmentProvider lidarSpacialProvider = new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), max_alt);
