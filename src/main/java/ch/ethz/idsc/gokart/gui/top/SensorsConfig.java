@@ -8,7 +8,9 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16FromPolarCoordinates;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16ToPolarCoordinates;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -17,6 +19,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -94,6 +97,14 @@ public class SensorsConfig {
 
   public int imuSamplesPerLidarScan() {
     return Round.of(davis_imu_rate.divide(vlp16_rate)).number().intValue();
+  }
+
+  public TensorUnaryOperator vlp16ToPolarCoordinates() {
+    return new Vlp16ToPolarCoordinates(vlp16_twist);
+  }
+
+  public TensorUnaryOperator vlp16FromPolarCoordinates() {
+    return new Vlp16FromPolarCoordinates(vlp16_twist);
   }
 
   /***************************************************/

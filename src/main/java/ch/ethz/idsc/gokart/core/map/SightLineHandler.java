@@ -6,18 +6,22 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
-import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Transform;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 /* package */ enum SightLineHandler {
   ;
   public static final int HORIZON = 50; // in meters
   public static final int SECTORS = 72;
+  private static final TensorUnaryOperator FROM_POLAR = SensorsConfig.GLOBAL.vlp16FromPolarCoordinates();
+  private static final Tensor ZEROS_2 = Array.zeros(2);
 
   /** @param points in polar coordinates recorded by lidar
    * @param predicate obstacle detection
@@ -32,7 +36,7 @@ import ch.ethz.idsc.tensor.alg.Array;
         if (!blindSpots.isBlind(azimuth)) {
           if (!freeSpace.containsKey(azimuth))
             freeSpace.put(azimuth, Tensors.vector(azimuth.number(), 0, HORIZON));
-          if (predicate.isObstacle(Vlp16Transform.PolarToCartesian.of(point))) {
+          if (predicate.isObstacle(FROM_POLAR.apply(point))) {
             Scalar distance = point.Get(2);
             if (Scalars.lessThan(distance, freeSpace.get(azimuth).Get(2)))
               freeSpace.put(azimuth, point);
@@ -47,14 +51,13 @@ import ch.ethz.idsc.tensor.alg.Array;
   /** @param pointsPolar Collection</Tensor>
    * @return Tensor containing cartesian points */
   public static Tensor polygon(Collection<Tensor> pointsPolar) {
-    return Tensor.of(pointsPolar.stream().map(point -> //
-    Vlp16Transform.PolarToCartesian.of(point).extract(0, 2)));
+    return Tensor.of(pointsPolar.stream().map(FROM_POLAR).map(Extract2D.FUNCTION));
   }
 
   /** close segment with origin to full sector
    * @param polygon Tensor containing cartesian points
    * @return Tensor containing cartesian points */
   public static Tensor closeSector(Tensor polygon) {
-    return polygon.append(Array.zeros(2)); // add origin to close sector
+    return polygon.append(ZEROS_2); // add origin to close sector
   }
 }
