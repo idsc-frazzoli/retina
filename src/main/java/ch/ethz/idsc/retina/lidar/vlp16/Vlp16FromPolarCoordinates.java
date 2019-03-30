@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.sca.Sin;
 /** transform lidar coordinates from polar to cartesian, and vice versa
  * not compensating twist and incline
  * 
- * class name inspired by Mathematica::ToPolarCoordinates */
+ * class name inspired by Mathematica::FromPolarCoordinates */
 public class Vlp16FromPolarCoordinates implements TensorUnaryOperator {
   private final Scalar twist;
 
@@ -25,10 +25,13 @@ public class Vlp16FromPolarCoordinates implements TensorUnaryOperator {
     return of(vector.Get(0), vector.Get(1), vector.Get(2));
   }
 
-  /** @param azimuth in [rad]
+  /** Hint: if the radius is provided with a Unit,
+   * then the Unit is attached to entries of the return vector
+   * 
+   * @param azimuth in [rad]
    * @param elevation in [rad]
-   * @param radius in [m]
-   * @return Tensor x, y, z in [m] */
+   * @param radius
+   * @return {x, y, z} */
   private Tensor of(Scalar azimuth, Scalar elevation, Scalar radius) {
     azimuth = azimuth.negate().add(twist);
     /* according to manual
@@ -36,10 +39,10 @@ public class Vlp16FromPolarCoordinates implements TensorUnaryOperator {
      * radius.multiply(Cos.of(elevation)).multiply(Sin.of(azimuth)), //
      * radius.multiply(Cos.of(elevation)).multiply(Cos.of(azimuth)), //
      * radius.multiply(Sin.of(elevation))); */
-    // TODO optimize
+    Scalar rad_cos_elev = radius.multiply(Cos.of(elevation));
     return Tensors.of( //
-        radius.multiply(Cos.of(elevation)).multiply(Cos.of(azimuth)), //
-        radius.multiply(Cos.of(elevation)).multiply(Sin.of(azimuth)), //
+        rad_cos_elev.multiply(Cos.of(azimuth)), //
+        rad_cos_elev.multiply(Sin.of(azimuth)), //
         radius.multiply(Sin.of(elevation)));
   }
 }
