@@ -85,7 +85,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     List<File> list = Stream.of(root.listFiles()) //
         .filter(File::isDirectory) //
         .sorted() //
-        .skip(2) //
+        .skip(1) //
         .limit(1) //
         .collect(Collectors.toList());
     for (File folder : list) {
