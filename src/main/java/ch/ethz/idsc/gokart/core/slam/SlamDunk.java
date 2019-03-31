@@ -3,8 +3,10 @@ package ch.ethz.idsc.gokart.core.slam;
 
 import java.util.stream.IntStream;
 
+import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.tensor.RationalScalar;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
@@ -31,14 +33,13 @@ public class SlamDunk {
 
   /** the list of points is typically provided by ParametricResample
    * 
-   * @param se2MultiresGrids
    * @param geometricLayer
    * @param points with dimension n x 2 {{px_1, py_1}, ..., {px_n, py_n}}
-   * @param slamScore
    * @return */
   public SlamResult evaluate(GeometricLayer geometricLayer, Tensor points) {
     Tensor result = IdentityMatrix.of(3);
     int score = -1;
+    System.out.println("------------");
     for (int level = 0; level < se2MultiresGrids.levels(); ++level) {
       score = -1;
       Se2GridPoint best = null;
@@ -56,9 +57,13 @@ public class SlamDunk {
       }
       geometricLayer.pushMatrix(best.matrix()); // manifest for next level
       result = result.dot(best.matrix());
+      System.out.println("level=" + level + " " + best.tangent());
     }
     IntStream.range(0, se2MultiresGrids.levels()) //
         .forEach(index -> geometricLayer.popMatrix());
-    return new SlamResult(result, RationalScalar.of(score, points.length() * 255));
+    Scalar quality = RealScalar.of(score / (points.length() * 255.0));
+    if (!LocalizationConfig.GLOBAL.isQualityOk(quality))
+      System.err.println(quality);
+    return new SlamResult(result, quality);
   }
 }
