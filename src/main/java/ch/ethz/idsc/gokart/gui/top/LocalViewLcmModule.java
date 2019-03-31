@@ -14,6 +14,7 @@ import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
+import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -39,12 +40,13 @@ public class LocalViewLcmModule extends AbstractModule {
   protected void first() {
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     {
-      GokartRender gokartRender = new GokartRender(() -> POSE);
+      GokartRender gokartRender = new GokartRender();
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
+      gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     {
@@ -53,12 +55,14 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(velocityIndicatorRender);
     }
     {
-      AccelerationRender accelerationRender = new AccelerationRender(MINOR_ACC, 100);
+      AccelerationRender accelerationRender = new AccelerationRender(100, //
+          Se2Utils.toSE2Matrix(MINOR_ACC).dot(GroundSpeedRender.DIAGONAL));
       vmu931ImuLcmClient.addListener(accelerationRender);
       timerFrame.geometricComponent.addRenderInterface(accelerationRender);
     }
+    final Tensor matrix = Se2Utils.toSE2Matrix(MINOR_VEL).dot(GroundSpeedRender.DIAGONAL);
     {
-      GroundSpeedRender groundSpeedRender = new GroundSpeedRender(MINOR_VEL, 50);
+      GroundSpeedRender groundSpeedRender = new GroundSpeedRender(50, matrix);
       gokartPoseLcmClient.addListener(groundSpeedRender);
       timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
     }
@@ -72,7 +76,7 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(brakeCalibrationRender);
     }
     {
-      TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(MINOR_VEL);
+      TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(matrix);
       rimoGetLcmClient.addListener(tachometerMustangDash);
       timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);
     }

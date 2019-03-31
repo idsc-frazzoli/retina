@@ -46,6 +46,12 @@ public enum GokartPoseEvents {
     return new GokartPoseEventV2(byteBuffer);
   }
 
+  /** @param pose {x[m], y[m], alpha}
+   * @param quality in the interval [0, 1] */
+  public static GokartPoseEvent create(Tensor pose, Scalar quality) {
+    return create(pose, quality, GokartPoseEventV1.VELOCITY_ZERO, GokartPoseEventV1.GYROZ_ZERO);
+  }
+
   /***************************************************/
   /** Hint: do not use function during live operation!
    * 

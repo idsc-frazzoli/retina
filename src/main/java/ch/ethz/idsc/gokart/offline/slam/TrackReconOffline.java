@@ -59,7 +59,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final MappedPoseInterface gokartPoseInterface = new GokartPoseContainer();
-  private final GokartRender gokartRender = new GokartRender(gokartPoseInterface);
+  private final GokartRender gokartRender = new GokartRender();
   private final SpacialXZObstaclePredicate predicate = TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final Consumer<BufferedImage> consumer;
   private final BayesianOccupancyGrid bayesianOccupancyGridThic;
@@ -96,6 +96,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
+      gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       bayesianOccupancyGridThic.setPose(gokartPoseEvent.getPose());
       bayesianOccupancyGridThin.setPose(gokartPoseEvent.getPose());
       if (!trackReconManagement.isStartSet())

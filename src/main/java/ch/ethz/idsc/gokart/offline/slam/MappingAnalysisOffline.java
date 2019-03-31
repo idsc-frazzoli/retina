@@ -85,9 +85,10 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
       GeometricLayer gl = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
-      GokartRender gr = new GokartRender(gokartPoseInterface);
+      GokartRender gokartRender = new GokartRender();
+      gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       bayesianOccupancyGrid.render(gl, graphics);
-      gr.render(gl, graphics);
+      gokartRender.render(gl, graphics);
       // if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)) && flag == false) {
       // grid.setNewlBound(Tensors.vector(20, 20));
       // flag = true;

@@ -11,25 +11,24 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
-import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 
-/* package */ class AccelerationRender extends CrosshairRender implements Vmu931ImuFrameListener {
+public class AccelerationRender extends CrosshairRender implements Vmu931ImuFrameListener {
   private static final Scalar FILTER = RealScalar.of(0.02);
   // ---
   private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
   private final GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, FILTER);
   private final Tensor matrix;
 
-  /** @param xya vector of the form {x, y, a}
+  /** @param matrix
    * @param limit */
-  public AccelerationRender(Tensor xya, int limit) {
+  public AccelerationRender(int limit, Tensor matrix) {
     super(limit, ColorDataGradients.BONE, Tensors.vector(5, 10, 15));
-    matrix = Se2Utils.toSE2Matrix(xya).dot(GroundSpeedRender.DIAGONAL);
+    this.matrix = matrix;
   }
 
   @Override // from Vmu931ImuFrameListener

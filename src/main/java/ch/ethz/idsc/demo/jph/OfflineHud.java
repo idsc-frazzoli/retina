@@ -56,21 +56,21 @@ public class OfflineHud implements OfflineLogListener {
   private final GokartPoseInterface gokartPoseInterface = new GokartPoseInterface() {
     @Override
     public Tensor getPose() {
-      return gpe.getPose();
+      return gokartPoseEvent.getPose();
     }
   };
   final RenderInterface renderInterface = new ImageRender( //
       PREDEFINED_MAP.getImage(), Tensors.vector(1, 1));
-  final GokartRender gokartRender = new GokartRender(gokartPoseInterface);
+  final GokartRender gokartRender = new GokartRender();
   final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   final AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
-  final TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
-  final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender(gokartPoseInterface);
+  final TrigonometryRender trigonometryRender = new TrigonometryRender();
+  final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rimoGetEvent;
   private GokartStatusEvent gokartStatusEvent;
-  private GokartPoseEvent gpe;
+  private GokartPoseEvent gokartPoseEvent;
 
   public OfflineHud(Scalar period) {
     this.delta = period;
@@ -87,7 +87,7 @@ public class OfflineHud implements OfflineLogListener {
       gokartStatusEvent = new GokartStatusEvent(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gpe = GokartPoseEvent.of(byteBuffer);
+      gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
     } else //
     if (channel.equals("davis240c.overview.dvs")) {
       davisLcmClient.messageReceived(byteBuffer);
@@ -120,13 +120,16 @@ public class OfflineHud implements OfflineLogListener {
           renderInterface.render(geometricLayer, graphics);
           geometricLayer.popMatrix();
         }
-        trigonometryRender.getEvent(gokartStatusEvent);
+        trigonometryRender.gokartPoseListener.getEvent(gokartPoseEvent);
+        trigonometryRender.gokartStatusListener.getEvent(gokartStatusEvent);
         trigonometryRender.render(geometricLayer, graphics);
-        extrudedFootprintRender.getEvent(gokartStatusEvent);
+        extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
+        extrudedFootprintRender.gokartStatusListener.getEvent(gokartStatusEvent);
         extrudedFootprintRender.color = Color.CYAN;
         extrudedFootprintRender.render(geometricLayer, graphics);
         gokartRender.rimoGetListener.getEvent(rimoGetEvent);
         gokartRender.gokartStatusListener.getEvent(gokartStatusEvent);
+        gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
         gokartRender.render(geometricLayer, graphics);
         accumulatedEventRender.render(geometricLayer, graphics);
         // ---

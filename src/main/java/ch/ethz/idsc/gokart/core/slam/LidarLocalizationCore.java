@@ -41,8 +41,8 @@ public class LidarLocalizationCore implements //
    * with mh and jph to filter out spikes in the gyroZ signal */
   private static final Scalar IIR1_FILTER_GYROZ = RealScalar.of(0.1);
   private static final Scalar QUALITY_DECR = RealScalar.of(0.05);
-  private static final Scalar BLEND_POSE = RealScalar.of(0.2);
-  private static final Scalar BLEND_VELOCITY = RealScalar.of(0.02);
+  private static final Scalar BLEND_POSE = RealScalar.of(0.25);
+  private static final Scalar BLEND_VELOCITY = RealScalar.of(0.04);
   // ---
   private static final Scalar _1 = DoubleScalar.of(1);
   private static final LieDifferences LIE_DIFFERENCES = //

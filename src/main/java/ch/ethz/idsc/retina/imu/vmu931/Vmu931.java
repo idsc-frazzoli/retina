@@ -15,7 +15,10 @@ import ch.ethz.idsc.retina.util.tty.SerialPorts;
  * Inertial Measurement Unit VMU931
  * User Guide
  * Version 1.3, March 2018, Variense inc. */
+// TODO JPH prevent reissuing calibration or self-test while calibration or self-test is going on
 public class Vmu931 implements Runnable {
+  private static final long SLEEP_MS_SHORT = 1;
+  private static final long SLEEP_MS_LONG = 3;
   private static final byte MESSAGE_DATA_BEG = 1;
   private static final byte MESSAGE_DATA_END = 4;
   private static final byte MESSAGE_TEXT_BEG = 2;
@@ -40,7 +43,12 @@ public class Vmu931 implements Runnable {
    * @param vmu931_DPS
    * @param vmu931_G
    * @param vmu931Listener */
-  public Vmu931(String port, Set<Vmu931Channel> set, Vmu931_DPS vmu931_DPS, Vmu931_G vmu931_G, Vmu931Listener vmu931Listener) {
+  public Vmu931( //
+      String port, //
+      Set<Vmu931Channel> set, //
+      Vmu931_DPS vmu931_DPS, //
+      Vmu931_G vmu931_G, //
+      Vmu931Listener vmu931Listener) {
     this.port = port;
     this.set.addAll(set);
     this.dps = vmu931_DPS;
@@ -57,6 +65,8 @@ public class Vmu931 implements Runnable {
     System.out.println("requested status");
   }
 
+  /** TODO JPH what is printout when starting?
+   * writes "Test passed. Your device works fine." */
   public void requestSelftest() {
     replies.remove(Vmu931Reply.SELFTEST);
     serialPortWrap.write(Vmu931Statics.requestSelftest());
@@ -92,7 +102,7 @@ public class Vmu931 implements Runnable {
                   serialPortWrap.advance(1);
               } else {
                 // System.out.println("wait data");
-                Thread.sleep(1);
+                Thread.sleep(SLEEP_MS_SHORT);
               }
             }
             break;
@@ -111,7 +121,7 @@ public class Vmu931 implements Runnable {
                   serialPortWrap.advance(1);
               } else {
                 // System.out.println("wait text");
-                Thread.sleep(1);
+                Thread.sleep(SLEEP_MS_SHORT);
               }
             }
             break;
@@ -122,7 +132,7 @@ public class Vmu931 implements Runnable {
           }
         } else {
           // System.out.println("wait rx");
-          Thread.sleep(3);
+          Thread.sleep(SLEEP_MS_LONG);
         }
       }
     } catch (Exception exception) {

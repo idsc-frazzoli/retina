@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.sca.N;
 /** localization using only lidar */
 public class SlamOfflineLocalize extends OfflineLocalize {
   private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
-  private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
+  private static final Se2MultiresGrids SE2_MULTIRES_GRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
@@ -35,7 +35,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
    * @param scatterImage */
   public SlamOfflineLocalize(BufferedImage map_image, Tensor pose, ScatterImage scatterImage) {
     super(map_image, pose);
-    slamDunk = new SlamDunk(SE2MULTIRESGRIDS, slamScore);
+    slamDunk = new SlamDunk(SE2_MULTIRES_GRIDS, slamScore);
     this.scatterImage = scatterImage;
   }
 

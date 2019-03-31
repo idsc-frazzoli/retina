@@ -89,8 +89,9 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
-      ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender(gokartPoseInterface);
-      gokartStatusLcmClient.addListener(extrudedFootprintRender);
+      ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
+      gokartPoseLcmClient.addListener(extrudedFootprintRender.gokartPoseListener);
+      gokartStatusLcmClient.addListener(extrudedFootprintRender.gokartStatusListener);
       viewLcmFrame.geometricComponent.addRenderInterface(extrudedFootprintRender);
     }
     // ---
@@ -127,11 +128,12 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     {
-      GokartRender gokartRender = new GokartRender(gokartPoseInterface);
+      GokartRender gokartRender = new GokartRender();
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
+      gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       viewLcmFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     viewLcmFrame.geometricComponent.addRenderInterface(Dubilab.GRID_RENDER);
