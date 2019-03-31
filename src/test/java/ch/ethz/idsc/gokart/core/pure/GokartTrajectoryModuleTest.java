@@ -33,16 +33,13 @@ public class GokartTrajectoryModuleTest extends TestCase {
   }
 
   public void testPose() throws Exception {
-    if (true)
-      return;
-    // FIXME JPH
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig();
     trajectoryConfig.waypoints = "/dubilab/controlpoints/tires/20190116.csv";
     GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule(trajectoryConfig);
     gokartTrajectoryModule.first();
     {
       PoseLcmServerModule.publish( //
-          GokartPoseEvents.create(Tensors.fromString("{36.8[m], 44.2[m], 0.8}"), RealScalar.ONE));
+          GokartPoseEvents.offlineV1(Tensors.fromString("{36.8[m], 44.2[m], 0.8}"), RealScalar.ONE));
       RimoLcmServer.INSTANCE.getEvent( //
           RimoGetEvents.create(500, 500));
       Thread.sleep(50);
@@ -95,7 +92,7 @@ public class GokartTrajectoryModuleTest extends TestCase {
       RimoLcmServer.INSTANCE.getEvent( //
           RimoGetEvents.create(-900, -900));
       PoseLcmServerModule.publish( //
-          GokartPoseEvents.create(Tensors.fromString("{31.8[m], 38.2[m], 0.8}"), RealScalar.ONE));
+          GokartPoseEvents.offlineV1(Tensors.fromString("{31.8[m], 38.2[m], 0.8}"), RealScalar.ONE));
       Thread.sleep(1000);
       gokartTrajectoryModule.runAlgo();
       Optional<Tensor> optional = gokartTrajectoryModule.purePursuitModule.getCurve();

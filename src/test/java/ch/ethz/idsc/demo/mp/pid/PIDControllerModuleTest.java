@@ -32,7 +32,7 @@ public class PIDControllerModuleTest extends TestCase {
     pidControllerModule.first();
     Tensor pose = Tensors.fromString("{40[m], 30[m], 1}");
     for (int index = 0; index < 100; index++) {
-      GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
       Scalar heading = pidControllerModule.pidSteer.getHeading();

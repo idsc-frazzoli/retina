@@ -61,7 +61,7 @@ public class LogPosePostInject implements LocalizationResultListener {
             // ---
             if (Objects.nonNull(localizationResult)) {
               // System.out.println("inject");
-              GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create( //
+              GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1( //
                   GokartPoseHelper.attachUnits(localizationResult.pose_xyt), //
                   localizationResult.ratio);
               // ---

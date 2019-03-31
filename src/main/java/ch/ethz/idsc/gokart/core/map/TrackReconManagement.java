@@ -106,7 +106,7 @@ public class TrackReconManagement {
   }
 
   private Optional<MPCBSplineTrack> update(Tensor pose, Scalar dTime) {
-    //System.out.println("update called: " + timeSinceLastTrackUpdate);
+    // System.out.println("update called: " + timeSinceLastTrackUpdate);
     MPCBSplineTrack lastTrack = null;
     timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
     if (!closedTrack || newSolutionNeeded) {
@@ -148,7 +148,7 @@ public class TrackReconManagement {
               // TODO JPH/MH
               timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
             } else {
-              //System.out.println("no solution found!");
+              // System.out.println("no solution found!");
               // lastTrack = null;
             }
           }
@@ -160,7 +160,7 @@ public class TrackReconManagement {
             if (optional.isPresent()) {
               Tensor ctrpointsXY = optional.get();
               Tensor newTrackDataXYR = Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER))));
-              //System.out.println("open track");
+              // System.out.println("open track");
               newTrackDataXYR = trackRefinement.getRefinedTrack( //
                   newTrackDataXYR, //
                   RealScalar.of(8), 10, closedTrack, constraints);

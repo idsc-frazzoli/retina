@@ -63,7 +63,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     velodyneDecoder.addRayListener(lidarRotationProvider);
   }
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
       lidarLocalizationModule.vmu931ImuFrame(new Vmu931ImuFrame(byteBuffer));
@@ -93,7 +93,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     }
   }
 
-  @Override
+  @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
     Tensor points = Tensors.vector(i -> Tensors.of( //
@@ -102,7 +102,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     lidarLocalizationModule.fit(points);
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tableBuilder.toTable();
   }
