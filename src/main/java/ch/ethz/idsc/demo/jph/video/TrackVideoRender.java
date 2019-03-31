@@ -11,7 +11,9 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -29,6 +31,7 @@ public class TrackVideoRender implements OfflineLogListener, RenderInterface, Au
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
   private final Mp4AnimationWriter mp4AnimationWriter;
+  private final GokartRender gokartRender = new GokartRender();
 
   public TrackVideoRender(BufferedImage background, File file) throws Exception {
     this.background = background;
@@ -49,6 +52,8 @@ public class TrackVideoRender implements OfflineLogListener, RenderInterface, Au
       return;
     // ---
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
+      gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       GeometricLayer geometricLayer = GeometricLayer.of(VideoBackground.MODEL2PIXEL); // TODO
       this.time = time;
       render(geometricLayer, graphics);
@@ -56,9 +61,12 @@ public class TrackVideoRender implements OfflineLogListener, RenderInterface, Au
     }
   }
 
-  @Override
+  @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     graphics.drawImage(background, 0, 0, null);
+    // ---
+    gokartRender.render(geometricLayer, graphics);
+    // ---
     graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
     graphics.setColor(Color.LIGHT_GRAY);
     graphics.drawString(String.format("time:%8s", time.map(Round._3)), 0, 25);

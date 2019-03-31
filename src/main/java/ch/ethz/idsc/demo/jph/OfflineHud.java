@@ -61,7 +61,7 @@ public class OfflineHud implements OfflineLogListener {
   };
   final RenderInterface renderInterface = new ImageRender( //
       PREDEFINED_MAP.getImage(), Tensors.vector(1, 1));
-  final GokartRender gokartRender = new GokartRender(gokartPoseInterface);
+  final GokartRender gokartRender = new GokartRender();
   final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   final AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
   final TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
@@ -127,6 +127,7 @@ public class OfflineHud implements OfflineLogListener {
         extrudedFootprintRender.render(geometricLayer, graphics);
         gokartRender.rimoGetListener.getEvent(rimoGetEvent);
         gokartRender.gokartStatusListener.getEvent(gokartStatusEvent);
+        gokartRender.gokartPoseListener.getEvent(gpe);
         gokartRender.render(geometricLayer, graphics);
         accumulatedEventRender.render(geometricLayer, graphics);
         // ---

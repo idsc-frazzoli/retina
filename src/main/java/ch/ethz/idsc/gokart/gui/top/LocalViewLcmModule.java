@@ -39,12 +39,13 @@ public class LocalViewLcmModule extends AbstractModule {
   protected void first() {
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     {
-      GokartRender gokartRender = new GokartRender(() -> POSE);
+      GokartRender gokartRender = new GokartRender();
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
+      gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     {

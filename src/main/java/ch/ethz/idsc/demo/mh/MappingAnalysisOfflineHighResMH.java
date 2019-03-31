@@ -109,10 +109,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       GeometricLayer gl = new GeometricLayer(model2pixel, Tensors.vector(0, 0, 0));
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
-      GokartRender gr = new GokartRender(gokartPoseInterface);
+      GokartRender gokartRender = new GokartRender();
+      gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       bayesianOccupancyGrid.render(gl, graphics);
       // bayesianOccupancyGridThin.render(gl, graphics);
-      gr.render(gl, graphics);
+      gokartRender.render(gl, graphics);
       // FIXME JPH
       // trackReconManagement.renderHR(gl, graphics);
       // if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)) && flag == false) {
