@@ -6,12 +6,16 @@ import java.awt.Graphics2D;
 
 import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
+import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.StateSpaceModels;
 import ch.ethz.idsc.owl.math.flow.Flow;
@@ -27,23 +31,24 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-/** draw blue lines of prediction of traces of gokart
- * extruded footprint */
-public class ExtrudedFootprintRender extends AbstractGokartRender implements GokartStatusListener {
+/** draw blue lines of prediction of traces of gokart extruded footprint */
+public class ExtrudedFootprintRender implements RenderInterface {
   private static final StateIntegrator STATE_INTEGRATOR = FixedStateIntegrator.create( //
       Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
   // ---
-  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+  public final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
+  // ---
   private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
+  public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  // ---
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   public Color color = new Color(0, 0, 255, 128);
 
-  public ExtrudedFootprintRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
-  }
-
-  @Override // from AbstractGokartRender
-  public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  @Override // from RenderInterface
+  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
+      geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
       // ---
       Scalar XAD = ChassisGeometry.GLOBAL.xAxleDistanceMeter(); // axle distance
       Scalar YHW = ChassisGeometry.GLOBAL.yHalfWidthMeter(); // half width
@@ -89,16 +94,12 @@ public class ExtrudedFootprintRender extends AbstractGokartRender implements Gok
         graphics.draw(geometricLayer.toPath2D(w1));
         graphics.draw(geometricLayer.toPath2D(w2));
       }
+      geometricLayer.popMatrix();
     }
   }
 
   /* package for testing */ static Flow singleton(Scalar speed, Tensor rate) {
     return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, //
         N.DOUBLE.of(Tensors.of(speed, RealScalar.ZERO, rate.multiply(speed))));
-  }
-
-  @Override // from GokartStatusListener
-  public void getEvent(GokartStatusEvent getEvent) {
-    gokartStatusEvent = getEvent;
   }
 }

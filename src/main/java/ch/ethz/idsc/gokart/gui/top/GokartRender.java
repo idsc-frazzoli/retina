@@ -92,8 +92,7 @@ public class GokartRender implements RenderInterface {
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    Tensor state = gokartPoseEvent.getPose(); // units {x[m], y[m], angle[]}
-    geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(state));
+    geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
     { // footprint
       graphics.setColor(new Color(224, 224, 224, 192));
       graphics.fill(geometricLayer.toPath2D(VEHICLE_MODEL.footprint()));

@@ -89,8 +89,9 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
-      ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender(gokartPoseInterface);
-      gokartStatusLcmClient.addListener(extrudedFootprintRender);
+      ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
+      gokartPoseLcmClient.addListener(extrudedFootprintRender.gokartPoseListener);
+      gokartStatusLcmClient.addListener(extrudedFootprintRender.gokartStatusListener);
       viewLcmFrame.geometricComponent.addRenderInterface(extrudedFootprintRender);
     }
     // ---

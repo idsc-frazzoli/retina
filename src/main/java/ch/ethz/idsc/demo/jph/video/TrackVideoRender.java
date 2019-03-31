@@ -13,6 +13,8 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
+import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
@@ -32,6 +34,7 @@ public class TrackVideoRender implements OfflineLogListener, RenderInterface, Au
   private final Graphics2D graphics;
   private final Mp4AnimationWriter mp4AnimationWriter;
   private final GokartRender gokartRender = new GokartRender();
+  private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
 
   public TrackVideoRender(BufferedImage background, File file) throws Exception {
     this.background = background;
@@ -51,9 +54,14 @@ public class TrackVideoRender implements OfflineLogListener, RenderInterface, Au
     if (Scalars.lessEquals(Quantity.of(5, SI.SECOND), time))
       return;
     // ---
+    if (channel.equals(GokartLcmChannel.STATUS)) {
+      GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
+      extrudedFootprintRender.gokartStatusListener.getEvent(gokartStatusEvent);
+    } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
+      extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
       GeometricLayer geometricLayer = GeometricLayer.of(VideoBackground.MODEL2PIXEL); // TODO
       this.time = time;
       render(geometricLayer, graphics);
@@ -66,6 +74,7 @@ public class TrackVideoRender implements OfflineLogListener, RenderInterface, Au
     graphics.drawImage(background, 0, 0, null);
     // ---
     gokartRender.render(geometricLayer, graphics);
+    extrudedFootprintRender.render(geometricLayer, graphics);
     // ---
     graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
     graphics.setColor(Color.LIGHT_GRAY);

@@ -9,7 +9,8 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseContainer;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
@@ -50,8 +51,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   private final Tensor tensor;
   private final int id;
   private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-  private final GokartPoseContainer gokartPoseContainer = new GokartPoseContainer();
-  private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender(gokartPoseContainer);
+  private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
 
   public TrackDriving(Tensor tensor, int id) {
     this.tensor = tensor;
@@ -88,8 +88,9 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     Tensor row = row(render_index);
     Tensor xya = row.extract(10, 13); // unitless
     if (extrusion) {
-      gokartPoseContainer.setPose(GokartPoseHelper.attachUnits(xya), RealScalar.ONE);
-      extrudedFootprintRender.getEvent(new GokartStatusEvent(row.Get(8).number().floatValue()));
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(GokartPoseHelper.attachUnits(xya), RealScalar.ONE);
+      extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
+      extrudedFootprintRender.gokartStatusListener.getEvent(new GokartStatusEvent(row.Get(8).number().floatValue()));
       extrudedFootprintRender.render(geometricLayer, graphics);
     }
     {
