@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.jph.video;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -26,7 +27,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   ;
   public static void main(String[] args) throws Exception {
     /** Read in some option values and their defaults. */
-    final int snaps = 50; // fps
     final String string = "multidriver";
     final String filename = HomeDirectory.file(string + ".mp4").toString();
     // ---
@@ -40,6 +40,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       list.add(trackDriving);
     }
     BufferedImage background = ImageIO.read(VideoBackground.IMAGE_FILE);
+    Dimension dimension = new Dimension(background.getWidth(), background.getHeight());
     final int max = list.stream().mapToInt(TrackDriving::maxIndex).max().getAsInt();
     BufferedImage bufferedImage = new BufferedImage( //
         VideoBackground.DIMENSION.width, //
@@ -47,7 +48,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         BufferedImage.TYPE_3BYTE_BGR);
     Graphics2D graphics = bufferedImage.createGraphics();
     GraphicsUtil.setQualityHigh(graphics);
-    try (Mp4AnimationWriter mp4AnimationWriter = new Mp4AnimationWriter(filename, VideoBackground.DIMENSION, snaps)) {
+    try (Mp4AnimationWriter mp4AnimationWriter = new Mp4AnimationWriter(filename, dimension, StaticHelper.FRAMERATE)) {
       for (int index = 0; index < max; ++index) {
         System.out.println(index);
         Scalar time = list.get(0).timeFor(index);

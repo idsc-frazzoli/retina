@@ -44,6 +44,7 @@ public class SerialPortWrap implements Runnable, SerialPortInterface, AutoClosea
         if (0 < nRead)
           synchronized (byteBuffer) {
             int length = Math.min(nRead, rxData.length - rxHead); // max number of bytes to read
+            // TODO JPH test if thread is needed, since read() is supposed to block
             int rxRead = inputStream.read(rxData, rxHead, length); // number of bytes effectively read
             rxHead += rxRead;
             rxHead %= BUFFER_SIZE;
