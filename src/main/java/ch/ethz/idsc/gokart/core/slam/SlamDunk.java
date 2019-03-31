@@ -16,10 +16,19 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
  * 
  * confirmed to work well at speeds of up to 2[m*s^-1] following
  * the oval trajectory in the Dubendorf hangar
+ * confirmed to work well at speeds of up to 6[m*s^-1] and
+ * rotational rates of up to 180[deg*s^-1] in combination with a gyro
  * confirmed to work well at speeds of up to 10[m*s^-1] and
- * rotational rates of up to 180[deg*s^-1]. */
-public enum SlamDunk {
-  ;
+ * rotational rates of up to 180[deg*s^-1] in combination with an imu */
+public class SlamDunk {
+  private final Se2MultiresGrids se2MultiresGrids;
+  private final SlamScore slamScore;
+
+  public SlamDunk(Se2MultiresGrids se2MultiresGrids, SlamScore slamScore) {
+    this.se2MultiresGrids = se2MultiresGrids;
+    this.slamScore = slamScore;
+  }
+
   /** the list of points is typically provided by ParametricResample
    * 
    * @param se2MultiresGrids
@@ -27,8 +36,7 @@ public enum SlamDunk {
    * @param points with dimension n x 2 {{px_1, py_1}, ..., {px_n, py_n}}
    * @param slamScore
    * @return */
-  public static SlamResult of( //
-      Se2MultiresGrids se2MultiresGrids, GeometricLayer geometricLayer, Tensor points, SlamScore slamScore) {
+  public SlamResult evaluate(GeometricLayer geometricLayer, Tensor points) {
     Tensor result = IdentityMatrix.of(3);
     int score = -1;
     for (int level = 0; level < se2MultiresGrids.levels(); ++level) {
