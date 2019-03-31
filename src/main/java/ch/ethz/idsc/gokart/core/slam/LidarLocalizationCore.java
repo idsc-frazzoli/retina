@@ -17,6 +17,8 @@ import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.group.LieDifferences;
@@ -48,9 +50,10 @@ public class LidarLocalizationCore implements //
   private static final LidarGyroLocalization LIDAR_GYRO_LOCALIZATION = //
       LidarGyroLocalization.of(LocalizationConfig.getPredefinedMap());
   // ---
+  public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   public final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-  public final LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
-  public final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
+  private final LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
+  private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
   // ---
   private boolean tracking = false;
@@ -72,6 +75,8 @@ public class LidarLocalizationCore implements //
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     lidarAngularFiringCollector.addListener(this);
+    velodyneDecoder.addRayListener(lidarSpacialProvider);
+    velodyneDecoder.addRayListener(lidarRotationProvider);
   }
 
   /** @return */
@@ -173,15 +178,6 @@ public class LidarLocalizationCore implements //
     return gyroZ_filtered;
   }
 
-  /***************************************************/
-  /** Hint: only use function during post-processing.
-   * DO NOT use function during operation of the gokart
-   * 
-   * @return unfiltered gyroZ value with unit "s^-1" */
-  public Scalar getGyroZ_vmu931() {
-    return gyroZ_vmu931;
-  }
-
   public GokartPoseEvent createPoseEvent() {
     return GokartPoseEvents.create(getPose(), quality, getVelocityXY(), getGyroZ());
   }
@@ -194,5 +190,14 @@ public class LidarLocalizationCore implements //
     vmu931Odometry.inertialOdometry.resetPose(pose);
     quality = _1;
     prevResult = null;
+  }
+
+  /***************************************************/
+  /** Hint: only use function during post-processing.
+   * DO NOT use function during operation of the gokart
+   * 
+   * @return unfiltered gyroZ value with unit "s^-1" */
+  public Scalar getGyroZ_vmu931() {
+    return gyroZ_vmu931;
   }
 }

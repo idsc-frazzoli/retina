@@ -5,7 +5,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.PoseVelocityInterface;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
-import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
+import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmClient;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -14,18 +14,16 @@ import ch.ethz.idsc.tensor.Tensor;
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements PoseVelocityInterface {
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
-  private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
+  private final Vlp16LcmClient vlp16LcmClient = //
+      SensorsConfig.GLOBAL.vlp16LcmClient(lidarLocalizationCore.velodyneDecoder);
 
   @Override // from AbstractModule
   protected void first() {
     vmu931ImuLcmClient.addListener(lidarLocalizationCore);
     vmu931ImuLcmClient.startSubscriptions();
     // ---
-    vlp16LcmHandler.velodyneDecoder.addRayListener(lidarLocalizationCore.lidarSpacialProvider);
-    vlp16LcmHandler.velodyneDecoder.addRayListener(lidarLocalizationCore.lidarRotationProvider);
-    // ---
-    vlp16LcmHandler.startSubscriptions();
+    vlp16LcmClient.startSubscriptions();
     lidarLocalizationCore.isLaunched = true;
     lidarLocalizationCore.thread.start();
   }
@@ -34,7 +32,7 @@ public class LidarLocalizationModule extends AbstractModule implements PoseVeloc
   protected void last() {
     lidarLocalizationCore.isLaunched = false;
     lidarLocalizationCore.thread.interrupt();
-    vlp16LcmHandler.stopSubscriptions();
+    vlp16LcmClient.stopSubscriptions();
     vmu931ImuLcmClient.stopSubscriptions();
   }
 

@@ -22,9 +22,7 @@ import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -36,14 +34,11 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
-  private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
   private final TableBuilder tableBuilder = new TableBuilder();
   private final TableBuilder tableBuilderOdometry = new TableBuilder();
 
   public LidarLocalizationTable() {
-    velodyneDecoder.addRayListener(lidarLocalizationCore.lidarSpacialProvider);
-    velodyneDecoder.addRayListener(lidarLocalizationCore.lidarRotationProvider);
     lidarLocalizationCore.lidarAngularFiringCollector.addListener(this);
     lidarLocalizationCore.setTracking(true);
   }
@@ -61,7 +56,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       );
     } else //
     if (channel.equals(CHANNEL_LIDAR))
-      velodyneDecoder.lasers(byteBuffer);
+      lidarLocalizationCore.velodyneDecoder.lasers(byteBuffer);
     else //
     if (channel.equals(GokartPoseChannel.INSTANCE.channel())) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
