@@ -4,12 +4,14 @@ package ch.ethz.idsc.demo.jph.lidar.local;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationCore;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
@@ -30,13 +32,15 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
+// TODO JPH build table outside
 /* package */ class LidarLocalizationTable implements OfflineTableSupplier, LidarRayBlockListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
-  private final LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
+  final LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
   private final TableBuilder tableBuilder = new TableBuilder();
   private final TableBuilder tableBuilderOdometry = new TableBuilder();
+  final List<GokartPoseListener> listeners = new LinkedList<>();
 
   public LidarLocalizationTable() {
     lidarLocalizationCore.lidarAngularFiringCollector.addListener(this);
@@ -61,6 +65,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     if (channel.equals(GokartPoseChannel.INSTANCE.channel())) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       GokartPoseEvent gokartPoseUpdat = lidarLocalizationCore.createPoseEvent();
+      listeners.forEach(listener -> listener.getEvent(gokartPoseUpdat));
       tableBuilder.appendRow( //
           Magnitude.SECOND.apply(time), //
           gokartPoseEvent.asVector(), //
@@ -85,13 +90,19 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     List<File> list = Stream.of(root.listFiles()) //
         .filter(File::isDirectory) //
         .sorted() //
-        .skip(1) //
+        .skip(2) //
         .limit(1) //
         .collect(Collectors.toList());
     for (File folder : list) {
       System.out.println(folder.getName());
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder, "log.lcm");
       LidarLocalizationTable lidarLocalizationTable = new LidarLocalizationTable();
+      lidarLocalizationTable.listeners.add(new GokartPoseListener() {
+        @Override
+        public void getEvent(GokartPoseEvent gokartPoseEvent) {
+          System.out.println(gokartPoseEvent.getQuality());
+        }
+      });
       lidarLocalizationTable.lidarLocalizationCore.resetPose(gokartLogInterface.pose());
       OfflineLogPlayer.process(gokartLogInterface.file(), lidarLocalizationTable);
       Export.of(new File(dest, folder.getName() + ".csv.gz"), lidarLocalizationTable.getTable().map(CsvFormat.strict()));

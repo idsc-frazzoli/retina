@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
@@ -23,6 +24,7 @@ import ch.ethz.idsc.tensor.red.Max;
 public class CrosshairRender implements RenderInterface {
   private static final Tensor POLYGON = CirclePoints.of(8).multiply(RealScalar.of(0.3));
   private static final Tensor CIRCLE = CirclePoints.of(28);
+  private static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 12);
   // ---
   private final BoundedLinkedList<Tensor> boundedLinkedList;
   private final ColorDataIndexed colorDataIndexed;
@@ -51,6 +53,7 @@ public class CrosshairRender implements RenderInterface {
     graphics.draw(geometricLayer.toPath2D(lineX));
     graphics.draw(geometricLayer.toPath2D(lineY));
     // ---
+    graphics.setFont(FONT);
     for (Tensor _x : circles) {
       Scalar x = _x.Get();
       graphics.setColor(new Color(128, 128, 128, 128));
