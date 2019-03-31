@@ -96,8 +96,7 @@ public class GokartTrajectoryModuleTest extends TestCase {
       Thread.sleep(1000);
       gokartTrajectoryModule.runAlgo();
       Optional<Tensor> optional = gokartTrajectoryModule.purePursuitModule.getCurve();
-      // TODO for some reason this fails:
-      // assertTrue(optional.isPresent());
+      assertTrue(optional.isPresent());
     }
     gokartTrajectoryModule.last();
   }

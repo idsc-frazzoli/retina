@@ -20,7 +20,7 @@ public class GokartPoseEventTest extends TestCase {
     Tensor pose = Tensors.fromString("{1[m],2[m],3}");
     GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
     assertEquals(gokartPoseEvent.getPose(), pose);
-    assertEquals(gokartPoseEvent.length(), 40);
+    assertEquals(gokartPoseEvent.length(), 28);
   }
 
   public void testFailUnits() {

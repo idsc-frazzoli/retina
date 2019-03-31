@@ -52,6 +52,9 @@ public class LidarLocalizationModule extends AbstractModule implements //
   private static final LidarGyroLocalization LIDAR_GYRO_LOCALIZATION = //
       LidarGyroLocalization.of(LocalizationConfig.getPredefinedMap());
   // ---
+  public final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
+  public final LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
+  public final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
@@ -60,7 +63,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
   private boolean tracking = false;
   private boolean flagSnap = false;
   /** tear down flag to stop thread */
-  private boolean isLaunched = true;
+  private boolean isLaunched = false;
   /** points_ferry is null or a matrix with dimension Nx2
    * containing the cross-section of the static geometry
    * with the horizontal plane at height of the lidar */
@@ -70,6 +73,12 @@ public class LidarLocalizationModule extends AbstractModule implements //
       new GeodesicIIR1Filter(RnGeodesic.INSTANCE, IIR1_FILTER_GYROZ);
   private Scalar gyroZ_vmu931 = Quantity.of(0.0, SI.PER_SECOND);
   private Scalar gyroZ_filtered = Quantity.of(0.0, SI.PER_SECOND);
+
+  public LidarLocalizationModule() {
+    lidarSpacialProvider.addListener(lidarAngularFiringCollector);
+    lidarRotationProvider.addListener(lidarAngularFiringCollector);
+    lidarAngularFiringCollector.addListener(this);
+  }
 
   /** @return */
   public boolean isTracking() {
@@ -91,16 +100,11 @@ public class LidarLocalizationModule extends AbstractModule implements //
     vmu931ImuLcmClient.addListener(this);
     vmu931ImuLcmClient.startSubscriptions();
     // ---
-    LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-    LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
-    lidarSpacialProvider.addListener(lidarAngularFiringCollector);
-    LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-    lidarRotationProvider.addListener(lidarAngularFiringCollector);
-    lidarAngularFiringCollector.addListener(this);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
     // ---
     vlp16LcmHandler.startSubscriptions();
+    isLaunched = true;
     thread.start();
   }
 
@@ -136,7 +140,7 @@ public class LidarLocalizationModule extends AbstractModule implements //
   /***************************************************/
   @Override // from Runnable
   public void run() {
-    while (isLaunched) {
+    do {
       Tensor points = points2d_ferry;
       if (Objects.nonNull(points)) {
         points2d_ferry = null;
@@ -147,12 +151,12 @@ public class LidarLocalizationModule extends AbstractModule implements //
         } catch (Exception exception) {
           // ---
         }
-    }
+    } while (isLaunched);
   }
 
   private SlamResult prevResult = null;
 
-  public void fit(Tensor points) {
+  private void fit(Tensor points) {
     Optional<SlamResult> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), getGyroZ(), points);
     if (optional.isPresent()) {
       SlamResult slamResult = optional.get();
