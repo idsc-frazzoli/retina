@@ -8,11 +8,15 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.car.math.TurningGeometry;
+import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -21,17 +25,19 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** renders point of rotation as small dot in plane */
-public class TrigonometryRender extends AbstractGokartRender implements GokartStatusListener {
-  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+public class TrigonometryRender implements RenderInterface {
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+  public final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
+  // ---
   private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
+  public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  // ---
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
 
-  public TrigonometryRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
-  }
-
-  @Override // from AbstractGokartRender
-  public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  @Override // from RenderInterface
+  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
+      geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
       final Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       Optional<Scalar> optional = TurningGeometry.offset_y(ChassisGeometry.GLOBAL.xAxleRtoF, angle);
       if (optional.isPresent()) { // draw point of rotation when assuming no slip
@@ -41,11 +47,7 @@ public class TrigonometryRender extends AbstractGokartRender implements GokartSt
         graphics.setColor(Color.PINK);
         graphics.fillRect((int) point2D.getX() - 1, (int) point2D.getY() - 1, 3, 3);
       }
+      geometricLayer.popMatrix();
     }
-  }
-
-  @Override // from GokartStatusListener
-  public void getEvent(GokartStatusEvent getEvent) {
-    gokartStatusEvent = getEvent;
   }
 }

@@ -137,8 +137,9 @@ public class PresenterLcmModule extends AbstractModule {
       // timerFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
-      TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseLcmLidar);
-      gokartStatusLcmClient.addListener(trigonometryRender);
+      TrigonometryRender trigonometryRender = new TrigonometryRender();
+      gokartPoseLcmClient.addListener(trigonometryRender.gokartPoseListener);
+      gokartStatusLcmClient.addListener(trigonometryRender.gokartStatusListener);
       timerFrame.geometricComponent.addRenderInterface(trigonometryRender);
     }
     {

@@ -11,13 +11,19 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionStepsMessage;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
+import ch.ethz.idsc.gokart.gui.top.MPCPredictionRender;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
@@ -33,6 +39,8 @@ public class TrackVideoRender implements OfflineLogListener, RenderInterface, Au
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
   private final Mp4AnimationWriter mp4AnimationWriter;
+  private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
+  private final DriftLinesRender driftLinesRender = new DriftLinesRender(100);
   private final GokartRender gokartRender = new GokartRender();
   private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
 
@@ -56,10 +64,23 @@ public class TrackVideoRender implements OfflineLogListener, RenderInterface, Au
     // ---
     if (channel.equals(GokartLcmChannel.STATUS)) {
       GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
+      gokartRender.gokartStatusListener.getEvent(gokartStatusEvent);
       extrudedFootprintRender.gokartStatusListener.getEvent(gokartStatusEvent);
     } else //
+    if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
+      RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
+      gokartRender.rimoGetListener.getEvent(rimoGetEvent);
+    } else //
+    if (channel.equals(RimoLcmServer.CHANNEL_PUT)) {
+      RimoPutEvent rimoGetEvent = RimoPutHelper.from(byteBuffer);
+      gokartRender.rimoPutListener.putEvent(rimoGetEvent);
+    } else //
+    if (channel.equals(GokartLcmChannel.MPC_FORCES_CNS))
+      mpcPredictionRender.getControlAndPredictionSteps(new ControlAndPredictionStepsMessage(byteBuffer).getPayload());
+    else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
+      driftLinesRender.getEvent(gokartPoseEvent);
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
       GeometricLayer geometricLayer = GeometricLayer.of(VideoBackground.MODEL2PIXEL); // TODO
@@ -73,6 +94,8 @@ public class TrackVideoRender implements OfflineLogListener, RenderInterface, Au
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     graphics.drawImage(background, 0, 0, null);
     // ---
+    mpcPredictionRender.render(geometricLayer, graphics);
+    driftLinesRender.render(geometricLayer, graphics);
     gokartRender.render(geometricLayer, graphics);
     extrudedFootprintRender.render(geometricLayer, graphics);
     // ---
@@ -90,7 +113,7 @@ public class TrackVideoRender implements OfflineLogListener, RenderInterface, Au
     BufferedImage background = ImageIO.read(VideoBackground.IMAGE_FILE);
     try (TrackVideoRender trackVideoRender = new TrackVideoRender( //
         background, //
-        HomeDirectory.file("test.mp4"))) {
+        HomeDirectory.file("test2.mp4"))) {
       OfflineLogPlayer.process(TrackDrivingTables.SINGLETON, trackVideoRender);
     }
     System.out.println("[done.]");
