@@ -8,12 +8,15 @@ import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
+import ch.ethz.idsc.retina.util.Refactor;
 
+// TODO JPH longterm deprecated, use Vlp16LcmClient instead!
+@Refactor
 public class Vlp16LcmHandler implements LcmClientInterface {
   public static final int MAX_COORDINATES = 2304 * 32;
   // ---
   public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  // FIXME JPH this is coupled!!
+  //
   public final LidarAngularFiringCollector lidarAngularFiringCollector = //
       new LidarAngularFiringCollector(MAX_COORDINATES, 3);
   private final VelodyneLcmClient velodyneLcmClient;

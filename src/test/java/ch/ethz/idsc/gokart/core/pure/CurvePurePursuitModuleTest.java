@@ -47,7 +47,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
-        GokartPoseEvents.create(Tensors.fromString("{0[m],0[m],0}"), RealScalar.ONE);
+        GokartPoseEvents.offlineV1(Tensors.fromString("{0[m],0[m],0}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
     assertFalse(purePursuitModule.purePursuitRimo.private_isOperational());
@@ -74,7 +74,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
-        GokartPoseEvents.create(Tensors.fromString("{35.1[m], 44.9[m], 1}"), RealScalar.ONE);
+        GokartPoseEvents.offlineV1(Tensors.fromString("{35.1[m], 44.9[m], 1}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     AllGunsBlazing.publishAutonomous();
     purePursuitModule.runAlgo();
@@ -94,7 +94,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
-        GokartPoseEvents.create(Tensors.fromString("{35.1[m], 44.9[m], 1+3.14}"), RealScalar.ONE);
+        GokartPoseEvents.offlineV1(Tensors.fromString("{35.1[m], 44.9[m], 1+3.14}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     purePursuitModule.runAlgo();
     assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
@@ -110,7 +110,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
-        GokartPoseEvents.create(Tensors.fromString("{35.1[m], 44.9[m], 1+1.14}"), RealScalar.ONE);
+        GokartPoseEvents.offlineV1(Tensors.fromString("{35.1[m], 44.9[m], 1+1.14}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     purePursuitModule.runAlgo();
     assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
@@ -127,7 +127,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
-        GokartPoseEvents.create(Tensors.fromString("{35.1[m], 44.9[m], 1.2}"), RealScalar.ONE);
+        GokartPoseEvents.offlineV1(Tensors.fromString("{35.1[m], 44.9[m], 1.2}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     AllGunsBlazing.publishAutonomous();
     purePursuitModule.runAlgo();
@@ -147,7 +147,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
-        GokartPoseEvents.create(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.ONE);
+        GokartPoseEvents.offlineV1(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     AllGunsBlazing.publishAutonomous();
     purePursuitModule.runAlgo();
@@ -166,7 +166,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
-        GokartPoseEvents.create(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.of(0.05));
+        GokartPoseEvents.offlineV1(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.of(0.05));
     purePursuitModule.getEvent(gokartPoseEvent);
     AllGunsBlazing.publishAutonomous();
     purePursuitModule.runAlgo();

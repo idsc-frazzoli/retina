@@ -91,7 +91,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.setColor(Color.LIGHT_GRAY);
         graphics.drawString(String.format("time:%7s[s]", time.map(Round._3)), 0, 25);
         mp4AnimationWriter.append(bufferedImage);
-        if (index == 100000)
+        if (index == 200)
           break;
       }
     }
