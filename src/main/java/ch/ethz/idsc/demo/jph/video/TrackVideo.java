@@ -69,7 +69,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         System.out.println(index);
         Scalar time = list.get(0).timeFor(index);
         graphics.drawImage(background, 0, 0, null);
-        Tensor model2pixel = VideoBackground.MODEL2PIXEL;
+        Tensor model2pixel = VideoBackground._20190401;
         GeometricLayer geometricLayer = GeometricLayer.of(model2pixel);
         // ri.render(geometricLayer, graphics);
         {

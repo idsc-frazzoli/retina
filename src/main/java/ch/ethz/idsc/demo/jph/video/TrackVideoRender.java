@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
+import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.tensor.Scalar;
@@ -67,12 +67,12 @@ public class TrackVideoRender implements OfflineLogListener, AutoCloseable {
 
   public static void main(String[] args) throws Exception {
     BufferedImage background = ImageIO.read(VideoBackground.IMAGE_FILE);
-    File file = new File("/media/datahaki/data/gokart/cuts/20190311/20190311T173809_01/post.lcm");
+    File file = new File("/media/datahaki/data/gokart/cuts/20190401/20190401T101109_05/log.lcm");
     try (TrackVideoRender trackVideoRender = new TrackVideoRender( //
-        VideoBackground.MODEL2PIXEL, //
+        VideoBackground._20190401, //
         background, //
-        GokartPosePostChannel.INSTANCE.channel(), //
-        HomeDirectory.file("20190311T173809_01.mp4"))) {
+        GokartPoseChannel.INSTANCE.channel(), //
+        HomeDirectory.file("20190401T101109_05.mp4"))) {
       OfflineLogPlayer.process(file, trackVideoRender);
     }
     System.out.println("[done.]");

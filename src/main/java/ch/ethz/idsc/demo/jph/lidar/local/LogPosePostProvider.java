@@ -28,8 +28,8 @@ public class LogPosePostProvider {
     for (File folder : list) {
       System.out.println(folder.getName());
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder, "log.lcm");
-      LidarLocalizationTable lidarLocalizationTable = new LidarLocalizationTable();
-      lidarLocalizationTable.listeners.add(new GokartPoseListener() {
+      LidarLocalizationOffline lidarLocalizationOffline = new LidarLocalizationOffline(gokartLogInterface.pose());
+      lidarLocalizationOffline.gokartPoseListeners.add(new GokartPoseListener() {
         @Override
         public void getEvent(GokartPoseEvent gokartPoseEvent) {
           Scalar quality = gokartPoseEvent.getQuality();
@@ -37,11 +37,10 @@ public class LogPosePostProvider {
             System.err.println("quality! " + quality);
         }
       });
-      lidarLocalizationTable.lidarLocalizationCore.resetPose(gokartLogInterface.pose());
       // ---
       LogPosePostInject logPosePostInject = new LogPosePostInject();
-      lidarLocalizationTable.listeners.add(logPosePostInject);
-      logPosePostInject.process(gokartLogInterface.file(), new File(folder, "post.lcm"), lidarLocalizationTable);
+      lidarLocalizationOffline.gokartPoseListeners.add(logPosePostInject);
+      logPosePostInject.process(gokartLogInterface.file(), new File(folder, "post.lcm"), lidarLocalizationOffline);
     }
   }
 }
