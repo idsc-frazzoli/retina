@@ -43,20 +43,20 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
   private final MappedPoseInterface gokartPoseInterface = new GokartPoseContainer();
   private final Scalar delta = Quantity.of(0.1, SI.SECOND);
   // ---
-  private GokartPoseEvent gpe;
+  private GokartPoseEvent gokartPoseEvent;
   private ScatterImage scatterImage;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gpe = GokartPoseEvent.of(byteBuffer);
+      gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME)) {
       Tensor trajTensor = ArrayFloatBlob.decode(byteBuffer);
       trajectoryRender.trajectory(PlannerPublish.getTrajectory(trajTensor));
     }
-    if (Scalars.lessThan(time_next, time) && Objects.nonNull(gpe)) {
+    if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(delta);
       System.out.print("Extracting log at " + time.map(Round._2) + "\n");
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
@@ -65,8 +65,9 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
       GeometricLayer geometricLayer = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
       BufferedImage image = scatterImage.getImage();
       Graphics2D graphics = image.createGraphics();
-      gokartPoseInterface.setPose(gpe.getPose(), gpe.getQuality());
-      GokartRender gokartRender = new GokartRender(gokartPoseInterface);
+      gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
+      GokartRender gokartRender = new GokartRender();
+      gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       trajectoryRender.render(geometricLayer, graphics);
       renderInterface.render(geometricLayer, graphics);
       gokartRender.render(geometricLayer, graphics);

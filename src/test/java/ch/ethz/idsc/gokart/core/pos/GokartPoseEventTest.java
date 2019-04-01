@@ -18,15 +18,15 @@ import junit.framework.TestCase;
 public class GokartPoseEventTest extends TestCase {
   public void testSimple() {
     Tensor pose = Tensors.fromString("{1[m],2[m],3}");
-    GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
+    GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
     assertEquals(gokartPoseEvent.getPose(), pose);
-    assertEquals(gokartPoseEvent.length(), 40);
+    assertEquals(gokartPoseEvent.length(), 28);
   }
 
   public void testFailUnits() {
     Tensor pose = Tensors.fromString("{1[m],2[m],3[m]}");
     try {
-      GokartPoseEvents.create(pose, RealScalar.ONE);
+      GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       fail();
     } catch (Exception exception) {
       // ---
@@ -50,7 +50,7 @@ public class GokartPoseEventTest extends TestCase {
 
   public void testReconstruction() {
     Tensor pose = Tensors.fromString("{1[m],2[m],3}");
-    GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(pose, RealScalar.of(.7));
+    GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.of(.7));
     byte[] array = gokartPoseEvent.asArray();
     ByteBuffer byteBuffer = ByteBuffer.wrap(array);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);

@@ -100,7 +100,7 @@ public class Mp4AnimationWriter implements AnimationWriter {
   }
 
   @Override // from AutoCloseable
-  public void close() throws Exception {
+  public void close() {
     /** Encoders, like decoders, sometimes cache pictures so it can do the right key-frame optimizations.
      * So, they need to be flushed as well. As with the decoders, the convention is to pass in a null
      * input until the output is not complete. */

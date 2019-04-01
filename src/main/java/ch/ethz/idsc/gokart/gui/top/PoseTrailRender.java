@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
-/** renders (x, y) part of pose sequence as path.
+/** renders {x[m], y[m]} part of pose sequence as path.
  * only the latest 100 poses are considered */
 public class PoseTrailRender implements GokartPoseListener, RenderInterface {
   private static final Stroke STROKE_DEFAULT = new BasicStroke();
@@ -31,23 +31,22 @@ public class PoseTrailRender implements GokartPoseListener, RenderInterface {
   private static final Scalar THRESHOLD_ADD = Quantity.of(0.3, SI.METER);
   private static final Scalar THRESHOLD_CLEAR = Quantity.of(4.0, SI.METER);
   // ---
+  /** list contains vectors of the form {x[m], y[m]} */
   private final BoundedLinkedList<Tensor> boundedLinkedList = new BoundedLinkedList<>(MAX_SIZE);
 
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     synchronized (boundedLinkedList) {
-      Tensor pose = gokartPoseEvent.getPose();
+      Tensor xy = gokartPoseEvent.getPose().extract(0, 2);
       if (!boundedLinkedList.isEmpty()) {
         Tensor prev = boundedLinkedList.getLast();
-        Scalar norm = Norm._2.between( //
-            prev.extract(0, 2), //
-            pose.extract(0, 2));
+        Scalar norm = Norm._2.between(prev, xy); // norm has unit [m]
         if (Scalars.lessThan(norm, THRESHOLD_ADD))
           return;
         if (Scalars.lessThan(THRESHOLD_CLEAR, norm))
           boundedLinkedList.clear();
       }
-      boundedLinkedList.add(pose);
+      boundedLinkedList.add(xy);
     }
   }
 

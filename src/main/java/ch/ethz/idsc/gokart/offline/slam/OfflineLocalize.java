@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.slam.ImageScore;
 import ch.ethz.idsc.gokart.core.slam.SlamScore;
-import ch.ethz.idsc.gokart.gui.top.ImageScore;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;

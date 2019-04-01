@@ -14,8 +14,12 @@ public class ControlAndPredictionSteps implements BufferInsertable {
     steps = controlAndPredictionSteps;
   }
 
-  // TODO JPH can use byteBuffer.remaining() for adaptive size
-  public ControlAndPredictionSteps(ByteBuffer byteBuffer) {
+  /** DO NOT call this construction on content of log files!
+   * instead use {@link ControlAndPredictionStepsMessage}.
+   * 
+   * @param byteBuffer */
+  /* package */ ControlAndPredictionSteps(ByteBuffer byteBuffer) {
+    // TODO JPH can use byteBuffer.remaining() for adaptive size
     steps = new ControlAndPredictionStep[MPCNative.PREDICTION_SIZE];
     for (int index = 0; index < MPCNative.PREDICTION_SIZE; ++index)
       steps[index] = new ControlAndPredictionStep(byteBuffer);

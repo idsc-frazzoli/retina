@@ -23,17 +23,19 @@ import ch.ethz.idsc.tensor.sca.N;
 /** localization using only lidar */
 public class SlamOfflineLocalize extends OfflineLocalize {
   private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
-  private static final Se2MultiresGrids SE2MULTIRESGRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
+  private static final Se2MultiresGrids SE2_MULTIRES_GRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final ScatterImage scatterImage;
+  private final SlamDunk slamDunk;
 
   /** @param map_image
    * @param pose {x[m], y[m], angle}
    * @param scatterImage */
   public SlamOfflineLocalize(BufferedImage map_image, Tensor pose, ScatterImage scatterImage) {
     super(map_image, pose);
+    slamDunk = new SlamDunk(SE2_MULTIRES_GRIDS, slamScore);
     this.scatterImage = scatterImage;
   }
 
@@ -51,7 +53,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);
       Timing timing = Timing.started();
-      SlamResult slamResult = SlamDunk.of(SE2MULTIRESGRIDS, geometricLayer, scattered, slamScore);
+      SlamResult slamResult = slamDunk.evaluate(geometricLayer, scattered);
       double duration = timing.seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = lidar.dot(pre_delta).dot(Inverse.of(lidar));

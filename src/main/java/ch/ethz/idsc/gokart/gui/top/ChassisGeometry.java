@@ -21,6 +21,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
 
 /** parameters in this config class are final because they
  * correspond to immutable characteristic of the gokart. */
+// TODO JPH location of class not good
 public class ChassisGeometry {
   public static final ChassisGeometry GLOBAL = AppResources.load(new ChassisGeometry());
   /***************************************************/

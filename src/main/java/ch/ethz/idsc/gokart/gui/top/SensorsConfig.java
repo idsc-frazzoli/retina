@@ -5,9 +5,11 @@ import ch.ethz.idsc.gokart.calib.vmu931.FlippedPlanarVmu931Imu;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16FromPolarCoordinates;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16ToPolarCoordinates;
@@ -83,6 +85,10 @@ public class SensorsConfig {
   public Vlp16LcmHandler vlp16LcmHandler() {
     double angle_offset = vlp16_twist.number().doubleValue();
     return new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER, angle_offset);
+  }
+
+  public Vlp16LcmClient vlp16LcmClient(VelodyneDecoder velodyneDecoder) {
+    return new Vlp16LcmClient(velodyneDecoder, GokartLcmChannel.VLP16_CENTER);
   }
 
   public LidarSpacialProvider vlp16SpacialProvider() {

@@ -32,7 +32,8 @@ import ch.ethz.idsc.tensor.Tensor;
     } else {
       OfflineLocalizeWrap lidarGyroPoseEstimator = of(gokartLogInterface.pose());
       LogPosePostInject logPosePostInject = new LogPosePostInject();
-      lidarGyroPoseEstimator.offlineLocalize.addListener(logPosePostInject);
+      // FIXME JPH
+      // lidarGyroPoseEstimator.offlineLocalize.addListener(logPosePostInject);
       logPosePostInject.process(gokartLogInterface.file(), post_lcm, lidarGyroPoseEstimator);
     }
     if (post_lcm.isFile()) {

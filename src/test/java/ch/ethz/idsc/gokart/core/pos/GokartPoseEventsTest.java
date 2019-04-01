@@ -8,19 +8,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class GokartPoseEventsTest extends TestCase {
-  public void testSimple() {
-    GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create( //
-        Tensors.fromString("{1[m], 2[m], 3}"), RealScalar.ONE);
-    assertEquals(gokartPoseEvent.getVelocityXY(), Tensors.fromString("{0[m*s^-1],0[m*s^-1]}"));
-    assertEquals(gokartPoseEvent.getGyroZ(), Quantity.of(0, SI.PER_SECOND));
-    assertTrue(gokartPoseEvent.hasVelocity());
-    assertEquals(gokartPoseEvent.asVector(), Tensors.vector(1, 2, 3, 1, 0, 0, 0));
-  }
-
   public void testMotionless() {
     GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
     assertTrue(gokartPoseEvent.hasVelocity());
     assertEquals(gokartPoseEvent.asVector(), Tensors.vector(0, 0, 0, 0, 0, 0, 0));
+    assertTrue(gokartPoseEvent instanceof GokartPoseEventV2);
   }
 
   public void testExtended() {
@@ -34,9 +26,25 @@ public class GokartPoseEventsTest extends TestCase {
     assertEquals(gokartPoseEvent.asVector(), Tensors.vector(1, 2, 3, 1, 4, 5, 6));
   }
 
+  /***************************************************/
+  public void testCreateV1() {
+    GokartPoseEvent gokartPoseEvent = //
+        GokartPoseEvents.offlineV1(GokartPoseHelper.attachUnits(Tensors.vector(1, 2, 3)), RealScalar.ONE);
+    assertFalse(gokartPoseEvent instanceof GokartPoseEventV2);
+  }
+
+  public void testSimple() {
+    GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1( //
+        Tensors.fromString("{1[m], 2[m], 3}"), RealScalar.ONE);
+    assertEquals(gokartPoseEvent.getVelocityXY(), Tensors.fromString("{0[m*s^-1],0[m*s^-1]}"));
+    assertEquals(gokartPoseEvent.getGyroZ(), Quantity.of(0, SI.PER_SECOND));
+    assertFalse(gokartPoseEvent.hasVelocity());
+    assertEquals(gokartPoseEvent.asVector(), Tensors.vector(1, 2, 3, 1));
+  }
+
   public void testNullFail() {
     try {
-      GokartPoseEvents.create(null, RealScalar.ONE);
+      GokartPoseEvents.offlineV1(null, RealScalar.ONE);
       fail();
     } catch (Exception exception) {
       // ---

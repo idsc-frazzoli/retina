@@ -31,7 +31,7 @@ public class LidarGyroOfflineLocalize extends OfflineLocalize {
   // ---
   /** 3x3 transformation matrix of lidar to center of rear axle */
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
-  private final Se2MultiresGrids se2MultiresGrids;
+  private final SlamDunk slamDunk;
   private final ScatterImage scatterImage;
 
   /** @param map_image
@@ -39,7 +39,7 @@ public class LidarGyroOfflineLocalize extends OfflineLocalize {
    * @param scatterImage */
   public LidarGyroOfflineLocalize(BufferedImage map_image, Tensor pose, Se2MultiresGrids se2MultiresGrids, ScatterImage scatterImage) {
     super(map_image, pose);
-    this.se2MultiresGrids = se2MultiresGrids;
+    this.slamDunk = new SlamDunk(se2MultiresGrids, slamScore);
     this.scatterImage = scatterImage;
   }
 
@@ -63,7 +63,7 @@ public class LidarGyroOfflineLocalize extends OfflineLocalize {
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);
       Timing timing = Timing.started();
-      SlamResult slamResult = SlamDunk.of(se2MultiresGrids, geometricLayer, scattered, slamScore);
+      SlamResult slamResult = slamDunk.evaluate(geometricLayer, scattered);
       double duration = timing.seconds(); // typical is 0.03
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = lidar.dot(pre_delta).dot(Inverse.of(lidar));

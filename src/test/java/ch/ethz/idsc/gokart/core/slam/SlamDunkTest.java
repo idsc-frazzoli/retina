@@ -40,14 +40,14 @@ public class SlamDunkTest extends TestCase {
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
     ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
     OfflineLocalize offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), GokartLogAdapterTest.SIMPLE.pose(), scatterImage);
-    TableBuilder tb = new TableBuilder();
-    LocalizationResultListener lrl = new LocalizationResultListener() {
+    TableBuilder tableBuilder = new TableBuilder();
+    LocalizationResultListener localizationResultListener = new LocalizationResultListener() {
       @Override
       public void localizationCallback(LocalizationResult localizationResult) {
-        tb.appendRow(localizationResult.ratio);
+        tableBuilder.appendRow(localizationResult.ratio);
       }
     };
-    offlineLocalize.addListener(lrl);
+    offlineLocalize.addListener(localizationResultListener);
     lidarAngularFiringCollector.addListener(offlineLocalize);
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       @Override
@@ -60,7 +60,7 @@ public class SlamDunkTest extends TestCase {
     OfflineLogPlayer.process(GokartLogAdapterTest.SIMPLE.file(), offlineLogListener);
     assertEquals(offlineLocalize.skipped.length(), 1);
     Clip clip = Clips.interval(0.35, 1);
-    Tensor table = tb.toTable();
+    Tensor table = tableBuilder.toTable();
     assertEquals(table.map(clip), table);
     System.out.println(table);
     // System.out.println(offlineLocalize.getTable().get(Tensor.ALL, 7));

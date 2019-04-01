@@ -48,7 +48,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
     );
   }
 
-  @Override
+  @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     { // draw line as floor
       Tensor polygon = Tensors.of(Tensors.vector(-20, 0), Tensors.vector(+20, 0));

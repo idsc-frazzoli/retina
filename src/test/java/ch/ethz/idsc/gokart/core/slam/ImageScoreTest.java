@@ -1,11 +1,9 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.top;
+package ch.ethz.idsc.gokart.core.slam;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
-import ch.ethz.idsc.gokart.core.slam.SlamScore;
 import junit.framework.TestCase;
 
 public class ImageScoreTest extends TestCase {

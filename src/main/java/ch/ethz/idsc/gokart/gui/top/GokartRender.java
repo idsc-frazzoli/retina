@@ -9,7 +9,10 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
@@ -25,6 +28,7 @@ import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
+import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -38,7 +42,7 @@ import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 
-public class GokartRender extends AbstractGokartRender {
+public class GokartRender implements RenderInterface {
   private static final Tensor[] OFFSET_TORQUE = new Tensor[] { Tensors.vector(0, -0.15, 0), Tensors.vector(0, +0.15, 0) };
   private static final Tensor[] OFFSET_RATE = new Tensor[] { Tensors.vector(0, +0.15, 0), Tensors.vector(0, -0.15, 0) };
   private static final Tensor MATRIX_BRAKE = Se2Utils.toSE2Translation(Tensors.vector(1.0, 0.05));
@@ -47,6 +51,9 @@ public class GokartRender extends AbstractGokartRender {
   private final AxisAlignedBox aabRimoRate = //
       new AxisAlignedBox(ChassisGeometry.GLOBAL.tireHalfWidthRear().multiply(RealScalar.of(0.8)));
   private final AxisAlignedBox aabLinmotPos = new AxisAlignedBox(RealScalar.of(0.2));
+  // ---
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+  public final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
   // ---
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   public final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
@@ -68,8 +75,7 @@ public class GokartRender extends AbstractGokartRender {
   private final Tensor TIRE_REAR;
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
 
-  public GokartRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
+  public GokartRender() {
     {
       double TR = ChassisGeometry.GLOBAL.tireRadiusFront.number().doubleValue();
       double TW = ChassisGeometry.GLOBAL.tireHalfWidthFront().number().doubleValue();
@@ -84,8 +90,9 @@ public class GokartRender extends AbstractGokartRender {
     }
   }
 
-  @Override
-  public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  @Override // from RenderInterface
+  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
     { // footprint
       graphics.setColor(new Color(224, 224, 224, 192));
       graphics.fill(geometricLayer.toPath2D(VEHICLE_MODEL.footprint()));
@@ -141,6 +148,8 @@ public class GokartRender extends AbstractGokartRender {
         graphics.fill(geometricLayer.toPath2D(index < 2 ? TIRE_FRONT : TIRE_REAR));
         geometricLayer.popMatrix();
       }
+      // Tensor pose = gokartPoseInterface.getPose();
+      // TODO JPH use of lidarLocalizationModule in display functionality is prohibited
       if (Objects.nonNull(lidarLocalizationModule)) {
         Scalar gyroZ = lidarLocalizationModule.getGyroZ(); // unit s^-1
         Scalar angularSlip = gokartAngularSlip.getAngularSlip(gokartStatusEvent, gyroZ);
@@ -152,5 +161,6 @@ public class GokartRender extends AbstractGokartRender {
       }
     }
     graphics.setStroke(new BasicStroke());
+    geometricLayer.popMatrix();
   }
 }

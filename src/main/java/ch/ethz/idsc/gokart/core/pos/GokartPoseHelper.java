@@ -10,7 +10,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public enum GokartPoseHelper {
   ;
-  /** @param state vector with units {x[m], y[m], angle[]}
+  /** Example:
+   * GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose())
+   * 
+   * @param state vector with units {x[m], y[m], angle[]}
    * @return */
   public static Tensor toSE2Matrix(Tensor state) {
     // Se2Utils.toSE2Matrix(state.extract(0, 2).map(Magnitude.METER).append(state.Get(2)));

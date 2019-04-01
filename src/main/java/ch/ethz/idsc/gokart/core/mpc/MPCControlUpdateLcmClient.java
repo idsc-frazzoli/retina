@@ -16,6 +16,6 @@ public class MPCControlUpdateLcmClient extends SimpleLcmClient<MPCControlUpdateL
     ControlAndPredictionStepsMessage controlAndPredictionStepsMessage = //
         new ControlAndPredictionStepsMessage(byteBuffer);
     for (MPCControlUpdateListener listener : listeners)
-      listener.getControlAndPredictionSteps(controlAndPredictionStepsMessage.controlAndPredictionSteps);
+      listener.getControlAndPredictionSteps(controlAndPredictionStepsMessage.getPayload());
   }
 }
