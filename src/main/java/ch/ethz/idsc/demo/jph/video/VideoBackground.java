@@ -26,17 +26,21 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
   ;
   public static final Dimension DIMENSION = new Dimension(1920, 1080);
   // public static final Tensor MODEL2PIXEL = Tensors.fromString("{{50,0,-1000},{0,-50,3000},{0,0,1}}");
-  // "{{21.57529078604976, 20.84482735590282, -1091.4861896725226}, {20.84482735590282, -21.57529078604976, 364.92043391882794}, {0.0, 0.0, 1.0}}"));
-  // public static final Tensor MODEL2PIXEL = Tensors
-  // .fromString("{{36.67799433628459, 35.43620650503479, -1900.5265224432885}, {35.43620650503479, -36.67799433628459, 620.3647376620074}, {0.0, 0.0, 1.0}}");
-  public static final Tensor MODEL2PIXEL = Se2Utils.toSE2Translation(Tensors.vector(0, +200)).dot(DiagonalMatrix.of(0.9, 0.9, 1).dot(Tensors.fromString( //
+  // public static final Tensor MODEL2PIXEL = Tensors.fromString(
+  // "{{21.57529078604976, 20.84482735590282, -1091.4861896725226}, {20.84482735590282, -21.57529078604976, 364.92043391882794}, {0.0, 0.0, 1.0}}");
+  /** large */
+  public static final Tensor _20190311 = Se2Utils.toSE2Translation(Tensors.vector(0, +200)).dot(DiagonalMatrix.of(0.9, 0.9, 1).dot(Tensors.fromString( //
       "{{36.67799433628459, 35.43620650503479, -1900.5265224432885}, {35.43620650503479, -36.67799433628459, 620.3647376620074}, {0.0, 0.0, 1.0}}")));
-  public static final File IMAGE_FILE = HomeDirectory.Pictures("20190311T173809_00.png");
+  /** dustproof wall */
+  public static final Tensor _20190401 = Se2Utils.toSE2Translation(Tensors.vector(0, +120)).dot(Tensors.fromString( //
+      "{{36.67799433628459, 35.43620650503479, -1900.5265224432885}, {35.43620650503479, -36.67799433628459, 620.3647376620074}, {0.0, 0.0, 1.0}}"));
+  // ---
+  public static final File IMAGE_FILE = HomeDirectory.Pictures("20190401T101109_00.png");
 
   public static void main(String[] args) throws IOException {
     // File folder = new File("/media/datahaki/data/gokart/cuts/20190329/20190329T144049_00");
     GokartLogInterface gokartLogInterface = //
-        GokartLogAdapter.of(new File("/media/datahaki/data/gokart/cuts/20190311/20190311T173809_00"));
+        GokartLogAdapter.of(new File("/media/datahaki/data/gokart/cuts/20190401/20190401T101109_00"));
     BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = bufferedImage.createGraphics();
     graphics.setColor(Color.WHITE);
@@ -45,7 +49,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
     ObstacleAggregate obstacleAggregate = new ObstacleAggregate( //
         GokartPoseChannel.INSTANCE.channel(), //
         graphics, //
-        MODEL2PIXEL, //
+        _20190401, //
         gokartLogInterface.pose());
     OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
     ImageIO.write(bufferedImage, "png", IMAGE_FILE);
