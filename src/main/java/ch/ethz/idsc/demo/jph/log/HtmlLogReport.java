@@ -251,6 +251,23 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     {
       visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
       visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("z (up)");
+    }
+    exportListPlot("vmu931acc.png", visualSet);
+  }
+
+  public void exportVmu931gyro() throws IOException {
+    VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(64));
+    visualSet.setPlotLabel("VMU931 gyroscope");
+    visualSet.setAxesLabelX("time [s]");
+    visualSet.setAxesLabelY("gyroscope [s^-1]");
+    Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
+    Tensor domain = tensor.get(Tensor.ALL, 0);
+    // if (!Tensors.isEmpty(domain))
+    {
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("z (up)");
     }
     exportListPlot("vmu931acc.png", visualSet);
   }
@@ -268,8 +285,10 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
         Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
         Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
         Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
+        Tensor smoothZ = ListConvolve.of(mask, tensor.get(Tensor.ALL, 4));
         visualSet.add(domain.extract(0, smoothX.length()), smoothX).setLabel("x (forward)");
         visualSet.add(domain.extract(0, smoothY.length()), smoothY).setLabel("y (left)");
+        visualSet.add(domain.extract(0, smoothZ.length()), smoothZ).setLabel("z (up)");
       }
     }
     exportListPlot("vmu931accSmooth.png", visualSet);
@@ -291,49 +310,55 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     VisualSet visualSet = new VisualSet();
     visualSet.setPlotLabel("Smoothed Pose");
     visualSet.setAxesLabelX("time [s]");
-    Tensor tensor = Import.of(new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz"));
-    Tensor domain = tensor.get(Tensor.ALL, 0);
-    visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("global x position [m]");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global y position [m]");
-    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global heading [rad]");
-    exportListPlot("pose_smooth.png", visualSet);
+    File file = new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz");
+    if (file.isFile()) {
+      Tensor tensor = Import.of(file);
+      Tensor domain = tensor.get(Tensor.ALL, 0);
+      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("global x position [m]");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global y position [m]");
+      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global heading [rad]");
+      exportListPlot("pose_smooth.png", visualSet);
+    }
   }
 
   public void exportPoseDerivative() throws IOException {
     final Scalar hertz = RealScalar.of(20.0);
-    Tensor tensor = Import.of(new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz"));
-    LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
-    Tensor refined = Tensor.of(tensor.stream().map(row -> row.extract(1, 4)));
-    Tensor speeds = lieDifferences.apply(refined);
-    Tensor times = tensor.get(Tensor.ALL, 0);
-    Tensor domain = times.extract(0, tensor.length() - 1);
-    {
-      VisualSet visualSet = new VisualSet();
-      visualSet.setPlotLabel("Derivatives from Smoothed Pose");
-      visualSet.setAxesLabelX("time [s]");
-      visualSet.add(domain, speeds.get(Tensor.ALL, 0).multiply(hertz)).setLabel("tangent velocity [m/s]");
-      visualSet.add(domain, speeds.get(Tensor.ALL, 1).multiply(hertz)).setLabel("side slip [m/s]");
-      exportListPlot("speeds.png", visualSet);
-    }
-    {
-      VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(192));
-      visualSet.setPlotLabel("Rotational Rate");
-      visualSet.setAxesLabelX("time [s]");
-      visualSet.setAxesLabelY("gyro [rad*s^-1]");
+    File file = new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz");
+    if (file.isFile()) {
+      Tensor tensor = Import.of(file);
+      LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
+      Tensor refined = Tensor.of(tensor.stream().map(row -> row.extract(1, 4)));
+      Tensor speeds = lieDifferences.apply(refined);
+      Tensor times = tensor.get(Tensor.ALL, 0);
+      Tensor domain = times.extract(0, tensor.length() - 1);
       {
-        VisualRow visualRow = visualSet.add(domain, speeds.get(Tensor.ALL, 2).multiply(hertz));
-        visualRow.setLabel("from smoothed pose [rad/s]");
-        visualRow.setStroke(new BasicStroke(2f));
+        VisualSet visualSet = new VisualSet();
+        visualSet.setPlotLabel("Derivatives from Smoothed Pose");
+        visualSet.setAxesLabelX("time [s]");
+        visualSet.add(domain, speeds.get(Tensor.ALL, 0).multiply(hertz)).setLabel("tangent velocity [m/s]");
+        visualSet.add(domain, speeds.get(Tensor.ALL, 1).multiply(hertz)).setLabel("side slip [m/s]");
+        exportListPlot("speeds.png", visualSet);
       }
       {
-        Tensor vmu931 = map.get(Vmu931ImuVehicleChannel.INSTANCE);
-        Tensor vmu931_domain = vmu931.get(Tensor.ALL, 0);
-        // if (!Tensors.isEmpty(vmu931_domain))
+        VisualSet visualSet = new VisualSet(ColorDataLists._097.cyclic().deriveWithAlpha(192));
+        visualSet.setPlotLabel("Rotational Rate");
+        visualSet.setAxesLabelX("time [s]");
+        visualSet.setAxesLabelY("gyro [rad*s^-1]");
         {
-          visualSet.add(vmu931_domain, vmu931.get(Tensor.ALL, 4)).setLabel("from VMU931");
+          VisualRow visualRow = visualSet.add(domain, speeds.get(Tensor.ALL, 2).multiply(hertz));
+          visualRow.setLabel("from smoothed pose [rad/s]");
+          visualRow.setStroke(new BasicStroke(2f));
         }
+        {
+          Tensor vmu931 = map.get(Vmu931ImuVehicleChannel.INSTANCE);
+          Tensor vmu931_domain = vmu931.get(Tensor.ALL, 0);
+          // if (!Tensors.isEmpty(vmu931_domain))
+          {
+            visualSet.add(vmu931_domain, vmu931.get(Tensor.ALL, 4)).setLabel("from VMU931");
+          }
+        }
+        exportListPlot("vmu931gyro.png", visualSet);
       }
-      exportListPlot("vmu931gyro.png", visualSet);
     }
   }
 

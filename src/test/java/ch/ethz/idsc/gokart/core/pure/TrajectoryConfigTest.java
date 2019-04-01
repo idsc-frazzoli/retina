@@ -38,8 +38,9 @@ public class TrajectoryConfigTest extends TestCase {
   }
 
   public void testWaypoints() {
-    Tensor tensor = TrajectoryConfig.getWaypoints();
+    Tensor tensor = TrajectoryConfig.GLOBAL.getWaypoints();
     List<Integer> dims = Dimensions.of(tensor);
+    // System.out.println(dims);
     assertTrue(1 < dims.get(0));
     assertEquals((int) dims.get(1), 3); // {x, y, theta}
   }

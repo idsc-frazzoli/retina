@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     new LcmLogFileCutter(gokartLogInterface.file(), lapSegmenter.navigableMap()) {
       @Override
       public File filename(int index) {
-        return new File("/home/datahaki/laps", String.format("r%02d.lcm", index));
+        return new File("/home/datahaki/laps", String.format("m%02d.lcm", index));
       }
     };
   }

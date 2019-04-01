@@ -10,17 +10,15 @@ import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
-import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
+import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 public class LocalViewLcmModule extends AbstractModule {
-  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor POSE = Tensors.fromString("{0[m],-3[m],0}").unmodifiable();
   private static final Tensor MINOR_ACC = Tensors.vector(0.8, -0.0, 0);
   private static final Tensor MINOR_VEL = Tensors.vector(0.8, -6.0, 0);
@@ -38,16 +36,17 @@ public class LocalViewLcmModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
-  @Override
+  @Override // from AbstractModule
   protected void first() {
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     {
-      GokartRender gokartRender = new GokartRender(() -> POSE, VEHICLE_MODEL);
+      GokartRender gokartRender = new GokartRender();
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
+      gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     {
@@ -56,12 +55,14 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(velocityIndicatorRender);
     }
     {
-      AccelerationRender accelerationRender = new AccelerationRender(MINOR_ACC, 100);
+      AccelerationRender accelerationRender = new AccelerationRender(100, //
+          Se2Utils.toSE2Matrix(MINOR_ACC).dot(GroundSpeedRender.DIAGONAL));
       vmu931ImuLcmClient.addListener(accelerationRender);
       timerFrame.geometricComponent.addRenderInterface(accelerationRender);
     }
+    final Tensor matrix = Se2Utils.toSE2Matrix(MINOR_VEL).dot(GroundSpeedRender.DIAGONAL);
     {
-      GroundSpeedRender groundSpeedRender = new GroundSpeedRender(MINOR_VEL, 50);
+      GroundSpeedRender groundSpeedRender = new GroundSpeedRender(50, matrix);
       gokartPoseLcmClient.addListener(groundSpeedRender);
       timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
     }
@@ -75,7 +76,7 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(brakeCalibrationRender);
     }
     {
-      TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(MINOR_VEL);
+      TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(matrix);
       rimoGetLcmClient.addListener(tachometerMustangDash);
       timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);
     }
@@ -92,7 +93,7 @@ public class LocalViewLcmModule extends AbstractModule {
     timerFrame.jFrame.setVisible(true);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     gokartPoseLcmClient.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();

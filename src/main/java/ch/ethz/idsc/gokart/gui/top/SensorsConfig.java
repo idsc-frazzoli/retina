@@ -5,10 +5,14 @@ import ch.ethz.idsc.gokart.calib.vmu931.FlippedPlanarVmu931Imu;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16FromPolarCoordinates;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16ToPolarCoordinates;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -17,6 +21,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -82,6 +87,10 @@ public class SensorsConfig {
     return new Vlp16LcmHandler(GokartLcmChannel.VLP16_CENTER, angle_offset);
   }
 
+  public Vlp16LcmClient vlp16LcmClient(VelodyneDecoder velodyneDecoder) {
+    return new Vlp16LcmClient(velodyneDecoder, GokartLcmChannel.VLP16_CENTER);
+  }
+
   public LidarSpacialProvider vlp16SpacialProvider() {
     double angle_offset = vlp16_twist.number().doubleValue();
     return new Vlp16SpacialProvider(angle_offset);
@@ -94,6 +103,14 @@ public class SensorsConfig {
 
   public int imuSamplesPerLidarScan() {
     return Round.of(davis_imu_rate.divide(vlp16_rate)).number().intValue();
+  }
+
+  public TensorUnaryOperator vlp16ToPolarCoordinates() {
+    return new Vlp16ToPolarCoordinates(vlp16_twist);
+  }
+
+  public TensorUnaryOperator vlp16FromPolarCoordinates() {
+    return new Vlp16FromPolarCoordinates(vlp16_twist);
   }
 
   /***************************************************/

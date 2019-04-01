@@ -22,8 +22,6 @@ import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
-import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
@@ -44,7 +42,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 // TODO contains redundancies with GokartMappingModule 
 @Deprecated
 /* package */ class MappingAnalysisOfflineHighResMH implements OfflineLogListener, LidarRayBlockListener {
-  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
@@ -112,10 +109,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       GeometricLayer gl = new GeometricLayer(model2pixel, Tensors.vector(0, 0, 0));
       Graphics2D graphics = image.createGraphics();
       gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
-      GokartRender gr = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
+      GokartRender gokartRender = new GokartRender();
+      gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       bayesianOccupancyGrid.render(gl, graphics);
       // bayesianOccupancyGridThin.render(gl, graphics);
-      gr.render(gl, graphics);
+      gokartRender.render(gl, graphics);
       // FIXME JPH
       // trackReconManagement.renderHR(gl, graphics);
       // if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)) && flag == false) {

@@ -24,7 +24,7 @@ class GokartHudRender implements RenderInterface {
   private static final int SEPX = 200;
   // ---
   private final GokartPoseInterface gokartPoseInterface;
-  private RimoGetEvent rimoGetEvent = RimoGetEvents.create(0, 0);
+  private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private SteerGetEvent steerGetEvent = SteerGetEvents.ZEROS;
   final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   final SteerGetListener steerGetListener = getEvent -> steerGetEvent = getEvent;

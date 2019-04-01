@@ -13,14 +13,15 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /**  */
 public class LocalizationConfig {
   public static final LocalizationConfig GLOBAL = AppResources.load(new LocalizationConfig());
   /***************************************************/
-  public final Scalar gridShift = Quantity.of(0.5, SI.METER);
-  public final Scalar gridAngle = Quantity.of(1.5, NonSI.DEGREE_ANGLE);
+  public final Scalar gridShift = Quantity.of(0.6, SI.METER);
+  public final Scalar gridAngle = Quantity.of(3.3, NonSI.DEGREE_ANGLE);
   public final Scalar gridFan = RealScalar.of(1);
   public final Scalar gridLevels = RealScalar.of(4);
   /** positive integer 0, 1, 2, 4
@@ -36,6 +37,8 @@ public class LocalizationConfig {
   public final Scalar threshold = RealScalar.of(33.0);
   /** distance for equidistant resampling */
   public final Scalar resampleDs = Quantity.of(0.4, SI.METER);
+  /** threshold below which the pose estimate should not be trusted */
+  public final Scalar qualityMin = RealScalar.of(0.55);
 
   /***************************************************/
   /** @return grid for localization in real-time */
@@ -79,6 +82,12 @@ public class LocalizationConfig {
         Magnitude.METER.apply(resampleDs));
   }
 
+  /** @param quality in the interval [0, 1]
+   * @return whether quality is greater equal quality threshold */
+  public boolean isQualityOk(Scalar quality) {
+    return Scalars.lessEquals(qualityMin, quality);
+  }
+
   /***************************************************/
   /** @return predefined map with static geometry for lidar based localization */
   public static PredefinedMap getPredefinedMap() {
@@ -86,6 +95,6 @@ public class LocalizationConfig {
   }
 
   public static PredefinedMap getPredefinedMapObstacles() {
-    return PredefinedMap.DUBILAB_OBSTACLES_20180703; // with container moved
+    return PredefinedMap.DUBILAB_OBSTACLES_20190314;
   }
 }

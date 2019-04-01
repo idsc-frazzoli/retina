@@ -10,14 +10,11 @@ import java.util.Objects;
 import java.util.Set;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
 import ch.ethz.idsc.gokart.lcm.MessageConsistency;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.offline.slam.LocalizationResult;
-import ch.ethz.idsc.gokart.offline.slam.LocalizationResultListener;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -29,15 +26,10 @@ import lcm.logging.Log.Event;
 import lcm.logging.LogEventWriter;
 
 /** changes pose messages based on given pose estimating interface */
-public class LogPosePostInject implements LocalizationResultListener {
-  // private static final String POST_POSE = ;
-  // ---
-  private LocalizationResult localizationResult = null;
+public class LogPosePostInject implements GokartPoseListener {
+  private GokartPoseEvent gokartPoseEvent = null;
 
   public void process(File src, File dst, OfflineLogListener offlineLogListener) throws Exception {
-    if (dst.exists())
-      throw new RuntimeException();
-    // ---
     Log log = new Log(src.toString(), "r");
     LogEventWriter logEventWriter = new LogEventWriter(dst);
     Set<String> set = new HashSet<>();
@@ -61,12 +53,7 @@ public class LogPosePostInject implements LocalizationResultListener {
             Scalar time = UnitSystem.SI().apply(Quantity.of(event.utime - tic, NonSI.MICRO_SECOND));
             offlineLogListener.event(time, event.channel, ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
             // ---
-            if (Objects.nonNull(localizationResult)) {
-              // System.out.println("inject");
-              GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create( //
-                  GokartPoseHelper.attachUnits(localizationResult.pose_xyt), //
-                  localizationResult.ratio);
-              // ---
+            if (Objects.nonNull(gokartPoseEvent)) {
               LCMDataOutputStream encodeBuffer = new LCMDataOutputStream(new byte[1024]);
               BinaryBlob post_binaryBlob = BinaryBlobs.create(gokartPoseEvent.asArray());
               post_binaryBlob.encode(encodeBuffer);
@@ -76,7 +63,7 @@ public class LogPosePostInject implements LocalizationResultListener {
               post_event.channel = GokartPosePostChannel.INSTANCE.channel();
               logEventWriter.write(post_event);
               // ---
-              localizationResult = null;
+              gokartPoseEvent = null;
             }
           }
         }
@@ -92,8 +79,8 @@ public class LogPosePostInject implements LocalizationResultListener {
     OfflineLogPlayer.process(dst, MessageConsistency.INSTANCE);
   }
 
-  @Override // from LocalizationResultListener
-  public void localizationCallback(LocalizationResult localizationResult) {
-    this.localizationResult = localizationResult;
+  @Override // from GokartPoseListener
+  public void getEvent(GokartPoseEvent gokartPoseEvent) {
+    this.gokartPoseEvent = gokartPoseEvent;
   }
 }

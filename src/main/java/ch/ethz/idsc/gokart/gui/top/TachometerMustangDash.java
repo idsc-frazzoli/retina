@@ -15,7 +15,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -25,25 +25,26 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-/* package */ class TachometerMustangDash implements RenderInterface, RimoGetListener {
-  private final Tensor xya;
-  private RimoGetEvent rimoGetEvent = RimoGetEvents.create(0, 0);
+public class TachometerMustangDash implements RenderInterface, RimoGetListener {
+  private static final ScalarUnaryOperator SCALAR_UNARY_OPERATOR = //
+      QuantityMagnitude.SI().in(NonSI.KM_PER_HOUR);
+  // ---
+  private final Tensor matrix;
+  private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
 
-  public TachometerMustangDash(Tensor xya) {
-    this.xya = xya;
+  public TachometerMustangDash(Tensor matrix) {
+    this.matrix = matrix;
   }
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     GraphicsUtil.setQualityHigh(graphics);
-    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
-    geometricLayer.pushMatrix(GroundSpeedRender.DIAGONAL);
+    geometricLayer.pushMatrix(matrix);
     graphics.setColor(Color.DARK_GRAY);
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.2)));
     for (Tensor _a : Subdivide.of(-2, 2, 12)) {
@@ -54,11 +55,10 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
           vector.multiply(RealScalar.of(11.8))));
       graphics.draw(path2d);
     }
-    ScalarUnaryOperator scalarUnaryOperator = QuantityMagnitude.SI().in(Unit.of("km*h^-1"));
-    Scalar speed = scalarUnaryOperator.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
+    Scalar speed = SCALAR_UNARY_OPERATOR.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
     Clip clip = Clips.interval(0, 60);
     speed = clip.apply(speed);
-    final int steps = speed.multiply(RealScalar.of(1)).number().intValue();
+    final int steps = speed.number().intValue();
     int count = 0;
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.3)));
     for (Tensor _a : Subdivide.of(2, -2, 12 * 6)) {
@@ -87,12 +87,11 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       graphics.drawString(string, (float) point2d.getX() - stringWidth / 2, (float) point2d.getY());
     }
     geometricLayer.popMatrix();
-    geometricLayer.popMatrix();
     GraphicsUtil.setQualityDefault(graphics);
     graphics.setStroke(new BasicStroke());
   }
 
-  @Override
+  @Override // from RimoGetListener
   public void getEvent(RimoGetEvent rimoGetEvent) {
     this.rimoGetEvent = rimoGetEvent;
   }

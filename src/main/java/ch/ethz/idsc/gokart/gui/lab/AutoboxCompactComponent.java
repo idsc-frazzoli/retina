@@ -14,6 +14,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
@@ -31,7 +32,6 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -42,15 +42,11 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Put;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable {
-  private static final Clip CLIP_DEG_C = Clips.interval( //
-      Quantity.of(+20, NonSI.DEGREE_CELSIUS), //
-      Quantity.of(100, NonSI.DEGREE_CELSIUS));
   private static final Clip CLIP_AHEAD = Clips.absoluteOne();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
@@ -98,7 +94,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     {
       if (Objects.nonNull(linmotGetEvent)) {
         Scalar temperatureMax = linmotGetEvent.getWindingTemperatureMax();
-        Scalar rescaled = CLIP_DEG_C.rescale(temperatureMax);
+        Scalar rescaled = LinmotConfig.CLIP_TEMPERATURE.rescale(temperatureMax);
         Color color = ColorFormat.toColor(ColorDataGradients.TEMPERATURE.apply(rescaled));
         jTF_linmotTemp.setText(temperatureMax.map(Round._1).toString());
         jTF_linmotTemp.setBackground(color);

@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
-import ch.ethz.idsc.gokart.gui.top.ImageScore;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -20,12 +19,12 @@ import ch.ethz.idsc.tensor.mat.Inverse;
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 /* package */ class LidarGyroLocalization {
   public static LidarGyroLocalization of(PredefinedMap predefinedMap) {
-    return new LidarGyroLocalization( //
-        predefinedMap.getModel2Pixel(), //
-        ImageScore.of(predefinedMap.getImageExtruded()));
+    return new LidarGyroLocalization(predefinedMap.getModel2Pixel(), new SlamDunk( //
+        LocalizationConfig.GLOBAL.createSe2MultiresGrids(), //
+        ImageScore.of(predefinedMap.getImageExtruded())));
   }
 
-  private final Se2MultiresGrids se2MultiresGrids = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
+  // ---
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
   /** 3x3 transformation matrix of lidar to center of rear axle */
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
@@ -34,11 +33,11 @@ import ch.ethz.idsc.tensor.mat.Inverse;
   private final Scalar lidarRate = SensorsConfig.GLOBAL.vlp16_rate;
   // ---
   private final Tensor model2pixel;
-  private final SlamScore slamScore;
+  private final SlamDunk slamDunk;
 
-  public LidarGyroLocalization(Tensor model2pixel, SlamScore slamScore) {
+  public LidarGyroLocalization(Tensor model2pixel, SlamDunk slamDunk) {
     this.model2pixel = model2pixel;
-    this.slamScore = slamScore;
+    this.slamDunk = slamDunk;
   }
 
   /** call {@link #setState(Tensor)} before invoking {@link #handle(Tensor)}
@@ -60,7 +59,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
       model = model.dot(rotate);
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);
-      SlamResult slamResult = SlamDunk.of(se2MultiresGrids, geometricLayer, scattered, slamScore); // 0.03[s]
+      SlamResult slamResult = slamDunk.evaluate(geometricLayer, scattered); // 0.03[s]
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = lidar.dot(pre_delta).dot(inverseLidar);
       model = model.dot(poseDelta); // advance gokart

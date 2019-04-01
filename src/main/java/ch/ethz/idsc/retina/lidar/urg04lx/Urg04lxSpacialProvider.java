@@ -5,9 +5,9 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
 import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.io.Primitives;
@@ -65,8 +65,8 @@ public class Urg04lxSpacialProvider implements LidarSpacialProvider {
         float dist_m = distance * TO_METER_FLOAT;
         coords[0] = dirx[index] * dist_m;
         coords[1] = diry[index] * dist_m;
-        LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, (byte) 255);
-        listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
+        LidarXYZEvent lidarXYZEvent = new LidarXYZEvent(usec, coords, (byte) 255);
+        listeners.forEach(listener -> listener.lidarSpacial(lidarXYZEvent));
       }
     }
   }

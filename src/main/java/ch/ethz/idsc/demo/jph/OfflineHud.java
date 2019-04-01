@@ -28,8 +28,6 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
-import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.region.ImageRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -51,7 +49,6 @@ import ch.ethz.idsc.tensor.sca.Round;
  * https://www.youtube.com/watch?v=noqpenUZ34w */
 // public because class is referenced outside of retina
 public class OfflineHud implements OfflineLogListener {
-  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   public static final Dimension DIMENSION = new Dimension(1920, 480);
   public static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.getPredefinedMap();
   // ---
@@ -59,21 +56,21 @@ public class OfflineHud implements OfflineLogListener {
   private final GokartPoseInterface gokartPoseInterface = new GokartPoseInterface() {
     @Override
     public Tensor getPose() {
-      return gpe.getPose();
+      return gokartPoseEvent.getPose();
     }
   };
   final RenderInterface renderInterface = new ImageRender( //
       PREDEFINED_MAP.getImage(), Tensors.vector(1, 1));
-  final GokartRender gokartRender = new GokartRender(gokartPoseInterface, VEHICLE_MODEL);
+  final GokartRender gokartRender = new GokartRender();
   final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   final AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
-  final TrigonometryRender trigonometryRender = new TrigonometryRender(gokartPoseInterface);
-  final ExtrudedFootprintRender pathRender = new ExtrudedFootprintRender(gokartPoseInterface);
+  final TrigonometryRender trigonometryRender = new TrigonometryRender();
+  final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rimoGetEvent;
   private GokartStatusEvent gokartStatusEvent;
-  private GokartPoseEvent gpe;
+  private GokartPoseEvent gokartPoseEvent;
 
   public OfflineHud(Scalar period) {
     this.delta = period;
@@ -90,7 +87,7 @@ public class OfflineHud implements OfflineLogListener {
       gokartStatusEvent = new GokartStatusEvent(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      gpe = GokartPoseEvent.of(byteBuffer);
+      gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
     } else //
     if (channel.equals("davis240c.overview.dvs")) {
       davisLcmClient.messageReceived(byteBuffer);
@@ -123,13 +120,16 @@ public class OfflineHud implements OfflineLogListener {
           renderInterface.render(geometricLayer, graphics);
           geometricLayer.popMatrix();
         }
+        trigonometryRender.gokartPoseListener.getEvent(gokartPoseEvent);
         trigonometryRender.gokartStatusListener.getEvent(gokartStatusEvent);
         trigonometryRender.render(geometricLayer, graphics);
-        pathRender.gokartStatusListener.getEvent(gokartStatusEvent);
-        pathRender.color = Color.CYAN;
-        pathRender.render(geometricLayer, graphics);
+        extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
+        extrudedFootprintRender.gokartStatusListener.getEvent(gokartStatusEvent);
+        extrudedFootprintRender.color = Color.CYAN;
+        extrudedFootprintRender.render(geometricLayer, graphics);
         gokartRender.rimoGetListener.getEvent(rimoGetEvent);
         gokartRender.gokartStatusListener.getEvent(gokartStatusEvent);
+        gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
         gokartRender.render(geometricLayer, graphics);
         accumulatedEventRender.render(geometricLayer, graphics);
         // ---

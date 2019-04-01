@@ -11,7 +11,7 @@ public class Tse2CurvePurePursuitModuleTest extends TestCase {
   public void testSimple() {
     Tse2CurvePurePursuitModule tse2CurvePurePursuitModule = //
         new Tse2CurvePurePursuitModule(PursuitConfig.GLOBAL);
-    tse2CurvePurePursuitModule.gokartPoseEvent = GokartPoseEvents.create(Tensors.fromString("{1[m],2[m],3}"), RealScalar.of(.8));
+    tse2CurvePurePursuitModule.gokartPoseEvent = GokartPoseEvents.offlineV1(Tensors.fromString("{1[m],2[m],3}"), RealScalar.of(.8));
     Scalar scalar = tse2CurvePurePursuitModule.getSpeedMultiplier();
     assertEquals(scalar, RealScalar.ZERO);
   }

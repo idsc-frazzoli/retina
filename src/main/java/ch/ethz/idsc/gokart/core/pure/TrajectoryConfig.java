@@ -3,6 +3,8 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.sophus.curve.BSpline2CurveSubdivision;
+import ch.ethz.idsc.sophus.group.Se2Geodesic;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -21,7 +23,7 @@ public class TrajectoryConfig {
   /** horizonDistance is unit-less because it entails all three: x, y, heading using Se2Wrap
    * post 20180904: changed horizonDistance from 8 to 10 so that the gokart plans through a gateway
    * post 20181025: changed horizonDistance to 12 */
-  public Scalar horizonDistance = RealScalar.of(12);
+  public Scalar horizonDistance = RealScalar.of(10);
   /** number of different steering angles for path planning
    * value has to be an integer */
   public Scalar controlResolution = RealScalar.of(9);
@@ -33,6 +35,7 @@ public class TrajectoryConfig {
   /** half angle of conic goal region */
   public Scalar coneHalfAngle = RealScalar.of(Math.PI / 10);
   public Tensor goalRadiusFactor = Tensors.vector(4, 4, 2);
+  public String waypoints = "/dubilab/waypoints/20190325.csv";
 
   /***************************************************/
   /** @param tangentSpeed with unit "m*s^-1"
@@ -49,10 +52,10 @@ public class TrajectoryConfig {
 
   /** @return matrix with dimensions N x 3
    * @throws Exception if waypoints cannot be retrieved from resources */
-  public static Tensor getWaypoints() {
+  public Tensor getWaypoints() {
     // oval shape
-    // return ResourceData.of("/dubilab/waypoints/20181126.csv").unmodifiable();
+    return new BSpline2CurveSubdivision(Se2Geodesic.INSTANCE).cyclic(ResourceData.of(waypoints).unmodifiable());
     // around tires
-    return ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").unmodifiable();
+    // return ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").unmodifiable();
   }
 }

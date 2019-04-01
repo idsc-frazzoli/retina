@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.jph;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 
@@ -26,7 +26,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneStatics;
     byte intensity = byteBuffer.get();
     coords[0] = azimuth;
     coords[1] = distance * VelodyneStatics.TO_METER_FLOAT;
-    LidarSpacialEvent lidarSpacialEvent = new LidarSpacialEvent(usec, coords, intensity);
-    listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
+    LidarXYZEvent lidarXYZEvent = new LidarXYZEvent(usec, coords, intensity);
+    listeners.forEach(listener -> listener.lidarSpacial(lidarXYZEvent));
   }
 }

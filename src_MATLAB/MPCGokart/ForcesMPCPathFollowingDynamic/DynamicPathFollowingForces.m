@@ -83,8 +83,8 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));
     
-%points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
-points = getPoints('/wildpoints.csv');
+points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
+%points = getPoints('/wildpoints.csv');
 points(:,3)=points(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
 %points = [0,40,40,5,0;0,0,10,9,10]';

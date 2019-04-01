@@ -1567,7 +1567,8 @@ public enum GokartLogFile implements LogFile {
   /** mpc simple track */
   _20190311T164018_da0bb9b9,
   /** mpc challenging track
-   * manual driving */
+   * manual driving
+   * [abrupt log termination] */
   _20190311T173809_da0bb9b9,
   /***************************************************/
   /* 2019-03-14
@@ -1586,9 +1587,11 @@ public enum GokartLogFile implements LogFile {
   _20190314T150851_c3c5a0db,
   /** mpc */
   _20190314T154544_c3c5a0db,
-  /** mpc */
+  /** mpc
+   * [abrupt log termination] */
   _20190314T174957_c3c5a0db,
-  /** mpc */
+  /** mpc
+   * [abrupt log termination] */
   _20190314T175917_c3c5a0db,
   /***************************************************/
   /* 2019-03-18 */
@@ -1612,7 +1615,8 @@ public enum GokartLogFile implements LogFile {
    * localization inactive */
   _20190321T114452_79067bba,
   /** data collection for mapping challenge
-   * with moving obstacles and various speeds */
+   * with moving obstacles and various speeds
+   * [abrupt log termination] */
   _20190321T144129_140b9727,
   /** power steering test */
   _20190321T152149_140b9727,
@@ -1645,10 +1649,49 @@ public enum GokartLogFile implements LogFile {
   _20190325T171337_61639f01,
   /** mpc with changing map */
   _20190325T172211_61639f01,
-  /** mpc with changing map */
+  /** mpc with changing map
+   * [abrupt log termination] */
   _20190325T172919_61639f01,
   /** mpc */
   _20190325T175100_61639f01,
+  /***************************************************/
+  /* 2019-03-28 */
+  /** brief manual driving */
+  _20190328T112543_3b0b20b0,
+  /** brief manual driving */
+  _20190328T144659_e6dada55,
+  /** slow manual driving */
+  _20190328T145152_e6dada55,
+  /** trajectory planning */
+  _20190328T155002_ad28d651,
+  /** trajectory planning */
+  _20190328T162227_e084a72b,
+  /** kinematic mpc
+   * [abrupt log termination] */
+  _20190328T163118_558748f1,
+  /** manual driving with localization failure az, jg */
+  _20190328T164433_ad28d651,
+  /** mpc az jg
+   * manual driving jh */
+  _20190328T165416_558748f1,
+  /***************************************************/
+  /* 2019-03-29 */
+  /** manual driving, mpc
+   * [abrupt log termination] */
+  _20190329T140240_459f8e9a,
+  /** mpc, manual driving */
+  _20190329T141035_459f8e9a,
+  /** mpc, localization failure */
+  _20190329T142259_459f8e9a,
+  /** mpc, localization failure */
+  _20190329T143349_558748f1,
+  /** slow manual driving to scan map
+   * mpc, localization failure */
+  _20190329T144049_558748f1,
+  /** mpc, localization failure */
+  _20190329T151406_558748f1,
+  /** mpc, localization failure */
+  _20190329T152003_558748f1,
   /***************************************************/
   ;
   // ---

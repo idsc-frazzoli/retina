@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.lidar.vlp16;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.lidar.LidarSpacialEvent;
+import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
 import ch.ethz.idsc.retina.lidar.app.VelodyneRay;
 
@@ -27,9 +27,9 @@ public class Vlp16TiltedPlanarEmulator extends VelodyneSpacialProvider {
     int distance = byteBuffer.getShort() & 0xffff;
     if (limit_lo <= distance) {
       byte intensity = byteBuffer.get();
-      LidarSpacialEvent lidarSpacialEvent = //
-          new LidarSpacialEvent(usec, velodyneRay.getCoord(distance), intensity);
-      listeners.forEach(listener -> listener.lidarSpacial(lidarSpacialEvent));
+      LidarXYZEvent lidarXYZEvent = //
+          new LidarXYZEvent(usec, velodyneRay.getCoord(distance), intensity);
+      listeners.forEach(listener -> listener.lidarSpacial(lidarXYZEvent));
     }
   }
 }

@@ -3,15 +3,19 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
+import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.StateSpaceModels;
 import ch.ethz.idsc.owl.math.flow.Flow;
@@ -27,23 +31,24 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-/** draw blue lines of prediction of traces of gokart
- * extruded footprint */
-public class ExtrudedFootprintRender extends AbstractGokartRender {
-  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+/** draw blue lines of prediction of traces of gokart extruded footprint */
+public class ExtrudedFootprintRender implements RenderInterface {
+  private static final StateIntegrator STATE_INTEGRATOR = FixedStateIntegrator.create( //
+      Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
+  // ---
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+  public final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
+  // ---
+  private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
-  private GokartStatusEvent gokartStatusEvent;
+  // ---
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   public Color color = new Color(0, 0, 255, 128);
 
-  public ExtrudedFootprintRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
-  }
-
-  @Override
-  public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
-      StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
-          Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
+  @Override // from RenderInterface
+  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    if (gokartStatusEvent.isSteerColumnCalibrated()) {
+      geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
       // ---
       Scalar XAD = ChassisGeometry.GLOBAL.xAxleDistanceMeter(); // axle distance
       Scalar YHW = ChassisGeometry.GLOBAL.yHalfWidthMeter(); // half width
@@ -62,7 +67,7 @@ public class ExtrudedFootprintRender extends AbstractGokartRender {
       {
         final Flow flow_forward = singleton(RealScalar.ONE, angle);
         final Tensor center_forward = //
-            Tensor.of(stateIntegrator.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
+            Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_forward) {
@@ -77,7 +82,7 @@ public class ExtrudedFootprintRender extends AbstractGokartRender {
       {
         final Flow flow_reverse = singleton(RealScalar.ONE.negate(), angle);
         final Tensor center_reverse = //
-            Tensor.of(stateIntegrator.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
+            Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_reverse) {
@@ -89,6 +94,7 @@ public class ExtrudedFootprintRender extends AbstractGokartRender {
         graphics.draw(geometricLayer.toPath2D(w1));
         graphics.draw(geometricLayer.toPath2D(w2));
       }
+      geometricLayer.popMatrix();
     }
   }
 

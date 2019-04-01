@@ -23,8 +23,8 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ enum DynamicsConversion {
   ;
-  public static Optional<File> single(File cut) {
-    File file = new File(cut, StaticHelper.POST_LCM);
+  public static Optional<File> single(File cut, String filename) {
+    File file = new File(cut, filename);
     if (!file.isFile())
       throw new RuntimeException("" + file);
     // ---
@@ -53,9 +53,10 @@ import ch.ethz.idsc.tensor.sca.Round;
         Tensor smooth = GokartPoseSmoothing.INSTANCE.apply(tensor).map(Round._6);
         for (int index = 0; index < 3; ++index)
           pose.set(smooth.get(Tensor.ALL, index), Tensor.ALL, 1 + index);
-        Export.of( //
-            new File(target, StaticHelper.GOKART_POSE_SMOOTH + StaticHelper.EXTENSION), //
-            pose);
+        if (0 < pose.length())
+          Export.of( //
+              new File(target, StaticHelper.GOKART_POSE_SMOOTH + StaticHelper.EXTENSION), //
+              pose);
       }
     } catch (Exception exception) {
       exception.printStackTrace();

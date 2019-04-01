@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.slam;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -52,7 +51,10 @@ public enum PredefinedMap implements LocalizationImage {
   /** tents at parking position */
   // DUBILAB_LOCALIZATION_20190307(7.5), //
   // DUBILAB_LOCALIZATION_20190309(7.5), //
+  /** dust proof wall */
   DUBILAB_LOCALIZATION_20190314(7.5), //
+  // TODO EPHEMERAL 023
+  DUBILAB_OBSTACLES_20190314(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   private static final int TTL = 3;
@@ -71,7 +73,7 @@ public enum PredefinedMap implements LocalizationImage {
   /** @param meter_to_pixel for instance 1[m] may correspond to 7.5 pixel */
   private PredefinedMap(double meter_to_pixel) {
     this.scale = DoubleScalar.of(meter_to_pixel);
-    String string = String.format("/%s.png", name().replace('_', File.separatorChar).toLowerCase());
+    String string = String.format("/%s.png", name().replace('_', '/').toLowerCase());
     Tensor tensor = ImageRegions.grayscale(ResourceData.of(string));
     bufferedImage = ImageFormat.of(tensor);
     this.size = bufferedImage.getWidth();
@@ -143,6 +145,6 @@ public enum PredefinedMap implements LocalizationImage {
   }
 
   public static void main(String[] args) throws IOException {
-    ImageIO.write(DUBILAB_LOCALIZATION_20190314.bufferedImage, "png", HomeDirectory.file("20190314.png"));
+    ImageIO.write(DUBILAB_OBSTACLES_20190314.bufferedImage, "png", HomeDirectory.Pictures("20190314.png"));
   }
 }

@@ -7,10 +7,12 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.tensor.Tensor;
 
+@Refactor // TODO JPH make class obsolete. constructor is ugly
 public abstract class AbstractGokartRender implements RenderInterface {
-  final GokartPoseInterface gokartPoseInterface;
+  private final GokartPoseInterface gokartPoseInterface;
 
   public AbstractGokartRender(GokartPoseInterface gokartPoseInterface) {
     this.gokartPoseInterface = gokartPoseInterface;

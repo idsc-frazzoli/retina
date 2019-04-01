@@ -10,7 +10,10 @@ import ch.ethz.idsc.tensor.Scalar;
 /** j2b2 project
  * http://hakenberg.de/automation/j2b2_competition.htm */
 public class Se2MultiresGrids {
-  private static final Scalar DECR = DoubleScalar.of(0.6);
+  /** .
+   * 20190331 ante decr == 0.6
+   * 20190331 post decr == 0.55 */
+  private static final Scalar DECR = DoubleScalar.of(0.55);
   // ---
   private final List<Se2Grid> list = new ArrayList<>();
 
