@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.jph.lidar.local;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,44 +12,31 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationCore;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
-import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
-import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
-import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-// TODO JPH build table outside
-/* package */ class LidarLocalizationTable implements OfflineTableSupplier, LidarRayBlockListener {
-  private static final String CHANNEL_LIDAR = //
-      VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
-  // ---
-  final LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
+/** class is not tested */
+/* package */ class LidarLocalizationTable implements OfflineLogListener {
   private final TableBuilder tableBuilder = new TableBuilder();
   private final TableBuilder tableBuilderOdometry = new TableBuilder();
-  final List<GokartPoseListener> listeners = new LinkedList<>();
+  private final LidarLocalizationCore lidarLocalizationCore;
 
-  public LidarLocalizationTable() {
-    lidarLocalizationCore.lidarAngularFiringCollector.addListener(this);
-    lidarLocalizationCore.setTracking(true);
+  public LidarLocalizationTable(LidarLocalizationCore lidarLocalizationCore) {
+    this.lidarLocalizationCore = lidarLocalizationCore;
   }
 
-  @Override // from OfflineLogListener
+  @Override
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
-      lidarLocalizationCore.vmu931ImuFrame(new Vmu931ImuFrame(byteBuffer));
+    if (channel.equals(Vmu931ImuChannel.INSTANCE.channel()))
       tableBuilderOdometry.appendRow( //
           Magnitude.SECOND.apply(time), //
           GokartPoseHelper.toUnitless(lidarLocalizationCore.getPose()), //
@@ -58,29 +44,13 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
           lidarLocalizationCore.getGyroZ().map(Magnitude.PER_SECOND), //
           lidarLocalizationCore.getGyroZ_vmu931().map(Magnitude.PER_SECOND) //
       );
-    } else //
-    if (channel.equals(CHANNEL_LIDAR))
-      lidarLocalizationCore.velodyneDecoder.lasers(byteBuffer);
     else //
     if (channel.equals(GokartPoseChannel.INSTANCE.channel())) {
-      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
-      GokartPoseEvent gokartPoseUpdat = lidarLocalizationCore.createPoseEvent();
-      listeners.forEach(listener -> listener.getEvent(gokartPoseUpdat));
+      GokartPoseEvent gokartPoseEvent = lidarLocalizationCore.createPoseEvent();
       tableBuilder.appendRow( //
           Magnitude.SECOND.apply(time), //
-          gokartPoseEvent.asVector(), //
-          gokartPoseUpdat.asVector());
+          gokartPoseEvent.asVector());
     }
-  }
-
-  @Override // from LidarRayBlockListener
-  public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-    lidarLocalizationCore.run();
-  }
-
-  @Override // from OfflineTableSupplier
-  public Tensor getTable() {
-    return tableBuilder.toTable();
   }
 
   public static void main(String[] args) throws IOException {
@@ -96,16 +66,17 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     for (File folder : list) {
       System.out.println(folder.getName());
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder, "log.lcm");
-      LidarLocalizationTable lidarLocalizationTable = new LidarLocalizationTable();
-      lidarLocalizationTable.listeners.add(new GokartPoseListener() {
+      LidarLocalizationOffline lidarLocalizationOffline = new LidarLocalizationOffline(gokartLogInterface.pose());
+      lidarLocalizationOffline.gokartPoseListeners.add(new GokartPoseListener() {
         @Override
         public void getEvent(GokartPoseEvent gokartPoseEvent) {
           System.out.println(gokartPoseEvent.getQuality());
         }
       });
-      lidarLocalizationTable.lidarLocalizationCore.resetPose(gokartLogInterface.pose());
-      OfflineLogPlayer.process(gokartLogInterface.file(), lidarLocalizationTable);
-      Export.of(new File(dest, folder.getName() + ".csv.gz"), lidarLocalizationTable.getTable().map(CsvFormat.strict()));
+      LidarLocalizationTable lidarLocalizationTable = //
+          new LidarLocalizationTable(lidarLocalizationOffline.lidarLocalizationCore());
+      OfflineLogPlayer.process(gokartLogInterface.file(), lidarLocalizationOffline);
+      Export.of(new File(dest, folder.getName() + ".csv.gz"), lidarLocalizationTable.tableBuilder.toTable().map(CsvFormat.strict()));
       Export.of(new File(dest, folder.getName() + "_odom.csv.gz"), lidarLocalizationTable.tableBuilderOdometry.toTable().map(CsvFormat.strict()));
     }
   }
