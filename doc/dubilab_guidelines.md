@@ -10,23 +10,23 @@ These guidelines are indented to ensure a safe operation of the gokart for human
 ## Begin of Day
 
 * communicate experiments to be conducted during the day
-* agree on order of experiments for instance due number of people required, or obstacle layout
+* agree on order of experiments for instance due to required number of people, or obstacle layout
 * write schedule on whiteboard
 
 ## Setup of gokart PC
 
 * run `./setup_lcm` in the home directory
 * connect to ETH wifi
-* activate the Davis 240C using `JAERViewer.java`
+* activate `JAERViewer.java` (for readout of the Davis 240C camera)
 
 ## Operations
 
 ### Before
 
 * ensure that no loose parts are on the gokart
-* ensure that no cables are sticking out
+* ensure that no cables are sticking out of the chassis
 * clear rock debris from the track. Loose rocks may impact against the IMU, which deteriorates the state estimation.
-* after plugging in the USB cable to the gokart PC wait ~20 seconds before starting `QuickStartGui.java`. This delay is required for the system to connect to the IMU.
+* after plugging in the USB cable to the gokart PC wait ~20 seconds before starting `QuickStartGui.java`. This delay is required for the system to detect the IMU at `/dev/ttyACM0`.
 
 ### After
 
@@ -34,7 +34,8 @@ These guidelines are indented to ensure a safe operation of the gokart for human
 * switch off the electronics on the gokart: the switch on the box, the emergency stop button, and the main power switch of the gokart
 * disconnect the steering battery and bring the battery to the charger on the table
 * charge the steering battery and laptop after each use
-* ensure that the steering battery charges displays `CHARGING` while charging
+* ensure that the steering battery charger displays `CHARGING` while charging
+* charding the gokart battery requires the main switch to be on, and the emergency stop to be pressed. When charging, the current is indicated on the display of the charging station.
 
 ## End of Day
 
@@ -42,6 +43,5 @@ Before leaving the hangar
 
 * ensure that all log files have been uploaded to NAS in the folder `gokartlogs/YYYYMMDD`. The upload rate is about 4 MB/s.
 * ensure that all batteries (gokart, laptop, steering) are fully charged
-* unplug the gokart battery charger from the power supply
+* unplug the gokart battery charging station from the power supply
 * lock container, cabinets, and hangar doors
-
