@@ -3,7 +3,7 @@
 These guidelines are indented to ensure a safe operation of the gokart for human and machine. Please keep in mind, that several student projects besides your own depend on the operability of the gokart. Preserving the hardware is vital to most of these projects.
 
 * only operate the gokart when at least two adult persons are present
-* the driver always wears a helmet and have his seatbelt fastened
+* the driver always wears a helmet and has the seatbelt fastened
 * do not delete log files from the gokart pc (even after they have been uploaded to the NAS)
 * when in doubt, ask a more experienced person for instructions
 
