@@ -18,13 +18,16 @@ import ch.ethz.idsc.tensor.red.ScalarSummaryStatistics;
 import ch.ethz.idsc.tensor.red.Variance;
 import ch.ethz.idsc.tensor.sca.N;
 
+/** code used to generate report "LCM Channel Timings"
+ * https://github.com/idsc-frazzoli/retina/files/1801729/20180205_channel_timings.pdf */
 public class ChannelTimingTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Map<String, Scalar> timings = new TreeMap<>();
   private final Map<String, Tensor> deltas = new TreeMap<>();
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+    // TODO JPH implementation clumsy: should store time and only compute differences in getTable()
     if (timings.containsKey(channel)) {
       Scalar last = timings.get(channel);
       deltas.get(channel).append(Magnitude.SECOND.apply(time.subtract(last)));
@@ -34,7 +37,7 @@ public class ChannelTimingTable implements OfflineTableSupplier {
     timings.put(channel, N.DOUBLE.apply(time));
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     for (Entry<String, Tensor> entry : deltas.entrySet()) {
       Scalar key = StringScalar.of(entry.getKey());

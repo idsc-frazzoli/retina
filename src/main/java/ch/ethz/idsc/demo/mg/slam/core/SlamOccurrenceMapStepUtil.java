@@ -52,11 +52,11 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
   }
 
   /** updates the normalization map
+   * function is not used due to computational complexity
    * 
    * @param currentExpectedPose
    * @param lastExpectedPose
    * @param normalizationMap */
-  // TODO unused due to computational complexity
   public static void updateNormalizationMap(Tensor currentExpectedPose, Tensor lastExpectedPose, MapProvider normalizationMap,
       ImageToGokartInterface imageToGokartLookup, GokartToImageInterface gokartToImageUtil, int width, int height, double lookAheadDistance) {
     // use of hash set since we want a list of unique cells
