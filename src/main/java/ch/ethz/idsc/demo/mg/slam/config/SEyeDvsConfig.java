@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.config;
 
-import ch.ethz.idsc.demo.mg.LogFileLocations;
+import ch.ethz.idsc.demo.mg.MgLogFileLocations;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.seye.SeyeAeDvsLcmClient;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   public SEyeDvsConfig() {
     // log file parameters
     /** must match name in LogFileLocations and be an extract of a recording with the siliconEye */
-    logFileLocations = LogFileLocations.DUBISiliconEyeG;
+    logFileLocations = MgLogFileLocations.DUBISiliconEyeG;
     width = RealScalar.of(320);
     height = RealScalar.of(264);
     channel_DVS = "seye.overview.aedvs";

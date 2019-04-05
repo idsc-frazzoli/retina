@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** export of various content to determine accuracy of measurements.
  * export data for system identification */
-public class ComprehensiveLogTableExport {
+/* package */ class ComprehensiveLogTableExport {
   private static final Scalar STEERINGPERIOD = Quantity.of(0.01, SI.SECOND);
   private static final Scalar POWERPERIOD = Quantity.of(0.01, SI.SECOND);
   private static final Scalar OFFSET = Quantity.of(0, SI.SECOND);

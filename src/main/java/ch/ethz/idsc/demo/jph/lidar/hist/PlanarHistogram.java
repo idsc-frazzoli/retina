@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-class PlanarHistogram implements LidarRayDataListener {
+/* package */ class PlanarHistogram implements LidarRayDataListener {
   public static final int MID = 2000;
   public static final int WID = 4001;
   // ---

@@ -13,7 +13,7 @@ import ch.ethz.idsc.retina.util.io.BGR3ByteAnimationWriter;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-enum MappingAnalysisVideo {
+/* package */ enum MappingAnalysisVideo {
   ;
   public static void main(String[] args) throws InterruptedException, Exception {
     // File file = YnLogFileLocator.file(GokartLogFile._20180503T160522_16144bb6);

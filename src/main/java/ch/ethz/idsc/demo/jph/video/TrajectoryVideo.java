@@ -70,7 +70,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private Tensor times = Tensors.empty();
   private List<TrajectorySample> trajectory;
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);

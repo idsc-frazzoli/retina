@@ -6,7 +6,7 @@ import java.io.IOException;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
-enum Urg04lxLcmLogPlayer {
+/* package */ enum Urg04lxLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig cfg = new LogPlayerConfig();

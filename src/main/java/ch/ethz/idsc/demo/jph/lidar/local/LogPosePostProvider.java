@@ -14,7 +14,8 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.pose.LogPosePostInject;
 import ch.ethz.idsc.tensor.Scalar;
 
-public class LogPosePostProvider {
+/* package */ enum LogPosePostProvider {
+  ;
   public static void main(String[] args) throws Exception {
     File root = new File("/media/datahaki/data/gokart/cuts/20190311");
     File dest = new File("/media/datahaki/data/gokart/localization/20190311");

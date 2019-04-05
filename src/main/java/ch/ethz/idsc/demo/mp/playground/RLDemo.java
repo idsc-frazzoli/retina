@@ -15,7 +15,7 @@ import ch.ethz.idsc.subare.core.td.SarsaType;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public class RLDemo implements DemoInterface {
+/* package */ class RLDemo implements DemoInterface {
   @Override
   public BaseFrame start() {
     OwlyAnimationFrame owlyAnimationFrame = new OwlyAnimationFrame();

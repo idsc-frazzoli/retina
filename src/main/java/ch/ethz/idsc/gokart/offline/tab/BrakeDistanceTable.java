@@ -13,7 +13,6 @@ import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
-import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalize;
 import ch.ethz.idsc.gokart.offline.slam.PoseScatterImage;
@@ -38,10 +37,10 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   private final OfflineLocalize offlineLocalize;
   // ---
-  private RimoGetEvent rge;
-  private LinmotGetEvent lge;
+  private RimoGetEvent rimoGetEvent;
+  private LinmotGetEvent linmotGetEvent;
 
-  public BrakeDistanceTable(GokartLogInterface gokartLogInterface) {
+  public BrakeDistanceTable(Tensor pose) {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     // LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
     LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
@@ -52,26 +51,26 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
     velodyneDecoder.addRayListener(lidarRotationProvider);
     PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
     ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
-    offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), gokartLogInterface.pose(), scatterImage);
+    offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), pose, scatterImage);
     lidarAngularFiringCollector.addListener(offlineLocalize);
   }
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
-      rge = new RimoGetEvent(byteBuffer);
+      rimoGetEvent = new RimoGetEvent(byteBuffer);
     } else //
     if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
-      lge = new LinmotGetEvent(byteBuffer);
+      linmotGetEvent = new LinmotGetEvent(byteBuffer);
       // System.out.println(offlineLocalize.getPositionVector());
-      if (Objects.nonNull(rge)) {
+      if (Objects.nonNull(rimoGetEvent)) {
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //
             offlineLocalize.getPositionVector(), //
-            lge.getActualPosition().map(Magnitude.METER), //
-            lge.getDemandPosition().map(Magnitude.METER), //
-            rge.getAngularRate_Y_pair().map(Magnitude.PER_SECOND), //
-            ChassisGeometry.GLOBAL.odometryTangentSpeed(rge).map(Magnitude.VELOCITY) //
+            linmotGetEvent.getActualPosition().map(Magnitude.METER), //
+            linmotGetEvent.getDemandPosition().map(Magnitude.METER), //
+            rimoGetEvent.getAngularRate_Y_pair().map(Magnitude.PER_SECOND), //
+            ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent).map(Magnitude.VELOCITY) //
         );
       }
     } else //
@@ -81,7 +80,7 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
     }
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tableBuilder.toTable();
   }

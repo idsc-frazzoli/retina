@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam.config;
 
-import ch.ethz.idsc.demo.mg.LogFileLocations;
+import ch.ethz.idsc.demo.mg.MgLogFileLocations;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /* package */ class DavisDvsConfig extends DvsConfig {
   public DavisDvsConfig() {
     /** must match name in LogFileLocations and be an extract of a recording with the davis */
-    logFileLocations = LogFileLocations.DUBI20a;
+    logFileLocations = MgLogFileLocations.DUBI20a;
     width = RealScalar.of(240);
     height = RealScalar.of(180);
     dvsLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);

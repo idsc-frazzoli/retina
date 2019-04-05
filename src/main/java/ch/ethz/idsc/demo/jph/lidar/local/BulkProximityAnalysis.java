@@ -7,9 +7,9 @@ import java.io.IOException;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.io.Export;
 
-enum BulkProximityAnalysis {
+/* package */ enum BulkProximityAnalysis {
   ;
-  static final File OUTPUT = new File("/media/datahaki/media/ethz/gokartexport/vlp16artifacts");
+  private static final File OUTPUT = new File("/media/datahaki/media/ethz/gokartexport/vlp16artifacts");
 
   static void process(File file, File out) throws IOException {
     ProximityAnalysis proximityAnalysis = new ProximityAnalysis();

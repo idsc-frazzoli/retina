@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
 
-enum AccumulateToGif {
+/* package */ enum AccumulateToGif {
   ;
   public static void of(DvsEventSupplier dvsEventSupplier, File gifFile, int window_us) throws Exception {
     of(dvsEventSupplier, gifFile, window_us, window_us);
