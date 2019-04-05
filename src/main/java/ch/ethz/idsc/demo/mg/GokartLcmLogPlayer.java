@@ -10,7 +10,7 @@ import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
 // to test live version of SLAM algorithm
-enum GokartLcmLogPlayer {
+/* package */ enum GokartLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     SlamDvsConfig.eventCamera = EventCamera.DAVIS;

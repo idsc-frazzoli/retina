@@ -8,14 +8,14 @@ import junit.framework.TestCase;
 
 public class LogFileLocationsTest extends TestCase {
   public void testSimple() {
-    assertNotNull(LogFileLocations.DUBI12a.calibration());
-    assertNotNull(LogFileLocations.DUBI14b.calibration());
-    assertNotNull(LogFileLocations.DUBI15c.calibration());
+    assertNotNull(MgLogFileLocations.DUBI12a.calibration());
+    assertNotNull(MgLogFileLocations.DUBI14b.calibration());
+    assertNotNull(MgLogFileLocations.DUBI15c.calibration());
   }
 
   public void testDatahaki() {
     if (UserName.is("datahaki")) {
-      File file = LogFileLocations.DUBI15a.getFile();
+      File file = MgLogFileLocations.DUBI15a.getFile();
       assertTrue(file.isFile());
     }
   }

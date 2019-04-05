@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.io.UserName;
 
-public enum LogFileLocations {
+public enum MgLogFileLocations {
   /** extracted part of DUBI4 log file */
   DUBI4a("20180307T154859_0cd18c6bExtracted.lcm"), //
   /** 22sec, only noise */
@@ -199,7 +199,7 @@ public enum LogFileLocations {
   // ---
   private final String filename;
 
-  private LogFileLocations(String filename) {
+  private MgLogFileLocations(String filename) {
     this.filename = filename;
   }
 

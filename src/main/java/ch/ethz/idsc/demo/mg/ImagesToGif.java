@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import ch.ethz.idsc.retina.util.img.ImageFilesAnimation;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-enum ImagesToGif {
+/* package */ enum ImagesToGif {
   ;
   public static void main(String[] args) throws Exception {
     File dir = HomeDirectory.Pictures("gif", "slamTest");
