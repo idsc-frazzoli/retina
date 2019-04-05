@@ -120,7 +120,7 @@ public class GokartLcmLogCutter {
       pressed = null;
     }
   };
-  boolean csvhtml = false;
+  boolean csv = false;
   private final ActionListener actionListener = new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
@@ -168,11 +168,12 @@ public class GokartLcmLogCutter {
               exception.printStackTrace();
             }
           // ---
-          for (File file : lcmLogFileCutter.files()) {
-            File dest_folder = new File(file.getParentFile(), "csvhtml");
-            dest_folder.mkdir();
-            DynamicsConversion.single(file.getParentFile(), "log.lcm", dest_folder);
-          }
+          if (csv)
+            for (File file : lcmLogFileCutter.files()) {
+              File dest_folder = new File(file.getParentFile(), "csv");
+              dest_folder.mkdir();
+              DynamicsConversion.single(file.getParentFile(), "log.lcm", dest_folder);
+            }
         } catch (Exception exception) {
           exception.printStackTrace();
         }
@@ -204,9 +205,9 @@ public class GokartLcmLogCutter {
       jToolBar.setFloatable(false);
       jToolBar.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
       {
-        JCheckBox jCheckBox = new JCheckBox("csv and html");
-        jCheckBox.setSelected(csvhtml);
-        jCheckBox.addActionListener(actionEvent -> csvhtml = jCheckBox.isSelected());
+        JCheckBox jCheckBox = new JCheckBox("csv");
+        jCheckBox.setSelected(csv);
+        jCheckBox.addActionListener(actionEvent -> csv = jCheckBox.isSelected());
         jToolBar.add(jCheckBox);
       }
       {
