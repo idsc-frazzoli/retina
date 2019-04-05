@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.log;
+package ch.ethz.idsc.gokart.offline.gui;
 
 import java.awt.BasicStroke;
 import java.io.File;
@@ -46,7 +46,7 @@ import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 
-/* package */ class HtmlLogReport {
+public class HtmlLogReport {
   private static final int WIDTH = 854;
   private static final int HEIGHT = 360; // 480;
 
@@ -461,10 +461,5 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
     visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("autonomous button");
     visualSet.add(domain, tensor.get(Tensor.ALL, 5)).setLabel("ADC5 (not used)");
     exportListPlot("labjackAdc.png", visualSet);
-  }
-
-  public static void main(String[] args) throws IOException {
-    // HtmlLogReport.generate(new File(StaticHelper.DEST, "20190208/20190208T145312_04"));
-    HtmlLogReport.generate(new File(StaticHelper.DEST, "20190211/20190211T100755_00"));
   }
 }

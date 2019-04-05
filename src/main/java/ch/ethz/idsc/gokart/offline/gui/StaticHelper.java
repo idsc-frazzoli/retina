@@ -1,7 +1,6 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.log;
+package ch.ethz.idsc.gokart.offline.gui;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,8 +40,8 @@ import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
   static final String GOKART_POSE_SMOOTH = "gokart.pose.smooth";
   static final String LOG_START_TIME = "logStartTime_us.txt";
   // ---
-  static final File CUTS = new File("/media/datahaki/data/gokart/cuts");
-  static final File DEST = new File("/media/datahaki/data/gokart/dynamics");
-  static final File DEST2 = new File("/media/datahaki/data/gokart/freeze_exp");
+  // static final File CUTS = new File("/media/datahaki/data/gokart/cuts");
+  // static final File DEST = new File("/media/datahaki/data/gokart/dynamics");
+  // static final File DEST2 = new File("/media/datahaki/data/gokart/freeze_exp");
   static final String LOG_LCM = "log.lcm";
 }

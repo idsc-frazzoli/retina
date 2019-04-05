@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.log;
+package ch.ethz.idsc.demo.jph.lidar.local;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /* package */ enum EphemeralGokartPose {
   ;
   public static void main(String[] args) throws IOException {
-    File root = new File(StaticHelper.CUTS, "20190321");
+    File root = new File("/media/datahaki/data/gokart/cuts", "20190321");
     for (File folder : root.listFiles())
       if (folder.isDirectory()) {
         File file = new File(folder, StaticHelper.POST_LCM);
