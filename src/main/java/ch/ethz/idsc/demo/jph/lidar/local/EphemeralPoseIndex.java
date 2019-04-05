@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.log;
+package ch.ethz.idsc.demo.jph.lidar.local;
 
 import java.io.File;
 import java.io.IOException;

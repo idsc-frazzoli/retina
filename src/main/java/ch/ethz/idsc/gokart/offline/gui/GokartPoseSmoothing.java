@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.log;
+package ch.ethz.idsc.gokart.offline.gui;
 
 import ch.ethz.idsc.sophus.filter.GeodesicCenter;
 import ch.ethz.idsc.sophus.filter.GeodesicCenterFilter;

@@ -6,13 +6,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* package */ enum DynamicsConversionBulk {
+import ch.ethz.idsc.gokart.offline.gui.DynamicsConversion;
+import ch.ethz.idsc.gokart.offline.gui.HtmlLogReport;
+
+public enum DynamicsConversionBulk {
   ;
-  public static void main(String[] args) {
-    final File folder = new File(StaticHelper.CUTS, "20190321");
+  public static void all(File folder) {
     for (File cut : Stream.of(folder.listFiles()).sorted().collect(Collectors.toList())) {
       System.out.println(cut);
-      Optional<File> optional = DynamicsConversion.single(cut, StaticHelper.POST_LCM);
+      Optional<File> optional = DynamicsConversion.single(cut, StaticHelper.LOG_LCM, StaticHelper.DEST);
       if (optional.isPresent())
         try {
           HtmlLogReport.generate(optional.get());
@@ -20,5 +22,9 @@ import java.util.stream.Stream;
           exception.printStackTrace();
         }
     }
+  }
+
+  public static void main(String[] args) {
+    all(new File(StaticHelper.CUTS, "20190401"));
   }
 }
