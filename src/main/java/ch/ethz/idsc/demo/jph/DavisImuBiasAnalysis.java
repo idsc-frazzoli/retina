@@ -24,10 +24,10 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
   private static final int LIMIT = 60 * 1000;
   // ---
-  int count = 0;
-  TableBuilder tableBuilder = new TableBuilder();
+  private int count = 0;
+  private final TableBuilder tableBuilder = new TableBuilder();
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (count < LIMIT) {
       if (CHANNEL_DAVIS_IMU.equals(channel)) {
@@ -40,7 +40,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       throw new RuntimeException("EOF");
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tableBuilder.toTable();
   }
