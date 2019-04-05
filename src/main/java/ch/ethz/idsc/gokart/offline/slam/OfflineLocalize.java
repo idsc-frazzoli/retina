@@ -67,8 +67,6 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
         ? ZERO_RATE
         : Mean.of(gyro_y).Get();
     gyro_y = Tensors.empty();
-    // TODO use imu tracker instead
-    // System.out.println("gyro " + mean);
     return mean;
   }
 
