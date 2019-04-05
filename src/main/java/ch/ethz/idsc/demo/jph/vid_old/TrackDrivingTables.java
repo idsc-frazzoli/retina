@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.video;
+package ch.ethz.idsc.demo.jph.vid_old;
 
 import java.io.File;
 import java.io.IOException;

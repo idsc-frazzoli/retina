@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 
-enum PcapParseDemo {
+/* package */ enum PcapParseDemo {
   ;
   public static void main(String[] args) throws Exception {
     @SuppressWarnings("unused")

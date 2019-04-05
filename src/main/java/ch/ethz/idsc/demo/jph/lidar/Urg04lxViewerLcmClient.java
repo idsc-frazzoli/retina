@@ -6,7 +6,7 @@ import ch.ethz.idsc.gokart.lcm.lidar.Urg04lxLcmHandler;
 import ch.ethz.idsc.retina.lidar.urg04lx.Urg04lxRangeProvider;
 import ch.ethz.idsc.retina.lidar.urg04lx.app.Urg04lxFrame;
 
-enum Urg04lxViewerLcmClient {
+/* package */ enum Urg04lxViewerLcmClient {
   ;
   public static void main(String[] args) {
     Urg04lxFrame urg04lxFrame = new Urg04lxFrame();

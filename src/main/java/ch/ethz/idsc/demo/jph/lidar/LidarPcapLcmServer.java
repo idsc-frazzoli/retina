@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 import ch.ethz.idsc.retina.util.io.PcapRealtimePlayback;
 
-enum LidarPcapLcmServer {
+/* package */ enum LidarPcapLcmServer {
   ;
   /** realtime factor */
   private static final double SPEED = 1.0;

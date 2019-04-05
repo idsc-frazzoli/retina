@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.sca.Increment;
 
-class TemporalHistogram implements LidarRayDataListener {
+/* package */ class TemporalHistogram implements LidarRayDataListener {
   public static final int MID = 2000;
   public static final int WID = 4001;
   // ---

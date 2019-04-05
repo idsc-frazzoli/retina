@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16PanoramaProvider;
 
 /** displays hdl32e live data stream as depth and intensity panorama */
-enum Vlp16LcmPanoramaDemo {
+/* package */ enum Vlp16LcmPanoramaDemo {
   ;
   public static void main(String[] args) throws Exception {
     VelodyneModel velodyneModel = VelodyneModel.VLP16;

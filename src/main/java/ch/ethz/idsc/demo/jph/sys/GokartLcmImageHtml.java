@@ -23,15 +23,15 @@ import ch.ethz.idsc.subare.util.HtmlUtf8;
         file.getName()));
   }
 
+  @Override // from AutoCloseable
+  public void close() throws Exception {
+    htmlUtf8.close();
+  }
+
   public static void main(String[] args) throws Exception {
     File index = new File(GokartLcmImageGenerator.DIRECTORY.getParentFile(), "index.html");
     try (GokartLcmImageHtml gokartLcmImageHtml = new GokartLcmImageHtml(index)) {
       Stream.of(GokartLcmImageGenerator.DIRECTORY.listFiles()).sorted().forEach(gokartLcmImageHtml::process);
     }
-  }
-
-  @Override
-  public void close() throws Exception {
-    htmlUtf8.close();
   }
 }

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.video;
+package ch.ethz.idsc.demo.jph.vid_old;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +13,11 @@ import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionStepsMessage;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.tensor.Scalar;
 
+// class is likely to be obsolete in the future
+@Refactor
 /* package */ class ControlAndPredictionStepsIndex implements OfflineLogListener {
   /** @param file
    * @return navigable map with quantity with unit [s] as key type
