@@ -26,17 +26,10 @@ public enum DynamicsConversion {
   /** @param cut folder
    * @param filename
    * @return */
-  public static Optional<File> single(File cut, String filename, File dest_folder) {
+  public static Optional<File> single(File cut, String filename, File target) {
     File file = new File(cut, filename);
     if (!file.isFile())
       throw new RuntimeException("" + file);
-    // ---
-    File folder = new File(dest_folder, cut.getName().substring(0, 8)); // date e.g. 20190208
-    folder.mkdir();
-    File target = new File(folder, cut.getName());
-    if (target.isDirectory())
-      return Optional.empty();
-    // ---
     target.mkdir();
     Map<SingleChannelInterface, OfflineTableSupplier> map = StaticHelper.SINGLE_CHANNEL_INTERFACES.stream() //
         .collect(Collectors.toMap(Function.identity(), SingleChannelTable::of));

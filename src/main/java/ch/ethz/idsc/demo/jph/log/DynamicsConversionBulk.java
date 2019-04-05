@@ -9,12 +9,17 @@ import java.util.stream.Stream;
 import ch.ethz.idsc.gokart.offline.gui.DynamicsConversion;
 import ch.ethz.idsc.gokart.offline.gui.HtmlLogReport;
 
-public enum DynamicsConversionBulk {
+/* package */ enum DynamicsConversionBulk {
   ;
   public static void all(File folder) {
     for (File cut : Stream.of(folder.listFiles()).sorted().collect(Collectors.toList())) {
       System.out.println(cut);
-      Optional<File> optional = DynamicsConversion.single(cut, StaticHelper.LOG_LCM, StaticHelper.DEST);
+      File folder2 = new File(StaticHelper.DEST, cut.getName().substring(0, 8)); // date e.g. 20190208
+      folder2.mkdir();
+      File target = new File(folder2, cut.getName());
+      if (target.isDirectory())
+        return;
+      Optional<File> optional = DynamicsConversion.single(cut, StaticHelper.LOG_LCM, target);
       if (optional.isPresent())
         try {
           HtmlLogReport.generate(optional.get());
