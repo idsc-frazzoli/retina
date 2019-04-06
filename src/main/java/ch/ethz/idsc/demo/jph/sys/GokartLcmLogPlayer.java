@@ -15,7 +15,7 @@ import lcm.logging.LogPlayerConfig;
     LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
     File file;
     // file = DatahakiLogFileLocator.file(GokartLogFile._20190311T173809_da0bb9b9);
-    file = new File("/media/datahaki/data/gokart/cuts/20190311/20190311T173809_02/post.lcm");
+    file = new File("/media/datahaki/data/gokart/cuts/20190401/20190401T115537_00", "log.lcm");
     // file = new File("/media/datahaki/media/ethz/gokart/topic/trackid", "changingtrack.lcm");
     // file = new File("/media/datahaki/data/gokart/cuts/20190318/20190318T142605_08/post.lcm");
     logPlayerConfig.logFile = file.toString();

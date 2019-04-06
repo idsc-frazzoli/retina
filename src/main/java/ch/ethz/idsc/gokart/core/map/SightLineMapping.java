@@ -16,11 +16,17 @@ import ch.ethz.idsc.tensor.Tensor;
 /** create an obstacle map based on lidar sight lines */
 public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
   public static SightLineMapping defaultObstacle() {
-    return new SightLineMapping(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), 1000, BlindSpots.defaultGokart());
+    return new SightLineMapping( //
+        SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
+        1000, //
+        BlindSpots.defaultGokart());
   }
 
   public static SightLineMapping defaultTrack() {
-    return new SightLineMapping(TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), 200, BlindSpots.defaultGokart());
+    return new SightLineMapping( //
+        TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
+        200, //
+        BlindSpots.defaultGokart());
   }
 
   // ---
@@ -69,13 +75,12 @@ public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
         Tensor polygon = SightLineHandler.polygon(points);
         SightLineHandler.closeSector(polygon);
         occupancyGrid.updateMap(polygon);
-      } else {
+      } else
         try {
           Thread.sleep(waitMillis);
-        } catch (Exception e) {
+        } catch (Exception exception) {
           // ---
         }
-      }
     }
   }
 }

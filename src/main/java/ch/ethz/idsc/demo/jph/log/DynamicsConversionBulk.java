@@ -2,11 +2,10 @@
 package ch.ethz.idsc.demo.jph.log;
 
 import java.io.File;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ch.ethz.idsc.gokart.offline.gui.DynamicsConversion;
+import ch.ethz.idsc.gokart.offline.gui.ChannelCsvExport;
 import ch.ethz.idsc.gokart.offline.gui.HtmlLogReport;
 
 /* package */ enum DynamicsConversionBulk {
@@ -19,13 +18,12 @@ import ch.ethz.idsc.gokart.offline.gui.HtmlLogReport;
       File target = new File(folder2, cut.getName());
       if (target.isDirectory())
         return;
-      Optional<File> optional = DynamicsConversion.single(cut, StaticHelper.LOG_LCM, target);
-      if (optional.isPresent())
-        try {
-          HtmlLogReport.generate(optional.get());
-        } catch (Exception exception) {
-          exception.printStackTrace();
-        }
+      try {
+        ChannelCsvExport.of(new File(cut, StaticHelper.LOG_LCM), target);
+        HtmlLogReport.generate(target);
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
     }
   }
 

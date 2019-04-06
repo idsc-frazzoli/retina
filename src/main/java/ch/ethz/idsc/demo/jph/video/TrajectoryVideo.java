@@ -19,7 +19,7 @@ import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
-import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryEvents;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
@@ -146,7 +146,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       // ---
       trail = Tensors.empty();
       times = Tensors.empty();
-      trajectory = TrajectoryLcmClient.trajectory(byteBuffer);
+      trajectory = TrajectoryEvents.trajectory(byteBuffer);
     }
   }
 

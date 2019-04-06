@@ -172,7 +172,7 @@ public class GokartLcmLogCutter {
             for (File file : lcmLogFileCutter.files()) {
               File dest_folder = new File(file.getParentFile(), "csv");
               dest_folder.mkdir();
-              DynamicsConversion.single(file.getParentFile(), "log.lcm", dest_folder);
+              ChannelCsvExport.of(new File(file.getParentFile(), "log.lcm"), dest_folder);
             }
         } catch (Exception exception) {
           exception.printStackTrace();

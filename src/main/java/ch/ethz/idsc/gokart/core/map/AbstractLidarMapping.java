@@ -19,8 +19,8 @@ public abstract class AbstractLidarMapping extends AbstractLidarProcessor implem
   protected final SpacialXZObstaclePredicate spacialXZObstaclePredicate;
 
   /* package */ AbstractLidarMapping(SpacialXZObstaclePredicate spacialXZObstaclePredicate, int waitMillis) {
-    this.waitMillis = waitMillis;
     this.spacialXZObstaclePredicate = spacialXZObstaclePredicate;
+    this.waitMillis = waitMillis;
   }
 
   @Override // from StartAndStoppable
