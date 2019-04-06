@@ -260,9 +260,9 @@ public class PresenterLcmModule extends AbstractModule {
     vlp16LcmHandler.stopSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
     davisLcmClient.stopSubscriptions();
-    // sightLines.stop();
-    // sightLineMapping.stop();
     mpcControlUpdateLcmClient.stopSubscriptions();
+    sightLines.stop();
+    sightLineMapping.stop();
   }
 
   public static void main(String[] args) throws Exception {
