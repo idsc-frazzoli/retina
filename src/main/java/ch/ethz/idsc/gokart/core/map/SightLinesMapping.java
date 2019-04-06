@@ -14,16 +14,16 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** create an obstacle map based on lidar sight lines */
-public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
-  public static SightLineMapping defaultObstacle() {
-    return new SightLineMapping( //
+public class SightLinesMapping extends AbstractMapping<SightLineOccupancyGrid> {
+  public static SightLinesMapping defaultObstacle() {
+    return new SightLinesMapping( //
         SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
         1000, //
         BlindSpots.defaultGokart());
   }
 
-  public static SightLineMapping defaultTrack() {
-    return new SightLineMapping( //
+  public static SightLinesMapping defaultTrack() {
+    return new SightLinesMapping( //
         TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
         200, //
         BlindSpots.defaultGokart());
@@ -33,7 +33,7 @@ public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
   private final ErodedMap map = ErodedMap.of(occupancyGrid, MappingConfig.GLOBAL.obsRadius);
   private final BlindSpots blindSpots;
 
-  private SightLineMapping(SpacialXZObstaclePredicate predicate, int waitMillis, BlindSpots blindSpots) {
+  private SightLinesMapping(SpacialXZObstaclePredicate predicate, int waitMillis, BlindSpots blindSpots) {
     super(predicate, waitMillis, MappingConfig.GLOBAL.createSightLineOccupancyGrid());
     this.blindSpots = blindSpots;
     // ---
@@ -48,14 +48,12 @@ public class SightLineMapping extends AbstractMapping<SightLineOccupancyGrid> {
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSectorProvider);
   }
 
-  // from AbstractMapping
-  @Override
+  @Override // from AbstractMapping
   public void prepareMap() {
     map.genObstacleMap();
   }
 
-  // from AbstractMapping
-  @Override
+  @Override // from AbstractMapping
   public ImageGrid getMap() {
     return map;
   }

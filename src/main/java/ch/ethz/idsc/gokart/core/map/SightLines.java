@@ -26,6 +26,11 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** class interprets sensor data from lidar */
 public class SightLines extends AbstractLidarMapping implements RenderInterface {
+  public static SightLines defaultGokart() {
+    return new SightLines(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(), 200);
+  }
+
+  // ---
   private final LidarPolarFiringCollector lidarPolarFiringCollector = //
       new LidarPolarFiringCollector(LIDAR_SAMPLES, 3);
   private final Vlp16PolarProvider lidarPolarProvider = new Vlp16PolarProvider();
@@ -34,10 +39,6 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
   private final TreeSet<Tensor> pointsPolar = //
       new TreeSet<>(Comparator.comparingDouble(point -> point.Get(0).number().doubleValue()));
   private final BlindSpots blindSpots;
-
-  public static SightLines defaultGokart() {
-    return new SightLines(SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), BlindSpots.defaultGokart(), 200);
-  }
 
   public SightLines(SpacialXZObstaclePredicate predicate, BlindSpots blindSpots, int waitMillis) {
     super(predicate, waitMillis);

@@ -12,8 +12,8 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.SightLineMapping;
 import ch.ethz.idsc.gokart.core.map.SightLines;
+import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
@@ -74,7 +74,7 @@ public class PresenterLcmModule extends AbstractModule {
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   // TODO probably remove again
-  private final SightLineMapping sightLineMapping = SightLineMapping.defaultTrack();
+  private final SightLinesMapping sightLineMapping = SightLinesMapping.defaultTrack();
   private final SightLines sightLines = SightLines.defaultGokart();
 
   @Override // from AbstractModule
