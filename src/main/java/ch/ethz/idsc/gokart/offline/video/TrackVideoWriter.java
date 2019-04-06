@@ -24,7 +24,7 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
   private final String poseChannel;
   // ---
   private final Mp4AnimationWriter mp4AnimationWriter;
-  private final OfflineRender offlineRender;
+  private final TrackVideoRender trackVideoRender;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
 
@@ -46,7 +46,7 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
         file.toString(), //
         dimension, //
         Magnitude.PER_SECOND.toInt(trackVideoConfig.frameRate));
-    offlineRender = new OfflineRender(model2pixel, poseChannel);
+    trackVideoRender = new TrackVideoRender(model2pixel, poseChannel);
     bufferedImage = new BufferedImage( //
         dimension.width, //
         dimension.height, //
@@ -56,10 +56,10 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    offlineRender.event(time, channel, byteBuffer);
+    trackVideoRender.event(time, channel, byteBuffer);
     if (channel.equals(poseChannel)) {
       graphics.drawImage(background, 0, 0, null);
-      offlineRender.render(GeometricLayer.of(model2pixel), graphics);
+      trackVideoRender.render(GeometricLayer.of(model2pixel), graphics);
       graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
       graphics.setColor(Color.GRAY);
       graphics.drawString(String.format("time :%9s", time.map(Round._2)), 0, 25);

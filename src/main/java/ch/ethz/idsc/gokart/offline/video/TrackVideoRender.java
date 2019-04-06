@@ -10,6 +10,7 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionStepsMessage;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryEvents;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
@@ -28,6 +29,7 @@ import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ren.TrajectoryRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -38,7 +40,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/* package */ class OfflineRender implements OfflineLogListener, RenderInterface {
+/* package */ class TrackVideoRender implements OfflineLogListener, RenderInterface {
   private final MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(20);
   private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
   private final DriftLinesRender driftLinesRender = new DriftLinesRender(100);
@@ -46,12 +48,13 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final AccelerationRender accelerationRender;
   private final GroundSpeedRender groundSpeedRender;
   private final TachometerMustangDash tachometerMustangDash;
+  private final TrajectoryRender trajectoryRender = new TrajectoryRender();
   private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
   private final String poseChannel;
   // ---
   private LinmotGetEvent linmotGetEvent;
 
-  public OfflineRender(Tensor model2pixel, String poseChannel) {
+  public TrackVideoRender(Tensor model2pixel, String poseChannel) {
     this.poseChannel = poseChannel;
     accelerationRender = new AccelerationRender(50, //
         Inverse.of(model2pixel) //
@@ -95,6 +98,9 @@ import ch.ethz.idsc.tensor.sca.Round;
       mpcPredictionSequenceRender.getControlAndPredictionSteps(controlAndPredictionSteps);
       mpcPredictionRender.getControlAndPredictionSteps(controlAndPredictionSteps);
     } else //
+    if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME))
+      trajectoryRender.trajectory(TrajectoryEvents.trajectory(byteBuffer));
+    else //
     if (channel.equals(poseChannel)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       driftLinesRender.getEvent(gokartPoseEvent);
@@ -110,6 +116,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     mpcPredictionRender.render(geometricLayer, graphics);
     driftLinesRender.render(geometricLayer, graphics);
     gokartRender.render(geometricLayer, graphics);
+    trajectoryRender.render(geometricLayer, graphics);
     extrudedFootprintRender.render(geometricLayer, graphics);
     accelerationRender.render(geometricLayer, graphics);
     groundSpeedRender.render(geometricLayer, graphics);
