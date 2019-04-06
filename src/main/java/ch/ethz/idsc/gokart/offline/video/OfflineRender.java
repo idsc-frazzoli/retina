@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.video;
+package ch.ethz.idsc.gokart.offline.video;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -38,7 +38,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class OfflineRender implements OfflineLogListener, RenderInterface {
+/* package */ class OfflineRender implements OfflineLogListener, RenderInterface {
   private final MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(20);
   private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
   private final DriftLinesRender driftLinesRender = new DriftLinesRender(100);

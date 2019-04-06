@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.video;
+package ch.ethz.idsc.gokart.offline.video;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,9 +9,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -30,7 +32,10 @@ public class TrackVideoRender implements OfflineLogListener, AutoCloseable {
     this.background = background;
     this.poseChannel = poseChannel;
     Dimension dimension = new Dimension(background.getWidth(), background.getHeight());
-    mp4AnimationWriter = new Mp4AnimationWriter(file.toString(), dimension, StaticHelper.FRAMERATE);
+    mp4AnimationWriter = new Mp4AnimationWriter( //
+        file.toString(), //
+        dimension, //
+        Magnitude.PER_SECOND.toInt(PoseLcmServerModule.RATE));
     bufferedImage = new BufferedImage( //
         dimension.width, //
         dimension.height, //
@@ -41,9 +46,6 @@ public class TrackVideoRender implements OfflineLogListener, AutoCloseable {
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    // if (Scalars.lessEquals(Quantity.of(3, SI.SECOND), time))
-    // return;
-    // ---
     offlineRender.event(time, channel, byteBuffer);
     if (channel.equals(poseChannel)) {
       graphics.drawImage(background, 0, 0, null);

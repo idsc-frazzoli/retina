@@ -13,6 +13,7 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
   public static void main(String[] args) throws IOException {
     GokartLogFile gokartLogFile = GokartLogFile._20190401T115537_411917b6;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
+    file = new File("/media/datahaki/data/gokart/cuts/20190401", "20190401T115537_411917b6.lcm.00");
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //
         gokartLogFileIndexer, //

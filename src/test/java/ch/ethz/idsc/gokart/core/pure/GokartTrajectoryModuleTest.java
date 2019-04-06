@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.dev.AllGunsBlazing;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
@@ -14,8 +13,11 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.owl.math.flow.Flow;
+import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -26,6 +28,8 @@ import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class GokartTrajectoryModuleTest extends TestCase {
+  private static final ByteArrayConsumer BYTE_ARRAY_CONSUMER = new BinaryBlobPublisher(GokartLcmChannel.POSE_LIDAR);
+
   public void testSimple() throws Exception {
     GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule();
     gokartTrajectoryModule.first();
@@ -38,8 +42,8 @@ public class GokartTrajectoryModuleTest extends TestCase {
     GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule(trajectoryConfig);
     gokartTrajectoryModule.first();
     {
-      PoseLcmServerModule.publish( //
-          GokartPoseEvents.offlineV1(Tensors.fromString("{36.8[m], 44.2[m], 0.8}"), RealScalar.ONE));
+      BYTE_ARRAY_CONSUMER.accept( //
+          GokartPoseEvents.offlineV1(Tensors.fromString("{36.8[m], 44.2[m], 0.8}"), RealScalar.ONE).asArray());
       RimoLcmServer.INSTANCE.getEvent( //
           RimoGetEvents.create(500, 500));
       Thread.sleep(50);
@@ -91,8 +95,8 @@ public class GokartTrajectoryModuleTest extends TestCase {
     {
       RimoLcmServer.INSTANCE.getEvent( //
           RimoGetEvents.create(-900, -900));
-      PoseLcmServerModule.publish( //
-          GokartPoseEvents.offlineV1(Tensors.fromString("{31.8[m], 38.2[m], 0.8}"), RealScalar.ONE));
+      BYTE_ARRAY_CONSUMER.accept( //
+          GokartPoseEvents.offlineV1(Tensors.fromString("{31.8[m], 38.2[m], 0.8}"), RealScalar.ONE).asArray());
       Thread.sleep(1000);
       gokartTrajectoryModule.runAlgo();
       Optional<Tensor> optional = gokartTrajectoryModule.purePursuitModule.getCurve();

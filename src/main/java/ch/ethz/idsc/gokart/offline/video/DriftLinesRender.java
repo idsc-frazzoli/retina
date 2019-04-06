@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.video;
+package ch.ethz.idsc.gokart.offline.video;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
