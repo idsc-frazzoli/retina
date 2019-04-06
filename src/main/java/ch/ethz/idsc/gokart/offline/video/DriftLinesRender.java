@@ -13,6 +13,8 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+/** draws brief history of rear axle center with orientation
+ * to indicate drift in video playback */
 /* package */ class DriftLinesRender implements GokartPoseListener, RenderInterface {
   private static final Color COLOR = new Color(128, 128, 128, 64);
   private static final Tensor PATH = Tensors.of( //

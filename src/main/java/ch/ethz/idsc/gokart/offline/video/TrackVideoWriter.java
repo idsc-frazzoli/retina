@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
@@ -18,29 +17,40 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class TrackVideoRender implements OfflineLogListener, AutoCloseable {
+/** implementation renders a log file to a mp4 video */
+public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
   private final Tensor model2pixel;
   private final BufferedImage background;
+  private final String poseChannel;
+  // ---
+  private final Mp4AnimationWriter mp4AnimationWriter;
+  private final OfflineRender offlineRender;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
-  private final Mp4AnimationWriter mp4AnimationWriter;
-  private final String poseChannel;
-  private final OfflineRender offlineRender;
 
-  public TrackVideoRender(Tensor model2pixel, BufferedImage background, String poseChannel, File file) throws Exception {
+  /** @param model2pixel
+   * @param background
+   * @param trackVideoConfig
+   * @param file with extension "mp4"
+   * @throws Exception */
+  public TrackVideoWriter( //
+      Tensor model2pixel, //
+      BufferedImage background, //
+      TrackVideoConfig trackVideoConfig, //
+      File file) throws Exception {
     this.model2pixel = model2pixel;
     this.background = background;
-    this.poseChannel = poseChannel;
+    this.poseChannel = trackVideoConfig.poseChannel;
     Dimension dimension = new Dimension(background.getWidth(), background.getHeight());
     mp4AnimationWriter = new Mp4AnimationWriter( //
         file.toString(), //
         dimension, //
-        Magnitude.PER_SECOND.toInt(PoseLcmServerModule.RATE));
+        Magnitude.PER_SECOND.toInt(trackVideoConfig.frameRate));
+    offlineRender = new OfflineRender(model2pixel, poseChannel);
     bufferedImage = new BufferedImage( //
         dimension.width, //
         dimension.height, //
         BufferedImage.TYPE_3BYTE_BGR);
-    offlineRender = new OfflineRender(model2pixel, poseChannel);
     graphics = bufferedImage.createGraphics();
   }
 

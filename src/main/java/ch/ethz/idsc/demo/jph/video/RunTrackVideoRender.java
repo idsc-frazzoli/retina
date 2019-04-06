@@ -6,8 +6,8 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.video.TrackVideoRender;
+import ch.ethz.idsc.gokart.offline.video.TrackVideoConfig;
+import ch.ethz.idsc.gokart.offline.video.TrackVideoWriter;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum RunTrackVideoRender {
@@ -16,10 +16,10 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     BufferedImage background = ImageIO.read(VideoBackground.IMAGE_FILE);
     String name = "20190401T115537_00";
     File file = new File("/media/datahaki/data/gokart/cuts/20190401", name + "/log.lcm");
-    try (TrackVideoRender trackVideoRender = new TrackVideoRender( //
+    try (TrackVideoWriter trackVideoRender = new TrackVideoWriter( //
         VideoBackground._20190401, //
         background, //
-        GokartPoseChannel.INSTANCE.channel(), //
+        new TrackVideoConfig(), //
         HomeDirectory.file(name + ".mp4"))) {
       OfflineLogPlayer.process(file, trackVideoRender);
     }
