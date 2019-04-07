@@ -1,10 +1,9 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo;
 
 import java.io.File;
 import java.util.Objects;
 
-import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
 import ch.ethz.idsc.tensor.io.UserName;
 import junit.framework.TestCase;

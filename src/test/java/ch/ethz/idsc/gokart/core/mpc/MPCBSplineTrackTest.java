@@ -1,8 +1,7 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.demo.travis.TravisUserName;
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

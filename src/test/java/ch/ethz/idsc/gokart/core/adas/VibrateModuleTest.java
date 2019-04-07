@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
 
-public class VibrationModuleTest extends TestCase {
+public class VibrateModuleTest extends TestCase {
   public void testSimple() {
     VibrateModule vibrateModule = new VibrateModule();
     vibrateModule.first();

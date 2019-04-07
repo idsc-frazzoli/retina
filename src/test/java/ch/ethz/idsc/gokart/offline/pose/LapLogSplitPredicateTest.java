@@ -1,7 +1,6 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.offline.pose;
 
-import ch.ethz.idsc.gokart.offline.pose.LapLogSplitPredicate;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;

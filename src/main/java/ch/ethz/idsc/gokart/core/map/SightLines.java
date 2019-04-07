@@ -7,6 +7,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.NavigableSet;
 import java.util.TreeSet;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
@@ -36,7 +37,7 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
   private final Vlp16PolarProvider lidarPolarProvider = new Vlp16PolarProvider();
   private final LidarSectorProvider lidarSectorProvider = //
       new LidarSectorProvider(VelodyneStatics.AZIMUTH_RESOLUTION, SightLineHandler.SECTORS);
-  private final TreeSet<Tensor> pointsPolar = //
+  private final NavigableSet<Tensor> pointsPolar = //
       new TreeSet<>(Comparator.comparingDouble(point -> point.Get(0).number().doubleValue()));
   private final BlindSpots blindSpots;
 
@@ -63,7 +64,7 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
       } else {
         try {
           Thread.sleep(waitMillis);
-        } catch (Exception e) {
+        } catch (Exception exception) {
           // ---
         }
       }
@@ -98,9 +99,8 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
 
   /** @return Tensor containing the current polygon points in cartesian coordinates */
   private Tensor polygon() {
-    Tensor polygon;
     synchronized (pointsPolar) {
-      polygon = SightLineHandler.polygon(pointsPolar);
+      Tensor polygon = SightLineHandler.polygon(pointsPolar);
       // ---
       double first = pointsPolar.first().Get(0).number().doubleValue();
       double last = pointsPolar.last().Get(0).number().doubleValue();
@@ -108,7 +108,7 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
         SightLineHandler.closeSector(polygon);
       // ---
       pointsPolar.clear();
+      return polygon;
     }
-    return polygon;
   }
 }
