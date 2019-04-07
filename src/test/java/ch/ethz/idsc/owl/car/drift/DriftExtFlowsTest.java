@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
 
-public class DriftExtTest extends TestCase {
+public class DriftExtFlowsTest extends TestCase {
   public void testSimple() {
     // the resolution refers to the last 3 of the state coordinates (x,y,theta,beta,r,Ux)
     Tensor eta = Tensors.vector(30, 30, 5);

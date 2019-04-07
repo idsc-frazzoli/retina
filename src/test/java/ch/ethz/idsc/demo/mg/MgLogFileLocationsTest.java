@@ -6,7 +6,7 @@ import java.io.File;
 import ch.ethz.idsc.tensor.io.UserName;
 import junit.framework.TestCase;
 
-public class LogFileLocationsTest extends TestCase {
+public class MgLogFileLocationsTest extends TestCase {
   public void testSimple() {
     assertNotNull(MgLogFileLocations.DUBI12a.calibration());
     assertNotNull(MgLogFileLocations.DUBI14b.calibration());

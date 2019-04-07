@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class MPCSimpleBrakingAndPowerTest extends TestCase {
+public class MPCSimpleBrakingTest extends TestCase {
   public void testDerivative() {
     MPCBraking braking = new MPCSimpleBraking();
     // this has no effect

@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.map;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import junit.framework.TestCase;
 
-public class TrackDetectionConfigTest extends TestCase {
+public class TrackReconConfigTest extends TestCase {
   public void testSimple() {
     SpacialXZObstaclePredicate createSpacialXZObstaclePredicate = //
         TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
