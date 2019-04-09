@@ -108,6 +108,7 @@ public class PowerLookupTable {
   }
 
   /** get acceleration for a given current and velocity
+   * 
    * @param current the applied motor current [ARMS]
    * @param velocity the velocity [m/s]
    * @return the resulting acceleration [m/s^2] */

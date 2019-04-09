@@ -19,6 +19,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 public class GroundSpeedRender extends CrosshairRender implements GokartPoseListener {
+  public static final Color COLOR_VELOCITY = new Color(200, 67, 255);
   private static final Stroke STROKE_DEFAULT = new BasicStroke();
   private static final Tensor ORIGIN = Array.zeros(2);
   static final Tensor DIAGONAL = DiagonalMatrix.of(.12, .12, 1);
@@ -43,7 +44,7 @@ public class GroundSpeedRender extends CrosshairRender implements GokartPoseList
     GraphicsUtil.setQualityHigh(graphics);
     super.render(geometricLayer, graphics);
     Tensor velocityXY = gokartPoseEvent.getVelocityXY();
-    graphics.setColor(new Color(200, 67, 255));
+    graphics.setColor(COLOR_VELOCITY);
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.25)));
     graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, velocityXY)));
     GraphicsUtil.setQualityDefault(graphics);

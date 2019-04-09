@@ -11,7 +11,7 @@ import ch.ethz.idsc.gokart.offline.gui.HtmlLogReport;
 /* package */ enum DynamicsConversionBulk {
   ;
   public static void all(File folder) {
-    for (File cut : Stream.of(folder.listFiles()).sorted().collect(Collectors.toList())) {
+    for (File cut : Stream.of(folder.listFiles()).filter(File::isDirectory).sorted().collect(Collectors.toList())) {
       System.out.println(cut);
       File folder2 = new File(StaticHelper.DEST, cut.getName().substring(0, 8)); // date e.g. 20190208
       folder2.mkdir();
