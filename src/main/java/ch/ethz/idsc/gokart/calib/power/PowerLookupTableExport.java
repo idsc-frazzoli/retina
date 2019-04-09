@@ -7,7 +7,6 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.alg.MatrixQ;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.io.Export;
@@ -31,7 +30,6 @@ import ch.ethz.idsc.tensor.sca.Round;
       Tensor matrix = //
           Tensors.matrix((i, j) -> PowerLookupTable.getInstance().getAcceleration(si.Get(i), sj.Get(j)), si.length(), sj.length()) //
               .map(Magnitude.ACCELERATION).map(Round._6);
-      System.out.println(Dimensions.of(matrix));
       MatrixQ.require(matrix);
       Export.of(HomeDirectory.file("powerlookup", "forward", "cur_vel_to_acc.csv"), matrix);
       Export.of(HomeDirectory.file("powerlookup", "forward", "cur.csv"), si.map(Magnitude.ARMS));
@@ -47,7 +45,6 @@ import ch.ethz.idsc.tensor.sca.Round;
       Tensor matrix = //
           Tensors.matrix((i, j) -> PowerLookupTable.getInstance().getNeededCurrent(si.Get(i), sj.Get(j)), si.length(), sj.length()) //
               .map(Magnitude.ARMS).map(Round._6);
-      System.out.println(Dimensions.of(matrix));
       MatrixQ.require(matrix);
       Export.of(HomeDirectory.file("powerlookup", "inverse", "acc_vel_to_cur.csv"), matrix);
       Export.of(HomeDirectory.file("powerlookup", "inverse", "acc.csv"), si.map(Magnitude.ACCELERATION));

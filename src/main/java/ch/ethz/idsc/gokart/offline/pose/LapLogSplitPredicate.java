@@ -1,17 +1,12 @@
-// code by mh
+// code by mh, jph
 package ch.ethz.idsc.gokart.offline.pose;
 
-import java.nio.ByteBuffer;
-
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.lcm.LogSplitPredicate;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Sign;
 
-public class LapLogSplitPredicate implements LogSplitPredicate {
+public class LapLogSplitPredicate extends PoseLogSplitPredicate {
   private final Tensor standartPosition;
   private final Tensor standartDirection;
   private Tensor pose_prev;
@@ -21,9 +16,9 @@ public class LapLogSplitPredicate implements LogSplitPredicate {
     this.standartDirection = standartDirection;
   }
 
-  @Override // from LogSplitPredicate
-  public boolean split(Scalar time, String channel, ByteBuffer byteBuffer) {
-    Tensor pose_next = GokartPoseEvent.of(byteBuffer).getPose();
+  @Override // from PoseLogSplitPredicate
+  protected boolean split(GokartPoseEvent gokartPoseEvent) {
+    Tensor pose_next = gokartPoseEvent.getPose();
     boolean split = getLineTrigger(pose_prev.extract(0, 2), pose_next.extract(0, 2));
     pose_prev = pose_next;
     return split;
@@ -32,7 +27,7 @@ public class LapLogSplitPredicate implements LogSplitPredicate {
   private boolean isInFront(Tensor position) {
     Tensor diff = position.subtract(standartPosition);
     Scalar normalDistance = (Scalar) diff.dot(standartDirection);
-    return Scalars.lessThan(Quantity.of(0, SI.METER), normalDistance);
+    return Sign.isPositive(normalDistance);
   }
 
   public boolean getLineTrigger(Tensor lastPosition, Tensor position) {
