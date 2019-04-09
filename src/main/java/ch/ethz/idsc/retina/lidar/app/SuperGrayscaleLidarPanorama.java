@@ -32,7 +32,7 @@ class Col implements Comparable<Col> {
 
 /** grayscale images visualizing distance and intensity */
 public class SuperGrayscaleLidarPanorama implements LidarPanorama {
-  public static int history = 1; // TODO very bad design
+  public static int history = 1; // TODO JPH very bad design
   // ---
   private final int height;
   // ---

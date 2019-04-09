@@ -5,12 +5,9 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.gokart.lcm.SimpleLcmClient;
-import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.ani.api.TrajectoryListener;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
-import ch.ethz.idsc.tensor.Tensor;
 
 public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
   public static TrajectoryLcmClient xyat() {
@@ -21,15 +18,6 @@ public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
     return new TrajectoryLcmClient(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME);
   }
 
-  /** function for offline log processing
-   * 
-   * @param byteBuffer
-   * @return */
-  public static List<TrajectorySample> trajectory(ByteBuffer byteBuffer) {
-    Tensor tensor = ArrayFloatBlob.decode(byteBuffer);
-    return PlannerPublish.getTrajectory(tensor);
-  }
-
   // ---
   private TrajectoryLcmClient(String channel) {
     super(channel);
@@ -37,7 +25,7 @@ public class TrajectoryLcmClient extends SimpleLcmClient<TrajectoryListener> {
 
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
-    List<TrajectorySample> trajectory = trajectory(byteBuffer);
+    List<TrajectorySample> trajectory = TrajectoryEvents.trajectory(byteBuffer);
     listeners.forEach(listener -> listener.trajectory(trajectory));
   }
 }

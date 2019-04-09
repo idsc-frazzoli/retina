@@ -1,3 +1,4 @@
+// code by mg
 package ch.ethz.idsc.demo.mg.slam.config;
 
 public enum EventCamera {

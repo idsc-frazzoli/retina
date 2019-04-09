@@ -7,8 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.FrontWheelSteerMapping;
 import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
-import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -32,21 +32,25 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
+import ch.ethz.idsc.sophus.group.Se2Adjoint;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Join;
+import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
+import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 public class GokartRender implements RenderInterface {
+  private static final Tensor ORIGIN = Array.zeros(2);
   private static final Tensor[] OFFSET_TORQUE = new Tensor[] { Tensors.vector(0, -0.15, 0), Tensors.vector(0, +0.15, 0) };
   private static final Tensor[] OFFSET_RATE = new Tensor[] { Tensors.vector(0, +0.15, 0), Tensors.vector(0, -0.15, 0) };
   private static final Tensor MATRIX_BRAKE = Se2Utils.toSE2Translation(Tensors.vector(1.0, 0.05));
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
+  private static final Color COLOR_TIRE = new Color(128, 128, 128, 128 + 64);
   // ---
   private final AxisAlignedBox aabRimoRate = //
       new AxisAlignedBox(ChassisGeometry.GLOBAL.tireHalfWidthRear().multiply(RealScalar.of(0.8)));
@@ -73,7 +77,7 @@ public class GokartRender implements RenderInterface {
   // ---
   private final Tensor TIRE_FRONT;
   private final Tensor TIRE_REAR;
-  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  // private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
 
   public GokartRender() {
     {
@@ -108,6 +112,25 @@ public class GokartRender implements RenderInterface {
         geometricLayer.popMatrix();
       }
     }
+    final Tensor uvw = gokartPoseEvent.getVelocityXY().map(Magnitude.VELOCITY).append(gokartPoseEvent.getGyroZ().map(Magnitude.PER_SECOND)).unmodifiable();
+    { // rear wheel gnd velocity
+      // System.out.println("uvw=" + uvw);
+      graphics.setColor(GroundSpeedRender.COLOR_VELOCITY);
+      graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(.05)));
+      graphics.draw(geometricLayer.toVector(ORIGIN, uvw));
+      // for (int wheel = 0; wheel < 2; ++wheel) {
+      // Tensor xya = VEHICLE_MODEL.wheel(2 + wheel).lever().copy();
+      // xya.set(RealScalar.ZERO, 2);
+      // // System.out.println("wheel" + wheel + " = " + xya);
+      // Se2Adjoint se2Adjoint = new Se2Adjoint(xya);
+      // Tensor matrix = Se2Utils.toSE2Translation(xya);
+      // geometricLayer.pushMatrix(matrix);
+      // graphics.draw(geometricLayer.toPath2D(CirclePoints.of(20)));
+      // Tensor local_vel = se2Adjoint.apply(uvw);
+      // graphics.draw(geometricLayer.toVector(Array.zeros(2), local_vel));
+      // geometricLayer.popMatrix();
+      // }
+    }
     { // rear wheel torques
       double factor = 5E-4;
       double[] trq = new double[] { //
@@ -135,17 +158,32 @@ public class GokartRender implements RenderInterface {
       geometricLayer.popMatrix();
     }
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
-      Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
-      Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
-      Scalar angleL = pair.Get(0);
-      Scalar angleR = pair.Get(1);
-      graphics.setStroke(new BasicStroke(2));
-      graphics.setColor(new Color(128, 128, 128, 128));
-      Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO);
+      // Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
+      // Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
+      Scalar angleL = FrontWheelSteerMapping._LEFT.getAngleFromSCE(gokartStatusEvent); // pair.Get(0);
+      Scalar angleR = FrontWheelSteerMapping.RIGHT.getAngleFromSCE(gokartStatusEvent); // pair.Get(1);
+      graphics.setStroke(new BasicStroke(1));
+      graphics.setColor(COLOR_TIRE);
+      Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO).unmodifiable();
       for (int index = 0; index < 4; ++index) {
-        Tensor matrix = Se2Utils.toSE2Matrix(Join.of(VEHICLE_MODEL.wheel(index).lever().extract(0, 2), Tensors.of(angles.Get(index))));
+        Tensor xya = VEHICLE_MODEL.wheel(index).lever().extract(0, 2).append(angles.Get(index));
+        Tensor matrix = Se2Utils.toSE2Matrix(xya);
         geometricLayer.pushMatrix(matrix);
         graphics.fill(geometricLayer.toPath2D(index < 2 ? TIRE_FRONT : TIRE_REAR));
+        geometricLayer.popMatrix();
+      }
+      graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(.03)));
+      graphics.setColor(new Color(255, 0, 0, 128));
+      for (int index = 0; index < 4; ++index) {
+        Tensor xya = VEHICLE_MODEL.wheel(index).lever().extract(0, 2).append(angles.Get(index));
+        Tensor matrix = Se2Utils.toSE2Matrix(xya);
+        geometricLayer.pushMatrix(matrix);
+        TensorUnaryOperator se2Adjoint = Se2Adjoint.inverse(xya);
+        Tensor local_vel = se2Adjoint.apply(uvw);
+        // graphics.setColor(Color.PINK);
+        // graphics.draw(geometricLayer.toVector(Array.zeros(2), local_vel));
+        local_vel.set(RealScalar.ZERO, 0);
+        graphics.draw(geometricLayer.toVector(ORIGIN, local_vel));
         geometricLayer.popMatrix();
       }
       // Tensor pose = gokartPoseInterface.getPose();

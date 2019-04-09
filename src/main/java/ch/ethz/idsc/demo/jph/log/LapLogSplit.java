@@ -25,9 +25,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     LogSplitPredicate logSplitPredicate = new LapLogSplitPredicate( //
         Tensors.vector(41.6, 34.2).multiply(Quantity.of(1, SI.METER)), //
         AngleVector.of(RealScalar.of(-2.25)));
-    LogSplit lapSegmenter = new LogSplit(logSplitPredicate);
-    OfflineLogPlayer.process(gokartLogInterface.file(), lapSegmenter);
-    new LcmLogFileCutter(gokartLogInterface.file(), lapSegmenter.navigableMap()) {
+    LogSplit logSplit = new LogSplit(logSplitPredicate);
+    OfflineLogPlayer.process(gokartLogInterface.file(), logSplit);
+    new LcmLogFileCutter(gokartLogInterface.file(), logSplit.navigableMap()) {
       @Override
       public File filename(int index) {
         return new File("/home/datahaki/laps", String.format("m%02d.lcm", index));

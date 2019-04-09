@@ -30,7 +30,7 @@ public class LinearSteerMapping implements SteerMapping {
     return getAngleFromSCE(steerColumnInterface.getSteerColumnEncoderCentered());
   }
 
-  @Override
+  @Override // from SteerMapping
   public Scalar getAngleFromSCE(Scalar scalar) {
     return UnitSystem.SI().apply(scalar.multiply(column2steer));
   }

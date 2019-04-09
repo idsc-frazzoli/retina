@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
@@ -15,6 +16,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -46,7 +48,8 @@ public class LocalViewLcmModule extends AbstractModule {
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
-      gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
+      gokartRender.gokartPoseListener.getEvent(GokartPoseEvents.create(Tensors.fromString("{0[m], -3[m], 0}"), RealScalar.ONE));
+      // gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     {

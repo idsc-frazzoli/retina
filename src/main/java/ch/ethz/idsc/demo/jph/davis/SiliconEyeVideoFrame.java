@@ -13,8 +13,8 @@ import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
 
 /* package */ class SiliconEyeVideoFrame implements Aedat31FrameListener, TimedImageListener {
-  static final int WIDTH = 320;
-  static final int HEIGHT = 264;
+  private static final int WIDTH = 320;
+  private static final int HEIGHT = 264;
   // ---
   static final Dimension DIMENSION = new Dimension(WIDTH * 2, HEIGHT);
   // ---

@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * 4th line represents image coordinates of principal point [pixel]
  * 5th line represents radial distortion coefficients [-]
  * 6th line represents focal lengths [mm] */
-// TODO z coordinate is implicitly set to zero
+// TODO MG z coordinate is implicitly set to zero
 public class GokartToImageUtil implements GokartToImageInterface {
   private static final Tensor OFFSET = Tensors.vector(-420, 2200, 0);
 

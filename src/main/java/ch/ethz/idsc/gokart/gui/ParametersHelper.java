@@ -9,6 +9,7 @@ import ch.ethz.idsc.demo.mg.slam.config.DavisSlamPrcConfig;
 import ch.ethz.idsc.demo.mp.pid.PIDTuningParams;
 import ch.ethz.idsc.gokart.calib.brake.BrakeFunctionConfig;
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerConfig;
+import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
@@ -33,6 +34,7 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
       SensorsConfig.GLOBAL, //
       LinmotConfig.GLOBAL, //
       SteerConfig.GLOBAL, //
+      HapticSteerConfig.GLOBAL, //
       HighPowerSteerConfig.GLOBAL, //
       RimoConfig.GLOBAL, //
       SafetyConfig.GLOBAL, //

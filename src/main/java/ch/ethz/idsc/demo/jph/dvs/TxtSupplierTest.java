@@ -11,10 +11,10 @@ import ch.ethz.idsc.retina.dvs.supply.DvsTxtFileSupplier;
 /** demo events.txt file read
  * file format used by Robotics and Perception Group
  * http://rpg.ifi.uzh.ch/ */
-enum TxtSupplierTest {
+/* package */ enum TxtSupplierTest {
   ;
   public static void main(String[] args) throws Exception {
-    DvsEventStatistics stats = new DvsEventStatistics();
+    DvsEventStatistics dvsEventStatistics = new DvsEventStatistics();
     int maxx = 0;
     int maxy = 0;
     File file = new File("/media/datahaki/media/ethz/davis/shapes_6dof", //
@@ -26,7 +26,7 @@ enum TxtSupplierTest {
         DvsEvent dvsEvent = sup.next();
         maxx = Math.max(dvsEvent.x, maxx);
         maxy = Math.max(dvsEvent.y, maxy);
-        stats.digest(dvsEvent);
+        dvsEventStatistics.digest(dvsEvent);
         buf.digest(dvsEvent);
         // if (count%100000==0)
         // System.out.println(dvsEvent.toString());
@@ -35,6 +35,6 @@ enum TxtSupplierTest {
       exception.printStackTrace();
     }
     System.out.println(maxx + " " + maxy);
-    stats.printSummary();
+    dvsEventStatistics.printSummary();
   }
 }

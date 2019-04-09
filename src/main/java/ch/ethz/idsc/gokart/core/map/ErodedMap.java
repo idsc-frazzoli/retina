@@ -46,6 +46,7 @@ import ch.ethz.idsc.tensor.Tensors;
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
     // ---
     if (Scalars.lessEquals(obsDilationRadius, cellDim))
+      // FIXME JG/JPH very inefficient
       this.imageGrid.cells().filter(this.imageGrid::isCellOccupied).forEach(cell -> //
       imagePixels[cellToIdx(cell)] = MASK_OCCUPIED);
     else {
