@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.jph.dvs;
 
 import java.awt.Dimension;
 
-enum ImageDimensions {
+/* package */ enum ImageDimensions {
   ;
   // wp.doc.ic.ac.uk_pb2114_datasets
   public static final Dimension IMPERIAL_COLLEGE = new Dimension(128, 128);

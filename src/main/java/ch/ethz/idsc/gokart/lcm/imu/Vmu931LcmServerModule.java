@@ -15,10 +15,14 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931_G;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
+/** configures VMU931 IMU to 1000Hz readout
+ * listens to acc and gyro messages
+ * publishes acc and gyro data via lcm */
 public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Listener {
   private static final String PORT = "/dev/ttyACM0";
   // ---
   private final ByteArrayConsumer byteArrayConsumer = new BinaryBlobPublisher(GokartLcmChannel.VMU931_AG);
+  /** array for timestamp_ms accXYZ gyroXYZ */
   private final byte[] data = new byte[4 + 12 + 12];
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
   private final Vmu931 vmu931 = new Vmu931(PORT, //
@@ -55,7 +59,8 @@ public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Liste
     byteBuffer.putFloat(recvBuffer.getFloat()); // x
     byteBuffer.putFloat(recvBuffer.getFloat()); // y
     byteBuffer.putFloat(recvBuffer.getFloat()); // z
-    byteArrayConsumer.accept(data);
+    // ---
+    byteArrayConsumer.accept(data); // publish
   }
 
   public void requestStatus() {

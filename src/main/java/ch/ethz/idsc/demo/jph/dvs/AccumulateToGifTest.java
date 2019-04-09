@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.dvs.supply.Waves;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /** visualization of events in data sets as animated gif's */
-enum AccumulateToGifTest {
+/* package */ enum AccumulateToGifTest {
   ;
   static void _dat(String name) throws Exception {
     File file = new File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //

@@ -7,18 +7,18 @@ import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 
-/** display joystick status in console */
+/** display joystick/manual control status in console */
 /* package */ enum ManualControlLcmClientDemo {
   ;
   public static void main(String[] args) throws Exception {
-    ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
-    joystickLcmProvider.start();
+    ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+    manualControlProvider.start();
     for (int index = 0; index < 50; ++index) {
-      Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
-      System.out.println(optional.isPresent() ? optional.get() : "no joystick");
+      Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
+      System.out.println(optional.isPresent() ? optional.get() : "no control");
       Thread.sleep(250);
     }
-    joystickLcmProvider.stop();
+    manualControlProvider.stop();
     System.out.println("end");
   }
 }

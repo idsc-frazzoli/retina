@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.sca.Increment;
 
 /** builds histogram of azimuth angles */
-class RotationalHistogram implements LidarRayDataListener {
+/* package */ class RotationalHistogram implements LidarRayDataListener {
   final Tensor histogram = Array.zeros(VelodyneStatics.AZIMUTH_RESOLUTION);
   private Integer rotational_last = null;
 

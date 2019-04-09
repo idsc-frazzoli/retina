@@ -19,6 +19,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
+/** LabjackU3 is used to perceive button press and throttle controlled by driver */
 /* package */ class LabjackU3Analysis implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
 

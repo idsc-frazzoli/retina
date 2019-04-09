@@ -48,8 +48,8 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
         element.Get(1).number().intValue());
   }
 
-  @Override
+  @Override // from OccupancyGrid
   public void clearStart(int startX, int startY, double orientation) {
-    // TODO Auto-generated method stub
+    // ---
   }
 }

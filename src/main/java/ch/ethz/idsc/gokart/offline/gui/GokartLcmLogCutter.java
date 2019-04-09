@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -92,7 +93,7 @@ public class GokartLcmLogCutter {
   private final MouseAdapter mouseListener = new MouseAdapter() {
     private Point pressed = null;
 
-    @Override
+    @Override // from MouseAdapter
     public void mousePressed(MouseEvent mouseEvent) {
       if (mouseEvent.getButton() == 3) {
         synchronized (map) {
@@ -105,7 +106,7 @@ public class GokartLcmLogCutter {
         pressed = mouseEvent.getPoint();
     }
 
-    @Override
+    @Override // from MouseAdapter
     public void mouseDragged(MouseEvent mouseEvent) {
       synchronized (map) {
         if (Objects.nonNull(pressed))
@@ -114,11 +115,12 @@ public class GokartLcmLogCutter {
       jComponent.repaint();
     }
 
-    @Override
+    @Override // from MouseAdapter
     public void mouseReleased(MouseEvent mouseEvent) {
       pressed = null;
     }
   };
+  boolean csv = false;
   private final ActionListener actionListener = new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
@@ -165,6 +167,13 @@ public class GokartLcmLogCutter {
             } catch (Exception exception) {
               exception.printStackTrace();
             }
+          // ---
+          if (csv)
+            for (File file : lcmLogFileCutter.files()) {
+              File dest_folder = new File(file.getParentFile(), "csv");
+              dest_folder.mkdir();
+              ChannelCsvExport.of(new File(file.getParentFile(), "log.lcm"), dest_folder);
+            }
         } catch (Exception exception) {
           exception.printStackTrace();
         }
@@ -195,9 +204,17 @@ public class GokartLcmLogCutter {
       JToolBar jToolBar = new JToolBar();
       jToolBar.setFloatable(false);
       jToolBar.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
-      JButton jButton = new JButton("export");
-      jButton.addActionListener(actionListener);
-      jToolBar.add(jButton);
+      {
+        JCheckBox jCheckBox = new JCheckBox("csv");
+        jCheckBox.setSelected(csv);
+        jCheckBox.addActionListener(actionEvent -> csv = jCheckBox.isSelected());
+        jToolBar.add(jCheckBox);
+      }
+      {
+        JButton jButton = new JButton("export");
+        jButton.addActionListener(actionListener);
+        jToolBar.add(jButton);
+      }
       jPanel.add(jToolBar, BorderLayout.NORTH);
     }
     jComponent.setPreferredSize(new Dimension(bufferedImage.getWidth(), 0));

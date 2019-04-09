@@ -11,7 +11,7 @@ import ch.ethz.idsc.gokart.offline.slam.MappingAnalysisOffline;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-enum MappingAnalysisImages {
+/* package */ enum MappingAnalysisImages {
   ;
   public static void main(String[] args) throws Exception {
     File file = new File("/media/datahaki/media/ethz/gokart/topic/mapping/20180827T155655_1/log.lcm");

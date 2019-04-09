@@ -19,7 +19,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ class AccumulateToListener implements OfflineLogListener, TimedImageListener {
-  private final String CHANNEL = DavisDvsBlockPublisher.channel("overview");
+  private static final String CHANNEL = DavisDvsBlockPublisher.channel("overview");
+  // ---
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private int count = 0;
 
@@ -33,9 +34,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(CHANNEL)) {
+    if (channel.equals(CHANNEL))
       davisDvsDatagramDecoder.decode(byteBuffer);
-    }
   }
 
   @Override // from TimedImageListener

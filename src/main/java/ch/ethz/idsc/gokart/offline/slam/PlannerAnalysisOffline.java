@@ -13,13 +13,12 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryEvents;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.TrajectoryRender;
-import ch.ethz.idsc.gokart.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
-import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -52,10 +51,9 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
     } else //
-    if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME)) {
-      Tensor trajTensor = ArrayFloatBlob.decode(byteBuffer);
-      trajectoryRender.trajectory(PlannerPublish.getTrajectory(trajTensor));
-    }
+    if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME))
+      trajectoryRender.trajectory(TrajectoryEvents.trajectory(byteBuffer));
+    else //
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(delta);
       System.out.print("Extracting log at " + time.map(Round._2) + "\n");

@@ -25,8 +25,9 @@ public enum Magnitude implements ScalarUnaryOperator {
   /** for s^-2 and rad*s^-2 */
   ANGULAR_ACCELERATION(SI.ANGULAR_ACCELERATION), //
   // ---
-  /** conversion to non-SI magnitude may be necessary
-   * when interfacing with 3rd party code that requires input along that scale */
+  /** conversion to non-SI magnitude may be necessary when interfacing
+   * with 3rd party code that requires input along that scale
+   * for instance {@link Thread#sleep(long)} */
   MILLI_SECOND(NonSI.MILLI_SECOND), //
   MICRO_SECOND(NonSI.MICRO_SECOND), //
   // ---

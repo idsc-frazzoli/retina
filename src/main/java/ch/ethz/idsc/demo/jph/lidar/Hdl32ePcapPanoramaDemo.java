@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.lidar.hdl32e.Hdl32ePanoramaProvider;
 import ch.ethz.idsc.retina.util.io.PcapParse;
 import ch.ethz.idsc.retina.util.io.PcapRealtimePlayback;
 
-enum Hdl32ePcapPanoramaDemo {
+/* package */ enum Hdl32ePcapPanoramaDemo {
   ;
   public static void main(String[] args) throws Exception {
     LidarPanoramaFrame hdl32ePanoramaFrame = new LidarPanoramaFrame();

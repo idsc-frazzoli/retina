@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.red.Times;
 
-enum Inertias {
+/* package */ enum Inertias {
   ;
   public static Tensor shift(Tensor I, Scalar m, Tensor r) {
     return I.add(IdentityMatrix.of(r.length()).multiply(r.dot(r).Get()).subtract(TensorProduct.of(r, r)).multiply(m));

@@ -11,7 +11,7 @@ import lcm.logging.Log;
 import lcm.logging.Log.Event;
 import lcm.logging.LogEventWriter;
 
-enum LogEventExtract {
+/* package */ enum LogEventExtract {
   ;
   public static void main(String[] args) throws Exception {
     File src = DatahakiLogFileLocator.file(GokartLogFile._20180705T101944_b01c2886);

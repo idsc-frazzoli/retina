@@ -8,7 +8,7 @@ import java.util.List;
 
 import ch.ethz.idsc.owl.data.GlobalAssert;
 
-// TODO could be integrated in LidarAngulrFiringCollector
+// TODO could be integrated in LidarAngularFiringCollector
 /** collects a lidar scan of a complete 360 rotation into a pointcloud consisting
  * of 3d points */
 public class LidarPolarFiringCollector implements LidarPolarListener, LidarRotationListener {
@@ -51,7 +51,7 @@ public class LidarPolarFiringCollector implements LidarPolarListener, LidarRotat
   }
 
   @Override // from LidarPolarListener
-  public void lidarSpacial(LidarPolarEvent lidarPolarEvent) {
+  public void lidarPolar(LidarPolarEvent lidarPolarEvent) {
     floatBuffer.put(lidarPolarEvent.coords);
     byteBuffer.put(lidarPolarEvent.intensity);
   }

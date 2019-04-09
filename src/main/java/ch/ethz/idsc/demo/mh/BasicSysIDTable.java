@@ -30,27 +30,24 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class BasicSysIDTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
-  private final SimplePositionVelocityEstimation velocityModule = new SimplePositionVelocityEstimation();
   private final SteerColumnTracker steerTracker = new SteerColumnTracker();
-  private Scalar lastTime = Quantity.of(0, SI.SECOND);
+  private GokartPoseEvent gokartPoseEvent;
   private Scalar steerPosition = Quantity.of(0, "SCE");
   private Tensor powerPair = Tensors.vector(0, 0).multiply(Quantity.of(1, NonSI.ARMS));
   private Scalar wheelSpeed = Quantity.of(0, SI.VELOCITY);
   private Scalar powerAccelerationLeft = Quantity.of(0, SI.ACCELERATION);
   private Scalar powerAccelerationRight = Quantity.of(0, SI.ACCELERATION);
-  private boolean isPosePostAvailable = false;
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
       Vmu931ImuFrame vmu931ImuFrame = new Vmu931ImuFrame(byteBuffer);
-      velocityModule.vmu931ImuFrame(vmu931ImuFrame);
       // append to table
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
           RealScalar.of(vmu931ImuFrame.timestamp_ms()), //
-          velocityModule.getVelocityXY().map(Magnitude.VELOCITY).map(Round._5), //
-          velocityModule.getGyroZ().map(Magnitude.PER_SECOND).map(Round._5), //
+          gokartPoseEvent.getVelocityXY().map(Magnitude.VELOCITY).map(Round._5), //
+          gokartPoseEvent.getGyroZ().map(Magnitude.PER_SECOND).map(Round._5), //
           SensorsConfig.getPlanarVmu931Imu().accXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), //
           RealScalar.of(steerPosition.number().floatValue()), //
           powerPair.map(Magnitude.ARMS).map(Round._5), //
@@ -59,19 +56,8 @@ import ch.ethz.idsc.tensor.sca.Round;
           wheelSpeed.map(Magnitude.VELOCITY).map(Round._5));
       // System.out.println("vmu time: "+time);
     } else //
-    if (channel.equals(GokartLcmChannel.POSE_POST)) {
-      isPosePostAvailable = true;
-      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
-      Scalar step = time.subtract(lastTime);
-      velocityModule.measurePose(gokartPoseEvent, step);
-      lastTime = time;
-      System.out.println("pose time: " + time.number().doubleValue());
-    } else //
-    if (channel.equals(GokartLcmChannel.POSE_LIDAR) && !isPosePostAvailable) {
-      GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
-      Scalar step = time.subtract(lastTime);
-      velocityModule.measurePose(gokartPoseEvent, step);
-      lastTime = time;
+    if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
+      gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       System.out.println("pose time: " + time.number().doubleValue());
     } else //
     if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
@@ -92,7 +78,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     }
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tableBuilder.toTable();
   }
