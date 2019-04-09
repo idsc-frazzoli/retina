@@ -20,4 +20,9 @@ public class HapticSteerConfig {
   /** Values for Vibration Mode */
   public Scalar vibrationAmplitude = RealScalar.of(0.4);
   public Scalar vibrationFrequency = RealScalar.of(12);
+  public double criticalSlip = 0.2;
+  public double criticalAngle = 12; // die Einheit davon ist Grad, ?
+  public Scalar absFrequency = RealScalar.of(5);
+  public Scalar absAmplitude = RealScalar.of(0.2);
+  public double absDuration = 1;
 }

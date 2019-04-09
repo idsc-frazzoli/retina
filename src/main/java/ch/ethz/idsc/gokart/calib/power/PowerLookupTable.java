@@ -24,8 +24,8 @@ public class PowerLookupTable {
   private static final File FILE_FORWARD = new File(DIRECTORY, "powerlookuptable_forward.object");
   private static final File FILE_INVERSE = new File(DIRECTORY, "powerlookuptable_inverse.object");
   // ---
+  // TODO JPH magic const in config class, also make public and reuse in PowerLookupTableExport
   // min and max values for lookup tables
-  // TODO magic const in config class
   private static final Clip CLIP_VEL = Clips.interval( //
       Quantity.of(-10, SI.VELOCITY), //
       Quantity.of(+10, SI.VELOCITY));
@@ -108,6 +108,7 @@ public class PowerLookupTable {
   }
 
   /** get acceleration for a given current and velocity
+   * 
    * @param current the applied motor current [ARMS]
    * @param velocity the velocity [m/s]
    * @return the resulting acceleration [m/s^2] */
