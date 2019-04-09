@@ -36,19 +36,21 @@ for ia = -7:1:0
     for ively = -1:0.001:1
         accy = [accy,saccy(ively,standartvelx,ia)];
     end
-    plot(vely,accy, 'DisplayName',strcat(num2str(ia),'[m/s^2] acc-X'));
+    plot(vely,accy, 'DisplayName',strcat('f_x = ',num2str(ia),'[N/kg]'));
 end
-xlabel("$\frac{\textrm{lateral velocity}}{\textrm{longitudinal velocity}}$",'Interpreter','latex');
-ylabel("$\frac{\textrm{lateral force}}{\textrm{mass}}$ [N/kg]",'Interpreter','latex');
+xlabel("$\frac{v_y}{v_x}$",'Interpreter','latex');
+ylabel("$\frac{f_y}{M}$ [N/kg]",'Interpreter','latex');
 legend show
 hold off
+print('mixedmodeltheorie','-dpng','-r600')
 
 %simplified model
 maxA = D;
 capfactor = @(VELY,VELX,taccx)(1-satfun((taccx/D)^2))^(1/2);
 simpleslip = @(VELY,VELX,taccx)-(1/capfactor(VELY,VELX,taccx))*VELY/(VELX+0.001);
 simplediraccy = @(VELY,VELX,taccx)magic(simpleslip(VELY,VELX,taccx),B,C,D);
-simpleaccy = @(VELY,VELX,taccx)capfactor(VELY,VELX,taccx)*simplediraccy(VELY,VELX,taccx);
+simpleaccy = @(VELY,VELX,taccx)capfactor(VELY,VELX
+capfactor = @(VELY,VELX,taccx),taccx)*simplediraccy(VELY,VELX,taccx);
 acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
 simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+0.001),B,C,D);
 

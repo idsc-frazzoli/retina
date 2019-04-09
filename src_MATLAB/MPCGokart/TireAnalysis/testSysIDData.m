@@ -109,14 +109,19 @@ hold on
 minAx = -0.4;
 maxAx = 0.4;
 sela = sax>minAx & sax<maxAx & vx > 3;
-minAx = -3.6;
-maxAx = -3.4;
+minAx = -3;
+maxAx = -1.5;
 selb = sax>minAx & sax<maxAx & vx > 3;
+minAx = -5;
+maxAx = -3;
+selc = sax>minAx & sax<maxAx & vx > 3;
 magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
 scatter(-vy(sela)./vx(sela),say(sela),'b');
 scatter(vy(sela)./vx(sela),-say(sela),'b');
 scatter(-vy(selb)./vx(selb),say(selb),'r');
 scatter(vy(selb)./vx(selb),-say(selb),'r');
+scatter(-vy(selc)./vx(selc),say(selc),'y');
+scatter(vy(selc)./vx(selc),-say(selc),'y');
 
 B = 5;
 C = 1.8;
