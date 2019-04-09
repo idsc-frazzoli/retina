@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
  * extract all dvs events */
 /* package */ class DavisEventPolarityTotal implements OfflineLogListener, DavisDvsListener {
   private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
-  int[] total = new int[2];
+  private int[] total = new int[2];
 
   public DavisEventPolarityTotal() {
     davisDvsDatagramDecoder.addDvsListener(this);

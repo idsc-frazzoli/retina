@@ -86,28 +86,28 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   }
 
   /** @return grid size in x direction */
-  protected int dimX() {
+  protected final int dimX() {
     return gridSize.Get(0).number().intValue();
   }
 
   /** @return grid size in y direction */
-  protected int dimY() {
+  protected final int dimY() {
     return gridSize.Get(1).number().intValue();
   }
 
   /** @return Stream of all index combinations as Tensors */
-  protected Stream<Tensor> cells() {
+  protected final Stream<Tensor> cells() {
     return IntStream.range(0, dimX()).mapToObj(x -> IntStream.range(0, dimY()).mapToObj(y -> //
     Tensors.vector(x, y))).flatMap(Function.identity());
   }
 
-  protected Tensor getWorld2grid() {
+  protected final Tensor getWorld2grid() {
     return Se2Utils.toSE2Matrix(lbounds.negate().append(RealScalar.ZERO));
   }
 
   /** set vehicle pose w.r.t world frame
    * @param pose vector of the form {px, py, heading} */
-  public synchronized void setPose(Tensor pose) {
+  public synchronized final void setPose(Tensor pose) {
     gokart2world = GokartPoseHelper.toSE2Matrix(pose);
     lidar2cellLayer.popMatrix();
     lidar2cellLayer.popMatrix();
@@ -118,7 +118,7 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   /** function is used as key
    * @param pos vector of the form {px, py, ...}; only the first two entries are considered
    * @return Tensor {pix, piy} */
-  protected Tensor lidarToCell(Tensor pos) {
+  protected final Tensor lidarToCell(Tensor pos) {
     // TODO investigate if class with 2 int's is an attractive replacement as key type
     return Floor.of(lidar2cellLayer.toVector(pos));
   }
@@ -128,68 +128,68 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
    *
    * @param pos
    * @return Tensor {pix, piy} */
-  private Tensor worldToCell(Tensor pos) {
+  private final Tensor worldToCell(Tensor pos) {
     Point2D point2D = world2cellLayer.toPoint2D(pos);
     return Tensors.vector((int) point2D.getX(), (int) point2D.getY());
   }
 
   /** @param cell Tensor {pix, piy}
    * @return byte array index */
-  protected int cellToIdx(Tensor cell) {
+  protected final int cellToIdx(Tensor cell) {
     return cellToIdx(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
   }
 
   /** @param pix of cell
    * @param piy of cell
    * @return byte array index */
-  protected int cellToIdx(int pix, int piy) {
+  protected final int cellToIdx(int pix, int piy) {
     return piy * dimX() + pix;
   }
 
   @Override // from OccupancyGrid
-  public Tensor getGridSize() {
+  public final Tensor getGridSize() {
     return gridSize;
   }
 
   /** @param cell Tensor {pix, piy}
    * @return whether cell is in grid */
-  protected boolean isCellInGrid(Tensor cell) {
+  protected final boolean isCellInGrid(Tensor cell) {
     return isCellInGrid(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
   }
 
   /** @param pix of cell
    * @param piy of cell
    * @return whether cell is in grid */
-  protected boolean isCellInGrid(int pix, int piy) {
+  protected final boolean isCellInGrid(int pix, int piy) {
     return 0 <= pix && pix < dimX() && 0 <= piy && piy < dimY();
   }
 
   @Override // from OccupancyGrid
-  public Tensor getTransform() {
+  public final Tensor getTransform() {
     Tensor translate = IdentityMatrix.of(3);
     translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
     translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
     return IdentityMatrix.of(3).dot(scaling).dot(translate);
   }
 
-  public boolean isCellOccupied(Tensor cell) {
+  public final boolean isCellOccupied(Tensor cell) {
     return isCellOccupied(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
   }
 
   @Override // from OccupancyGrid
-  public boolean isCellOccupied(int pix, int piy) {
+  public final boolean isCellOccupied(int pix, int piy) {
     if (isCellInGrid(pix, piy))
       return imagePixels[cellToIdx(pix, piy)] == MASK_OCCUPIED;
     return true;
   }
 
   @Override // from Region<Tensor>
-  public boolean isMember(Tensor state) {
+  public final boolean isMember(Tensor state) {
     return isCellOccupied(worldToCell(state));
   }
 
   @Override // from RenderInterface
-  public synchronized void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  public synchronized final void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     // TODO JPH simplify use ImageRender?
     Tensor model2pixel = geometricLayer.getMatrix();
     Tensor translate = IdentityMatrix.of(3);

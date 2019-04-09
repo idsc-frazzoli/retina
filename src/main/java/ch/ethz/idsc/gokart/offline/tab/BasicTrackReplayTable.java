@@ -15,7 +15,6 @@ import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
-import ch.ethz.idsc.gokart.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -33,7 +32,7 @@ import ch.ethz.idsc.tensor.sca.Round;
  * rimo rate right [rad*s^-1]
  * tangent speed [m*s^-1]
  * rotational rate [rad*s^-1]
- * gyro rate around gokart z-axis [rad*s^-1]
+ * 0
  * steering column encoder [SCE]
  * brake position [m]
  * localization pose x [m]
@@ -41,10 +40,6 @@ import ch.ethz.idsc.tensor.sca.Round;
  * localization pose theta [rad]
  * localization pose quality */
 public class BasicTrackReplayTable implements OfflineTableSupplier {
-  private static final String CHANNEL_IMU = //
-      DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
-  // ---
-  // private DavisImuFrame davisImuFrame;
   private RimoGetEvent rimoGetEvent;
   private RimoPutEvent rimoPutEvent;
   private LinmotGetEvent linmotGetEvent;
@@ -53,9 +48,6 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(CHANNEL_IMU)) {
-      // davisImuFrame = new DavisImuFrame(byteBuffer);
-    } else //
     if (channel.equals(LinmotLcmServer.CHANNEL_GET))
       linmotGetEvent = new LinmotGetEvent(byteBuffer);
     else //
@@ -69,8 +61,7 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
       gokartStatusEvent = new GokartStatusEvent(byteBuffer);
     else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      if (// Objects.isNull(davisImuFrame) || //
-      Objects.isNull(linmotGetEvent) || //
+      if (Objects.isNull(linmotGetEvent) || //
           Objects.isNull(rimoGetEvent) || //
           Objects.isNull(rimoPutEvent) || //
           Objects.isNull(gokartStatusEvent))
@@ -85,8 +76,7 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
           rates.map(Magnitude.PER_SECOND), //
           speed.map(Magnitude.VELOCITY), //
           rate.map(Magnitude.PER_SECOND), //
-          // davisImuFrame.gyroImageFrame().Get(1).map(Magnitude.PER_SECOND), //
-          RealScalar.ZERO, // FIXME JPH use vlp16
+          RealScalar.ZERO, //
           SteerPutEvent.ENCODER.apply(gokartStatusEvent.getSteerColumnEncoderCentered()), //
           linmotGetEvent.getActualPosition().map(Magnitude.METER).map(Round._6), //
           gokartPoseEvent.asVector() //

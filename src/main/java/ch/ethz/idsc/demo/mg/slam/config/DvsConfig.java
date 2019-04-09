@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.mg.slam.config;
 import java.io.File;
 import java.util.Objects;
 
-import ch.ethz.idsc.demo.mg.LogFileLocations;
+import ch.ethz.idsc.demo.mg.MgLogFileLocations;
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
 import ch.ethz.idsc.demo.mg.filter.BackgroundActivityFilter;
 import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageUtil;
@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.Tensor;
 /** provides general parameters not specific to SLAM or object detection algorithms */
 public class DvsConfig {
   public final Scalar unitConversion = RealScalar.of(1000);
-  public LogFileLocations logFileLocations;
+  public MgLogFileLocations logFileLocations;
   public DvsLcmClient dvsLcmClient;
   public String channel_DVS;
   public Scalar logFileDuration;
@@ -43,7 +43,7 @@ public class DvsConfig {
 
   /** @return file specified by parameter {@link #logFileName} */
   public File getLogFile() {
-    LogFileLocations logFileLocations = LogFileLocations.valueOf(logFilename());
+    MgLogFileLocations logFileLocations = MgLogFileLocations.valueOf(logFilename());
     if (Objects.isNull(logFileLocations))
       throw new RuntimeException("invalid logFileName: " + logFilename());
     return logFileLocations.getFile();

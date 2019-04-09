@@ -29,7 +29,7 @@ import ch.ethz.idsc.gokart.core.sound.MotorStateProvider;
     }
   }
 
-  @Override
+  @Override // from MotorStateProvider
   public GokartSoundState getMotorState(float time) {
     return getNextMotorStateAt(time);
   }

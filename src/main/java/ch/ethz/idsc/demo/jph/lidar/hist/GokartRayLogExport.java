@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Put;
 
-enum GokartRayLogExport {
+/* package */ enum GokartRayLogExport {
   ;
   public static void main(String[] args) throws IOException {
     final String channel = VelodyneLcmChannels.ray(VelodyneModel.VLP16, "center");

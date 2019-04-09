@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.lidar.urg04lx.Urg04lxLiveProvider;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
 
 /** for the demo, the sensor has to be connected to the pc */
-enum Urg04lxLiveConsoleDemo {
+/* package */ enum Urg04lxLiveConsoleDemo {
   ;
   // accepted 1374 at 146878809 1504461075001
   // accepted 1374 at 146878908 1504461075100

@@ -7,8 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.FrontWheelSteerMapping;
 import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
-import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -73,7 +73,7 @@ public class GokartRender implements RenderInterface {
   // ---
   private final Tensor TIRE_FRONT;
   private final Tensor TIRE_REAR;
-  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  // private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
 
   public GokartRender() {
     {
@@ -135,10 +135,10 @@ public class GokartRender implements RenderInterface {
       geometricLayer.popMatrix();
     }
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
-      Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
-      Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
-      Scalar angleL = pair.Get(0);
-      Scalar angleR = pair.Get(1);
+      // Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
+      // Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
+      Scalar angleL = FrontWheelSteerMapping._LEFT.getAngleFromSCE(gokartStatusEvent); // pair.Get(0);
+      Scalar angleR = FrontWheelSteerMapping.RIGHT.getAngleFromSCE(gokartStatusEvent); // pair.Get(1);
       graphics.setStroke(new BasicStroke(2));
       graphics.setColor(new Color(128, 128, 128, 128));
       Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO);

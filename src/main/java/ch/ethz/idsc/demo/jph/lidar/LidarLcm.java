@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.lidar;
 
-enum LidarLcm {
+/* package */ enum LidarLcm {
   ;
   /** Velodyne HDL32E */
   public static final String HDL32E_OFFICE1 = "/media/datahaki/media/ethz/lcmlog/lcmlog-2017-08-24.hdl32e";

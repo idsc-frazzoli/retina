@@ -17,7 +17,7 @@ public class BrakeDistanceTableTest extends TestCase {
   public void testSimple() throws IOException {
     GokartLogInterface gokartLogInterface = GokartLogAdapterTest.FULL;
     // ---
-    OfflineTableSupplier offlineTableSupplier = new BrakeDistanceTable(gokartLogInterface);
+    OfflineTableSupplier offlineTableSupplier = new BrakeDistanceTable(gokartLogInterface.pose());
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
     assertEquals(Dimensions.of(tensor), Arrays.asList(179, 9));

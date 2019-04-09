@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.jph.lidar;
 
 import java.io.File;
 
-enum Vlp16Pcap {
+/* package */ enum Vlp16Pcap {
   DOWNTOWN_SINGLE(new File("/media/datahaki/media/ethz/vlp16/VELODYNE/VLP-16 Sample Data", //
       "2015-07-23-14-37-22_Velodyne-VLP-16-Data_Downtown 10Hz Single.pcap")), //
   DOWNTOWN_DUAL(new File("/media/datahaki/media/ethz/vlp16/VELODYNE/VLP-16 Sample Data", //

@@ -1,6 +1,7 @@
 // code by jph, gjoel
 package ch.ethz.idsc.retina.lidar;
 
+@FunctionalInterface
 public interface LidarPolarListener {
-  void lidarSpacial(LidarPolarEvent lidarPolarEvent);
+  void lidarPolar(LidarPolarEvent lidarPolarEvent);
 }

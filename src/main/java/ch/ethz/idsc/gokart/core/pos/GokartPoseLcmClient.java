@@ -13,7 +13,7 @@ public class GokartPoseLcmClient extends SimpleLcmClient<GokartPoseListener> {
 
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
-    GokartPoseEvent event = GokartPoseEvent.of(byteBuffer);
-    listeners.forEach(listener -> listener.getEvent(event));
+    GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
+    listeners.forEach(listener -> listener.getEvent(gokartPoseEvent));
   }
 }

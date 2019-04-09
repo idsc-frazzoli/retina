@@ -10,6 +10,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
+/** based on report
+ * https://github.com/idsc-frazzoli/retina/files/2440459/20181001_steering_measurement.pdf */
 public class CubicSteerMapping implements SteerMapping {
   /** DO NOT MODIFY CONSTANTS BUT CREATE SECOND VERSION IF NEEDED */
   private static final SteerMapping INSTANCE = new CubicSteerMapping( //

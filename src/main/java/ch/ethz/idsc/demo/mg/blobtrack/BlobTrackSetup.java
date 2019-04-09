@@ -3,8 +3,7 @@ package ch.ethz.idsc.demo.mg.blobtrack;
 
 import java.io.File;
 
-import ch.ethz.idsc.demo.BoundedOfflineLogPlayer;
-import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.RealScalar;
 
 /** sets up the blob tracking algorithm for offline processing of a log file */
@@ -12,14 +11,12 @@ import ch.ethz.idsc.tensor.RealScalar;
   private final BlobTrackConfig blobTrackConfig;
   private final String logFilename;
   private final File logFile;
-  private final long logFileDuration;
   private final int iterationLength;
 
   BlobTrackSetup(BlobTrackConfig blobTrackConfig) {
     this.blobTrackConfig = blobTrackConfig;
     logFilename = blobTrackConfig.davisConfig.logFilename();
     logFile = blobTrackConfig.davisConfig.getLogFile();
-    logFileDuration = Magnitude.MICRO_SECOND.toLong(blobTrackConfig.davisConfig.logFileDuration);
     iterationLength = blobTrackConfig.iterationLength.number().intValue();
   }
 
@@ -37,10 +34,7 @@ import ch.ethz.idsc.tensor.RealScalar;
   private void runAlgo() {
     try {
       OfflineBlobTrackWrap offlinePipelineWrap = new OfflineBlobTrackWrap(blobTrackConfig);
-      BoundedOfflineLogPlayer.process( //
-          logFile, //
-          logFileDuration, //
-          offlinePipelineWrap);
+      OfflineLogPlayer.process(logFile, offlinePipelineWrap);
     } catch (Exception exception) {
       exception.printStackTrace();
     }

@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       System.out.println(folder);
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
-      BrakeDistanceTable brakeDistanceAnalysis = new BrakeDistanceTable(gokartLogInterface);
+      BrakeDistanceTable brakeDistanceAnalysis = new BrakeDistanceTable(gokartLogInterface.pose());
       OfflineLogPlayer.process(gokartLogInterface.file(), brakeDistanceAnalysis);
       Export.of(HomeDirectory.file(folder.getName() + ".csv"), brakeDistanceAnalysis.getTable().map(CsvFormat.strict()));
     }
