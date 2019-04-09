@@ -14,7 +14,6 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -24,8 +23,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.Cross;
 import ch.ethz.idsc.tensor.qty.Quantity;
-
 import ch.ethz.idsc.tensor.red.Min;
+import ch.ethz.idsc.tensor.sca.Cos;
+import ch.ethz.idsc.tensor.sca.Sin;
 
 public class PowerSteeringModule extends AbstractModule implements SteerGetListener, SteerPutProvider {
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
@@ -68,7 +68,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
     return Optional.empty();
   }
 
-  public Tensor FrontWheelVelocity() {
+  public Tensor frontWheelVelocity() {
     if (steerColumnTracker.isCalibratedAndHealthy()) {
       if (lidarLocalizationModule != null) {
         Scalar zero = Quantity.of(0, SI.METER);
@@ -85,8 +85,8 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
         Tensor crossProductLeft = Cross.of(angularvelocityTensor, distanceOriginLeftFrontWheel);
         Tensor crossProductRight = Cross.of(angularvelocityTensor, distanceOriginRightFrontWheel);
         // velocity in the front tire
-        Tensor FrontTireVelocityLeft = velocity.add(crossProductLeft);
-        Tensor FrontTireVelocityRight = velocity.add(crossProductRight);
+        Tensor frontTireVelocityLeft = velocity.add(crossProductLeft);
+        Tensor frontTireVelocityRight = velocity.add(crossProductRight);
         // angle between front and velocity
         Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
         Scalar angleGrad = steerMapping.getAngleFromSCE(angleSCE);
@@ -94,21 +94,15 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
         Scalar angleL = pair.Get(0);
         Scalar angleR = pair.Get(1);
         // convert the angle of the wheel into a vector pointing in the direction of the wheel
-        double angleLDouble = Magnitude.ARMS.toDouble(angleL);
-        double angleRDouble = Magnitude.ARMS.toDouble(angleR);
-        double projectionLeftSin = Math.sin(angleLDouble);
-        double projectionLeftCos = Math.cos(angleLDouble);
-        double projectionRightSin = Math.sin(angleRDouble);
-        double projectionRightCos = Math.cos(angleRDouble);
-        Scalar LeftWheelx = RealScalar.of(projectionLeftSin);
-        Scalar LeftWheely = RealScalar.of(projectionLeftCos);
-        Scalar RightWheelx = RealScalar.of(projectionRightSin);
-        Scalar RightWheely = RealScalar.of(projectionRightCos);
+        Scalar leftWheelx = Sin.FUNCTION.apply(angleL);
+        Scalar leftWheely = Cos.FUNCTION.apply(angleL);
+        Scalar rightWheelx = Sin.FUNCTION.apply(angleR);
+        Scalar rightWheely = Cos.FUNCTION.apply(angleR);
         // Vector which points in the direction of the wheel
-        Tensor vectorWheelL = Tensors.of(LeftWheelx, LeftWheely);
-        Tensor vectorWheelR = Tensors.of(RightWheelx, RightWheely);
-        Tensor lateralVelocityLeft = Cross.of(vectorWheelL, FrontTireVelocityLeft);
-        Tensor lateralVelocityRight = Cross.of(vectorWheelR, FrontTireVelocityRight);
+        Tensor vectorWheelL = Tensors.of(leftWheelx, leftWheely);
+        Tensor vectorWheelR = Tensors.of(rightWheelx, rightWheely);
+        Tensor lateralVelocityLeft = Cross.of(vectorWheelL, frontTireVelocityLeft);
+        Tensor lateralVelocityRight = Cross.of(vectorWheelR, frontTireVelocityRight);
         return Tensors.of(lateralVelocityLeft, lateralVelocityRight);
       }
       return Tensors.empty();

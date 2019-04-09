@@ -21,8 +21,8 @@ import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Timing;
@@ -62,19 +62,20 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
       Tensor angularRate_Y_pair = rimoGetEvent.getAngularRate_Y_pair();
       // 1:left, 2: right
       Tensor velocityOrigin = lidarLocalizationModule.getVelocityXY();
-      double x = Magnitude.ARMS.toDouble(velocityOrigin.Get(1));
-      double y = Magnitude.ARMS.toDouble(velocityOrigin.Get(2));
+      double velx = Magnitude.VELOCITY.toDouble(velocityOrigin.Get(0));
+      double vely = Magnitude.VELOCITY.toDouble(velocityOrigin.Get(1));
       // "angular velocity of the go-kart", x-Speed devided by the radius of the rear tire
-      Scalar angularRate_Origin = velocityOrigin.Get(1).divide(ChassisGeometry.GLOBAL.tireRadiusRear);
-      Scalar one = RealScalar.of(1);
-      Tensor oneTensor = Tensors.of(one, one);
+      Scalar angularRate_Origin = velocityOrigin.Get(0).divide(ChassisGeometry.GLOBAL.tireRadiusRear);
+      Tensor oneTensor = Tensors.vector(1.0, 1.0);
       // Slip = 0 if velocity of tire equals velocity of the gokart, Slip = 1 if velocity of tire is zero
-      Tensor slip = Tensors.of(//
-          oneTensor.add((angularRate_Y_pair.Get(1).divide(angularRate_Origin)).negate()), //
-          oneTensor.add((angularRate_Y_pair.Get(2).divide(angularRate_Origin)).negate()));
+      Tensor slip = Tensors.of( //
+          oneTensor.add((angularRate_Y_pair.Get(0).divide(angularRate_Origin)).negate()), //
+          oneTensor.add((angularRate_Y_pair.Get(1).divide(angularRate_Origin)).negate()));
       // the brake cannot be constantly applied otherwise the brake motor heats up too much
-      double slip1 = Magnitude.ARMS.toDouble(slip.Get(1)); // was ist der Unterschied von .todouble zu .number().doubleValue?
-      double slip2 = Magnitude.ARMS.toDouble(slip.Get(2));
+      // was ist der Unterschied von .todouble zu .number().doubleValue?
+      // FIXME AM use magnitude with correct unit
+      double slip1 = Magnitude.ARMS.toDouble(slip.Get(0));
+      double slip2 = Magnitude.ARMS.toDouble(slip.Get(1));
       // ABS system
       double frequency = HapticSteerConfig.GLOBAL.absFrequency.number().doubleValue();
       double amplitude = HapticSteerConfig.GLOBAL.absAmplitude.number().doubleValue();
@@ -98,9 +99,10 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
         }
       }
       if (steerColumnTracker.isCalibratedAndHealthy()) {
-        double velocityAngle = Math.atan2(y, x);
+        double velocityAngle = Math.atan2(vely, velx);
         Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
         Scalar angleGrad = steerMapping.getAngleFromSCE(angleSCE);
+        // FIXME AM use magnitude with correct unit
         double angleGradDouble = Magnitude.ARMS.toDouble(angleGrad);
         double angleDifference = (Math.abs(angleGradDouble) - Math.abs(velocityAngle));
         if (angleDifference > HapticSteerConfig.GLOBAL.criticalAngle) {
