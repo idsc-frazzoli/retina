@@ -12,8 +12,6 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.SightLines;
-import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
@@ -74,19 +72,19 @@ public class PresenterLcmModule extends AbstractModule {
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   // TODO probably remove again
-  private final SightLinesMapping sightLineMapping = SightLinesMapping.defaultTrack();
-  private final SightLines sightLines = SightLines.defaultGokart();
+  // private final SightLinesMapping sightLineMapping = SightLinesMapping.defaultTrack();
+  // private final SightLines sightLines = SightLines.defaultGokart();
 
   @Override // from AbstractModule
   protected void first() {
-    {
-      timerFrame.geometricComponent.addRenderInterface(sightLineMapping);
-      sightLineMapping.start();
-    }
-    {
-      timerFrame.geometricComponent.addRenderInterface(sightLines);
-      sightLines.start();
-    }
+    // {
+    // timerFrame.geometricComponent.addRenderInterface(sightLineMapping);
+    // sightLineMapping.start();
+    // }
+    // {
+    // timerFrame.geometricComponent.addRenderInterface(sightLines);
+    // sightLines.start();
+    // }
     {
       ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
@@ -261,8 +259,8 @@ public class PresenterLcmModule extends AbstractModule {
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);
     davisLcmClient.stopSubscriptions();
     mpcControlUpdateLcmClient.stopSubscriptions();
-    sightLines.stop();
-    sightLineMapping.stop();
+    // sightLines.stop();
+    // sightLineMapping.stop();
   }
 
   public static void main(String[] args) throws Exception {

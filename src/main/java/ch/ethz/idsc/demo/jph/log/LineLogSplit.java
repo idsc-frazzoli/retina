@@ -10,21 +10,17 @@ import ch.ethz.idsc.gokart.lcm.LogSplitPredicate;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
-import ch.ethz.idsc.gokart.offline.pose.LapLogSplitPredicate;
-import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.gokart.offline.pose.LineLogSplitPredicate;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ enum LapLogSplit {
+/* package */ enum LineLogSplit {
   ;
   public static void main(String[] args) throws IOException {
-    File folder = new File("/media/datahaki/data/gokart/cuts/20190318/20190318T142605_08");
+    File folder = new File("/media/datahaki/data/gokart/ensemble/centerline");
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
-    LogSplitPredicate logSplitPredicate = new LapLogSplitPredicate( //
-        Tensors.vector(41.6, 34.2).multiply(Quantity.of(1, SI.METER)), //
-        AngleVector.of(RealScalar.of(-2.25)));
+    LogSplitPredicate logSplitPredicate = new LineLogSplitPredicate( //
+        Tensors.fromString("{37.37[m], 42.41[m], -2.11}"), Quantity.of(1, "m"));
     LogSplit logSplit = new LogSplit(logSplitPredicate);
     OfflineLogPlayer.process(gokartLogInterface.file(), logSplit);
     new LcmLogFileCutter(gokartLogInterface.file(), logSplit.navigableMap()) {
