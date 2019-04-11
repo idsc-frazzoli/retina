@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.img.ColorDataLists;
 
 // TODO depending on future development, maybe move drawing fct to VisualizationUtil
 public class DavisPipelineRender extends AbstractGokartRender implements ActionListener {
-  private AccumulatedFeaturePoints accumulatedFeaturePoints;
+  private final AccumulatedFeaturePoints accumulatedFeaturePoints;
   public final BlobTrackProvider pipelineProvider = new BlobTrackProvider(new BlobTrackConfig());
   final ColorDataIndexed colorDataIndexed = ColorDataLists._250.cyclic();
   final JToggleButton jToggleButton = new JToggleButton("pipeline");

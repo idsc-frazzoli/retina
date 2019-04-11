@@ -12,7 +12,6 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
@@ -77,7 +76,6 @@ public class GlobalViewLcmModule extends AbstractModule {
 
   @Override // from AbstractModule
   public void first() {
-    final GokartPoseInterface gokartPoseInterface = viewLcmFrame.gokartPoseInterface();
     viewLcmFrame.geometricComponent.setButtonDrag(MouseEvent.BUTTON1);
     {
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
@@ -113,7 +111,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       lidarRotationProvider.addListener(lidarAngularFiringCollector);
       lidarAngularFiringCollector.addListener(resampledLidarRender);
       // vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender.lrbl);
-      gokartPoseLcmClient.addListener(resampledLidarRender);
+      gokartPoseLcmClient.addListener(resampledLidarRender.gokartPoseListener);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);

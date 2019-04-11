@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Tan;
 
-/* package */ class GokartAngularSlip implements RimoGetListener {
+/* package */ final class GokartAngularSlip implements RimoGetListener {
   private final SteerMapping steerMapping;
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
@@ -33,7 +33,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
   }
 
   @Override // from RimoGetListener
-  public final void getEvent(RimoGetEvent getEvent) {
+  public void getEvent(RimoGetEvent getEvent) {
     meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
   }
 }

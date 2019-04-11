@@ -116,7 +116,7 @@ public class PresenterLcmModule extends AbstractModule {
       lidarRender.setObstacleColor(new Color(128, 0, 128, 128));
       lidarRender.pointSize = 1;
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
-      gokartPoseLcmClient.addListener(lidarRender);
+      gokartPoseLcmClient.addListener(lidarRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     {
@@ -148,7 +148,7 @@ public class PresenterLcmModule extends AbstractModule {
       Vlp16ClearanceRender vlp16ClearanceRender = new Vlp16ClearanceRender();
       gokartStatusLcmClient.addListener(vlp16ClearanceRender.gokartStatusListener);
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(vlp16ClearanceRender);
-      gokartPoseLcmClient.addListener(vlp16ClearanceRender);
+      gokartPoseLcmClient.addListener(vlp16ClearanceRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(vlp16ClearanceRender);
     }
     // {
@@ -180,14 +180,14 @@ public class PresenterLcmModule extends AbstractModule {
       {
         AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender();
         davisLcmClient.addDvsListener(accumulatedEventRender.abstractAccumulatedImage);
-        gokartPoseLcmClient.addListener(accumulatedEventRender);
+        gokartPoseLcmClient.addListener(accumulatedEventRender.gokartPoseListener);
         timerFrame.geometricComponent.addRenderInterface(accumulatedEventRender);
         timerFrame.jToolBar.add(accumulatedEventRender.jToggleButton);
       }
       {
         DavisPipelineRender davisPipelineRender = new DavisPipelineRender();
         davisLcmClient.addDvsListener(davisPipelineRender.pipelineProvider);
-        gokartPoseLcmClient.addListener(davisPipelineRender);
+        gokartPoseLcmClient.addListener(davisPipelineRender.gokartPoseListener);
         timerFrame.geometricComponent.addRenderInterface(davisPipelineRender);
         timerFrame.jToolBar.add(davisPipelineRender.jToggleButton);
       }

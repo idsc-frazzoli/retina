@@ -23,7 +23,7 @@ public class SideLcmModule extends AbstractModule {
     {
       LidarRender lidarRender = new SideLidarRender();
       lidarRender.setColor(new Color(0, 0, 128, 128));
-      gokartPoseLcmClient.addListener(lidarRender);
+      gokartPoseLcmClient.addListener(lidarRender.gokartPoseListener);
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
     }
@@ -31,7 +31,7 @@ public class SideLcmModule extends AbstractModule {
       LidarRender lidarRender = new SideObstacleLidarRender();
       lidarRender.setColor(new Color(255, 0, 0, 128));
       lidarRender.pointSize = 4;
-      gokartPoseLcmClient.addListener(lidarRender);
+      gokartPoseLcmClient.addListener(lidarRender.gokartPoseListener);
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
     }
