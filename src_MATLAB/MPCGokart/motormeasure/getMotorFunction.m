@@ -36,21 +36,23 @@ l1 = 0.73;
 l2 = l-l1;
 
 SysID=SysID(30000:end,:);
+%SysID=SysID(54000:55000,:);
 t = SysID(:,1);
 s = SysID(:,8);
 pl = SysID(:,9);
-dpl = getDerivation(pl, 100, 0.001);
+dpl = getDerivation(pl, 300, 0.001);
 absdpl = abs(dpl);
 hold on
 plot(t,pl);
 plot(t,absdpl);
 hold off
-steerSel = abs(s)<0.02;
-powSel = abs(pl)<2000;
+steerSel = abs(s)<0.1;
+powSel = absdpl<10;
 
-SysID=SysID(steerSel&powSel,:);
+%SysID=SysID(steerSel,:);
+%SysID=SysID(steerSel&powSel,:);
 t = SysID(:,1);
-dt = (t(1001)-t(1))/1000;
+dt = (t(101)-t(1))/100;
 tms = SysID(:,2);
 vx = SysID(:,3);
 vy = SysID(:,4);
@@ -82,8 +84,10 @@ hold off
 figure
 title('acc comparison')
 hold on
+yyaxis left
 plot(t,sax,'DisplayName', 'a-X')
-plot(t,mean([pal,par],2),'DisplayName', 'power a-X')
+yyaxis right
+plot(t,mean([pl,pr],2),'DisplayName', 'power a-X')
 legend show
 hold off
 
@@ -151,7 +155,7 @@ Y = meanRateAcceleration;
 if(true)
 figure
 hold on
-scatter3(meanRate,meanpower,meanRateAcceleration);
+h = scatter3(meanRate,meanpower,meanRateAcceleration);
 xlabel('forward speed [m/s]')
 ylabel('power [A]')
 zlabel('forwardacceleration [m/s^2]')

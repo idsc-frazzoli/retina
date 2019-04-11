@@ -7,3 +7,5 @@ for xx = 0:0.01:2
 end
 
 plot(x,y);
+
+print('satfun','-dpng','-r600')
