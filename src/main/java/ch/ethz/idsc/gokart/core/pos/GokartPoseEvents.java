@@ -15,7 +15,7 @@ public enum GokartPoseEvents {
   private static final GokartPoseEvent MOTIONLESS_0 = create( //
       GokartPoseLocal.INSTANCE.getPose(), //
       RealScalar.ZERO, //
-      GokartPoseEventV1.VELOCITY_ZERO, //
+      GokartPoseEventV1.VELOCITY_XY_ZERO, //
       GokartPoseEventV1.GYROZ_ZERO);
 
   /** @return motionless with pose quality == 0, instance of {@link GokartPoseEventV2} */
@@ -49,7 +49,7 @@ public enum GokartPoseEvents {
   /** @param pose {x[m], y[m], alpha}
    * @param quality in the interval [0, 1] */
   public static GokartPoseEvent create(Tensor pose, Scalar quality) {
-    return create(pose, quality, GokartPoseEventV1.VELOCITY_ZERO, GokartPoseEventV1.GYROZ_ZERO);
+    return create(pose, quality, GokartPoseEventV1.VELOCITY_XY_ZERO, GokartPoseEventV1.GYROZ_ZERO);
   }
 
   /***************************************************/

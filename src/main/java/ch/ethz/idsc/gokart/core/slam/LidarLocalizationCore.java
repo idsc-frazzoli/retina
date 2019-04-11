@@ -169,6 +169,11 @@ public class LidarLocalizationCore implements //
   }
 
   @Override // from PoseVelocityInterface
+  public Tensor getVelocity() {
+    return vmu931Odometry.inertialOdometry.getVelocity();
+  }
+
+  @Override // from PoseVelocityInterface
   public Tensor getVelocityXY() {
     return vmu931Odometry.inertialOdometry.getVelocityXY();
   }

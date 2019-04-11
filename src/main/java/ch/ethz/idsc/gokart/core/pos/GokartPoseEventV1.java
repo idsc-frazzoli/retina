@@ -17,6 +17,10 @@ import ch.ethz.idsc.tensor.sca.Round;
   static final int LENGTH = Double.BYTES * 3 + Float.BYTES;
   static final Tensor VELOCITY_ZERO = Tensors.of( //
       Quantity.of(0.0, SI.VELOCITY), //
+      Quantity.of(0.0, SI.VELOCITY), //
+      Quantity.of(0.0, SI.PER_SECOND)).unmodifiable();
+  static final Tensor VELOCITY_XY_ZERO = Tensors.of( //
+      Quantity.of(0.0, SI.VELOCITY), //
       Quantity.of(0.0, SI.VELOCITY)).unmodifiable();
   static final Scalar GYROZ_ZERO = Quantity.of(0.0, SI.PER_SECOND);
   // ---
@@ -65,8 +69,13 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   @Override // from PoseVelocityInterface
+  public Tensor getVelocity() {
+    return VELOCITY_ZERO;
+  }
+
+  @Override // from PoseVelocityInterface
   public Tensor getVelocityXY() {
-    return VELOCITY_ZERO.copy();
+    return VELOCITY_XY_ZERO.copy();
   }
 
   @Override // from PoseVelocityInterface
