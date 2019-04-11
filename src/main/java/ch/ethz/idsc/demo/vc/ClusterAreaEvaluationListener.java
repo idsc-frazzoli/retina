@@ -54,7 +54,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   public ClusterAreaEvaluationListener(ClusterConfig clusterConfig) {
     ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
     RenderInterface create = RegionRenders.create(imageRegion);
-    lidarClustering = new LidarClustering(clusterConfig, collection, () -> pose) {
+    lidarClustering = new LidarClustering(clusterConfig, collection) {
       private LinearPredictor linearPredictor;
 
       @Override

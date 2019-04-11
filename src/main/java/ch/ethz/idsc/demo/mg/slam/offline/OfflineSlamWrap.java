@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.demo.mg.slam.AbstractSlamWrap;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
@@ -23,7 +22,7 @@ import ch.ethz.idsc.tensor.Scalar;
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR))
-      gokartLidarPose.getEvent(GokartPoseEvent.of(byteBuffer));
+      ; // gokartLidarPose.getEvent(GokartPoseEvent.of(byteBuffer));
     else //
     if (channel.equals(CHANNEL_DVS))
       dvsLcmClient.messageReceived(byteBuffer);

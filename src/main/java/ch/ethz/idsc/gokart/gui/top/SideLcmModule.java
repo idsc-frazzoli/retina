@@ -5,8 +5,7 @@ import java.awt.Color;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
-import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
@@ -17,24 +16,22 @@ public class SideLcmModule extends AbstractModule {
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private MappedPoseInterface gokartPoseInterface = GokartPoseLocal.INSTANCE;
+  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
 
-  // protected void setGokartPoseInterface(MappedPoseInterface gokartPoseInterface) {
-  // this.gokartPoseInterface = gokartPoseInterface;
-  // viewLcmFrame.setGokartPoseInterface(gokartPoseInterface);
-  // }
   @Override // from AbstractModule
   protected void first() {
     {
-      LidarRender lidarRender = new SideLidarRender(gokartPoseInterface);
+      LidarRender lidarRender = new SideLidarRender();
       lidarRender.setColor(new Color(0, 0, 128, 128));
+      gokartPoseLcmClient.addListener(lidarRender);
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
     }
     {
-      LidarRender lidarRender = new SideObstacleLidarRender(gokartPoseInterface);
+      LidarRender lidarRender = new SideObstacleLidarRender();
       lidarRender.setColor(new Color(255, 0, 0, 128));
       lidarRender.pointSize = 4;
+      gokartPoseLcmClient.addListener(lidarRender);
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
     }
@@ -51,7 +48,7 @@ public class SideLcmModule extends AbstractModule {
     // ---
     vlp16LcmHandler.startSubscriptions();
     // ---
-    // odometryLcmClient.startSubscriptions();
+    gokartPoseLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), viewLcmFrame.jFrame);
     viewLcmFrame.configCoordinateOffset(400, 500);
@@ -62,7 +59,7 @@ public class SideLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void last() {
     // ---
-    // odometryLcmClient.stopSubscriptions();
+    gokartPoseLcmClient.stopSubscriptions();
     // ---
     vlp16LcmHandler.stopSubscriptions();
     viewLcmFrame.close();

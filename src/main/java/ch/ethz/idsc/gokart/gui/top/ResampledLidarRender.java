@@ -11,7 +11,6 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -23,10 +22,6 @@ public class ResampledLidarRender extends LidarRender {
   private boolean flagMapCreate = false;
   private boolean flagMapUpdate = false;
   public final UpdatedMap updatedMap = new UpdatedMap();
-
-  public ResampledLidarRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
-  }
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {

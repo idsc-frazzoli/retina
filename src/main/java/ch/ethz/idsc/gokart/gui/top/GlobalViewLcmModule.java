@@ -96,7 +96,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     }
     // ---
     {
-      ResampledLidarRender resampledLidarRender = new ResampledLidarRender(gokartPoseInterface);
+      ResampledLidarRender resampledLidarRender = new ResampledLidarRender();
       resampledLidarRender.updatedMap.setCrop(CROP_REGION);
       viewLcmFrame.jButtonMapCreate.addActionListener(resampledLidarRender.action_mapCreate);
       viewLcmFrame.jButtonMapCreate.setEnabled(false);
@@ -113,6 +113,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       lidarRotationProvider.addListener(lidarAngularFiringCollector);
       lidarAngularFiringCollector.addListener(resampledLidarRender);
       // vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender.lrbl);
+      gokartPoseLcmClient.addListener(resampledLidarRender);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);

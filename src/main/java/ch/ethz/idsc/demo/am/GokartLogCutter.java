@@ -6,7 +6,6 @@ import java.io.IOException;
 
 import ch.ethz.idsc.gokart.offline.gui.GokartLcmLogCutter;
 import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
-import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum GokartLogCutter {
   ;

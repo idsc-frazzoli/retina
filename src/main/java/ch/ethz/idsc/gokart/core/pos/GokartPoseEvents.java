@@ -18,7 +18,7 @@ public enum GokartPoseEvents {
       GokartPoseEventV1.VELOCITY_ZERO, //
       GokartPoseEventV1.GYROZ_ZERO);
 
-  /** @return motionless with pose quality == 0, instances of {@link GokartPoseEventV2} */
+  /** @return motionless with pose quality == 0, instance of {@link GokartPoseEventV2} */
   public static GokartPoseEvent motionlessUninitialized() {
     return MOTIONLESS_0;
   }
