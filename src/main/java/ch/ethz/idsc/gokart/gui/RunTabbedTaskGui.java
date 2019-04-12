@@ -59,7 +59,7 @@ import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
-import ch.ethz.idsc.gokart.gui.top.SideLcmModule;
+import ch.ethz.idsc.gokart.gui.top.SideViewLcmModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
@@ -155,7 +155,7 @@ enum RunTabbedTaskGui {
       DavisDetailModule.class, //
       SeyeDetailModule.class, //
       PanoramaViewModule.class, // , //
-      SideLcmModule.class, //
+      SideViewLcmModule.class, //
       PresenterLcmModule.class //
   // DavisOverviewModule.class //
   );

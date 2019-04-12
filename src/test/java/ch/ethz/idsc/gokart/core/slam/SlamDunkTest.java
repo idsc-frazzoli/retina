@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.slam;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;

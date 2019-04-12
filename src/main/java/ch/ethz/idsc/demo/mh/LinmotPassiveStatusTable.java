@@ -2,13 +2,14 @@
 // modified by mheim
 // also get data if not fused
 // only get GET data
-package ch.ethz.idsc.gokart.offline.tab;
+package ch.ethz.idsc.demo.mh;
 
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -16,10 +17,12 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class LinmotPassiveStatusTable implements OfflineTableSupplier {
+// TODO MH class is obsolete use LinmotGetChannel with SingleChannelTable
+@Refactor
+/* package */ class LinmotPassiveStatusTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
       LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
@@ -35,7 +38,7 @@ public class LinmotPassiveStatusTable implements OfflineTableSupplier {
     }
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tableBuilder.toTable();
   }

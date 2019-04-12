@@ -6,7 +6,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.MinMax;
@@ -28,8 +27,6 @@ import ch.ethz.idsc.tensor.sca.Chop;
   private final Tensor polygon;
 
   public SideGokartRender() {
-    super(GokartPoseLocal.INSTANCE);
-    // ---
     MinMax minMax = MinMax.of(RimoSinusIonModel.standard().footprint());
     Scalar min = minMax.min().Get(0);
     Scalar max = minMax.max().Get(0);

@@ -46,7 +46,7 @@ public abstract class DefaultCarModel implements VehicleModel {
   public Tensor footprint() {
     Tensor hull = Tensors.empty();
     for (int index = 0; index < wheels(); ++index)
-      hull.append(wheel(index).lever().extract(0, 2));
+      hull.append(wheelConstant(index).lever().extract(0, 2));
     return ConvexHull.of(hull);
   }
 
@@ -63,8 +63,8 @@ public abstract class DefaultCarModel implements VehicleModel {
   /***************************************************/
   // helper functions
   private Tensor _angles_front(Scalar delta) {
-    Tensor rear_center = Mean.of(Tensors.vector(i -> wheel(2 + i).lever(), 2));
-    Tensor p1L = wheel(0).lever().subtract(rear_center);
+    Tensor rear_center = Mean.of(Tensors.vector(i -> wheelConstant(2 + i).lever(), 2));
+    Tensor p1L = wheelConstant(0).lever().subtract(rear_center);
     AckermannSteering ackermannSteering = new AckermannSteering(p1L.Get(0), p1L.Get(1));
     return ackermannSteering.pair(delta).append(RealScalar.ZERO).append(RealScalar.ZERO);
   }
@@ -79,17 +79,17 @@ public abstract class DefaultCarModel implements VehicleModel {
   }
 
   private Tensor _angles_rear(Scalar delta) {
-    Tensor front_center = Mean.of(Tensors.vector(i -> wheel(0 + i).lever(), 2));
-    Tensor p2L = wheel(2).lever().subtract(front_center);
+    Tensor front_center = Mean.of(Tensors.vector(i -> wheelConstant(0 + i).lever(), 2));
+    Tensor p2L = wheelConstant(2).lever().subtract(front_center);
     AckermannSteering ackermannSteering = new AckermannSteering(p2L.Get(0), p2L.Get(1));
     return Join.of(Array.zeros(2), ackermannSteering.pair(delta));
   }
 
   private Tensor _angles_both(Scalar delta) {
-    Tensor p1L = wheel(0).lever();
-    Tensor p1R = wheel(1).lever();
-    Tensor p2L = wheel(2).lever();
-    Tensor p2R = wheel(3).lever();
+    Tensor p1L = wheelConstant(0).lever();
+    Tensor p1R = wheelConstant(1).lever();
+    Tensor p2L = wheelConstant(2).lever();
+    Tensor p2R = wheelConstant(3).lever();
     return Tensors.of( //
         new AckermannSteering(p1L.Get(0), p1L.Get(1)).angle(delta), //
         new AckermannSteering(p1R.Get(0), p1R.Get(1)).angle(delta), //

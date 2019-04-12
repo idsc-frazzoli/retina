@@ -13,8 +13,7 @@ import java.util.Objects;
 import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -53,17 +52,11 @@ public class OfflineHud implements OfflineLogListener {
   public static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.getPredefinedMap();
   // ---
   private final Scalar delta;
-  private final GokartPoseInterface gokartPoseInterface = new GokartPoseInterface() {
-    @Override
-    public Tensor getPose() {
-      return gokartPoseEvent.getPose();
-    }
-  };
   final RenderInterface renderInterface = new ImageRender( //
       PREDEFINED_MAP.getImage(), Tensors.vector(1, 1));
   final GokartRender gokartRender = new GokartRender();
   final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
-  final AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender(gokartPoseInterface);
+  final AccumulatedEventRender accumulatedEventRender = new AccumulatedEventRender();
   final TrigonometryRender trigonometryRender = new TrigonometryRender();
   final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
   // ---

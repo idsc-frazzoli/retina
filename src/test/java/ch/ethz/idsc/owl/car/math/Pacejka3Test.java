@@ -11,14 +11,14 @@ import junit.framework.TestCase;
 public class Pacejka3Test extends TestCase {
   public void testSimple() {
     VehicleModel c = CHatchbackModel.standard();
-    Scalar r = c.wheel(0).pacejka().apply(RealScalar.ZERO);
+    Scalar r = c.wheelConstant(0).pacejka().apply(RealScalar.ZERO);
     assertEquals(r, RealScalar.ZERO);
   }
 
   public void testAntiSymmetric() {
     VehicleModel c = CHatchbackModel.standard();
-    Scalar sp = c.wheel(1).pacejka().apply(RealScalar.ONE);
-    Scalar sn = c.wheel(0).pacejka().apply(RealScalar.ONE.negate());
+    Scalar sp = c.wheelConstant(1).pacejka().apply(RealScalar.ONE);
+    Scalar sn = c.wheelConstant(0).pacejka().apply(RealScalar.ONE.negate());
     assertEquals(sp, sn.negate());
     assertTrue(sp.toString().startsWith("0.854"));
   }
@@ -26,7 +26,7 @@ public class Pacejka3Test extends TestCase {
   public void testFail() {
     VehicleModel carModel = CHatchbackModel.standard();
     try {
-      carModel.wheel(0).pacejka().apply(DoubleScalar.POSITIVE_INFINITY);
+      carModel.wheelConstant(0).pacejka().apply(DoubleScalar.POSITIVE_INFINITY);
     } catch (Exception exception) {
       // ---
     }

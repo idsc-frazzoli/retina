@@ -32,7 +32,7 @@ public class CrosshairRender implements RenderInterface {
   private final Tensor lineX;
   private final Tensor lineY;
 
-  public CrosshairRender(int limit, ColorDataGradient colorDataGradient, Tensor circles) {
+  protected CrosshairRender(int limit, ColorDataGradient colorDataGradient, Tensor circles) {
     boundedLinkedList = new BoundedLinkedList<>(limit);
     colorDataIndexed = ColorLookup.decreasing(limit, colorDataGradient).deriveWithAlpha(64);
     this.circles = circles;
@@ -41,7 +41,7 @@ public class CrosshairRender implements RenderInterface {
     lineY = Tensors.matrix(new Scalar[][] { { RealScalar.ZERO, max.negate() }, { RealScalar.ZERO, max } });
   }
 
-  public final void push_end(Tensor vector) {
+  protected final void push_end(Tensor vector) {
     synchronized (boundedLinkedList) {
       boundedLinkedList.add(vector);
     }

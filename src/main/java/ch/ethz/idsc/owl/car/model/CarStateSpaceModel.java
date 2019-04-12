@@ -81,8 +81,8 @@ public class CarStateSpaceModel implements StateSpaceModel {
     // ---
     Tensor dw = Tensors.vector(index -> //
     carControl.throttleV.Get(index).add(brakeTorques.torque(index)) //
-        .subtract(vehicleModel.wheel(index).radius().multiply(tire.fwheel.Get(index, 0))) //
-        .multiply(vehicleModel.wheel(index).Iw_invert()), //
+        .subtract(vehicleModel.wheelConstant(index).radius().multiply(tire.fwheel.Get(index, 0))) //
+        .multiply(vehicleModel.wheelConstant(index).Iw_invert()), //
         vehicleModel.wheels());
     // ---
     // change of coordinates

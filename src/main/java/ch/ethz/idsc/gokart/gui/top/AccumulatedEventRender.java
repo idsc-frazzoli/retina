@@ -13,7 +13,6 @@ import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
@@ -37,8 +36,7 @@ public class AccumulatedEventRender extends AbstractGokartRender implements Time
   final JToggleButton jToggleButton = new JToggleButton("events");
   public boolean isSelected = false;
 
-  public AccumulatedEventRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
+  public AccumulatedEventRender() {
     abstractAccumulatedImage.setInterval(25_000);
     abstractAccumulatedImage.addListener(this);
     pipelineConfig = new BlobTrackConfig();

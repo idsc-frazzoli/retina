@@ -4,8 +4,10 @@ package ch.ethz.idsc.demo.mg.slam;
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.demo.mg.slam.vis.SlamViewer;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmLidar;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.lcm.davis.DvsLcmClient;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
@@ -17,13 +19,14 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
  * https://mediatum.ub.tum.de/doc/1191908/1191908.pdf */
 public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStoppable {
   protected final DvsLcmClient dvsLcmClient;
-  protected final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
-  protected final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
+  protected final GokartPoseOdometryDemo gokartPoseOdometryDemo = GokartPoseOdometryDemo.create();
   // SLAM modules below
   protected final SlamCoreContainer slamCoreContainer;
   protected final SlamPrcContainer slamPrcContainer;
   protected final AbstractFilterHandler abstractFilterHandler;
   protected final SlamViewer slamViewer;
+  protected GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+  protected final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
   // ---
   protected boolean triggered;
 
@@ -33,19 +36,17 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
     slamCoreContainer = new SlamCoreContainer();
     slamPrcContainer = new SlamPrcContainer(slamCoreContainer);
     abstractFilterHandler = SlamDvsConfig.eventCamera.slamCoreConfig.dvsConfig.createBackgroundActivityFilter();
-    slamViewer = new SlamViewer(slamCoreContainer, slamPrcContainer, gokartLidarPose);
+    slamViewer = new SlamViewer(slamCoreContainer, slamPrcContainer);
   }
 
   @Override // from StartAndStoppable
   public final void start() {
     protected_start();
-    gokartLidarPose.gokartPoseLcmClient.startSubscriptions();
     dvsLcmClient.startSubscriptions();
   }
 
   @Override // from StartAndStoppable
   public final void stop() {
-    gokartLidarPose.gokartPoseLcmClient.stopSubscriptions();
     dvsLcmClient.stopSubscriptions();
     slamViewer.stop();
     abstractFilterHandler.stopStopableListeners();
@@ -61,12 +62,12 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   @Override // from DavisDvsListener
   public final void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (!triggered)
-      if (!gokartLidarPose.getPose().equals(GokartPoseLocal.INSTANCE.getPose())) {
+      if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality())) {
         triggered = true;
         dvsLcmClient.addDvsListener(abstractFilterHandler);
         dvsLcmClient.addDvsListener(slamViewer);
         SlamWrapUtil.initialize(slamCoreContainer, slamPrcContainer, //
-            abstractFilterHandler, gokartLidarPose, gokartOdometryPose);
+            abstractFilterHandler, gokartPoseEvent, gokartPoseOdometryDemo);
         slamViewer.start();
         dvsLcmClient.removeDvsListener(this);
       }

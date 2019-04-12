@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
 
   OnlineSlamWrap() {
-    rimoGetLcmClient.addListener(gokartOdometryPose);
+    rimoGetLcmClient.addListener(gokartPoseOdometryDemo);
   }
 
   @Override // from AbstractSlamWrap

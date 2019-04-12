@@ -11,7 +11,7 @@ import ch.ethz.idsc.owl.car.math.Pacejka3;
 import ch.ethz.idsc.owl.car.model.CarControl;
 import ch.ethz.idsc.owl.car.model.CarSteering;
 import ch.ethz.idsc.owl.car.model.DefaultCarModel;
-import ch.ethz.idsc.owl.car.model.DefaultWheel;
+import ch.ethz.idsc.owl.car.model.DefaultWheelConstant;
 import ch.ethz.idsc.owl.car.model.MotorTorques;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -45,14 +45,14 @@ public class CHatchbackModel extends DefaultCarModel {
     final Scalar LF = DoubleScalar.of(1.015); // front axle distance from COG [m]
     final Scalar LR = DoubleScalar.of(1.895); // rear axle distance from COG [m]
     final Scalar LZ = DoubleScalar.of(-0.54); // from COG to ground contact level [m]
-    list.add(new DefaultWheel(radius, WIDTH_165, IW, PACEJKA1, Tensors.of(LF, LW, LZ)));
-    list.add(new DefaultWheel(radius, WIDTH_165, IW, PACEJKA1, Tensors.of(LF, LW.negate(), LZ)));
-    list.add(new DefaultWheel(radius, WIDTH_165, IW, PACEJKA2, Tensors.of(LR.negate(), LW, LZ)));
-    list.add(new DefaultWheel(radius, WIDTH_165, IW, PACEJKA2, Tensors.of(LR.negate(), LW.negate(), LZ)));
+    list.add(new DefaultWheelConstant(radius, WIDTH_165, IW, PACEJKA1, Tensors.of(LF, LW, LZ)));
+    list.add(new DefaultWheelConstant(radius, WIDTH_165, IW, PACEJKA1, Tensors.of(LF, LW.negate(), LZ)));
+    list.add(new DefaultWheelConstant(radius, WIDTH_165, IW, PACEJKA2, Tensors.of(LR.negate(), LW, LZ)));
+    list.add(new DefaultWheelConstant(radius, WIDTH_165, IW, PACEJKA2, Tensors.of(LR.negate(), LW.negate(), LZ)));
   }
 
   @Override
-  public WheelInterface wheel(int index) {
+  public WheelInterface wheelConstant(int index) {
     return list.get(index);
   }
 

@@ -14,7 +14,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
@@ -128,7 +127,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     //
     Tensor imageLid = ResourceData.of("/dubilab/sr/lidar_obs.png").get(Tensor.ALL, Tensor.ALL);
     imageLid = ImageEdges.extrusion(imageLid, 3);
-    Tensor range = LocalizationConfig.getPredefinedMapObstacles().range();
+    Tensor range = TrajectoryConfig.getPredefinedMapObstacles().range();
     ImageRegion irLid = new ImageRegion(imageLid, range, false);
     // ---
     final Scalar goalRadius_xy = DoubleScalar.of(1.2);
