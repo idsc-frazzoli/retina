@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
 public class BrakeDistanceTable implements OfflineTableSupplier {
-  private static final String LIDAR = //
+  private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
   private final TableBuilder tableBuilder = new TableBuilder();
@@ -42,7 +42,6 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
 
   public BrakeDistanceTable(Tensor pose) {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-    // LidarSpacialProvider lidarSpacialProvider = SensorsConfig.GLOBAL.planarEmulatorVlp16_p01deg();
     LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
@@ -74,7 +73,7 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
         );
       }
     } else //
-    if (channel.equals(LIDAR)) {
+    if (channel.equals(CHANNEL_LIDAR)) {
       offlineLocalize.setTime(time);
       velodyneDecoder.lasers(byteBuffer);
     }

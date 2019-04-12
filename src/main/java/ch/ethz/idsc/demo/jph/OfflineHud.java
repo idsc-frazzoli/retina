@@ -52,12 +52,6 @@ public class OfflineHud implements OfflineLogListener {
   public static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.getPredefinedMap();
   // ---
   private final Scalar delta;
-  // private final GokartPoseInterface gokartPoseInterface = new GokartPoseInterface() {
-  // @Override
-  // public Tensor getPose() {
-  // return gokartPoseEvent.getPose();
-  // }
-  // };
   final RenderInterface renderInterface = new ImageRender( //
       PREDEFINED_MAP.getImage(), Tensors.vector(1, 1));
   final GokartRender gokartRender = new GokartRender();

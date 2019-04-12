@@ -18,7 +18,7 @@ import ch.ethz.idsc.gokart.offline.api.LogFile;
     for (LogFile logFile : list)
       try {
         System.out.println(logFile.getFilename());
-        ProduceReport.of(logFile);
+        // ProduceReport.of(logFile);
       } catch (Exception exception) {
         exception.printStackTrace();
       }
