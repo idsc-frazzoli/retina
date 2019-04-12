@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.slam;
 
 import java.util.Arrays;
 
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.qty.Degree;

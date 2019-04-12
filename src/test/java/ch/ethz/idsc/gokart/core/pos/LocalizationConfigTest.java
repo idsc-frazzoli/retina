@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pos;
 
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.ParametricResample;
 import ch.ethz.idsc.tensor.IntegerQ;

@@ -8,7 +8,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.io.UserName;
 public class LidarClustering implements LidarRayBlockListener, GokartPoseListener {
   private static final boolean ENABLED = UserName.is("valentinacavinato");
   // ---
-  private final PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
+  private final PredefinedMap predefinedMap = TrajectoryConfig.getPredefinedMapObstacles();
   private final SpacialXZObstaclePredicate nonFloorPredicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final UnknownObstacleGlobalPredicate unknownObstacleGlobalPredicate = //
       new UnknownObstacleGlobalPredicate(predefinedMap);

@@ -7,8 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.sys.GuiConfig;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;

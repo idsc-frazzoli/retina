@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
-public class SideLcmModule extends AbstractModule {
+public class SideViewLcmModule extends AbstractModule {
   protected final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final WindowConfiguration windowConfiguration = //
@@ -23,7 +23,6 @@ public class SideLcmModule extends AbstractModule {
     {
       LidarRender lidarRender = new SideLidarRender();
       lidarRender.setColor(new Color(0, 0, 128, 128));
-      gokartPoseLcmClient.addListener(lidarRender.gokartPoseListener);
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
     }
@@ -31,7 +30,6 @@ public class SideLcmModule extends AbstractModule {
       LidarRender lidarRender = new SideObstacleLidarRender();
       lidarRender.setColor(new Color(255, 0, 0, 128));
       lidarRender.pointSize = 4;
-      gokartPoseLcmClient.addListener(lidarRender.gokartPoseListener);
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lidarRender);
     }
@@ -66,7 +64,7 @@ public class SideLcmModule extends AbstractModule {
   }
 
   public static void standalone() throws Exception {
-    SideLcmModule sideLcmModule = new SideLcmModule();
+    SideViewLcmModule sideLcmModule = new SideViewLcmModule();
     sideLcmModule.first();
     sideLcmModule.viewLcmFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }

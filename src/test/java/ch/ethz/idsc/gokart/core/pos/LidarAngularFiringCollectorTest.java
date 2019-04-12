@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pos;
 import java.io.File;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
