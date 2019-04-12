@@ -102,7 +102,7 @@ public class GokartRender implements RenderInterface {
       graphics.setColor(new Color(0, 160, 0));
       Tensor rateY_draw = rateY_pair.map(Magnitude.PER_SECOND).multiply(RealScalar.of(0.03));
       for (int wheel = 0; wheel < 2; ++wheel) {
-        Tensor matrix = Se2Utils.toSE2Translation(VEHICLE_MODEL.wheel(2 + wheel).lever().add(OFFSET_RATE[wheel]));
+        Tensor matrix = Se2Utils.toSE2Translation(VEHICLE_MODEL.wheelConstant(2 + wheel).lever().add(OFFSET_RATE[wheel]));
         geometricLayer.pushMatrix(matrix);
         graphics.fill(geometricLayer.toPath2D(aabRimoRate.alongX(rateY_draw.Get(0 + wheel))));
         geometricLayer.popMatrix();
@@ -116,7 +116,7 @@ public class GokartRender implements RenderInterface {
       };
       graphics.setColor(Color.BLUE);
       for (int wheel = 0; wheel < 2; ++wheel) {
-        Tensor matrix = Se2Utils.toSE2Translation(VEHICLE_MODEL.wheel(2 + wheel).lever().add(OFFSET_TORQUE[wheel]));
+        Tensor matrix = Se2Utils.toSE2Translation(VEHICLE_MODEL.wheelConstant(2 + wheel).lever().add(OFFSET_TORQUE[wheel]));
         geometricLayer.pushMatrix(matrix);
         graphics.fill(geometricLayer.toPath2D(aabRimoRate.alongX(RealScalar.of(trq[0 + wheel]))));
         geometricLayer.popMatrix();
@@ -143,7 +143,7 @@ public class GokartRender implements RenderInterface {
       graphics.setColor(new Color(128, 128, 128, 128));
       Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO);
       for (int index = 0; index < 4; ++index) {
-        Tensor matrix = Se2Utils.toSE2Matrix(Join.of(VEHICLE_MODEL.wheel(index).lever().extract(0, 2), Tensors.of(angles.Get(index))));
+        Tensor matrix = Se2Utils.toSE2Matrix(Join.of(VEHICLE_MODEL.wheelConstant(index).lever().extract(0, 2), Tensors.of(angles.Get(index))));
         geometricLayer.pushMatrix(matrix);
         graphics.fill(geometricLayer.toPath2D(index < 2 ? TIRE_FRONT : TIRE_REAR));
         geometricLayer.popMatrix();

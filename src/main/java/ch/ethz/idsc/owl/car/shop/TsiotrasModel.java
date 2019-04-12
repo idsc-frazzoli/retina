@@ -58,7 +58,7 @@ public class TsiotrasModel extends DefaultCarModel {
   }
 
   @Override
-  public WheelInterface wheel(int index) {
+  public WheelInterface wheelConstant(int index) {
     throw new RuntimeException();
   }
 

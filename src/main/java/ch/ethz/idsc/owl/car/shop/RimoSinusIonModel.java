@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
 import ch.ethz.idsc.owl.car.math.Pacejka3;
 import ch.ethz.idsc.owl.car.model.CarControl;
 import ch.ethz.idsc.owl.car.model.CarSteering;
 import ch.ethz.idsc.owl.car.model.DefaultCarModel;
-import ch.ethz.idsc.owl.car.model.DefaultWheel;
+import ch.ethz.idsc.owl.car.model.DefaultWheelConstant;
 import ch.ethz.idsc.owl.car.model.MotorTorques;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -45,12 +46,13 @@ import ch.ethz.idsc.tensor.sca.Clips;
  * Außendurchmesser: 280mm
  * Felgengrösse (inch): 8.0 (210mm) */
 public class RimoSinusIonModel extends DefaultCarModel {
-  public static RimoSinusIonModel standard() {
+  public static VehicleModel standard() {
     return new RimoSinusIonModel(ChassisGeometry.GLOBAL);
   }
 
   // ---
   private final List<WheelInterface> list = new ArrayList<>();
+  // private final List<WheelConfiguration> list = new ArrayList<>();
   private final Tensor hull;
 
   private RimoSinusIonModel(ChassisGeometry chassisGeometry) {
@@ -75,10 +77,10 @@ public class RimoSinusIonModel extends DefaultCarModel {
     // tire width front total: 13 cm (same as tire rear width on ground)
     final Scalar TWR = RealScalar.of(0.13); // tire width read
     // tire width rear total: 19.5 cm
-    list.add(new DefaultWheel(RADIUS1, TWF, IW, PACEJKA, Tensors.of(LF, TF, LZ)));
-    list.add(new DefaultWheel(RADIUS1, TWF, IW, PACEJKA, Tensors.of(LF, TF.negate(), LZ)));
-    list.add(new DefaultWheel(RADIUS2, TWR, IW, PACEJKA, Tensors.of(LR, TR, LZ)));
-    list.add(new DefaultWheel(RADIUS2, TWR, IW, PACEJKA, Tensors.of(LR, TR.negate(), LZ)));
+    list.add(new DefaultWheelConstant(RADIUS1, TWF, IW, PACEJKA, Tensors.of(LF, TF, LZ)));
+    list.add(new DefaultWheelConstant(RADIUS1, TWF, IW, PACEJKA, Tensors.of(LF, TF.negate(), LZ)));
+    list.add(new DefaultWheelConstant(RADIUS2, TWR, IW, PACEJKA, Tensors.of(LR, TR, LZ)));
+    list.add(new DefaultWheelConstant(RADIUS2, TWR, IW, PACEJKA, Tensors.of(LR, TR.negate(), LZ)));
     // front axle to boundary contact 35 [cm] + to front tip 22.5 [cm]
     final Scalar HFX = LF.add(DoubleScalar.of(0.350 + 0.225));
     final Scalar HRX = HFX.subtract(DoubleScalar.of(2.060)); // measured
@@ -102,7 +104,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
   }
 
   @Override
-  public WheelInterface wheel(int index) {
+  public WheelInterface wheelConstant(int index) {
     return list.get(index);
   }
 

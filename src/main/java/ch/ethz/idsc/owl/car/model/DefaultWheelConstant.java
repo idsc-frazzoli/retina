@@ -7,14 +7,14 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** class holds invariant parameters of wheel */
-public class DefaultWheel implements WheelInterface {
+public class DefaultWheelConstant implements WheelInterface {
   private final Scalar radius;
   private final Scalar width;
   private final Scalar iw_invert;
   private final Pacejka3 pacejka3;
   private final Tensor lever;
 
-  public DefaultWheel(Scalar radius, Scalar width, Scalar iw, Pacejka3 pacejka3, Tensor lever) {
+  public DefaultWheelConstant(Scalar radius, Scalar width, Scalar iw, Pacejka3 pacejka3, Tensor lever) {
     this.radius = radius;
     this.width = width;
     this.iw_invert = iw.reciprocal();

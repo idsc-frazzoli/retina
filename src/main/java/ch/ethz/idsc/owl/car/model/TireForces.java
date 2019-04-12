@@ -38,14 +38,14 @@ public class TireForces {
     final Tensor angles = vehicleModel.angles(carControl.delta).unmodifiable();
     // ---
     Tensor mus = Tensors.vector(index -> //
-    new RobustSlip(vehicleModel.wheel(index).pacejka(), get_ui_2d(angles.Get(index), index), //
-        vehicleModel.wheel(index).radius().multiply(carState.omega.Get(index))).slip(), 4).multiply(mu);
+    new RobustSlip(vehicleModel.wheelConstant(index).pacejka(), get_ui_2d(angles.Get(index), index), //
+        vehicleModel.wheelConstant(index).radius().multiply(carState.omega.Get(index))).slip(), 4).multiply(mu);
     final Tensor dir = Tensors.vector(index -> //
     Join.of(RotationMatrix.of(angles.Get(index)).dot(mus.get(index)), AFFINE_ONE), 4);
     // ---
     final Tensor fbodyZ;
     {
-      Tensor levers = Tensors.vector(i -> vehicleModel.wheel(i).lever(), 4);
+      Tensor levers = Tensors.vector(i -> vehicleModel.wheelConstant(i).lever(), 4);
       Tensor rotX_z = levers.get(Tensor.ALL, 1);
       Tensor rotX_y = levers.get(Tensor.ALL, 2).pmul(dir.get(Tensor.ALL, 1)); // z coordinate of tire contact * dir_y
       Tensor rotY_z = levers.get(Tensor.ALL, 0);
@@ -80,7 +80,7 @@ public class TireForces {
   public Tensor torque() {
     Tensor tensor = Array.zeros(3);
     for (int index = 0; index < vehicleModel.wheels(); ++index)
-      tensor = tensor.add(Cross.of(vehicleModel.wheel(index).lever(), Forces.get(index)));
+      tensor = tensor.add(Cross.of(vehicleModel.wheelConstant(index).lever(), Forces.get(index)));
     return tensor;
   }
 
@@ -103,7 +103,7 @@ public class TireForces {
    * @param index of wheel
    * @return */
   private Tensor get_ui_2d(Scalar delta, int index) { // as in doc
-    Tensor tangent_2 = carState.u_2d().add(Cross.of(vehicleModel.wheel(index).lever().extract(0, 2).multiply(carState.r)));
+    Tensor tangent_2 = carState.u_2d().add(Cross.of(vehicleModel.wheelConstant(index).lever().extract(0, 2).multiply(carState.r)));
     return RotationMatrix.of(delta.negate()).dot(tangent_2);
   }
 
@@ -115,7 +115,7 @@ public class TireForces {
    * @return */
   /* package */ Tensor get_ui_3(Scalar delta, int index) { // as in doc
     Tensor rotation_3 = Rodrigues.exp(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, delta.negate()));
-    Tensor tangent_3 = carState.u_3d().add(Cross.of(carState.rate_3d(), vehicleModel.wheel(index).lever()));
+    Tensor tangent_3 = carState.u_3d().add(Cross.of(carState.rate_3d(), vehicleModel.wheelConstant(index).lever()));
     return rotation_3.dot(tangent_3).extract(0, 2);
   }
 }

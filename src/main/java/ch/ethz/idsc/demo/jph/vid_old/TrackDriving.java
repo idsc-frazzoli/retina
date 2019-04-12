@@ -130,7 +130,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       Tensor[] ofs = new Tensor[] { Tensors.vector(0, 0, 0), Tensors.vector(0, 0, 0) };
       graphics.setColor(new Color(0, 0, 255, 64));
       for (int wheel = 0; wheel < 2; ++wheel) {
-        Tensor vector = VEHICLE_MODEL.wheel(2 + wheel).lever();
+        Tensor vector = VEHICLE_MODEL.wheelConstant(2 + wheel).lever();
         geometricLayer.pushMatrix(Se2Utils.toSE2Translation(vector.add(ofs[wheel])));
         graphics.fill(geometricLayer.toPath2D(axisAlignedBox.alongX(RealScalar.of(trq[0 + wheel]))));
         geometricLayer.popMatrix();
