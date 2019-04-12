@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
 import ch.ethz.idsc.owl.car.math.Pacejka3;
 import ch.ethz.idsc.owl.car.model.CarControl;
@@ -46,7 +45,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
  * Außendurchmesser: 280mm
  * Felgengrösse (inch): 8.0 (210mm) */
 public class RimoSinusIonModel extends DefaultCarModel {
-  public static VehicleModel standard() {
+  public static RimoSinusIonModel standard() {
     return new RimoSinusIonModel(ChassisGeometry.GLOBAL);
   }
 

@@ -34,7 +34,7 @@ public class FirstLogMessage implements OfflineLogListener {
   public void event(Scalar time, String string, ByteBuffer byteBuffer) {
     if (string.equals(channel)) {
       optional = Optional.of(byteBuffer);
-      throw new RuntimeException();
+      throw OfflineLogPlayer.endOfFile();
     }
   }
 }

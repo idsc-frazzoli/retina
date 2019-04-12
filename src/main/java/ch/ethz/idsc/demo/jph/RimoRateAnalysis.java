@@ -24,8 +24,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     File file = DatahakiLogFileLocator.file(GokartLogFile._20180307T154859_0cd18c6b);
     file = HomeDirectory.file("gokart/pursuit/20180307T154859/log.lcm");
     file = HomeDirectory.file("gokartlogs/20180419/20180419T150253_7373f83e.lcm.00");
-    RimoRateJoystickTable rimoRateTable = new RimoRateJoystickTable(Quantity.of(0.01, SI.SECOND), ByteOrder.BIG_ENDIAN);
-    OfflineLogPlayer.process(file, rimoRateTable);
-    Export.of(HomeDirectory.file("20180419T150253_7373f83e_joy.csv"), rimoRateTable.getTable().map(CsvFormat.strict()));
+    RimoRateJoystickTable rimoRateJoystickTable = new RimoRateJoystickTable(Quantity.of(0.01, SI.SECOND), ByteOrder.BIG_ENDIAN);
+    OfflineLogPlayer.process(file, rimoRateJoystickTable);
+    Export.of(HomeDirectory.file("20180419T150253_7373f83e_joy.csv"), rimoRateJoystickTable.getTable().map(CsvFormat.strict()));
   }
 }

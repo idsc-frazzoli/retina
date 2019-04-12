@@ -27,9 +27,9 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   public AccumulateToListener(int period) {
     DavisDevice davisDevice = Davis240c.INSTANCE;
     // handle dvs
-    AbstractAccumulatedImage accumulatedEventsImage = SAEGaussDecayImage.of(davisDevice, period);
-    davisDvsDatagramDecoder.addDvsListener(accumulatedEventsImage);
-    accumulatedEventsImage.addListener(this);
+    AbstractAccumulatedImage abstractAccumulatedImage = SAEGaussDecayImage.of(davisDevice, period);
+    davisDvsDatagramDecoder.addDvsListener(abstractAccumulatedImage);
+    abstractAccumulatedImage.addListener(this);
   }
 
   @Override // from OfflineLogListener
