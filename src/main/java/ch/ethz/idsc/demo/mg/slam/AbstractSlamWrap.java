@@ -19,8 +19,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
  * https://mediatum.ub.tum.de/doc/1191908/1191908.pdf */
 public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStoppable {
   protected final DvsLcmClient dvsLcmClient;
-  // protected final GokartPoseLcmLidar gokartLidarPose = new GokartPoseLcmLidar();
-  protected final GokartPoseOdometryDemo gokartOdometryPose = GokartPoseOdometryDemo.create();
+  protected final GokartPoseOdometryDemo gokartPoseOdometryDemo = GokartPoseOdometryDemo.create();
   // SLAM modules below
   protected final SlamCoreContainer slamCoreContainer;
   protected final SlamPrcContainer slamPrcContainer;
@@ -43,13 +42,11 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   @Override // from StartAndStoppable
   public final void start() {
     protected_start();
-    // gokartLidarPose.gokartPoseLcmClient.startSubscriptions();
     dvsLcmClient.startSubscriptions();
   }
 
   @Override // from StartAndStoppable
   public final void stop() {
-    // gokartLidarPose.gokartPoseLcmClient.stopSubscriptions();
     dvsLcmClient.stopSubscriptions();
     slamViewer.stop();
     abstractFilterHandler.stopStopableListeners();
@@ -70,7 +67,7 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
         dvsLcmClient.addDvsListener(abstractFilterHandler);
         dvsLcmClient.addDvsListener(slamViewer);
         SlamWrapUtil.initialize(slamCoreContainer, slamPrcContainer, //
-            abstractFilterHandler, gokartPoseEvent, gokartOdometryPose);
+            abstractFilterHandler, gokartPoseEvent, gokartPoseOdometryDemo);
         slamViewer.start();
         dvsLcmClient.removeDvsListener(this);
       }

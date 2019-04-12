@@ -7,8 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.calib.steer.FrontWheelSteerMapping;
 import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -26,6 +26,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
+import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -38,7 +39,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 
@@ -97,28 +97,29 @@ public class GokartRender implements RenderInterface {
       graphics.setColor(new Color(224, 224, 224, 192));
       graphics.fill(geometricLayer.toPath2D(VEHICLE_MODEL.footprint()));
     }
-    { // rear wheel odometry
-      final Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair();
-      graphics.setColor(new Color(0, 160, 0));
-      Tensor rateY_draw = rateY_pair.map(Magnitude.PER_SECOND).multiply(RealScalar.of(0.03));
-      for (int wheel = 0; wheel < 2; ++wheel) {
-        Tensor matrix = Se2Utils.toSE2Translation(VEHICLE_MODEL.wheelConstant(2 + wheel).lever().add(OFFSET_RATE[wheel]));
-        geometricLayer.pushMatrix(matrix);
-        graphics.fill(geometricLayer.toPath2D(aabRimoRate.alongX(rateY_draw.Get(0 + wheel))));
-        geometricLayer.popMatrix();
-      }
-    }
-    { // rear wheel torques
+    { // rear wheel torques and rear wheel odometry
       double factor = 5E-4;
       double[] trq = new double[] { //
           -Magnitude.ARMS.toDouble(rimoPutEvent.putTireL.getTorque()) * factor, //
           +Magnitude.ARMS.toDouble(rimoPutEvent.putTireR.getTorque()) * factor //
       };
-      graphics.setColor(Color.BLUE);
+      final Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair();
+      Tensor rateY_draw = rateY_pair.map(Magnitude.PER_SECOND).multiply(RealScalar.of(0.03));
+      graphics.setStroke(new BasicStroke(1));
+      AxleConfiguration axleConfiguration = RimoAxleConfiguration.rear();
       for (int wheel = 0; wheel < 2; ++wheel) {
-        Tensor matrix = Se2Utils.toSE2Translation(VEHICLE_MODEL.wheelConstant(2 + wheel).lever().add(OFFSET_TORQUE[wheel]));
-        geometricLayer.pushMatrix(matrix);
+        geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
+        // ---
+        geometricLayer.pushMatrix(Se2Utils.toSE2Translation(OFFSET_TORQUE[wheel]));
+        graphics.setColor(Color.BLUE);
         graphics.fill(geometricLayer.toPath2D(aabRimoRate.alongX(RealScalar.of(trq[0 + wheel]))));
+        geometricLayer.popMatrix();
+        // ---
+        geometricLayer.pushMatrix(Se2Utils.toSE2Translation(OFFSET_RATE[wheel]));
+        graphics.setColor(new Color(0, 160, 0));
+        graphics.fill(geometricLayer.toPath2D(aabRimoRate.alongX(rateY_draw.Get(0 + wheel))));
+        geometricLayer.popMatrix();
+        // ---
         geometricLayer.popMatrix();
       }
     }
@@ -135,18 +136,23 @@ public class GokartRender implements RenderInterface {
       geometricLayer.popMatrix();
     }
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
-      // Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
-      // Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
-      Scalar angleL = FrontWheelSteerMapping._LEFT.getAngleFromSCE(gokartStatusEvent); // pair.Get(0);
-      Scalar angleR = FrontWheelSteerMapping.RIGHT.getAngleFromSCE(gokartStatusEvent); // pair.Get(1);
-      graphics.setStroke(new BasicStroke(2));
+      graphics.setStroke(new BasicStroke(1));
       graphics.setColor(new Color(128, 128, 128, 128));
-      Tensor angles = Tensors.of(angleL, angleR, RealScalar.ZERO, RealScalar.ZERO);
-      for (int index = 0; index < 4; ++index) {
-        Tensor matrix = Se2Utils.toSE2Matrix(Join.of(VEHICLE_MODEL.wheelConstant(index).lever().extract(0, 2), Tensors.of(angles.Get(index))));
-        geometricLayer.pushMatrix(matrix);
-        graphics.fill(geometricLayer.toPath2D(index < 2 ? TIRE_FRONT : TIRE_REAR));
-        geometricLayer.popMatrix();
+      {
+        AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(gokartStatusEvent.getSteerColumnEncoderCentered());
+        for (int wheel = 0; wheel < 2; ++wheel) {
+          geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
+          graphics.fill(geometricLayer.toPath2D(TIRE_FRONT));
+          geometricLayer.popMatrix();
+        }
+      }
+      {
+        AxleConfiguration axleConfiguration = RimoAxleConfiguration.rear();
+        for (int wheel = 0; wheel < 2; ++wheel) {
+          geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
+          graphics.fill(geometricLayer.toPath2D(TIRE_FRONT));
+          geometricLayer.popMatrix();
+        }
       }
       // Tensor pose = gokartPoseInterface.getPose();
       // TODO JPH use of lidarLocalizationModule in display functionality is prohibited
