@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Chop;
@@ -24,17 +25,18 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   /** forward motion is determined by odometry:
    * noise in the measurements around zero are also mapped to "forward" */
-  private boolean isForward = true;
+  protected boolean isForward = true;
+  protected Scalar speed = RealScalar.ZERO;
   /* package */ final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent rimoGetEvent) {
-      Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
-      isForward = Sign.isPositiveOrZero(speedChop.apply(speed));
+      speed = speedChop.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
+      isForward = Sign.isPositiveOrZero(speed);
     }
   };
   // ---
-  private Optional<Tensor> optionalCurve = Optional.empty();
-  private boolean closed = true;
+  protected Optional<Tensor> optionalCurve = Optional.empty();
+  protected boolean closed = true;
   GokartPoseEvent gokartPoseEvent = null;
 
   public CurvePurePursuitModule(PursuitConfig pursuitConfig) {
@@ -79,7 +81,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   // right now, "curve" does not have "m" as unit but entries are unitless.
   /** @param pose
    * @return */
-  private synchronized Optional<Scalar> getRatio(Tensor pose) {
+  protected synchronized Optional<Scalar> getRatio(Tensor pose) {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent())
       return CurvePurePursuitHelper.getRatio( //
