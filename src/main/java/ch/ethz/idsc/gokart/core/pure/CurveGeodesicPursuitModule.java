@@ -1,13 +1,12 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.util.Optional;
+
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-import java.util.Optional;
-
 public class CurveGeodesicPursuitModule extends CurvePurePursuitModule {
-
   public CurveGeodesicPursuitModule(PursuitConfig pursuitConfig) {
     super(pursuitConfig);
   }

@@ -1,6 +1,11 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.planar.ArgMinVariable;
@@ -15,14 +20,8 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Norm;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 /* package */ enum CurveGeodesicPursuitHelper {
   ;
-
   /** @param pose of vehicle
    * @param speed of vehicle
    * @param curve in world coordinates
@@ -35,7 +34,7 @@ import java.util.function.Predicate;
       GeodesicInterface geodesic, TrajectoryEntryFinder entryFinder, List<DynamicRatioLimit> ratioLimits) {
     TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(pose).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(t -> //
-        tensorUnaryOperator.apply(t).append(t.Get(2).subtract(pose.Get(2))))); // TODO could be part of Se2Bijection
+    tensorUnaryOperator.apply(t).append(t.Get(2).subtract(pose.Get(2))))); // TODO could be part of Se2Bijection
     if (!isForward)
       mirrorAndReverse(tensor);
     Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);

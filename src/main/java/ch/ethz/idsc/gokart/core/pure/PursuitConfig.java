@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.util.Collections;
+import java.util.List;
+
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.bot.se2.glc.StaticRatioLimit;
 import ch.ethz.idsc.owl.math.planar.InterpolationEntryFinder;
@@ -15,9 +18,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
-
-import java.util.Collections;
-import java.util.List;
 
 /** parameters for PID controller of steering
  * 
@@ -45,7 +45,6 @@ public class PursuitConfig {
   public final GeodesicInterface geodesic = ClothoidCurve.INSTANCE;
   public final TrajectoryEntryFinder entryFinder = new InterpolationEntryFinder(0);
   public final List<DynamicRatioLimit> ratioLimits = Collections.singletonList(new StaticRatioLimit(RealScalar.of(0.4082))); // TODO check value
-
 
   /***************************************************/
   /** @return unitless look ahead distance with interpretation in meters */
