@@ -1,9 +1,18 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.util.Collections;
+import java.util.List;
+
+import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
+import ch.ethz.idsc.owl.bot.se2.glc.StaticRatioLimit;
+import ch.ethz.idsc.owl.math.planar.InterpolationEntryFinder;
+import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.sophus.curve.ClothoidCurve;
+import ch.ethz.idsc.sophus.math.GeodesicInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -33,6 +42,9 @@ public class PursuitConfig {
   public Scalar rateFollower = Quantity.of(50.0, "rad*s^-1");
   /** poseQualityMin is threshold above which a pose quality is considered sufficient */
   public final Scalar poseQualityMin = RealScalar.of(0.5);
+  public final GeodesicInterface geodesic = ClothoidCurve.INSTANCE;
+  public final TrajectoryEntryFinder entryFinder = new InterpolationEntryFinder(0);
+  public final List<DynamicRatioLimit> ratioLimits = Collections.singletonList(new StaticRatioLimit(RealScalar.of(0.4082))); // TODO check value
 
   /***************************************************/
   /** @return unitless look ahead distance with interpretation in meters */
