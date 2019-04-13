@@ -35,25 +35,25 @@ public class BrakeTorques {
       if (Scalars.nonZero(carState.omega.Get(0))) {
         _Tb1L = pressF.multiply(vehicleModel.press2torF()).multiply(Sign.of(carState.omega.Get(0))).negate();
       } else {
-        _Tb1L = tireForces.fwheel.Get(0, 0).multiply(vehicleModel.wheel(0).radius());
+        _Tb1L = tireForces.fwheel.Get(0, 0).multiply(vehicleModel.wheelConstant(0).radius());
       }
       //
       if (Scalars.nonZero(carState.omega.Get(1))) {
         _Tb1R = pressF.multiply(vehicleModel.press2torF()).multiply(Sign.of(carState.omega.Get(1))).negate();
       } else {
-        _Tb1R = tireForces.fwheel.Get(1, 0).multiply(vehicleModel.wheel(1).radius());
+        _Tb1R = tireForces.fwheel.Get(1, 0).multiply(vehicleModel.wheelConstant(1).radius());
       }
       //
       if (Scalars.nonZero(carState.omega.Get(2))) {
         _Tb2L = pressR.multiply(vehicleModel.press2torR()).multiply(Sign.of(carState.omega.Get(2))).negate();
       } else {
-        _Tb2L = tireForces.fwheel.Get(2, 0).multiply(vehicleModel.wheel(2).radius());
+        _Tb2L = tireForces.fwheel.Get(2, 0).multiply(vehicleModel.wheelConstant(2).radius());
       }
       //
       if (Scalars.nonZero(carState.omega.Get(3))) {
         _Tb2R = pressR.multiply(vehicleModel.press2torR()).multiply(Sign.of(carState.omega.Get(3))).negate();
       } else {
-        _Tb2R = tireForces.fwheel.Get(3, 0).multiply(vehicleModel.wheel(3).radius());
+        _Tb2R = tireForces.fwheel.Get(3, 0).multiply(vehicleModel.wheelConstant(3).radius());
       }
     }
     // ---
@@ -61,13 +61,13 @@ public class BrakeTorques {
       if (Scalars.nonZero(carState.omega.Get(2))) {
         _Tb2L = _Tb2L.subtract(carControl.handbrake.multiply(Sign.of(carState.omega.Get(2))));
       } else {
-        _Tb2L = _Tb2L.subtract(tireForces.fwheel.Get(2, 0).multiply(vehicleModel.wheel(2).radius()));
+        _Tb2L = _Tb2L.subtract(tireForces.fwheel.Get(2, 0).multiply(vehicleModel.wheelConstant(2).radius()));
       }
       //
       if (Scalars.nonZero(carState.omega.Get(3))) {
         _Tb2R = _Tb2R.subtract(carControl.handbrake.multiply(Sign.of(carState.omega.Get(3))));
       } else {
-        _Tb2R = _Tb2R.subtract(tireForces.fwheel.Get(3, 0).multiply(vehicleModel.wheel(3).radius()));
+        _Tb2R = _Tb2R.subtract(tireForces.fwheel.Get(3, 0).multiply(vehicleModel.wheelConstant(3).radius()));
       }
     }
     tbreak = Tensors.of(_Tb1L, _Tb1R, _Tb2L, _Tb2R).unmodifiable();

@@ -1,8 +1,6 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.pos;
+package ch.ethz.idsc.gokart.core.slam;
 
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
-import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16TiltedPlanarEmulator;
@@ -16,7 +14,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/**  */
+/** parameters for lidar- and gyro-based localization algorithm */
 public class LocalizationConfig {
   public static final LocalizationConfig GLOBAL = AppResources.load(new LocalizationConfig());
   /***************************************************/
@@ -50,19 +48,6 @@ public class LocalizationConfig {
         gridLevels.number().intValue());
   }
 
-  /** Hint: function strictly only for post-processing!
-   * search grid is too fine for use in realtime.
-   * 
-   * @param fan
-   * @return */
-  public static Se2MultiresGrids offlineSe2MultiresGrids(int fan) {
-    return new Se2MultiresGrids( //
-        RealScalar.of(0.8 / fan), //
-        Magnitude.ONE.apply(Quantity.of(9.0 / fan, NonSI.DEGREE_ANGLE)), //
-        fan, //
-        4);
-  }
-
   /** the VLP-16 is tilted by 0.04[rad] around the y-axis.
    * 
    * @return lidar spacial provider that approximates measurements
@@ -92,9 +77,5 @@ public class LocalizationConfig {
   /** @return predefined map with static geometry for lidar based localization */
   public static PredefinedMap getPredefinedMap() {
     return PredefinedMap.DUBILAB_LOCALIZATION_20190314; // without tents
-  }
-
-  public static PredefinedMap getPredefinedMapObstacles() {
-    return PredefinedMap.DUBILAB_OBSTACLES_20190314;
   }
 }

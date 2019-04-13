@@ -26,7 +26,7 @@ import lcm.logging.Log.Event;
  * Observed "step backs" are 1[us], 18[us], or 70[us]. */
 public enum OfflineLogPlayer {
   ;
-  public static final String END_OF_FILE = "EOF";
+  private static final String END_OF_FILE = "EOF";
 
   public static void process(File file, OfflineLogListener... offlineLogListeners) throws IOException {
     process(file, Arrays.asList(offlineLogListeners));
@@ -60,5 +60,9 @@ public enum OfflineLogPlayer {
       if (!END_OF_FILE.equals(exception.getMessage()))
         throw exception;
     }
+  }
+
+  public static RuntimeException endOfFile() {
+    return new RuntimeException(END_OF_FILE);
   }
 }

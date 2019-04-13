@@ -1,8 +1,8 @@
 clear all;
 close all;
-B = 2;
-C = 1.5;
-D = 0.7*9.81;
+B = 5.2;
+C = 1.4;
+D = 10.4;
 slx = @(VELY,VELX, wheelSpeed)(VELX-wheelSpeed)./(wheelSpeed+0.001);
 sly = @(VELY,VELX, wheelSpeed)(1+slx(VELY,VELX, wheelSpeed)).*VELY./(VELX+0.001);
 slip = @(VELY,VELX,wheelSpeed)(slx(VELY,VELX,wheelSpeed).^2+sly(VELY,VELX, wheelSpeed).^2).^(0.5)+0.001;
@@ -27,28 +27,30 @@ swheelspeed = @(vely,velx,taccx)fminsearch(@(wheelspeed)fun(vely,velx,wheelspeed
 saccy = @(VELY,VELX,taccx)accy(VELY,VELX,swheelspeed(VELY,VELX,taccx));
 
 %compute curves at different acceleration levels
-standartvelx = 3;
+standartvelx = 1;
 figure
 hold on
-for ia = -6:0.5:0
-    vely = -3:0.01:3;
+for ia = -7:1:0
+    vely = -1:0.001:1;
     accy = [];
-    for ively = -3:0.01:3
+    for ively = -1:0.001:1
         accy = [accy,saccy(ively,standartvelx,ia)];
     end
-    xlabel("velocity-Y [m/s]");
-    ylabel("acc-Y [m/s^2]");
-    plot(vely,accy, 'DisplayName',strcat(num2str(ia),'[m/s^2] acc-X'));
+    plot(vely,accy, 'DisplayName',strcat('f_x = ',num2str(ia),'[N/kg]'));
 end
+xlabel("$\frac{v_y}{v_x}$",'Interpreter','latex');
+ylabel("$\frac{f_y}{M}$ [N/kg]",'Interpreter','latex');
 legend show
 hold off
+print('mixedmodeltheorie','-dpng','-r600')
 
 %simplified model
 maxA = D;
-capfactor = @(taccx)(1-satfun((taccx/D)^2))^(1/2);
-simpleslip = @(VELY,VELX,taccx)-(1/capfactor(taccx))*VELY/(VELX+0.001);
+capfactor = @(VELY,VELX,taccx)(1-satfun((taccx/D)^2))^(1/2);
+simpleslip = @(VELY,VELX,taccx)-(1/capfactor(VELY,VELX,taccx))*VELY/(VELX+0.001);
 simplediraccy = @(VELY,VELX,taccx)magic(simpleslip(VELY,VELX,taccx),B,C,D);
-simpleaccy = @(VELY,VELX,taccx)capfactor(taccx)*simplediraccy(VELY,VELX,taccx);
+simpleaccy = @(VELY,VELX,taccx)capfactor(VELY,VELX
+capfactor = @(VELY,VELX,taccx),taccx)*simplediraccy(VELY,VELX,taccx);
 acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
 simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+0.001),B,C,D);
 
@@ -57,7 +59,7 @@ standartvelx = 3;
 figure
 title('approximation');
 hold on
-for ia = -6:0.5:0
+for ia = -9:0.5:0
     vely = -3:0.01:3;
     accy = [];
     for ively = -3:0.01:3

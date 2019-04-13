@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.jph.lidar.local;
 
 import java.io.File;
 
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.pose.LogPosePostInject;
@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.Tensor;
     return new OfflineLocalizeWrap(new LidarGyroOfflineLocalize( //
         LocalizationConfig.getPredefinedMap().getImageExtruded(), //
         pose, //
-        LocalizationConfig.offlineSe2MultiresGrids(4), //
+        StaticHelper.offlineSe2MultiresGrids(4), //
         VoidScatterImage.INSTANCE));
   }
 

@@ -15,7 +15,7 @@ import ch.ethz.idsc.gokart.core.perc.LidarClustering;
 import ch.ethz.idsc.gokart.core.perc.LinearPredictor;
 import ch.ethz.idsc.gokart.core.perc.SimplePredictor;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.ObstacleClusterTrackingRender;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -54,7 +54,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   public ClusterAreaEvaluationListener(ClusterConfig clusterConfig) {
     ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
     RenderInterface create = RegionRenders.create(imageRegion);
-    lidarClustering = new LidarClustering(clusterConfig, collection, () -> pose) {
+    lidarClustering = new LidarClustering(clusterConfig, collection) {
       private LinearPredictor linearPredictor;
 
       @Override

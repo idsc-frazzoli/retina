@@ -56,6 +56,11 @@ public class InertialOdometry implements PoseVelocityInterface {
   }
 
   @Override // from PositionVelocityEstimation
+  public Tensor getVelocity() {
+    return getVelocityXY().append(getGyroZ());
+  }
+
+  @Override // from PositionVelocityEstimation
   public synchronized Tensor getVelocityXY() {
     return localVelocityXY.copy();
   }

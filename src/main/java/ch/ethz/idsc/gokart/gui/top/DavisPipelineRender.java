@@ -12,7 +12,6 @@ import javax.swing.JToggleButton;
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
 import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -21,7 +20,7 @@ import ch.ethz.idsc.tensor.img.ColorDataLists;
 
 // TODO depending on future development, maybe move drawing fct to VisualizationUtil
 public class DavisPipelineRender extends AbstractGokartRender implements ActionListener {
-  private AccumulatedFeaturePoints accumulatedFeaturePoints;
+  private final AccumulatedFeaturePoints accumulatedFeaturePoints;
   public final BlobTrackProvider pipelineProvider = new BlobTrackProvider(new BlobTrackConfig());
   final ColorDataIndexed colorDataIndexed = ColorDataLists._250.cyclic();
   final JToggleButton jToggleButton = new JToggleButton("pipeline");
@@ -29,8 +28,7 @@ public class DavisPipelineRender extends AbstractGokartRender implements ActionL
   private final double mapAheadDistance = 7; // [m]
   private final int circleSize = 10; // [pixel]
 
-  public DavisPipelineRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
+  public DavisPipelineRender() {
     jToggleButton.setSelected(isSelected);
     jToggleButton.addActionListener(this);
     accumulatedFeaturePoints = new AccumulatedFeaturePoints();

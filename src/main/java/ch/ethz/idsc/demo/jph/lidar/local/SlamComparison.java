@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.lidar.local;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
@@ -41,7 +41,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
       scatterImage = new WallScatterImage(predefinedMap);
       OfflineLocalize offlineLocalize = new LidarGyroOfflineLocalize( //
           predefinedMap.getImageExtruded(), gokartLogInterface.pose(), //
-          LocalizationConfig.offlineSe2MultiresGrids(4), //
+          StaticHelper.offlineSe2MultiresGrids(4), //
           scatterImage);
       OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
       OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);

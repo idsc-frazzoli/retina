@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
@@ -29,10 +28,6 @@ class Vlp16ClearanceRender extends LidarRender {
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
   private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
-
-  public Vlp16ClearanceRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
-  }
 
   @Override
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {

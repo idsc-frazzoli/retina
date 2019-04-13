@@ -5,7 +5,7 @@ import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -23,7 +23,7 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
   private GeometricLayer geometricLayer;
 
   public UnknownObstaclePredicate() {
-    predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
+    predefinedMap = TrajectoryConfig.getPredefinedMapObstacles();
     geometricLayer = GeometricLayer.of(predefinedMap.getModel2Pixel());
   }
 

@@ -12,11 +12,10 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
@@ -77,7 +76,6 @@ public class GlobalViewLcmModule extends AbstractModule {
 
   @Override // from AbstractModule
   public void first() {
-    final GokartPoseInterface gokartPoseInterface = viewLcmFrame.gokartPoseInterface();
     viewLcmFrame.geometricComponent.setButtonDrag(MouseEvent.BUTTON1);
     {
       PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
@@ -96,7 +94,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     }
     // ---
     {
-      ResampledLidarRender resampledLidarRender = new ResampledLidarRender(gokartPoseInterface);
+      ResampledLidarRender resampledLidarRender = new ResampledLidarRender();
       resampledLidarRender.updatedMap.setCrop(CROP_REGION);
       viewLcmFrame.jButtonMapCreate.addActionListener(resampledLidarRender.action_mapCreate);
       viewLcmFrame.jButtonMapCreate.setEnabled(false);
@@ -113,6 +111,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       lidarRotationProvider.addListener(lidarAngularFiringCollector);
       lidarAngularFiringCollector.addListener(resampledLidarRender);
       // vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender.lrbl);
+      gokartPoseLcmClient.addListener(resampledLidarRender.gokartPoseListener);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);

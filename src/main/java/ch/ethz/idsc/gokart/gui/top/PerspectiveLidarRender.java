@@ -7,7 +7,6 @@ import java.awt.Point;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.ProjectionMatrix;
 import ch.ethz.idsc.retina.util.math.Viewport;
@@ -25,10 +24,6 @@ class PerspectiveLidarRender extends LidarRender {
   private final Viewport viewport = Viewport.create(240, 180);
   private final Tensor projection = //
       ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clips.interval(1, 100)).unmodifiable();
-
-  public PerspectiveLidarRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
-  }
 
   @Override
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {

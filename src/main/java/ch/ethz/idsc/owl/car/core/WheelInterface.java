@@ -15,7 +15,7 @@ public interface WheelInterface {
   /** @return width of wheel on ground [m] */
   Scalar width();
 
-  /** @return inverse of wheel moment of inertia [kgm2] */
+  /** @return inverse of wheel moment of inertia [kg*m^2] */
   Scalar Iw_invert();
 
   Pacejka3 pacejka();

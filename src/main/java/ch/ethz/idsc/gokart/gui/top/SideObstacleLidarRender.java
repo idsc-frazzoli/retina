@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -18,11 +17,6 @@ import ch.ethz.idsc.tensor.Tensors;
 
 class SideObstacleLidarRender extends LidarRender {
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
-
-  // TODO pose interface not needed
-  public SideObstacleLidarRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
-  }
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {

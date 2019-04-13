@@ -15,7 +15,7 @@ public interface VehicleModel {
 
   /** @param index
    * @return description of wheel of given index */
-  WheelInterface wheel(int index);
+  WheelInterface wheelConstant(int index);
 
   /** @param delta steering angle
    * @return angles of wheels (measured from longitude forward direction)
