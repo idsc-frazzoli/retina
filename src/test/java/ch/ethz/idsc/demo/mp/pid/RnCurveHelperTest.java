@@ -14,13 +14,6 @@ public class RnCurveHelperTest extends TestCase {
   private final Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL.stream().map(Extract2D.FUNCTION)).unmodifiable();
   private final Tensor pose = Tensors.fromString("{30[m], 40[m], 1}").unmodifiable();
 
-  public void testClosest() {
-    // FIXME MCP make curve with units [m]
-    curve.copy();
-    pose.copy();
-    int index = RnCurveHelper.closest(curve, pose);
-  }
-
   public void testTrajAngle() {
     // FIXME MCP check by hand if done correctly
     Tensor curveAngle = RnCurveHelper.addAngleToCurve(curve);
