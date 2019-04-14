@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 enum RunBasicTrackTable {
   ;
   public static void main(String[] args) {
-    File folder = HomeDirectory.file("ensemblelaps/pursuit");
+    File folder = HomeDirectory.file("ensemblelaps/dynamic");
     List<BasicTrackTable> list = Stream.of(folder.listFiles()) //
         .filter(File::isFile) //
         .map(BasicTrackTable::from) //

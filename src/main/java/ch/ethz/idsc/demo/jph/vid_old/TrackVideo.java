@@ -16,7 +16,7 @@ import ch.ethz.idsc.demo.jph.video.RunVideoBackground;
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.gui.top.MPCPredictionRender;
 import ch.ethz.idsc.gokart.gui.top.MPCPredictionSequenceRender;
-import ch.ethz.idsc.gokart.offline.video.VideoBackground;
+import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
@@ -50,12 +50,11 @@ import ch.ethz.idsc.tensor.sca.Round;
       // System.out.println(trackDriving.row(0));
       list.add(trackDriving);
     }
-    VideoBackground videoBackground = RunVideoBackground.get20190414();
-    // BufferedImage background = ImageIO.read();
+    BackgroundImage backgroundImage = RunVideoBackground.get20190414();
     final int max = list.stream().mapToInt(TrackDriving::maxIndex).max().getAsInt();
     BufferedImage bufferedImage = new BufferedImage( //
-        videoBackground.dimension().width, //
-        videoBackground.dimension().height, //
+        backgroundImage.dimension().width, //
+        backgroundImage.dimension().height, //
         BufferedImage.TYPE_3BYTE_BGR);
     Graphics2D graphics = bufferedImage.createGraphics();
     GraphicsUtil.setQualityHigh(graphics);
@@ -64,12 +63,12 @@ import ch.ethz.idsc.tensor.sca.Round;
     // Tensor optimal = Import.of(new File(src, "opt/onelap.csv"));
     // RenderInterface ri = pathRender.setCurve(optimal, true);
     MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(30);
-    try (Mp4AnimationWriter mp4AnimationWriter = new Mp4AnimationWriter(filename, videoBackground.dimension(), snaps)) {
+    try (Mp4AnimationWriter mp4AnimationWriter = new Mp4AnimationWriter(filename, backgroundImage.dimension(), snaps)) {
       for (int index = 0; index < max; ++index) {
         System.out.println(index);
         Scalar time = list.get(0).timeFor(index);
-        graphics.drawImage(videoBackground.bufferedImage, 0, 0, null);
-        GeometricLayer geometricLayer = GeometricLayer.of(videoBackground.model2pixel);
+        graphics.drawImage(backgroundImage.bufferedImage, 0, 0, null);
+        GeometricLayer geometricLayer = GeometricLayer.of(backgroundImage.model2pixel);
         // ri.render(geometricLayer, graphics);
         {
           Entry<Scalar, ControlAndPredictionSteps> floorEntry = navigableMap.floorEntry(Quantity.of(time, SI.SECOND));
@@ -82,10 +81,8 @@ import ch.ethz.idsc.tensor.sca.Round;
             mpcPredictionRender.render(geometricLayer, graphics);
           }
         }
-        for (TrackDriving trackDriving : list) {
-          trackDriving.setRenderIndex(index);
-          trackDriving.render(geometricLayer, graphics);
-        }
+        for (TrackDriving trackDriving : list)
+          trackDriving.render(index, geometricLayer, graphics);
         graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
         graphics.setColor(Color.LIGHT_GRAY);
         graphics.drawString(String.format("time:%7s[s]", time.map(Round._3)), 0, 25);

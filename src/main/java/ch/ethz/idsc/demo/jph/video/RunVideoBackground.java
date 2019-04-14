@@ -19,7 +19,7 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.slam.ObstacleAggregate;
-import ch.ethz.idsc.gokart.offline.video.VideoBackground;
+import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -40,10 +40,10 @@ public enum RunVideoBackground {
   public static final Tensor _20190401 = Se2Utils.toSE2Translation(Tensors.vector(0, +120)).dot(Tensors.fromString( //
       "{{36.67799433628459, 35.43620650503479, -1900.5265224432885}, {35.43620650503479, -36.67799433628459, 620.3647376620074}, {0.0, 0.0, 1.0}}"));
   // ---
-  private static final File IMAGE_FILE = HomeDirectory.Pictures("20190414T000000_00.png");
+  private static final File IMAGE_FILE = HomeDirectory.Pictures("20190408T000000_00.png");
 
-  public static VideoBackground get20190414() throws IOException {
-    return VideoBackground.from(IMAGE_FILE, _20190401);
+  public static BackgroundImage get20190414() throws IOException {
+    return BackgroundImage.from(IMAGE_FILE, _20190401);
   }
 
   public static void main(String[] args) throws IOException {

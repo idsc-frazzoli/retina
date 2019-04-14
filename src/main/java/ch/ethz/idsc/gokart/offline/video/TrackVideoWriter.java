@@ -28,17 +28,14 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
 
-  /** @param model2pixel
-   * @param background
+  /** @param backgroundImage
    * @param trackVideoConfig
    * @param file with extension "mp4"
    * @throws Exception */
-  public TrackVideoWriter( //
-      VideoBackground videoBackground, //
-      TrackVideoConfig trackVideoConfig, //
-      File file) throws Exception {
-    this.model2pixel = videoBackground.model2pixel;
-    this.background = videoBackground.bufferedImage;
+  public TrackVideoWriter(BackgroundImage backgroundImage, TrackVideoConfig trackVideoConfig, File file) //
+      throws Exception {
+    this.model2pixel = backgroundImage.model2pixel;
+    this.background = backgroundImage.bufferedImage;
     this.poseChannel = trackVideoConfig.poseChannel;
     Dimension dimension = new Dimension(background.getWidth(), background.getHeight());
     mp4AnimationWriter = new Mp4AnimationWriter( //

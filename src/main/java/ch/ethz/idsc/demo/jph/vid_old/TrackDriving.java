@@ -19,7 +19,6 @@ import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
-import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -37,7 +36,7 @@ import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
-/* package */ class TrackDriving implements RenderInterface {
+/* package */ class TrackDriving extends AbstractFrameRender {
   private static final ColorDataIndexed COLOR_DATA_INDEXED = ColorDataLists._063.cyclic().deriveWithAlpha(128);
   private static final ColorDataIndexed COLOR_DATA_INDEXED_32 = COLOR_DATA_INDEXED.deriveWithAlpha(32);
   private static final ColorDataIndexed COLOR_DATA_INDEXED_64 = COLOR_DATA_INDEXED.deriveWithAlpha(64);
@@ -48,7 +47,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       RealScalar.ZERO);
   private static final int ICON_SIZE = 32;
   // ---
-  private final Tensor tensor;
+  final Tensor tensor;
   private final int id;
   private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
   private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
@@ -76,13 +75,8 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       System.err.println("driver icon not found [" + name + "]");
   }
 
-  private int render_index;
   private boolean extrusion = false;
   private boolean posetrail = false;
-
-  public void setRenderIndex(int render_index) {
-    this.render_index = render_index;
-  }
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
