@@ -12,17 +12,16 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Objects;
 
-import javax.imageio.ImageIO;
-
+import ch.ethz.idsc.demo.jph.video.RunVideoBackground;
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.gui.top.MPCPredictionRender;
 import ch.ethz.idsc.gokart.gui.top.MPCPredictionSequenceRender;
+import ch.ethz.idsc.gokart.offline.video.VideoBackground;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -51,11 +50,12 @@ import ch.ethz.idsc.tensor.sca.Round;
       // System.out.println(trackDriving.row(0));
       list.add(trackDriving);
     }
-    BufferedImage background = ImageIO.read(VideoBackground.IMAGE_FILE);
+    VideoBackground videoBackground = RunVideoBackground.get20190414();
+    // BufferedImage background = ImageIO.read();
     final int max = list.stream().mapToInt(TrackDriving::maxIndex).max().getAsInt();
     BufferedImage bufferedImage = new BufferedImage( //
-        VideoBackground.DIMENSION.width, //
-        VideoBackground.DIMENSION.height, //
+        videoBackground.dimension().width, //
+        videoBackground.dimension().height, //
         BufferedImage.TYPE_3BYTE_BGR);
     Graphics2D graphics = bufferedImage.createGraphics();
     GraphicsUtil.setQualityHigh(graphics);
@@ -64,13 +64,12 @@ import ch.ethz.idsc.tensor.sca.Round;
     // Tensor optimal = Import.of(new File(src, "opt/onelap.csv"));
     // RenderInterface ri = pathRender.setCurve(optimal, true);
     MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(30);
-    try (Mp4AnimationWriter mp4AnimationWriter = new Mp4AnimationWriter(filename, VideoBackground.DIMENSION, snaps)) {
+    try (Mp4AnimationWriter mp4AnimationWriter = new Mp4AnimationWriter(filename, videoBackground.dimension(), snaps)) {
       for (int index = 0; index < max; ++index) {
         System.out.println(index);
         Scalar time = list.get(0).timeFor(index);
-        graphics.drawImage(background, 0, 0, null);
-        Tensor model2pixel = VideoBackground._20190401;
-        GeometricLayer geometricLayer = GeometricLayer.of(model2pixel);
+        graphics.drawImage(videoBackground.bufferedImage, 0, 0, null);
+        GeometricLayer geometricLayer = GeometricLayer.of(videoBackground.model2pixel);
         // ri.render(geometricLayer, graphics);
         {
           Entry<Scalar, ControlAndPredictionSteps> floorEntry = navigableMap.floorEntry(Quantity.of(time, SI.SECOND));

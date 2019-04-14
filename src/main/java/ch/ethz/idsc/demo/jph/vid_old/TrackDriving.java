@@ -77,7 +77,8 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   }
 
   private int render_index;
-  private boolean extrusion = true;
+  private boolean extrusion = false;
+  private boolean posetrail = false;
 
   public void setRenderIndex(int render_index) {
     this.render_index = render_index;
@@ -93,7 +94,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       extrudedFootprintRender.gokartStatusListener.getEvent(new GokartStatusEvent(row.Get(8).number().floatValue()));
       extrudedFootprintRender.render(geometricLayer, graphics);
     }
-    {
+    if (posetrail) {
       PathRender pathRender = new PathRender(COLOR_DATA_INDEXED_64.getColor(id), 1.5f);
       Tensor points = Tensor.of(tensor.stream().limit(render_index) //
           .map(v -> v.extract(10, 13)) //
