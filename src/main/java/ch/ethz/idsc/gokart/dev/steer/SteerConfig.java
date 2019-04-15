@@ -46,7 +46,7 @@ public class SteerConfig {
   public Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
   /** 0.5 corresponds to 50% of torque limit */
   public Scalar stepOfLimit = RealScalar.of(0.5);
-  /** max turning rate per meter
+  /** max turning rate per meter driven under the assumption of no slip
    * the numeric value was determined in an experiment documented in the report below
    * https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf
    * The reciprocal gives the minimum turning radius to be approx. 2.45[m]. */
