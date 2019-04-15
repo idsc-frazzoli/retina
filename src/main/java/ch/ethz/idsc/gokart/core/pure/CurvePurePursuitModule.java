@@ -77,7 +77,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
     return Optional.empty(); // autonomous operation denied
   }
 
-  // TODO JPH function should return a scalar with unit "rad*m^-1"...
+  // TODO JPH function should return a scalar with unit "m^-1"...
   // right now, "curve" does not have "m" as unit but entries are unitless.
   /** @param pose
    * @return */

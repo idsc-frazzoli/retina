@@ -29,7 +29,7 @@ public class SteerConfigTest extends TestCase {
 
   public void testSCEfromAngle() {
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-    Scalar q = steerMapping.getSCEfromAngle(Quantity.of(1, "rad"));
+    Scalar q = steerMapping.getSCEfromAngle(Quantity.of(1, ""));
     assertEquals(QuantityUnit.of(q), Unit.of("SCE"));
     assertTrue(1.1 < q.number().doubleValue());
   }

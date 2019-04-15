@@ -29,7 +29,7 @@ public class MagnitudeTest extends TestCase {
   }
 
   public void testUnitOne() {
-    Scalar scalar = Quantity.of(2500, "rad*deg");
+    Scalar scalar = Quantity.of(2500, "deg");
     Scalar result = Magnitude.ONE.apply(scalar);
     assertTrue(result instanceof RealScalar);
   }

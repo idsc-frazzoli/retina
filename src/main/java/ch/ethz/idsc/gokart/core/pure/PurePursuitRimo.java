@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -33,14 +34,14 @@ class PurePursuitRimo extends PurePursuitBase<RimoPutEvent> {
     RimoSocket.INSTANCE.removeGetListener(rimoRateControllerWrap);
   }
 
-  private Scalar speed = Quantity.of(0, "rad*s^-1");
+  private Scalar speed = Quantity.of(0, SI.PER_SECOND);
 
-  /** @param speed with unit "rad*s^-1" */
+  /** @param speed with unit "s^-1" */
   /* package */ void setSpeed(Scalar speed) {
     this.speed = speed;
   }
 
-  /** @return speed with unit "rad*s^-1" */
+  /** @return speed with unit "s^-1" */
   /* package */ Scalar getSpeed() {
     return speed;
   }

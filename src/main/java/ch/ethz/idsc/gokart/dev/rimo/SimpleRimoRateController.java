@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final RimoConfig rimoConfig;
   // ---
   /** pos error initially incorrect in the first iteration */
-  private Scalar lastVel_error = Quantity.of(0, SI.PER_SECOND); // unit "rad*s^-1"
+  private Scalar lastVel_error = Quantity.of(0, SI.PER_SECOND); // unit "s^-1"
   private Scalar lastTor_value = Quantity.of(0, NonSI.ARMS); // unit "ARMS"
 
   public SimpleRimoRateController(RimoConfig rimoConfig) {

@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   // ---
   /** pos error initially incorrect in the first iteration */
-  // private Scalar lastVel_error = Quantity.of(0, SIDerived.RADIAN_PER_SECOND); // unit "rad*s^-1"
+  // private Scalar lastVel_error = Quantity.of(0, SI.PER_SECOND); // unit "s^-1"
   public LookupRimoRateController(RimoConfig rimoConfig) {
     this.rimoConfig = rimoConfig;
   }

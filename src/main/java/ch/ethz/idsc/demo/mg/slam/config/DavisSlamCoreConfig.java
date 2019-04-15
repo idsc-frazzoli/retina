@@ -53,7 +53,7 @@ public class DavisSlamCoreConfig extends SlamCoreConfig {
     angVelStd = Quantity.of(0.1, SI.PER_SECOND); // [rad/s] for initial particle distribution
     // particle roughening
     rougheningLinAccelStd = Quantity.of(5, SI.ACCELERATION);
-    rougheningAngAccelStd = Quantity.of(12, "rad*s^-2");
+    rougheningAngAccelStd = Quantity.of(12, "s^-2");
     // SLAM map parameters
     cellDim = Quantity.of(0.05, SI.METER); // single cell dimension
     /** map dimensions {width[m], height[m]} */

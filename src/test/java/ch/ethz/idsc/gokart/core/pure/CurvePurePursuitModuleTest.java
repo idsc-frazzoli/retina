@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.dev.AllGunsBlazing;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -32,7 +33,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
   }
 
   public void testChopUnit() {
-    Scalar scalar = Chop.below(.1).apply(Quantity.of(.01, "rad*s^-1"));
+    Scalar scalar = Chop.below(.1).apply(Quantity.of(.01, SI.PER_SECOND));
     System.out.println(scalar);
   }
 
@@ -82,7 +83,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
     Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
     // System.out.println(heading);
-    // assertEquals(Quantity.of(-0.013455281968592674, "rad"), heading);
+    // assertEquals(Quantity.of(-0.013455281968592674, ""), heading);
     Clip clip = Clips.interval(Quantity.of(-0.02, ""), Quantity.of(-0.01, ""));
     clip.requireInside(heading);
     _checkFallback(purePursuitModule.purePursuitSteer.putEvent());

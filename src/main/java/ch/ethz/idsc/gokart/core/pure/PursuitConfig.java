@@ -36,10 +36,10 @@ public class PursuitConfig {
   @FieldSubdivide(start = "2.5[m]", end = "4[m]", intervals = 6)
   public Scalar lookAhead = Quantity.of(3.5, SI.METER);
   /** gokart velocity speed for curve follower module
-   * 20180531 the rate was increased to 75[rad*s^-1]
-   * 20180604 the rate was decreased to 50[rad*s^-1] because of the presence of the tents */
-  @FieldSubdivide(start = "30[rad*s^-1]", end = "70[rad*s^-1]", intervals = 4)
-  public Scalar rateFollower = Quantity.of(50.0, "rad*s^-1");
+   * 20180531 the rate was increased to 75[s^-1]
+   * 20180604 the rate was decreased to 50[s^-1] because of the presence of the tents */
+  @FieldSubdivide(start = "30[s^-1]", end = "70[s^-1]", intervals = 4)
+  public Scalar rateFollower = Quantity.of(50.0, SI.PER_SECOND);
   /** poseQualityMin is threshold above which a pose quality is considered sufficient */
   public final Scalar poseQualityMin = RealScalar.of(0.5);
   public final GeodesicInterface geodesic = ClothoidCurve.INSTANCE;

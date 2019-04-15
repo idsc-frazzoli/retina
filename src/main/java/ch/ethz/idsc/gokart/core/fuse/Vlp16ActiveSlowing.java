@@ -7,13 +7,14 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerUno;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */
 /* package */ final class Vlp16ActiveSlowing extends Vlp16ClearanceModule {
-  private static final Scalar SPEED_ZERO = Quantity.of(0, "rad*s^-1");
+  private static final Scalar SPEED_ZERO = Quantity.of(0.0, SI.PER_SECOND);
   /** RimoRateControllerWrap has to be instance of {@link RimoRateControllerUno}
    * as the steering angle is not provided */
   private final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();

@@ -42,8 +42,6 @@ public class ChassisGeometry {
   public final Scalar tireHalfWidthContactRear = Quantity.of(0.0675, SI.METER);
   /** approximation of ground clearance measured on 20180507 */
   public final Scalar groundClearance = Quantity.of(0.03, SI.METER);
-  /** approx. radius of front tire when on gokart is on ground [m/rad] */
-  /** approx. radius of rear tire when on gokart is on ground [m/rad] */
   /** longitudinal distance to center of mass from back axle */
   public final Scalar xAxleRtoCoM = Quantity.of(0.46, SI.METER);
 
@@ -70,7 +68,7 @@ public class ChassisGeometry {
   }
 
   public DifferentialSpeed getDifferentialSpeed() {
-    return DifferentialSpeed.fromSI(xAxleDistanceMeter(), yTireRearMeter());
+    return DifferentialSpeed.fromSI(xAxleRtoF, yTireRear);
   }
 
   public AckermannSteering getAckermannSteering() {
@@ -79,11 +77,11 @@ public class ChassisGeometry {
 
   /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r
    * inverse function of {@link TurningGeometry}
-   * @param ratio without unit but with interpretation "rad*m^-1"
+   * @param ratio without unit but with interpretation "m^-1"
    * see for instance SteerConfig.GLOBAL.turningRatioMax
    * @return steering angle unitless */
   public Scalar steerAngleForTurningRatio(Scalar ratio) {
-    // TODO JPH require ratio to have unit "rad*m^-1"
+    // TODO JPH require ratio to have unit "m^-1"
     return ArcTan.of(xAxleDistanceMeter().multiply(ratio));
   }
 
