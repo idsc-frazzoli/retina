@@ -5,28 +5,23 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import ch.ethz.idsc.demo.jph.video.RunVideoBackground;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.gokart.offline.video.BasicTrackTable;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-public class MultiDriverVideo {
+public class MultiTrackVideo {
   private final int max;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
 
-  public MultiDriverVideo(String filename, BackgroundImage backgroundImage, List<TrackDriving> list, AbstractFrameRender... abstractFrameRenders) //
+  public MultiTrackVideo(String filename, BackgroundImage backgroundImage, List<TrackDriving> list, AbstractFrameRender... abstractFrameRenders) //
       throws IOException, InterruptedException {
     max = list.stream().mapToInt(TrackDriving::maxIndex).max().getAsInt();
     bufferedImage = new BufferedImage( //
@@ -61,19 +56,5 @@ public class MultiDriverVideo {
         .map(BasicTrackTable::from) //
         .sorted() //
         .collect(Collectors.toList());
-  }
-
-  public static void main(String[] args) throws Exception {
-    Map<ControlType, List<TrackDriving>> map = new EnumMap<>(ControlType.class);
-    for (ControlType controlType : ControlType.values()) {
-      map.put(controlType, new ArrayList<>());
-      for (BasicTrackTable gokartRaceFile : tables(HomeDirectory.file("ensemblelaps", controlType.name().toLowerCase())))
-        map.get(controlType).add(new TrackDriving(gokartRaceFile.tensor, controlType.ordinal()));
-    }
-    BackgroundImage backgroundImage = RunVideoBackground.get20190414();
-    ControlComparisonRender controlComparisonRender = new ControlComparisonRender(map);
-    new MultiDriverVideo(HomeDirectory.file("multidriver.mp4").toString(), backgroundImage, //
-        map.values().stream().flatMap(List::stream).collect(Collectors.toList()), //
-        controlComparisonRender);
   }
 }

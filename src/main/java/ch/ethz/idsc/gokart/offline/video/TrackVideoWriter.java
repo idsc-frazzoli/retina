@@ -14,13 +14,11 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** implementation renders a log file to a mp4 video */
 public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
-  private final Tensor model2pixel;
-  private final BufferedImage background;
+  private final BackgroundImage backgroundImage;
   private final String poseChannel;
   // ---
   private final Mp4AnimationWriter mp4AnimationWriter;
@@ -34,15 +32,14 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
    * @throws Exception */
   public TrackVideoWriter(BackgroundImage backgroundImage, TrackVideoConfig trackVideoConfig, File file) //
       throws Exception {
-    this.model2pixel = backgroundImage.model2pixel;
-    this.background = backgroundImage.bufferedImage;
+    this.backgroundImage = backgroundImage;
     this.poseChannel = trackVideoConfig.poseChannel;
-    Dimension dimension = new Dimension(background.getWidth(), background.getHeight());
+    Dimension dimension = backgroundImage.dimension();
     mp4AnimationWriter = new Mp4AnimationWriter( //
         file.toString(), //
         dimension, //
         Magnitude.PER_SECOND.toInt(trackVideoConfig.frameRate));
-    trackVideoRender = new TrackVideoRender(model2pixel, poseChannel);
+    trackVideoRender = new TrackVideoRender(backgroundImage.model2pixel, poseChannel);
     bufferedImage = new BufferedImage( //
         dimension.width, //
         dimension.height, //
@@ -54,8 +51,8 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     trackVideoRender.event(time, channel, byteBuffer);
     if (channel.equals(poseChannel)) {
-      graphics.drawImage(background, 0, 0, null);
-      trackVideoRender.render(GeometricLayer.of(model2pixel), graphics);
+      graphics.drawImage(backgroundImage.bufferedImage, 0, 0, null);
+      trackVideoRender.render(GeometricLayer.of(backgroundImage.model2pixel), graphics);
       graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
       graphics.setColor(Color.GRAY);
       graphics.drawString(String.format("time :%9s", time.map(Round._2)), 0, 25);
