@@ -6,7 +6,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.NonSI;
-import ch.ethz.idsc.retina.util.math.SIDerived;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final RimoConfig rimoConfig;
   // ---
   /** pos error initially incorrect in the first iteration */
-  private Scalar lastVel_error = Quantity.of(0, SIDerived.RADIAN_PER_SECOND); // unit "rad*s^-1"
+  private Scalar lastVel_error = Quantity.of(0, SI.PER_SECOND); // unit "rad*s^-1"
   private Scalar lastTor_value = Quantity.of(0, NonSI.ARMS); // unit "ARMS"
 
   public SimpleRimoRateController(RimoConfig rimoConfig) {

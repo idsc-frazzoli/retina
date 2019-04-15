@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.dev.steer;
 import ch.ethz.idsc.gokart.calib.steer.CubicSteerMapping;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -73,7 +72,7 @@ public class SteerConfig {
 
   /** @return */
   public Clip getAngleLimit() {
-    Scalar angleMax = Quantity.of(getSteerMapping().getAngleFromSCE(columnMax), SIDerived.RADIAN);
+    Scalar angleMax = getSteerMapping().getAngleFromSCE(columnMax);
     return Clips.interval(angleMax.negate(), angleMax);
   }
 }

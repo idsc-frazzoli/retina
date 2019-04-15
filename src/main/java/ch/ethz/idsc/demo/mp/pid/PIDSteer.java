@@ -12,9 +12,8 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.math.SIDerived;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ class PIDSteer implements SteerPutProvider, StartAndStoppable {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
@@ -48,7 +47,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 
-  private Scalar heading = Quantity.of(0.0, SIDerived.RADIAN);
+  private Scalar heading = RealScalar.of(0.0);
 
   /* package */ void setHeading(Scalar heading) {
     this.heading = heading;

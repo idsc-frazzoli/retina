@@ -47,17 +47,17 @@ public class ChassisGeometryTest extends TestCase {
 
   public void testSteerAngleTowardsLeft() {
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.of(0.3));
-    assertTrue(Chop._13.close(Quantity.of(0.34289723785565446, "rad"), angle));
+    assertTrue(Chop._13.close(Quantity.of(0.34289723785565446, ""), angle));
   }
 
   public void testSteerAngleTowardsRight() {
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.of(-.2));
-    assertTrue(Chop._13.close(Quantity.of(-0.2336530501796457, "rad"), angle));
+    assertTrue(Chop._13.close(Quantity.of(-0.2336530501796457, ""), angle));
   }
 
   public void testSteerAngleStraight() {
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.ZERO);
-    assertTrue(Chop._13.close(Quantity.of(0, "rad"), angle));
+    assertTrue(Chop._13.close(Quantity.of(0, ""), angle));
   }
 
   public void testTireWidthFront() {

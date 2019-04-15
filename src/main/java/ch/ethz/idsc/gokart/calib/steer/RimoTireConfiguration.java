@@ -9,13 +9,17 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public enum RimoTireConfiguration implements TireConfiguration {
+  /** front tire type */
   FRONT(Quantity.of(0.230 * 0.5, SI.METER), Quantity.of(0.0650, SI.METER)), //
+  /** rear tire type */
   _REAR(Quantity.of(0.240 * 0.5, SI.METER), Quantity.of(0.0975, SI.METER)), //
   ;
   // ---
   private final Scalar radius;
   private final Scalar halfWidth;
 
+  /** @param radius of tire
+   * @param halfWidth of tire */
   private RimoTireConfiguration(Scalar radius, Scalar halfWidth) {
     this.radius = radius;
     this.halfWidth = halfWidth;
@@ -33,6 +37,7 @@ public enum RimoTireConfiguration implements TireConfiguration {
 
   @Override // from TireConfiguration
   public Tensor footprint() {
+    // TODO JPH
     double TR = radius().number().doubleValue();
     double TW = halfWidth().number().doubleValue();
     return Tensors.matrixDouble( //
