@@ -9,13 +9,13 @@ import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.offline.slam.MappingAnalysisOffline;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-@Deprecated
-enum RunMappingAnalysisOfflineHighRes {
+enum RunMappingAnalysisOffline {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     // File file = YnLogFileLocator.file(GokartLogFile._20180503T160522_16144bb6);
@@ -30,7 +30,7 @@ enum RunMappingAnalysisOfflineHighRes {
     MappingConfig config = new MappingConfig();
     config.obsRadius = Quantity.of(0.8, SI.METER);
     // MappingConfig.GLOBAL.P_M = RealScalar.of(0.95);
-    OfflineLogPlayer.process(file, new MappingAnalysisOfflineHighResMH(config, consumer));
+    OfflineLogPlayer.process(file, new MappingAnalysisOffline(config, consumer));
     System.out.print("Done.");
   }
 }

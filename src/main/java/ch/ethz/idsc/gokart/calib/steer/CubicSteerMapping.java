@@ -7,7 +7,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Series;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** based on report
@@ -45,6 +44,6 @@ public class CubicSteerMapping implements SteerMapping {
 
   @Override // from SteerMapping
   public Scalar getSCEfromAngle(Scalar angle) {
-    return steer2column.apply(UnitSystem.SI().apply(angle));
+    return steer2column.apply(angle);
   }
 }

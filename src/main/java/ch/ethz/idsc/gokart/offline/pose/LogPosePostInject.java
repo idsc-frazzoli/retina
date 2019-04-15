@@ -38,7 +38,7 @@ public class LogPosePostInject implements GokartPoseListener {
     System.out.println("start");
     try {
       while (true) {
-        // TODO code redundant to OfflineLogPlayer
+        // TODO JPH code redundant to OfflineLogPlayer
         Event event = log.readNext();
         {
           if (Objects.isNull(tic))

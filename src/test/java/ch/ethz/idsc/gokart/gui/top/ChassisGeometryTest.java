@@ -11,7 +11,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -47,17 +46,17 @@ public class ChassisGeometryTest extends TestCase {
 
   public void testSteerAngleTowardsLeft() {
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.of(0.3));
-    assertTrue(Chop._13.close(Quantity.of(0.34289723785565446, ""), angle));
+    assertTrue(Chop._13.close(RealScalar.of(0.34289723785565446), angle));
   }
 
   public void testSteerAngleTowardsRight() {
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.of(-.2));
-    assertTrue(Chop._13.close(Quantity.of(-0.2336530501796457, ""), angle));
+    assertTrue(Chop._13.close(RealScalar.of(-0.2336530501796457), angle));
   }
 
   public void testSteerAngleStraight() {
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.ZERO);
-    assertTrue(Chop._13.close(Quantity.of(0, ""), angle));
+    assertTrue(Chop._13.close(RealScalar.of(0), angle));
   }
 
   public void testTireWidthFront() {

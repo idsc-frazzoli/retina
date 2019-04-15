@@ -15,7 +15,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.ArcTan;
@@ -94,7 +93,7 @@ public class ChassisGeometry {
   }
 
   public Scalar odometryTangentSpeed(Tensor angularRate_Y_pair) {
-    return UnitSystem.SI().apply(Mean.of(angularRate_Y_pair).multiply(RimoTireConfiguration._REAR.radius()).Get());
+    return RimoTireConfiguration._REAR.radius().multiply(Mean.of(angularRate_Y_pair).Get());
   }
 
   /** @param rimoGetEvent
@@ -107,8 +106,8 @@ public class ChassisGeometry {
 
   public Scalar odometryTurningRate(Tensor angularRate_Y_pair) {
     // rad/s * m == (m / s) / m
-    return UnitSystem.SI().apply(Differences.of(angularRate_Y_pair).Get(0) //
-        .multiply(RationalScalar.HALF).multiply(RimoTireConfiguration._REAR.radius()).divide(yTireRear));
+    return Differences.of(angularRate_Y_pair).Get(0) //
+        .multiply(RationalScalar.HALF).multiply(RimoTireConfiguration._REAR.radius()).divide(yTireRear);
   }
 
   // ---
