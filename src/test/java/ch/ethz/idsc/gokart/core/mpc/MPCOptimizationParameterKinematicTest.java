@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
-public class MPCPathFollowingClientLCMTest extends TestCase {
+public class MPCOptimizationParameterKinematicTest extends TestCase {
   public void testSimple() throws Exception {
     // only sends a simple message
     // uncomment if you are able to compile the binary
@@ -72,8 +72,8 @@ public class MPCPathFollowingClientLCMTest extends TestCase {
       assertNotNull(mpcControlUpdateCapture.cns);
       mpcRequestPublisher.stop();
       mpcControlUpdateLcmClient.stopSubscriptions();
-    } catch (Exception e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
   }
 }
