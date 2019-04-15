@@ -11,8 +11,8 @@ import java.util.Optional;
   private final Map<Short, RimoEmergencyError> map = new HashMap<>();
 
   private RimoEmergencyErrors() {
-    for (RimoEmergencyError ree : RimoEmergencyError.values())
-      map.put(ree.code, ree);
+    for (RimoEmergencyError rimoEmergencyError : RimoEmergencyError.values())
+      map.put(rimoEmergencyError.code, rimoEmergencyError);
   }
 
   public Optional<RimoEmergencyError> ofCode(short code) {

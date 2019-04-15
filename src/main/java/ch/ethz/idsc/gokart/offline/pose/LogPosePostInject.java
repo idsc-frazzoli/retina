@@ -57,8 +57,13 @@ public class LogPosePostInject implements GokartPoseListener {
             if (Objects.nonNull(gokartPoseEvent)) {
               System.out.println("q=" + gokartPoseEvent.getQuality().map(Round._2));
               LCMDataOutputStream encodeBuffer = new LCMDataOutputStream(new byte[1024]);
-              BinaryBlob post_binaryBlob = BinaryBlobs.create(gokartPoseEvent.asArray());
-              post_binaryBlob.encode(encodeBuffer);
+              {
+                BinaryBlob post_binaryBlob = BinaryBlobs.create(gokartPoseEvent.length());
+                ByteBuffer byteBuffer = ByteBuffer.wrap(post_binaryBlob.data);
+                byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+                gokartPoseEvent.insert(byteBuffer);
+                post_binaryBlob.encode(encodeBuffer);
+              }
               Event post_event = new Event();
               post_event.utime = event.utime;
               post_event.data = Arrays.copyOf(encodeBuffer.getBuffer(), encodeBuffer.size());
