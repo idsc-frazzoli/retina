@@ -12,9 +12,7 @@ import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseContainer;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.MappedPoseInterface;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -49,7 +47,6 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
   // ---
   private GokartPoseEvent gokartPoseEvent;
   private ScatterImage scatterImage;
-  private MappedPoseInterface gokartPoseInterface = new GokartPoseContainer();
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private Scalar delta = Quantity.of(0.1, SI.SECOND);
   private SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
@@ -84,7 +81,6 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
       BufferedImage image = scatterImage.getImage();
       GeometricLayer gl = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
       Graphics2D graphics = image.createGraphics();
-      gokartPoseInterface.setPose(gokartPoseEvent.getPose(), gokartPoseEvent.getQuality());
       GokartRender gokartRender = new GokartRender();
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       bayesianOccupancyGrid.render(gl, graphics);
