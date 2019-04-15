@@ -146,8 +146,6 @@ public class OfflineHud implements OfflineLogListener {
     } catch (Exception exception) {
       exception.printStackTrace();
     }
-    // TODO JPH flow does not make sense
-    System.exit(0);
   }
 
   public static void main(String[] args) throws IOException {

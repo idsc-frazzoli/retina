@@ -6,6 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
+// TODO GJOEL class is not referenced
 public class CurveGeodesicPursuitModule extends CurvePurePursuitModule {
   public CurveGeodesicPursuitModule(PursuitConfig pursuitConfig) {
     super(pursuitConfig);

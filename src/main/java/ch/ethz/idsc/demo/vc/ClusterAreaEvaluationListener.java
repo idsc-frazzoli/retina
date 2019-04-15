@@ -14,7 +14,6 @@ import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
 import ch.ethz.idsc.gokart.core.perc.LinearPredictor;
 import ch.ethz.idsc.gokart.core.perc.SimplePredictor;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.ObstacleClusterTrackingRender;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
@@ -46,7 +45,6 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   private double perfAveragedLP = 0;
   private double perfAveragedSP = 0;
   private double noiseAveraged = 0;
-  private Tensor pose = GokartPoseLocal.INSTANCE.getPose();
   public final LidarClustering lidarClustering;
   private final double side = 0.04;
   private final ObstacleClusterTrackingRender octr;
@@ -137,9 +135,5 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     return new PerformanceMeasures( //
         areaIntersection / enlargedPoints.getTotalArea(), //
         areaIntersection / predictedAreas.getTotalArea());
-  }
-
-  public void setPose(Tensor pose) {
-    this.pose = pose;
   }
 }

@@ -7,7 +7,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
-import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -37,7 +37,7 @@ public class PurePursuitRimoTest extends TestCase {
 
   public void testSimple() {
     PurePursuitRimo ppr = new PurePursuitRimo();
-    assertEquals(ppr.getSpeed(), Scalars.fromString("0.0[rad*s^-1]"));
+    assertEquals(ppr.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
     assertFalse(ppr.putEvent().isPresent());
     {
       Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
@@ -60,7 +60,7 @@ public class PurePursuitRimoTest extends TestCase {
 
   public void testSlowdown() {
     PurePursuitRimo ppr = new PurePursuitRimo();
-    assertEquals(ppr.getSpeed(), Scalars.fromString("0.0[rad*s^-1]"));
+    assertEquals(ppr.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
     assertFalse(ppr.putEvent().isPresent());
     {
       Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
@@ -81,7 +81,7 @@ public class PurePursuitRimoTest extends TestCase {
 
   public void testSimpleBranch() {
     PurePursuitRimo ppr = new PurePursuitRimo();
-    assertEquals(ppr.getSpeed(), Scalars.fromString("0.0[rad*s^-1]"));
+    assertEquals(ppr.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
     assertFalse(ppr.putEvent().isPresent());
     {
       Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));

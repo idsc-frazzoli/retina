@@ -50,7 +50,7 @@ public class DavisSlamCoreConfig extends SlamCoreConfig {
     // particle initialization
     linVelAvg = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
     linVelStd = Quantity.of(1, SI.VELOCITY); // for initial particle distribution
-    angVelStd = Quantity.of(0.1, SI.PER_SECOND); // [rad/s] for initial particle distribution
+    angVelStd = Quantity.of(0.1, SI.PER_SECOND); // [1/s] for initial particle distribution
     // particle roughening
     rougheningLinAccelStd = Quantity.of(5, SI.ACCELERATION);
     rougheningAngAccelStd = Quantity.of(12, "s^-2");

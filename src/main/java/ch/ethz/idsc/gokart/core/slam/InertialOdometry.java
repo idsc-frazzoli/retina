@@ -1,7 +1,7 @@
 // code by mh, jph
 package ch.ethz.idsc.gokart.core.slam;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.core.pos.PoseVelocityInterface;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
@@ -18,19 +18,22 @@ import ch.ethz.idsc.tensor.sca.Mod;
 /** integrated unfiltered */
 public class InertialOdometry implements PoseVelocityInterface {
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
+  private static final Tensor VELOCITY_ZERO = Tensors.of(Quantity.of(0.0, SI.VELOCITY), Quantity.of(0.0, SI.VELOCITY));
   // ---
-  private Tensor pose = GokartPoseHelper.attachUnits(Tensors.vector(0, 0, 0));
-  private Tensor localVelocityXY = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+  private Tensor pose = GokartPoseLocal.INSTANCE.getPose();
+  private Tensor localVelocityXY = VELOCITY_ZERO;
   private Scalar gyroZ = Quantity.of(0, SI.PER_SECOND);
 
-  /** @param pose {x[m], y[m], angle[]} */
+  /** override stored pose to given pose
+   * 
+   * @param pose {x[m], y[m], angle[]} */
   public synchronized void resetPose(Tensor pose) {
     this.pose = pose.copy();
   }
 
-  /** sets velocity to {0[m*s^-2], 0[m*s^-2]} */
+  /** sets velocity to {0[m*s^-1], 0[m*s^-1]} */
   synchronized void resetVelocity() {
-    localVelocityXY = Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY));
+    localVelocityXY = VELOCITY_ZERO;
   }
 
   /** take new acceleration measurement into account

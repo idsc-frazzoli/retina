@@ -22,7 +22,7 @@ public class RimoRateControllerUnoTest extends TestCase {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     RimoGetEvent rimoGetEvent = RimoSocket.INSTANCE.createGetEvent(byteBuffer);
     rrcw.getEvent(rimoGetEvent);
-    // RimoPutEvent rimoPutEvent = rrcw.iterate(Tensors.fromString("{1[rad*s^-1],2[rad*s^-1]}")).get();
+    // RimoPutEvent rimoPutEvent = rrcw.iterate(Tensors.fromString("{1[s^-1],2[s^-1]}")).get();
     RimoPutEvent rimoPutEvent = rrcw.iterate(Quantity.of(1, "s^-1"), RealScalar.of(0.3)).get();
     assertEquals(rimoPutEvent.putTireL.getTorqueRaw(), -rimoPutEvent.putTireR.getTorqueRaw());
     assertTrue(rimoPutEvent.putTireL.getTorqueRaw() <= 0);
@@ -52,7 +52,7 @@ public class RimoRateControllerUnoTest extends TestCase {
     RimoGetEvent rimoGetEvent = RimoSocket.INSTANCE.createGetEvent(byteBuffer);
     assertEquals(rimoGetEvent.getAngularRate_Y_pair(), Tensors.fromString("{2.1[s^-1], 2.0[s^-1]}"));
     rrcw.getEvent(rimoGetEvent);
-    // RimoPutEvent rimoPutEvent = rrcw.iterate(Tensors.fromString("{1[rad*s^-1],2[rad*s^-1]}")).get();
+    // RimoPutEvent rimoPutEvent = rrcw.iterate(Tensors.fromString("{1[s^-1],2[s^-1]}")).get();
     RimoPutEvent rimoPutEvent = rrcw.iterate(Quantity.of(1, "s^-1"), RealScalar.of(0.1)).get();
     // because "uno" uses a single PI controller, the torques have the same absolute value
     assertEquals(rimoPutEvent.putTireL.getTorqueRaw(), -rimoPutEvent.putTireR.getTorqueRaw());

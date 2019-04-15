@@ -33,6 +33,7 @@ import ch.ethz.idsc.tensor.red.Norm;
   static Optional<Scalar> getRatio(Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       GeodesicInterface geodesic, TrajectoryEntryFinder entryFinder, List<DynamicRatioLimit> ratioLimits) {
     TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(pose).inverse();
+    // TODO GJOEL see CurveGeodesicPursuitHelperTest
     Tensor tensor = Tensor.of(curve.stream().map(t -> //
     tensorUnaryOperator.apply(t).append(t.Get(2).subtract(pose.Get(2))))); // TODO could be part of Se2Bijection
     if (!isForward)
