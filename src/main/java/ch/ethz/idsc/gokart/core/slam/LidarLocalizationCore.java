@@ -131,23 +131,23 @@ public class LidarLocalizationCore implements //
     } while (isLaunched);
   }
 
-  private SlamResult prevResult = null;
+  private GokartPoseEvent prevResult = null;
 
   private void fit(Tensor points) {
-    Optional<SlamResult> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), getGyroZ(), points);
+    Optional<GokartPoseEvent> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), getGyroZ(), points);
     if (optional.isPresent()) {
-      SlamResult slamResult = optional.get();
-      quality = slamResult.getMatchRatio();
+      GokartPoseEvent slamResult = optional.get();
+      quality = slamResult.getQuality();
       boolean matchOk = LocalizationConfig.GLOBAL.isQualityOk(quality);
       if (matchOk || flagSnap) {
         // blend pose
         Scalar blend = flagSnap ? _1 : BLEND_POSE;
-        vmu931Odometry.blendPose(slamResult.getTransform(), blend);
+        vmu931Odometry.blendPose(slamResult.getPose(), blend);
         if (Objects.nonNull(prevResult)) {
           // blend velocity
           Tensor velXY = LIE_DIFFERENCES.pair( //
-              prevResult.getTransform(), //
-              slamResult.getTransform()) //
+              prevResult.getPose(), //
+              slamResult.getPose()) //
               .extract(0, 2).multiply(SensorsConfig.GLOBAL.vlp16_rate);
           vmu931Odometry.blendVelocity(velXY, BLEND_VELOCITY);
         }

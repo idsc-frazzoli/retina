@@ -67,7 +67,7 @@ public class LidarGyroOfflineLocalize extends OfflineLocalize {
       Tensor poseDelta = lidar.dot(pre_delta).dot(Inverse.of(lidar));
       // Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);
       model = model.dot(poseDelta); // advance gokart
-      Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
+      Scalar ratio = N.DOUBLE.apply(slamResult.getQuality());
       appendRow(ratio, sum, duration);
       scatterImage.render(model.dot(lidar), scattered);
     } else {

@@ -4,6 +4,8 @@ package ch.ethz.idsc.gokart.core.slam;
 import java.util.List;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -45,7 +47,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
    * @param gyroZ with unit "s^-1"
    * @param points
    * @return */
-  Optional<SlamResult> handle(Tensor pose, Scalar gyroZ, Tensor points) {
+  Optional<GokartPoseEvent> handle(Tensor pose, Scalar gyroZ, Tensor points) {
     Tensor model = GokartPoseHelper.toSE2Matrix(pose);
     Scalar rate = gyroZ.divide(lidarRate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getResample() //
@@ -63,9 +65,9 @@ import ch.ethz.idsc.tensor.mat.Inverse;
       Tensor poseDelta = lidar.dot(pre_delta).dot(inverseLidar);
       model = model.dot(poseDelta); // advance gokart
       Tensor result = Se2Utils.fromSE2Matrix(model);
-      Tensor vector = GokartPoseHelper.attachUnits(result);
-      // TODO bad style to re-purpose SlamResult
-      return Optional.of(new SlamResult(vector, slamResult.getMatchRatio()));
+      return Optional.of(GokartPoseEvents.offlineV1( //
+          GokartPoseHelper.attachUnits(result), //
+          slamResult.getQuality()));
     }
     System.err.println("few points " + sum);
     return Optional.empty();

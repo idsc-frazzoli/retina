@@ -6,22 +6,22 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 public class SlamResult {
-  private final Tensor tensor;
-  private final Scalar ratio;
+  private final Tensor matrix;
+  private final Scalar quality;
 
-  /** @param tensor
-   * @param ratio in the interval [0, 1] */
-  public SlamResult(Tensor tensor, Scalar ratio) {
-    this.tensor = tensor;
-    this.ratio = Clips.unit().requireInside(ratio);
+  /** @param matrix with size 3 x 3
+   * @param quality in the interval [0, 1] */
+  public SlamResult(Tensor matrix, Scalar quality) {
+    this.matrix = matrix;
+    this.quality = Clips.unit().requireInside(quality);
   }
 
   public Tensor getTransform() {
-    return tensor;
+    return matrix;
   }
 
   /** @return in the interval [0, 1] */
-  public Scalar getMatchRatio() {
-    return ratio;
+  public Scalar getQuality() {
+    return quality;
   }
 }

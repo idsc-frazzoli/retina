@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.dev.rimo;
 
 import ch.ethz.idsc.tensor.Scalar;
 
-interface RimoRateController {
+/* package */ interface RimoRateController {
   /** @param vel_error with unit "s^-1"
    * @return value with unit "ARMS" */
   Scalar iterate(Scalar vel_error);
