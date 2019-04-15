@@ -8,17 +8,20 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 
 class RimoFrontAxleConfiguration implements AxleConfiguration {
-  private final WheelConfiguration[] wheelConfiguration = new WheelConfiguration[2];
+  private final WheelConfiguration[] wheelConfiguration;
 
   public RimoFrontAxleConfiguration(Scalar scalar) {
-    wheelConfiguration[0] = new WheelConfiguration(Tensors.of( //
-        ChassisGeometry.GLOBAL.xAxleRtoF, //
-        ChassisGeometry.GLOBAL.yTireFront, //
-        FrontWheelSteerMapping._LEFT.getAngleFromSCE(scalar)));
-    wheelConfiguration[1] = new WheelConfiguration(Tensors.of( //
-        ChassisGeometry.GLOBAL.xAxleRtoF, //
-        ChassisGeometry.GLOBAL.yTireFront.negate(), //
-        FrontWheelSteerMapping.RIGHT.getAngleFromSCE(scalar)));
+    wheelConfiguration = new WheelConfiguration[] { //
+        new WheelConfiguration(Tensors.of( //
+            ChassisGeometry.GLOBAL.xAxleRtoF, //
+            ChassisGeometry.GLOBAL.yTireFront, //
+            FrontWheelSteerMapping._LEFT.getAngleFromSCE(scalar)), //
+            RimoTireConfiguration.FRONT), //
+        new WheelConfiguration(Tensors.of( //
+            ChassisGeometry.GLOBAL.xAxleRtoF, //
+            ChassisGeometry.GLOBAL.yTireFront.negate(), //
+            FrontWheelSteerMapping.RIGHT.getAngleFromSCE(scalar)), //
+            RimoTireConfiguration.FRONT) };
   }
 
   @Override // from AxleConfiguration

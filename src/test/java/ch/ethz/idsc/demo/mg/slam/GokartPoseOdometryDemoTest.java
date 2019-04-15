@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.demo.mg.slam;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -31,7 +32,7 @@ public class GokartPoseOdometryDemoTest extends TestCase {
   }
 
   private static Tensor computeVelocity(Tensor angularRate_Y_pair) {
-    Tensor speed_pair = angularRate_Y_pair.multiply(ChassisGeometry.GLOBAL.tireRadiusRear);
+    Tensor speed_pair = angularRate_Y_pair.multiply(RimoTireConfiguration._REAR.radius());
     Scalar speedL = speed_pair.Get(0);
     Scalar speedR = speed_pair.Get(1);
     Scalar HALF = DoubleScalar.of(0.5);

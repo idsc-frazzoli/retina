@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
@@ -60,12 +61,12 @@ public class ChassisGeometryTest extends TestCase {
   }
 
   public void testTireWidthFront() {
-    Scalar width = ChassisGeometry.GLOBAL.tireHalfWidthFront.multiply(RealScalar.of(2));
+    Scalar width = RimoTireConfiguration.FRONT.halfWidth().multiply(RealScalar.of(2));
     assertEquals(IN_CM.apply(width), RealScalar.of(13)); // cm
   }
 
   public void testTireWidthRear() {
-    Scalar width = ChassisGeometry.GLOBAL.tireHalfWidthRear.multiply(RealScalar.of(2));
+    Scalar width = RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(2));
     assertEquals(IN_CM.apply(width), RealScalar.of(19.5)); // cm
   }
 

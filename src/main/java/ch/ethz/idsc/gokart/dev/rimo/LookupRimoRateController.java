@@ -3,8 +3,8 @@
 package ch.ethz.idsc.gokart.dev.rimo;
 
 import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -40,7 +40,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override // from RimoRateController
   public Scalar iterate(final Scalar vel_error) {
-    final Scalar tangentVelError = ChassisGeometry.GLOBAL.tireRadiusRear.multiply(vel_error);
+    final Scalar tangentVelError = RimoTireConfiguration._REAR.radius().multiply(vel_error);
     final Scalar pPart = tangentVelError.multiply(rimoConfig.lKp);
     final Scalar iPart = integral.multiply(rimoConfig.lKi);
     final Scalar acc_value = pPart.add(iPart);
@@ -60,6 +60,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override // from RimoRateController
   public void setWheelRate(Scalar vel_avg) {
-    velocity = vel_avg.multiply(ChassisGeometry.GLOBAL.tireRadiusRear);
+    velocity = vel_avg.multiply(RimoTireConfiguration._REAR.radius());
   }
 }

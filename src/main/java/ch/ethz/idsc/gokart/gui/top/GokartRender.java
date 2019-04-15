@@ -9,6 +9,8 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
+import ch.ethz.idsc.gokart.calib.steer.RimoWheelConfigurations;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -26,8 +28,10 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
+import ch.ethz.idsc.gokart.offline.video.TireConfiguration;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
+import ch.ethz.idsc.owl.car.core.WheelConfiguration;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -49,7 +53,7 @@ public class GokartRender implements RenderInterface {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   // ---
   private final AxisAlignedBox aabRimoRate = //
-      new AxisAlignedBox(ChassisGeometry.GLOBAL.tireHalfWidthRear().multiply(RealScalar.of(0.8)));
+      new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.8)));
   private final AxisAlignedBox aabLinmotPos = new AxisAlignedBox(RealScalar.of(0.2));
   // ---
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
@@ -70,25 +74,6 @@ public class GokartRender implements RenderInterface {
   public final GokartAngularSlip gokartAngularSlip = new GokartAngularSlip(SteerConfig.GLOBAL.getSteerMapping());
   private final LidarLocalizationModule lidarLocalizationModule = //
       ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
-  // ---
-  private final Tensor TIRE_FRONT;
-  private final Tensor TIRE_REAR;
-  // private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-
-  public GokartRender() {
-    {
-      double TR = ChassisGeometry.GLOBAL.tireRadiusFront.number().doubleValue();
-      double TW = ChassisGeometry.GLOBAL.tireHalfWidthFront().number().doubleValue();
-      TIRE_FRONT = Tensors.matrixDouble( //
-          new double[][] { { TR, TW }, { -TR, TW }, { -TR, -TW }, { TR, -TW } });
-    }
-    {
-      double TR = ChassisGeometry.GLOBAL.tireRadiusRear.number().doubleValue();
-      double TW = ChassisGeometry.GLOBAL.tireHalfWidthRear().number().doubleValue();
-      TIRE_REAR = Tensors.matrixDouble( //
-          new double[][] { { TR, TW }, { -TR, TW }, { -TR, -TW }, { TR, -TW } });
-    }
-  }
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
@@ -139,18 +124,10 @@ public class GokartRender implements RenderInterface {
       graphics.setStroke(new BasicStroke(1));
       graphics.setColor(new Color(128, 128, 128, 128));
       {
-        AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(gokartStatusEvent.getSteerColumnEncoderCentered());
-        for (int wheel = 0; wheel < 2; ++wheel) {
-          geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
-          graphics.fill(geometricLayer.toPath2D(TIRE_FRONT));
-          geometricLayer.popMatrix();
-        }
-      }
-      {
-        AxleConfiguration axleConfiguration = RimoAxleConfiguration.rear();
-        for (int wheel = 0; wheel < 2; ++wheel) {
-          geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
-          graphics.fill(geometricLayer.toPath2D(TIRE_FRONT));
+        for (WheelConfiguration wheelConfiguration : RimoWheelConfigurations.frontFromSCE(gokartStatusEvent.getSteerColumnEncoderCentered())) {
+          geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(wheelConfiguration.local()));
+          TireConfiguration tireConfiguration = wheelConfiguration.tireConfiguration();
+          graphics.fill(geometricLayer.toPath2D(tireConfiguration.footprint()));
           geometricLayer.popMatrix();
         }
       }

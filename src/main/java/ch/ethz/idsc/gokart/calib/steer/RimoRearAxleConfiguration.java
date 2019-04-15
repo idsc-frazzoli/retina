@@ -16,11 +16,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       new WheelConfiguration(Tensors.of( //
           Quantity.of(0, SI.METER), //
           ChassisGeometry.GLOBAL.yTireRear, //
-          RealScalar.ZERO)), //
+          RealScalar.ZERO), //
+          RimoTireConfiguration._REAR), //
       new WheelConfiguration(Tensors.of( //
           Quantity.of(0, SI.METER), //
           ChassisGeometry.GLOBAL.yTireRear.negate(), //
-          RealScalar.ZERO)) };
+          RealScalar.ZERO), //
+          RimoTireConfiguration._REAR) };
 
   @Override // from AxleConfiguration
   public WheelConfiguration wheel(int index) {

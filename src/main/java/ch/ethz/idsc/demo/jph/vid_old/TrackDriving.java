@@ -9,6 +9,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -116,7 +117,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     {
       // TODO JPH redundant to GokartRender -> extract
       final AxisAlignedBox axisAlignedBox = //
-          new AxisAlignedBox(ChassisGeometry.GLOBAL.tireHalfWidthRear().multiply(RealScalar.of(.5)));
+          new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(.5)));
       double factor = 3E-4;
       double[] trq = new double[] { //
           row.Get(1).number().doubleValue() * factor, //
