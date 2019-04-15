@@ -103,14 +103,14 @@ public class LidarLocalizationCore implements //
       thread.interrupt();
     }
     if (!tracking)
-      vmu931Odometry.inertialOdometry.resetVelocity();
+      vmu931Odometry.resetVelocity();
   }
 
   /***************************************************/
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
     vmu931Odometry.vmu931ImuFrame(vmu931ImuFrame);
-    gyroZ_vmu931 = vmu931Odometry.inertialOdometry.getGyroZ();
+    gyroZ_vmu931 = vmu931Odometry.getGyroZ();
     gyroZ_filtered = geodesicIIR1Filter.apply(gyroZ_vmu931).Get();
   }
 
@@ -142,14 +142,14 @@ public class LidarLocalizationCore implements //
       if (matchOk || flagSnap) {
         // blend pose
         Scalar blend = flagSnap ? _1 : BLEND_POSE;
-        vmu931Odometry.inertialOdometry.blendPose(slamResult.getTransform(), blend);
+        vmu931Odometry.blendPose(slamResult.getTransform(), blend);
         if (Objects.nonNull(prevResult)) {
           // blend velocity
           Tensor velXY = LIE_DIFFERENCES.pair( //
               prevResult.getTransform(), //
               slamResult.getTransform()) //
               .extract(0, 2).multiply(SensorsConfig.GLOBAL.vlp16_rate);
-          vmu931Odometry.inertialOdometry.blendVelocity(velXY, BLEND_VELOCITY);
+          vmu931Odometry.blendVelocity(velXY, BLEND_VELOCITY);
         }
         prevResult = slamResult;
         flagSnap = false;
@@ -164,17 +164,17 @@ public class LidarLocalizationCore implements //
   /***************************************************/
   @Override // from GokartPoseInterface
   public Tensor getPose() {
-    return vmu931Odometry.inertialOdometry.getPose();
+    return vmu931Odometry.getPose();
   }
 
   @Override // from PoseVelocityInterface
   public Tensor getVelocity() {
-    return vmu931Odometry.inertialOdometry.getVelocity();
+    return vmu931Odometry.getVelocity();
   }
 
   @Override // from PoseVelocityInterface
   public Tensor getVelocityXY() {
-    return vmu931Odometry.inertialOdometry.getVelocityXY();
+    return vmu931Odometry.getVelocityXY();
   }
 
   @Override // from PoseVelocityInterface
@@ -191,7 +191,7 @@ public class LidarLocalizationCore implements //
    * @param pose */
   public void resetPose(Tensor pose) {
     // System.out.println("reset pose=" + pose.map(Round._5));
-    vmu931Odometry.inertialOdometry.resetPose(pose);
+    vmu931Odometry.resetPose(pose);
     quality = _1;
     prevResult = null;
   }
