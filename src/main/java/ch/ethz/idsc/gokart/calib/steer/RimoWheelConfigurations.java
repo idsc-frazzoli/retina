@@ -10,7 +10,9 @@ import ch.ethz.idsc.tensor.Scalar;
 
 public enum RimoWheelConfigurations {
   ;
-  public static List<WheelConfiguration> frontFromSCE(Scalar scalar) {
+  /** @param scalar with unit "SCE"
+   * @return list of wheels: front-left, front-right, rear-left, rear-right */
+  public static List<WheelConfiguration> fromSCE(Scalar scalar) {
     AxleConfiguration fac = RimoAxleConfiguration.frontFromSCE(scalar);
     AxleConfiguration rac = RimoAxleConfiguration.rear();
     return Arrays.asList( //

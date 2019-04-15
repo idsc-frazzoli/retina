@@ -7,7 +7,7 @@ import ch.ethz.idsc.owl.car.core.WheelConfiguration;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 
-class RimoFrontAxleConfiguration implements AxleConfiguration {
+/* package */ class RimoFrontAxleConfiguration implements AxleConfiguration {
   private final WheelConfiguration[] wheelConfiguration;
 
   public RimoFrontAxleConfiguration(Scalar scalar) {

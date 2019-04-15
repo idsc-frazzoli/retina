@@ -8,15 +8,9 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** the linear steer mapping was in use from 2017-12 until at least 2018-09 */
-public class LinearSteerMapping implements SteerMapping {
+public enum LinearSteerMapping implements SteerMapping {
   /** conversion factor from measured steer column angle to front wheel angle */
-  private static final Scalar COLUMN_TO_STEER = Quantity.of(0.6, "SCE^-1");
-  private static final SteerMapping INSTANCE = new LinearSteerMapping(COLUMN_TO_STEER);
-
-  public static SteerMapping instance() {
-    return INSTANCE;
-  }
-
+  INSTANCE(Quantity.of(0.6, "SCE^-1"));
   // ---
   private final Scalar column2steer;
 

@@ -123,15 +123,12 @@ public class GokartRender implements RenderInterface {
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
       graphics.setStroke(new BasicStroke(1));
       graphics.setColor(new Color(128, 128, 128, 128));
-      {
-        for (WheelConfiguration wheelConfiguration : RimoWheelConfigurations.frontFromSCE(gokartStatusEvent.getSteerColumnEncoderCentered())) {
-          geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(wheelConfiguration.local()));
-          TireConfiguration tireConfiguration = wheelConfiguration.tireConfiguration();
-          graphics.fill(geometricLayer.toPath2D(tireConfiguration.footprint()));
-          geometricLayer.popMatrix();
-        }
+      for (WheelConfiguration wheelConfiguration : RimoWheelConfigurations.fromSCE(gokartStatusEvent.getSteerColumnEncoderCentered())) {
+        geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(wheelConfiguration.local()));
+        TireConfiguration tireConfiguration = wheelConfiguration.tireConfiguration();
+        graphics.fill(geometricLayer.toPath2D(tireConfiguration.footprint()));
+        geometricLayer.popMatrix();
       }
-      // Tensor pose = gokartPoseInterface.getPose();
       // TODO JPH use of lidarLocalizationModule in display functionality is prohibited
       if (Objects.nonNull(lidarLocalizationModule)) {
         Scalar gyroZ = lidarLocalizationModule.getGyroZ(); // unit s^-1

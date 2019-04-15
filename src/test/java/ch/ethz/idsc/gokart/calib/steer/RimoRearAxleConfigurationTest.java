@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class RimoRearWheelConfigurationTest extends TestCase {
+public class RimoRearAxleConfigurationTest extends TestCase {
   public void testSimple() {
     AxleConfiguration axleConfiguration = RimoRearAxleConfiguration.INSTANCE;
     Chop._10.requireClose( //
