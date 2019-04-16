@@ -22,14 +22,11 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutListener;
-import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
-import ch.ethz.idsc.gokart.offline.video.TireConfiguration;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelConfiguration;
-import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -43,17 +40,19 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 
-public class GokartRender implements RenderInterface {
+public abstract class GokartRender implements RenderInterface {
   private static final Tensor[] OFFSET_TORQUE = new Tensor[] { Tensors.vector(0, -0.15, 0), Tensors.vector(0, +0.15, 0) };
   private static final Tensor[] OFFSET_RATE = new Tensor[] { Tensors.vector(0, +0.15, 0), Tensors.vector(0, -0.15, 0) };
   private static final Tensor MATRIX_BRAKE = Se2Utils.toSE2Translation(Tensors.vector(1.0, 0.05));
+  private static final Color COLOR_WHEEL = new Color(128, 128, 128, 128);
+  private static final Color COLOR_SLIP = new Color(255, 0, 0, 128);
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   // ---
   private static final AxisAlignedBox AXIS_ALIGNED_BOX = //
       new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.8)));
   private final AxisAlignedBox aabLinmotPos = new AxisAlignedBox(RealScalar.of(0.2));
   // ---
-  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+  protected GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   public final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
   // ---
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
@@ -68,9 +67,7 @@ public class GokartRender implements RenderInterface {
   private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
 
-  @Override // from RenderInterface
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
+  public final void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     { // footprint
       graphics.setColor(new Color(224, 224, 224, 192));
       graphics.fill(geometricLayer.toPath2D(VEHICLE_MODEL.footprint()));
@@ -111,26 +108,30 @@ public class GokartRender implements RenderInterface {
     }
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
       graphics.setStroke(new BasicStroke());
-      graphics.setColor(new Color(128, 128, 128, 128));
+      // draw wheels
       for (WheelConfiguration wheelConfiguration : RimoWheelConfigurations.fromSCE(gokartStatusEvent.getSteerColumnEncoderCentered())) {
         geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(wheelConfiguration.local()));
-        TireConfiguration tireConfiguration = wheelConfiguration.tireConfiguration();
-        graphics.fill(geometricLayer.toPath2D(tireConfiguration.footprint()));
+        // draw tire
+        graphics.setColor(COLOR_WHEEL);
+        graphics.fill(geometricLayer.toPath2D(wheelConfiguration.tireConfiguration().footprint()));
+        // draw slip
+        Tensor tensor = wheelConfiguration.adjoint().apply(gokartPoseEvent.getVelocity());
+        graphics.setColor(COLOR_SLIP);
+        graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(tensor.Get(1).multiply(RealScalar.of(0.5)))));
         geometricLayer.popMatrix();
       }
       {
-        Scalar gyroZ = gokartPoseEvent.getGyroZ(); // unit s^-1
-        Scalar angularSlip = AngularSlip.of( //
-            SteerConfig.GLOBAL.getSteerMapping().getAngleFromSCE(gokartStatusEvent), //
-            ChassisGeometry.GLOBAL.xAxleRtoF, //
-            gyroZ, //
-            ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
-        Tensor alongX = AXIS_ALIGNED_BOX.alongY(Magnitude.PER_SECOND.apply(angularSlip).negate());
-        graphics.setColor(new Color(255, 0, 0, 128));
-        graphics.fill(geometricLayer.toPath2D(alongX));
+        // TODO JPH/MH discuss if still necessary, or whether to use vel instead of odometry
+        // Scalar gyroZ = gokartPoseEvent.getGyroZ(); // unit s^-1
+        // Scalar angularSlip = AngularSlip.of( //
+        // SteerConfig.GLOBAL.getSteerMapping().getAngleFromSCE(gokartStatusEvent), //
+        // ChassisGeometry.GLOBAL.xAxleRtoF, //
+        // gyroZ, //
+        // ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
+        // graphics.setColor(COLOR_SLIP);
+        // graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(Magnitude.PER_SECOND.apply(angularSlip).negate())));
       }
     }
     graphics.setStroke(new BasicStroke());
-    geometricLayer.popMatrix();
   }
 }

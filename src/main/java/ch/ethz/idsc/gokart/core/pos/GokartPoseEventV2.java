@@ -40,11 +40,18 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   @Override // from PoseVelocityInterface
+  public Tensor getVelocity() {
+    return Tensors.of( //
+        Quantity.of(ux, SI.VELOCITY), //
+        Quantity.of(uy, SI.VELOCITY), //
+        Quantity.of(omega, SI.PER_SECOND));
+  }
+
+  @Override // from PoseVelocityInterface
   public Tensor getVelocityXY() {
     return Tensors.of( //
         Quantity.of(ux, SI.VELOCITY), //
-        Quantity.of(uy, SI.VELOCITY) //
-    );
+        Quantity.of(uy, SI.VELOCITY));
   }
 
   @Override // from PoseVelocityInterface

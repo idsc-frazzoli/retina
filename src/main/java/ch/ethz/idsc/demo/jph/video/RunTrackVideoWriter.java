@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     try (TrackVideoWriter trackVideoWriter = new TrackVideoWriter( //
         RunVideoBackground.get20190414(), //
         new TrackVideoConfig(), //
-        HomeDirectory.file("dynamic13.mp4"))) {
+        HomeDirectory.file("dynamic13b.mp4"))) {
       OfflineLogPlayer.process(file, trackVideoWriter);
     }
     System.out.println("[done.]");

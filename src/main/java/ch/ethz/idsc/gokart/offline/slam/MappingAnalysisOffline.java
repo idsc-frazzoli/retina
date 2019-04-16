@@ -16,6 +16,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
@@ -81,7 +82,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
       BufferedImage image = scatterImage.getImage();
       GeometricLayer gl = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
       Graphics2D graphics = image.createGraphics();
-      GokartRender gokartRender = new GokartRender();
+      GokartRender gokartRender = new GlobalGokartRender();
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       bayesianOccupancyGrid.render(gl, graphics);
       gokartRender.render(gl, graphics);

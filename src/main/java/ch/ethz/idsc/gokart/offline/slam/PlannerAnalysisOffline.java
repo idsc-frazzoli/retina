@@ -14,6 +14,7 @@ import ch.ethz.idsc.gokart.core.pure.TrajectoryEvents;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.TrajectoryRender;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
@@ -60,7 +61,7 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
       GeometricLayer geometricLayer = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
       BufferedImage image = scatterImage.getImage();
       Graphics2D graphics = image.createGraphics();
-      GokartRender gokartRender = new GokartRender();
+      GokartRender gokartRender = new GlobalGokartRender();
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       trajectoryRender.render(geometricLayer, graphics);
       renderInterface.render(geometricLayer, graphics);
