@@ -11,5 +11,6 @@ public interface TireConfiguration {
   /** @return half width with unit [m] */
   Scalar halfWidth();
 
+  /** @return polygon for drawing tire shape top view */
   Tensor footprint();
 }

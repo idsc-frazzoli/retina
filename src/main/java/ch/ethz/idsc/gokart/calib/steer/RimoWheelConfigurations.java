@@ -13,12 +13,12 @@ public enum RimoWheelConfigurations {
   /** @param scalar with unit "SCE"
    * @return list of wheels: front-left, front-right, rear-left, rear-right */
   public static List<WheelConfiguration> fromSCE(Scalar scalar) {
-    AxleConfiguration fac = RimoAxleConfiguration.frontFromSCE(scalar);
-    AxleConfiguration rac = RimoAxleConfiguration.rear();
+    AxleConfiguration front = RimoAxleConfiguration.frontFromSCE(scalar);
+    AxleConfiguration _rear = RimoAxleConfiguration.rear();
     return Arrays.asList( //
-        fac.wheel(0), //
-        fac.wheel(1), //
-        rac.wheel(0), //
-        rac.wheel(1));
+        front.wheel(0), //
+        front.wheel(1), //
+        _rear.wheel(0), //
+        _rear.wheel(1));
   }
 }

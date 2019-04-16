@@ -52,7 +52,7 @@ public class GokartRender implements RenderInterface {
   private static final Tensor MATRIX_BRAKE = Se2Utils.toSE2Translation(Tensors.vector(1.0, 0.05));
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   // ---
-  private final AxisAlignedBox aabRimoRate = //
+  private static final AxisAlignedBox AXIS_ALIGNED_BOX = //
       new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.8)));
   private final AxisAlignedBox aabLinmotPos = new AxisAlignedBox(RealScalar.of(0.2));
   // ---
@@ -83,12 +83,8 @@ public class GokartRender implements RenderInterface {
       graphics.fill(geometricLayer.toPath2D(VEHICLE_MODEL.footprint()));
     }
     { // rear wheel torques and rear wheel odometry
-      double factor = 5E-4;
-      double[] trq = new double[] { //
-          -Magnitude.ARMS.toDouble(rimoPutEvent.putTireL.getTorque()) * factor, //
-          +Magnitude.ARMS.toDouble(rimoPutEvent.putTireR.getTorque()) * factor //
-      };
-      final Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair();
+      Tensor tarms_pair = rimoPutEvent.getTorque_Y_pair().map(Magnitude.ARMS).multiply(RealScalar.of(5E-4));
+      Tensor rateY_pair = rimoGetEvent.getAngularRate_Y_pair();
       Tensor rateY_draw = rateY_pair.map(Magnitude.PER_SECOND).multiply(RealScalar.of(0.03));
       graphics.setStroke(new BasicStroke(1));
       AxleConfiguration axleConfiguration = RimoAxleConfiguration.rear();
@@ -97,12 +93,12 @@ public class GokartRender implements RenderInterface {
         // ---
         geometricLayer.pushMatrix(Se2Utils.toSE2Translation(OFFSET_TORQUE[wheel]));
         graphics.setColor(Color.BLUE);
-        graphics.fill(geometricLayer.toPath2D(aabRimoRate.alongX(RealScalar.of(trq[0 + wheel]))));
+        graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongX(tarms_pair.Get(wheel))));
         geometricLayer.popMatrix();
         // ---
         geometricLayer.pushMatrix(Se2Utils.toSE2Translation(OFFSET_RATE[wheel]));
         graphics.setColor(new Color(0, 160, 0));
-        graphics.fill(geometricLayer.toPath2D(aabRimoRate.alongX(rateY_draw.Get(0 + wheel))));
+        graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongX(rateY_draw.Get(wheel))));
         geometricLayer.popMatrix();
         // ---
         geometricLayer.popMatrix();
@@ -133,7 +129,7 @@ public class GokartRender implements RenderInterface {
       if (Objects.nonNull(lidarLocalizationModule)) {
         Scalar gyroZ = lidarLocalizationModule.getGyroZ(); // unit s^-1
         Scalar angularSlip = gokartAngularSlip.getAngularSlip(gokartStatusEvent, gyroZ);
-        Tensor alongX = aabRimoRate.alongY(Magnitude.PER_SECOND.apply(angularSlip).negate());
+        Tensor alongX = AXIS_ALIGNED_BOX.alongY(Magnitude.PER_SECOND.apply(angularSlip).negate());
         Path2D path = geometricLayer.toPath2D(alongX);
         path.closePath();
         graphics.setColor(new Color(255, 0, 0, 128));

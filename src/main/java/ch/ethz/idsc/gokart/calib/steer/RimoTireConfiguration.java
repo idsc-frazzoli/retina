@@ -17,12 +17,17 @@ public enum RimoTireConfiguration implements TireConfiguration {
   // ---
   private final Scalar radius;
   private final Scalar halfWidth;
+  private final Tensor footprint;
 
   /** @param radius of tire
    * @param halfWidth of tire */
   private RimoTireConfiguration(Scalar radius, Scalar halfWidth) {
     this.radius = radius;
     this.halfWidth = halfWidth;
+    double x = radius.number().doubleValue();
+    double y = halfWidth.number().doubleValue();
+    footprint = Tensors.matrixDouble( //
+        new double[][] { { x, y }, { -x, y }, { -x, -y }, { x, -y } }).unmodifiable();
   }
 
   @Override // from TireConfiguration
@@ -37,10 +42,6 @@ public enum RimoTireConfiguration implements TireConfiguration {
 
   @Override // from TireConfiguration
   public Tensor footprint() {
-    // TODO JPH
-    double TR = radius().number().doubleValue();
-    double TW = halfWidth().number().doubleValue();
-    return Tensors.matrixDouble( //
-        new double[][] { { TR, TW }, { -TR, TW }, { -TR, -TW }, { TR, -TW } });
+    return footprint;
   }
 }

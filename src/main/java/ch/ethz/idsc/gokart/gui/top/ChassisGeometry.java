@@ -70,6 +70,7 @@ public class ChassisGeometry {
     return DifferentialSpeed.fromSI(xAxleRtoF, yTireRear);
   }
 
+  // TODO JPH obsolete, rather use RimoAxleConfiguration
   public AckermannSteering getAckermannSteering() {
     return new AckermannSteering(xAxleRtoF, yTireFront);
   }
