@@ -61,7 +61,7 @@ class Vlp16ClearanceRender extends LidarRender {
                   Tensors.of(RealScalar.ZERO, half)));
               graphics.draw(path2D);
             }
-            graphics.setStroke(new BasicStroke(1));
+            graphics.setStroke(new BasicStroke());
             geometricLayer.popMatrix();
           }
         }

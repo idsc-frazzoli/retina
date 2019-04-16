@@ -119,7 +119,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
           (int) point2d.getY() - ICON_SIZE / 2, ICON_SIZE, ICON_SIZE, null);
     }
     {
-      graphics.setStroke(new BasicStroke(1));
+      graphics.setStroke(new BasicStroke());
       Tensor torquePair = row.extract(1, 3).multiply(RealScalar.of(3E-4));
       AxleConfiguration axleConfiguration = RimoAxleConfiguration.rear();
       graphics.setColor(new Color(0, 0, 255, 128));
@@ -136,7 +136,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       graphics.draw(geometricLayer.toVector(Tensors.vector(1, 0), UnitVector.of(2, 0).multiply(factor)));
     }
     {
-      graphics.setStroke(new BasicStroke(1));
+      graphics.setStroke(new BasicStroke());
       AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(Quantity.of(row.Get(8), "SCE"));
       graphics.setColor(new Color(128, 128, 128, 128));
       for (int wheel = 0; wheel < 2; ++wheel) {
@@ -146,7 +146,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
         geometricLayer.popMatrix();
       }
     }
-    graphics.setStroke(new BasicStroke(1));
+    graphics.setStroke(new BasicStroke());
     geometricLayer.popMatrix();
   }
 
