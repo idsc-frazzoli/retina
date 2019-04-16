@@ -32,7 +32,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   /* package */ final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent rimoGetEvent) {
-      speed = Quantity.of(speedChop.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent)), SI.VELOCITY);
+      speed = speedChop.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
       isForward = Sign.isPositiveOrZero(speed);
     }
   };
