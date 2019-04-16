@@ -45,8 +45,9 @@ public abstract class GokartRender implements RenderInterface {
   private static final Tensor[] OFFSET_RATE = new Tensor[] { Tensors.vector(0, +0.15, 0), Tensors.vector(0, -0.15, 0) };
   private static final Tensor MATRIX_BRAKE = Se2Utils.toSE2Translation(Tensors.vector(1.0, 0.05));
   private static final Color COLOR_WHEEL = new Color(128, 128, 128, 128);
-  private static final Color COLOR_SLIP = new Color(255, 0, 0, 128);
+  private static final Color COLOR_SLIP = new Color(255, 128, 64, 128 + 64);
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
+  public static final Scalar SLIP_FACTOR = RealScalar.of(0.75);
   // ---
   private static final AxisAlignedBox AXIS_ALIGNED_BOX = //
       new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.8)));
@@ -117,7 +118,7 @@ public abstract class GokartRender implements RenderInterface {
         // draw slip
         Tensor tensor = wheelConfiguration.adjoint().apply(gokartPoseEvent.getVelocity());
         graphics.setColor(COLOR_SLIP);
-        graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(tensor.Get(1).multiply(RealScalar.of(0.5)))));
+        graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(tensor.Get(1).multiply(SLIP_FACTOR))));
         geometricLayer.popMatrix();
       }
       {

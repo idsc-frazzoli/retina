@@ -18,8 +18,8 @@ import ch.ethz.idsc.tensor.Tensors;
 /* package */ class DriftLinesRender implements GokartPoseListener, RenderInterface {
   private static final Color COLOR = new Color(128, 128, 128, 64);
   private static final Tensor PATH = Tensors.of( //
-      Tensors.vector(0.0, 0), //
-      Tensors.vector(0.4, 0));
+      Tensors.vector(0.0, 0.0), //
+      Tensors.vector(0.4, 0.0));
   // ---
   private final BoundedLinkedList<Tensor> boundedLinkedList;
 
