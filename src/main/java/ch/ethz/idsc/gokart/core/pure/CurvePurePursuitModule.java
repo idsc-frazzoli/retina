@@ -13,9 +13,10 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Sign;
 
@@ -27,11 +28,11 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   /** forward motion is determined by odometry:
    * noise in the measurements around zero are also mapped to "forward" */
   protected boolean isForward = true;
-  protected Scalar speed = RealScalar.ZERO;
+  protected Scalar speed = Quantity.of(0, SI.VELOCITY);
   /* package */ final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent rimoGetEvent) {
-      speed = speedChop.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
+      speed = Quantity.of(speedChop.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent)), SI.VELOCITY);
       isForward = Sign.isPositiveOrZero(speed);
     }
   };

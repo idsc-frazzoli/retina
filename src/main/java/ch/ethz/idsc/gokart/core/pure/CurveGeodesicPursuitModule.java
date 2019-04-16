@@ -23,7 +23,7 @@ public class CurveGeodesicPursuitModule extends CurvePurePursuitModule {
           isForward, //
           pursuitConfig.geodesicInterface, //
           pursuitConfig.trajectoryEntryFinder, //
-          pursuitConfig.ratioLimits());
+          PursuitConfig.ratioLimits());
     System.err.println("no curve in geodesic pursuit");
     return Optional.empty();
   }
