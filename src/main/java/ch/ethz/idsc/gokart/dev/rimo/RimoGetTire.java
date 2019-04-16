@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -74,7 +73,7 @@ public class RimoGetTire implements Serializable {
   /** @return rotational rate around the y-axis with unit rad/s
    * a positive value usually corresponds to forward motion of the vehicle */
   public Scalar getAngularRate_Y() {
-    return Quantity.of(actual_rate * sign * MIN_TO_S, SIDerived.RADIAN_PER_SECOND);
+    return Quantity.of(actual_rate * sign * MIN_TO_S, SI.PER_SECOND);
   }
 
   /** the value of RmsMotorCurrent is not correlated to the expected motor current.

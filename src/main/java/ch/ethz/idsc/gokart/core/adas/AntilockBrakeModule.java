@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.adas;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
@@ -16,7 +17,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
@@ -65,7 +65,7 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
       double velx = Magnitude.VELOCITY.toDouble(velocityOrigin.Get(0));
       double vely = Magnitude.VELOCITY.toDouble(velocityOrigin.Get(1));
       // "angular velocity of the go-kart", x-Speed devided by the radius of the rear tire
-      Scalar angularRate_Origin = velocityOrigin.Get(0).divide(ChassisGeometry.GLOBAL.tireRadiusRear);
+      Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
       Tensor oneTensor = Tensors.vector(1.0, 1.0);
       // Slip = 0 if velocity of tire equals velocity of the gokart, Slip = 1 if velocity of tire is zero
       Tensor slip = Tensors.of( //

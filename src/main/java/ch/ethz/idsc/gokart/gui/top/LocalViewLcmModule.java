@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
@@ -16,15 +15,16 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.group.Se2Utils;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 public class LocalViewLcmModule extends AbstractModule {
   private static final Tensor POSE = Tensors.fromString("{0[m],-3[m],0}").unmodifiable();
   private static final Tensor MINOR_ACC = Tensors.vector(0.8, -0.0, 0);
   private static final Tensor MINOR_VEL = Tensors.vector(0.8, -6.0, 0);
   private static final Tensor MINORRIGHT = Tensors.vector(0, -3.5, 0);
+  private static final Tensor DIAGONAL = DiagonalMatrix.of(0.12, 0.12, 1);
   static final Tensor MODEL2PIXEL = Tensors.fromString("{{0,-100,200},{-100,0,300},{0,0,1}}").unmodifiable();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
@@ -42,14 +42,12 @@ public class LocalViewLcmModule extends AbstractModule {
   protected void first() {
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
     {
-      GokartRender gokartRender = new GokartRender();
+      GokartRender gokartRender = new LocalGokartRender(POSE);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
-      rimoGetLcmClient.addListener(gokartRender.gokartAngularSlip);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
       gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
-      gokartRender.gokartPoseListener.getEvent(GokartPoseEvents.create(Tensors.fromString("{0[m], -3[m], 0}"), RealScalar.ONE));
-      // gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
+      gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     {
@@ -59,11 +57,11 @@ public class LocalViewLcmModule extends AbstractModule {
     }
     {
       AccelerationRender accelerationRender = new AccelerationRender(100, //
-          Se2Utils.toSE2Matrix(MINOR_ACC).dot(GroundSpeedRender.DIAGONAL));
+          Se2Utils.toSE2Matrix(MINOR_ACC).dot(DIAGONAL));
       vmu931ImuLcmClient.addListener(accelerationRender);
       timerFrame.geometricComponent.addRenderInterface(accelerationRender);
     }
-    final Tensor matrix = Se2Utils.toSE2Matrix(MINOR_VEL).dot(GroundSpeedRender.DIAGONAL);
+    final Tensor matrix = Se2Utils.toSE2Matrix(MINOR_VEL).dot(DIAGONAL);
     {
       GroundSpeedRender groundSpeedRender = new GroundSpeedRender(50, matrix);
       gokartPoseLcmClient.addListener(groundSpeedRender);

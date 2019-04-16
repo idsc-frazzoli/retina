@@ -80,7 +80,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
     return DoubleScalar.of(1.0);
   }
 
-  /** @return heading with unit "rad"
+  /** @return heading unitless with interpretation in radian
    * Optional.empty() if autonomous pure pursuit control is not warranted */
   protected abstract Optional<Scalar> deriveHeading();
 }

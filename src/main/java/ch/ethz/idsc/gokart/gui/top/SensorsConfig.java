@@ -28,10 +28,6 @@ import ch.ethz.idsc.tensor.sca.Round;
 public class SensorsConfig {
   public static final SensorsConfig GLOBAL = AppResources.load(new SensorsConfig());
   /***************************************************/
-  // TODO at some point also introduce units here
-  /** urg04lx is the pose of the front lidar {px, py, angle} */
-  // @Deprecated
-  public final Tensor urg04lx = Tensors.vector(1.67, 0.0, 0.005);
   /** angular offset that rotates the sensor azimuth 0 onto the gokart positive x axis */
   public final Scalar vlp16_twist = RealScalar.of(-1.61);
   /** transformation from center of rear-axle to vlp16 in (x,y)-plane

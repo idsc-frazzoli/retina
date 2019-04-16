@@ -45,14 +45,24 @@ A single type of message is used: a byte array of variable length in little-endi
 
 ### Java
 
-So far, the gokart code is written in `Java`
+The core part of the gokart software is written in `Java`
 
 * sensor and actuator interfaces
 * emergency modules
 * controllers for steering, velocity, and trajectory following
-* localization by lidar
+* localization by lidar and imu
 * motion planning
 * visualization in 2D and 3D
+
+### C
+
+Several peripheral components of the gokart software have been written in `C`
+
+* interface hardware Labjack U3
+* interface to the commercial MPC solver
+
+Implementing an algorithm in the `C` language can optimize the performance of a module.
+For instance, if an algorithm prototype runs at a rate of 20[Hz] in a single thread in Java, the careful `C` port may permit operation at 100[Hz].
 
 ### Python
 
@@ -61,11 +71,6 @@ The use of `Python` *may* be advantageous for modules that involve
 * camera calibration
 * image processing
 * machine learning
-
-### C
-
-Implementing an algorithm in the `C` language can optimize the performance of a module.
-For instance, if an algorithm prototype runs at a rate of 20[Hz] in a single thread in Java, the careful `C` port may permit operation at 100[Hz].
 
 ### C++
 
@@ -83,5 +88,6 @@ There are at least 6 ways to initialize a pointer to be *null* in `c++`
 * [Project setup in eclipse](https://www.youtube.com/watch?v=iHj2akXxlac)
 * [Implementation of issue#152 in retina](https://www.youtube.com/watch?v=V4B_6P0z7os)
 * [On log file playback and extraction](https://www.youtube.com/watch?v=mKk6MBDqF7o)
+* [Visual log file cutter and csv-export](https://www.youtube.com/watch?v=5QuHDoEp3t4)
 * [Inspecting messages of log file](https://www.youtube.com/watch?v=EjDyieCVAlo)
 * [Visualization, frames of reference, quantities](https://www.youtube.com/watch?v=UGOe8AF3VF8)

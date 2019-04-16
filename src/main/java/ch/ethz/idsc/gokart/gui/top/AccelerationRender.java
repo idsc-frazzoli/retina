@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 
+/** draws brief history of accelerations */
 public class AccelerationRender extends CrosshairRender implements Vmu931ImuFrameListener {
   private static final Scalar FILTER = RealScalar.of(0.02);
   // ---

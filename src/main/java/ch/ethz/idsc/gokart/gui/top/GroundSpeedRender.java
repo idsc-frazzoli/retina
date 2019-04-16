@@ -16,13 +16,13 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
-import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
+import ch.ethz.idsc.tensor.sca.N;
 
+/** draws line of speed as well as brief history of velocities */
 public class GroundSpeedRender extends CrosshairRender implements GokartPoseListener {
   public static final Color COLOR_VELOCITY = new Color(200, 67, 255);
   private static final Stroke STROKE_DEFAULT = new BasicStroke();
-  private static final Tensor ORIGIN = Array.zeros(2);
-  static final Tensor DIAGONAL = DiagonalMatrix.of(.12, .12, 1);
+  private static final Tensor ORIGIN = Array.zeros(2).map(N.DOUBLE);
   // ---
   private final Tensor matrix;
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();

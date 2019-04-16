@@ -19,6 +19,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AccelerationRender;
 import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
+import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.gokart.gui.top.GroundSpeedRender;
 import ch.ethz.idsc.gokart.gui.top.MPCPredictionRender;
@@ -44,7 +45,8 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(20);
   private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
   private final DriftLinesRender driftLinesRender = new DriftLinesRender(100);
-  private final GokartRender gokartRender = new GokartRender();
+  private final SlipLinesRender slipLinesRender = new SlipLinesRender(1000);
+  private final GokartRender gokartRender = new GlobalGokartRender();
   private final AccelerationRender accelerationRender;
   private final GroundSpeedRender groundSpeedRender;
   private final TachometerMustangDash tachometerMustangDash;
@@ -74,6 +76,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (channel.equals(GokartLcmChannel.STATUS)) {
       GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
       gokartRender.gokartStatusListener.getEvent(gokartStatusEvent);
+      slipLinesRender.gokartStatusListener.getEvent(gokartStatusEvent);
       extrudedFootprintRender.gokartStatusListener.getEvent(gokartStatusEvent);
     } else //
     if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
@@ -104,6 +107,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (channel.equals(poseChannel)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       driftLinesRender.getEvent(gokartPoseEvent);
+      slipLinesRender.getEvent(gokartPoseEvent);
       groundSpeedRender.getEvent(gokartPoseEvent);
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
@@ -115,6 +119,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     mpcPredictionSequenceRender.render(geometricLayer, graphics);
     mpcPredictionRender.render(geometricLayer, graphics);
     driftLinesRender.render(geometricLayer, graphics);
+    slipLinesRender.render(geometricLayer, graphics);
     gokartRender.render(geometricLayer, graphics);
     trajectoryRender.render(geometricLayer, graphics);
     extrudedFootprintRender.render(geometricLayer, graphics);

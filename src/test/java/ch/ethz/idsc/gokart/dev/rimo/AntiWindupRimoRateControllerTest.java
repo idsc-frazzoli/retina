@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.dev.rimo;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
@@ -13,15 +14,15 @@ public class AntiWindupRimoRateControllerTest extends TestCase {
     System.out.println("Kawu =" + RimoConfig.GLOBAL.Kawu);
     AntiWindupRimoRateController srrc = new AntiWindupRimoRateController(RimoConfig.GLOBAL);
     {
-      Scalar scalar = srrc.iterate(Quantity.of(10, "rad*s^-1")); // initially large error
+      Scalar scalar = srrc.iterate(Quantity.of(10, SI.PER_SECOND)); // initially large error
       Magnitude.ARMS.apply(scalar);
     }
     for (int count = 0; count < 5; ++count) {
-      Scalar scalar = srrc.iterate(Quantity.of(0.1, "rad*s^-1")); // small error
+      Scalar scalar = srrc.iterate(Quantity.of(0.1, SI.PER_SECOND)); // small error
       System.out.println(scalar);
     }
     for (int count = 0; count < 5; ++count) {
-      Scalar scalar = srrc.iterate(Quantity.of(0.0, "rad*s^-1")); // no error
+      Scalar scalar = srrc.iterate(Quantity.of(0.0, SI.PER_SECOND)); // no error
       System.out.println(scalar);
     }
   }

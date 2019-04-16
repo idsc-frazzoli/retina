@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.MinMax;
@@ -82,7 +83,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
       graphics.fill(geometricLayer.toPath2D(polygon));
     }
     { // draw rear tire
-      Scalar radius = Magnitude.METER.apply(ChassisGeometry.GLOBAL.tireRadiusRear);
+      Scalar radius = Magnitude.METER.apply(RimoTireConfiguration._REAR.radius());
       Tensor translate = Se2Utils.toSE2Matrix(Tensors.vector( //
           0, // translation right (in pixel space)
           radius.number().doubleValue(), // translation up (in pixel space)
@@ -96,7 +97,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
       geometricLayer.popMatrix();
     }
     { // draw front tire
-      Scalar radius = Magnitude.METER.apply(ChassisGeometry.GLOBAL.tireRadiusFront);
+      Scalar radius = Magnitude.METER.apply(RimoTireConfiguration.FRONT.radius());
       Tensor translate = Se2Utils.toSE2Matrix(Tensors.vector( //
           Magnitude.METER.toDouble(ChassisGeometry.GLOBAL.xAxleRtoF), // translation right (in pixel space)
           radius.number().doubleValue(), // translation up (in pixel space)

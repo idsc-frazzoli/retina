@@ -66,7 +66,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   /** draws the curve estimated by the SLAM algorithm
    * 
    * @param slamMapFrame
-   * @param pose of vehicle
+   * @param poseUnitless of vehicle
    * @param cure in go kart frame */
   private static void drawInterpolate(SlamMapFrame slamMapFrame, Tensor poseUnitless, Tensor curve) {
     // transform to world frame coordinates for visualization

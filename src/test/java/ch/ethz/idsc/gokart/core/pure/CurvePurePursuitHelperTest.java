@@ -18,11 +18,11 @@ public class CurvePurePursuitHelperTest extends TestCase {
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     // assertTrue(Clip.function( // for look ahead 3.9[m]
-    // Quantity.of(-0.018, "rad"), //
-    // Quantity.of(-0.016, "rad")).isInside(angle));
+    // Quantity.of(-0.018, ""), //
+    // Quantity.of(-0.016, "")).isInside(angle));
     assertTrue(Clips.interval( //
-        Quantity.of(-0.014, "rad"), //
-        Quantity.of(-0.013, "rad")).isInside(angle));
+        Quantity.of(-0.014, ""), //
+        Quantity.of(-0.013, "")).isInside(angle));
   }
 
   public void testSpecific2() throws Exception {
@@ -31,8 +31,8 @@ public class CurvePurePursuitHelperTest extends TestCase {
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     assertTrue(Clips.interval( //
-        Quantity.of(0.04, "rad"), //
-        Quantity.of(0.07, "rad")).isInside(angle));
+        Quantity.of(0.04, ""), //
+        Quantity.of(0.07, "")).isInside(angle));
   }
 
   public void testLookAheadFail() throws Exception {

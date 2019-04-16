@@ -19,11 +19,11 @@ public class RimoConfig {
   /***************************************************/
   /** parameters for {@link SimpleRimoRateController}
    * rateLimit, Kp, Ki */
-  public Scalar rateLimit = Quantity.of(20, "rad*s^-1"); // <- DEPRECATED
-  @FieldSubdivide(start = "20[ARMS*rad^-1*s]", end = "40[ARMS*rad^-1*s]", intervals = 4)
-  public Scalar Kp = Quantity.of(35, "ARMS*rad^-1*s"); // 40
-  @FieldSubdivide(start = "0[ARMS*rad^-1]", end = "10[ARMS*rad^-1]", intervals = 2)
-  public Scalar Ki = Quantity.of(0, "ARMS*rad^-1"); // 15
+  public Scalar rateLimit = Quantity.of(20, SI.PER_SECOND); // <- DEPRECATED
+  @FieldSubdivide(start = "20[ARMS*s]", end = "40[ARMS*s]", intervals = 4)
+  public Scalar Kp = Quantity.of(35, "ARMS*s"); // 40
+  @FieldSubdivide(start = "0[ARMS]", end = "10[ARMS]", intervals = 2)
+  public Scalar Ki = Quantity.of(0, NonSI.ARMS); // 15
   /** used for lookup table */
   public Scalar lKp = Quantity.of(0, SI.ACCELERATION.add(SI.VELOCITY.negate()));
   public Scalar lKi = Quantity.of(1, SI.ACCELERATION.add(SI.METER.negate()));

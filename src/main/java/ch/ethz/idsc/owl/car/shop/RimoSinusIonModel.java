@@ -4,6 +4,7 @@ package ch.ethz.idsc.owl.car.shop;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
@@ -57,8 +58,8 @@ public class RimoSinusIonModel extends DefaultCarModel {
 
   private RimoSinusIonModel(ChassisGeometry chassisGeometry) {
     final Pacejka3 PACEJKA = new Pacejka3(7, 1.4);
-    final Scalar RADIUS1 = Magnitude.METER.apply(chassisGeometry.tireRadiusFront); // wheel radius [m]
-    final Scalar RADIUS2 = Magnitude.METER.apply(chassisGeometry.tireRadiusRear); // wheel radius [m]
+    final Scalar RADIUS1 = Magnitude.METER.apply(RimoTireConfiguration.FRONT.radius()); // wheel radius [m]
+    final Scalar RADIUS2 = Magnitude.METER.apply(RimoTireConfiguration._REAR.radius()); // wheel radius [m]
     final Scalar IW = DoubleScalar.of(1); // wheel inertia [kgm2]
     final Scalar LZ = DoubleScalar.of(-0.25); // height of COG [m]
     // data-sheet:

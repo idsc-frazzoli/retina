@@ -40,7 +40,7 @@ public enum SlamCurveUtil {
     return curvature;
   }
 
-  /** @param curvature without unit but with interpretation "rad*m^-1"
+  /** @param curvature without unit but with interpretation "m^-1"
    * @return curvature limited by maximum physically possible values */
   public static Scalar limitCurvature(Scalar curvature) {
     return CURVATURE_CLIP.apply(curvature);

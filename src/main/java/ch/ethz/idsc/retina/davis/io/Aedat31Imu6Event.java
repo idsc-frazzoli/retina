@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-// TODO add units
+// TODO JPH add units
 public class Aedat31Imu6Event {
   private final int valid;
   private final int time;

@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import ch.ethz.idsc.tensor.io.Timing;
 import junit.framework.TestCase;
 
-public class MPCKinematicDrivingTest extends TestCase {
+public class MPCAbstractDrivingModuleTest extends TestCase {
   public void testFakeData() throws Exception {
     if (MPCNative.lcmTestBinary().isPresent()) {
       Timing timing = Timing.started();

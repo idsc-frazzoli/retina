@@ -71,7 +71,7 @@ public class DifferentialSpeedTest extends TestCase {
     Scalar y_offset = Quantity.of(0.5, "m");
     DifferentialSpeed tireRearL = DifferentialSpeed.fromSI(Quantity.of(1.2, "m"), y_offset);
     DifferentialSpeed tireRearR = DifferentialSpeed.fromSI(Quantity.of(1.2, "m"), y_offset.negate());
-    Scalar speed = Quantity.of(+4.0, "rad*s^-1");
+    Scalar speed = Quantity.of(+4.0, "s^-1");
     {
       Scalar angle = RealScalar.of(+0.3);
       Scalar tireL = tireRearL.get(speed, angle);
@@ -80,8 +80,8 @@ public class DifferentialSpeedTest extends TestCase {
       Tensor pair = tireRearL.pair(speed, angle);
       // System.out.println(pair);
       assertEquals(pair, Tensors.of(tireL, tireR));
-      assertEquals(QuantityUnit.of(pair.Get(0)), Unit.of("rad*s^-1"));
-      assertEquals(QuantityUnit.of(pair.Get(1)), Unit.of("rad*s^-1"));
+      assertEquals(QuantityUnit.of(pair.Get(0)), Unit.of("s^-1"));
+      assertEquals(QuantityUnit.of(pair.Get(1)), Unit.of("s^-1"));
     }
     {
       Scalar angle = RealScalar.of(-0.3);

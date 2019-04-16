@@ -6,6 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
+// TODO GJOEL class is not referenced
 public class CurveGeodesicPursuitModule extends CurvePurePursuitModule {
   public CurveGeodesicPursuitModule(PursuitConfig pursuitConfig) {
     super(pursuitConfig);
@@ -20,9 +21,9 @@ public class CurveGeodesicPursuitModule extends CurvePurePursuitModule {
           speed, //
           optionalCurve.get(), //
           isForward, //
-          pursuitConfig.geodesic, //
-          pursuitConfig.entryFinder, //
-          pursuitConfig.ratioLimits);
+          pursuitConfig.geodesicInterface, //
+          pursuitConfig.trajectoryEntryFinder, //
+          pursuitConfig.ratioLimits());
     System.err.println("no curve in geodesic pursuit");
     return Optional.empty();
   }

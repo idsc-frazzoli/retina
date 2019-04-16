@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 public enum RimoAxleConfiguration {
   ;
-  /** @param scalar
+  /** @param scalar with unit "SCE"
    * @return */
   public static AxleConfiguration frontFromSCE(Scalar scalar) {
     return new RimoFrontAxleConfiguration(scalar);

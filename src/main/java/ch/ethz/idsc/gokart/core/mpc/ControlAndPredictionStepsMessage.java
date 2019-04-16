@@ -7,11 +7,6 @@ public class ControlAndPredictionStepsMessage extends MPCNativeMessage {
   /** access to field controlAndPredictionSteps via function getPayload() */
   private final ControlAndPredictionSteps controlAndPredictionSteps;
 
-  public ControlAndPredictionStepsMessage(ControlAndPredictionSteps controlAndPredictionSteps, MPCNativeSession mpcNativeSession) {
-    super(mpcNativeSession);
-    this.controlAndPredictionSteps = controlAndPredictionSteps;
-  }
-
   public ControlAndPredictionStepsMessage(ByteBuffer byteBuffer) {
     super(byteBuffer);
     controlAndPredictionSteps = new ControlAndPredictionSteps(byteBuffer);

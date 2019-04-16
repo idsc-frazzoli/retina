@@ -7,6 +7,7 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
@@ -62,7 +63,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
     // System.err.println("check isOperational");
     if (Objects.nonNull(gokartPoseEvent)) { // is localization pose available?
       final Scalar quality = gokartPoseEvent.getQuality();
-      if (pursuitConfig.isQualitySufficient(quality)) { // is localization quality sufficient?
+      if (LocalizationConfig.GLOBAL.isQualityOk(quality)) { // is localization quality sufficient?
         Tensor pose = gokartPoseEvent.getPose(); // latest pose
         Optional<Scalar> ratio = getRatio(pose);
         if (ratio.isPresent()) { // is look ahead beacon available?
@@ -77,7 +78,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
     return Optional.empty(); // autonomous operation denied
   }
 
-  // TODO JPH function should return a scalar with unit "rad*m^-1"...
+  // TODO JPH function should return a scalar with unit "m^-1"...
   // right now, "curve" does not have "m" as unit but entries are unitless.
   /** @param pose
    * @return */
