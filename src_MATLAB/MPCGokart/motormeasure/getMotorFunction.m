@@ -15,10 +15,10 @@ end
 if(0)
     folders{end+1} = '/retina_out/20190128T141006/';
 end
-if(0)
+if(1)
     folders{end+1} = '/retina_out/sysidlog/';
 end
-if(1)
+if(0)
     folders{end+1} = '/retina_out/motorSysID/';
 end
 N = numel(folders);

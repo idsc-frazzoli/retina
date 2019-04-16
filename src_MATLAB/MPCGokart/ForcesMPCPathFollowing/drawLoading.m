@@ -49,7 +49,9 @@ for iff = 1:frames
     R = [cos(theta) -sin(theta); sin(theta) cos(theta)];
     rgklp = [plansx(iff+1,1);plansy(iff+1,1)]+R*gklp;
     fill(rgklp(1,:),rgklp(2,:),'b');
-    
+    if(mod(iff,10)==0)
+        print(strcat(num2str(iff),'trackbg.png'),'-dpng','-r600')
+    end
     drawnow
     F = getframe(gcf); 
     writeVideo(vidfile,F);

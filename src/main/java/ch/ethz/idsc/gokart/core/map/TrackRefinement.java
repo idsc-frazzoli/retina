@@ -264,7 +264,7 @@ public class TrackRefinement {
     // only for debugging
     Tensor freeline = Tensors.empty();
     // negative direction
-    while (!occupied) {
+    while (!occupied && Scalars.lessThan(Abs.of(sideStep),Quantity.of(10, SI.METER))) {
       sideStep = sideStep.subtract(stepsSize);
       testPosition = pos.add(sidedir.multiply(sideStep));
       occupied = occupancyGrid.isMember(testPosition);
@@ -273,7 +273,7 @@ public class TrackRefinement {
     lowPosition = sideStep;
     // negative direction
     occupied = false;
-    while (!occupied) {
+    while (!occupied && Scalars.lessThan(Abs.of(sideStep),Quantity.of(10, SI.METER))) {
       sideStep = sideStep.add(stepsSize);
       testPosition = pos.add(sidedir.multiply(sideStep));
       occupied = occupancyGrid.isMember(testPosition);
