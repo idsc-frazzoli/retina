@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.planar.ArgMinVariable;
@@ -32,12 +33,13 @@ import ch.ethz.idsc.tensor.red.Norm;
    * @return ratio rate with interpretation rad*m^-1 */
   static Optional<Scalar> getRatio(Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       GeodesicInterface geodesic, TrajectoryEntryFinder entryFinder, List<DynamicRatioLimit> ratioLimits) {
-    TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(pose).inverse();
+    Tensor pose_ = GokartPoseHelper.toUnitless(pose);
+    TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(pose_).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(t -> //
-    tensorUnaryOperator.apply(t).append(t.Get(2).subtract(pose.Get(2))))); // TODO could be part of Se2Bijection
+    tensorUnaryOperator.apply(t).append(t.Get(2).subtract(pose_.Get(2))))); // TODO could be part of Se2Bijection
     if (!isForward)
       mirrorAndReverse(tensor);
-    Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
+    Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose_, speed);
     Function<Tensor, Scalar> mapping = vector -> { //
       GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesic, vector);
       Tensor ratios = geodesicPursuit.ratios();
