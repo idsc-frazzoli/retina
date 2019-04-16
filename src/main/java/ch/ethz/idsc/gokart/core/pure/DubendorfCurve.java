@@ -41,6 +41,7 @@ public enum DubendorfCurve {
   public static final Tensor TIRES_TRACK_A = tires_track_a();
   public static final Tensor TIRES_TRACK_B = tires_track_b();
   public static final Tensor TRACK_OVAL = track_oval();
+  public static final Tensor TRACK_OVAL_SE2 = track_oval_se2();
 
   /** CURVE "OVAL" IS USED IN TESTS
    * DONT MODIFY COORDINATES - INSTEAD CREATE A NEW CURVE */
@@ -123,10 +124,14 @@ public enum DubendorfCurve {
   }
 
   private static Tensor track_oval() {
-    Tensor poly;
+    Tensor poly = track_oval_se2();
+    return Tensors.isEmpty(poly) ? Tensors.empty() : project_se2_r2(poly).unmodifiable();
+  }
+
+  private static Tensor track_oval_se2() {
     try {
-      poly = Import.of(new File("resources/track20190325.csv"));
-      return project_se2_r2(Nest.of(SUBDIVISION_SE2, poly, 4)).unmodifiable();
+      Tensor poly = Import.of(new File("resources/track20190325.csv"));
+      return Nest.of(SUBDIVISION_SE2, poly, 4).unmodifiable();
     } catch (IOException e) {
       e.printStackTrace();
     }
