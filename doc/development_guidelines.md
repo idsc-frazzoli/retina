@@ -88,6 +88,6 @@ There are at least 6 ways to initialize a pointer to be *null* in `c++`
 * [Project setup in eclipse](https://www.youtube.com/watch?v=iHj2akXxlac)
 * [Implementation of issue#152 in retina](https://www.youtube.com/watch?v=V4B_6P0z7os)
 * [On log file playback and extraction](https://www.youtube.com/watch?v=mKk6MBDqF7o)
-* [Visual log file cutter](https://www.youtube.com/watch?v=mKk6MBDqF7o)
+* [Visual log file cutter and csv-export](https://www.youtube.com/watch?v=5QuHDoEp3t4)
 * [Inspecting messages of log file](https://www.youtube.com/watch?v=EjDyieCVAlo)
 * [Visualization, frames of reference, quantities](https://www.youtube.com/watch?v=UGOe8AF3VF8)
