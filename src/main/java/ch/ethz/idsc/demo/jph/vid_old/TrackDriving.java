@@ -9,17 +9,19 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
-import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AxisAlignedBox;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
+import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
+import ch.ethz.idsc.owl.car.core.WheelConfiguration;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
-import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -33,11 +35,10 @@ import ch.ethz.idsc.tensor.alg.UnitVector;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 import ch.ethz.idsc.tensor.io.ResourceData;
-import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
-/* package */ class TrackDriving implements RenderInterface {
+/* package */ class TrackDriving extends AbstractFrameRender {
   private static final ColorDataIndexed COLOR_DATA_INDEXED = ColorDataLists._063.cyclic().deriveWithAlpha(128);
   private static final ColorDataIndexed COLOR_DATA_INDEXED_32 = COLOR_DATA_INDEXED.deriveWithAlpha(32);
   private static final ColorDataIndexed COLOR_DATA_INDEXED_64 = COLOR_DATA_INDEXED.deriveWithAlpha(64);
@@ -47,8 +48,12 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       Magnitude.METER.apply(ChassisGeometry.GLOBAL.xAxleRtoCoM), //
       RealScalar.ZERO);
   private static final int ICON_SIZE = 32;
+  private static final AxisAlignedBox AXIS_ALIGNED_BOX = //
+      new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.5)));
+  private static final Tensor SLIM = Tensors.matrixDouble( //
+      new double[][] { { 0.2, 0.02 }, { -0.2, 0.02 }, { -0.2, -0.02 }, { 0.2, -0.02 } }).unmodifiable();
   // ---
-  private final Tensor tensor;
+  final Tensor tensor;
   private final int id;
   private BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
   private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
@@ -76,12 +81,8 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       System.err.println("driver icon not found [" + name + "]");
   }
 
-  private int render_index;
-  private boolean extrusion = true;
-
-  public void setRenderIndex(int render_index) {
-    this.render_index = render_index;
-  }
+  private boolean extrusion = false;
+  private boolean posetrail = false;
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
@@ -93,7 +94,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       extrudedFootprintRender.gokartStatusListener.getEvent(new GokartStatusEvent(row.Get(8).number().floatValue()));
       extrudedFootprintRender.render(geometricLayer, graphics);
     }
-    {
+    if (posetrail) {
       PathRender pathRender = new PathRender(COLOR_DATA_INDEXED_64.getColor(id), 1.5f);
       Tensor points = Tensor.of(tensor.stream().limit(render_index) //
           .map(v -> v.extract(10, 13)) //
@@ -117,43 +118,35 @@ import ch.ethz.idsc.tensor.sca.Ramp;
           (int) point2d.getX() - ICON_SIZE / 2, //
           (int) point2d.getY() - ICON_SIZE / 2, ICON_SIZE, ICON_SIZE, null);
     }
-    graphics.setStroke(new BasicStroke(2.5f));
     {
-      // TODO JPH redundant to GokartRender -> extract
-      final AxisAlignedBox axisAlignedBox = //
-          new AxisAlignedBox(ChassisGeometry.GLOBAL.tireHalfWidthRear().multiply(RealScalar.of(.5)));
-      double factor = 3E-4;
-      double[] trq = new double[] { //
-          row.Get(1).number().doubleValue() * factor, //
-          row.Get(2).number().doubleValue() * factor //
-      };
-      Tensor[] ofs = new Tensor[] { Tensors.vector(0, 0, 0), Tensors.vector(0, 0, 0) };
-      graphics.setColor(new Color(0, 0, 255, 64));
+      graphics.setStroke(new BasicStroke());
+      Tensor torquePair = row.extract(1, 3).multiply(RealScalar.of(3E-4));
+      AxleConfiguration axleConfiguration = RimoAxleConfiguration.rear();
+      graphics.setColor(new Color(0, 0, 255, 128));
       for (int wheel = 0; wheel < 2; ++wheel) {
-        Tensor vector = VEHICLE_MODEL.wheel(2 + wheel).lever();
-        geometricLayer.pushMatrix(Se2Utils.toSE2Translation(vector.add(ofs[wheel])));
-        graphics.fill(geometricLayer.toPath2D(axisAlignedBox.alongX(RealScalar.of(trq[0 + wheel]))));
+        geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
+        graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongX(torquePair.Get(wheel))));
         geometricLayer.popMatrix();
       }
     }
     {
+      graphics.setStroke(new BasicStroke(2.5f));
       Scalar factor = Ramp.FUNCTION.apply(row.Get(9).negate().subtract(RealScalar.of(0.02))).divide(RealScalar.of(-0.06));
       graphics.setColor(new Color(255, 0, 0, 128));
       graphics.draw(geometricLayer.toVector(Tensors.vector(1, 0), UnitVector.of(2, 0).multiply(factor)));
     }
-    graphics.setStroke(new BasicStroke(2.5f));
     {
-      Scalar angle = SteerConfig.GLOBAL.getSteerMapping().getAngleFromSCE(Quantity.of(row.Get(8), "SCE"));
-      Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angle);
+      graphics.setStroke(new BasicStroke());
+      AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(Quantity.of(row.Get(8), "SCE"));
       graphics.setColor(new Color(128, 128, 128, 128));
-      Tensor v1 = AngleVector.of(pair.Get(0)).multiply(RealScalar.of(.2));
-      graphics.draw(geometricLayer.toVector(Tensors.vector(1.19, +.5), v1));
-      graphics.draw(geometricLayer.toVector(Tensors.vector(1.19, +.5), v1.negate()));
-      Tensor v2 = AngleVector.of(pair.Get(1)).multiply(RealScalar.of(.2));
-      graphics.draw(geometricLayer.toVector(Tensors.vector(1.19, -.5), v2));
-      graphics.draw(geometricLayer.toVector(Tensors.vector(1.19, -.5), v2.negate()));
+      for (int wheel = 0; wheel < 2; ++wheel) {
+        WheelConfiguration wheelConfiguration = axleConfiguration.wheel(wheel);
+        geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(wheelConfiguration.local()));
+        graphics.fill(geometricLayer.toPath2D(SLIM));
+        geometricLayer.popMatrix();
+      }
     }
-    graphics.setStroke(new BasicStroke(1));
+    graphics.setStroke(new BasicStroke());
     geometricLayer.popMatrix();
   }
 

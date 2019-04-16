@@ -19,6 +19,7 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
+/** checks */
 /* package */ class DavisImuBiasAnalysis implements OfflineTableSupplier {
   private static final String CHANNEL_DAVIS_IMU = //
       DavisImuFramePublisher.channel(GokartLcmChannel.DAVIS_OVERVIEW);
@@ -37,7 +38,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
         ++count;
       }
     } else
-      throw new RuntimeException("EOF");
+      throw OfflineLogPlayer.endOfFile();
   }
 
   @Override // from OfflineTableSupplier

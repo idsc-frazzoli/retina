@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.nio.FloatBuffer;
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -14,10 +13,6 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 
 abstract class LidarRender extends AbstractGokartRender implements LidarRayBlockListener {
-  public LidarRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
-  }
-
   protected Supplier<Tensor> supplier = () -> Array.zeros(3);
   // ---
   /** points in reference frame of lidar */

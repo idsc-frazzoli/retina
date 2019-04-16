@@ -25,7 +25,13 @@ import ch.ethz.idsc.tensor.qty.Unit;
   private final float uB;
   private final float aB;
 
-  public GokartControl(float uL, float uR, float udotS, float uB) {
+  /** ONLY FOR TESTING
+   * 
+   * @param uL
+   * @param uR
+   * @param udotS
+   * @param uB */
+  GokartControl(float uL, float uR, float udotS, float uB) {
     this.uL = uL;
     this.uR = uR;
     this.udotS = udotS;
@@ -33,7 +39,11 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.aB = 0;
   }
 
-  public GokartControl(float aB, float udotS) {
+  /** ONLY FOR TESTING
+   * 
+   * @param aB
+   * @param udotS */
+  GokartControl(float aB, float udotS) {
     this.uL = 0;
     this.uR = 0;
     this.udotS = udotS;

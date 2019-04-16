@@ -35,7 +35,7 @@ public enum ClustersTracking {
    * @param eps parameter for DBSCAN
    * @param minPoints parameter for DBSCAN
    * @return */
-  // TODO also handle empty input
+  // TODO VC also handle empty input
   public static double elkiDBSCAN(ClusterCollection oldClusters, Tensor newScan, double eps, int minPoints) {
     double noiseRatio = 0;
     Tensor scans = oldClusters.toMatrices().append(newScan);

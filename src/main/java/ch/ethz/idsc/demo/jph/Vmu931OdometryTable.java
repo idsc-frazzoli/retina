@@ -33,7 +33,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       vmu931Odometry.vmu931ImuFrame(vmu931ImuFrame);
       tableBuilder.appendRow( //
           Magnitude.SECOND.apply(time), //
-          GokartPoseHelper.toUnitless(vmu931Odometry.inertialOdometry.getPose()));
+          GokartPoseHelper.toUnitless(vmu931Odometry.getPose()));
     }
   }
 
@@ -47,7 +47,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
     File file = new File(folder, "post.lcm");
     Vmu931OdometryTable vmu931OdometryTable = new Vmu931OdometryTable();
-    vmu931OdometryTable.vmu931Odometry.inertialOdometry.resetPose(gokartLogInterface.pose());
+    vmu931OdometryTable.vmu931Odometry.resetPose(gokartLogInterface.pose());
     OfflineLogPlayer.process(file, vmu931OdometryTable);
     Export.of(HomeDirectory.file("vmu931_odometry.csv"), vmu931OdometryTable.getTable().map(CsvFormat.strict()));
   }

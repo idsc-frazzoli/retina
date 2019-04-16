@@ -19,7 +19,7 @@ import java.util.Objects;
 public enum ModuleAuto {
   INSTANCE;
   /** map for holding the module list */
-  // TODO choose a more thread-safe data structure
+  // TODO JPH choose a more thread-safe data structure
   private final Map<Class<? extends AbstractModule>, AbstractModule> moduleMap = new LinkedHashMap<>();
 
   /** Methods for launching the modules */

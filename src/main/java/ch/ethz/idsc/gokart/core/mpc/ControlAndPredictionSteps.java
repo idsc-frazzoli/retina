@@ -10,10 +10,6 @@ import ch.ethz.idsc.tensor.Tensor;
 public class ControlAndPredictionSteps implements BufferInsertable {
   final ControlAndPredictionStep[] steps;
 
-  public ControlAndPredictionSteps(ControlAndPredictionStep[] controlAndPredictionSteps) {
-    steps = controlAndPredictionSteps;
-  }
-
   /** DO NOT call this construction on content of log files!
    * instead use {@link ControlAndPredictionStepsMessage}.
    * 
@@ -23,6 +19,13 @@ public class ControlAndPredictionSteps implements BufferInsertable {
     steps = new ControlAndPredictionStep[MPCNative.PREDICTION_SIZE];
     for (int index = 0; index < MPCNative.PREDICTION_SIZE; ++index)
       steps[index] = new ControlAndPredictionStep(byteBuffer);
+  }
+
+  /** ONLY FOR TESTING
+   * 
+   * @param controlAndPredictionSteps */
+  /* package */ ControlAndPredictionSteps(ControlAndPredictionStep[] controlAndPredictionSteps) {
+    steps = controlAndPredictionSteps;
   }
 
   @Override // from BufferInsertable
@@ -37,6 +40,7 @@ public class ControlAndPredictionSteps implements BufferInsertable {
   }
 
   /***************************************************/
+  /** @return matrix of size N x 2, rows encode xy-positions {x[m], y[m]} */
   public Tensor toPositions() {
     return Tensor.of(Stream.of(steps) //
         .map(ControlAndPredictionStep::gokartState) //

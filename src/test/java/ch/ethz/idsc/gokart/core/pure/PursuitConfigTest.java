@@ -1,12 +1,14 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
-import ch.ethz.idsc.tensor.RealScalar;
+import java.util.List;
+
+import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import junit.framework.TestCase;
 
 public class PursuitConfigTest extends TestCase {
   public void testSimple() {
-    assertFalse(PursuitConfig.GLOBAL.isQualitySufficient(RealScalar.ZERO));
-    assertTrue(PursuitConfig.GLOBAL.isQualitySufficient(RealScalar.ONE));
+    List<DynamicRatioLimit> ratioLimits = PursuitConfig.ratioLimits();
+    assertEquals(ratioLimits.size(), 1);
   }
 }

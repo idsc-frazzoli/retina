@@ -14,7 +14,7 @@ public interface SteerMapping {
    * @return angle of imaginary center front wheel without unit but with interpretation in radian */
   Scalar getAngleFromSCE(Scalar scalar);
 
-  /** @param angle of imaginary center front wheel with unit "rad"
+  /** @param angle of imaginary center front wheel unitless with interpretation in radian
    * @return steer column encoder value with unit "SCE" */
   Scalar getSCEfromAngle(Scalar angle);
 }

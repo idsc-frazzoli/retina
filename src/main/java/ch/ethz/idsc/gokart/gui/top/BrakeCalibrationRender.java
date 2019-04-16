@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 public class BrakeCalibrationRender implements RenderInterface {
-  // TODO JPH
+  // TODO JPH make calibrationValue transient variable of SafetyConfig
   public static Scalar calibrationValue = RealScalar.ONE;
   private static final Tensor DIAGONAL = DiagonalMatrix.of(.5, .5, 1);
   // ---

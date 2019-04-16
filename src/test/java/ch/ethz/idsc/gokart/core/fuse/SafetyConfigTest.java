@@ -5,7 +5,7 @@ import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.owl.car.math.ClearanceTracker;
 import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
-import ch.ethz.idsc.retina.util.math.SIDerived;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -37,6 +37,6 @@ public class SafetyConfigTest extends TestCase {
   }
 
   public void testRateLimit() {
-    assertTrue(Scalars.lessEquals(Quantity.of(1, SIDerived.RADIAN_PER_SECOND), SafetyConfig.GLOBAL.rateLimit));
+    assertTrue(Scalars.lessEquals(Quantity.of(1, SI.PER_SECOND), SafetyConfig.GLOBAL.rateLimit));
   }
 }

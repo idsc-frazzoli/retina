@@ -1,6 +1,7 @@
 // code by ynager
 package ch.ethz.idsc.gokart.core.pure;
 
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.curve.BSpline2CurveSubdivision;
@@ -57,5 +58,10 @@ public class TrajectoryConfig {
     return new BSpline2CurveSubdivision(Se2Geodesic.INSTANCE).cyclic(ResourceData.of(waypoints).unmodifiable());
     // around tires
     // return ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").unmodifiable();
+  }
+
+  /** @return */
+  public static PredefinedMap getPredefinedMapObstacles() {
+    return PredefinedMap.DUBILAB_OBSTACLES_20190314;
   }
 }

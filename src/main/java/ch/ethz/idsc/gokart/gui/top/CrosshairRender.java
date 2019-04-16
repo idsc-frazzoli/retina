@@ -24,24 +24,23 @@ import ch.ethz.idsc.tensor.red.Max;
 public class CrosshairRender implements RenderInterface {
   private static final Tensor POLYGON = CirclePoints.of(8).multiply(RealScalar.of(0.3));
   private static final Tensor CIRCLE = CirclePoints.of(28);
-  private static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 12);
   // ---
   private final BoundedLinkedList<Tensor> boundedLinkedList;
   private final ColorDataIndexed colorDataIndexed;
   private final Tensor circles;
-  private final Tensor lineX;
-  private final Tensor lineY;
+  private final Tensor axisX;
+  private final Tensor axisY;
 
-  public CrosshairRender(int limit, ColorDataGradient colorDataGradient, Tensor circles) {
+  protected CrosshairRender(int limit, ColorDataGradient colorDataGradient, Tensor circles) {
     boundedLinkedList = new BoundedLinkedList<>(limit);
     colorDataIndexed = ColorLookup.decreasing(limit, colorDataGradient).deriveWithAlpha(64);
     this.circles = circles;
     Scalar max = circles.stream().reduce(Max::of).get().Get();
-    lineX = Tensors.matrix(new Scalar[][] { { max.negate(), RealScalar.ZERO }, { max, RealScalar.ZERO } });
-    lineY = Tensors.matrix(new Scalar[][] { { RealScalar.ZERO, max.negate() }, { RealScalar.ZERO, max } });
+    axisX = Tensors.matrix(new Scalar[][] { { max.negate(), RealScalar.ZERO }, { max, RealScalar.ZERO } });
+    axisY = Tensors.matrix(new Scalar[][] { { RealScalar.ZERO, max.negate() }, { RealScalar.ZERO, max } });
   }
 
-  public final void push_end(Tensor vector) {
+  protected final void push_end(Tensor vector) {
     synchronized (boundedLinkedList) {
       boundedLinkedList.add(vector);
     }
@@ -50,10 +49,11 @@ public class CrosshairRender implements RenderInterface {
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     graphics.setColor(new Color(128, 128, 128, 128));
-    graphics.draw(geometricLayer.toPath2D(lineX));
-    graphics.draw(geometricLayer.toPath2D(lineY));
+    graphics.draw(geometricLayer.toPath2D(axisX));
+    graphics.draw(geometricLayer.toPath2D(axisY));
     // ---
-    graphics.setFont(FONT);
+    float width = geometricLayer.model2pixelWidth(1);
+    graphics.setFont(new Font(Font.DIALOG, Font.PLAIN, (int) width));
     for (Tensor _x : circles) {
       Scalar x = _x.Get();
       graphics.setColor(new Color(128, 128, 128, 128));

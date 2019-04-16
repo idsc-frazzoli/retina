@@ -5,7 +5,7 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.mg.filter.AbstractFilterHandler;
 import ch.ethz.idsc.demo.mg.slam.core.SlamAlgoConfiguration;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
 
 /* package */ enum SlamWrapUtil {
@@ -17,15 +17,17 @@ import ch.ethz.idsc.retina.davis.DavisDvsListener;
    * @param slamPrcContainer
    * @param abstractFilterHandler sets up listeners
    * @param gokartLidarPose
-   * @param gokartOdometryPose */
-  public static void initialize(SlamCoreContainer slamCoreContainer, //
-      SlamPrcContainer slamPrcContainer, AbstractFilterHandler abstractFilterHandler, //
-      GokartPoseInterface gokartLidarPose, //
-      GokartPoseOdometryDemo gokartOdometryPose) {
+   * @param gokartPoseOdometryDemo */
+  public static void initialize( //
+      SlamCoreContainer slamCoreContainer, //
+      SlamPrcContainer slamPrcContainer, //
+      AbstractFilterHandler abstractFilterHandler, //
+      GokartPoseEvent gokartLidarPose, //
+      GokartPoseOdometryDemo gokartPoseOdometryDemo) {
     slamCoreContainer.initialize(gokartLidarPose.getPose());
-    gokartOdometryPose.setPose(gokartLidarPose.getPose());
+    gokartPoseOdometryDemo.setPose(gokartLidarPose.getPose());
     List<DavisDvsListener> listeners = //
-        SlamAlgoConfiguration.getListeners(slamCoreContainer, slamPrcContainer, gokartLidarPose, gokartOdometryPose);
+        SlamAlgoConfiguration.getListeners(slamCoreContainer, slamPrcContainer, gokartLidarPose, gokartPoseOdometryDemo);
     listeners.forEach(abstractFilterHandler::addListener);
   }
 }

@@ -24,8 +24,8 @@ class RimoMetronomeModule extends AbstractModule implements RimoPutProvider {
   // ---
   private final Timing timing = Timing.started();
   private final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerDuo();
-  private final Scalar testPulseLo = Quantity.of(0, "rad*s^-1");
-  private final Scalar testPulseHi = Quantity.of(20, "rad*s^-1");
+  private final Scalar testPulseLo = Quantity.of(0, "s^-1");
+  private final Scalar testPulseHi = Quantity.of(20, "s^-1");
 
   @Override // from AbstractModule
   protected void first() {

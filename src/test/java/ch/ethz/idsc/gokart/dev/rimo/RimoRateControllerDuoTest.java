@@ -18,13 +18,13 @@ public class RimoRateControllerDuoTest extends TestCase {
 
   public void testPresent() {
     RimoRateControllerWrap rrcw = new RimoRateControllerDuo();
-    assertFalse(rrcw.iterate(Quantity.of(1, "rad*s^-1"), RealScalar.of(0.3)).isPresent());
+    assertFalse(rrcw.iterate(Quantity.of(1, "s^-1"), RealScalar.of(0.3)).isPresent());
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[48]);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     RimoGetEvent rimoGetEvent = RimoSocket.INSTANCE.createGetEvent(byteBuffer);
     rrcw.getEvent(rimoGetEvent);
     // RimoPutEvent rimoPutEvent = rrcw.iterate(Tensors.fromString("{1[rad*s^-1],2[rad*s^-1]}")).get();
-    RimoPutEvent rimoPutEvent = rrcw.iterate(Quantity.of(1, "rad*s^-1"), RealScalar.of(0.3)).get();
+    RimoPutEvent rimoPutEvent = rrcw.iterate(Quantity.of(1, "s^-1"), RealScalar.of(0.3)).get();
     assertFalse(rimoPutEvent.putTireL.getTorqueRaw() == -rimoPutEvent.putTireR.getTorqueRaw());
     assertTrue(rimoPutEvent.putTireL.getTorqueRaw() < 0);
     assertTrue(rimoPutEvent.putTireR.getTorqueRaw() > 0);
@@ -36,7 +36,7 @@ public class RimoRateControllerDuoTest extends TestCase {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     RimoGetEvent rimoGetEvent = RimoSocket.INSTANCE.createGetEvent(byteBuffer);
     rrcw.getEvent(rimoGetEvent);
-    RimoPutEvent rimoPutEvent = rrcw.iterate(Quantity.of(20, "rad*s^-1"), RealScalar.of(0)).get();
+    RimoPutEvent rimoPutEvent = rrcw.iterate(Quantity.of(20, "s^-1"), RealScalar.of(0)).get();
     assertEquals(rimoPutEvent.putTireL.getTorqueRaw(), -rimoPutEvent.putTireR.getTorqueRaw());
     assertTrue(rimoPutEvent.putTireL.getTorqueRaw() < 0);
     assertTrue(rimoPutEvent.putTireR.getTorqueRaw() > 0);
@@ -44,16 +44,16 @@ public class RimoRateControllerDuoTest extends TestCase {
 
   public void testSlowdown() {
     RimoRateControllerWrap rrcw = new RimoRateControllerDuo();
-    assertFalse(rrcw.iterate(Quantity.of(1, "rad*s^-1"), RealScalar.of(0.1)).isPresent());
+    assertFalse(rrcw.iterate(Quantity.of(1, "s^-1"), RealScalar.of(0.1)).isPresent());
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[48]);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     byteBuffer.putShort(2, (short) -1260);
     byteBuffer.putShort(2 + 24, (short) 1101);
     byteBuffer.position(0);
     RimoGetEvent rimoGetEvent = RimoSocket.INSTANCE.createGetEvent(byteBuffer);
-    assertEquals(rimoGetEvent.getAngularRate_Y_pair(), Tensors.fromString("{21.0[rad*s^-1], 18.35[rad*s^-1]}"));
+    assertEquals(rimoGetEvent.getAngularRate_Y_pair(), Tensors.fromString("{21.0[s^-1], 18.35[s^-1]}"));
     rrcw.getEvent(rimoGetEvent);
-    RimoPutEvent rimoPutEvent = rrcw.iterate(Quantity.of(1, "rad*s^-1"), RealScalar.of(0.1)).get();
+    RimoPutEvent rimoPutEvent = rrcw.iterate(Quantity.of(1, "s^-1"), RealScalar.of(0.1)).get();
     Scalar tL = rimoPutEvent.putTireL.getTorque();
     Scalar tR = rimoPutEvent.putTireR.getTorque();
     // because "duo" uses two PI controllers, the torques do not have the same absolute value

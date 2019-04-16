@@ -22,9 +22,9 @@ public class PurePursuitSteerTest extends TestCase {
     CurvePurePursuitModuleTest._checkFallback(optional);
     optional = pps.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
     assertTrue(optional.isPresent());
-    pps.setHeading(Quantity.of(-0.2, "rad"));
+    pps.setHeading(Quantity.of(-0.2, ""));
     pps.control(new SteerColumnAdapter(true, Quantity.of(0.2, "SCE")));
-    pps.setHeading(Quantity.of(-0.1, "rad"));
+    pps.setHeading(Quantity.of(-0.1, ""));
     pps.control(new SteerColumnAdapter(true, Quantity.of(0.1, "SCE")));
   }
 

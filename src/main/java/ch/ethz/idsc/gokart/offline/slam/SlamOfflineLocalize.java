@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
@@ -59,7 +59,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
       Tensor poseDelta = lidar.dot(pre_delta).dot(Inverse.of(lidar));
       // Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);
       model = model.dot(poseDelta); // advance gokart
-      Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
+      Scalar ratio = N.DOUBLE.apply(slamResult.getQuality());
       appendRow(ratio, sum, duration);
       scatterImage.render(model.dot(lidar), scattered);
     } else

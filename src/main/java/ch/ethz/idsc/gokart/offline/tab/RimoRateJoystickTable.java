@@ -57,7 +57,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
     if (channel.equals(GokartLcmChannel.STATUS)) {
       gse = new GokartStatusEvent(byteBuffer);
     } else //
-    if (channel.equals("joystick.generic_xbox_pad")) {
+    if (channel.equals(GokartLcmChannel.JOYSTICK)) {
       JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
       manualControlInterface = (ManualControlInterface) joystickEvent;
     } else //

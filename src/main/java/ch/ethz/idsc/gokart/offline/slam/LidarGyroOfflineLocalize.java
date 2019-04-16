@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
@@ -49,9 +49,7 @@ public class LidarGyroOfflineLocalize extends OfflineLocalize {
     Tensor points = Tensors.vector(i -> Tensors.of( //
         DoubleScalar.of(floatBuffer.get()), //
         DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
-    // TODO the sign of rate was changed 2018-09
     Scalar rate = getGyroAndReset().divide(SensorsConfig.GLOBAL.vlp16_rate);
-    // System.out.println("rate=" + rate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getResample() //
         .apply(points).getPointsSpin(SensorsConfig.GLOBAL.vlp16_relativeZero, rate);
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
@@ -69,7 +67,7 @@ public class LidarGyroOfflineLocalize extends OfflineLocalize {
       Tensor poseDelta = lidar.dot(pre_delta).dot(Inverse.of(lidar));
       // Tensor dstate = Se2Utils.fromSE2Matrix(poseDelta);
       model = model.dot(poseDelta); // advance gokart
-      Scalar ratio = N.DOUBLE.apply(slamResult.getMatchRatio());
+      Scalar ratio = N.DOUBLE.apply(slamResult.getQuality());
       appendRow(ratio, sum, duration);
       scatterImage.render(model.dot(lidar), scattered);
     } else {

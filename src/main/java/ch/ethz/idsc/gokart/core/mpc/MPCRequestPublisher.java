@@ -57,7 +57,7 @@ import idsc.BinaryBlob;
    * 
    * @param gokartState the newest available gokart state */
   public final void publishControlRequest(GokartState gokartState, MPCPathParameter mpcPathParameter) {
-    ControlRequestMessage gokartStateMessage = new ControlRequestMessage(gokartState, mpcPathParameter, mpcNativeSession);
+    ControlRequestMessage gokartStateMessage = new ControlRequestMessage(mpcNativeSession, gokartState, mpcPathParameter);
     BinaryBlob binaryBlob = BinaryBlobs.create(gokartStateMessage.length());
     ByteBuffer byteBuffer = ByteBuffer.wrap(binaryBlob.data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);

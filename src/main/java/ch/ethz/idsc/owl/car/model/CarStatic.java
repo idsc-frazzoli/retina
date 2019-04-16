@@ -33,10 +33,10 @@ public enum CarStatic {
         // ---
         -50, -75, // px, py
         // ---
-        noSlipRate(speed, vehicleModel.wheel(0).radius()).number().doubleValue() / 3.6, //
-        noSlipRate(speed, vehicleModel.wheel(1).radius()).number().doubleValue() / 3.6, //
-        noSlipRate(speed, vehicleModel.wheel(2).radius()).number().doubleValue() / 3.6, //
-        noSlipRate(speed, vehicleModel.wheel(3).radius()).number().doubleValue() / 3.6 //
+        noSlipRate(speed, vehicleModel.wheelConstant(0).radius()).number().doubleValue() / 3.6, //
+        noSlipRate(speed, vehicleModel.wheelConstant(1).radius()).number().doubleValue() / 3.6, //
+        noSlipRate(speed, vehicleModel.wheelConstant(2).radius()).number().doubleValue() / 3.6, //
+        noSlipRate(speed, vehicleModel.wheelConstant(3).radius()).number().doubleValue() / 3.6 //
     ));
   }
 
@@ -60,10 +60,10 @@ public enum CarStatic {
         // ---
         -50, -75, // px, py
         // ---
-        noSlipRate(speed, vehicleModel.wheel(0).radius()).number().doubleValue() / 3.6, //
-        noSlipRate(speed, vehicleModel.wheel(1).radius()).number().doubleValue() / 3.6, //
-        noSlipRate(speed, vehicleModel.wheel(2).radius()).number().doubleValue() / 3.6, //
-        noSlipRate(speed, vehicleModel.wheel(3).radius()).number().doubleValue() / 3.6 //
+        noSlipRate(speed, vehicleModel.wheelConstant(0).radius()).number().doubleValue() / 3.6, //
+        noSlipRate(speed, vehicleModel.wheelConstant(1).radius()).number().doubleValue() / 3.6, //
+        noSlipRate(speed, vehicleModel.wheelConstant(2).radius()).number().doubleValue() / 3.6, //
+        noSlipRate(speed, vehicleModel.wheelConstant(3).radius()).number().doubleValue() / 3.6 //
     ));
   }
 
@@ -84,10 +84,10 @@ public enum CarStatic {
         // ---
         -50, -75, // px, py
         // ---
-        noSlipRate(speed, vehicleModel.wheel(0).radius()).number().doubleValue() / 3.6, //
-        noSlipRate(speed, vehicleModel.wheel(1).radius()).number().doubleValue() / 3.6, //
-        noSlipRate(speed, vehicleModel.wheel(2).radius()).number().doubleValue() / 3.6, //
-        noSlipRate(speed, vehicleModel.wheel(3).radius()).number().doubleValue() / 3.6 //
+        noSlipRate(speed, vehicleModel.wheelConstant(0).radius()).number().doubleValue() / 3.6, //
+        noSlipRate(speed, vehicleModel.wheelConstant(1).radius()).number().doubleValue() / 3.6, //
+        noSlipRate(speed, vehicleModel.wheelConstant(2).radius()).number().doubleValue() / 3.6, //
+        noSlipRate(speed, vehicleModel.wheelConstant(3).radius()).number().doubleValue() / 3.6 //
     ));
   }
 
@@ -103,10 +103,10 @@ public enum CarStatic {
         // ---
         -50, -75, // px, py
         // ---
-        noSlipRate(speed, vehicleModel.wheel(0).radius()).number().doubleValue() / 3.6 + 3, //
-        noSlipRate(speed, vehicleModel.wheel(1).radius()).number().doubleValue() / 3.6 - 2, //
-        noSlipRate(speed, vehicleModel.wheel(2).radius()).number().doubleValue() / 3.6 + 4, //
-        noSlipRate(speed, vehicleModel.wheel(3).radius()).number().doubleValue() / 3.6 - 5 //
+        noSlipRate(speed, vehicleModel.wheelConstant(0).radius()).number().doubleValue() / 3.6 + 3, //
+        noSlipRate(speed, vehicleModel.wheelConstant(1).radius()).number().doubleValue() / 3.6 - 2, //
+        noSlipRate(speed, vehicleModel.wheelConstant(2).radius()).number().doubleValue() / 3.6 + 4, //
+        noSlipRate(speed, vehicleModel.wheelConstant(3).radius()).number().doubleValue() / 3.6 - 5 //
     ));
   }
 }

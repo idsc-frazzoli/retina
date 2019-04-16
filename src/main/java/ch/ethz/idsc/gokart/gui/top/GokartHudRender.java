@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
@@ -23,15 +25,12 @@ class GokartHudRender implements RenderInterface {
   private static final Font FONT_LARGE = new Font(Font.DIALOG, Font.BOLD, 25);
   private static final int SEPX = 200;
   // ---
-  private final GokartPoseInterface gokartPoseInterface;
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private SteerGetEvent steerGetEvent = SteerGetEvents.ZEROS;
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   final SteerGetListener steerGetListener = getEvent -> steerGetEvent = getEvent;
-
-  public GokartHudRender(GokartPoseInterface gokartPoseInterface) {
-    this.gokartPoseInterface = gokartPoseInterface;
-  }
+  final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
@@ -48,7 +47,8 @@ class GokartHudRender implements RenderInterface {
     {
       graphics.setFont(FONT_SMALL);
       graphics.setColor(Color.GRAY);
-      graphics.drawString(gokartPoseInterface.getPose().map(Round._2).toString(), SEPX, 12);
+      // TODO also show vel
+      graphics.drawString(gokartPoseEvent.getPose().map(Round._2).toString(), SEPX, 12);
     }
     {
       graphics.setFont(FONT_LARGE);

@@ -9,11 +9,14 @@ import javax.imageio.ImageIO;
 
 public enum ExtrudedImageCache {
   ;
-  private static final File FOLDER = new File("resources/cache", "extruded");
+  /* package */ static final File FOLDER = new File("resources/cache", "extruded");
 
-  public static BufferedImage of(String string, Supplier<BufferedImage> supplier) {
+  /** @param title of image file
+   * @param supplier
+   * @return */
+  public static BufferedImage of(String title, Supplier<BufferedImage> supplier) {
     FOLDER.mkdirs();
-    File file = new File(FOLDER, string + ".png");
+    File file = new File(FOLDER, title + ".png");
     if (file.isFile())
       try {
         return ImageIO.read(file);

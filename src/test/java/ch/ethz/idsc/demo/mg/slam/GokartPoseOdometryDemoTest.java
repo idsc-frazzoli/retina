@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.demo.mg.slam;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -18,20 +19,20 @@ import junit.framework.TestCase;
 public class GokartPoseOdometryDemoTest extends TestCase {
   public void testSimple() {
     GokartPoseOdometryDemo demo = GokartPoseOdometryDemo.create();
-    Tensor angularRate_Y_pair = Tensors.fromString("{5[rad*s^-1],14[rad*s^-1]}");
+    Tensor angularRate_Y_pair = Tensors.fromString("{5[s^-1],14[s^-1]}");
     demo.step(angularRate_Y_pair);
     Tensor velocity = demo.getVelocity();
     assertEquals(velocity, Tensors.fromString("{1.14[m*s^-1], 0[m*s^-1], 1.0[s^-1]}"));
   }
 
   public void testPreviousImpl() {
-    Tensor angularRate_Y_pair = Tensors.fromString("{5[rad*s^-1],14[rad*s^-1]}");
+    Tensor angularRate_Y_pair = Tensors.fromString("{5[s^-1],14[s^-1]}");
     Tensor velocity = computeVelocity(angularRate_Y_pair);
     assertEquals(velocity, Tensors.fromString("{1.14[m*s^-1], 0[m*s^-1], 1.0[s^-1]}"));
   }
 
   private static Tensor computeVelocity(Tensor angularRate_Y_pair) {
-    Tensor speed_pair = angularRate_Y_pair.multiply(ChassisGeometry.GLOBAL.tireRadiusRear);
+    Tensor speed_pair = angularRate_Y_pair.multiply(RimoTireConfiguration._REAR.radius());
     Scalar speedL = speed_pair.Get(0);
     Scalar speedR = speed_pair.Get(1);
     Scalar HALF = DoubleScalar.of(0.5);

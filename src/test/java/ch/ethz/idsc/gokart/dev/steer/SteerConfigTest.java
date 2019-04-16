@@ -5,7 +5,6 @@ import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.SIDerived;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -30,7 +29,7 @@ public class SteerConfigTest extends TestCase {
 
   public void testSCEfromAngle() {
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-    Scalar q = steerMapping.getSCEfromAngle(Quantity.of(1, "rad"));
+    Scalar q = steerMapping.getSCEfromAngle(Quantity.of(1, ""));
     assertEquals(QuantityUnit.of(q), Unit.of("SCE"));
     assertTrue(1.1 < q.number().doubleValue());
   }
@@ -38,7 +37,7 @@ public class SteerConfigTest extends TestCase {
   public void testAngleLimit() {
     Clip clip = SteerConfig.GLOBAL.getAngleLimit();
     assertEquals(clip.min(), clip.max().negate());
-    clip.requireInside(Quantity.of(0.37, SIDerived.RADIAN));
+    clip.requireInside(RealScalar.of(0.37));
   }
 
   public void testConversion() {

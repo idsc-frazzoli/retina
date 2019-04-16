@@ -11,6 +11,8 @@ import ch.ethz.idsc.gokart.core.slam.SlamScore;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -23,7 +25,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
 /** functionality is strictly for offline processing
  * do not use during live operation: memory consumption is not bounded */
-public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImuFrameListener {
+public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImuFrameListener, Vmu931ImuFrameListener {
   private static final Scalar ZERO_RATE = Quantity.of(0, SI.PER_SECOND);
   // ---
   protected final SlamScore slamScore;
@@ -57,8 +59,14 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   }
 
   @Override // from DavisImuFrameListener
-  public void imuFrame(DavisImuFrame davisImuFrame) {
+  public final void imuFrame(DavisImuFrame davisImuFrame) {
     Scalar rate = SensorsConfig.GLOBAL.davisGyroZ(davisImuFrame);
+    gyro_y.append(rate);
+  }
+
+  @Override
+  public final void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
+    Scalar rate = vmu931ImuFrame.gyroZ();
     gyro_y.append(rate);
   }
 

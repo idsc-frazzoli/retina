@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
@@ -18,10 +17,6 @@ import ch.ethz.idsc.tensor.Tensors;
 class ParallelLidarRender extends LidarRender {
   private Color obstacleColor = null;
   private SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
-
-  public ParallelLidarRender(GokartPoseInterface gokartPoseInterface) {
-    super(gokartPoseInterface);
-  }
 
   public void setObstacleColor(Color obstacleColor) {
     this.obstacleColor = obstacleColor;

@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 
+/** draws brief history of accelerations */
 public class AccelerationRender extends CrosshairRender implements Vmu931ImuFrameListener {
   private static final Scalar FILTER = RealScalar.of(0.02);
   // ---
@@ -24,8 +25,8 @@ public class AccelerationRender extends CrosshairRender implements Vmu931ImuFram
   private final GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, FILTER);
   private final Tensor matrix;
 
-  /** @param matrix
-   * @param limit */
+  /** @param limit
+   * @param matrix */
   public AccelerationRender(int limit, Tensor matrix) {
     super(limit, ColorDataGradients.BONE, Tensors.vector(5, 10, 15));
     this.matrix = matrix;

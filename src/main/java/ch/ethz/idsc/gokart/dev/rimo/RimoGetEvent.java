@@ -39,7 +39,7 @@ public class RimoGetEvent extends DataEvent {
     return LENGTH;
   }
 
-  /** @return vector with 2 entries: left and right rear wheel angular rate in unit "rad*s^-1" */
+  /** @return vector with 2 entries: left and right rear wheel angular rate in unit "s^-1" */
   public Tensor getAngularRate_Y_pair() {
     return Tensors.of( //
         getTireL.getAngularRate_Y(), //

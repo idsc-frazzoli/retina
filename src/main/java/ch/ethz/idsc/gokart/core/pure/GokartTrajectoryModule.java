@@ -19,7 +19,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.core.pos.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
@@ -128,7 +127,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         new Dimension(640, 640)); // resolution of image
     MinMax minMax = MinMax.of(STANDARD.footprint());
     Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
-    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMapObstacles();
+    PredefinedMap predefinedMap = TrajectoryConfig.getPredefinedMapObstacles();
     ImageRegion imageRegion = predefinedMap.getImageRegion();
     // ---
     unionRegion = RegionUnion.wrap(Arrays.asList( //

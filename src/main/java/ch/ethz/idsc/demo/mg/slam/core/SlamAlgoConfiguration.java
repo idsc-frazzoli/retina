@@ -12,7 +12,7 @@ import ch.ethz.idsc.demo.mg.slam.log.DvsTimerLogCollection;
 import ch.ethz.idsc.demo.mg.slam.log.SlamEventCounter;
 import ch.ethz.idsc.demo.mg.slam.log.TimerLogCollection;
 import ch.ethz.idsc.demo.mg.slam.prc.SlamMapProcessing;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
@@ -29,7 +29,7 @@ public enum SlamAlgoConfiguration {
   ;
   public static final List<DavisDvsListener> getListeners( //
       SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
-      GokartPoseInterface gokartLidarPose, GokartPoseOdometryDemo gokartPoseOdometry) {
+      GokartPoseEvent gokartLidarPose, GokartPoseOdometryDemo gokartPoseOdometry) {
     System.out.println(SlamDvsConfig.eventCamera.slamCoreConfig.slamAlgoConfig);
     List<DavisDvsListener> listeners = new ArrayList<>();
     /** image plane to go kart frame mapping is used by every configuration
@@ -46,9 +46,9 @@ public enum SlamAlgoConfiguration {
     case lidarMode:
       externalPoseMode(listeners, slamCoreContainer, slamPrcContainer, gokartLidarPose);
       break;
-    case odometryMode:
-      externalPoseMode(listeners, slamCoreContainer, slamPrcContainer, gokartPoseOdometry);
-      break;
+    // case odometryMode:
+    // externalPoseMode(listeners, slamCoreContainer, slamPrcContainer, gokartPoseOdometry);
+    // break;
     case lidarReactiveMode:
       lidarPoseReactiveMode(listeners, slamCoreContainer, slamPrcContainer, gokartLidarPose);
       break;
@@ -94,7 +94,7 @@ public enum SlamAlgoConfiguration {
   /** externalPoseMode: Instead of using a particle filter, the pose is provided by an external module like the lidar
    * or odometry. The occurrence map is then updated using this pose */
   private static final void externalPoseMode(List<DavisDvsListener> listeners, SlamCoreContainer slamCoreContainer, //
-      SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartPoseInterface) {
+      SlamPrcContainer slamPrcContainer, GokartPoseEvent gokartPoseInterface) {
     listeners.add(new SlamLocalizationStep(slamCoreContainer, gokartPoseInterface));
     listeners.add(new SlamMappingStep(slamCoreContainer));
     listeners.add(new SlamMapProcessing(slamCoreContainer, slamPrcContainer));
@@ -102,7 +102,7 @@ public enum SlamAlgoConfiguration {
 
   /** lidarPoseReactiveMode: reactive map mode with lidar pose. Since the lidar pose does not drift, we do not need a SlamMapPoseReset */
   private static final void lidarPoseReactiveMode(List<DavisDvsListener> listeners, SlamCoreContainer slamCoreContainer, //
-      SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartPoseInterface) {
+      SlamPrcContainer slamPrcContainer, GokartPoseEvent gokartPoseInterface) {
     externalPoseMode(listeners, slamCoreContainer, slamPrcContainer, gokartPoseInterface);
     listeners.add(new SlamReactiveMapStep(slamCoreContainer));
   }
