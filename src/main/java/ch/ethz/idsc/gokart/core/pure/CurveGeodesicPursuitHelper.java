@@ -13,12 +13,14 @@ import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuit;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
 import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.sophus.math.GeodesicInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
 /* package */ enum CurveGeodesicPursuitHelper {
@@ -30,7 +32,7 @@ import ch.ethz.idsc.tensor.red.Norm;
    * @param geodesicInterface type of planned curve
    * @param trajectoryEntryFinder strategy to find best re-entry point
    * @param ratioLimits depending on pose and speed
-   * @return ratio rate unitless but with interpretation rad*m^-1 */
+   * @return ratio rate [rad*m^-1] */
   static Optional<Scalar> getRatio( //
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       GeodesicInterface geodesicInterface, //
@@ -43,14 +45,14 @@ import ch.ethz.idsc.tensor.red.Norm;
     Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
     Function<Tensor, Scalar> mapping = vector -> { //
       GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
-      Tensor ratios = geodesicPursuit.ratios();
+      Tensor ratios = geodesicPursuit.ratios().map(r -> Quantity.of(r, SI.PER_METER));
       if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
         return Norm._2.ofVector(Extract2D.FUNCTION.apply(vector));
       return RealScalar.of(Double.MAX_VALUE); // TODO GJOEL unitless?
     };
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
-    return lookAhead.map(vector -> new GeodesicPursuit(geodesicInterface, vector).firstRatio().orElse(null));
+    return lookAhead.map(vector -> new GeodesicPursuit(geodesicInterface, vector).firstRatio().map(r -> Quantity.of(r, SI.PER_METER)).orElse(null));
   }
 
   /** mirror the points along the y axis and invert their orientation

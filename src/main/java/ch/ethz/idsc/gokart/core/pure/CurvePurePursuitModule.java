@@ -13,6 +13,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -79,10 +80,9 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
     return Optional.empty(); // autonomous operation denied
   }
 
-  // TODO JPH function should return a scalar with unit "m^-1"...
-  // right now, "curve" does not have "m" as unit but entries are unitless.
-  /** @param pose
-   * @return */
+  // TODO JPH right now, "curve" does not have "m" as unit but entries are unitless.
+  /** @param pose of vehicle {x[m], y[m], angle}
+   * @return ratio rate [rad*m^-1] */
   protected synchronized Optional<Scalar> getRatio(Tensor pose) {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent())
