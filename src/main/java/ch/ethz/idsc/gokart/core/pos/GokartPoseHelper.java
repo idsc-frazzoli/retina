@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+// TODO JPH (only jan) rename to PoseHelper and relocate to ch.ethz.idsc.retina.util.pose
 public enum GokartPoseHelper {
   ;
   /** Example:

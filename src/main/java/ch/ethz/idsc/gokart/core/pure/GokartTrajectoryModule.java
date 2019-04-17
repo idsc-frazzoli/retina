@@ -173,7 +173,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     System.out.println("entering...");
     mapping.prepareMap();
     if (Objects.nonNull(gokartPoseEvent)) {
-      final Scalar tangentSpeed = gokartPoseEvent.getVelocityXY().Get(0);
+      final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
       System.out.println("setup planner, tangent speed=" + tangentSpeed);
       final Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
       final List<TrajectorySample> head;

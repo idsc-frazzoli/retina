@@ -20,7 +20,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** important class that emulates the lidar/imu-based localization methods on log files */
+/** emulation of the lidar/imu-based localization method on log files */
 /* package */ class LidarLocalizationOffline implements OfflineLogListener, LidarRayBlockListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);

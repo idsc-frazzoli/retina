@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Mod;
 
-/** integrated unfiltered PoseVelocityInterface
+/** integrated, a priori unfiltered, PoseVelocityInterface
  * 
  * the implementation uses the following sensor information:
  * 1) accelerationXY and gyroZ
@@ -48,28 +48,27 @@ import ch.ethz.idsc.tensor.sca.Mod;
    * @param gyroZ with unit [s^-1]
    * @param deltaT [s] */
   /* package */ final synchronized void integrateImu(Tensor local_accXY, Scalar gyroZ, Scalar deltaT) {
-    // transform old system (compensate for rotation)
+    // transform old velocity to new frame of reference (compensate for rotation), then add integrated acceleration
     localVelocityXY = RotationMatrix.of(gyroZ.negate().multiply(deltaT)).dot(localVelocityXY) //
         .add(local_accXY.multiply(deltaT));
     // update gyro
     this.gyroZ = gyroZ;
     // integrate pose
-    Tensor dpose = localVelocityXY.copy().append(gyroZ);
-    pose = Se2CoveringIntegrator.INSTANCE.spin(pose, dpose.multiply(deltaT));
+    pose = Se2CoveringIntegrator.INSTANCE.spin(pose, getVelocity().multiply(deltaT));
     pose.set(MOD_DISTANCE, 2);
   }
 
-  @Override // from PositionVelocityEstimation
+  @Override // from PoseVelocityInterface
   public final synchronized Tensor getPose() {
     return pose.copy();
   }
 
-  @Override // from PositionVelocityEstimation
+  @Override // from PoseVelocityInterface
   public final Tensor getVelocity() {
-    return getVelocityXY().append(getGyroZ());
+    return localVelocityXY.copy().append(gyroZ);
   }
 
-  @Override // from PositionVelocityEstimation
+  @Override // from PoseVelocityInterface
   public final synchronized Tensor getVelocityXY() {
     return localVelocityXY.copy();
   }

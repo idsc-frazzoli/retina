@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
@@ -29,8 +30,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       tableBuilderOdometry.appendRow( //
           Magnitude.SECOND.apply(time), //
           GokartPoseHelper.toUnitless(lidarLocalizationCore.getPose()), //
-          lidarLocalizationCore.getVelocityXY().map(Magnitude.VELOCITY), //
-          lidarLocalizationCore.getGyroZ().map(Magnitude.PER_SECOND), //
+          VelocityHelper.toUnitless(lidarLocalizationCore.getVelocity()), //
           lidarLocalizationCore.getGyroZ_vmu931().map(Magnitude.PER_SECOND) //
       );
     else //

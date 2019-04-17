@@ -32,9 +32,11 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/** localization algorithm 3rd gen:
- * fusing inertial measurements acc and gyro from VMU931 sensor at 1000[Hz]
- * with lidar-based pose and velocity estimates at 20[Hz] */
+/** localization algorithm 3rd gen. fusing of two sources of information:
+ * 1) inertial measurements acc and gyro from VMU931 sensor at 1000[Hz], and
+ * 2) lidar-based pose and velocity estimates at 20[Hz]
+ * 
+ * PoseVelocityInterface provides fused (and therefore filtered) pose and velocity */
 public class LidarLocalizationCore implements //
     LidarRayBlockListener, Vmu931ImuFrameListener, Runnable, PoseVelocityInterface {
   /** the constant 0.1 was established in post-processing
