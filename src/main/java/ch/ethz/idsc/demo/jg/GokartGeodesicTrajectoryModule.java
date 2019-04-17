@@ -1,6 +1,16 @@
 // code by ynager and jph
 package ch.ethz.idsc.demo.jg;
 
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
@@ -46,7 +56,6 @@ import ch.ethz.idsc.owl.math.Lexicographic;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
-import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
@@ -74,16 +83,6 @@ import ch.ethz.idsc.tensor.red.Nest;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 // TODO make configurable as parameter
 public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
@@ -178,7 +177,7 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
     System.out.println("entering...");
     mapping.prepareMap();
     if (Objects.nonNull(gokartPoseEvent)) {
-      final Scalar tangentSpeed = gokartPoseEvent.getVelocityXY().Get(0);
+      final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
       System.out.println("setup planner, tangent speed=" + tangentSpeed);
       final Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
       final List<TrajectorySample> head;
