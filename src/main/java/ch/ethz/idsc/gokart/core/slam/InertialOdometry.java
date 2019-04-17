@@ -68,6 +68,12 @@ import ch.ethz.idsc.tensor.sca.Mod;
     return localVelocityXY.copy().append(gyroZ);
   }
 
+  /** function is not member of PoseVelocityInterface
+   * this design is deliberate */
+  /* package */ final Tensor velocityXY() {
+    return localVelocityXY.copy();
+  }
+
   @Override // from PoseVelocityInterface
   public final Scalar getGyroZ() {
     return gyroZ;

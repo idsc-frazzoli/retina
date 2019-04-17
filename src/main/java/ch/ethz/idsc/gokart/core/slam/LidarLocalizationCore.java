@@ -137,7 +137,7 @@ public class LidarLocalizationCore implements //
   private GokartPoseEvent prevResult = null;
 
   private void fit(Tensor points) {
-    Optional<GokartPoseEvent> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), getGyroZ(), points);
+    Optional<GokartPoseEvent> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), getVelocity(), points);
     if (optional.isPresent()) {
       GokartPoseEvent slamResult = optional.get();
       quality = slamResult.getQuality();
@@ -172,7 +172,7 @@ public class LidarLocalizationCore implements //
 
   @Override // from PoseVelocityInterface
   public Tensor getVelocity() {
-    return vmu931Odometry.getVelocity();
+    return vmu931Odometry.velocityXY().append(gyroZ_filtered);
   }
 
   @Override // from PoseVelocityInterface
