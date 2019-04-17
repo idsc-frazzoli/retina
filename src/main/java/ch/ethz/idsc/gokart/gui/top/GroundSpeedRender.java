@@ -35,7 +35,7 @@ public class GroundSpeedRender extends CrosshairRender implements GokartPoseList
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     this.gokartPoseEvent = gokartPoseEvent;
-    push_end(gokartPoseEvent.getVelocityXY().map(Magnitude.VELOCITY));
+    push_end(velXY(gokartPoseEvent));
   }
 
   @Override // from RenderInterface
@@ -43,12 +43,17 @@ public class GroundSpeedRender extends CrosshairRender implements GokartPoseList
     geometricLayer.pushMatrix(matrix);
     GraphicsUtil.setQualityHigh(graphics);
     super.render(geometricLayer, graphics);
-    Tensor velocityXY = gokartPoseEvent.getVelocityXY();
     graphics.setColor(COLOR_VELOCITY);
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.25)));
-    graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, velocityXY)));
+    graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, velXY(gokartPoseEvent))));
     GraphicsUtil.setQualityDefault(graphics);
     graphics.setStroke(STROKE_DEFAULT);
     geometricLayer.popMatrix();
+  }
+
+  /** @param gokartPoseEvent
+   * @return {vx, vy} without units */
+  private static Tensor velXY(GokartPoseEvent gokartPoseEvent) {
+    return gokartPoseEvent.getVelocity().extract(0, 2).map(Magnitude.VELOCITY);
   }
 }
