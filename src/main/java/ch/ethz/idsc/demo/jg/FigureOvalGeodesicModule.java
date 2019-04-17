@@ -1,6 +1,9 @@
 // code by jph, gjoel
 package ch.ethz.idsc.demo.jg;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import ch.ethz.idsc.gokart.core.pure.CurveGeodesicPursuitModule;
 import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitModule;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
@@ -10,9 +13,6 @@ import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
-
-import java.util.Objects;
-import java.util.Optional;
 
 public class FigureOvalGeodesicModule extends AbstractModule {
   private final CurvePurePursuitModule pursuitModule = new CurveGeodesicPursuitModule(PursuitConfig.GLOBAL);
