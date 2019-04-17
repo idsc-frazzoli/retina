@@ -77,12 +77,11 @@ public class ChassisGeometry {
 
   /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r
    * inverse function of {@link TurningGeometry}
-   * @param ratio without unit but with interpretation "m^-1"
+   * @param ratio [m^-1]
    * see for instance SteerConfig.GLOBAL.turningRatioMax
    * @return steering angle unitless */
   public Scalar steerAngleForTurningRatio(Scalar ratio) {
-    // TODO JPH require ratio to have unit "m^-1"
-    return ArcTan.of(xAxleDistanceMeter().multiply(ratio));
+    return ArcTan.of(xAxleRtoF.multiply(ratio));
   }
 
   /** @param rimoGetEvent

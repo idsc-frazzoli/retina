@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import ch.ethz.idsc.demo.jg.FigureOvalGeodesicModule;
+import ch.ethz.idsc.demo.jg.GokartGeodesicTrajectoryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamVisualModule;
@@ -138,7 +140,9 @@ enum RunTabbedTaskGui {
       SEyeSlamLidarModule.class, //
       SEyeSlamOdometryModule.class, //
       SEyeSlamVisualModule.class, //
-      FigureDucttapeModule.class //
+      FigureDucttapeModule.class, //
+      GokartGeodesicTrajectoryModule.class, //
+      FigureOvalGeodesicModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //
