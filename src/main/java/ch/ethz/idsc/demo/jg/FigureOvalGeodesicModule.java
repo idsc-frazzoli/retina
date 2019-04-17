@@ -18,7 +18,7 @@ public class FigureOvalGeodesicModule extends AbstractModule {
   private final CurvePurePursuitModule pursuitModule = new CurveGeodesicPursuitModule(PursuitConfig.GLOBAL);
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
-  protected FigureOvalGeodesicModule() {
+  public FigureOvalGeodesicModule() {
     Tensor curve = DubendorfCurve.TRACK_OVAL_SE2;
     pursuitModule.setCurve(Optional.of(curve));
     if (Objects.nonNull(globalViewLcmModule))
