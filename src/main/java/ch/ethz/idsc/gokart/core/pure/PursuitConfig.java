@@ -45,9 +45,7 @@ public class PursuitConfig {
 
   // ---
   public static final List<DynamicRatioLimit> ratioLimits() {
-    // TODO GJOEL don't remove unit m^-1
-    return Collections.singletonList(new StaticRatioLimit( //
-        Magnitude.PER_METER.apply(SteerConfig.GLOBAL.turningRatioMax)));
+    return Collections.singletonList(new StaticRatioLimit(SteerConfig.GLOBAL.turningRatioMax));
   }
 
   /***************************************************/

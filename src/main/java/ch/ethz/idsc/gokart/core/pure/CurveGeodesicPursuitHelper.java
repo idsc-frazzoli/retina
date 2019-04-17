@@ -45,7 +45,7 @@ import ch.ethz.idsc.tensor.red.Norm;
     Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
     Function<Tensor, Scalar> mapping = vector -> { //
       GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
-      Tensor ratios = geodesicPursuit.ratios();
+      Tensor ratios = geodesicPursuit.ratios().map(r -> Quantity.of(r, SI.PER_METER));
       if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
         return Norm._2.ofVector(Extract2D.FUNCTION.apply(vector));
       return RealScalar.of(Double.MAX_VALUE); // TODO GJOEL unitless?
