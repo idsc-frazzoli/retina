@@ -1,7 +1,7 @@
 // code by mh, jph
 package ch.ethz.idsc.gokart.core.slam;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.PoseVelocityInterface;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Mod;
 
-/** integrated unfiltered
+/** integrated, a priori unfiltered, PoseVelocityInterface
  * 
  * the implementation uses the following sensor information:
  * 1) accelerationXY and gyroZ
@@ -26,9 +26,9 @@ import ch.ethz.idsc.tensor.sca.Mod;
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   private static final Tensor VELOCITY_ZERO = Tensors.of(Quantity.of(0.0, SI.VELOCITY), Quantity.of(0.0, SI.VELOCITY));
   // ---
-  private Tensor pose = GokartPoseLocal.INSTANCE.getPose();
+  private Tensor pose = GokartPoseEvents.motionlessUninitialized().getPose();
   private Tensor localVelocityXY = VELOCITY_ZERO;
-  private Scalar gyroZ = Quantity.of(0, SI.PER_SECOND);
+  private Scalar gyroZ = Quantity.of(0.0, SI.PER_SECOND);
 
   /** override stored pose to given pose
    * 
@@ -48,29 +48,29 @@ import ch.ethz.idsc.tensor.sca.Mod;
    * @param gyroZ with unit [s^-1]
    * @param deltaT [s] */
   /* package */ final synchronized void integrateImu(Tensor local_accXY, Scalar gyroZ, Scalar deltaT) {
-    // transform old system (compensate for rotation)
+    // transform old velocity to new frame of reference (compensate for rotation), then add integrated acceleration
     localVelocityXY = RotationMatrix.of(gyroZ.negate().multiply(deltaT)).dot(localVelocityXY) //
         .add(local_accXY.multiply(deltaT));
     // update gyro
     this.gyroZ = gyroZ;
     // integrate pose
-    Tensor dpose = localVelocityXY.copy().append(gyroZ);
-    pose = Se2CoveringIntegrator.INSTANCE.spin(pose, dpose.multiply(deltaT));
+    pose = Se2CoveringIntegrator.INSTANCE.spin(pose, getVelocity().multiply(deltaT));
     pose.set(MOD_DISTANCE, 2);
   }
 
-  @Override // from PositionVelocityEstimation
+  @Override // from PoseVelocityInterface
   public final synchronized Tensor getPose() {
     return pose.copy();
   }
 
-  @Override // from PositionVelocityEstimation
+  @Override // from PoseVelocityInterface
   public final Tensor getVelocity() {
-    return getVelocityXY().append(getGyroZ());
+    return localVelocityXY.copy().append(gyroZ);
   }
 
-  @Override // from PositionVelocityEstimation
-  public final synchronized Tensor getVelocityXY() {
+  /** function is not member of PoseVelocityInterface
+   * this design is deliberate */
+  /* package */ final Tensor velocityXY() {
     return localVelocityXY.copy();
   }
 

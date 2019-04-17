@@ -39,9 +39,9 @@ import ch.ethz.idsc.tensor.io.Export;
       });
       LidarLocalizationTable lidarLocalizationTable = //
           new LidarLocalizationTable(lidarLocalizationOffline.lidarLocalizationCore());
-      OfflineLogPlayer.process(gokartLogInterface.file(), lidarLocalizationOffline);
-      Export.of(new File(dest, folder.getName() + ".csv.gz"), lidarLocalizationTable.tableBuilder.toTable().map(CsvFormat.strict()));
-      Export.of(new File(dest, folder.getName() + "_odom.csv.gz"), lidarLocalizationTable.tableBuilderOdometry.toTable().map(CsvFormat.strict()));
+      OfflineLogPlayer.process(gokartLogInterface.file(), lidarLocalizationOffline, lidarLocalizationTable);
+      Export.of(new File(dest, folder.getName() + "_pose.csv.gz"), lidarLocalizationTable.tablePose().map(CsvFormat.strict()));
+      Export.of(new File(dest, folder.getName() + "_odom.csv.gz"), lidarLocalizationTable.tableOdom().map(CsvFormat.strict()));
     }
   }
 }
