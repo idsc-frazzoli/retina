@@ -40,7 +40,7 @@ public class MPCOptimizationConfig {
   /** the amount of additional front acceleration capacity strong braking can have
    * suggestion: low priority (braking can be done in a straight line */
   @FieldSubdivide(start = "0f[1]", end = "2[1]", intervals = 20)
-  public Scalar brakeEffect = Quantity.of(0, SI.ONE);
+  public Scalar brakeEffect = RealScalar.of(0);
   /** The mpc update cycle time when not successful */
   public Scalar updateCycle = Quantity.of(0.2, SI.SECOND);
   /** The wait time after a successful optimization */
@@ -64,7 +64,6 @@ public class MPCOptimizationConfig {
   public Scalar steeringReg = RealScalar.of(0.1);
   /** steering damping factor */
   public Scalar steerDamp = RealScalar.of(1);
-  /** specific MoI */
-  // TODO MH/JPH units
-  public Scalar specificMoI = RealScalar.of(0.5);
+  /** specific MoI in "m" */
+  public Scalar specificMoI = Quantity.of(0.3, SI.METER);
 }

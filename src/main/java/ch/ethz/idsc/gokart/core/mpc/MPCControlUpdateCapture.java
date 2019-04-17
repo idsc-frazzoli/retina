@@ -84,6 +84,7 @@ public class MPCControlUpdateCapture implements MPCControlUpdateListener {
     return Objects.nonNull(cns);
   }
 
+  /** @return quantity with unit "m*s^-2" */
   public final Scalar getFirstWantedAcceleration() {
     if (Objects.nonNull(cns))
       return cns.steps[0].gokartControl().getaB();
