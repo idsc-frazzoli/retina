@@ -20,6 +20,10 @@ import ch.ethz.idsc.tensor.sca.Sin;
  * Collisions Using Conventional Control Inputs
  * B=7, C=1.4, D=1
  * 
+ * Thesis report by MH, Section 5.1, p. 57
+ * Gokart Front Tire: B=15, C=1.1, D=0.96
+ * Gokart Rear Tire: B=5.2, C=1.4, D=1.06
+ * 
  * Important: {@link Pacejka3} is not continuous for several input
  * Tensors.vector(0, 1);
  * Tensors.vector(0, 0); */
@@ -30,13 +34,17 @@ public class Pacejka3 implements ScalarUnaryOperator {
   private final Scalar C;
   private final Scalar D;
 
+  public Pacejka3(Scalar B, Scalar C, Scalar D) {
+    this.B = B;
+    this.C = C;
+    this.D = D;
+  }
+
   /** @param B
    * @param C
    * @param D */
   public Pacejka3(double B, double C, double D) {
-    this.B = RealScalar.of(B);
-    this.C = RealScalar.of(C);
-    this.D = RealScalar.of(D);
+    this(RealScalar.of(B), RealScalar.of(C), RealScalar.of(D));
   }
 
   /** @param B
