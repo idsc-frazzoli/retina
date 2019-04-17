@@ -6,10 +6,12 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.planar.PurePursuit;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ enum CurvePurePursuitHelper {
   ;
@@ -17,7 +19,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
    * @param curve in world coordinates
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @param distance for instance PursuitConfig.GLOBAL.lookAheadMeter()
-   * @return ratio rate with interpretation rad*m^-1 */
+   * @return ratio rate [rad*m^-1] */
   static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward, Scalar distance) {
     return getRatio(pose, curve, true, isForward, distance);
   }
@@ -32,7 +34,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
     Optional<Tensor> aheadTrail = CurveUtils.getAheadTrail(tensor, distance);
     if (aheadTrail.isPresent()) {
       PurePursuit purePursuit = PurePursuit.fromTrajectory(aheadTrail.get(), distance);
-      return purePursuit.ratio();
+      return purePursuit.ratio().map(r -> Quantity.of(r, SI.PER_METER));
     }
     return Optional.empty();
   }
