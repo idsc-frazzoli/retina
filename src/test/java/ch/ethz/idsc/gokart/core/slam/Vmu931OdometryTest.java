@@ -16,11 +16,11 @@ public class Vmu931OdometryTest extends TestCase {
   public void testInitial() {
     Vmu931Odometry vmu931Odometry = new Vmu931Odometry(FlippedPlanarVmu931Imu.INSTANCE);
     assertEquals(vmu931Odometry.getPose(), Tensors.fromString("{0[m], 0[m], 0}"));
-    assertEquals(vmu931Odometry.getVelocityXY(), Tensors.fromString("{0[m*s^-1], 0[m*s^-1]}"));
+    assertEquals(vmu931Odometry.getVelocity().extract(0, 2), Tensors.fromString("{0[m*s^-1], 0[m*s^-1]}"));
     vmu931Odometry.resetPose(GokartPoseHelper.attachUnits(Tensors.vector(1, 2, 3)));
     assertEquals(vmu931Odometry.getPose(), Tensors.fromString("{1[m], 2[m], 3}"));
     vmu931Odometry.resetVelocity();
-    assertEquals(vmu931Odometry.getVelocityXY(), Tensors.fromString("{0[m*s^-1], 0[m*s^-1]}"));
+    assertEquals(vmu931Odometry.getVelocity().extract(0, 2), Tensors.fromString("{0[m*s^-1], 0[m*s^-1]}"));
   }
 
   public void testIntegrate() {

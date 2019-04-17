@@ -13,11 +13,11 @@ public class InertialOdometryTest extends TestCase {
   public void testInitial() {
     InertialOdometry inertialOdometry = new InertialOdometry();
     assertEquals(inertialOdometry.getPose(), Tensors.fromString("{0[m], 0[m], 0}"));
-    assertEquals(inertialOdometry.getVelocityXY(), Tensors.fromString("{0[m*s^-1], 0[m*s^-1]}"));
+    assertEquals(inertialOdometry.getVelocity().extract(0, 2), Tensors.fromString("{0[m*s^-1], 0[m*s^-1]}"));
     inertialOdometry.resetPose(GokartPoseHelper.attachUnits(Tensors.vector(1, 2, 3)));
     assertEquals(inertialOdometry.getPose(), Tensors.fromString("{1[m], 2[m], 3}"));
     inertialOdometry.resetVelocity();
-    assertEquals(inertialOdometry.getVelocityXY(), Tensors.fromString("{0[m*s^-1], 0[m*s^-1]}"));
+    assertEquals(inertialOdometry.getVelocity().extract(0, 2), Tensors.fromString("{0[m*s^-1], 0[m*s^-1]}"));
   }
 
   public void testIntegrate() {

@@ -61,7 +61,7 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
       // TODO AM unfinished implementation
       Tensor angularRate_Y_pair = rimoGetEvent.getAngularRate_Y_pair();
       // 1:left, 2: right
-      Tensor velocityOrigin = lidarLocalizationModule.getVelocityXY();
+      Tensor velocityOrigin = lidarLocalizationModule.getVelocity().extract(0, 2);
       double velx = Magnitude.VELOCITY.toDouble(velocityOrigin.Get(0));
       double vely = Magnitude.VELOCITY.toDouble(velocityOrigin.Get(1));
       // "angular velocity of the go-kart", x-Speed devided by the radius of the rear tire

@@ -18,7 +18,7 @@ public class GokartPoseEventV2Test extends TestCase {
         Tensors.fromString("{4[m*s^-1], 5[m*s^-1],6[s^-1]}"));
     assertTrue(gokartPoseEvent instanceof GokartPoseEventV2);
     Chop._07.requireClose(gokartPoseEvent.getVelocity(), Tensors.fromString("{4[m*s^-1], 5[m*s^-1], 6[s^-1]}"));
-    Chop._07.requireClose(gokartPoseEvent.getVelocityXY(), Tensors.fromString("{4[m*s^-1], 5[m*s^-1]}"));
+    Chop._07.requireClose(gokartPoseEvent.getVelocity().extract(0, 2), Tensors.fromString("{4[m*s^-1], 5[m*s^-1]}"));
     Chop._07.requireClose(gokartPoseEvent.getGyroZ(), Tensors.fromString("6[s^-1]"));
   }
 }

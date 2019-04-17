@@ -1,4 +1,4 @@
-// code by mh
+// code by mh, jph
 package ch.ethz.idsc.gokart.core.pos;
 
 import ch.ethz.idsc.tensor.Scalar;
@@ -15,12 +15,12 @@ public interface PoseVelocityInterface extends GokartPoseInterface {
    * The tangent vector can transformed to another frame of reference
    * using the adjoint mapping.
    * 
+   * measured at the center of the rear-axle:
+   * vx == forward speed
+   * vy == side speed (to the left)
+   * 
    * @return {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]} */
   Tensor getVelocity();
-
-  /** @return velocity vector of length 2 in local frame {dotx[m*s^-1], doty[m*s^-1]}
-   * {forward speed, side speed (to the left)} measured at the center of the rear-axle */
-  Tensor getVelocityXY();
 
   /** @return angular velocity[s^-1] */
   Scalar getGyroZ();

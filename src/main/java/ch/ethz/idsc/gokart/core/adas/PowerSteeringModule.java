@@ -73,7 +73,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
       if (lidarLocalizationModule != null) {
         Scalar zero = Quantity.of(0, SI.METER);
         Scalar minus1 = RealScalar.of(-1);
-        Tensor velocity = lidarLocalizationModule.getVelocityXY();
+        Tensor velocity = lidarLocalizationModule.getVelocity().extract(0, 2);
         Scalar angularvelocity = lidarLocalizationModule.getGyroZ();
         Tensor angularvelocityTensor = Tensors.of(zero, zero, angularvelocity);
         // distances from origin to front tire

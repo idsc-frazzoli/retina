@@ -74,11 +74,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   @Override // from PoseVelocityInterface
-  public Tensor getVelocityXY() {
-    return VELOCITY_XY_ZERO.copy();
-  }
-
-  @Override // from PoseVelocityInterface
   public Scalar getGyroZ() {
     return GYROZ_ZERO;
   }

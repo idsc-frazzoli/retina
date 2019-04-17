@@ -69,11 +69,6 @@ import ch.ethz.idsc.tensor.sca.Mod;
   }
 
   @Override // from PoseVelocityInterface
-  public final synchronized Tensor getVelocityXY() {
-    return localVelocityXY.copy();
-  }
-
-  @Override // from PoseVelocityInterface
   public final Scalar getGyroZ() {
     return gyroZ;
   }

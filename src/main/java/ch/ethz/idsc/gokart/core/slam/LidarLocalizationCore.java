@@ -176,11 +176,6 @@ public class LidarLocalizationCore implements //
   }
 
   @Override // from PoseVelocityInterface
-  public Tensor getVelocityXY() {
-    return vmu931Odometry.getVelocityXY();
-  }
-
-  @Override // from PoseVelocityInterface
   public Scalar getGyroZ() {
     return gyroZ_filtered;
   }
