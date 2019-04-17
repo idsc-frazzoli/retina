@@ -67,7 +67,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
       final Scalar quality = gokartPoseEvent.getQuality();
       if (LocalizationConfig.GLOBAL.isQualityOk(quality)) { // is localization quality sufficient?
         Tensor pose = gokartPoseEvent.getPose(); // latest pose
-        Optional<Scalar> ratio = getRatio(pose).map(Magnitude.PER_METER);
+        Optional<Scalar> ratio = getRatio(pose);
         if (ratio.isPresent()) { // is look ahead beacon available?
           Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio.get());
           if (angleClip.isInside(angle)) // is look ahead beacon within steering range?

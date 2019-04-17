@@ -24,7 +24,7 @@ public class CurveGeodesicPursuitHelperTest extends TestCase {
     Optional<Scalar> optional = CurveGeodesicPursuitHelper.getRatio(pose, speed, DubendorfCurve.TRACK_OVAL_SE2, true, //
         PursuitConfig.GLOBAL.geodesicInterface, PursuitConfig.GLOBAL.trajectoryEntryFinder, PursuitConfig.ratioLimits());
     Scalar ratio = optional.get();
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(Magnitude.PER_METER.apply(ratio));
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
     assertTrue(Clips.interval( //
         Quantity.of(-0.38, ""), //
         Quantity.of(-0.37, "")).isInside(angle));
@@ -36,7 +36,7 @@ public class CurveGeodesicPursuitHelperTest extends TestCase {
     Optional<Scalar> optional = CurveGeodesicPursuitHelper.getRatio(pose, speed, DubendorfCurve.TRACK_OVAL_SE2, true, //
         PursuitConfig.GLOBAL.geodesicInterface, PursuitConfig.GLOBAL.trajectoryEntryFinder, PursuitConfig.ratioLimits());
     Scalar ratio = optional.get();
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(Magnitude.PER_METER.apply(ratio));
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
     assertTrue(Clips.interval( //
         Quantity.of(-0.37, ""), //
         Quantity.of(-0.36, "")).isInside(angle));
