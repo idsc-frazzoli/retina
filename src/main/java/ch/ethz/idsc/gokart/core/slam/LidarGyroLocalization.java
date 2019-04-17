@@ -10,10 +10,8 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.sophus.group.Se2Utils;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.Inverse;
 
 /** matches the most recent lidar scan to static geometry of a pre-recorded map.
@@ -59,9 +57,6 @@ import ch.ethz.idsc.tensor.mat.Inverse;
     int sum = scattered.length(); // usually around 430
     if (min_points < sum) {
       GeometricLayer geometricLayer = GeometricLayer.of(model2pixel);
-      Tensor rotate = Se2Utils.toSE2Matrix(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate.Get(2)));
-      // rotate = Se2Utils.toSE2Matrix(GokartPoseHelper.toUnitless(rate));
-      model = model.dot(rotate);
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);
       SlamResult slamResult = slamDunk.evaluate(geometricLayer, scattered); // 0.03[s]
