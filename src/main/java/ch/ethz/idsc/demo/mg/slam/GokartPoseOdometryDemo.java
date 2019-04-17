@@ -1,9 +1,9 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
@@ -34,7 +34,7 @@ public class GokartPoseOdometryDemo implements GokartPoseInterface, RimoGetListe
 
   /** @return with initial pose {0[m], 0[m], 0} */
   public static GokartPoseOdometryDemo create() {
-    return create(GokartPoseLocal.INSTANCE.getPose());
+    return create(GokartPoseEvents.motionlessUninitialized().getPose());
   }
 
   // ---

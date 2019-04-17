@@ -1,7 +1,7 @@
 // code by mh, jph
 package ch.ethz.idsc.gokart.core.slam;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseLocal;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.PoseVelocityInterface;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Mod;
 
-/** integrated unfiltered
+/** integrated unfiltered PoseVelocityInterface
  * 
  * the implementation uses the following sensor information:
  * 1) accelerationXY and gyroZ
@@ -26,9 +26,9 @@ import ch.ethz.idsc.tensor.sca.Mod;
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   private static final Tensor VELOCITY_ZERO = Tensors.of(Quantity.of(0.0, SI.VELOCITY), Quantity.of(0.0, SI.VELOCITY));
   // ---
-  private Tensor pose = GokartPoseLocal.INSTANCE.getPose();
+  private Tensor pose = GokartPoseEvents.motionlessUninitialized().getPose();
   private Tensor localVelocityXY = VELOCITY_ZERO;
-  private Scalar gyroZ = Quantity.of(0, SI.PER_SECOND);
+  private Scalar gyroZ = Quantity.of(0.0, SI.PER_SECOND);
 
   /** override stored pose to given pose
    * 

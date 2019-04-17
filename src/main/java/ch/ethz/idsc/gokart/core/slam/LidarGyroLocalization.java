@@ -16,7 +16,10 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.Inverse;
 
-/** localization algorithm described in
+/** matches the most recent lidar scan to static geometry of a pre-recorded map.
+ * on a standard pc the matching takes 0.017[s] on average.
+ * 
+ * the localization algorithm is described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 /* package */ class LidarGyroLocalization {
   public static LidarGyroLocalization of(PredefinedMap predefinedMap) {

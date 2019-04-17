@@ -32,8 +32,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/** match the most recent lidar scan to static geometry of a pre-recorded map
- * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
+/** localization algorithm 3rd gen:
+ * fusing inertial measurements acc and gyro from VMU931 sensor at 1000[Hz]
+ * with lidar-based pose and velocity estimates at 20[Hz] */
 public class LidarLocalizationCore implements //
     LidarRayBlockListener, Vmu931ImuFrameListener, Runnable, PoseVelocityInterface {
   /** the constant 0.1 was established in post-processing
@@ -182,8 +183,9 @@ public class LidarLocalizationCore implements //
     return gyroZ_filtered;
   }
 
+  /** @return instance of GokartPoseEvent with current pose, quality and velocity */
   public GokartPoseEvent createPoseEvent() {
-    return GokartPoseEvents.create(getPose(), quality, getVelocityXY(), getGyroZ());
+    return GokartPoseEvents.create(getPose(), quality, getVelocity());
   }
 
   /** function called when operator initializes pose
@@ -197,7 +199,7 @@ public class LidarLocalizationCore implements //
   }
 
   /***************************************************/
-  /** Hint: only use function during post-processing.
+  /** Hint: only use function in post-processing.
    * DO NOT use function during operation of the gokart
    * 
    * @return unfiltered gyroZ value with unit "s^-1" */
