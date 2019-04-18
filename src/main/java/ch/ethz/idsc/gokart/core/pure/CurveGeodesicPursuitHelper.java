@@ -23,8 +23,11 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
-/* package */ enum CurveGeodesicPursuitHelper {
+public enum CurveGeodesicPursuitHelper {
   ;
+
+  public static Tensor curve;
+
   /** @param pose of vehicle {x[m], y[m], angle}
    * @param speed of vehicle [m*s^-1]
    * @param curve in world coordinates
@@ -52,7 +55,11 @@ import ch.ethz.idsc.tensor.red.Norm;
     };
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
-    return lookAhead.map(vector -> new GeodesicPursuit(geodesicInterface, vector).firstRatio().map(r -> Quantity.of(r, SI.PER_METER)).orElse(null));
+    return lookAhead.map(vector -> {
+      GeodesicPursuitInterface geo = new GeodesicPursuit(geodesicInterface, vector);
+      CurveGeodesicPursuitHelper.curve = Tensor.of(geo.curve().stream().map(new Se2GroupElement(GokartPoseHelper.toUnitless(pose))::combine)).unmodifiable();
+      return geo.firstRatio().map(r -> Quantity.of(r, SI.PER_METER)).orElse(null);
+    });
   }
 
   /** mirror the points along the y axis and invert their orientation

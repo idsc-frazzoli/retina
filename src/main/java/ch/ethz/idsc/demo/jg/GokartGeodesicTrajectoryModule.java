@@ -19,6 +19,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.pure.CurveGeodesicPursuitHelper;
 import ch.ethz.idsc.gokart.core.pure.CurveGeodesicPursuitModule;
 import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitModule;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
@@ -102,7 +103,7 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
   private final FlowsInterface flowsInterface;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  final CurvePurePursuitModule pursuitModule = new CurveGeodesicPursuitModule(PursuitConfig.GLOBAL);
+  final CurveGeodesicPursuitModule pursuitModule = new CurveGeodesicPursuitModule(PursuitConfig.GLOBAL);
   private final AbstractMapping mapping = // SightLineMapping.defaultObstacle();
       GenericBayesianMapping.createObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
@@ -283,6 +284,8 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
       if (Dimensions.of(curve).get(1) != 3)
         System.err.println("WARN curve has dimensions " + Dimensions.of(curve));
       pursuitModule.setCurve(Optional.of(curve));
+      if (Objects.nonNull(globalViewLcmModule))
+        globalViewLcmModule.setCurve(CurveGeodesicPursuitHelper.curve);
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
       // failure to reach goal
