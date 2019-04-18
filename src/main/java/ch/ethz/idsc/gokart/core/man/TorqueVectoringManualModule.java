@@ -16,7 +16,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.owl.car.math.AngularSlip;
+import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -36,6 +36,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
 abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEvent> //
     implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  private final BicycleAngularSlip bicycleAngularSlip = ChassisGeometry.GLOBAL.getBicycleAngularSlip();
   private final TorqueVectoringInterface torqueVectoringInterface;
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = //
       ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
@@ -81,7 +82,7 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
     // compute wanted motor torques / no-slip behavior (sorry Jan for corrective factor)
     // Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip
-    Scalar angularSlip = AngularSlip.of(theta, ChassisGeometry.GLOBAL.xAxleRtoF, meanTangentSpeed, gyroZ);
+    Scalar angularSlip = bicycleAngularSlip.of(theta, meanTangentSpeed, gyroZ);
     // wantedRotationRate.subtract(gyroZ);
     // ---
     Tensor powers = torqueVectoringInterface.powers( //

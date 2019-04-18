@@ -10,7 +10,7 @@ import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.owl.car.math.AngularSlip;
+import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
 
 /* package */ class MPCAggressiveTorqueVectoringPower extends MPCPower {
   private static final Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
-  // private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
+  private final BicycleAngularSlip bicycleAngularSlip = ChassisGeometry.GLOBAL.getBicycleAngularSlip();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
       new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
@@ -48,7 +48,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
     // Scalar wantedRotationRate = expectedRotationPerMeterDriven.multiply(tangentialSpeed); // unit s^-1
     // compute (negative) angular slip
     Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
-    Scalar angularSlip = AngularSlip.of(theta, ChassisGeometry.GLOBAL.xAxleRtoF, tangentialSpeed, gyroZ);
+    Scalar angularSlip = bicycleAngularSlip.of(theta, tangentialSpeed, gyroZ);
     // wantedRotationRate.subtract(gyroZ);
     Scalar wantedAcceleration = cnsStep.gokartControl().getaB();// when used in
     // get midpoint of powered acceleration range
