@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -27,7 +28,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     pureRotAccEffect = Quantity.of(byteBuffer.getFloat(), //
         SI.ACCELERATION.add(SI.ANGULAR_ACCELERATION.negate()));
     torqueVecEffect = Quantity.of(byteBuffer.getFloat(), SI.ACCELERATION);
-    brakeEffect = Quantity.of(byteBuffer.getFloat(), SI.ONE);
+    brakeEffect = RealScalar.of(byteBuffer.getFloat());
   }
 
   public MPCOptimizationParameterKinematic(Scalar speedLimit, Scalar xAccLimit, Scalar yAccLimit, //

@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class DriftThrustManualModuleTest extends TestCase {
-  public void testSimple() {
+  public void testSimple() throws Exception {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
     RimoPutEvent rimoPutEvent = driftThrustManualModule.derive( //
@@ -22,7 +22,7 @@ public class DriftThrustManualModuleTest extends TestCase {
     ModuleAuto.INSTANCE.endOne(LidarLocalizationModule.class);
   }
 
-  public void testRapid() {
+  public void testRapid() throws Exception {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
     RimoPutEvent rimoPutEvent = driftThrustManualModule.derive( //
@@ -34,7 +34,7 @@ public class DriftThrustManualModuleTest extends TestCase {
     ModuleAuto.INSTANCE.endOne(LidarLocalizationModule.class);
   }
 
-  public void testZero() {
+  public void testZero() throws Exception {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
     RimoPutEvent rimoPutEvent = driftThrustManualModule.derive( //
@@ -46,7 +46,7 @@ public class DriftThrustManualModuleTest extends TestCase {
     ModuleAuto.INSTANCE.endOne(LidarLocalizationModule.class);
   }
 
-  public void testForward() {
+  public void testForward() throws Exception {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
     RimoPutEvent rimoPutEvent = driftThrustManualModule.derive( //
@@ -58,7 +58,7 @@ public class DriftThrustManualModuleTest extends TestCase {
     ModuleAuto.INSTANCE.endOne(LidarLocalizationModule.class);
   }
 
-  public void testForwardRotate() {
+  public void testForwardRotate() throws Exception {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     DriftThrustManualModule driftThrustManualModule = new DriftThrustManualModule();
     RimoPutEvent rimoPutEvent = driftThrustManualModule.derive( //

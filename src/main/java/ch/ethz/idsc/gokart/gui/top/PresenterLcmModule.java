@@ -265,8 +265,8 @@ public class PresenterLcmModule extends AbstractModule {
   }
 
   public static void main(String[] args) throws Exception {
-    PresenterLcmModule globalViewLcmModule = new PresenterLcmModule();
-    globalViewLcmModule.first();
-    globalViewLcmModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    PresenterLcmModule presenterLcmModule = new PresenterLcmModule();
+    presenterLcmModule.first();
+    presenterLcmModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 }

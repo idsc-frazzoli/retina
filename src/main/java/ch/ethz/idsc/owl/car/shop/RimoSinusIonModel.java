@@ -51,13 +51,16 @@ public class RimoSinusIonModel extends DefaultCarModel {
     return new RimoSinusIonModel(ChassisGeometry.GLOBAL);
   }
 
+  /** coefficients for Pacejka's magic formula taken from
+   * thesis report by MH, Section 5.1, p. 57 */
+  public static final Pacejka3 PACEJKA_FRONT = new Pacejka3(15.0, 1.1, 0.96);
+  public static final Pacejka3 PACEJKA__REAR = new Pacejka3(05.2, 1.4, 1.06);
   // ---
   private final List<WheelInterface> list = new ArrayList<>();
   // private final List<WheelConfiguration> list = new ArrayList<>();
   private final Tensor hull;
 
   private RimoSinusIonModel(ChassisGeometry chassisGeometry) {
-    final Pacejka3 PACEJKA = new Pacejka3(7, 1.4);
     final Scalar RADIUS1 = Magnitude.METER.apply(RimoTireConfiguration.FRONT.radius()); // wheel radius [m]
     final Scalar RADIUS2 = Magnitude.METER.apply(RimoTireConfiguration._REAR.radius()); // wheel radius [m]
     final Scalar IW = DoubleScalar.of(1); // wheel inertia [kgm2]
@@ -78,10 +81,10 @@ public class RimoSinusIonModel extends DefaultCarModel {
     // tire width front total: 13 cm (same as tire rear width on ground)
     final Scalar TWR = RealScalar.of(0.13); // tire width read
     // tire width rear total: 19.5 cm
-    list.add(new DefaultWheelConstant(RADIUS1, TWF, IW, PACEJKA, Tensors.of(LF, TF, LZ)));
-    list.add(new DefaultWheelConstant(RADIUS1, TWF, IW, PACEJKA, Tensors.of(LF, TF.negate(), LZ)));
-    list.add(new DefaultWheelConstant(RADIUS2, TWR, IW, PACEJKA, Tensors.of(LR, TR, LZ)));
-    list.add(new DefaultWheelConstant(RADIUS2, TWR, IW, PACEJKA, Tensors.of(LR, TR.negate(), LZ)));
+    list.add(new DefaultWheelConstant(RADIUS1, TWF, IW, PACEJKA_FRONT, Tensors.of(LF, TF, LZ)));
+    list.add(new DefaultWheelConstant(RADIUS1, TWF, IW, PACEJKA_FRONT, Tensors.of(LF, TF.negate(), LZ)));
+    list.add(new DefaultWheelConstant(RADIUS2, TWR, IW, PACEJKA__REAR, Tensors.of(LR, TR, LZ)));
+    list.add(new DefaultWheelConstant(RADIUS2, TWR, IW, PACEJKA__REAR, Tensors.of(LR, TR.negate(), LZ)));
     // front axle to boundary contact 35 [cm] + to front tip 22.5 [cm]
     final Scalar HFX = LF.add(DoubleScalar.of(0.350 + 0.225));
     final Scalar HRX = HFX.subtract(DoubleScalar.of(2.060)); // measured
