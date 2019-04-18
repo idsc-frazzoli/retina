@@ -13,8 +13,8 @@ public class AngularSlipTest extends TestCase {
     Scalar scalar = AngularSlip.of( //
         Quantity.of(0.37, ""), //
         Quantity.of(2, SI.METER), //
-        Quantity.of(0.4, SI.PER_SECOND), //
-        Quantity.of(2, SI.VELOCITY));
+        Quantity.of(2, SI.VELOCITY), //
+        Quantity.of(0.4, SI.PER_SECOND));
     Chop._10.requireClose(scalar, Tensors.fromString("-0.012136838344150969[s^-1]"));
   }
 }

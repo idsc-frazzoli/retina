@@ -53,6 +53,7 @@ public abstract class GokartRender implements RenderInterface {
       new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.8)));
   private final AxisAlignedBox aabLinmotPos = new AxisAlignedBox(RealScalar.of(0.2));
   // ---
+  /** gokart pose event is also used in rendering */
   protected GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   public final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
   // ---
