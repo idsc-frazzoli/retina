@@ -13,6 +13,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
+import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -25,11 +26,13 @@ import ch.ethz.idsc.tensor.sca.N;
 
 public class SteerTurnRender implements RenderInterface {
   private static final Tensor ORIGIN = Array.zeros(2).map(N.DOUBLE);
+  // ---
   private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   public final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  private final BicycleAngularSlip bicycleAngularSlip = ChassisGeometry.GLOBAL.getBicycleAngularSlip();
   private final Tensor matrix;
 
   public SteerTurnRender(Tensor matrix) {
@@ -39,12 +42,15 @@ public class SteerTurnRender implements RenderInterface {
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(matrix);
-    if (gokartStatusEvent.isSteerColumnCalibrated()) {
-      Scalar scalar = steerMapping.getAngleFromSCE(gokartStatusEvent.getSteerColumnEncoderCentered());
+    if (gokartStatusEvent.isSteerColumnCalibrated() && gokartPoseEvent.hasVelocity()) {
+      Scalar theta = steerMapping.getAngleFromSCE(gokartStatusEvent.getSteerColumnEncoderCentered());
       graphics.setColor(Color.MAGENTA);
-      graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, AngleVector.of(scalar))));
-    }
-    if (gokartPoseEvent.hasVelocity()) {
+      graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, AngleVector.of(theta))));
+      Scalar rotationRate = bicycleAngularSlip.wantedRotationRate(theta, gokartPoseEvent.getVelocity().Get(0));
+      graphics.setColor(Color.BLUE);
+      graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, //
+          AngleVector.of(Magnitude.PER_SECOND.apply(rotationRate)))));
+      // ---
       graphics.setColor(Color.GREEN);
       graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, //
           AngleVector.of(Magnitude.PER_SECOND.apply(gokartPoseEvent.getGyroZ())))));

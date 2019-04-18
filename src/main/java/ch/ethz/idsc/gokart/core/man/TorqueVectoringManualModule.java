@@ -82,7 +82,7 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
     // compute wanted motor torques / no-slip behavior (sorry Jan for corrective factor)
     // Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
     // compute (negative) angular slip
-    Scalar angularSlip = bicycleAngularSlip.of(theta, meanTangentSpeed, gyroZ);
+    Scalar angularSlip = bicycleAngularSlip.angularSlip(theta, meanTangentSpeed, gyroZ);
     // wantedRotationRate.subtract(gyroZ);
     // ---
     Tensor powers = torqueVectoringInterface.powers( //

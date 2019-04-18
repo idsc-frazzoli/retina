@@ -48,7 +48,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
     // Scalar wantedRotationRate = expectedRotationPerMeterDriven.multiply(tangentialSpeed); // unit s^-1
     // compute (negative) angular slip
     Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
-    Scalar angularSlip = bicycleAngularSlip.of(theta, tangentialSpeed, gyroZ);
+    Scalar angularSlip = bicycleAngularSlip.angularSlip(theta, tangentialSpeed, gyroZ);
     // wantedRotationRate.subtract(gyroZ);
     Scalar wantedAcceleration = cnsStep.gokartControl().getaB();// when used in
     // get midpoint of powered acceleration range

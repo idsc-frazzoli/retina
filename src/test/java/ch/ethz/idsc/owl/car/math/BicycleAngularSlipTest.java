@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 public class BicycleAngularSlipTest extends TestCase {
   public void testSimple() {
-    Scalar scalar = new BicycleAngularSlip(Quantity.of(2, SI.METER)).of( //
+    Scalar scalar = new BicycleAngularSlip(Quantity.of(2, SI.METER)).angularSlip( //
         Quantity.of(0.37, ""), //
         Quantity.of(2, SI.VELOCITY), //
         Quantity.of(0.4, SI.PER_SECOND));

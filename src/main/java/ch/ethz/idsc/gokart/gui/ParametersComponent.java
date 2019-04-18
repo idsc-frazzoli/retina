@@ -38,7 +38,7 @@ import ch.ethz.idsc.tensor.ref.TensorReflection;
   private static final int BUTTON = 56;
   // ---
   private final Object object;
-  private Object reference;
+  private final Object reference;
   private final Map<Field, JTextField> map = new HashMap<>();
   private final JButton jButtonUpdate = new JButton("udpate");
   private final JButton jButtonSave = new JButton("save");
@@ -67,16 +67,11 @@ import ch.ethz.idsc.tensor.ref.TensorReflection;
     return jButton;
   }
 
-  public ParametersComponent(Object object) {
+  /** @param object non-null
+   * @throws Exception if given object is null, or class of object does not have a default constructor */
+  public ParametersComponent(Object object) throws Exception {
     this.object = object;
-    try {
-      // TODO JPH use proper default constructor
-      reference = object.getClass().getDeclaredConstructor().newInstance();
-    } catch (Exception exception) {
-      reference = null;
-      System.out.println(object.getClass().getSimpleName());
-      exception.printStackTrace();
-    }
+    reference = object.getClass().getDeclaredConstructor().newInstance();
     {
       JToolBar jToolBar = createRow("Actions");
       {

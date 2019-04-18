@@ -122,17 +122,8 @@ public abstract class GokartRender implements RenderInterface {
         graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(tensor.Get(1).multiply(SLIP_FACTOR))));
         geometricLayer.popMatrix();
       }
-      {
-        // TODO JPH/MH discuss if still necessary, or whether to use vel instead of odometry
-        // Scalar gyroZ = gokartPoseEvent.getGyroZ(); // unit s^-1
-        // Scalar angularSlip = AngularSlip.of( //
-        // SteerConfig.GLOBAL.getSteerMapping().getAngleFromSCE(gokartStatusEvent), //
-        // ChassisGeometry.GLOBAL.xAxleRtoF, //
-        // gyroZ, //
-        // ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
-        // graphics.setColor(COLOR_SLIP);
-        // graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(Magnitude.PER_SECOND.apply(angularSlip).negate())));
-      }
+      // see BicycleAngularSlip if angular slip is still needed
+      // ChassisGeometry.GLOBAL.getBicycleAngularSlip()
     }
     graphics.setStroke(new BasicStroke());
   }

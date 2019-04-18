@@ -35,7 +35,7 @@ public class BicycleAngularSlip {
    * @param tangentSpeed with unit m*s^-1
    * @param gyroZ with unit s^-1
    * @return */
-  public Scalar of(Scalar theta, Scalar tangentSpeed, Scalar gyroZ) {
+  public Scalar angularSlip(Scalar theta, Scalar tangentSpeed, Scalar gyroZ) {
     // compute (negative) angular slip
     return wantedRotationRate(theta, tangentSpeed).subtract(gyroZ);
   }
