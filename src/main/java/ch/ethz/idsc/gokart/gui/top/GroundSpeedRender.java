@@ -16,13 +16,13 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
-import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
+import ch.ethz.idsc.tensor.sca.N;
 
+/** draws line of speed as well as brief history of velocities */
 public class GroundSpeedRender extends CrosshairRender implements GokartPoseListener {
   public static final Color COLOR_VELOCITY = new Color(200, 67, 255);
   private static final Stroke STROKE_DEFAULT = new BasicStroke();
-  private static final Tensor ORIGIN = Array.zeros(2);
-  static final Tensor DIAGONAL = DiagonalMatrix.of(.12, .12, 1);
+  private static final Tensor ORIGIN = Array.zeros(2).map(N.DOUBLE);
   // ---
   private final Tensor matrix;
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
@@ -35,7 +35,7 @@ public class GroundSpeedRender extends CrosshairRender implements GokartPoseList
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     this.gokartPoseEvent = gokartPoseEvent;
-    push_end(gokartPoseEvent.getVelocityXY().map(Magnitude.VELOCITY));
+    push_end(velXY(gokartPoseEvent));
   }
 
   @Override // from RenderInterface
@@ -43,12 +43,17 @@ public class GroundSpeedRender extends CrosshairRender implements GokartPoseList
     geometricLayer.pushMatrix(matrix);
     GraphicsUtil.setQualityHigh(graphics);
     super.render(geometricLayer, graphics);
-    Tensor velocityXY = gokartPoseEvent.getVelocityXY();
     graphics.setColor(COLOR_VELOCITY);
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.25)));
-    graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, velocityXY)));
+    graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, velXY(gokartPoseEvent))));
     GraphicsUtil.setQualityDefault(graphics);
     graphics.setStroke(STROKE_DEFAULT);
     geometricLayer.popMatrix();
+  }
+
+  /** @param gokartPoseEvent
+   * @return {vx, vy} without units */
+  private static Tensor velXY(GokartPoseEvent gokartPoseEvent) {
+    return gokartPoseEvent.getVelocity().extract(0, 2).map(Magnitude.VELOCITY);
   }
 }

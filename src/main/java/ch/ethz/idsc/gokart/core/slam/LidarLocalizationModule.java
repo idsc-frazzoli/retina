@@ -63,11 +63,6 @@ public class LidarLocalizationModule extends AbstractModule implements PoseVeloc
   }
 
   @Override // from PoseVelocityInterface
-  public Tensor getVelocityXY() {
-    return lidarLocalizationCore.getVelocityXY();
-  }
-
-  @Override // from PoseVelocityInterface
   public Scalar getGyroZ() {
     return lidarLocalizationCore.getGyroZ();
   }

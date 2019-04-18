@@ -16,8 +16,7 @@ public class TrackVideoWriterTest extends TestCase {
     File target = HomeDirectory.file(getClass().getSimpleName() + ".mp4");
     assertFalse(target.exists());
     try (TrackVideoWriter trackVideoRender = new TrackVideoWriter( //
-        IdentityMatrix.of(3), //
-        new BufferedImage(1920, 1280, BufferedImage.TYPE_3BYTE_BGR), //
+        new BackgroundImage(new BufferedImage(1920, 1280, BufferedImage.TYPE_3BYTE_BGR), IdentityMatrix.of(3)), //
         new TrackVideoConfig(), //
         target)) {
       OfflineLogPlayer.process(file, trackVideoRender);

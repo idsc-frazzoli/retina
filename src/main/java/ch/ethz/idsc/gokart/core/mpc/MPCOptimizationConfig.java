@@ -40,7 +40,7 @@ public class MPCOptimizationConfig {
   /** the amount of additional front acceleration capacity strong braking can have
    * suggestion: low priority (braking can be done in a straight line */
   @FieldSubdivide(start = "0f[1]", end = "2[1]", intervals = 20)
-  public Scalar brakeEffect = Quantity.of(0, SI.ONE);
+  public Scalar brakeEffect = RealScalar.of(0);
   /** The mpc update cycle time when not successful */
   public Scalar updateCycle = Quantity.of(0.2, SI.SECOND);
   /** The wait time after a successful optimization */
@@ -53,18 +53,17 @@ public class MPCOptimizationConfig {
   @FieldSubdivide(start = "0f[m]", end = "2[m]", intervals = 20)
   public Scalar padding = Quantity.of(0.5, SI.METER);
   @FieldSubdivide(start = "-5f", end = "1", intervals = 50)
-  public Scalar qpFactor = RealScalar.of(0);
+  public Scalar qpFactor = RealScalar.of(-0.56);
   @FieldSubdivide(start = "0f", end = "1", intervals = 10)
-  public Scalar qpLimit = RealScalar.of(0.9);
+  public Scalar qpLimit = RealScalar.of(0.7);
   /** How much does mpc underestimate the braking */
   public Scalar brakeMultiplicator = RealScalar.of(1);
   /** How much does mpc underestimate the steering */
   public Scalar steerMultiplicator = RealScalar.of(1);
   /** steering regularization in MPC optimization */
-  public Scalar steeringReg = RealScalar.of(0.1);
+  public Scalar steeringReg = RealScalar.of(0.02);
   /** steering damping factor */
   public Scalar steerDamp = RealScalar.of(1);
-  /** specific MoI */
-  // TODO MH/JPH units
-  public Scalar specificMoI = RealScalar.of(0.5);
+  /** specific MoI in "m" */
+  public Scalar specificMoI = Quantity.of(0.3, SI.METER);
 }

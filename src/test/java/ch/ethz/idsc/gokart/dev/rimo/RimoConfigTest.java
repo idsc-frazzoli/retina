@@ -15,4 +15,9 @@ public class RimoConfigTest extends TestCase {
     assertEquals(chop.apply(Quantity.of(+0.05, SI.VELOCITY)), Quantity.of(+0.05, SI.VELOCITY));
     assertEquals(chop.apply(Quantity.of(-0.05, SI.VELOCITY)), Quantity.of(-0.05, SI.VELOCITY));
   }
+
+  public void testLookup() {
+    assertEquals(RimoConfig.GLOBAL.lKp, Quantity.of(0, "s^-1"));
+    assertEquals(RimoConfig.GLOBAL.lKi, Quantity.of(1, "s^-2"));
+  }
 }

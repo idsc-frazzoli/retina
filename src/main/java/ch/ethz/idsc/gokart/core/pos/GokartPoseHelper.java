@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+// TODO JPH (only jan) rename to PoseHelper and relocate to ch.ethz.idsc.retina.util.pose
 public enum GokartPoseHelper {
   ;
   /** Example:
@@ -16,7 +17,6 @@ public enum GokartPoseHelper {
    * @param state vector with units {x[m], y[m], angle[]}
    * @return */
   public static Tensor toSE2Matrix(Tensor state) {
-    // Se2Utils.toSE2Matrix(state.extract(0, 2).map(Magnitude.METER).append(state.Get(2)));
     return Se2Utils.toSE2Matrix(toUnitless(state));
   }
 

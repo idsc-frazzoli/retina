@@ -9,9 +9,8 @@ import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
-import ch.ethz.idsc.retina.util.math.SIDerived;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 final class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
   private static final Optional<SteerPutEvent> FALLBACK = Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_1);
@@ -29,9 +28,9 @@ final class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 
-  private Scalar angle = Quantity.of(0.0, SIDerived.RADIAN);
+  private Scalar angle = RealScalar.of(0.0);
 
-  /** @param angle with unit "rad" */
+  /** @param angle unitless with interpretation in radian */
   /* package */ void setHeading(Scalar angle) {
     this.angle = angle;
   }

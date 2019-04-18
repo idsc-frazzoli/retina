@@ -43,7 +43,7 @@ public class SlamDunkTest extends TestCase {
     LocalizationResultListener localizationResultListener = new LocalizationResultListener() {
       @Override
       public void localizationCallback(LocalizationResult localizationResult) {
-        tableBuilder.appendRow(localizationResult.ratio);
+        tableBuilder.appendRow(localizationResult.quality);
       }
     };
     offlineLocalize.addListener(localizationResultListener);

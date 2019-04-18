@@ -17,6 +17,11 @@ public class DriftRatioTest extends TestCase {
     assertEquals(scalar, RealScalar.ONE);
   }
 
+  public void testOneGyroZPos() {
+    Scalar scalar = DriftRatio.of(Tensors.fromString("{1[m*s^-1],1[m*s^-1],2}"));
+    assertEquals(scalar, RealScalar.ONE);
+  }
+
   public void testOneNeg() {
     Scalar scalar = DriftRatio.of(Tensors.fromString("{1[m*s^-1],-1[m*s^-1]}"));
     assertEquals(scalar, RealScalar.ONE.negate());

@@ -33,8 +33,15 @@ public abstract class AbstractBrakeFunction {
    * 
    * @param brakingPosition [m]
    * @return braking deceleration in [m*s^-2] */
+  static Scalar decelerationFromPos(Scalar brakingPosition) {
+    return Ramp.FUNCTION.apply(BRAKING_ACCELERATION.apply(Ramp.FUNCTION.apply(brakingPosition.subtract(BRAKE_START))));
+  }
+
+  /** @param brakingPosition [m]
+   * @param factor
+   * @return braking deceleration in [m*s^-2] */
   static Scalar getDeceleration(Scalar brakingPosition, Scalar factor) {
-    return Ramp.FUNCTION.apply(BRAKING_ACCELERATION.apply(Ramp.FUNCTION.apply(brakingPosition.subtract(BRAKE_START)))).multiply(factor);
+    return decelerationFromPos(brakingPosition).multiply(factor);
   }
 
   /** get the wanted actuation position

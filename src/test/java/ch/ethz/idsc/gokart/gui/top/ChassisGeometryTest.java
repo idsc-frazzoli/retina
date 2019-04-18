@@ -1,10 +1,12 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -45,27 +47,27 @@ public class ChassisGeometryTest extends TestCase {
   }
 
   public void testSteerAngleTowardsLeft() {
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.of(0.3));
-    assertTrue(Chop._13.close(Quantity.of(0.34289723785565446, "rad"), angle));
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(Quantity.of(0.3, SI.PER_METER));
+    assertTrue(Chop._13.close(RealScalar.of(0.34289723785565446), angle));
   }
 
   public void testSteerAngleTowardsRight() {
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.of(-.2));
-    assertTrue(Chop._13.close(Quantity.of(-0.2336530501796457, "rad"), angle));
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(Quantity.of(-.2, SI.PER_METER));
+    assertTrue(Chop._13.close(RealScalar.of(-0.2336530501796457), angle));
   }
 
   public void testSteerAngleStraight() {
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(RealScalar.ZERO);
-    assertTrue(Chop._13.close(Quantity.of(0, "rad"), angle));
+    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(Quantity.of(0, SI.PER_METER));
+    assertTrue(Chop._13.close(RealScalar.of(0), angle));
   }
 
   public void testTireWidthFront() {
-    Scalar width = ChassisGeometry.GLOBAL.tireHalfWidthFront.multiply(RealScalar.of(2));
+    Scalar width = RimoTireConfiguration.FRONT.halfWidth().multiply(RealScalar.of(2));
     assertEquals(IN_CM.apply(width), RealScalar.of(13)); // cm
   }
 
   public void testTireWidthRear() {
-    Scalar width = ChassisGeometry.GLOBAL.tireHalfWidthRear.multiply(RealScalar.of(2));
+    Scalar width = RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(2));
     assertEquals(IN_CM.apply(width), RealScalar.of(19.5)); // cm
   }
 

@@ -29,7 +29,7 @@ public class MagnitudeTest extends TestCase {
   }
 
   public void testUnitOne() {
-    Scalar scalar = Quantity.of(2500, "rad*deg");
+    Scalar scalar = Quantity.of(2500, "deg");
     Scalar result = Magnitude.ONE.apply(scalar);
     assertTrue(result instanceof RealScalar);
   }
@@ -43,7 +43,7 @@ public class MagnitudeTest extends TestCase {
 
   public void testRadPerSec() {
     Scalar s1 = Quantity.of(100, SI.PER_SECOND);
-    Scalar s2 = Quantity.of(100, SIDerived.RADIAN_PER_SECOND);
+    Scalar s2 = Quantity.of(100, SI.PER_SECOND);
     assertEquals(Magnitude.PER_SECOND.apply(s1), Magnitude.PER_SECOND.apply(s2));
     assertEquals(Magnitude.PER_SECOND.toDouble(s1), 100.0);
     assertEquals(Magnitude.PER_SECOND.toInt(s1), 100);

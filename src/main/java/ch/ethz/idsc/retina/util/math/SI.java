@@ -16,6 +16,10 @@ public enum SI {
   // ---
   public static final Unit VELOCITY = Unit.of("m*s^-1");
   public static final Unit ACCELERATION = Unit.of("m*s^-2");
+  // ---
+  /** per second is used for
+   * 1) temporal rate with interpretation Hz
+   * 2) speed of revolution with interpretation rad*s^-1 */
   public static final Unit PER_SECOND = Unit.of("s^-1");
   public static final Unit ANGULAR_ACCELERATION = Unit.of("s^-2");
 }

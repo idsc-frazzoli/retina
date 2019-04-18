@@ -33,7 +33,7 @@ public enum ArrayFloatBlob {
     return binaryBlob;
   }
 
-  /** @param byteBuffer
+  /** @param byteBuffer with ByteOrder.LITTLE_ENDIAN
    * @return */
   public static Tensor decode(ByteBuffer byteBuffer) {
     int rank = byteBuffer.get() & 0xff;

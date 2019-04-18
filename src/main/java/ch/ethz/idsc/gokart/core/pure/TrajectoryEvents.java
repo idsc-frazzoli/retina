@@ -12,11 +12,10 @@ import ch.ethz.idsc.tensor.Tensor;
 
 public enum TrajectoryEvents {
   ;
-  /** @param byteBuffer
+  /** @param byteBuffer with ByteOrder.LITTLE_ENDIAN
    * @return */
   public static List<TrajectorySample> trajectory(ByteBuffer byteBuffer) {
-    Tensor tensor = ArrayFloatBlob.decode(byteBuffer);
-    return TrajectoryEvents.trajectory(tensor);
+    return trajectory(ArrayFloatBlob.decode(byteBuffer));
   }
 
   /** reconstruct trajectory from tensor

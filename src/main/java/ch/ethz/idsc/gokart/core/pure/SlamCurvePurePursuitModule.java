@@ -6,8 +6,10 @@ import java.util.Optional;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.math.planar.PurePursuit;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** pure pursuit controller for SLAM algorithm */
 // XXX MG when only forward driving is supported, the speed should be Ramp'ed
@@ -43,12 +45,9 @@ public final class SlamCurvePurePursuitModule extends PurePursuitModule {
   private Optional<Scalar> getRatio() {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent()) {
-      if (optionalCurve.isPresent()) {
-        PurePursuit purePursuit = PurePursuit.fromTrajectory( //
-            optionalCurve.get(), SlamDvsConfig.eventCamera.slamPrcConfig.lookAheadMeter());
-        return purePursuit.ratio();
-      }
-      return Optional.empty();
+      PurePursuit purePursuit = PurePursuit.fromTrajectory( //
+          optionalCurve.get(), SlamDvsConfig.eventCamera.slamPrcConfig.lookAheadMeter());
+      return purePursuit.ratio().map(r -> Quantity.of(r, SI.PER_METER));
     }
     System.err.println("no curve in pure pursuit");
     return Optional.empty();

@@ -2,11 +2,13 @@
 package ch.ethz.idsc.gokart.offline.tab;
 
 import java.nio.ByteBuffer;
-import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
@@ -21,6 +23,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TableBuilder;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class produces table with the following columns:
@@ -38,12 +41,15 @@ import ch.ethz.idsc.tensor.sca.Round;
  * localization pose x [m]
  * localization pose y [m]
  * localization pose theta [rad]
- * localization pose quality */
+ * localization pose quality
+ * localization velocity ux [m*s^-1]
+ * localization velocity uy [m*s^-1]
+ * localization rate omega [s^-1] */
 public class BasicTrackReplayTable implements OfflineTableSupplier {
-  private RimoGetEvent rimoGetEvent;
-  private RimoPutEvent rimoPutEvent;
-  private LinmotGetEvent linmotGetEvent;
-  private GokartStatusEvent gokartStatusEvent;
+  private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
+  private RimoPutEvent rimoPutEvent = RimoPutEvent.PASSIVE;
+  private LinmotGetEvent linmotGetEvent = LinmotGetEvents.ZEROS;
+  private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
   private final TableBuilder tableBuilder = new TableBuilder();
 
   @Override // from OfflineLogListener
@@ -61,15 +67,13 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
       gokartStatusEvent = new GokartStatusEvent(byteBuffer);
     else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-      if (Objects.isNull(linmotGetEvent) || //
-          Objects.isNull(rimoGetEvent) || //
-          Objects.isNull(rimoPutEvent) || //
-          Objects.isNull(gokartStatusEvent))
-        return;
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
       Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
       Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
+      Scalar sce = gokartStatusEvent.isSteerColumnCalibrated() //
+          ? gokartStatusEvent.getSteerColumnEncoderCentered()
+          : Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
           rimoPutEvent.getTorque_Y_pair().map(Magnitude.ARMS), //
@@ -77,7 +81,7 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
           speed.map(Magnitude.VELOCITY), //
           rate.map(Magnitude.PER_SECOND), //
           RealScalar.ZERO, //
-          SteerPutEvent.ENCODER.apply(gokartStatusEvent.getSteerColumnEncoderCentered()), //
+          SteerPutEvent.ENCODER.apply(sce), //
           linmotGetEvent.getActualPosition().map(Magnitude.METER).map(Round._6), //
           gokartPoseEvent.asVector() //
       );

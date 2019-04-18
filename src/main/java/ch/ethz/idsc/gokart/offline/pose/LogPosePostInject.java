@@ -19,6 +19,7 @@ import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
+import ch.ethz.idsc.tensor.sca.Round;
 import idsc.BinaryBlob;
 import lcm.lcm.LCMDataOutputStream;
 import lcm.logging.Log;
@@ -37,7 +38,7 @@ public class LogPosePostInject implements GokartPoseListener {
     System.out.println("start");
     try {
       while (true) {
-        // TODO code redundant to OfflineLogPlayer
+        // TODO JPH code redundant to OfflineLogPlayer
         Event event = log.readNext();
         {
           if (Objects.isNull(tic))
@@ -54,9 +55,15 @@ public class LogPosePostInject implements GokartPoseListener {
             offlineLogListener.event(time, event.channel, ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
             // ---
             if (Objects.nonNull(gokartPoseEvent)) {
+              System.out.println("q=" + gokartPoseEvent.getQuality().map(Round._2));
               LCMDataOutputStream encodeBuffer = new LCMDataOutputStream(new byte[1024]);
-              BinaryBlob post_binaryBlob = BinaryBlobs.create(gokartPoseEvent.asArray());
-              post_binaryBlob.encode(encodeBuffer);
+              {
+                BinaryBlob post_binaryBlob = BinaryBlobs.create(gokartPoseEvent.length());
+                ByteBuffer byteBuffer = ByteBuffer.wrap(post_binaryBlob.data);
+                byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+                gokartPoseEvent.insert(byteBuffer);
+                post_binaryBlob.encode(encodeBuffer);
+              }
               Event post_event = new Event();
               post_event.utime = event.utime;
               post_event.data = Arrays.copyOf(encodeBuffer.getBuffer(), encodeBuffer.size());

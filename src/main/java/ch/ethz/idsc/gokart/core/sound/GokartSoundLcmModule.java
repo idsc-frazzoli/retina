@@ -35,7 +35,7 @@ public class GokartSoundLcmModule extends AbstractModule {
     gokartMotorStateLcmProvider.stop();
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     ModuleAuto.INSTANCE.runOne(GokartSoundLcmModule.class);
   }
 }

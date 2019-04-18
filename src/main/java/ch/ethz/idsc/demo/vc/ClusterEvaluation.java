@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
@@ -50,8 +49,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
               vlp16LcmHandler.velodyneDecoder.lasers(byteBuffer);
             else //
             if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
-              GokartPoseEvent gpe = GokartPoseEvent.of(byteBuffer);
-              clusterEvaluationListener.setPose(gpe.getPose());
+              // GokartPoseEvent gpe = GokartPoseEvent.of(byteBuffer);
+              // clusterEvaluationListener.setPose(gpe.getPose());
             }
           }
         };

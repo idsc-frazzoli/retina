@@ -19,14 +19,19 @@ import java.util.Objects;
 public enum ModuleAuto {
   INSTANCE;
   /** map for holding the module list */
-  // TODO choose a more thread-safe data structure
+  // TODO JPH choose a more thread-safe data structure
   private final Map<Class<? extends AbstractModule>, AbstractModule> moduleMap = new LinkedHashMap<>();
 
-  /** Methods for launching the modules */
+  /** Methods for launching the modules
+   * @throws Exception */
   public void runAll(List<Class<? extends AbstractModule>> modules) {
     System.out.println(new Date() + " Module Auto: Launch all");
     for (Class<? extends AbstractModule> module : modules)
-      runOne(module);
+      try {
+        runOne(module);
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
     System.out.println(new Date() + " Module Auto: Launch all done");
   }
 
@@ -40,33 +45,31 @@ public enum ModuleAuto {
     System.out.println(new Date() + " Module Auto: Terminate all done");
   }
 
-  public void runOne(Class<? extends AbstractModule> module) {
+  /** @param module
+   * @throws Exception */
+  public void runOne(Class<? extends AbstractModule> module) throws Exception {
     synchronized (moduleMap) {
       if (moduleMap.containsKey(module)) {
         System.out.println(new Date() + " Module Auto: Already launched: " + module);
         return;
       }
     }
-    try {
-      AbstractModule instance = module.newInstance();
-      System.out.println(new Date() + " Module Auto: Launching: " + module);
-      instance.launch();
-      synchronized (moduleMap) {
-        moduleMap.put(module, instance);
-      }
-    } catch (Exception exception) {
-      exception.printStackTrace();
+    AbstractModule abstractModule = module.getDeclaredConstructor().newInstance();
+    System.out.println(new Date() + " Module Auto: Launching: " + module);
+    abstractModule.launch();
+    synchronized (moduleMap) {
+      moduleMap.put(module, abstractModule);
     }
   }
 
   public void endOne(Class<? extends AbstractModule> module) {
-    AbstractModule instance = null;
+    AbstractModule abstractModule = null;
     synchronized (moduleMap) {
-      instance = moduleMap.remove(module);
+      abstractModule = moduleMap.remove(module);
     }
-    if (Objects.nonNull(instance)) {
+    if (Objects.nonNull(abstractModule)) {
       System.out.println(new Date() + " Module Auto: Terminating: " + module);
-      instance.terminate();
+      abstractModule.terminate();
     } else
       System.err.println("not registered: " + module.getSimpleName());
   }

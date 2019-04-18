@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
         .multiply(MPCOptimizationConfig.GLOBAL.brakeMultiplicator);
     // System.out.println(braking);
     // self calibration
-    Scalar gokartSpeed = lidarLocalizationModule.getVelocityXY().Get(0);
+    Scalar gokartSpeed = lidarLocalizationModule.getVelocity().Get(0);
     Scalar realBraking = currentAcceleration.negate();
     selfCalibratingBrakeFunction.correctBraking(braking, realBraking, gokartSpeed, wheelSpeed);
     BrakeCalibrationRender.calibrationValue = selfCalibratingBrakeFunction.getBrakeFadeFactor(); // TODO JPH
@@ -69,14 +69,14 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
   private Scalar currentAcceleration = Quantity.of(0, SI.ACCELERATION);
 
-  @Override
+  @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
     currentAcceleration = SensorsConfig.getPlanarVmu931Imu().accXY(vmu931ImuFrame).Get(0);
   }
 
   private Scalar wheelSpeed = Quantity.of(0, SI.VELOCITY);
 
-  @Override
+  @Override // from RimoGetListener
   public void getEvent(RimoGetEvent getEvent) {
     wheelSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
   }

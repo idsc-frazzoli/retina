@@ -18,9 +18,8 @@ public class GokartPoseEventsTest extends TestCase {
   public void testExtended() {
     GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create( //
         Tensors.fromString("{1[m], 2[m], 3}"), RealScalar.ONE, //
-        Tensors.fromString("{4[m*s^-1], 5[m*s^-1]}"), //
-        Quantity.of(6, SI.PER_SECOND));
-    assertEquals(gokartPoseEvent.getVelocityXY(), Tensors.fromString("{4[m*s^-1],5[m*s^-1]}"));
+        Tensors.fromString("{4[m*s^-1], 5[m*s^-1], 6[s^-1]}"));
+    assertEquals(gokartPoseEvent.getVelocity(), Tensors.fromString("{4[m*s^-1], 5[m*s^-1], 6[s^-1]}"));
     assertEquals(gokartPoseEvent.getGyroZ(), Quantity.of(6, SI.PER_SECOND));
     assertTrue(gokartPoseEvent.hasVelocity());
     assertEquals(gokartPoseEvent.asVector(), Tensors.vector(1, 2, 3, 1, 4, 5, 6));
@@ -36,7 +35,7 @@ public class GokartPoseEventsTest extends TestCase {
   public void testSimple() {
     GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1( //
         Tensors.fromString("{1[m], 2[m], 3}"), RealScalar.ONE);
-    assertEquals(gokartPoseEvent.getVelocityXY(), Tensors.fromString("{0[m*s^-1],0[m*s^-1]}"));
+    assertEquals(gokartPoseEvent.getVelocity(), Tensors.fromString("{0[m*s^-1], 0[m*s^-1], 0[s^-1]}"));
     assertEquals(gokartPoseEvent.getGyroZ(), Quantity.of(0, SI.PER_SECOND));
     assertFalse(gokartPoseEvent.hasVelocity());
     assertEquals(gokartPoseEvent.asVector(), Tensors.vector(1, 2, 3, 1));
