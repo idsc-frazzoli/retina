@@ -35,7 +35,7 @@ These guidelines are indented to ensure a safe operation of the gokart for human
 * disconnect the steering battery and bring the battery to the charger on the table
 * charge the steering battery and laptop after each use
 * ensure that the steering battery charger displays `CHARGING` while charging
-* charding the gokart battery requires the main switch to be on, and the emergency stop to be pressed. When charging, the current is indicated on the display of the charging station.
+* charging the gokart battery requires the main switch to be on, and the emergency stop to be pressed. When charging, the current is indicated on the display of the charging station.
 
 ## End of Day
 

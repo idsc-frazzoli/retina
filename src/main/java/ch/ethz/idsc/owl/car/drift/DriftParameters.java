@@ -23,7 +23,7 @@ public class DriftParameters implements Serializable {
   /** rear axle distanc from COG [m] */
   public final Scalar b = RealScalar.of(1.895);
   /** pacejka model parameters
-   * 1 - for frint tires, 2 - rear tires
+   * 1 - for front tires, 2 - rear tires
    * Pacejka3
    * Scalar B1 = 13.8509;par.C1=1.367;par.D1=0.9622;
    * Scalar B2 = 14.1663;par.C2=1.3652;par.D2=0.9744;

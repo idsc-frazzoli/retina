@@ -5,12 +5,13 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** for the specification of:
  * speed limit
- * max acceleration
+ * max acceleration along x axis
  * steering reg
  * moment of inertia (over mass) */
 /* package */ class MPCOptimizationParameterDynamic implements MPCOptimizationParameter {
@@ -20,19 +21,23 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final Scalar xAccLimit;
   // TODO MH document steeringReg
   private final Scalar steeringReg;
-  // FIXME MH/JPH units
+  /** with unit "m" */
   private final Scalar specificMoI;
 
   public MPCOptimizationParameterDynamic(ByteBuffer byteBuffer) {
     speedLimit = Quantity.of(byteBuffer.getFloat(), SI.VELOCITY);
     xAccLimit = Quantity.of(byteBuffer.getFloat(), SI.ACCELERATION);
-    steeringReg = Quantity.of(byteBuffer.getFloat(), SI.ONE);
-    specificMoI = Quantity.of(byteBuffer.getFloat(), SI.ONE);
+    steeringReg = RealScalar.of(byteBuffer.getFloat());
+    specificMoI = Quantity.of(byteBuffer.getFloat(), SI.METER);
   }
 
-  public MPCOptimizationParameterDynamic(Scalar speedLimit, Scalar maxxAcc, Scalar steeringReg, Scalar specificMoI) {
-    this.xAccLimit = maxxAcc;
+  /** @param speedLimit with unit "m*s^-1"
+   * @param xAccLimit with unit "m*s^-2"
+   * @param steeringReg unitless
+   * @param specificMoI with unit "m" */
+  public MPCOptimizationParameterDynamic(Scalar speedLimit, Scalar xAccLimit, Scalar steeringReg, Scalar specificMoI) {
     this.speedLimit = speedLimit;
+    this.xAccLimit = xAccLimit;
     this.steeringReg = steeringReg;
     this.specificMoI = specificMoI;
   }
@@ -42,7 +47,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     byteBuffer.putFloat(Magnitude.VELOCITY.toFloat(speedLimit));
     byteBuffer.putFloat(Magnitude.ACCELERATION.toFloat(xAccLimit));
     byteBuffer.putFloat(Magnitude.ONE.toFloat(steeringReg));
-    byteBuffer.putFloat(Magnitude.ONE.toFloat(specificMoI));
+    byteBuffer.putFloat(Magnitude.METER.toFloat(specificMoI));
   }
 
   @Override // from BufferInsertable

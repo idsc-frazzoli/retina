@@ -2,8 +2,10 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
+import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.owl.car.math.AckermannSteering;
+import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owl.car.math.TurningGeometry;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -20,7 +22,9 @@ import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 
 /** parameters in this config class are final because they
- * correspond to immutable characteristic of the gokart. */
+ * correspond to immutable characteristic of the gokart.
+ * 
+ * further constants can be found in {@link MPCOptimizationConfig} */
 // TODO JPH location of class not good
 public class ChassisGeometry {
   public static final ChassisGeometry GLOBAL = AppResources.load(new ChassisGeometry());
@@ -73,6 +77,10 @@ public class ChassisGeometry {
   // TODO JPH obsolete, rather use RimoAxleConfiguration
   public AckermannSteering getAckermannSteering() {
     return new AckermannSteering(xAxleRtoF, yTireFront);
+  }
+
+  public BicycleAngularSlip getBicycleAngularSlip() {
+    return new BicycleAngularSlip(xAxleRtoF);
   }
 
   /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r

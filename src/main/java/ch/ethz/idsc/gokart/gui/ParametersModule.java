@@ -42,20 +42,23 @@ public class ParametersModule extends AbstractModule {
 
   private void addTab(Object object) {
     // only include config class with configurable parameters
-    if (0 < TensorProperties.wrap(object).fields().count()) {
-      ParametersComponent propertiesComponent = new ParametersComponent(object);
-      String title = object.getClass().getSimpleName();
-      title = title.endsWith("Config") //
-          ? title.substring(0, title.length() - 6)
-          : title;
-      jTabbedPane.addTab(title, propertiesComponent.getScrollPane());
-      {
-        // change tab component to modify display size
-        int count = jTabbedPane.getTabCount() - 1;
-        JLabel jLabel = GuiConfig.GLOBAL.createSubLabel(title);
-        jTabbedPane.setTabComponentAt(count, jLabel);
+    if (0 < TensorProperties.wrap(object).fields().count())
+      try {
+        ParametersComponent propertiesComponent = new ParametersComponent(object);
+        String title = object.getClass().getSimpleName();
+        title = title.endsWith("Config") //
+            ? title.substring(0, title.length() - 6)
+            : title;
+        jTabbedPane.addTab(title, propertiesComponent.getScrollPane());
+        {
+          // change tab component to modify display size
+          int count = jTabbedPane.getTabCount() - 1;
+          JLabel jLabel = GuiConfig.GLOBAL.createSubLabel(title);
+          jTabbedPane.setTabComponentAt(count, jLabel);
+        }
+      } catch (Exception exception) {
+        exception.printStackTrace();
       }
-    }
   }
 
   /***************************************************/

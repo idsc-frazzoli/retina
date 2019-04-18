@@ -34,7 +34,11 @@ import javax.swing.JToggleButton;
       // jToggleButton.setPreferredSize(new Dimension(120, 36));
       jToggleButton.addActionListener(e -> {
         if (jToggleButton.isSelected())
-          ModuleAuto.INSTANCE.runOne(module);
+          try {
+            ModuleAuto.INSTANCE.runOne(module);
+          } catch (Exception exception) {
+            exception.printStackTrace();
+          }
         else
           ModuleAuto.INSTANCE.endOne(module);
       });

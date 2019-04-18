@@ -14,7 +14,7 @@ public class StaticBrakeFunction extends AbstractBrakeFunction {
 
   @Override // from AbstractBrakeFunction
   Scalar getDeceleration(Scalar brakingPosition) {
-    return getDeceleration(brakingPosition, ONE);
+    return decelerationFromPos(brakingPosition);
   }
 
   @Override // from AbstractBrakeFunction
