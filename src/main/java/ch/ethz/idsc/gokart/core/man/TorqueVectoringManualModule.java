@@ -25,7 +25,6 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Tan;
 
 /** abstract base class for all torque vectoring modules:
  * 
@@ -77,13 +76,9 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
    * @return */
   final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Scalar gyroZ) {
     Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
-    Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
-    // why isn't theta rad/m?
-    // compute wanted motor torques / no-slip behavior (sorry Jan for corrective factor)
-    // Scalar wantedRotationRate = rotationPerMeterDriven.multiply(meanTangentSpeed); // unit s^-1
+    Scalar rotationPerMeterDriven = bicycleAngularSlip.rotationPerMeterDriven(theta); // m^-1
     // compute (negative) angular slip
     Scalar angularSlip = bicycleAngularSlip.angularSlip(theta, meanTangentSpeed, gyroZ);
-    // wantedRotationRate.subtract(gyroZ);
     // ---
     Tensor powers = torqueVectoringInterface.powers( //
         rotationPerMeterDriven, meanTangentSpeed, angularSlip, power, gyroZ);

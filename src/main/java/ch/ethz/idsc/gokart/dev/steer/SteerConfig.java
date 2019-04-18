@@ -42,7 +42,7 @@ public class SteerConfig {
    * but this choice put unnecessary stress on the hardware.
    * 
    * 20180517 the */
-  // TODO JPH value of columnMax does not correspond to the above comment
+  // TODO DUBILAB JPH value of columnMax does not correspond to the above comment
   public Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
   /** 0.5 corresponds to 50% of torque limit */
   public Scalar stepOfLimit = RealScalar.of(0.5);

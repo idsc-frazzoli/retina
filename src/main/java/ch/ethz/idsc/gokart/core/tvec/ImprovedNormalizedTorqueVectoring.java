@@ -37,7 +37,8 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
 
   /** get torque vectoring motor currents corresponding to the wanted rotation speed
    * (this can also be used externally!)
-   * @param expectedRotationPerMeterDriven [1/s] TODO JPH/MH unit
+   * 
+   * @param expectedRotationPerMeterDriven [m^-1]
    * @param meanTangentSpeed [m/s]
    * @param angularSlip [1/s]
    * @param wantedAcceleration [m/s^2]
@@ -62,9 +63,9 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
   /** @param wantedAcceleration [m*s^-2]
    * @param wantedZTorque [ONE]
    * @param velocity [m/s]
-   * @return the required motor currents [ARMS] */
+   * @return vector of length 2 with required motor currents [ARMS] */
   // TODO JPH/MH write tests specifically for method getAdvancedMotorCurrents
-  public static Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
+  /* package */ static Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
     Tensor minMax = POWER_LOOKUP_TABLE.getMinMaxAcceleration(velocity);
     Scalar min = minMax.Get(0);
     Scalar max = minMax.Get(1);
@@ -75,9 +76,7 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
     Scalar remappedMeanAcceleration = //
         wantedAcceleration.subtract(mid).divide(halfRange);//
     // get clipped individual accelerations
-    Tensor remappedAccelerations = TorqueVectoringClip.of( //
-        remappedMeanAcceleration.subtract(wantedZTorque), //
-        remappedMeanAcceleration.add(wantedZTorque));
+    Tensor remappedAccelerations = TorqueVectoringClip.from(remappedMeanAcceleration, wantedZTorque);
     // remap again to acceleration space
     Tensor wantedAccelerations = remappedAccelerations.multiply(halfRange).map(mid::add);
     return Tensors.of( //
