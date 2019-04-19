@@ -69,7 +69,7 @@ public class SafetyConfig {
   /** convenient way for the application layer to obtain an instance
    * without having to specify the geometric configuration
    * 
-   * @return */
+   * @return predicate to perform obstacle checking */
   public SpacialXZObstaclePredicate createSpacialXZObstaclePredicate() {
     return new SimpleSpacialObstaclePredicate(vlp16_ZClip(), SensorsConfig.GLOBAL.vlp16_incline);
   }

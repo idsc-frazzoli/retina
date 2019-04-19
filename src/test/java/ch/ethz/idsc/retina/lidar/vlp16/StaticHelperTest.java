@@ -6,8 +6,8 @@ import junit.framework.TestCase;
 public class StaticHelperTest extends TestCase {
   public void testDegToInd() {
     for (int laserId = 0; laserId < 16; ++laserId) {
-      int degree = StaticHelper.degree(laserId);
-      int toLidarId = StaticHelper.lidarId(degree);
+      int degree = Vlp16Helper.degree(laserId);
+      int toLidarId = Vlp16Helper.lidarId(degree);
       assertEquals(laserId, toLidarId);
     }
   }

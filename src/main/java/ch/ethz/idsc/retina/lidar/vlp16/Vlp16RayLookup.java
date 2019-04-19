@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
       float dy = angleVectorLookupFloat.dy(rotational);
       double angle = ArcTan.of(dx, dy).number().doubleValue();
       double tilt = tiltY_deg * Math.cos(angle); // Math.toDegrees(0.04) * cos(angle)
-      int index = StaticHelper.lidarId(closestRay(tilt)) * 3;
+      int index = Vlp16Helper.lidarId(closestRay(tilt)) * 3;
       velodyneRays[rotational] = new VelodyneRay( //
           dx * VelodyneStatics.TO_METER_FLOAT, //
           dy * VelodyneStatics.TO_METER_FLOAT, //

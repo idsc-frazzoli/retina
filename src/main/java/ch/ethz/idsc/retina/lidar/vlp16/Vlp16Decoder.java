@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodynePosEvent;
@@ -49,7 +48,7 @@ public class Vlp16Decoder implements VelodyneDecoder {
   }
 
   /** @param byteBuffer with at least 1206 bytes to read */
-  @Override
+  @Override // from VelodyneDecoder
   public void lasers(ByteBuffer byteBuffer) {
     final int offset = byteBuffer.position(); // 0 or 42
     final byte type;
@@ -62,10 +61,9 @@ public class Vlp16Decoder implements VelodyneDecoder {
       // 57 == 0x39 == Dual return
       type = byteBuffer.get();
       byte value = byteBuffer.get(); // 34 == 0x22 == VLP-16
-      if (value != 0x22) {
-        System.out.println(value);
-        GlobalAssert.that(value == 0x22);
-      }
+      if (value != 0x22)
+        // TODO JPH
+        System.err.println("Vlp16Decoder:" + value);
       rayListeners.forEach(listener -> listener.timestamp(gps_timestamp, type));
     }
     if (type != DUAL) { // SINGLE 24 blocks of firing data

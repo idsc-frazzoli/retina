@@ -32,6 +32,7 @@ public class SensorsConfig {
   public final Scalar vlp16_twist = RealScalar.of(-1.61);
   /** transformation from center of rear-axle to vlp16 in (x,y)-plane
    * the third, i.e. angle coordinate has to be zero. */
+  // TODO JPH attach units
   public final Tensor vlp16 = Tensors.vector(0.09, 0.0, 0.0);
   /** vlp16_incline is the rotation of tilt around the y-axis of the gokart
    * 
