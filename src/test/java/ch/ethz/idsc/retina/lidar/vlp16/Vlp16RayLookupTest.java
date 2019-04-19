@@ -30,11 +30,11 @@ public class Vlp16RayLookupTest extends TestCase {
   }
 
   public void testID() {
-    assertEquals(Vlp16RayLookup.degreeToLidarID(-15), 0);
-    assertEquals(Vlp16RayLookup.degreeToLidarID(-13), 2);
-    assertEquals(Vlp16RayLookup.degreeToLidarID(-11), 4);
-    assertEquals(Vlp16RayLookup.degreeToLidarID(1), 1);
-    assertEquals(Vlp16RayLookup.degreeToLidarID(3), 3);
-    assertEquals(Vlp16RayLookup.degreeToLidarID(15), 0);
+    assertEquals(StaticHelper.lidarId(-15), 0);
+    assertEquals(StaticHelper.lidarId(-13), 2);
+    assertEquals(StaticHelper.lidarId(-11), 4);
+    assertEquals(StaticHelper.lidarId(1), 1);
+    assertEquals(StaticHelper.lidarId(3), 3);
+    assertEquals(StaticHelper.lidarId(15), 0);
   }
 }

@@ -36,7 +36,7 @@ public class Hdl32ePanoramaProvider extends LidarPanoramaProvider {
     IntStream.range(0, INDEX.length).forEach(i -> INDEX[i] *= MAX_WIDTH);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     lidarPanorama.setRotational(rotational);
     for (int index : INDEX)
