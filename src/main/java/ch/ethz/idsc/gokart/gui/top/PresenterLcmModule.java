@@ -18,6 +18,7 @@ import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
@@ -109,7 +110,7 @@ public class PresenterLcmModule extends AbstractModule {
     // ---
     {
       ParallelLidarRender lidarRender = new ParallelLidarRender();
-      lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
+      lidarRender.setReference(() -> GokartPoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
       lidarRender.setColor(new Color(0, 0, 128, 128));
       lidarRender.setObstacleColor(new Color(128, 0, 128, 128));
       lidarRender.pointSize = 1;

@@ -18,7 +18,7 @@ class SideLidarRender extends LidarRender {
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
     Tensor translate = Se2Utils.toSE2Matrix(Tensors.of( //
-        SensorsConfig.GLOBAL.vlp16.Get(0), // translation right (in pixel space)
+        Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16_pose.Get(0)), // translation right (in pixel space)
         Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16Height), // translation up (in pixel space) to
         /** negate incline for rotation in pixel space */
         SensorsConfig.GLOBAL.vlp16_incline.negate() // rotation is pixel space

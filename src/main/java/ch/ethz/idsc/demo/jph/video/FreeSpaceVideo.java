@@ -1,9 +1,11 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.video;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -42,13 +44,14 @@ public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
   };
   private final Mp4AnimationWriter mp4AnimationWriter;
   private Tensor tensor = Tensors.empty();
+  BufferedImage mapImage = new BufferedImage(640, 640, BufferedImage.TYPE_4BYTE_ABGR);
 
   public FreeSpaceVideo() throws InterruptedException, IOException {
     velodyneDecoder.addRayListener(vlp16SegmentProjection);
     mp4AnimationWriter = new Mp4AnimationWriter( //
         HomeDirectory.file("some2.mp4").toString(), //
         new Dimension(640, 640), //
-        50);
+        10);
   }
 
   @Override // from OfflineLogListener
@@ -58,22 +61,32 @@ public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
     else //
     if (channel.equals(GokartPoseChannel.INSTANCE.channel())) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
-      BufferedImage bufferedImage = new BufferedImage(640, 640, BufferedImage.TYPE_3BYTE_BGR);
-      Graphics2D graphics = bufferedImage.createGraphics();
-      graphics.setColor(Color.BLACK);
-      graphics.fillRect(0, 0, 640, 640);
+      BufferedImage frameImage = new BufferedImage(640, 640, BufferedImage.TYPE_3BYTE_BGR);
+      Graphics2D frameGraphics = frameImage.createGraphics();
       Tensor model2Pixel = PredefinedMap.DUBILAB_LOCALIZATION_20190314.getModel2Pixel();
       GeometricLayer geometricLayer = GeometricLayer.of(model2Pixel);
       {
         geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
-        geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(GokartPoseHelper.attachUnits(SensorsConfig.GLOBAL.vlp16)));
-        graphics.setColor(Color.WHITE);
-        graphics.fill(geometricLayer.toPath2D(tensor.append(Array.zeros(2))));
+        geometricLayer.pushMatrix(SensorsConfig.GLOBAL.vlp16Gokart());
+        Graphics2D mapGraphics = mapImage.createGraphics();
+        {
+          mapGraphics.setStroke(new BasicStroke());
+          mapGraphics.setColor(Color.BLACK);
+          for (Tensor vector : tensor) {
+            Point2D point2d = geometricLayer.toPoint2D(vector);
+            mapGraphics.fillRect((int) point2d.getX(), (int) point2d.getY(), 1, 1);
+          }
+        }
+        {
+          mapGraphics.setColor(Color.WHITE);
+          mapGraphics.fill(geometricLayer.toPath2D(tensor.append(Array.zeros(2))));
+        }
         System.out.println(tensor.length());
         geometricLayer.popMatrix();
         geometricLayer.popMatrix();
       }
-      mp4AnimationWriter.append(bufferedImage);
+      frameGraphics.drawImage(mapImage, 0, 0, null);
+      mp4AnimationWriter.append(frameImage);
       // System.out.println("here");
       tensor = Tensors.empty();
     }

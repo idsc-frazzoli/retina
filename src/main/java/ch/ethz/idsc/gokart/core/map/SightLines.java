@@ -22,7 +22,6 @@ import ch.ethz.idsc.retina.lidar.LidarSectorProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16PolarProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** class interprets sensor data from lidar */
@@ -76,7 +75,7 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
     if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()) && //
         !pointsPolar.isEmpty()) {
       geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
-      geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16));
+      geometricLayer.pushMatrix(SensorsConfig.GLOBAL.vlp16Gokart());
       // ---
       Tensor polygon = polygon();
       // TODO apply filter? median, min, ...
