@@ -35,6 +35,6 @@ public class Vlp16RayLookupTest extends TestCase {
     assertEquals(Vlp16Helper.lidarId(-11), 4);
     assertEquals(Vlp16Helper.lidarId(1), 1);
     assertEquals(Vlp16Helper.lidarId(3), 3);
-    assertEquals(Vlp16Helper.lidarId(15), 0);
+    assertEquals(Vlp16Helper.lidarId(15), 15);
   }
 }
