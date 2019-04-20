@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.video;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -11,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.perc.Vlp16SegmentProjection;
+import ch.ethz.idsc.gokart.core.perc.GokartSegmentProjection;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
@@ -21,11 +20,13 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
+import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -36,7 +37,10 @@ public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  private final Vlp16SegmentProjection vlp16SegmentProjection = new Vlp16SegmentProjection(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), -1) {
+  private final GokartSegmentProjection gokartSegmentProjection = new GokartSegmentProjection( //
+      Magnitude.ONE.toDouble(SensorsConfig.GLOBAL.vlp16_twist), //
+      Magnitude.METER.toDouble(SensorsConfig.GLOBAL.vlp16Height), //
+      -1) {
     @Override // from Vlp16SegmentProjection
     public void freeSpaceUntil(int azimuth, float x, float y) {
       tensor.append(Tensors.vector(x, y));
@@ -44,14 +48,16 @@ public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
   };
   private final Mp4AnimationWriter mp4AnimationWriter;
   private Tensor tensor = Tensors.empty();
-  BufferedImage mapImage = new BufferedImage(640, 640, BufferedImage.TYPE_4BYTE_ABGR);
+  private final BufferedImage mapImage = new BufferedImage(640, 640, BufferedImage.TYPE_4BYTE_ABGR);
+  private final Graphics2D mapGraphics = mapImage.createGraphics();
+  private final Tensor model2Pixel = PredefinedMap.DUBILAB_LOCALIZATION_20190314.getModel2Pixel();
 
   public FreeSpaceVideo() throws InterruptedException, IOException {
-    velodyneDecoder.addRayListener(vlp16SegmentProjection);
+    velodyneDecoder.addRayListener(gokartSegmentProjection);
     mp4AnimationWriter = new Mp4AnimationWriter( //
         HomeDirectory.file("some2.mp4").toString(), //
         new Dimension(640, 640), //
-        10);
+        5);
   }
 
   @Override // from OfflineLogListener
@@ -63,18 +69,15 @@ public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       BufferedImage frameImage = new BufferedImage(640, 640, BufferedImage.TYPE_3BYTE_BGR);
       Graphics2D frameGraphics = frameImage.createGraphics();
-      Tensor model2Pixel = PredefinedMap.DUBILAB_LOCALIZATION_20190314.getModel2Pixel();
       GeometricLayer geometricLayer = GeometricLayer.of(model2Pixel);
+      geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
+      geometricLayer.pushMatrix(SensorsConfig.GLOBAL.vlp16Gokart());
       {
-        geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
-        geometricLayer.pushMatrix(SensorsConfig.GLOBAL.vlp16Gokart());
-        Graphics2D mapGraphics = mapImage.createGraphics();
         {
-          mapGraphics.setStroke(new BasicStroke());
           mapGraphics.setColor(Color.BLACK);
           for (Tensor vector : tensor) {
             Point2D point2d = geometricLayer.toPoint2D(vector);
-            mapGraphics.fillRect((int) point2d.getX(), (int) point2d.getY(), 1, 1);
+            mapGraphics.fillRect((int) point2d.getX(), (int) point2d.getY(), 2, 2);
           }
         }
         {
@@ -82,10 +85,18 @@ public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
           mapGraphics.fill(geometricLayer.toPath2D(tensor.append(Array.zeros(2))));
         }
         System.out.println(tensor.length());
-        geometricLayer.popMatrix();
-        geometricLayer.popMatrix();
       }
       frameGraphics.drawImage(mapImage, 0, 0, null);
+      {
+        frameGraphics.setColor(Color.RED);
+        frameGraphics.fill(geometricLayer.toPath2D(tensor));
+      }
+      {
+        frameGraphics.setColor(Color.GREEN);
+        frameGraphics.fill(geometricLayer.toPath2D(RimoSinusIonModel.standard().footprint()));
+      }
+      geometricLayer.popMatrix();
+      geometricLayer.popMatrix();
       mp4AnimationWriter.append(frameImage);
       // System.out.println("here");
       tensor = Tensors.empty();
