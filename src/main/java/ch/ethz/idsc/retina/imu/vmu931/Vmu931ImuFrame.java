@@ -4,6 +4,7 @@ package ch.ethz.idsc.retina.imu.vmu931;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -11,7 +12,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class Vmu931ImuFrame {
-  static final double DPS_TO_RPS = Magnitude.PER_SECOND.toDouble(Quantity.of(1, "deg*s^-1"));
+  static final double DPS_TO_RPS = Magnitude.PER_SECOND.toDouble(Quantity.of(1, NonSI.DEGREE_PER_SECOND));
   static final double G_TO_M_S2 = 9.81;
   // ---
   /** milli seconds */
