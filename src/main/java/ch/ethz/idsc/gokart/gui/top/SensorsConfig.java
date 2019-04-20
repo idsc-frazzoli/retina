@@ -57,12 +57,10 @@ public class SensorsConfig {
   public final Scalar vlp16_relativeZero = DoubleScalar.of(0.75);
   // ---
   public final Scalar davis_imu_rate = Quantity.of(1000, SI.PER_SECOND);
-  // TODO the location of the frustum is not final
   public final Tensor davis_frustum = Tensors.fromString("{0[m],7[m]}");
   /** 20181212: the value for the imu bias was established from
    * the first 60[s] of the logs from December 6. and 11. */
   public final Scalar davis_imuY_bias = Quantity.of(0.0142, SI.PER_SECOND);
-  // TODO create a conversion formula from inclination to scaling factor (will have singularity)
   /** due to the inclined mounting of the davis camera,
    * the imuY measurement may have to be scaled.
    * until 20180507 the factor was 1 because the davis camera

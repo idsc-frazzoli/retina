@@ -7,8 +7,8 @@ import java.util.List;
 
 import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
 
-/** compares a bunch of estimated runs against the ground truth by initializing one TrackingEvaluatorSingleRun per
- * estimated run. */
+/** compares a bunch of estimated runs against the ground truth by
+ * initializing one TrackingEvaluatorSingleRun per estimated run. */
 /* package */ class EvaluatorMultiRun {
   private final BlobTrackConfig pipelineConfig;
   private final String evaluationResultFileName;

@@ -25,7 +25,10 @@ public final class SteerColumnTracker implements SteerGetListener, SteerColumnIn
    * on test day 2017-12-13: calibration led to range = 1.6572
    * until 2018-04-27: 1.75
    * due to investigation: 20180428_steering_unit_range.pdf
-   * as of now: 1.55 */
+   * as of now: 1.55
+   * on test day 2019-04-20: after calibration the interval width
+   * is 1.49609[SCE] which means that the bounds [1.45, 1.55] are
+   * still warranted. */
   private static final double HARD = 1.55;
   // ---
   private final IntervalTracker intervalTracker = new IntervalTracker();

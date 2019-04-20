@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Tensor;
 // provides a lookup table for the world to image transform
 // idea: create lookup table for a rectangular area in front of the go kart that encloses the field of view as
 // seen by the ImageTogokartUtil. Discretize with the cellDim parameter. Include interpolation method.
-// TODO unused and unfinished code
+// TODO MG unused and unfinished code
 public class GokartToImageLookup implements GokartToImageInterface {
   public static GokartToImageLookup fromMatrix(Tensor inputTensor, Scalar unitConversion, Scalar cellDim, Scalar lookAheadDistance, int width) {
     return new GokartToImageLookup(new ImageToGokartUtil(inputTensor, unitConversion, width), //

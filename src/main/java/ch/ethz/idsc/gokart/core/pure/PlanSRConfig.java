@@ -9,7 +9,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class PlanSRConfig {
   public static final PlanSRConfig GLOBAL = AppResources.load(new PlanSRConfig());
   // ---
-  // TODO units
   public Boolean SR_PED_LEGAL = true;
   public Boolean SR_PED_ILLEGAL = false;
   public Scalar pedVelocity = Quantity.of(1.6, SI.VELOCITY);

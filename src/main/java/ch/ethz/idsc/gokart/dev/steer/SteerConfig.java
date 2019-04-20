@@ -33,13 +33,19 @@ public class SteerConfig {
   /** amplitude of signal during calibration procedure */
   public final Scalar calibration = Quantity.of(1.5, "SCT");
   // ---
-  /** maximum steer column value commanded by joystick or autonomous drive
-   * originally, the value was close to the max possible: 0.6743167638778687[SCE]
-   * but this choice put unnecessary stress on the hardware.
+  /** .
+   * 20190420 the steering column encoder values range in an interval
+   * of width 1.49609[SCE] that is centered typically slightly offset
+   * from zero. Example: on 20190401T115537 the interval was
+   * {-0.75586[SCE], 0.740235[SCE]}.
    * 
-   * 20180517 the */
-  // TODO DUBILAB JPH value of columnMax does not correspond to the above comment
-  public final Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
+   * the state interval width motivates the values
+   * SteerColumnTracker.SOFT and SteerColumnTracker.HARD
+   * 
+   * the value columnMax refines the half width for autonomous steer
+   * position control. the value columnMax is smaller than the
+   * physically possible in order to avoid stress on the hardware. */
+  public final Scalar columnMax = Quantity.of(0.73, SteerPutEvent.UNIT_ENCODER);
   /** 0.5 corresponds to 50% of torque limit */
   public final Scalar stepOfLimit = RealScalar.of(0.5);
   /** max turning rate per meter driven under the assumption of no slip
