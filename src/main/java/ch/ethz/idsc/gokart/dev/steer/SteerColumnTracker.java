@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * the HARD threshold is considered an emergency */
 public final class SteerColumnTracker implements SteerGetListener, SteerColumnInterface {
   /** manual moving the steer from left-right leads to a range: 1.45 */
-  private static final double SOFT = 1.45;
+  static final double SOFT = 1.45;
   /** upper bound on steer column interval width
    * in the lab, the max range measured: 1.538
    * on test day 2017-12-07: HARD limit increase from 1.6 to 1.9

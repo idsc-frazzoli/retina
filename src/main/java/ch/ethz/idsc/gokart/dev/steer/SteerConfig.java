@@ -45,7 +45,7 @@ public class SteerConfig {
    * the value columnMax refines the half width for autonomous steer
    * position control. the value columnMax is smaller than the
    * physically possible in order to avoid stress on the hardware. */
-  public final Scalar columnMax = Quantity.of(0.73, SteerPutEvent.UNIT_ENCODER);
+  public final Scalar columnMax = Quantity.of(SteerColumnTracker.SOFT / 2, SteerPutEvent.UNIT_ENCODER);
   /** 0.5 corresponds to 50% of torque limit */
   public final Scalar stepOfLimit = RealScalar.of(0.5);
   /** max turning rate per meter driven under the assumption of no slip

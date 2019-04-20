@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.tvec;
 
 import java.util.Objects;
 
+import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
@@ -26,20 +27,12 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
   }
 
   @Override // from ImprovedNormalizedTorqueVectoring
-  public final Tensor getMotorCurrentsFromAcceleration( //
-      Scalar expectedRotationPerMeterDriven, //
-      Scalar meanTangentSpeed, //
-      Scalar angularSlip, //
-      Scalar wantedAcceleration, //
-      Scalar realRotation) {
-    Scalar expectedRotationVelocity = meanTangentSpeed.multiply(expectedRotationPerMeterDriven);
+  public final Tensor getMotorCurrentsFromAcceleration(AngularSlip angularSlip, Scalar wantedAcceleration) {
+    Scalar expectedRotationVelocity = angularSlip.tangentSpeed().multiply(angularSlip.rotationPerMeterDriven());
     Scalar expectedRoationAcceleration = estimateRotationAcceleration(expectedRotationVelocity, intervalClock.seconds());
     return getMotorCurrentsFromAcceleration(//
-        expectedRotationPerMeterDriven, //
-        meanTangentSpeed, //
         angularSlip, //
         wantedAcceleration, //
-        realRotation, //
         expectedRoationAcceleration);
   }
 
@@ -61,21 +54,16 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
   }
 
   private Tensor getMotorCurrentsFromAcceleration( //
-      Scalar expectedRotationPerMeterDriven, //
-      Scalar meanTangentSpeed, //
-      Scalar angularSlip, //
-      Scalar wantedAcceleration, //
-      Scalar realRotation, //
-      Scalar expectedRotationAcceleration) {
-    Scalar dynamicComponent = getDynamicComponent(angularSlip);
-    Scalar staticComponent = getStaticComponent(expectedRotationPerMeterDriven, meanTangentSpeed);
+      AngularSlip angularSlip, Scalar wantedAcceleration, Scalar expectedRotationAcceleration) {
+    Scalar dynamicComponent = getDynamicComponent(angularSlip.angularSlip());
+    Scalar staticComponent = getStaticComponent(angularSlip.rotationPerMeterDriven(), angularSlip.tangentSpeed());
     Scalar predictiveComponent = getPredictiveComponent(expectedRotationAcceleration);
     // ---
     Scalar wantedZTorque = wantedZTorque( //
         dynamicComponent.add(staticComponent).add(predictiveComponent), // One
-        realRotation);
+        angularSlip.gyroZ());
     // left and right power prefer power over Z-torque
-    return getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, meanTangentSpeed);
+    return getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
   }
 
   private Scalar getPredictiveComponent(Scalar expectedRotationAcceleration) {
