@@ -5,8 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-/** converts firing data to spacial events with time, 3d-coordinates and
- * intensity
+/** converts firing data to spacial events with time, 3d-coordinates and intensity
  * 
  * CLASS IS USED OUTSIDE OF PROJECT - MODIFY ONLY IF ABSOLUTELY NECESSARY */
 public class LidarRotationProvider implements LidarRayDataListener {
@@ -22,12 +21,12 @@ public class LidarRotationProvider implements LidarRayDataListener {
     listeners.add(listener);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     this.usec = usec;
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     if (rotational <= rotational_last) {
       LidarRotationEvent lidarRotationEvent = new LidarRotationEvent(usec, rotational);

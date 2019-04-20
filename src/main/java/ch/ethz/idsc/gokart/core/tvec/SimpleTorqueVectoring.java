@@ -16,21 +16,14 @@ public class SimpleTorqueVectoring implements TorqueVectoringInterface {
   @Override // from TorqueVectoringInterface
   public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar wantedPower, Scalar realRotation) {
     // compute differential torque (in ARMS as we do not use the power function yet)
-    // Scalar dynamicComponent = angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);
     Scalar dynamicComponent = getDynamicComponent(angularSlip);
-    // Scalar lateralAcceleration = Times.of(expectedRotationPerMeterDriven, meanTangentSpeed, meanTangentSpeed);
-    // Scalar staticComponent = lateralAcceleration.multiply(torqueVectoringConfig.staticCompensation);
     Scalar staticComponent = getStaticComponent(expectedRotationPerMeterDriven, meanTangentSpeed);
     // ---
     Scalar wantedZTorque = wantedZTorque( //
         dynamicComponent.add(staticComponent), // One
         realRotation);
     // left and right power prefer power over Z-torque
-    Scalar power = Clips.absoluteOne().apply(wantedPower);
-    return TorqueVectoringClip.of( //
-        power.subtract(wantedZTorque), // unit one
-        power.add(wantedZTorque) // unit one
-    );
+    return TorqueVectoringClip.from(Clips.absoluteOne().apply(wantedPower), wantedZTorque);
   }
 
   /** @param angularSlip [1/s]

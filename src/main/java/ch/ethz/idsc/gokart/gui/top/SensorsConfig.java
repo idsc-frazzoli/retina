@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import ch.ethz.idsc.gokart.calib.vmu931.FlippedPlanarVmu931Imu;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
@@ -15,7 +16,6 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16ToPolarCoordinates;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
-import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -32,7 +32,7 @@ public class SensorsConfig {
   public final Scalar vlp16_twist = RealScalar.of(-1.61);
   /** transformation from center of rear-axle to vlp16 in (x,y)-plane
    * the third, i.e. angle coordinate has to be zero. */
-  public final Tensor vlp16 = Tensors.vector(0.09, 0.0, 0.0);
+  public final Tensor vlp16_pose = Tensors.fromString("{0.09[m], 0.0[m], 0.0}");
   /** vlp16_incline is the rotation of tilt around the y-axis of the gokart
    * 
    * due to the small magnitude of vlp16_incline, the approximations hold
@@ -94,7 +94,7 @@ public class SensorsConfig {
 
   /** @return 3x3 matrix transforming points in lidar frame to gokart frame */
   public Tensor vlp16Gokart() {
-    return Se2Utils.toSE2Matrix(vlp16).unmodifiable();
+    return GokartPoseHelper.toSE2Matrix(vlp16_pose);
   }
 
   public int imuSamplesPerLidarScan() {

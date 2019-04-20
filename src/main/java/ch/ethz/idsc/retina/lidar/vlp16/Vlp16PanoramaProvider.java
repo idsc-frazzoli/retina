@@ -8,8 +8,8 @@ import ch.ethz.idsc.retina.lidar.app.LidarPanorama;
 import ch.ethz.idsc.retina.lidar.app.LidarPanoramaProvider;
 
 public class Vlp16PanoramaProvider extends LidarPanoramaProvider {
-  /** constructor multiplies index values with image width */
-  private static final int[] INDEX = new int[] { //
+  /** pixelY of the rays in the byteBuffer */
+  static final int[] PIXEL_Y = new int[] { //
       15, 7, //
       14, 6, //
       13, 5, //
@@ -23,10 +23,10 @@ public class Vlp16PanoramaProvider extends LidarPanoramaProvider {
     super(supplier);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     lidarPanorama.setRotational(rotational);
-    for (int index : INDEX)
+    for (int index : PIXEL_Y)
       lidarPanorama.setReading( //
           index, //
           byteBuffer.getShort() & 0xffff, //

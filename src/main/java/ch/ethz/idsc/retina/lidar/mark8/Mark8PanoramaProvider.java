@@ -17,7 +17,7 @@ public class Mark8PanoramaProvider extends LidarPanoramaProvider {
     IntStream.range(0, index.length).forEach(i -> index[i] = (7 - i) * MAX_WIDTH);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     // final int x = lidarPanorama.getWidth();
     // lidarPanorama.setAngle(RealScalar.of(rotational));
