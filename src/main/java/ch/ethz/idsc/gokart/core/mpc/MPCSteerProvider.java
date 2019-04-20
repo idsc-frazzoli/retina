@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerConfig;
+import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   // TODO JPH not too good location for vlp16 slowing
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
-  private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerConfig.GLOBAL);
+  private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
 
   public MPCSteerProvider(Timing timing, MPCSteering mpcSteering) {

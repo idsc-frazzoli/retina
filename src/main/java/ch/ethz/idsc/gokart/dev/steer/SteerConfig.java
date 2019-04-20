@@ -31,11 +31,7 @@ public class SteerConfig {
   public final Scalar voltageHi = Quantity.of(4.2 * 3, SI.VOLT); // 4.2 * 3 == 12.9[V]
   // ---
   /** amplitude of signal during calibration procedure */
-  public Scalar calibration = Quantity.of(1.5, "SCT");
-  public Scalar Ki = Quantity.of(1.95, "SCE^-1*SCT*s^-1");
-  public Scalar Kp = Quantity.of(3.53, "SCE^-1*SCT");
-  public Scalar Kd = Quantity.of(0.57, "SCE^-1*SCT*s");
-  public Scalar torqueLimit = Quantity.of(1.5, "SCT");
+  public final Scalar calibration = Quantity.of(1.5, "SCT");
   // ---
   /** maximum steer column value commanded by joystick or autonomous drive
    * originally, the value was close to the max possible: 0.6743167638778687[SCE]
@@ -43,25 +39,19 @@ public class SteerConfig {
    * 
    * 20180517 the */
   // TODO DUBILAB JPH value of columnMax does not correspond to the above comment
-  public Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
+  public final Scalar columnMax = Quantity.of(0.7, SteerPutEvent.UNIT_ENCODER);
   /** 0.5 corresponds to 50% of torque limit */
-  public Scalar stepOfLimit = RealScalar.of(0.5);
+  public final Scalar stepOfLimit = RealScalar.of(0.5);
   /** max turning rate per meter driven under the assumption of no slip
    * the numeric value was determined in an experiment documented in the report below
    * https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf
    * The reciprocal gives the minimum turning radius to be approx. 2.45[m]. */
-  public Scalar turningRatioMax = Quantity.of(0.4082, SI.PER_METER);
+  public final Scalar turningRatioMax = Quantity.of(0.4082, SI.PER_METER);
 
   /***************************************************/
   /** @return voltage operating range of battery */
   public Clip operatingVoltageClip() {
     return Clips.interval(voltageLo, voltageHi);
-  }
-
-  /** @return symmetric interval centered at zero that bounds the torque
-   * applied to the steering wheel */
-  public Clip torqueLimitClip() {
-    return Clips.interval(torqueLimit.negate(), torqueLimit);
   }
 
   /***************************************************/
