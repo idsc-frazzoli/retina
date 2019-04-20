@@ -16,7 +16,7 @@ import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.sophus.math.GeodesicInterface;
-import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
@@ -47,8 +47,8 @@ import ch.ethz.idsc.tensor.red.Norm;
       GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
       Tensor ratios = geodesicPursuit.ratios().map(r -> Quantity.of(r, SI.PER_METER));
       if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
-        return Norm._2.ofVector(Extract2D.FUNCTION.apply(vector));
-      return RealScalar.of(Double.MAX_VALUE); // TODO GJOEL unitless?
+        return curveLength(geodesicPursuit.curve()); // Norm._2.ofVector(Extract2D.FUNCTION.apply(vector));
+      return DoubleScalar.POSITIVE_INFINITY; // TODO GJOEL unitless?
     };
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
@@ -68,5 +68,13 @@ import ch.ethz.idsc.tensor.red.Norm;
    * @return predicate to determine whether ratio is compliant with all posed turning ratio limits */
   private static Predicate<Scalar> isCompliant(List<DynamicRatioLimit> ratioLimits, Tensor pose, Scalar speed) {
     return ratio -> ratioLimits.stream().map(c -> c.at(pose, speed)).allMatch(c -> c.isInside(ratio));
+  }
+
+  /** @param curve geodesic
+   * @return approximated length of curve */
+  private static Scalar curveLength(Tensor curve) {
+    Tensor curve_ = Tensor.of(curve.stream().map(Extract2D.FUNCTION));
+    int n = curve_.length();
+    return curve_.extract(1, n).subtract(curve_.extract(0, n - 1)).stream().map(Norm._2::ofVector).reduce(Scalar::add).get();
   }
 }
