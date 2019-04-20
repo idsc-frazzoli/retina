@@ -11,9 +11,8 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class Vmu931ImuFrame {
-  private static final double DPS_TO_RPS = Magnitude.PER_SECOND.toDouble(Quantity.of(1, "deg*s^-1"));
-  // TODO redundant DavisImuFrame
-  private static final double G_TO_M_S2 = 9.81;
+  static final double DPS_TO_RPS = Magnitude.PER_SECOND.toDouble(Quantity.of(1, "deg*s^-1"));
+  static final double G_TO_M_S2 = 9.81;
   // ---
   /** milli seconds */
   private final int timestamp_ms;

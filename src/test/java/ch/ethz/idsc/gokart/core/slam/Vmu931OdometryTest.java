@@ -40,19 +40,19 @@ public class Vmu931OdometryTest extends TestCase {
     vmu931Odometry.vmu931ImuFrame(Vmu931ImuFrames.create( //
         123_000, //
         Tensors.fromString("{0.3[m*s^-2], 0.1[m*s^-2], 0.0[m*s^-2]}"), //
-        Tensors.fromString("{0[s^-1],0[s^-1],0.1[s^-1]}")));
+        Tensors.fromString("{0[s^-1], 0[s^-1], 0.1[s^-1]}")));
     Chop._10.requireClose(vmu931Odometry.getPose(), //
-        Tensors.fromString("{1.0002942991555954[m], 9.810256970907202E-5[m], 1.745329278001762E-5}"));
+        Tensors.fromString("{1.0000299949955427[m], 1.0014997904120474E-5[m], 0.0010000000116728047}"));
     Chop._10.requireClose(vmu931Odometry.getVelocity(), //
-        Tensors.fromString("{0.029430001169443134[m*s^-1], 0.009810000146180392[m*s^-1], 0.0017453292780017621[s^-1]}"));
+        Tensors.fromString("{0.003000000054202974[m*s^-1], 9.999999571591617E-4[m*s^-1], 0.10000000116728047[s^-1]}"));
     vmu931Odometry.vmu931ImuFrame(Vmu931ImuFrames.create( //
         121_000, // <- time decrement should never happen
         Tensors.fromString("{0.3[m*s^-2], 0.1[m*s^-2], 0.0[m*s^-2]}"), //
-        Tensors.fromString("{0[s^-1],0[s^-1],0.1[s^-1]}")));
+        Tensors.fromString("{0[s^-1], 0[s^-1], 0.1[s^-1]}")));
     Chop._10.requireClose(vmu931Odometry.getPose(), //
-        Tensors.fromString("{1.0002942991555954[m], 9.810256970907202E-5[m], 1.745329278001762E-5}"));
+        Tensors.fromString("{1.0000299949955427[m], 1.0014997904120474E-5[m], 0.0010000000116728047}"));
     Chop._10.requireClose(vmu931Odometry.getVelocity(), //
-        Tensors.fromString("{0.029430001169443134[m*s^-1], 0.009810000146180392[m*s^-1], 0.0017453292780017621[s^-1]}"));
+        Tensors.fromString("{0.003000000054202974[m*s^-1], 9.999999571591617E-4[m*s^-1], 0.10000000116728047[s^-1]}"));
   }
 
   public void testFail() {

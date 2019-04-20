@@ -32,7 +32,7 @@ import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-// TODO redraw thread is independent of sync signal of images...!
+// TODO JPH redraw thread is independent of sync signal of images...!
 public class DavisViewerFrame implements TimedImageListener {
   private static final File EXPORT_DIRECTORY = HomeDirectory.Pictures("dvs");
   // ---

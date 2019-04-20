@@ -24,6 +24,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class SteerPositionControl {
   static final Scalar DT = SteerSocket.INSTANCE.getPutPeriod();
   private final SteerPid steerPid;
+  private final Clip torqueLimitClip;
   // ---
   /** pos error initially incorrect in the first iteration */
   private Scalar lastPos_error = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
@@ -36,6 +37,7 @@ public class SteerPositionControl {
 
   public SteerPositionControl(SteerPid steerPid) {
     this.steerPid = Objects.requireNonNull(steerPid);
+    this.torqueLimitClip = steerPid.torqueLimitClip();
   }
 
   /** @param pos_error in "SCE"
@@ -50,10 +52,9 @@ public class SteerPositionControl {
     lastPos_error = pos_error; // update for next iteration
     // ---
     Scalar testValue = pPart.add(dPart).add(iPart);
-    Clip clip = steerPid.torqueLimitClip();
-    if (clip.isInside(testValue))
+    if (torqueLimitClip.isInside(testValue))
       lastIPt_value = iPart;
-    lastTor_value = steerPid.torqueLimitClip().apply(testValue); // anti-windup and update for next iteration
+    lastTor_value = torqueLimitClip.apply(testValue); // anti-windup and update for next iteration
     return lastTor_value;
   }
 
@@ -77,10 +78,9 @@ public class SteerPositionControl {
     lastPos_value = currentPos;
     // ---
     Scalar testValue = pPart.add(dPart).add(iPart);
-    Clip clip = steerPid.torqueLimitClip();
-    if (clip.isInside(testValue))
+    if (torqueLimitClip.isInside(testValue))
       lastIPt_value = iPart;
-    lastTor_value = steerPid.torqueLimitClip().apply(testValue); // anti-windup and update for next iteration
+    lastTor_value = torqueLimitClip.apply(testValue); // anti-windup and update for next iteration
     return lastTor_value;
   }
 }

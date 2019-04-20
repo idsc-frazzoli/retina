@@ -17,7 +17,7 @@ public class SteerPid {
 
   /** @return symmetric interval centered at zero that bounds the torque
    * applied to the steering wheel */
-  public Clip torqueLimitClip() {
+  public final Clip torqueLimitClip() {
     return Clips.interval(torqueLimit.negate(), torqueLimit);
   }
 }
