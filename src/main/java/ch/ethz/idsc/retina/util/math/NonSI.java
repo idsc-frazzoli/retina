@@ -14,7 +14,9 @@ public enum NonSI {
   public static final Unit MINUTE = Unit.of("min");
   // ---
   public static final Unit DEGREE_ANGLE = Unit.of("deg");
+  public static final Unit DEGREE_PER_SECOND = Unit.of("deg*s^-1");
   // ---
+  /** DegreesCelsius */
   public static final Unit DEGREE_CELSIUS = Unit.of("degC");
   // ---
   /** amplitude/Ampere root mean square */

@@ -16,6 +16,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -76,12 +77,11 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
    * @return */
   final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Scalar gyroZ) {
     Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
-    Scalar rotationPerMeterDriven = bicycleAngularSlip.rotationPerMeterDriven(theta); // m^-1
+    // Scalar rotationPerMeterDriven = bicycleAngularSlip.rotationPerMeterDriven(theta); // m^-1
     // compute (negative) angular slip
-    Scalar angularSlip = bicycleAngularSlip.angularSlip(theta, meanTangentSpeed, gyroZ);
+    AngularSlip angularSlip = bicycleAngularSlip.getAngularSlip(theta, meanTangentSpeed, gyroZ);
     // ---
-    Tensor powers = torqueVectoringInterface.powers( //
-        rotationPerMeterDriven, meanTangentSpeed, angularSlip, power, gyroZ);
+    Tensor powers = torqueVectoringInterface.powers(angularSlip, power);
     Tensor torquesARMS = powers.multiply(ManualConfig.GLOBAL.torqueLimit); // vector of length 2
     // ---
     short arms_rawL = Magnitude.ARMS.toShort(torquesARMS.Get(0));

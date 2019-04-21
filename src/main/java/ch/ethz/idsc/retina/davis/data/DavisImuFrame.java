@@ -21,8 +21,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class DavisImuFrame extends DataEvent {
   /* package */ static final int LENGTH = 4 + 2 * 7;
   // ---
-  // TODO these constants depend on the camera configuration and are only valid for the specific
-  // choice of settings for the imu chip!
+  /** these constants depend on the camera configuration and are only
+   * valid for the specific choice of settings for the imu chip! */
   private static final double TEMPERATURE_SCALE = 1.0 / 340;
   private static final double TEMPERATURE_OFFSET = 35.0;
   private static final double G_TO_M_S2 = 9.81;

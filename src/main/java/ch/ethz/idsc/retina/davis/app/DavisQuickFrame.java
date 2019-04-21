@@ -14,7 +14,7 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.davis.DavisDevice;
 
-// TODO redraw thread is independent of sync signal of images...!
+// TODO JPH redraw thread is independent of sync signal of images...!
 public class DavisQuickFrame {
   public final JFrame jFrame = new JFrame();
   private final Timer timer = new Timer();

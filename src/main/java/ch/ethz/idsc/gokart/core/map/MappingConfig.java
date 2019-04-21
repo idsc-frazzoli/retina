@@ -25,7 +25,7 @@ public class MappingConfig {
    * with occupancy probability larger than P_THRESH are classified
    * as occupied */
   public Scalar P_THRESH = DoubleScalar.of(0.5);
-  /** Forgetting factor lambda in (0,1] TODO check interval
+  /** Forgetting factor lambda in (0,1]
    * Lambda == 1 results in past and current measurements being equally important.
    * Lambda == 0.4 was a choice in the past */
   public Scalar lambda = DoubleScalar.of(0.8);
