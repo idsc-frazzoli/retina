@@ -7,6 +7,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
@@ -127,7 +128,7 @@ public class DifferentialSpeedTest extends TestCase {
     DifferentialSpeed dsL = DifferentialSpeed.fromSI(RealScalar.of(1.2), RealScalar.of(+.5));
     DifferentialSpeed dsR = DifferentialSpeed.fromSI(RealScalar.of(1.2), RealScalar.of(-.5));
     Scalar v = RealScalar.of(4);
-    Scalar beta = RealScalar.of(Math.PI / 2);
+    Scalar beta = Pi.HALF;
     Scalar rL = dsL.get(v, beta);
     Scalar rR = dsR.get(v, beta);
     assertTrue(Chop._12.close(rL, rR.negate()));
