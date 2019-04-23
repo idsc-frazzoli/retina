@@ -10,7 +10,9 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.slam.PlannerAnalysisOffline;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.ResourceData;
 
 /* package */ enum RunPlannerAnalysisOffline {
   ;
@@ -18,8 +20,9 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     File file = HomeDirectory.file("gokart", "logs");
     System.out.println(file.getName());
     GokartLogInterface gokartLogInterface = GokartLogAdapter.of(file);
-    OfflineLogListener oll = new PlannerAnalysisOffline();
-    OfflineLogPlayer.process(gokartLogInterface.file(), oll);
+    Tensor waypoints = ResourceData.of("/dubilab/waypoints/20180425.csv");
+    OfflineLogListener offlineLogListener = new PlannerAnalysisOffline(waypoints);
+    OfflineLogPlayer.process(gokartLogInterface.file(), offlineLogListener);
     System.out.print("Done.");
   }
 }

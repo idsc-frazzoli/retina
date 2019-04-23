@@ -20,7 +20,6 @@ import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
-import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
@@ -64,7 +63,7 @@ public class ObstacleAggregate implements OfflineLogListener, LidarSpacialListen
   private void setPose(Tensor pose) {
     geometricLayer = new GeometricLayer(model2pixel, Array.zeros(3));
     geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(pose));
-    geometricLayer.pushMatrix(Se2Utils.toSE2Translation(SensorsConfig.GLOBAL.vlp16));
+    geometricLayer.pushMatrix(SensorsConfig.GLOBAL.vlp16Gokart());
   }
 
   @Override // from LidarSpacialListener

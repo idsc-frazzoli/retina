@@ -11,27 +11,27 @@ import junit.framework.TestCase;
 
 public class SteerSimplePositionControlTest extends TestCase {
   public void testSimple() {
-    SteerSimplePositionControl test = new SteerSimplePositionControl();
-    test.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
-    test.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
-    test.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
+    SimpleSteerPositionControl simpleSteerPositionControl = new SimpleSteerPositionControl();
+    simpleSteerPositionControl.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
+    simpleSteerPositionControl.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
+    simpleSteerPositionControl.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
     for (int i = 0; i < 10; i++) {
-      Scalar value = test.iterate(Quantity.of(0, SteerPutEvent.UNIT_ENCODER));
+      Scalar value = simpleSteerPositionControl.iterate(Quantity.of(0, SteerPutEvent.UNIT_ENCODER));
       SteerPutEvent.RTORQUE.apply(value);
     }
   }
 
   public void testSimple2() {
-    SteerSimplePositionControl test = new SteerSimplePositionControl();
+    SimpleSteerPositionControl simpleSteerPositionControl = new SimpleSteerPositionControl();
     Distribution distribution = NormalDistribution.standard();
     for (int i = 0; i < 100; i++) {
       Scalar err_pos = Quantity.of(RandomVariate.of(distribution), SteerPutEvent.UNIT_ENCODER);
-      Scalar value = test.iterate(err_pos.multiply(RealScalar.of(0.01)));
+      Scalar value = simpleSteerPositionControl.iterate(err_pos.multiply(RealScalar.of(0.01)));
       SteerPutEvent.RTORQUE.apply(value);
     }
   }
 
   public void testDt() {
-    assertEquals(SteerSimplePositionControl.DT, Quantity.of(0.02, "s"));
+    assertEquals(SimpleSteerPositionControl.DT, Quantity.of(0.02, "s"));
   }
 }

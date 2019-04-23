@@ -11,12 +11,21 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
 public enum TorqueVectoringClip {
   ;
-  /** power left and right should total to a value in the interval [-1, 1]
+  /** @param power unitless
+   * @param wantedZTorque unitless
+   * @return */
+  public static Tensor from(Scalar power, Scalar wantedZTorque) {
+    return of( //
+        power.subtract(wantedZTorque), //
+        power.add(wantedZTorque));
+  }
+
+  /** power left (powerL) and power right (powerR) should total to a value in the interval [-1, 1]
    * 
    * @param powerL power left unitless
    * @param powerR power right unitless
    * @return vector of length 2 with scalars in interval [-1, 1] */
-  public static Tensor of(Scalar powerL, Scalar powerR) {
+  /* package */ static Tensor of(Scalar powerL, Scalar powerR) {
     Scalar l_hi = Ramp.FUNCTION.apply(powerL.subtract(RealScalar.ONE));
     Scalar l_lo = Ramp.FUNCTION.apply(powerL.negate().subtract(RealScalar.ONE));
     Scalar r_hi = Ramp.FUNCTION.apply(powerR.subtract(RealScalar.ONE));

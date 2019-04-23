@@ -10,16 +10,13 @@ import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.sca.Tan;
+import ch.ethz.idsc.tensor.sca.Ramp;
 
 /* package */ class MPCAggressiveTorqueVectoringPower extends MPCPower {
-  private static final Scalar NOACCELERATION = Quantity.of(0, SI.ACCELERATION);
   private final BicycleAngularSlip bicycleAngularSlip = ChassisGeometry.GLOBAL.getBicycleAngularSlip();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
@@ -33,7 +30,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
     this.mpcSteering = mpcSteering;
   }
 
-  @Override
+  @Override // from MPCPower
   Optional<Tensor> getPower(Scalar time) {
     ControlAndPredictionStep cnsStep = getStep(time);
     if (Objects.isNull(cnsStep))
@@ -43,23 +40,15 @@ import ch.ethz.idsc.tensor.sca.Tan;
       return Optional.empty();
     Tensor steering = optional.get();
     Scalar theta = steerMapping.getAngleFromSCE(steering.Get(0)); // steering angle of imaginary front wheel
-    Scalar expectedRotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(ChassisGeometry.GLOBAL.xAxleRtoF); // m^-1
     Scalar tangentialSpeed = mpcStateEstimationProvider.getState().getUx();
-    // Scalar wantedRotationRate = expectedRotationPerMeterDriven.multiply(tangentialSpeed); // unit s^-1
     // compute (negative) angular slip
     Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
-    Scalar angularSlip = bicycleAngularSlip.angularSlip(theta, tangentialSpeed, gyroZ);
-    // wantedRotationRate.subtract(gyroZ);
-    Scalar wantedAcceleration = cnsStep.gokartControl().getaB();// when used in
+    Scalar wantedAcceleration = cnsStep.gokartControl().getaB();
     // get midpoint of powered acceleration range
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar midpoint = (Scalar) Mean.of(minmax);
     // more tame version
-    return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(//
-        expectedRotationPerMeterDriven, //
-        tangentialSpeed, //
-        angularSlip, //
-        Max.of(NOACCELERATION, wantedAcceleration), //
-        gyroZ));
+    AngularSlip angularSlip = bicycleAngularSlip.getAngularSlip(theta, tangentialSpeed, gyroZ);
+    return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(angularSlip, Ramp.FUNCTION.apply(wantedAcceleration)));
   }
 }

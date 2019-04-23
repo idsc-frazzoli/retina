@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.fuse;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -61,7 +62,9 @@ public class SafetyConfig {
       SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
       Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent);
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-      return new CircleClearanceTracker(speed, half, angle, SensorsConfig.GLOBAL.vlp16, getClearanceClip());
+      return new CircleClearanceTracker( //
+          speed, half, angle, //
+          GokartPoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose), getClearanceClip());
     }
     return EmptyClearanceTracker.INSTANCE;
   }
@@ -69,7 +72,7 @@ public class SafetyConfig {
   /** convenient way for the application layer to obtain an instance
    * without having to specify the geometric configuration
    * 
-   * @return */
+   * @return predicate to perform obstacle checking */
   public SpacialXZObstaclePredicate createSpacialXZObstaclePredicate() {
     return new SimpleSpacialObstaclePredicate(vlp16_ZClip(), SensorsConfig.GLOBAL.vlp16_incline);
   }

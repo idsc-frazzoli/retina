@@ -59,7 +59,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
     { // draw the 16 lidar rays from -15deg to 15deg
       final Scalar py = Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16Height);
       Tensor translate = Se2Utils.toSE2Matrix(Tensors.of( //
-          SensorsConfig.GLOBAL.vlp16.Get(0), // translation right (in pixel space)
+          Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16_pose.Get(0)), // translation right (in pixel space)
           py, // translation up (in pixel space) to
           RealScalar.ZERO // rotation is pixel space
       ));

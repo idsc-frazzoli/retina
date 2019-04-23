@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
  * typically the distances up to 5[m] can be measured correctly. */
 public enum Urg04lxLiveProvider implements StartAndStoppable {
   INSTANCE;
-  // TODO possibly do not make this a singleton instance?
+  // TODO JPH do not make this a singleton instance so that launch can be controlled better
   // ---
   /* package */ static final File DIRECTORY = HomeDirectory.file("Public");
   /* package */ static final File EXECUTABLE = new File(DIRECTORY, "urg_binaryprovider");

@@ -29,8 +29,8 @@ public class DeleteDirectory {
    * @param max_count
    * @return
    * @throws Exception if given file does not exist, or criteria are not met */
-  // TODO specify option to delete root
-  // TODO max depth as 0 in order just to delete contents, rename to "max subfolder"
+  // TODO JPH specify option to delete root
+  // TODO JPH max depth as 0 in order just to delete contents, rename to "max subfolder"
   public static DeleteDirectory of(File file, int max_depth, int max_count) throws IOException {
     return new DeleteDirectory(file, max_depth, max_count);
   }

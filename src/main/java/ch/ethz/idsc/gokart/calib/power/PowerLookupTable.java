@@ -24,14 +24,11 @@ public class PowerLookupTable {
   private static final File FILE_FORWARD = new File(DIRECTORY, "powerlookuptable_forward.object");
   private static final File FILE_INVERSE = new File(DIRECTORY, "powerlookuptable_inverse.object");
   // ---
-  // TODO JPH magic const in config class, also make public and reuse in PowerLookupTableExport
-  // min and max values for lookup tables
-  private static final Clip CLIP_VEL = Clips.interval( //
-      Quantity.of(-10, SI.VELOCITY), //
-      Quantity.of(+10, SI.VELOCITY));
-  private static final Clip CLIP_ACC = Clips.interval( //
-      Quantity.of(-2, SI.ACCELERATION), //
-      Quantity.of(+2, SI.ACCELERATION));
+  private static final Scalar MAX_VEL = Quantity.of(+10, SI.VELOCITY);
+  private static final Scalar MAX_ACC = Quantity.of(+2, SI.ACCELERATION);
+  /** min and max values for lookup tables */
+  public static final Clip CLIP_VEL = Clips.interval(MAX_VEL.negate(), MAX_VEL);
+  public static final Clip CLIP_ACC = Clips.interval(MAX_ACC.negate(), MAX_ACC);
   private static final int RES = 1000;
   private static final PowerLookupTable INSTANCE = new PowerLookupTable();
 
@@ -129,27 +126,26 @@ public class PowerLookupTable {
   /** get the acceleration characterized by the relative power value
    * @param power value scaled from [-1,1] characterizing the requested power value [ONE]
    * -1: minimal acceleration (full deceleration)
-   * 0: no acceleration
-   * 1: maximal acceleration
-   * @param velocity [m/s]
-   * @return the resulting acceleration [m/s^2] */
-  public Scalar getNormalizedAcceleration(Scalar power, Scalar velocity) {
-    Tensor minMaxAcc = getMinMaxAcceleration(velocity);
-    Scalar clippedPower = Clips.absoluteOne().apply(power);
-    Tensor keypoints = Tensors.of(minMaxAcc.Get(0), Quantity.of(0, SI.ACCELERATION), minMaxAcc.Get(1));
-    return LinearInterpolation.of(keypoints).At(clippedPower.add(RealScalar.ONE));
-  }
-
-  /** get the acceleration characterized by the relative power value
-   * @param power value scaled from [-1,1] characterizing the requested power value [ONE]
-   * -1: minimal acceleration (full deceleration)
    * 0: no motor current
    * 1: maximal acceleration
    * @param velocity [m/s]
    * @return the resulting acceleration [m/s^2] */
   public Scalar getNormalizedAccelerationTorqueCentered(Scalar power, Scalar velocity) {
-    Tensor minMaxAcc = getMinMaxAcceleration(velocity);
     Scalar torqueFreeAcc = getAcceleration(Quantity.of(0, NonSI.ARMS), velocity);
+    return getNormalizedAcceleration(torqueFreeAcc, power, velocity);
+  }
+
+  /** get the acceleration characterized by the relative power value
+   *
+   * @param torqueFreeAcc with unit [m*s^-2]
+   * @param power value scaled from [-1,1] characterizing the requested power value [ONE]
+   * -1: minimal acceleration (full deceleration)
+   * 0: no acceleration
+   * 1: maximal acceleration
+   * @param velocity [m/s]
+   * @return the resulting acceleration [m/s^2] */
+  /* package */ Scalar getNormalizedAcceleration(Scalar torqueFreeAcc, Scalar power, Scalar velocity) {
+    Tensor minMaxAcc = getMinMaxAcceleration(velocity);
     Scalar clippedPower = Clips.absoluteOne().apply(power);
     Tensor keypoints = Tensors.of(minMaxAcc.Get(0), torqueFreeAcc, minMaxAcc.Get(1));
     return LinearInterpolation.of(keypoints).At(clippedPower.add(RealScalar.ONE));

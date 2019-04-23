@@ -5,8 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-/** converts firing data to spacial events with time, 3d-coordinates and
- * intensity */
+/** converts firing data to spacial events with time, 3d-coordinates and intensity */
 public class LidarSectorProvider implements LidarRayDataListener {
   /** init value 0 is mandatory for all sensors that transmit complete scan
    * example: urg04lxug01 */
@@ -33,12 +32,12 @@ public class LidarSectorProvider implements LidarRayDataListener {
     listeners.add(listener);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void timestamp(int usec, int type) {
     this.usec = usec;
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public void scan(int rotational, ByteBuffer byteBuffer) {
     int rot = rotational % sectorWidth;
     if (rot <= rotational_last) {

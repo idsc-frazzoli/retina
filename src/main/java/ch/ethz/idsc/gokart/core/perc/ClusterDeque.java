@@ -13,6 +13,8 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.red.Mean;
 
 public class ClusterDeque {
+  private static final int OVERLAYS = 4;
+  // ---
   private final Deque<DequeCloud> deque = new ArrayDeque<>();
   private final Deque<Tensor> means = new ArrayDeque<>();
   private final int id;
@@ -26,8 +28,8 @@ public class ClusterDeque {
     return deque.stream().map(DequeCloud::points).flatMap(Tensor::stream);
   }
 
-  public void removeFirst() { // TODO change it to parameter
-    while (deque.size() > 4)
+  public void removeFirst() {
+    while (deque.size() > OVERLAYS)
       deque.removeFirst();
   }
 

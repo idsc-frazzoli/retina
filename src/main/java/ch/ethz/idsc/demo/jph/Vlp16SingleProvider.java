@@ -26,6 +26,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneStatics;
     byte intensity = byteBuffer.get();
     coords[0] = azimuth;
     coords[1] = distance * VelodyneStatics.TO_METER_FLOAT;
+    // TODO JPH not a LidarXYZEvent
     LidarXYZEvent lidarXYZEvent = new LidarXYZEvent(usec, coords, intensity);
     listeners.forEach(listener -> listener.lidarSpacial(lidarXYZEvent));
   }

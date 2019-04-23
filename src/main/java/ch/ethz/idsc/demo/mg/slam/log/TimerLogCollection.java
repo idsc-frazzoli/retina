@@ -13,8 +13,8 @@ import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 
-/** saving logs with timestamps provided by a timer. Suitable for offline log processing when we are interested in algorithm
- * run time */
+/** saving logs with timestamps provided by a timer. Suitable for offline log processing
+ * when we are interested in algorithm run time */
 public class TimerLogCollection implements StartAndStoppable, DavisDvsListener {
   private final SlamLogSave slamLogSave;
   private final Timer timer = new Timer();
@@ -40,9 +40,8 @@ public class TimerLogCollection implements StartAndStoppable, DavisDvsListener {
     slamLogSave.logSaveTask(currentTimestamp);
   }
 
-  // we implement the interface such that we can elegantly stop the module through the call stopStoppableListeners() in
-  // abstractFilterHandler
-  // TODO not very elegant
+  // we implement the interface such that we can elegantly stop the module
+  // through the call stopStoppableListeners() in abstractFilterHandler
   @Override // from DavisDvsListener
   public void davisDvs(DavisDvsEvent davisDvsEvent) {
     // ---
