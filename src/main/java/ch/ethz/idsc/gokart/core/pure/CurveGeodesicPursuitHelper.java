@@ -46,7 +46,7 @@ import ch.ethz.idsc.tensor.red.Norm;
       mirrorAndReverse(tensor);
     Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
     TensorScalarFunction mapping = vector -> { //
-      if (Scalars.lessThan(Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)), RealScalar.of(2))) { // TODO GJOEL parameterize minimum distance
+      if (Scalars.lessThan(RealScalar.of(3), Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)))) { // TODO GJOEL parameterize minimum distance
         GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
         Tensor ratios = geodesicPursuit.ratios().map(r -> Quantity.of(r, SI.PER_METER));
         if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
