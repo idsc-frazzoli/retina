@@ -12,6 +12,7 @@ import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuit;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
 import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.sophus.math.GeodesicInterface;
@@ -46,7 +47,7 @@ import ch.ethz.idsc.tensor.red.Norm;
       mirrorAndReverse(tensor);
     Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
     TensorScalarFunction mapping = vector -> { //
-      if (Scalars.lessThan(RealScalar.of(3), Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)))) { // TODO GJOEL parameterize minimum distance
+      if (Scalars.lessThan(Magnitude.METER.apply(GeodesicPursuitParams.GLOBAL.minDistance), Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)))) {
         GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
         Tensor ratios = geodesicPursuit.ratios().map(r -> Quantity.of(r, SI.PER_METER));
         if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))

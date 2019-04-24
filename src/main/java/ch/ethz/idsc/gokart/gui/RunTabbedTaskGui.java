@@ -122,6 +122,8 @@ enum RunTabbedTaskGui {
       AntilockBrakeModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
+      GokartGeodesicTrajectoryModule.class, //
+      FigureOvalGeodesicModule.class, //
       MPCKinematicDrivingModule.class, //
       MPCDynamicDrivingModule.class, //
       GokartTrajectoryModule.class, //
@@ -140,9 +142,7 @@ enum RunTabbedTaskGui {
       SEyeSlamLidarModule.class, //
       SEyeSlamOdometryModule.class, //
       SEyeSlamVisualModule.class, //
-      FigureDucttapeModule.class, //
-      GokartGeodesicTrajectoryModule.class, //
-      FigureOvalGeodesicModule.class //
+      FigureDucttapeModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //
