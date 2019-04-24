@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
@@ -19,6 +18,7 @@ import ch.ethz.idsc.sophus.math.GeodesicInterface;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
@@ -46,7 +46,7 @@ public enum CurveGeodesicPursuitHelper {
     if (!isForward)
       mirrorAndReverse(tensor);
     Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
-    Function<Tensor, Scalar> mapping = vector -> { //
+    TensorScalarFunction mapping = vector -> { //
       GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
       Tensor ratios = geodesicPursuit.ratios().map(r -> Quantity.of(r, SI.PER_METER));
       if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))

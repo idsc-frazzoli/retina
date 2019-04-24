@@ -117,7 +117,7 @@ public abstract class GokartRender implements RenderInterface {
         graphics.setColor(COLOR_WHEEL);
         graphics.fill(geometricLayer.toPath2D(wheelConfiguration.tireConfiguration().footprint()));
         // draw slip
-        Tensor tensor = wheelConfiguration.adjoint().apply(gokartPoseEvent.getVelocity());
+        Tensor tensor = wheelConfiguration.adjoint(gokartPoseEvent.getVelocity());
         graphics.setColor(COLOR_SLIP);
         graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(tensor.Get(1).multiply(SLIP_FACTOR))));
         geometricLayer.popMatrix();

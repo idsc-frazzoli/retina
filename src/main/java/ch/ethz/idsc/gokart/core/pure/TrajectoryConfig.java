@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
@@ -34,7 +35,7 @@ public class TrajectoryConfig {
    * 20181025: reduced value to 15[deg/m] */
   public Scalar maxRotation = Quantity.of(15, "deg*m^-1");
   /** half angle of conic goal region */
-  public Scalar coneHalfAngle = RealScalar.of(Math.PI / 10);
+  public Scalar coneHalfAngle = Degree.of(18);
   public Tensor goalRadiusFactor = Tensors.vector(4, 4, 2);
   public String waypoints = "/dubilab/waypoints/20190325.csv";
 
