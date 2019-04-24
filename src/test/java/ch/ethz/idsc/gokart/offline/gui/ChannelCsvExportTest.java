@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.offline.gui;
 import java.io.File;
 import java.io.IOException;
 
-import ch.ethz.idsc.retina.util.io.DeleteDirectory;
+import ch.ethz.idsc.tensor.io.DeleteDirectory;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import junit.framework.TestCase;
 

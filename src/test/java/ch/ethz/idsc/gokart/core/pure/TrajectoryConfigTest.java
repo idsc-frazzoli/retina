@@ -6,9 +6,11 @@ import java.util.List;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.IntegerQ;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
+import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
@@ -35,6 +37,10 @@ public class TrajectoryConfigTest extends TestCase {
 
   public void testControlResolution() {
     assertTrue(IntegerQ.of(TrajectoryConfig.GLOBAL.controlResolution));
+  }
+
+  public void testConeHalfAngle() {
+    assertEquals(RealScalar.of(Math.PI / 10), Degree.of(18));
   }
 
   public void testWaypoints() {
