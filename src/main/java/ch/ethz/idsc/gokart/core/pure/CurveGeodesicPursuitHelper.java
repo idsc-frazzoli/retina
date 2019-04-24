@@ -16,7 +16,9 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.sophus.math.GeodesicInterface;
 import ch.ethz.idsc.tensor.DoubleScalar;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
@@ -44,10 +46,12 @@ import ch.ethz.idsc.tensor.red.Norm;
       mirrorAndReverse(tensor);
     Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
     TensorScalarFunction mapping = vector -> { //
-      GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
-      Tensor ratios = geodesicPursuit.ratios().map(r -> Quantity.of(r, SI.PER_METER));
-      if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
-        return curveLength(geodesicPursuit.curve()); // Norm._2.ofVector(Extract2D.FUNCTION.apply(vector));
+      if (Scalars.lessThan(Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)), RealScalar.of(2))) { // TODO GJOEL parameterize minimum distance
+        GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
+        Tensor ratios = geodesicPursuit.ratios().map(r -> Quantity.of(r, SI.PER_METER));
+        if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
+          return curveLength(geodesicPursuit.curve()); // Norm._2.ofVector(Extract2D.FUNCTION.apply(vector));
+      }
       return DoubleScalar.POSITIVE_INFINITY; // TODO GJOEL unitless?
     };
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
