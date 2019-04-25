@@ -9,7 +9,11 @@ public enum SystemTimestamp {
   ;
   private static final DateFormat FILE_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 
+  public static String asString(Date date) {
+    return FILE_FORMAT.format(date);
+  }
+
   public static String asString() {
-    return FILE_FORMAT.format(new Date());
+    return asString(new Date());
   }
 }

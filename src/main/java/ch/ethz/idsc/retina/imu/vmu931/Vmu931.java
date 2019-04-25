@@ -62,7 +62,7 @@ public class Vmu931 implements Runnable {
     thread.start();
     // ---
     requestStatus();
-    System.out.println("requested status");
+    System.out.println("vmu931 request status");
   }
 
   /** TODO JPH what is printout when starting?
@@ -196,7 +196,7 @@ public class Vmu931 implements Runnable {
     // System.out.println(vmu931_DPS.name() + " " + vmu931_DPS.isActive(resolution));
     if (!dps.isActive(resolution)) {
       System.out.println("vmu931 config dps=" + dps);
-      serialPortWrap.write(dps.set());
+      serialPortWrap.write(dps.setActive());
       isDirty = true;
     }
     // ---
@@ -204,7 +204,7 @@ public class Vmu931 implements Runnable {
     // System.out.println(vmu931_G.name() + " " + vmu931_G.isActive(resolution));
     if (!resolution_g.isActive(resolution)) {
       System.out.println("vmu931 config res=" + resolution + "->g=" + resolution_g);
-      serialPortWrap.write(resolution_g.set());
+      serialPortWrap.write(resolution_g.setActive());
       isDirty = true;
     }
     // ---

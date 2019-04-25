@@ -14,13 +14,13 @@ public enum Vmu931ImuFrames {
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4 * 7]);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     byteBuffer.putInt(timestamp_ms);
-    byteBuffer.putFloat(Magnitude.ACCELERATION.toFloat(acc.Get(0)));
-    byteBuffer.putFloat(Magnitude.ACCELERATION.toFloat(acc.Get(1)));
-    byteBuffer.putFloat(Magnitude.ACCELERATION.toFloat(acc.Get(2)));
-    byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(gyro.Get(0)));
-    byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(gyro.Get(1)));
-    byteBuffer.putFloat(Magnitude.PER_SECOND.toFloat(gyro.Get(2)));
-    byteBuffer.position(0);
+    byteBuffer.putFloat((float) (Magnitude.ACCELERATION.toDouble(acc.Get(0)) / Vmu931ImuFrame.G_TO_M_S2));
+    byteBuffer.putFloat((float) (Magnitude.ACCELERATION.toDouble(acc.Get(1)) / Vmu931ImuFrame.G_TO_M_S2));
+    byteBuffer.putFloat((float) (Magnitude.ACCELERATION.toDouble(acc.Get(2)) / Vmu931ImuFrame.G_TO_M_S2));
+    byteBuffer.putFloat((float) (Magnitude.PER_SECOND.toDouble(gyro.Get(0)) / Vmu931ImuFrame.DPS_TO_RPS));
+    byteBuffer.putFloat((float) (Magnitude.PER_SECOND.toDouble(gyro.Get(1)) / Vmu931ImuFrame.DPS_TO_RPS));
+    byteBuffer.putFloat((float) (Magnitude.PER_SECOND.toDouble(gyro.Get(2)) / Vmu931ImuFrame.DPS_TO_RPS));
+    byteBuffer.flip();
     return new Vmu931ImuFrame(byteBuffer);
   }
 }

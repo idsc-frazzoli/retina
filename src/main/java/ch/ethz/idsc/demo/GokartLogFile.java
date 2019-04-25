@@ -1699,6 +1699,49 @@ public enum GokartLogFile implements LogFile {
   /** trajectory planning with moving obstacles */
   _20190401T115537_411917b6,
   /***************************************************/
+  /* 2019-04-04 */
+  /** manual and mpc drive */
+  _20190404T133714_39258d17,
+  /** mpc */
+  _20190404T143912_39258d17,
+  /** mostly manual drive but without localization */
+  _20190404T154558_eb6eadfe,
+  /***************************************************/
+  /* 2019-04-08 */
+  /** mpc with challenging track */
+  _20190408T103556_eb6eadfe,
+  /** slow manual driving with localization failure */
+  _20190408T111457_eb6eadfe,
+  /** fast manual driving with localization failure */
+  _20190408T123841_eb6eadfe,
+  /***************************************************/
+  /* 2019-04-15 */
+  /* steer battery was found discharged */
+  /***************************************************/
+  /* 2019-04-18 */
+  /** geodesic pursuit */
+  _20190418T141321_b6a70baf,
+  /** geodesic pursuit, slow manual driving */
+  _20190418T142758_b6a70baf,
+  /** testing steering but without localization */
+  _20190418T144403_b6a70baf,
+  /** testing steering but without localization */
+  _20190418T145229_b6a70baf,
+  /** geodesic pursuit */
+  _20190418T155607_b6a70baf,
+  /** geodesic pursuit, drift in accelerometer */
+  _20190418T160410_b6a70baf,
+  /** geodesic pursuit */
+  _20190418T160707_b6a70baf,
+  /** geodesic pursuit */
+  _20190418T161148_b6a70baf,
+  /***************************************************/
+  /* 2019-04-24 */
+  /** geodesic pursuit */
+  _20190424T130849_b486c368,
+  /** geodesic pursuit */
+  _20190424T131353_aa45eece,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

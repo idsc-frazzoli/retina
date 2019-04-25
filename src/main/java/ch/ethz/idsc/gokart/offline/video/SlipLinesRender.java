@@ -67,7 +67,7 @@ class CombinedEvent {
           for (WheelConfiguration wheelConfiguration : RimoWheelConfigurations.fromSCE(combinedEvent.gokartStatusEvent.getSteerColumnEncoderCentered())) {
             geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(wheelConfiguration.local()));
             // draw slip
-            Tensor tensor = wheelConfiguration.adjoint().apply(combinedEvent.gokartPoseEvent.getVelocity());
+            Tensor tensor = wheelConfiguration.adjoint(combinedEvent.gokartPoseEvent.getVelocity());
             graphics.setColor(count < 2 //
                 ? new Color(255, 128, 64, 192)
                 : new Color(128, 255, 64, 192));

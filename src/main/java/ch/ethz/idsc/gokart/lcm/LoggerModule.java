@@ -1,6 +1,9 @@
 // code by swisstrolley+ and jph
 package ch.ethz.idsc.gokart.lcm;
 
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
@@ -10,12 +13,18 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /** invokes lcm logger binary as Process that records all lcm-messages
  * into binary files for later playback */
 public final class LoggerModule extends AbstractModule {
+  private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+  // ---
   private LcmLogProcess lcmLogProcess;
+  private Date date;
 
   @Override // from AbstractModule
   protected void first() {
     try {
-      lcmLogProcess = LcmLogProcess.createDefault(HomeDirectory.file());
+      date = new Date();
+      File directory = HomeDirectory.file("gokartlogs", DATE_FORMAT.format(date));
+      directory.mkdirs();
+      lcmLogProcess = LcmLogProcess.createDefault(directory, date);
     } catch (Exception exception) {
       throw new RuntimeException();
     }
@@ -30,5 +39,9 @@ public final class LoggerModule extends AbstractModule {
       } catch (Exception exception) {
         exception.printStackTrace();
       }
+  }
+
+  public Date uptime() {
+    return date;
   }
 }

@@ -20,8 +20,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 
   public static void main(String[] args) throws Exception {
     run(new File("/home/datahaki/ensemblelaps/dynamic/m13.lcm"), HomeDirectory.file("dynamic13b.mp4"));
-    run(new File("/home/datahaki/ensemblelaps/kinematic/m00.lcm"), HomeDirectory.file("kinematic00a.mp4"));
-    run(new File("/home/datahaki/ensemblelaps/human/m03.lcm"), HomeDirectory.file("human03.mp4"));
+    // run(new File("/home/datahaki/ensemblelaps/kinematic/m00.lcm"), HomeDirectory.file("kinematic00a.mp4"));
+    // run(new File("/home/datahaki/ensemblelaps/human/m03.lcm"), HomeDirectory.file("human03.mp4"));
     System.out.println("[done.]");
   }
 }

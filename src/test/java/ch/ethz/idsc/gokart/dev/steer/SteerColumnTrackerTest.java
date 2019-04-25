@@ -24,7 +24,7 @@ public class SteerColumnTrackerTest extends TestCase {
   }
 
   public void testMaxRange() {
-    Clip clip = Clips.interval(Quantity.of(0.6, "SCE"), Quantity.of(0.7, "SCE"));
+    Clip clip = Clips.interval(Quantity.of(0.7, "SCE"), Quantity.of(0.73, "SCE"));
     clip.requireInside(SteerConfig.GLOBAL.columnMax);
   }
 

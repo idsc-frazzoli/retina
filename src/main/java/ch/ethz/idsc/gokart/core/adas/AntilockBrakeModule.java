@@ -73,9 +73,8 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
           oneTensor.add((angularRate_Y_pair.Get(1).divide(angularRate_Origin)).negate()));
       // the brake cannot be constantly applied otherwise the brake motor heats up too much
       // was ist der Unterschied von .todouble zu .number().doubleValue?
-      // FIXME AM use magnitude with correct unit
-      double slip1 = Magnitude.ARMS.toDouble(slip.Get(0));
-      double slip2 = Magnitude.ARMS.toDouble(slip.Get(1));
+      double slip1 = Magnitude.ONE.toDouble(slip.Get(0));
+      double slip2 = Magnitude.ONE.toDouble(slip.Get(1));
       // ABS system
       double frequency = HapticSteerConfig.GLOBAL.absFrequency.number().doubleValue();
       double amplitude = HapticSteerConfig.GLOBAL.absAmplitude.number().doubleValue();
@@ -102,8 +101,7 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
         double velocityAngle = Math.atan2(vely, velx);
         Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
         Scalar angleGrad = steerMapping.getAngleFromSCE(angleSCE);
-        // FIXME AM use magnitude with correct unit
-        double angleGradDouble = Magnitude.ARMS.toDouble(angleGrad);
+        double angleGradDouble = Magnitude.DEGREE_ANGLE.toDouble(angleGrad);
         double angleDifference = (Math.abs(angleGradDouble) - Math.abs(velocityAngle));
         if (angleDifference > HapticSteerConfig.GLOBAL.criticalAngle) {
           double duration = timing.seconds();

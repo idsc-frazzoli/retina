@@ -8,7 +8,7 @@ import ch.ethz.idsc.demo.mg.slam.config.DavisSlamCoreConfig;
 import ch.ethz.idsc.demo.mg.slam.config.DavisSlamPrcConfig;
 import ch.ethz.idsc.demo.mp.pid.PIDTuningParams;
 import ch.ethz.idsc.gokart.calib.brake.BrakeFunctionConfig;
-import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerConfig;
+import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
@@ -16,6 +16,7 @@ import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCActiveCompensationLearningConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
+import ch.ethz.idsc.gokart.core.pure.GeodesicPursuitParams;
 import ch.ethz.idsc.gokart.core.pure.PlanSRConfig;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
@@ -24,6 +25,7 @@ import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerPid;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 
@@ -34,8 +36,9 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
       SensorsConfig.GLOBAL, //
       LinmotConfig.GLOBAL, //
       SteerConfig.GLOBAL, //
+      SteerPid.GLOBAL, //
       HapticSteerConfig.GLOBAL, //
-      HighPowerSteerConfig.GLOBAL, //
+      HighPowerSteerPid.GLOBAL, //
       RimoConfig.GLOBAL, //
       SafetyConfig.GLOBAL, //
       LocalizationConfig.GLOBAL, //
@@ -51,5 +54,6 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
       DavisSlamCoreConfig.GLOBAL, //
       PIDTuningParams.GLOBAL, //
       MPCActiveCompensationLearningConfig.GLOBAL, //
-      BrakeFunctionConfig.GLOBAL);
+      BrakeFunctionConfig.GLOBAL, //
+      GeodesicPursuitParams.GLOBAL);
 }

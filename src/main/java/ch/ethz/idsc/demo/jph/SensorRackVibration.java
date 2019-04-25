@@ -64,7 +64,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   public SensorRackVibration() {
     double angle_offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
-    LidarSpacialProvider lidarSpacialProvider = new Vlp16SingleProvider(angle_offset, 0);
+    int laser = 0; // corresponds to -15[deg]
+    LidarSpacialProvider lidarSpacialProvider = new Vlp16SingleProvider(angle_offset, laser);
     lidarSpacialProvider.addListener(this);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     davisDvsDatagramDecoder.addDvsListener(this);

@@ -73,8 +73,7 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> imp
     Scalar overDrift = Ramp.of(Abs.of(driftRatio).subtract(ManualConfig.GLOBAL.driftAvoidStart));
     Scalar driftfactor = Ramp.of(RealScalar.ONE.subtract(overDrift.multiply(ManualConfig.GLOBAL.driftAvoidRamp)));
     delta = driftfactor.multiply(delta);
-    Tensor power = TorqueVectoringClip.of(ahead.add(delta), ahead.subtract(delta)) //
-        .multiply(ManualConfig.GLOBAL.torqueLimit);
+    Tensor power = TorqueVectoringClip.from(ahead, delta.negate()).multiply(ManualConfig.GLOBAL.torqueLimit);
     short arms_rawL = Magnitude.ARMS.toShort(power.Get(0));
     short arms_rawR = Magnitude.ARMS.toShort(power.Get(1));
     return RimoPutHelper.operationTorque( //

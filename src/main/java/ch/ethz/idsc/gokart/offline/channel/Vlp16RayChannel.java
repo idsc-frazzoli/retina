@@ -11,6 +11,8 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
+/** channel interface does not export all information provided by the VLP16
+ * but only extracts the timestamp and first rotational/azimuth value of a ray packet */
 public enum Vlp16RayChannel implements SingleChannelInterface {
   INSTANCE;
   // ---

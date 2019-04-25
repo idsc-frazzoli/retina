@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * {@link SteerPositionControl}
  * 
  * controller is specific for steering on gokart */
-/* package */ class SteerSimplePositionControl {
+/* package */ class SimpleSteerPositionControl {
   static final Scalar DT = SteerSocket.INSTANCE.getPutPeriod();
   // ---
   /** pos error initially incorrect in the first iteration */
@@ -19,10 +19,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   /** @param pos_error in "SCE"
    * @return */
   public Scalar iterate(Scalar pos_error) {
-    Scalar pPart = pos_error.multiply(SteerConfig.GLOBAL.Kp);
-    Scalar dPart = pos_error.subtract(lastPos_error).multiply(SteerConfig.GLOBAL.Kd).divide(DT);
+    Scalar pPart = pos_error.multiply(SteerPid.GLOBAL.Kp);
+    Scalar dPart = pos_error.subtract(lastPos_error).multiply(SteerPid.GLOBAL.Kd).divide(DT);
     lastPos_error = pos_error;
     Scalar control = pPart.add(dPart);
-    return SteerConfig.GLOBAL.torqueLimitClip().apply(control);
+    return SteerPid.GLOBAL.torqueLimitClip().apply(control);
   }
 }
