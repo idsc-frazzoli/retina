@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.Color;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.ToolbarsComponent;
+import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
@@ -74,7 +76,9 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final JTextField jTF_localPose;
   private final JButton jButtonAppend = new JButton("pose append");
   private final JTextField jTF_localQual;
+  private JTextField jTF_uptime = new JTextField();
   private final Tensor poseList = Tensors.empty();
+  private final LoggerModule loggerModule = ModuleAuto.INSTANCE.getInstance(LoggerModule.class);
   // ---
   private GokartPoseEvent gokartPoseEvent;
   private RimoGetEvent rimoGetEvent;
@@ -146,6 +150,12 @@ import ch.ethz.idsc.tensor.sca.Round;
       Color color = ColorFormat.toColor(ColorDataGradients.MINT.apply(RealScalar.ONE.subtract(gokartPoseEvent.getQuality())));
       jTF_localQual.setBackground(color);
     }
+    if (Objects.nonNull(loggerModule)) {
+      Date date = loggerModule.uptime();
+      long diff = System.currentTimeMillis() - date.getTime();
+      diff /= 1000;
+      jTF_uptime.setText(diff + "[s]");
+    }
   }
 
   public AutoboxCompactComponent() {
@@ -183,6 +193,8 @@ import ch.ethz.idsc.tensor.sca.Round;
     }
     jTF_localPose = createReading("Pose");
     jTF_localQual = createReading("Pose quality");
+    if (Objects.nonNull(loggerModule))
+      jTF_uptime = createReading("Uptime");
     {
       JToolBar jToolBar = createRow("store");
       jButtonAppend.addActionListener(actionEvent -> {
