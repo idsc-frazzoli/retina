@@ -277,12 +277,6 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
       List<TrajectorySample> tail = //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       trajectory = Trajectories.glue(head, tail);
-      Tensor curve = Tensor.of(trajectory.stream() //
-          .map(TrajectorySample::stateTime) //
-          .map(StateTime::state));
-      if (Dimensions.of(curve).get(1) != 3)
-        System.err.println("WARN curve has dimensions " + Dimensions.of(curve));
-      pursuitModule.setCurve(Optional.of(curve));
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
       // failure to reach goal
@@ -290,6 +284,12 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
       // post 20181025: keep old trajectory
       System.err.println("use old trajectory");
     }
+    Tensor curve = Tensor.of(trajectory.stream() //
+        .map(TrajectorySample::stateTime) //
+        .map(StateTime::state));
+    if (Dimensions.of(curve).get(1) != 3)
+      System.err.println("WARN curve has dimensions " + Dimensions.of(curve));
+    pursuitModule.setCurve(Optional.of(curve));
   }
 
   Collection<Flow> getFlows(int resolution) {
