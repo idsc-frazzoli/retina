@@ -6,7 +6,6 @@ import ch.ethz.idsc.sophus.group.Se2CoveringParametricDistance;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class PIDTrajectory {
   private final Scalar time;
@@ -16,7 +15,7 @@ public class PIDTrajectory {
   private Scalar prop;
 
   public PIDTrajectory(int pidIndex, PIDTrajectory previousPID, PIDGains pidGains, Tensor traj, StateTime stateTime) {
-    this.time = Quantity.of(stateTime.time(), "s");
+    this.time = stateTime.time();
     Tensor trajInMeter = Se2CurveConverter.INSTANCE.toSI(traj);
     Tensor stateXYphi = Se2PoseConverter.INSTANCE.toSI(stateTime.state());
     Tensor closest = trajInMeter.get(Se2CurveHelper.closest(trajInMeter, stateXYphi));

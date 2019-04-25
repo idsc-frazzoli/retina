@@ -2,6 +2,7 @@
 package ch.ethz.idsc.owl.bot.se2.pid;
 
 import ch.ethz.idsc.owl.math.state.StateTime;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -24,7 +25,7 @@ public class ConvergenceTest extends TestCase {
   public void testSimple() {
     Tensor traj = Tensors.vector(i -> Tensors.of(RealScalar.of(1), RealScalar.of(i / 10), Pi.HALF), 2000);
     for (int index = 0; index < 100; ++index) {
-      StateTime stateTime = new StateTime(pose, RealScalar.of(index));
+      StateTime stateTime = new StateTime(pose, Quantity.of(index, SI.SECOND));
       PIDTrajectory _pidTrajectory = new PIDTrajectory(index, pidTrajectory, pidGains, traj, stateTime);
       pidTrajectory = _pidTrajectory;
       Scalar angleOut = pidTrajectory.angleOut();
