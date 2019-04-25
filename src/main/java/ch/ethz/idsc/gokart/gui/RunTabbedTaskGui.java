@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import ch.ethz.idsc.demo.jg.FigureOvalGeodesicModule;
+import ch.ethz.idsc.demo.jg.FigureDubiGeodesicModule;
 import ch.ethz.idsc.demo.jg.GokartGeodesicTrajectoryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
@@ -123,7 +123,7 @@ enum RunTabbedTaskGui {
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       GokartGeodesicTrajectoryModule.class, //
-      FigureOvalGeodesicModule.class, //
+      FigureDubiGeodesicModule.class, //
       MPCKinematicDrivingModule.class, //
       MPCDynamicDrivingModule.class, //
       GokartTrajectoryModule.class, //
