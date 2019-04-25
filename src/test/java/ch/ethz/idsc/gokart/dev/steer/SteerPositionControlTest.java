@@ -68,4 +68,13 @@ public class SteerPositionControlTest extends TestCase {
   public void testDt() {
     assertEquals(SteerPositionControl.DT, Quantity.of(0.02, "s"));
   }
+
+  public void testFailNull() {
+    try {
+      new SteerPositionControl(null);
+      fail();
+    } catch (Exception exception) {
+      // ---
+    }
+  }
 }
