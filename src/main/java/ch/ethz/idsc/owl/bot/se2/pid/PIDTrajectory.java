@@ -1,6 +1,7 @@
 // code by mcp
 package ch.ethz.idsc.owl.bot.se2.pid;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.sophus.group.Se2CoveringParametricDistance;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -17,7 +18,7 @@ public class PIDTrajectory {
   public PIDTrajectory(int pidIndex, PIDTrajectory previousPID, PIDGains pidGains, Tensor traj, StateTime stateTime) {
     this.time = stateTime.time();
     Tensor trajInMeter = Se2CurveConverter.INSTANCE.toSI(traj);
-    Tensor stateXYphi = Se2PoseConverter.INSTANCE.toSI(stateTime.state());
+    Tensor stateXYphi = GokartPoseHelper.attachUnits(stateTime.state());
     Tensor closest = trajInMeter.get(Se2CurveHelper.closest(trajInMeter, stateXYphi));
     this.errorPose = Se2CoveringParametricDistance.INSTANCE.distance(stateXYphi, closest);
     prop = pidGains.Kp.multiply(errorPose);

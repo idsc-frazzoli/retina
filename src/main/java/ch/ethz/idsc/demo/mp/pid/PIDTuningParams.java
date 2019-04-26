@@ -23,8 +23,8 @@ public class PIDTuningParams {
   // ---
   Scalar maxSteerAngle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio( //
       SteerConfig.GLOBAL.turningRatioMax);
-  Scalar maxSteerAngleSafetyRatio = RealScalar.of(.9); //Avoid limit of actuator
+  Scalar maxSteerAngleSafetyRatio = RealScalar.of(.9); // Avoid limit of actuator
   public final Clip clip = Clips.interval( //
       maxSteerAngle.negate().multiply(maxSteerAngleSafetyRatio), //
-      maxSteerAngle.multiply(maxSteerAngleSafetyRatio)); 
+      maxSteerAngle.multiply(maxSteerAngleSafetyRatio));
 }

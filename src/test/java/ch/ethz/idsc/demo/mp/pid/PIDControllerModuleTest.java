@@ -50,8 +50,7 @@ public class PIDControllerModuleTest extends TestCase {
     }
     // System.out.println(curve.length());
   }
-  
+
   public void testDistance() {
-    
   }
 }

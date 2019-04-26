@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private Optional<Tensor> optionalCurve = Optional.empty();
   private int pidIntex;
   private PIDTrajectory previousPID;
-  private StateTime previousStateTime = new StateTime(Tensors.vector(0,0,0), Quantity.of(0, "s"));
+  private StateTime previousStateTime = new StateTime(Tensors.vector(0, 0, 0), Quantity.of(0, "s"));
 
   public PIDControllerModule(PIDTuningParams pidTuningParams) {
     super(pidTuningParams);
@@ -50,9 +50,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     if (Objects.nonNull(gokartPoseEvent) && //
         optionalCurve.isPresent() && //
         RnCurveHelper.bigEnough(optionalCurve.get())) {
-      StateTime stateTime = new StateTime(
-          GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()),//
-          previousStateTime.time().add(PIDTuningParams.GLOBAL.updatePeriod)); //TODO Check this.
+      StateTime stateTime = new StateTime(GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()), //
+          previousStateTime.time().add(PIDTuningParams.GLOBAL.updatePeriod)); // TODO Check this.
       //
       PIDTrajectory pidTrajectory = new PIDTrajectory( //
           pidIntex, //

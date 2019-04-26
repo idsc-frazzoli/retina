@@ -22,7 +22,7 @@ public class RnCurveHelperTest extends TestCase {
       System.out.println(curveAngle.get(i).get(1));
     }
   }
-  
+
   public void testTensorLib() {
     Tensor tensor = Tensors.fromString("{10,10}");
     Tensor tensor2 = Tensors.fromString("{20}");
@@ -30,6 +30,5 @@ public class RnCurveHelperTest extends TestCase {
     System.out.println(tensor);
     tensor.append(scalar);
     System.out.println(tensor);
-    
   }
 }
