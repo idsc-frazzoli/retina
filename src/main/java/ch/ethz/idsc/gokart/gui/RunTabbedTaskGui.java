@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import ch.ethz.idsc.demo.jg.FigureOvalGeodesicModule;
+import ch.ethz.idsc.demo.jg.FigureDubiGeodesicModule;
 import ch.ethz.idsc.demo.jg.GokartGeodesicTrajectoryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
@@ -40,6 +40,7 @@ import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
+import ch.ethz.idsc.gokart.core.pure.FigureDubiModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightReverseModule;
@@ -122,12 +123,15 @@ enum RunTabbedTaskGui {
       AntilockBrakeModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
+      GokartGeodesicTrajectoryModule.class, //
+      FigureDubiGeodesicModule.class, //
       MPCKinematicDrivingModule.class, //
       MPCDynamicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       PIDModule.class, //
       PIDTestTrackModule.class, //
+      FigureDubiModule.class, //
       FigureTiresAModule.class, //
       FigureTiresBModule.class, //
       FigureEightModule.class, //
@@ -140,9 +144,7 @@ enum RunTabbedTaskGui {
       SEyeSlamLidarModule.class, //
       SEyeSlamOdometryModule.class, //
       SEyeSlamVisualModule.class, //
-      FigureDucttapeModule.class, //
-      GokartGeodesicTrajectoryModule.class, //
-      FigureOvalGeodesicModule.class //
+      FigureDucttapeModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //

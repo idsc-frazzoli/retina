@@ -1,8 +1,6 @@
 // code by edo and jph
 package ch.ethz.idsc.gokart.dev.steer;
 
-import java.util.Objects;
-
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -36,7 +34,7 @@ public class SteerPositionControl {
   }
 
   public SteerPositionControl(SteerPid steerPid) {
-    this.steerPid = Objects.requireNonNull(steerPid);
+    this.steerPid = steerPid;
     this.torqueLimitClip = steerPid.torqueLimitClip();
   }
 

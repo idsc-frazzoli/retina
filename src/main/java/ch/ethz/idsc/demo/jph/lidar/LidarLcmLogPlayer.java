@@ -9,10 +9,10 @@ import lcm.logging.LogPlayerConfig;
 /* package */ enum LidarLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
-    LogPlayerConfig cfg = new LogPlayerConfig();
+    LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
     // cfg.logFile = LidarLcm.HDL32E_LOCALIZE2;
-    cfg.logFile = LidarLcm.MARK8_LAB3;
-    cfg.speed_denominator = 8;
-    LogPlayer.create(cfg);
+    logPlayerConfig.logFile = LidarLcm.MARK8_LAB3;
+    logPlayerConfig.speed_denominator = 8;
+    LogPlayer.create(logPlayerConfig);
   }
 }

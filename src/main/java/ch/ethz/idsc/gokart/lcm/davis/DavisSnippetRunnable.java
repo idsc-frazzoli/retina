@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.lcm.davis;
 
 import java.io.File;
+import java.util.Date;
 
 import ch.ethz.idsc.gokart.lcm.LcmLogProcess;
 import ch.ethz.idsc.owl.data.GlobalAssert;
@@ -17,7 +18,7 @@ public abstract class DavisSnippetRunnable implements Runnable {
 
   @Override
   public void run() {
-    try (LcmLogProcess lcmLogProcess = LcmLogProcess.createDefault(directory)) {
+    try (LcmLogProcess lcmLogProcess = LcmLogProcess.createDefault(directory, new Date())) {
       File file = lcmLogProcess.file();
       System.out.println(file);
       Thread.sleep(milliSeconds);

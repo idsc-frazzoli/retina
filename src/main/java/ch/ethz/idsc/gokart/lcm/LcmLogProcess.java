@@ -18,15 +18,15 @@ public class LcmLogProcess implements AutoCloseable {
   /** split file every 50 MB */
   public final static String SPLIT_MB = "50";
 
-  public static LcmLogProcess createDefault(File directory) throws Exception {
-    return new LcmLogProcess(new File(directory, defaultFilename()));
+  public static LcmLogProcess createDefault(File directory, Date date) throws Exception {
+    return new LcmLogProcess(new File(directory, defaultFilename(date)));
   }
 
   // function is not for use from the outside
-  private static String defaultFilename() {
+  private static String defaultFilename(Date date) {
     String gitHash = GitRevHead.getHash();
     gitHash = gitHash.substring(0, Math.min(gitHash.length(), 8));
-    return String.join("_", SystemTimestamp.asString(), gitHash) + ".lcm";
+    return String.join("_", SystemTimestamp.asString(date), gitHash) + ".lcm";
   }
 
   // ---
@@ -36,7 +36,7 @@ public class LcmLogProcess implements AutoCloseable {
   /** @param file
    * reference to absolute path of log file
    * @throws Exception if file already exists or log process cannot be started */
-  private LcmLogProcess(final File file) throws Exception {
+  private LcmLogProcess(File file) throws Exception {
     if (file.exists())
       throw new RuntimeException();
     this.file = file;
