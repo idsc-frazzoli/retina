@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
-import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
@@ -17,8 +16,8 @@ public class PIDTestTrackModule extends AbstractModule {
 
   @Override // from AbstractModule
   public void first() {
-    Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL.stream().map(Extract2D.FUNCTION));
-    pidControllerModule.setCurve(Optional.ofNullable(curve));
+    Tensor curve = DubendorfCurve.TRACK_OVAL_R2;
+    pidControllerModule.setCurve(Optional.of(curve));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(curve);
     pidControllerModule.launch();

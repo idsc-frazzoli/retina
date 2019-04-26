@@ -6,7 +6,6 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
 
-// TODO JPH probably does not need to extend from AbstractClockedModule
 /* package */ abstract class PIDControllerBase extends AbstractClockedModule {
   final PIDSteer pidSteer = new PIDSteer();
   final PIDTuningParams pidTuningParams;

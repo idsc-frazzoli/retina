@@ -7,6 +7,7 @@ import java.util.List;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Unprotect;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.red.Norm;
@@ -52,5 +53,10 @@ public class DubendorfCurveTest extends TestCase {
     testCurve(DubendorfCurve.HYPERLOOP_OVAL);
     testCurve(DubendorfCurve.TIRES_TRACK_A);
     testCurve(DubendorfCurve.TIRES_TRACK_B);
+  }
+
+  public void testDim1() {
+    assertEquals(Unprotect.dimension1(DubendorfCurve.TRACK_OVAL_R2), 2);
+    assertEquals(Unprotect.dimension1(DubendorfCurve.TRACK_OVAL_SE2), 3);
   }
 }

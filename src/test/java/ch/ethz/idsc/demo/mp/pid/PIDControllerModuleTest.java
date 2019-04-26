@@ -44,7 +44,7 @@ public class PIDControllerModuleTest extends TestCase {
   }
 
   public void testCurve() { // Not going trough this if function not starting with "test-"
-    Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL.stream().map(Extract2D.FUNCTION));
+    Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL_R2.stream().map(Extract2D.FUNCTION));
     for (int index = 0; index < curve.length(); index++) {
       // System.out.println(curve.get(index));
     }
