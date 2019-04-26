@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -58,5 +59,13 @@ public class DubendorfCurveTest extends TestCase {
   public void testDim1() {
     assertEquals(Unprotect.dimension1(DubendorfCurve.TRACK_OVAL_R2), 2);
     assertEquals(Unprotect.dimension1(DubendorfCurve.TRACK_OVAL_SE2), 3);
+    assertEquals(Unprotect.dimension1(DubendorfCurve.TRACK_OVAL_SE2_UNITS), 3);
+    GokartPoseHelper.toUnitless(DubendorfCurve.TRACK_OVAL_SE2_UNITS.get(2));
+    try {
+      GokartPoseHelper.toUnitless(DubendorfCurve.TRACK_OVAL_SE2.get(2));
+      fail();
+    } catch (Exception exception) {
+      // ---
+    }
   }
 }

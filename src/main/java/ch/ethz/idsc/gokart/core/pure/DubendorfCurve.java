@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.sophus.curve.FourPointCurveSubdivision;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
@@ -42,6 +43,9 @@ public enum DubendorfCurve {
   public static final Tensor TIRES_TRACK_B = tires_track_b();
   /** matrix with 3 columns */
   public static final Tensor TRACK_OVAL_SE2 = track_oval_se2();
+  // TODO MCP use in PID steering
+  public static final Tensor TRACK_OVAL_SE2_UNITS = //
+      Tensor.of(track_oval_se2().stream().map(GokartPoseHelper::attachUnits));
   /** matrix with 2 columns */
   public static final Tensor TRACK_OVAL_R2 = track_oval();
 

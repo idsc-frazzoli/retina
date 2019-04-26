@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.owl.bot.se2.pid;
 
+import java.io.IOException;
+
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
@@ -9,6 +11,9 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -18,33 +23,45 @@ import junit.framework.TestCase;
 public class ConvergenceTest extends TestCase {
   private Scalar maxTurningRate = Pi.HALF;
   private Clip turningRate = Clips.interval(maxTurningRate.negate(), maxTurningRate);
-  private PIDGains pidGains = new PIDGains(Quantity.of(10, "m^-1"), RealScalar.ZERO, Quantity.of(1, "s*m^-1"));
+  private PIDGains pidGains = new PIDGains(Quantity.of(.4, "m^-1"), RealScalar.ZERO, Quantity.of(3, "s*m^-1"));
   private PIDTrajectory pidTrajectory = null;
-  private Tensor pose = Tensors.of(RealScalar.ONE, RealScalar.ZERO, RealScalar.ZERO);
 
-  public void testSimple() {
-    Tensor traj = Tensors.vector(i -> Tensors.of(RealScalar.of(1), RealScalar.of(i / 10), Pi.HALF), 2000);
+  /** A = Import["posepid.csv"];
+   * ListPlot[A[[All, {1, 2}]], AspectRatio -> 1, PlotRange -> All] */
+  public void testSimple() throws IOException {
+    // for (many different initial pose)
+    TableBuilder tableBuilder = new TableBuilder();
+    Tensor pose = Tensors.of(RealScalar.ZERO, RealScalar.of(2), RealScalar.ZERO);
+    Tensor traj = Tensors.vector(i -> Tensors.of(RealScalar.of(i / 10), RealScalar.of(1), Pi.HALF), 2000);
     for (int index = 0; index < 100; ++index) {
       StateTime stateTime = new StateTime(pose, Quantity.of(index, SI.SECOND));
       PIDTrajectory _pidTrajectory = new PIDTrajectory(index, pidTrajectory, pidGains, traj, stateTime);
       pidTrajectory = _pidTrajectory;
       Scalar angleOut = pidTrajectory.angleOut();
+      System.out.println("angleOut=" + angleOut);
+      // clip within valid angle [-max, max]
       if (turningRate.isOutside(angleOut)) {
         if (Scalars.lessEquals(turningRate.max().abs(), angleOut)) {
           angleOut = Pi.HALF;
-        } else if (Scalars.lessEquals(angleOut, turningRate.min())) {
+        } else //
+        if (Scalars.lessEquals(angleOut, turningRate.min())) {
           angleOut = Pi.HALF.negate();
         }
       }
-      pose = Se2CoveringIntegrator.INSTANCE. //
-          spin(pose, Tensors.of(RealScalar.of(0), RealScalar.of(0.1), angleOut));
-      stateTime = new StateTime(pose, stateTime.time().add(RealScalar.of(.01)));
-      // System.out.println(pose);
+      double dt = 0.1;
+      Tensor vel = Tensors.of(RealScalar.of(2), RealScalar.of(0), angleOut); // this is correct
+      // System.out.println("vel="+vel);
+      pose = Se2CoveringIntegrator.INSTANCE. // Euler
+          spin(pose, vel.multiply(Quantity.of(dt, SI.ONE)));
+      stateTime = new StateTime(pose, stateTime.time().add(Quantity.of(dt, SI.SECOND)));
+      System.out.println(pose);
+      tableBuilder.appendRow(pose);
       // System.out.println("angle out " + angleOut);
       // System.out.println(pidTrajectory.getProp());
       // System.out.println(pidTrajectory.getDeriv());
       // System.out.println("------------------_");
     }
+    Export.of(HomeDirectory.file("posepid.csv"), tableBuilder.toTable());
   }
 
   public void testPoseAngle() {
