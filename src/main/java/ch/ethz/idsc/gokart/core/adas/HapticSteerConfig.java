@@ -1,10 +1,12 @@
 // code by am
 package ch.ethz.idsc.gokart.core.adas;
 
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 
 public class HapticSteerConfig {
@@ -21,8 +23,13 @@ public class HapticSteerConfig {
   public Scalar vibrationAmplitude = RealScalar.of(0.4);
   public Scalar vibrationFrequency = RealScalar.of(12);
   public double criticalSlip = 0.2;
-  public double criticalAngle = 12; // die Einheit davon ist Grad, ?
+  /** access value via {@link #criticalAngle()} */
+  public Scalar criticalAngleDeg = Quantity.of(12, NonSI.DEGREE_ANGLE); // die Einheit davon ist Grad, ?
   public Scalar absFrequency = RealScalar.of(5);
   public Scalar absAmplitude = RealScalar.of(0.2);
   public double absDuration = 1;
+
+  public Scalar criticalAngle() {
+    return UnitSystem.SI().apply(criticalAngleDeg);
+  }
 }
