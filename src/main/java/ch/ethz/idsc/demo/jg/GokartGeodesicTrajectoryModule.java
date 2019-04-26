@@ -291,8 +291,6 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
     if (Dimensions.of(curve).get(1) != 3)
       System.err.println("WARN curve has dimensions " + Dimensions.of(curve));
     pursuitModule.setCurve(Optional.of(curve));
-    if (Objects.nonNull(globalViewLcmModule))
-      globalViewLcmModule.setCurve(CurveGeodesicPursuitHelper.curve);
   }
 
   Collection<Flow> getFlows(int resolution) {

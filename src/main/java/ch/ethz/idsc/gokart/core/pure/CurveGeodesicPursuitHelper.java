@@ -28,8 +28,6 @@ import ch.ethz.idsc.tensor.red.Norm;
 public enum CurveGeodesicPursuitHelper {
   ;
 
-  public static Tensor curve;
-
   /** @param pose of vehicle {x[m], y[m], angle}
    * @param speed of vehicle [m*s^-1]
    * @param curve in world coordinates
@@ -37,8 +35,8 @@ public enum CurveGeodesicPursuitHelper {
    * @param geodesicInterface type of planned curve
    * @param trajectoryEntryFinder strategy to find best re-entry point
    * @param ratioLimits depending on pose and speed
-   * @return ratio rate [m^-1] */
-  static Optional<Scalar> getRatio( //
+   * @return geodesic plan */
+  static Optional<GeodesicPlan> getPlan( //
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       GeodesicInterface geodesicInterface, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
@@ -61,8 +59,10 @@ public enum CurveGeodesicPursuitHelper {
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
     return lookAhead.map(vector -> {
       GeodesicPursuitInterface geo = new GeodesicPursuit(geodesicInterface, vector);
-      CurveGeodesicPursuitHelper.curve = Tensor.of(geo.curve().stream().map(new Se2GroupElement(GokartPoseHelper.toUnitless(pose))::combine)).unmodifiable();
-      return geo.firstRatio().map(r -> Quantity.of(r, SI.PER_METER)).orElse(null);
+      return geo.firstRatio().map(r -> new GeodesicPlan(
+          Quantity.of(r, SI.PER_METER), //
+          Tensor.of(geo.curve().stream().map(new Se2GroupElement(GokartPoseHelper.toUnitless(pose))::combine)).unmodifiable()) //
+      ).orElse(null);
     });
   }
 
@@ -91,5 +91,17 @@ public enum CurveGeodesicPursuitHelper {
     return curve_.extract(1, n).subtract(curve_.extract(0, n - 1)).stream() //
         .map(Norm._2::ofVector) //
         .reduce(Scalar::add).get();
+  }
+}
+
+/* package */ class GeodesicPlan {
+  public final Scalar ratio;
+  public final Tensor curve;
+
+  /** @param ratio [m^-1] used to derive future heading
+   * @param curve planned to be followed */
+  public GeodesicPlan(Scalar ratio, Tensor curve) {
+    this.ratio = ratio;
+    this.curve = curve;
   }
 }
