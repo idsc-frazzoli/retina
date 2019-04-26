@@ -26,6 +26,7 @@ public class PIDTrajectory {
       deriv = pidGains.Kd.multiply((errorPose.subtract(previousPID.errorPose)).divide(dt));
     }
     angleOut = prop.add(deriv);
+    angleOut = RnUnitCircle.convert(angleOut);
   }
 
   public Scalar angleOut() {

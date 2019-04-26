@@ -36,7 +36,7 @@ public class PIDControllerModuleTest extends TestCase {
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
       Scalar heading = pidControllerModule.pidSteer.getHeading();
-      // System.out.println(heading);
+      System.out.println(heading);
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, heading.divide(RealScalar.of(10))));
       System.out.println(pose);
       // TODO Solve issue with if gokart does multiple rotations (+pi factor)
