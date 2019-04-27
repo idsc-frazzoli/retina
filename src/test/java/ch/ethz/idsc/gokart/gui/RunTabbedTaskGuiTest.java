@@ -14,7 +14,7 @@ import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCAbstractDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
-import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
+import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
@@ -57,7 +57,7 @@ public class RunTabbedTaskGuiTest extends TestCase {
         PoseLcmServerModule.class, //
         LoggerModule.class, //
         // GenericXboxPadLcmServerModule.class, //
-        LabjackU3LcmModule.class, //
+        LabjackU3Module.class, //
         SteerCalibrationWatchdog.class, //
         MiscEmergencyWatchdog.class, //
         Vlp16PassiveSlowing.class, //
