@@ -51,7 +51,12 @@ public class HtmlLogReport {
   private final File plot;
   private final Map<SingleChannelInterface, Tensor> map;
 
+  /** @param gokartLcmMap
+   * @param title
+   * @param target directory
+   * @throws IOException */
   public HtmlLogReport(GokartLcmMap gokartLcmMap, String title, File target) throws IOException {
+    target.mkdirs();
     this.map = gokartLcmMap.map;
     plot = new File(target, "plot");
     plot.mkdir();
