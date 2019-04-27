@@ -15,7 +15,7 @@ import lcm.logging.LogPlayerConfig;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
     File file = null;
-    file = DatahakiLogFileLocator.file(GokartLogFile._20190424T162520_3262e93a);
+    file = DatahakiLogFileLocator.file(GokartLogFile._20190404T154558_eb6eadfe);
     // file = new File("/media/datahaki/data/gokart/cuts/20190328/20190328T164433_00", "log.lcm");
     // file = new File("/media/datahaki/data/gokart/cuts/20190401", "20190401T115537_411917b6.lcm.00");
     // file = new File("/media/datahaki/media/ethz/gokart/topic/trackid", "changingtrack.lcm");

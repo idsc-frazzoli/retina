@@ -1,4 +1,4 @@
-/* amodeus - Copyright (c) 2018, ETH Zurich, Institute for Dynamic Systems and Control */
+// code by jph
 package ch.ethz.idsc.retina.util.io;
 
 public enum ContentType {
