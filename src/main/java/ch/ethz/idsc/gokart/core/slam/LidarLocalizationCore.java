@@ -107,7 +107,7 @@ public class LidarLocalizationCore implements //
     }
     if (!tracking) {
       vmu931Odometry.resetVelocity();
-      quality = RealScalar.ZERO;
+      quality = RealScalar.ZERO; // pose quality is zero when tracking is off
     }
   }
 
@@ -123,7 +123,7 @@ public class LidarLocalizationCore implements //
   @Override // from Runnable
   public void run() {
     do {
-      Tensor points = points2d_ferry;
+      Tensor points = points2d_ferry; // only updated when tracking == true
       if (Objects.nonNull(points)) {
         points2d_ferry = null;
         fit(points);
@@ -132,7 +132,6 @@ public class LidarLocalizationCore implements //
           Thread.sleep(1000); // sleep is interrupted once data arrives
           // 1[s] of no lidar data indicates sensor failure
           quality = RealScalar.ZERO;
-          System.err.println("no vlp16 data -> q=0");
         } catch (Exception exception) {
           // ---
         }

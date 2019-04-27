@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.jfree.chart.ChartUtils;
 
@@ -38,42 +36,28 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Accumulate;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.ListConvolve;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
-import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 
 public class HtmlLogReport {
   private static final int WIDTH = 854;
   private static final int HEIGHT = 360; // 480;
-
-  // ---
-  public static void generate(File directory) throws IOException {
-    new HtmlLogReport(directory);
-  }
-
   // ---
   private final File plot;
   private final Map<SingleChannelInterface, Tensor> map;
 
-  private HtmlLogReport(File directory) throws IOException {
-    plot = new File(directory, "plot");
+  public HtmlLogReport(GokartLcmMap gokartLcmMap, String title, File target) throws IOException {
+    this.map = gokartLcmMap.map;
+    plot = new File(target, "plot");
     plot.mkdir();
-    map = StaticHelper.SINGLE_CHANNEL_INTERFACES.stream() //
-        .collect(Collectors.toMap(Function.identity(), singleChannelInterface -> {
-          try {
-            return Import.of(new File(directory, singleChannelInterface.exportName() + StaticHelper.EXTENSION));
-          } catch (Exception exception) {
-            throw new RuntimeException();
-          }
-        }));
-    try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(directory, "index.html"))) {
-      htmlUtf8.appendln("<h1>" + directory.getName() + "</h1>");
-      Tensor tensor = Get.of(new File(directory, StaticHelper.LOG_START_TIME));
-      htmlUtf8.appendln("<p>Absolute time of start of log recording: " + tensor + " [us] <small>since 1970-01-01</small></p>");
+    try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(target, "index.html"))) {
+      htmlUtf8.appendln("<h1>" + title + "</h1>");
+      htmlUtf8.appendln("<p>Absolute time of start of log recording: " + gokartLcmMap.utime + " [us] <small>since 1970-01-01</small></p>");
       htmlUtf8.appendln("<p><small>report generated: " + new Date() + "</small>");
       htmlUtf8.appendln("<h2>Steering</h2>");
       htmlUtf8.appendln("<img src='plot/status.png'/><br/><br/>");
@@ -280,8 +264,7 @@ public class HtmlLogReport {
     {
       Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
-      // if (!Tensors.isEmpty(domain))
-      {
+      if (!Tensors.isEmpty(domain)) {
         Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
         Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
         Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));

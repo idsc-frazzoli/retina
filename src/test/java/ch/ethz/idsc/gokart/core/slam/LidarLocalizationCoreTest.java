@@ -25,6 +25,7 @@ public class LidarLocalizationCoreTest extends TestCase {
 
   public void testQuality() {
     LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
+    assertEquals(lidarLocalizationCore.quality, RealScalar.ZERO);
     lidarLocalizationCore.quality = RealScalar.ONE;
     lidarLocalizationCore.thread.start();
     assertEquals(lidarLocalizationCore.quality, RealScalar.ONE);
@@ -32,5 +33,15 @@ public class LidarLocalizationCoreTest extends TestCase {
     assertEquals(lidarLocalizationCore.quality, RealScalar.ONE);
     lidarLocalizationCore.lidarRayBlock(null);
     assertEquals(lidarLocalizationCore.quality, RealScalar.ZERO);
+  }
+
+  public void testQualityOk() {
+    LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
+    lidarLocalizationCore.quality = RealScalar.ONE;
+    lidarLocalizationCore.setTracking(true);
+    lidarLocalizationCore.thread.start();
+    assertEquals(lidarLocalizationCore.quality, RealScalar.ONE);
+    lidarLocalizationCore.thread.interrupt();
+    assertEquals(lidarLocalizationCore.quality, RealScalar.ONE);
   }
 }
