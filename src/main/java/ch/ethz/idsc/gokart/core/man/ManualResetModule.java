@@ -21,11 +21,9 @@ public class ManualResetModule extends AbstractClockedModule {
   @Override // from AbstractClockedModule
   protected void runAlgo() {
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
-    if (optional.isPresent()) {
-      ManualControlInterface manualControlInterface = optional.get();
-      if (manualControlInterface.isResetPressed())
-        GokartActuatorCalibration.all();
-    }
+    if (optional.isPresent() && //
+        optional.get().isResetPressed()) // manual control reset button pressed
+      GokartActuatorCalibration.all();
   }
 
   @Override // from AbstractClockedModule
