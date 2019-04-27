@@ -66,7 +66,7 @@ public class LidarLocalizationCore implements //
    * containing the cross-section of the static geometry
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
-  private Scalar quality = RealScalar.ZERO;
+  /* package for testing */ Scalar quality = RealScalar.ZERO;
   private GeodesicIIR1Filter geodesicIIR1Filter = //
       new GeodesicIIR1Filter(RnGeodesic.INSTANCE, IIR1_FILTER_GYROZ);
   private Scalar gyroZ_vmu931 = Quantity.of(0.0, SI.PER_SECOND);
@@ -105,8 +105,10 @@ public class LidarLocalizationCore implements //
           DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
       thread.interrupt();
     }
-    if (!tracking)
+    if (!tracking) {
       vmu931Odometry.resetVelocity();
+      quality = RealScalar.ZERO;
+    }
   }
 
   /***************************************************/
@@ -127,7 +129,10 @@ public class LidarLocalizationCore implements //
         fit(points);
       } else
         try {
-          Thread.sleep(2000); // is interrupted once data arrives
+          Thread.sleep(1000); // sleep is interrupted once data arrives
+          // 1[s] of no lidar data indicates sensor failure
+          quality = RealScalar.ZERO;
+          System.err.println("no vlp16 data -> q=0");
         } catch (Exception exception) {
           // ---
         }
@@ -191,7 +196,6 @@ public class LidarLocalizationCore implements //
   public void resetPose(Tensor pose) {
     // System.out.println("reset pose=" + pose.map(Round._5));
     vmu931Odometry.resetPose(pose);
-    quality = _1;
     prevResult = null;
   }
 
