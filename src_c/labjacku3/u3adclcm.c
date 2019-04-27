@@ -68,7 +68,13 @@ done:
 
     idsc_BinaryBlob binaryBlob;
     binaryBlob.data_length = 5 * 4;
-    binaryBlob.data = (int8_t*)voltages;
+    float adcvalues[5];
+    adcvalues[0]=voltages[0];
+    adcvalues[1]=voltages[1];
+    adcvalues[2]=voltages[2];
+    adcvalues[3]=voltages[3];
+    adcvalues[4]=voltages[4];
+    binaryBlob.data = (int8_t*)adcvalues;
     idsc_BinaryBlob_publish(lcm, "labjack.u3.adc", &binaryBlob);
   }
   return 0;
