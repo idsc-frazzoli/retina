@@ -7,13 +7,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.dev.u3.LabjackU3Config;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** Labjack U3
  * readout ADC */
-public final class LabjackU3LiveProvider implements StartAndStoppable, Runnable {
+/* package */ final class LabjackU3LiveProvider implements StartAndStoppable, Runnable {
   private final LabjackU3Config labjackU3Config;
-  /** 2 bytes header, 8 bytes timestamp, each point as short */
   private final LabjackAdcListener labjackAdcListener;
   private Process process;
 
@@ -24,7 +24,7 @@ public final class LabjackU3LiveProvider implements StartAndStoppable, Runnable 
 
   @Override // from StartAndStoppable
   public void start() { // non-blocking
-    File executable = labjackU3Config.getExecutable();
+    File executable = labjackU3Config.getExecutableTxt();
     ProcessBuilder processBuilder = new ProcessBuilder(executable.toString());
     try {
       process = processBuilder.start();
