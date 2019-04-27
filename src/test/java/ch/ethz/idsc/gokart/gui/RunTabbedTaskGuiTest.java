@@ -6,6 +6,7 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
+import ch.ethz.idsc.gokart.core.fuse.LocalizationEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
@@ -61,8 +62,9 @@ public class RunTabbedTaskGuiTest extends TestCase {
         SteerCalibrationWatchdog.class, //
         MiscEmergencyWatchdog.class, //
         Vlp16PassiveSlowing.class, //
-        LidarLocalizationModule.class, //
         LinmotSafetyModule.class, //
+        LidarLocalizationModule.class, //
+        LocalizationEmergencyModule.class, //
         ManualResetModule.class //
     // AutonomySafetyModule.class //
     );
