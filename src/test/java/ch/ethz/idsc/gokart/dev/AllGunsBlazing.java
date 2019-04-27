@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
+import ch.ethz.idsc.gokart.dev.u3.LabjackU3Publisher;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.joystick.JoystickEncoder;
@@ -19,7 +19,7 @@ public enum AllGunsBlazing {
   ;
   /** joystick with all zeros except autonomous button pressed */
   public static void publishAutonomous() {
-    LabjackU3LcmModule.accept(new LabjackAdcFrame(new float[] { 0, 0, 0, 5, 0 }));
+    LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 0, 0, 0, 5, 0 }));
     // ---
     BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.JOYSTICK);
     JoystickType joystickType = JoystickType.GENERIC_XBOX_PAD;

@@ -15,6 +15,6 @@ public class LabjackU3LcmModuleTest extends TestCase {
   }
 
   public void testStatic() throws Exception {
-    LabjackU3LcmModule.accept(new LabjackAdcFrame(new float[5]));
+    LabjackU3Publisher.accept(new LabjackAdcFrame(new float[5]));
   }
 }
