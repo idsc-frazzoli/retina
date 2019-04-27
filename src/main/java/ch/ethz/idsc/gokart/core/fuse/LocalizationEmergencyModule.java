@@ -9,6 +9,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutProvider;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.data.SoftWatchdog;
 import ch.ethz.idsc.retina.util.data.Watchdog;
@@ -24,10 +25,12 @@ public class LocalizationEmergencyModule extends AbstractModule implements Gokar
   protected void first() {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
+    RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
   protected void last() {
+    RimoSocket.INSTANCE.removePutProvider(this);
     gokartPoseLcmClient.stopSubscriptions();
   }
 
