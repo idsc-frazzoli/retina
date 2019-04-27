@@ -26,7 +26,6 @@ public final class LabjackU3LiveProvider implements StartAndStoppable, Runnable 
   public void start() { // non-blocking
     File executable = labjackU3Config.getExecutable();
     ProcessBuilder processBuilder = new ProcessBuilder(executable.toString());
-    processBuilder.directory(executable.getParentFile()); // <- not required
     try {
       process = processBuilder.start();
       Thread thread = new Thread(this);
@@ -52,7 +51,8 @@ public final class LabjackU3LiveProvider implements StartAndStoppable, Runnable 
         labjackAdcListener.labjackAdc(new LabjackAdcFrame(array));
       }
     } catch (Exception exception) {
-      exception.printStackTrace();
+      if (process.isAlive())
+        exception.printStackTrace();
       stop();
     }
   }

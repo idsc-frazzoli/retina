@@ -10,4 +10,8 @@ public class GokartLcmChannelTest extends TestCase {
   public void testEmpty() {
     PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }
+
+  public void testLabjack() {
+    assertEquals(GokartLcmChannel.LABJACK_U3_ADC, "labjack.u3.adc");
+  }
 }
