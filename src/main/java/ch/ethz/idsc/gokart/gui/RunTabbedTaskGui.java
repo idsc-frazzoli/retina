@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import ch.ethz.idsc.demo.jg.FigureOvalGeodesicModule;
+import ch.ethz.idsc.demo.jg.FigureDubiGeodesicModule;
 import ch.ethz.idsc.demo.jg.GokartGeodesicTrajectoryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
@@ -41,6 +41,7 @@ import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
+import ch.ethz.idsc.gokart.core.pure.FigureDubiModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
 import ch.ethz.idsc.gokart.core.pure.FigureEightReverseModule;
@@ -63,6 +64,7 @@ import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.gui.top.SideViewLcmModule;
+import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
@@ -111,7 +113,8 @@ enum RunTabbedTaskGui {
       ParametersModule.class, // configure parameters
       SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      VoiceOutputModule.class //
+      VoiceOutputModule.class, //
+      TrajectoryDesignModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       UltimateTorqueVectoringModule.class, //
@@ -125,13 +128,14 @@ enum RunTabbedTaskGui {
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       GokartGeodesicTrajectoryModule.class, //
-      FigureOvalGeodesicModule.class, //
+      FigureDubiGeodesicModule.class, //
       MPCKinematicDrivingModule.class, //
       MPCDynamicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       PIDModule.class, //
       PIDTestTrackModule.class, //
+      FigureDubiModule.class, //
       FigureTiresAModule.class, //
       FigureTiresBModule.class, //
       FigureEightModule.class, //
