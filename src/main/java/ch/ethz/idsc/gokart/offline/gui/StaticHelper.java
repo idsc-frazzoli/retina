@@ -17,14 +17,12 @@ import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vlp16RayChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
-import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 
 /* package */ enum StaticHelper {
   ;
   static final String EXTENSION = ".csv.gz";
   static final List<SingleChannelInterface> SINGLE_CHANNEL_INTERFACES = Arrays.asList( //
       GokartPoseChannel.INSTANCE, //
-      GokartPosePostChannel.INSTANCE, //
       GokartStatusChannel.INSTANCE, //
       RimoPutChannel.INSTANCE, //
       RimoGetChannel.INSTANCE, //
