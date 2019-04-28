@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ch.ethz.idsc.gokart.offline.gui.ChannelCsvExport;
+import ch.ethz.idsc.gokart.offline.gui.GokartLcmMap;
 import ch.ethz.idsc.gokart.offline.gui.HtmlLogReport;
 
 /* package */ enum DynamicsConversionBulk {
@@ -19,8 +20,10 @@ import ch.ethz.idsc.gokart.offline.gui.HtmlLogReport;
       if (target.isDirectory())
         return;
       try {
-        ChannelCsvExport.of(new File(cut, StaticHelper.LOG_LCM), target);
-        HtmlLogReport.generate(target);
+        File file = new File(cut, StaticHelper.LOG_LCM);
+        GokartLcmMap gokartLcmMap = new GokartLcmMap(file);
+        ChannelCsvExport.of(gokartLcmMap, target);
+        new HtmlLogReport(gokartLcmMap, cut.getName(), target);
       } catch (Exception exception) {
         exception.printStackTrace();
       }

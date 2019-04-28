@@ -1710,6 +1710,7 @@ public enum GokartLogFile implements LogFile {
   /* 2019-04-08 */
   /** mpc with challenging track */
   _20190408T103556_eb6eadfe,
+  /* TODO DUBILAB MH MISSING LOG FILE OF ENSEMBLE LAPS */
   /** slow manual driving with localization failure */
   _20190408T111457_eb6eadfe,
   /** fast manual driving with localization failure */
@@ -1725,7 +1726,8 @@ public enum GokartLogFile implements LogFile {
   _20190418T142758_b6a70baf,
   /** testing steering but without localization */
   _20190418T144403_b6a70baf,
-  /** testing steering but without localization */
+  /** testing steering but without localization
+   * start at {28.9864287[m], 27.5183134[m], -1.1886032} */
   _20190418T145229_b6a70baf,
   /** geodesic pursuit */
   _20190418T155607_b6a70baf,
@@ -1741,14 +1743,28 @@ public enum GokartLogFile implements LogFile {
   _20190424T130849_b486c368,
   /** geodesic pursuit */
   _20190424T131353_aa45eece,
+  /** geodesic pursuit */
+  _20190424T144517_f0590cf6,
+  /** geodesic pursuit */
+  _20190424T144844_f0590cf6,
+  /** geodesic pursuit */
+  _20190424T155214_3262e93a,
+  /** geodesic pursuit */
+  _20190424T161815_3262e93a,
+  /** geodesic pursuit */
+  _20190424T162520_3262e93a,
   /***************************************************/
-  /** 2019-04-25 */
+  /* 2019-04-25 */
   /** with HighPowerSteerPid, each 2 times slow, 2 times fast
    * pure pursuit
    * geodesic pursuit, minimal distance [m] 3, 4, 5, 6, 7 */
   _20190425T133500_7cf20bb2,
   /** geodesic pursuit, minimal distance [m] 3, 6, with default SteerPositionControl, each slow and fast */
   _20190425T135709_7cf20bb2,
+  /** fast manual drive */
+  _20190425T140358_7cf20bb2,
+  /** fast manual drive */
+  _20190425T141045_7cf20bb2,
   /***************************************************/
   ;
   // ---

@@ -22,6 +22,7 @@ import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
+import ch.ethz.idsc.gokart.core.fuse.LocalizationEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
@@ -54,7 +55,7 @@ import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
 import ch.ethz.idsc.gokart.core.sound.VoiceOutputModule;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
 import ch.ethz.idsc.gokart.dev.SeesLcmModule;
-import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
+import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
@@ -90,7 +91,7 @@ enum RunTabbedTaskGui {
       GokartStatusLcmModule.class, //
       GokartTimestampModule.class, //
       LoggerModule.class, //
-      LabjackU3LcmModule.class, //
+      LabjackU3Module.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
       MiscEmergencyWatchdog.class, // <- DON'T REMOVE
       SteerPassiveModule.class, //
@@ -98,6 +99,7 @@ enum RunTabbedTaskGui {
       Vmu931CalibrationWatchdog.class, //
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
+      LocalizationEmergencyModule.class, //
       PoseLcmServerModule.class, // publishes pose
       ManualResetModule.class //
   // AutonomySafetyModule.class // <- dead man switch

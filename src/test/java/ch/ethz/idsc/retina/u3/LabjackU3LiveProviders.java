@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.u3;
 
+import ch.ethz.idsc.gokart.dev.u3.LabjackU3Config;
 import ch.ethz.idsc.retina.util.EmptyStartAndStoppable;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 

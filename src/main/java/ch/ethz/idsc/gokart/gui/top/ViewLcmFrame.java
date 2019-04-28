@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Objects;
 
 import javax.swing.JButton;
@@ -15,6 +17,7 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class ViewLcmFrame extends TimerFrame {
   private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
@@ -40,6 +43,23 @@ import ch.ethz.idsc.tensor.mat.LinearSolve;
         jToggleButton.setSelected(lidarLocalizationModule.isTracking());
         jToggleButton.addActionListener(actionEvent -> lidarLocalizationModule.setTracking(jToggleButton.isSelected()));
         jToolBar.add(jToggleButton);
+      }
+      {
+        JButton jButton = GuiConfig.GLOBAL.createButton("get");
+        jButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Tensor model2pixel = geometricComponent.getModel2Pixel(); // quantify drag by user
+            // System.out.println("model2pixel");
+            // System.out.println(Pretty.of(model2pixel));
+            // System.out.println(Pretty.of(model2pixel.map(Round._3)));
+            Tensor newPose = LinearSolve.of(MODEL2PIXEL_INITIAL, model2pixel);
+            // System.out.println(Pretty.of(newPose.map(Round._3)));
+            Tensor xya = GokartPoseHelper.attachUnits(Se2Utils.fromSE2Matrix(newPose));
+            System.out.println(xya.map(Round._7));
+          }
+        });
+        jToolBar.add(jButton);
       }
       jToolBar.add(jButtonMapCreate);
       jToolBar.add(jButtonMapUpdate);

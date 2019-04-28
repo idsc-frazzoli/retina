@@ -1,4 +1,4 @@
-// code by jph
+// code by mh, jph
 package ch.ethz.idsc.gokart.calib.brake;
 
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutHelper;
