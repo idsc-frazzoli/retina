@@ -1710,11 +1710,14 @@ public enum GokartLogFile implements LogFile {
   /* 2019-04-08 */
   /** mpc with challenging track */
   _20190408T103556_eb6eadfe,
-  /* TODO DUBILAB MH MISSING LOG FILE OF ENSEMBLE LAPS */
+  /** mh thesis benchmarking: dynamic kinematic */
+  _20190408T104821_eb6eadfe, //
   /** slow manual driving with localization failure */
   _20190408T111457_eb6eadfe,
   /** fast manual driving with localization failure */
   _20190408T123841_eb6eadfe,
+  /** mh thesis benchmarking: human centerline kinematic */
+  _20190408T124954_eb6eadfe,
   /***************************************************/
   /* 2019-04-15 */
   /* steer battery was found discharged */
