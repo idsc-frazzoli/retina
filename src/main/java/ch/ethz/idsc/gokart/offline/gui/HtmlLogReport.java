@@ -22,7 +22,6 @@ import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vlp16RayChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
-import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.sophus.math.WindowCenterSampler;
 import ch.ethz.idsc.subare.util.HtmlUtf8;
@@ -320,11 +319,6 @@ public class HtmlLogReport {
       Tensor tensor = map.get(GokartPoseChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
       visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("live");
-    }
-    {
-      Tensor tensor = map.get(GokartPosePostChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("post-processing");
     }
     exportListPlot("poseQuality.png", visualSet);
   }
