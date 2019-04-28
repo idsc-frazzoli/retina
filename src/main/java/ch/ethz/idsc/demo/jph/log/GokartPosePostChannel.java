@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.offline.pose;
+package ch.ethz.idsc.demo.jph.log;
 
 import java.nio.ByteBuffer;
 

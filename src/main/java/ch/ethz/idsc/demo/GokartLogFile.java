@@ -1710,6 +1710,7 @@ public enum GokartLogFile implements LogFile {
   /* 2019-04-08 */
   /** mpc with challenging track */
   _20190408T103556_eb6eadfe,
+  /* TODO DUBILAB MH MISSING LOG FILE OF ENSEMBLE LAPS */
   /** slow manual driving with localization failure */
   _20190408T111457_eb6eadfe,
   /** fast manual driving with localization failure */
@@ -1725,7 +1726,8 @@ public enum GokartLogFile implements LogFile {
   _20190418T142758_b6a70baf,
   /** testing steering but without localization */
   _20190418T144403_b6a70baf,
-  /** testing steering but without localization */
+  /** testing steering but without localization
+   * start at {28.9864287[m], 27.5183134[m], -1.1886032} */
   _20190418T145229_b6a70baf,
   /** geodesic pursuit */
   _20190418T155607_b6a70baf,

@@ -4,9 +4,9 @@ package ch.ethz.idsc.demo.jph.lidar.local;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.demo.jph.log.GokartPosePostChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
