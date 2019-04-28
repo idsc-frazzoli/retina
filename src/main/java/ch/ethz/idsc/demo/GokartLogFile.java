@@ -1741,14 +1741,28 @@ public enum GokartLogFile implements LogFile {
   _20190424T130849_b486c368,
   /** geodesic pursuit */
   _20190424T131353_aa45eece,
+  /** geodesic pursuit */
+  _20190424T144517_f0590cf6,
+  /** geodesic pursuit */
+  _20190424T144844_f0590cf6,
+  /** geodesic pursuit */
+  _20190424T155214_3262e93a,
+  /** geodesic pursuit */
+  _20190424T161815_3262e93a,
+  /** geodesic pursuit */
+  _20190424T162520_3262e93a,
   /***************************************************/
-  /** 2019-04-25 */
+  /* 2019-04-25 */
   /** with HighPowerSteerPid, each 2 times slow, 2 times fast
    * pure pursuit
    * geodesic pursuit, minimal distance [m] 3, 4, 5, 6, 7 */
   _20190425T133500_7cf20bb2,
   /** geodesic pursuit, minimal distance [m] 3, 6, with default SteerPositionControl, each slow and fast */
   _20190425T135709_7cf20bb2,
+  /** fast manual drive */
+  _20190425T140358_7cf20bb2,
+  /** fast manual drive */
+  _20190425T141045_7cf20bb2,
   /***************************************************/
   ;
   // ---

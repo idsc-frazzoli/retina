@@ -14,7 +14,7 @@ public class ChannelCsvExportTest extends TestCase {
     assertTrue(file.isFile());
     File target = HomeDirectory.Documents(getClass().getSimpleName());
     assertFalse(target.exists());
-    ChannelCsvExport.of(file, target);
+    ChannelCsvExport.of(new GokartLcmMap(file), target);
     assertTrue(12 < target.listFiles().length);
     DeleteDirectory.of(target, 1, 50);
   }

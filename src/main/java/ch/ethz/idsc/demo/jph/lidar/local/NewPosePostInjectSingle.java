@@ -5,6 +5,7 @@ import java.io.File;
 
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
+import ch.ethz.idsc.gokart.offline.pose.LidarLocalizationOffline;
 import ch.ethz.idsc.gokart.offline.pose.LogPosePostInject;
 
 /* package */ enum NewPosePostInjectSingle {

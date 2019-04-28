@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
+import ch.ethz.idsc.gokart.offline.pose.LidarLocalizationOffline;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 

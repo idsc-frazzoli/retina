@@ -3,7 +3,10 @@
 //This example program reads analog inputs AI0-AI4 using stream mode.  Requires
 //a U3 with hardware version 1.21 or higher.
 
+// adapted by jph
+
 #include "u3.h"
+#include "../../src_MATLAB/MPCGokart/ForcesMPCPathFollowing/idsc_BinaryBlob.c"
 
 int StreamData_example(HANDLE hDevice, u3CalibrationInfo *caliInfo, int isDAC1Enabled);
 
@@ -21,7 +24,13 @@ const uint8 SamplesPerPacket = 25;  //Needs to be 25 to read multiple StreamData
 
 #include "u3adc_stream.c"
 
+
+lcm_t * lcm;
 int main(int argc, char **argv) {
+  lcm = lcm_create(NULL);
+  if (!lcm)
+    return 1;
+
   HANDLE hDevice;
   u3CalibrationInfo caliInfo;
   int dac1Enabled;
@@ -55,15 +64,20 @@ done:
   return 0;
 }
 
-
 #include "u3adc_data.c"
 
-    for( k = 0; k < NumChannels; k++ )
-      printf("%f ", voltages[k]);
-    printf("\n");
-    fflush(stdout); // Will now print everything in the stdout buffer
+    idsc_BinaryBlob binaryBlob;
+    binaryBlob.data_length = 5 * 4;
+    float adcvalues[5];
+    adcvalues[0]=voltages[0];
+    adcvalues[1]=voltages[1];
+    adcvalues[2]=voltages[2];
+    adcvalues[3]=voltages[3];
+    adcvalues[4]=voltages[4];
+    binaryBlob.data = (int8_t*)adcvalues;
+    idsc_BinaryBlob_publish(lcm, "labjack.u3.adc", &binaryBlob);
   }
-
   return 0;
 }
+
 
