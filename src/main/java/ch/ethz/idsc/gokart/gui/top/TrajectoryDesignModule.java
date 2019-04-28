@@ -3,12 +3,14 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.demo.jg.FigureDubiGeodesicModule;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
@@ -16,6 +18,8 @@ import ch.ethz.idsc.tensor.io.MatrixForm;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.Round;
+
+// TODO make auto-clos when used with gui
 
 public class TrajectoryDesignModule extends AbstractModule {
   public static final Tensor _20190401 = Tensors.fromString( //
@@ -34,12 +38,17 @@ public class TrajectoryDesignModule extends AbstractModule {
   protected void first() {
     trajectoryDesign.timerFrame.jToolBar.addSeparator();
     JButton jButton = new JButton("set curve");
+    jButton.setToolTipText("override pursuit curve");
     jButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         System.out.println(Dimensions.of(trajectoryDesign.getCurve()));
         System.out.println("---");
         System.out.println(MatrixForm.of(trajectoryDesign.controlPoints().map(Round._4), ",", "", ""));
+        // ---
+        FigureDubiGeodesicModule geodesicModule = ModuleAuto.INSTANCE.getInstance(FigureDubiGeodesicModule.class);
+        if (Objects.nonNull(geodesicModule))
+          geodesicModule.setCurve(trajectoryDesign.getCurve());
       }
     });
     trajectoryDesign.timerFrame.jToolBar.add(jButton);
