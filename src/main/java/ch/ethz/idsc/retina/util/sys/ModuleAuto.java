@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /** ModuleWatchdog runs every PERIOD_S and checks if all the modules that should
@@ -80,12 +79,18 @@ public enum ModuleAuto {
    * @return instance of module if module was started before or null */
   @SuppressWarnings("unchecked")
   public <T extends AbstractModule> T getInstance(Class<? extends AbstractModule> module) {
-    return (T) moduleMap.get(module);
+    synchronized (moduleMap) {
+      return (T) moduleMap.get(module);
+    }
   }
 
   /** @param baseModule
    * @return stream all modules extending baseModule that were started before */
   public <T extends AbstractModule> Stream<T> getExtensions(Class<T> baseModule) {
-    return moduleMap.values().stream().filter(baseModule::isInstance).map(baseModule::cast);
+    synchronized (moduleMap) {
+      return moduleMap.values().stream() //
+          .filter(baseModule::isInstance) //
+          .map(baseModule::cast);
+    }
   }
 }

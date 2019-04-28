@@ -1,10 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Objects;
+
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
@@ -22,37 +20,34 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO make auto-close when used with gui
-
 public class TrajectoryDesignModule extends AbstractModule {
-  public static final Tensor _20190401 = Tensors.fromString( //
-      "{{3.6677994336284594, 3.5436206505034793, -190.05265224432887}, {3.5436206505034793, -3.6677994336284594, 74.03647376620074}, {0.0, 0.0, 1.0}}");
-  // ---
-  // private static final File IMAGE_FILE = HomeDirectory.Pictures("20190408_gray_ts.png");
+  public static final Tensor _20190401 = Tensors.of( //
+      Tensors.vector(3.6677994336284594, 3.5436206505034793, -190.05265224432887), //
+      Tensors.vector(3.5436206505034793, -3.6677994336284594, 74.03647376620074), //
+      Tensors.vector(0.0, 0.0, 1.0));
 
   public static BackgroundImage get20190408() {
-    // return BackgroundImage.from(IMAGE_FILE, _20190401);
     return new BackgroundImage(ResourceData.bufferedImage("/dubilab/obstacles/20190408.png"), _20190401);
   }
 
   private final TrajectoryDesign trajectoryDesign = new TrajectoryDesign();
 
-  @Override
+  @Override // from AbstractModule
   protected void first() {
     trajectoryDesign.timerFrame.jToolBar.addSeparator();
     JButton jButton = new JButton("set curve");
     jButton.setToolTipText("override pursuit curve");
-    jButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        System.out.println(Dimensions.of(trajectoryDesign.getCurve()));
-        System.out.println("---");
-        System.out.println(MatrixForm.of(trajectoryDesign.controlPoints().map(Round._4), ",", "", ""));
-        // ---
-        FigureDubiGeodesicModule geodesicModule = ModuleAuto.INSTANCE.getInstance(FigureDubiGeodesicModule.class);
-        if (Objects.nonNull(geodesicModule))
-          geodesicModule.setCurve(trajectoryDesign.getCurve());
-        ModuleAuto.INSTANCE.getExtensions(FigureBaseModule.class).forEach(pureModule -> pureModule.setCurve(trajectoryDesign.getCurve()));
-      }
+    jButton.addActionListener(actionEvent -> {
+      Tensor curve = trajectoryDesign.getCurve().unmodifiable();
+      System.out.println(Dimensions.of(curve));
+      System.out.println("---");
+      System.out.println(MatrixForm.of(trajectoryDesign.controlPoints().map(Round._4), ",", "", ""));
+      // ---
+      FigureDubiGeodesicModule geodesicModule = ModuleAuto.INSTANCE.getInstance(FigureDubiGeodesicModule.class);
+      if (Objects.nonNull(geodesicModule))
+        geodesicModule.setCurve(curve);
+      ModuleAuto.INSTANCE.getExtensions(FigureBaseModule.class) //
+          .forEach(figureBaseModule -> figureBaseModule.setCurve(curve));
     });
     trajectoryDesign.timerFrame.jToolBar.add(jButton);
     try {
@@ -65,7 +60,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     trajectoryDesign.timerFrame.geometricComponent.addRenderInterface(Dubilab.GRID_RENDER);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     trajectoryDesign.timerFrame.close();
   }
