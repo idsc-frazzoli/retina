@@ -3,11 +3,13 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.jg.FigureDubiGeodesicModule;
+import ch.ethz.idsc.gokart.core.pure.FigureBaseModule;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -19,7 +21,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.Round;
 
-// TODO make auto-clos when used with gui
+// TODO make auto-close when used with gui
 
 public class TrajectoryDesignModule extends AbstractModule {
   public static final Tensor _20190401 = Tensors.fromString( //
@@ -49,6 +51,7 @@ public class TrajectoryDesignModule extends AbstractModule {
         FigureDubiGeodesicModule geodesicModule = ModuleAuto.INSTANCE.getInstance(FigureDubiGeodesicModule.class);
         if (Objects.nonNull(geodesicModule))
           geodesicModule.setCurve(trajectoryDesign.getCurve());
+        ModuleAuto.INSTANCE.getExtensions(FigureBaseModule.class).forEach(pureModule -> pureModule.setCurve(trajectoryDesign.getCurve()));
       }
     });
     trajectoryDesign.timerFrame.jToolBar.add(jButton);
@@ -64,7 +67,7 @@ public class TrajectoryDesignModule extends AbstractModule {
 
   @Override
   protected void last() {
-    // ---
+    trajectoryDesign.timerFrame.close();
   }
 
   public static void standalone() {

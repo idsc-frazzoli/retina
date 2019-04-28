@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** ModuleWatchdog runs every PERIOD_S and checks if all the modules that should
  * be running are running as given by their threads. If not it will try to
@@ -79,5 +81,11 @@ public enum ModuleAuto {
   @SuppressWarnings("unchecked")
   public <T extends AbstractModule> T getInstance(Class<? extends AbstractModule> module) {
     return (T) moduleMap.get(module);
+  }
+
+  /** @param baseModule
+   * @return stream all modules extending baseModule that were started before */
+  public <T extends AbstractModule> Stream<T> getExtensions(Class<T> baseModule) {
+    return moduleMap.values().stream().filter(baseModule::isInstance).map(baseModule::cast);
   }
 }
