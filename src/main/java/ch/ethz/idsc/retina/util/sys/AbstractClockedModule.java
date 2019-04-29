@@ -51,6 +51,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
   public final void terminate() {
     // order of launch() reversed
     timer.cancel();
+    // TODO JPH/GJOEL wait here until task is finished!
     last();
   }
 }

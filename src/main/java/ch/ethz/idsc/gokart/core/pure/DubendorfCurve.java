@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.core.pure;
 
 import java.io.File;
-import java.io.IOException;
 
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -51,15 +50,17 @@ public enum DubendorfCurve {
 
   private static Tensor track_oval() {
     Tensor poly = track_oval_se2();
-    return Tensors.isEmpty(poly) ? Tensors.empty() : project_se2_r2(poly).unmodifiable();
+    return Tensors.isEmpty(poly) //
+        ? Tensors.empty()
+        : project_se2_r2(poly).unmodifiable();
   }
 
   private static Tensor track_oval_se2() {
     try {
       Tensor poly = Import.of(new File("resources/track20190325.csv"));
       return Nest.of(SUBDIVISION_SE2, poly, 4).unmodifiable();
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
     return Tensors.empty();
   }
