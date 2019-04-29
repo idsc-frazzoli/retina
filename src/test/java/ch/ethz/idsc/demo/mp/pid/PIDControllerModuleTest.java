@@ -27,6 +27,7 @@ public class PIDControllerModuleTest extends TestCase {
   public void testHeading() {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
     Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL.stream().map(Extract2D.FUNCTION));
+    // System.out.println(curve);
     pidControllerModule.setCurve(Optional.ofNullable(curve));
     System.out.println(curve);
     pidControllerModule.first();
@@ -38,7 +39,7 @@ public class PIDControllerModuleTest extends TestCase {
       Scalar heading = pidControllerModule.pidSteer.getHeading();
       // System.out.println(heading);
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, heading.divide(RealScalar.of(10))));
-      System.out.println(pose);
+      // System.out.println(pose);
       // TODO Solve issue with if gokart does multiple rotations (+pi factor)
     }
   }

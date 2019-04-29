@@ -12,9 +12,9 @@ public class GeodesicPursuitParams {
   // ---
   public Scalar minDistance = Quantity.of(3, SI.METER);
   public Scalar optimizationSteps = RealScalar.of(25);
-  public Scalar scale = RealScalar.of(20);
+  public Scalar scale = Quantity.of(20, "m*s");
 
   public int getOptimizationSteps() {
-    return  optimizationSteps.number().intValue();
+    return optimizationSteps.number().intValue();
   }
 }

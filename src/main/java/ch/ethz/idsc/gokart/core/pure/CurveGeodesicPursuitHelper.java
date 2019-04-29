@@ -5,14 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.math.planar.ArgMinVariable;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuit;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
 import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.sophus.math.GeodesicInterface;
@@ -25,11 +23,11 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Norm;
+import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Abs;
 
 public enum CurveGeodesicPursuitHelper {
   ;
-
   /** @param pose of vehicle {x[m], y[m], angle}
    * @param speed of vehicle [m*s^-1]
    * @param curve in world coordinates
@@ -43,27 +41,37 @@ public enum CurveGeodesicPursuitHelper {
       GeodesicInterface geodesicInterface, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {
-    TensorUnaryOperator tensorUnaryOperator = new Se2GroupElement(GokartPoseHelper.toUnitless(pose)).inverse()::combine;
+    TensorUnaryOperator tensorUnaryOperator = new Se2GroupElement(pose).inverse()::combine;
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
       mirrorAndReverse(tensor);
     Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
-    TensorScalarFunction mapping = vector -> { //
-      if (Scalars.lessThan(Magnitude.METER.apply(GeodesicPursuitParams.GLOBAL.minDistance), Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)))) {
-        GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
-        Tensor ratios = geodesicPursuit.ratios().map(scalar -> Quantity.of(scalar, SI.PER_METER));
-        if (ratios.stream().map(Tensor::Get).allMatch(isCompliant)) {
-          return curveLength(geodesicPursuit.curve()) //
-              .add(GeodesicPursuitParams.GLOBAL.scale //
-                  .multiply(Magnitude.VELOCITY.apply(speed)) //
-                  .multiply(Abs.of(geodesicPursuit.ratios().stream().reduce(Max::of).get()).Get()));
-        }
-      }
-      return DoubleScalar.POSITIVE_INFINITY; // TODO GJOEL unitless?
-    };
+    TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, geodesicInterface, isCompliant, speed);
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, GeodesicPursuitParams.GLOBAL.getOptimizationSteps()).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
     return lookAhead.map(vector -> GeodesicPlan.from(new GeodesicPursuit(geodesicInterface, vector), pose, isForward).orElse(null));
+  }
+
+  /** @param vector
+   * @param geodesicInterface
+   * @param isCompliant
+   * @param speed
+   * @return quantity with unit [m] */
+  public static Scalar dragonNightKingKnife(Tensor vector, GeodesicInterface geodesicInterface, Predicate<Scalar> isCompliant, Scalar speed) {
+    if (Scalars.lessThan(GeodesicPursuitParams.GLOBAL.minDistance, Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)))) {
+      GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
+      Tensor ratios = geodesicPursuit.ratios();
+      if (ratios.stream().map(Tensor::Get).allMatch(isCompliant)) {
+        Scalar length = curveLength(geodesicPursuit.curve()); // [m]
+        // System.out.println("length=" + length);
+        Scalar max = Abs.of(geodesicPursuit.ratios().stream().reduce(Max::of).get()).Get(); // [m^-1]
+        // System.out.println("max=" + max);
+        Scalar virtual = Times.of(GeodesicPursuitParams.GLOBAL.scale, speed, max);
+        // System.out.println("virtual=" + virtual);
+        return length.add(virtual);
+      }
+    }
+    return Quantity.of(DoubleScalar.POSITIVE_INFINITY, SI.METER);
   }
 
   /** mirror the points along the y axis and invert their orientation
@@ -110,12 +118,17 @@ public enum CurveGeodesicPursuitHelper {
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @return GeodesicPlan */
   public static Optional<GeodesicPlan> from(GeodesicPursuitInterface geodesicPursuitInterface, Tensor pose, boolean isForward) {
-    return geodesicPursuitInterface.firstRatio().map(scalar -> Quantity.of(scalar, SI.PER_METER)).map(ratio -> {
+    Optional<Scalar> optional = geodesicPursuitInterface.firstRatio(); // with unit [m^-1]
+    // System.out.println("optional=" + optional);
+    // return optional
+    if (optional.isPresent()) {
+      Scalar ratio = optional.get();
       Tensor curveSE2 = geodesicPursuitInterface.curve();
       if (!isForward)
         CurveGeodesicPursuitHelper.mirrorAndReverse(curveSE2);
-      Tensor curve = Tensor.of(curveSE2.stream().map(new Se2GroupElement(GokartPoseHelper.toUnitless(pose))::combine));
-      return new GeodesicPlan(ratio, curve);
-    });
+      Tensor curve = Tensor.of(curveSE2.stream().map(new Se2GroupElement(pose)::combine));
+      return Optional.of(new GeodesicPlan(ratio, curve));
+    }
+    return Optional.empty();
   }
 }

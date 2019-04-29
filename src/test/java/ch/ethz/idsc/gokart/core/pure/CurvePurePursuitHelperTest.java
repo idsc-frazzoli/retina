@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 public class CurvePurePursuitHelperTest extends TestCase {
   public void testSpecific1() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 1}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     // assertTrue(Clip.function( // for look ahead 3.9[m]
@@ -28,7 +28,7 @@ public class CurvePurePursuitHelperTest extends TestCase {
 
   public void testSpecific2() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 0.9}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     assertTrue(Clips.interval( //
@@ -38,13 +38,13 @@ public class CurvePurePursuitHelperTest extends TestCase {
 
   public void testLookAheadFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 42.9[m], 2.9}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
     assertFalse(optional.isPresent());
   }
 
   public void testLookAheadDistanceFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 420.9[m], 2.9}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
     assertFalse(optional.isPresent());
   }
 

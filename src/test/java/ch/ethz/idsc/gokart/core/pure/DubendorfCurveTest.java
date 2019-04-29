@@ -50,7 +50,7 @@ public class DubendorfCurveTest extends TestCase {
   }
 
   public void testDistances2() {
-    testCurve(DubendorfCurve.OVAL);
+    testCurve(DubendorfCurve2.OVAL);
     testCurve(DubendorfCurve2.DEMODAY_EIGHT);
     testCurve(DubendorfCurve2.HYPERLOOP_EIGHT);
     testCurve(DubendorfCurve2.HYPERLOOP_OVAL);
