@@ -57,12 +57,12 @@ public enum CurveGeodesicPursuitHelper {
     };
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
-    return lookAhead.map(vector -> GeodesicPlan.from(new GeodesicPursuit(geodesicInterface, vector), pose).orElse(null));
+    return lookAhead.map(vector -> GeodesicPlan.from(new GeodesicPursuit(geodesicInterface, vector), pose,isForward).orElse(null));
   }
 
   /** mirror the points along the y axis and invert their orientation
    * @param se2points curve given by points {x,y,a} */
-  private static void mirrorAndReverse(Tensor se2points) {
+  /* package */ static void mirrorAndReverse(Tensor se2points) {
     se2points.set(Scalar::negate, Tensor.ALL, 0);
     se2points.set(Scalar::negate, Tensor.ALL, 2);
   }
@@ -101,10 +101,14 @@ public enum CurveGeodesicPursuitHelper {
 
   /** @param geodesicPursuitInterface
    * @param pose of vehicle {x[m], y[m], angle}
+   * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @return GeodesicPlan */
-  public static Optional<GeodesicPlan> from(GeodesicPursuitInterface geodesicPursuitInterface, Tensor pose) {
+  public static Optional<GeodesicPlan> from(GeodesicPursuitInterface geodesicPursuitInterface, Tensor pose, boolean isForward) {
     return geodesicPursuitInterface.firstRatio().map(scalar -> Quantity.of(scalar, SI.PER_METER)).map(ratio -> {
-      Tensor curve = Tensor.of(geodesicPursuitInterface.curve().stream().map(new Se2GroupElement(GokartPoseHelper.toUnitless(pose))::combine));
+      Tensor curveSE2 = geodesicPursuitInterface.curve();
+      if (!isForward)
+        CurveGeodesicPursuitHelper.mirrorAndReverse(curveSE2);
+      Tensor curve = Tensor.of(curveSE2.stream().map(new Se2GroupElement(GokartPoseHelper.toUnitless(pose))::combine));
       return new GeodesicPlan(ratio, curve);
     });
   }

@@ -13,6 +13,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -29,6 +30,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
    * noise in the measurements around zero are also mapped to "forward" */
   protected boolean isForward = true;
   protected Scalar speed = Quantity.of(0, SI.VELOCITY);
+  private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   /* package */ final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent rimoGetEvent) {
@@ -49,12 +51,15 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
   protected final void protected_first() {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
-    RimoSocket.INSTANCE.addGetListener(rimoGetListener);
+    // RimoSocket.INSTANCE.addGetListener(rimoGetListener);
+    rimoGetLcmClient.addListener(rimoGetListener);
+    rimoGetLcmClient.startSubscriptions();
   }
 
   @Override // from AbstractModule
   protected final void protected_last() {
-    RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
+    rimoGetLcmClient.stopSubscriptions();
+    // RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
     gokartPoseLcmClient.stopSubscriptions();
   }
 
