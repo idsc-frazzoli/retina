@@ -9,7 +9,6 @@ import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.bot.se2.glc.StaticRatioLimit;
 import ch.ethz.idsc.owl.math.planar.InterpolationEntryFinder;
 import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.curve.ClothoidCurve;
@@ -46,11 +45,5 @@ public class PursuitConfig {
   // ---
   public static final List<DynamicRatioLimit> ratioLimits() {
     return Collections.singletonList(new StaticRatioLimit(SteerConfig.GLOBAL.turningRatioMax));
-  }
-
-  /***************************************************/
-  /** @return unitless look ahead distance with interpretation in meters */
-  public Scalar lookAheadMeter() {
-    return Magnitude.METER.apply(lookAhead);
   }
 }

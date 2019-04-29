@@ -42,12 +42,6 @@ import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
 import ch.ethz.idsc.gokart.core.pure.FigureDubiModule;
-import ch.ethz.idsc.gokart.core.pure.FigureDucttapeModule;
-import ch.ethz.idsc.gokart.core.pure.FigureEightModule;
-import ch.ethz.idsc.gokart.core.pure.FigureEightReverseModule;
-import ch.ethz.idsc.gokart.core.pure.FigureOvalModule;
-import ch.ethz.idsc.gokart.core.pure.FigureTiresAModule;
-import ch.ethz.idsc.gokart.core.pure.FigureTiresBModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -136,19 +130,13 @@ enum RunTabbedTaskGui {
       PIDModule.class, //
       PIDTestTrackModule.class, //
       FigureDubiModule.class, //
-      FigureTiresAModule.class, //
-      FigureTiresBModule.class, //
-      FigureEightModule.class, //
-      FigureEightReverseModule.class, //
-      FigureOvalModule.class, //
       GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //
       DavisSlamOdometryModule.class, //
       SEyeSlamLidarModule.class, //
       SEyeSlamOdometryModule.class, //
-      SEyeSlamVisualModule.class, //
-      FigureDucttapeModule.class //
+      SEyeSlamVisualModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //

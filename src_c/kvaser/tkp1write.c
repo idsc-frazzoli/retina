@@ -92,6 +92,7 @@ void sendCmd(canHandle hnd, char EpsMsgCntr, int enable, int torque) {
   // canMSG_EXT
   {
     stat = canWriteWait(hnd, 1, msgId01, 8, 0, WRITE_WAIT_INFINITE);
+    //printf("01 %02x %02x %02x %02x \n",msgId01[0]&0xff,msgId01[1]&0xff,msgId01[2]&0xff,msgId01[3]&0xff);
     // stat = canWrite(hnd, 1, msgId01, 8, 0);
     // printf("sent %3d\n", EpsMsgCntr & 0xff);
     if (errno == 0) {
@@ -164,6 +165,7 @@ int main(int argc, char *argv[]) {
 
   int commandCount = 0;
 
+int incr = 0;
   while(1) {
 
     // ----------------------------------------------------------
@@ -185,21 +187,26 @@ int main(int argc, char *argv[]) {
         //printf("recv %ld\n",id);
         // BO_ 11 EpsFr02: 8 EPS
         if (id==11) {
-
           int ctr = (msg[6] & 0xff) << 3;
           ctr += (msg[5] & 0xe0) >> 5;
           EpsMsgCntr = ctr;
+          //printf("11 ctr=%02x\n",EpsMsgCntr&0xff);
           // when receiving message 11: extract counter
           // SG_ EpsMsgCntr : 24|8@1+ (1,0) [0|255] ""  ABOX
           
         } else //
         if (id==10) {
+          //printf("10\n");
           // when receiving message 10: reply!
 
           if (commandCount == 0) {
             sendCmd(hnd, 0, 0, 0);
           } else {
-            sendCmd(hnd, EpsMsgCntr, 2*500 < commandCount, 4*500 < commandCount ? 0x10 : 0);
+            if (4*500 < commandCount) {
+              ++incr;
+              incr = intmin(incr,127);
+            }
+            sendCmd(hnd, EpsMsgCntr, 2*500 < commandCount, incr);
           }
           ++commandCount;
           commandCount = intmin(commandCount, 5*500);

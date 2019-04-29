@@ -12,10 +12,10 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/* package */ class SteerCanOffline implements OfflineLogListener, AutoCloseable {
+/* package */ class Tkp1CanOffline implements OfflineLogListener, AutoCloseable {
   private final HtmlUtf8 htmlUtf8;
 
-  public SteerCanOffline(String name) {
+  public Tkp1CanOffline(String name) {
     htmlUtf8 = HtmlUtf8.page(HomeDirectory.file(name + ".htm"));
     htmlUtf8.appendln("<pre>");
   }
@@ -32,9 +32,12 @@ import ch.ethz.idsc.tensor.sca.Round;
           canFrame.get(0), canFrame.get(1), canFrame.get(2), canFrame.get(3), //
           canFrame.get(4), canFrame.get(5), canFrame.get(6), canFrame.get(7)));
       if (canFrame.id == 11) {
-        int ctr = (canFrame.get(6) & 0xff) << 3;
-        ctr += (canFrame.get(5) & 0xe0) >> 5;
-        htmlUtf8.append(String.format("   #=%02x", ctr));
+        byteBuffer.position(2);
+        byteBuffer.getInt();
+        int message = byteBuffer.getInt();
+        int extr = message & 0x001fe000;
+        extr >>= 13;
+        htmlUtf8.append(String.format("   #=%3d", extr & 0xff));
       } else //
       if (canFrame.id == 10) {
         short value0 = (short) (((canFrame.get(1) & 0xff) << 9) + ((canFrame.get(0) & 0xff) << 1));
@@ -51,15 +54,15 @@ import ch.ethz.idsc.tensor.sca.Round;
             value0, value1, value2, value3, lo2 ? "LO2" : "", hi2 ? "HI2" : ""));
       } else //
       if (canFrame.id == 1) {
+        byteBuffer.position(2);
+        int all = byteBuffer.getInt();
         boolean active = (canFrame.get(0) & 1) == 1;
-        short value = 0;
-        value += canFrame.get(0) & 0xfe;
-        value += (canFrame.get(1) & 0x7f) << 8;
-        value <<= 1;
-        value >>= 2;
-        int ctr = (canFrame.get(2) & 0x7f) << 1;
-        ctr += (canFrame.get(1) & 0x80) >> 7;
-        htmlUtf8.append(String.format("   #=%02x   %5s %5d", ctr, active ? "ACT" : "", value));
+        int cta = all & 0x007f8000;
+        cta >>= 15;
+        int trq = all & 0x00007ffe;
+        trq <<= 17;
+        trq >>= 18;
+        htmlUtf8.append(String.format("   #=%3d  %5s %5d", cta & 0xff, active ? "ACT" : "", trq));
         htmlUtf8.append("</span>");
       }
       htmlUtf8.appendln();
@@ -79,7 +82,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     name = "tkp1_on_passive_static";
     name = "tkp1_on_passive_turning";
     name = "tkp1_complete_bootsequence_v1";
-    try (SteerCanOffline steerCanOffline = new SteerCanOffline(name)) {
+    try (Tkp1CanOffline steerCanOffline = new Tkp1CanOffline(name)) {
       OfflineLogPlayer.process(new File(folder, name + ".lcm.00"), steerCanOffline);
     }
   }
