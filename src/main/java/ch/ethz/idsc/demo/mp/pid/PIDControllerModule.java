@@ -9,8 +9,8 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.owl.bot.se2.pid.PIDTrajectory;
-import ch.ethz.idsc.owl.bot.se2.pid.RnCurveHelper;
 import ch.ethz.idsc.owl.math.state.StateTime;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -20,9 +20,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent = null;
   private Optional<Tensor> optionalCurve = Optional.empty();
-  private int pidIntex;
+  private int pidIndex;
   private PIDTrajectory previousPID;
-  private StateTime previousStateTime = new StateTime(Tensors.vector(0,0,0), Quantity.of(0, "s"));
+  private StateTime previousStateTime = new StateTime(Tensors.vector(0, 0, 0), Quantity.of(0, SI.SECOND));
 
   public PIDControllerModule(PIDTuningParams pidTuningParams) {
     super(pidTuningParams);
@@ -46,32 +46,36 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   protected Optional<Scalar> deriveHeading() {
-    GokartPoseEvent gokartPoseEvent = this.gokartPoseEvent;
     if (Objects.nonNull(gokartPoseEvent) && //
-        optionalCurve.isPresent() && //
-        RnCurveHelper.bigEnough(optionalCurve.get())) {
-      StateTime stateTime = new StateTime(
-          GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()),//
-          previousStateTime.time().add(PIDTuningParams.GLOBAL.updatePeriod)); //TODO Check this.
+        optionalCurve.isPresent()) {
+      StateTime stateTime = new StateTime( //
+          GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()), // TODO Check this
+          previousStateTime.time().add(PIDTuningParams.GLOBAL.updatePeriod));
       //
       PIDTrajectory pidTrajectory = new PIDTrajectory( //
-          pidIntex, //
+          pidIndex, //
           previousPID, //
           PIDTuningParams.GLOBAL.pidGains, //
           optionalCurve.get(), //
           stateTime); //
       //
-      if (PIDTuningParams.GLOBAL.clip.isInside(pidTrajectory.angleOut())) {
-        return Optional.of(pidTrajectory.angleOut());
+      Scalar angleOut = pidTrajectory.angleOut(); // TODO comment on unit? -> test
+      if (PIDTuningParams.GLOBAL.clip.isInside(angleOut)) {
+        this.previousPID = pidTrajectory;
+        pidIndex++;
+        return Optional.of(angleOut);
       }
       this.previousPID = pidTrajectory;
-      pidIntex++;
+      pidIndex++;
       return Optional.empty();
     }
     return Optional.empty();
   }
 
   public void setCurve(Optional<Tensor> curve) {
+    // TODO expect that curve has proper units (?)
+    // TODO either demand that se2 curve is provided or append angles ...
+    // TODO if invalid -> optionalCurve = Optional.empty()
     optionalCurve = curve;
   }
 

@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.sophus.curve.FourPointCurveSubdivision;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
@@ -40,8 +41,13 @@ public enum DubendorfCurve {
   // ---
   public static final Tensor TIRES_TRACK_A = tires_track_a();
   public static final Tensor TIRES_TRACK_B = tires_track_b();
-  public static final Tensor TRACK_OVAL = track_oval();
+  /** matrix with 3 columns */
   public static final Tensor TRACK_OVAL_SE2 = track_oval_se2();
+  // TODO MCP use in PID steering
+  public static final Tensor TRACK_OVAL_SE2_UNITS = //
+      Tensor.of(track_oval_se2().stream().map(GokartPoseHelper::attachUnits));
+  /** matrix with 2 columns */
+  public static final Tensor TRACK_OVAL_R2 = track_oval();
 
   /** CURVE "OVAL" IS USED IN TESTS
    * DONT MODIFY COORDINATES - INSTEAD CREATE A NEW CURVE */
@@ -123,9 +129,12 @@ public enum DubendorfCurve {
     return project_se2_r2(Nest.of(SUBDIVISION_SE2, poly, 4)).unmodifiable();
   }
 
+  /** @return tensor of vectors with length 2 as {x, y} */
   private static Tensor track_oval() {
     Tensor poly = track_oval_se2();
-    return Tensors.isEmpty(poly) ? Tensors.empty() : project_se2_r2(poly).unmodifiable();
+    return Tensors.isEmpty(poly) //
+        ? Tensors.empty()
+        : project_se2_r2(poly).unmodifiable();
   }
 
   private static Tensor track_oval_se2() {

@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
+// TODO JPH there is nothing PurePursuit-specific in this class -> rename
 final class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
   private static final Optional<SteerPutEvent> FALLBACK = Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_1);
   // ---
@@ -35,6 +36,7 @@ final class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
     this.angle = angle;
   }
 
+  // function testing
   /* package */ Scalar getHeading() {
     return angle;
   }

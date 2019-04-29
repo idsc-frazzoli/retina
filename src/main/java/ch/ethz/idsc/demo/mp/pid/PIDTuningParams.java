@@ -21,10 +21,10 @@ public class PIDTuningParams {
   public PIDGains pidGains = new PIDGains(Kp, Ki, Kd);
   public final Scalar updatePeriod = Quantity.of(0.1, SI.SECOND); // 0.1[s] == 10[Hz]
   // ---
-  Scalar maxSteerAngle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio( //
+  final Scalar maxSteerAngle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio( //
       SteerConfig.GLOBAL.turningRatioMax);
-  Scalar maxSteerAngleSafetyRatio = RealScalar.of(.9); //Avoid limit of actuator
+  final Scalar maxSteerAngleSafetyRatio = RealScalar.of(.9); // Avoid limit of actuator
   public final Clip clip = Clips.interval( //
-      maxSteerAngle.negate().multiply(maxSteerAngleSafetyRatio), //
-      maxSteerAngle.multiply(maxSteerAngleSafetyRatio)); 
+      maxSteerAngle.multiply(maxSteerAngleSafetyRatio).negate(), //
+      maxSteerAngle.multiply(maxSteerAngleSafetyRatio));
 }

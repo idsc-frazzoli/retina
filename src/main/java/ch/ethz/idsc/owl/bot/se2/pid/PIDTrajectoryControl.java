@@ -4,8 +4,6 @@ package ch.ethz.idsc.owl.bot.se2.pid;
 import java.util.List;
 import java.util.Optional;
 
-import com.jidesoft.swing.TristateCheckBox.State;
-
 import ch.ethz.idsc.owl.ani.adapter.StateTrajectoryControl;
 import ch.ethz.idsc.owl.bot.se2.Se2Wrap;
 import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
