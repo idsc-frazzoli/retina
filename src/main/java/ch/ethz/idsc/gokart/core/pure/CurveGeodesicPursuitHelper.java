@@ -61,7 +61,7 @@ public enum CurveGeodesicPursuitHelper {
       }
       return DoubleScalar.POSITIVE_INFINITY; // TODO GJOEL unitless?
     };
-    Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
+    Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, GeodesicPursuitParams.GLOBAL.getOptimizationSteps()).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
     return lookAhead.map(vector -> GeodesicPlan.from(new GeodesicPursuit(geodesicInterface, vector), pose, isForward).orElse(null));
   }

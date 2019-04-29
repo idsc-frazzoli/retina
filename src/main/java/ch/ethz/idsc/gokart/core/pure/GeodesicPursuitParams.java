@@ -11,5 +11,10 @@ public class GeodesicPursuitParams {
   public static final GeodesicPursuitParams GLOBAL = AppResources.load(new GeodesicPursuitParams());
   // ---
   public Scalar minDistance = Quantity.of(3, SI.METER);
-  public Scalar scale = RealScalar.ONE;
+  public Scalar optimizationSteps = RealScalar.of(25);
+  public Scalar scale = RealScalar.of(20);
+
+  public int getOptimizationSteps() {
+    return  optimizationSteps.number().intValue();
+  }
 }
