@@ -5,14 +5,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
 /* package */ class PIDControllerModule extends PIDControllerBase implements GokartPoseListener {
@@ -49,12 +46,12 @@ import ch.ethz.idsc.tensor.red.Norm;
         PIDCurveHelper.bigEnough(optionalCurve.get())) {
       Scalar angle = gokartPoseEvent.getPose().Get(2);
       Tensor curve = optionalCurve.get();
-      Tensor poseXY = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).extract(0, 2);
+      Tensor poseXY = gokartPoseEvent.getPose().extract(0, 2);
       // find closest points on trajectory and angle
       Tensor closest = curve.get(PIDCurveHelper.closest(curve, poseXY));
       Scalar trajAngle = PIDCurveHelper.trajAngle(curve, poseXY); // TODO MCP Improve scalar assignment
       // measure error
-      Scalar errorPose = Quantity.of(Norm._2.between(poseXY, closest), SI.METER);
+      Scalar errorPose = Norm._2.between(poseXY, closest);
       Scalar errorAngle = angle.subtract(trajAngle);
       Scalar iErrorAngle = errorAngle.multiply(PIDTuningParams.GLOBAL.updatePeriod);
       // Scalar dErrorAngle = errorAngle.subtract(previousAngleError);

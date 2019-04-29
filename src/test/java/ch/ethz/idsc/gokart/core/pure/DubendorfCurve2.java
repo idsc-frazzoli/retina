@@ -21,12 +21,28 @@ public enum DubendorfCurve2 {
       new FourPointCurveSubdivision(RnGeodesic.INSTANCE)::cyclic;
   private static final TensorUnaryOperator SUBDIVISION_SE2 = //
       new FourPointCurveSubdivision(Se2Geodesic.INSTANCE)::cyclic;
+  /** CURVE "OVAL" IS USED IN TESTS
+   * DONT MODIFY COORDINATES - INSTEAD CREATE A NEW CURVE */
+  public static final Tensor OVAL = oval();
   public static final Tensor HYPERLOOP_EIGHT = hyperloop_eight();
   public static final Tensor HYPERLOOP_EIGHT_REVERSE = Reverse.of(HYPERLOOP_EIGHT);
   public static final Tensor HYPERLOOP_OVAL = hyperloop_oval();
   public static final Tensor DEMODAY_EIGHT = eight_demoday();
   public static final Tensor TIRES_TRACK_A = tires_track_a();
   public static final Tensor TIRES_TRACK_B = tires_track_b();
+
+  /** CURVE "OVAL" IS USED IN TESTS
+   * DONT MODIFY COORDINATES - INSTEAD CREATE A NEW CURVE */
+  private static Tensor oval() {
+    Tensor poly = Tensors.of( //
+        Tensors.vector(35.200, 44.933), //
+        Tensors.vector(49.867, 59.200), //
+        Tensors.vector(57.200, 54.800), //
+        Tensors.vector(49.200, 45.067), //
+        Tensors.vector(40.800, 37.333));
+    poly = poly.map(scalar -> Quantity.of(scalar, SI.METER));
+    return Nest.of(SUBDIVISION_RN, poly, 6).unmodifiable();
+  }
 
   /** coordinates are used in tests */
   private static Tensor hyperloop_eight() {
