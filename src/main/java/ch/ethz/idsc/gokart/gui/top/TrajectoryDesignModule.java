@@ -19,7 +19,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.Round;
 
-// TODO make auto-close when used with gui
 public class TrajectoryDesignModule extends AbstractModule {
   public static final Tensor _20190401 = Tensors.of( //
       Tensors.vector(3.6677994336284594, 3.5436206505034793, -190.05265224432887), //
