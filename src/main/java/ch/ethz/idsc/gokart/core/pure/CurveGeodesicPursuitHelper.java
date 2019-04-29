@@ -63,7 +63,7 @@ public enum CurveGeodesicPursuitHelper {
     };
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
-    return lookAhead.map(vector -> GeodesicPlan.from(new GeodesicPursuit(geodesicInterface, vector), pose,isForward).orElse(null));
+    return lookAhead.map(vector -> GeodesicPlan.from(new GeodesicPursuit(geodesicInterface, vector), pose, isForward).orElse(null));
   }
 
   /** mirror the points along the y axis and invert their orientation
