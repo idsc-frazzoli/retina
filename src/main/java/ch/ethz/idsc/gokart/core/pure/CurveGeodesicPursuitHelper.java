@@ -23,10 +23,13 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Norm;
+import ch.ethz.idsc.tensor.sca.Abs;
 
-/* package */ enum CurveGeodesicPursuitHelper {
+public enum CurveGeodesicPursuitHelper {
   ;
+
   /** @param pose of vehicle {x[m], y[m], angle}
    * @param speed of vehicle [m*s^-1]
    * @param curve in world coordinates
@@ -34,8 +37,8 @@ import ch.ethz.idsc.tensor.red.Norm;
    * @param geodesicInterface type of planned curve
    * @param trajectoryEntryFinder strategy to find best re-entry point
    * @param ratioLimits depending on pose and speed
-   * @return ratio rate [m^-1] */
-  static Optional<Scalar> getRatio( //
+   * @return geodesic plan */
+  static Optional<GeodesicPlan> getPlan( //
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       GeodesicInterface geodesicInterface, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
@@ -49,19 +52,23 @@ import ch.ethz.idsc.tensor.red.Norm;
       if (Scalars.lessThan(Magnitude.METER.apply(GeodesicPursuitParams.GLOBAL.minDistance), Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)))) {
         GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
         Tensor ratios = geodesicPursuit.ratios().map(scalar -> Quantity.of(scalar, SI.PER_METER));
-        if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
-          return curveLength(geodesicPursuit.curve()); // Norm._2.ofVector(Extract2D.FUNCTION.apply(vector));
+        if (ratios.stream().map(Tensor::Get).allMatch(isCompliant)) {
+          return curveLength(geodesicPursuit.curve()) //
+              .add(GeodesicPursuitParams.GLOBAL.scale //
+                  .multiply(Magnitude.VELOCITY.apply(speed)) //
+                  .multiply(Abs.of(geodesicPursuit.ratios().stream().reduce(Max::of).get()).Get()));
+        }
       }
       return DoubleScalar.POSITIVE_INFINITY; // TODO GJOEL unitless?
     };
-    Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, 25).apply(tensor);
+    Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, GeodesicPursuitParams.GLOBAL.getOptimizationSteps()).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
-    return lookAhead.map(vector -> new GeodesicPursuit(geodesicInterface, vector).firstRatio().map(r -> Quantity.of(r, SI.PER_METER)).orElse(null));
+    return lookAhead.map(vector -> GeodesicPlan.from(new GeodesicPursuit(geodesicInterface, vector), pose, isForward).orElse(null));
   }
 
   /** mirror the points along the y axis and invert their orientation
    * @param se2points curve given by points {x,y,a} */
-  private static void mirrorAndReverse(Tensor se2points) {
+  /* package */ static void mirrorAndReverse(Tensor se2points) {
     se2points.set(Scalar::negate, Tensor.ALL, 0);
     se2points.set(Scalar::negate, Tensor.ALL, 2);
   }
@@ -84,5 +91,31 @@ import ch.ethz.idsc.tensor.red.Norm;
     return curve_.extract(1, n).subtract(curve_.extract(0, n - 1)).stream() //
         .map(Norm._2::ofVector) //
         .reduce(Scalar::add).get();
+  }
+}
+
+/* package */ class GeodesicPlan {
+  public final Scalar ratio;
+  public final Tensor curve;
+
+  /** @param ratio [m^-1] used to derive future heading
+   * @param curve planned to be followed */
+  public GeodesicPlan(Scalar ratio, Tensor curve) {
+    this.ratio = ratio;
+    this.curve = curve;
+  }
+
+  /** @param geodesicPursuitInterface
+   * @param pose of vehicle {x[m], y[m], angle}
+   * @param isForward driving direction, true when forward or stopped, false when driving backwards
+   * @return GeodesicPlan */
+  public static Optional<GeodesicPlan> from(GeodesicPursuitInterface geodesicPursuitInterface, Tensor pose, boolean isForward) {
+    return geodesicPursuitInterface.firstRatio().map(scalar -> Quantity.of(scalar, SI.PER_METER)).map(ratio -> {
+      Tensor curveSE2 = geodesicPursuitInterface.curve();
+      if (!isForward)
+        CurveGeodesicPursuitHelper.mirrorAndReverse(curveSE2);
+      Tensor curve = Tensor.of(curveSE2.stream().map(new Se2GroupElement(GokartPoseHelper.toUnitless(pose))::combine));
+      return new GeodesicPlan(ratio, curve);
+    });
   }
 }
