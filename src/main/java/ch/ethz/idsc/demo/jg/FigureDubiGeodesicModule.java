@@ -14,12 +14,17 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class FigureOvalGeodesicModule extends AbstractModule {
+public class FigureDubiGeodesicModule extends AbstractModule {
   private final CurvePurePursuitModule pursuitModule = new CurveGeodesicPursuitModule(PursuitConfig.GLOBAL);
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
-  public FigureOvalGeodesicModule() {
+  public FigureDubiGeodesicModule() {
     Tensor curve = DubendorfCurve.TRACK_OVAL_SE2;
+    setCurve(curve);
+  }
+
+  /** @param curve reference trajectory */
+  public void setCurve(Tensor curve) {
     pursuitModule.setCurve(Optional.of(curve));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(Tensor.of(curve.stream().map(Extract2D.FUNCTION)));

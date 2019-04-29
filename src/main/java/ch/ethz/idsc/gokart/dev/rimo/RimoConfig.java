@@ -17,6 +17,15 @@ import ch.ethz.idsc.tensor.sca.Clips;
 public class RimoConfig {
   public static final RimoConfig GLOBAL = AppResources.load(new RimoConfig());
   /***************************************************/
+  /** Heinzmann GmbH AC Motor
+   * Ke = 4.38[V/1000rpm] */
+  public final String motorName = "PMS 100R";
+  public final Scalar maxPower = Quantity.of(2600, "W");
+  public final Scalar maxCurrent = Quantity.of(61.6, "A");
+  public final Scalar maxMoment = Quantity.of(3.82, "N*m");
+  /** unit is interpreted as "V_AC" */
+  public final Scalar nominalVoltage = Quantity.of(36.6, "V");
+  /* package */ final Scalar maxRate = Quantity.of(6500, "rpm");
   /** parameters for {@link SimpleRimoRateController}
    * rateLimit, Kp, Ki */
   public Scalar rateLimit = Quantity.of(20, SI.PER_SECOND); // <- DEPRECATED

@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** the module monitors the reset button of the joystick.
- * when the button is presses by the operator, the module schedules
+ * when the button is pressed by the operator, the module schedules
  * the calibration procedure for the devices that are not calibrated.
  * the devices are: misc, linmot, and steer. */
 public class ManualResetModule extends AbstractClockedModule {
@@ -21,11 +21,9 @@ public class ManualResetModule extends AbstractClockedModule {
   @Override // from AbstractClockedModule
   protected void runAlgo() {
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
-    if (optional.isPresent()) {
-      ManualControlInterface manualControlInterface = optional.get();
-      if (manualControlInterface.isResetPressed())
-        GokartActuatorCalibration.all();
-    }
+    if (optional.isPresent() && //
+        optional.get().isResetPressed()) // manual control reset button pressed
+      GokartActuatorCalibration.all();
   }
 
   @Override // from AbstractClockedModule

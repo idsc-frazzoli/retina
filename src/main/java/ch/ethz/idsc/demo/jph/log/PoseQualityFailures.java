@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;

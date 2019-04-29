@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.retina.u3;
 
+import ch.ethz.idsc.gokart.dev.u3.LabjackU3Config;
+
 /* package */ enum LabjackU3LiveProviderDemo implements LabjackAdcListener {
   INSTANCE;
   @Override

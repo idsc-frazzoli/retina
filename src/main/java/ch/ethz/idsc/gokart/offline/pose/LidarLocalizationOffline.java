@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.lidar.local;
+package ch.ethz.idsc.gokart.offline.pose;
 
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
@@ -21,12 +21,12 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** emulation of the lidar/imu-based localization method on log files */
-/* package */ class LidarLocalizationOffline implements OfflineLogListener, LidarRayBlockListener {
+public class LidarLocalizationOffline implements OfflineLogListener, LidarRayBlockListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
   private final LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
-  final List<GokartPoseListener> gokartPoseListeners = new LinkedList<>();
+  public final List<GokartPoseListener> gokartPoseListeners = new LinkedList<>();
 
   /** @param pose {x[m], y[m], heading} at start of log */
   public LidarLocalizationOffline(Tensor pose) {
