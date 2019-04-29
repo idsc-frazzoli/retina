@@ -20,6 +20,11 @@ public class FigureDubiGeodesicModule extends AbstractModule {
 
   public FigureDubiGeodesicModule() {
     Tensor curve = DubendorfCurve.TRACK_OVAL_SE2;
+    setCurve(curve);
+  }
+
+  /** @param curve reference trajectory */
+  public void setCurve(Tensor curve) {
     pursuitModule.setCurve(Optional.of(curve));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(Tensor.of(curve.stream().map(Extract2D.FUNCTION)));
