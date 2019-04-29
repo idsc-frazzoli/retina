@@ -37,4 +37,11 @@ public class CurveGeodesicPursuitModule extends CurvePurePursuitModule {
     System.err.println("no curve in geodesic pursuit");
     return Optional.empty();
   }
+
+  @Override // from PurePursuitModule
+  protected final void protected_last() {
+    if (Objects.nonNull(globalViewLcmModule))
+      globalViewLcmModule.setPlan(null);
+    super.protected_last();
+  }
 }

@@ -46,7 +46,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
     super(pursuitConfig);
   }
 
-  @Override // from AbstractModule
+  @Override // from PurePursuitModule
   protected final void protected_first() {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
@@ -54,8 +54,8 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
     rimoGetLcmClient.startSubscriptions();
   }
 
-  @Override // from AbstractModule
-  protected final void protected_last() {
+  @Override // from PurePursuitModule
+  protected void protected_last() {
     rimoGetLcmClient.stopSubscriptions();
     gokartPoseLcmClient.stopSubscriptions();
   }
