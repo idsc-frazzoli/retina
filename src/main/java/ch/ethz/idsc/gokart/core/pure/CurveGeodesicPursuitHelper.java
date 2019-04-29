@@ -23,7 +23,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Norm;
+import ch.ethz.idsc.tensor.sca.Abs;
 
 public enum CurveGeodesicPursuitHelper {
   ;
@@ -50,8 +52,12 @@ public enum CurveGeodesicPursuitHelper {
       if (Scalars.lessThan(Magnitude.METER.apply(GeodesicPursuitParams.GLOBAL.minDistance), Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)))) {
         GeodesicPursuitInterface geodesicPursuit = new GeodesicPursuit(geodesicInterface, vector);
         Tensor ratios = geodesicPursuit.ratios().map(scalar -> Quantity.of(scalar, SI.PER_METER));
-        if (ratios.stream().map(Tensor::Get).allMatch(isCompliant))
-          return curveLength(geodesicPursuit.curve()); // Norm._2.ofVector(Extract2D.FUNCTION.apply(vector));
+        if (ratios.stream().map(Tensor::Get).allMatch(isCompliant)) {
+          return curveLength(geodesicPursuit.curve()) //
+              .add(GeodesicPursuitParams.GLOBAL.scale //
+                  .multiply(Magnitude.VELOCITY.apply(speed)) //
+                  .multiply(Abs.of(geodesicPursuit.ratios().stream().reduce(Max::of).get()).Get()));
+        }
       }
       return DoubleScalar.POSITIVE_INFINITY; // TODO GJOEL unitless?
     };
