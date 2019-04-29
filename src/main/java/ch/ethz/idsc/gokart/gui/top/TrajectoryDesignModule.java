@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Objects;
 
 import javax.swing.JButton;
@@ -10,11 +13,14 @@ import ch.ethz.idsc.demo.jg.FigureDubiGeodesicModule;
 import ch.ethz.idsc.gokart.core.pure.FigureBaseModule;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
+import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.MatrixForm;
+import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.Round;
@@ -34,6 +40,24 @@ public class TrajectoryDesignModule extends AbstractModule {
 
   @Override // from AbstractModule
   protected void first() {
+    {
+      final File file = AppCustomization.file(getClass(), "controlpoints.tensor");
+      try {
+        trajectoryDesign.setControl(Get.of(file));
+      } catch (Exception exception) {
+        // ---
+      }
+      trajectoryDesign.timerFrame.jFrame.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(WindowEvent windowEvent) {
+          try {
+            Put.of(file, trajectoryDesign.control());
+          } catch (Exception exception) {
+            exception.printStackTrace();
+          }
+        }
+      });
+    }
     trajectoryDesign.timerFrame.jToolBar.addSeparator();
     JButton jButton = new JButton("set curve");
     jButton.setToolTipText("override pursuit curve");
