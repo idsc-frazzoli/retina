@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.io.File;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.curve.FourPointCurveSubdivision;
@@ -58,6 +59,7 @@ public enum DubendorfCurve {
   private static Tensor track_oval_se2() {
     try {
       Tensor poly = Import.of(new File("resources/track20190325.csv"));
+      poly = Tensor.of(poly.stream().map(GokartPoseHelper::attachUnits));
       return Nest.of(SUBDIVISION_SE2, poly, 4).unmodifiable();
     } catch (Exception exception) {
       exception.printStackTrace();
