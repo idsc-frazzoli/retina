@@ -90,7 +90,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
           optionalCurve.get(), //
           closed, //
           isForward, //
-          pursuitConfig.lookAheadMeter());
+          pursuitConfig.lookAhead);
     System.err.println("no curve in pure pursuit");
     return Optional.empty();
   }
