@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.util.io.CanFrame;
 import ch.ethz.idsc.subare.util.HtmlUtf8;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class SteerCanOffline implements OfflineLogListener, AutoCloseable {
   private final HtmlUtf8 htmlUtf8;
@@ -25,7 +26,9 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
       CanFrame canFrame = new CanFrame(byteBuffer);
       if (canFrame.id == 1)
         htmlUtf8.append("<span style=\"background-color: #a0ffa0\">");
-      htmlUtf8.append(String.format("%2d  %02x %02x %02x %02x %02x %02x %02x %02x", canFrame.id, //
+      htmlUtf8.append(String.format("%12s %2d  %02x %02x %02x %02x %02x %02x %02x %02x", //
+          time.map(Round._6), //
+          canFrame.id, //
           canFrame.get(0), canFrame.get(1), canFrame.get(2), canFrame.get(3), //
           canFrame.get(4), canFrame.get(5), canFrame.get(6), canFrame.get(7)));
       if (canFrame.id == 11) {
