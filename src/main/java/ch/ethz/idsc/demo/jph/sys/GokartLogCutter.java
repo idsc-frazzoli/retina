@@ -14,11 +14,11 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
     GokartLogFile gokartLogFile = GokartLogFile._20190404T143912_39258d17;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
     // file = new File("/media/datahaki/data/gokart/cuts/20190401", "20190401T115537_411917b6.lcm.00");
-    // file = new File("/media/datahaki/media/ethz/gokart/topic/racing2r", "20180820T143852_1.lcm");
+    file = new File("/home/mvb/0_ETH/01_MasterThesis/Logs_GoKart/LogData/dynamics", "20190404T153731_eb6eadfe.lcm.00");
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //
         gokartLogFileIndexer, //
-        new File("/media/datahaki/data/gokart/cuts"), //
+        new File("/home/mvb/0_ETH/01_MasterThesis/Logs_GoKart/LogData/dynamics/cuts"), //
         gokartLogFile.getTitle());
   }
 }
