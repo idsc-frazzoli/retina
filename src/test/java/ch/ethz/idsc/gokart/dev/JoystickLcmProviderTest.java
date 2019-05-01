@@ -7,7 +7,7 @@ import java.nio.FloatBuffer;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
+import ch.ethz.idsc.gokart.dev.u3.LabjackU3Publisher;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.joystick.JoystickEncoder;
@@ -54,7 +54,7 @@ public class JoystickLcmProviderTest extends TestCase {
     assertFalse(joystickLcmClient.getManualControl().isPresent());
     joystickLcmClient.start();
     assertFalse(joystickLcmClient.getManualControl().isPresent());
-    LabjackU3LcmModule.accept(new LabjackAdcFrame(new float[] { 0, 0, 0, 5, 0 }));
+    LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 0, 0, 0, 5, 0 }));
     AllGunsBlazing.publishAutonomous();
     Optional<ManualControlInterface> optional = joystickLcmClient.getManualControl();
     assertTrue(optional.isPresent());

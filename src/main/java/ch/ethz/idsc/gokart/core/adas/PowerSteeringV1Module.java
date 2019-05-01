@@ -3,20 +3,20 @@ package ch.ethz.idsc.gokart.core.adas;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.gokart.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
+import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -27,23 +27,10 @@ import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Cos;
 import ch.ethz.idsc.tensor.sca.Sin;
 
-public class PowerSteeringModule extends AbstractModule implements SteerGetListener, SteerPutProvider {
+public class PowerSteeringV1Module extends PowerSteeringBaseModule {
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-
-  @Override
-  protected void first() {
-    SteerSocket.INSTANCE.addGetListener(this);
-    SteerSocket.INSTANCE.addPutProvider(this);
-  }
-
-  @Override
-  protected void last() {
-    SteerSocket.INSTANCE.removeGetListener(this);
-    SteerSocket.INSTANCE.removePutProvider(this);
-  }
-
   private SteerGetEvent prev;
   private double diffRelRckPos;
 
@@ -53,11 +40,6 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
       diffRelRckPos = getEvent.getGcpRelRckPos() - prev.getGcpRelRckPos();
     }
     prev = getEvent;
-  }
-
-  @Override
-  public ProviderRank getProviderRank() {
-    return ProviderRank.MANUAL;
   }
 
   @Override
@@ -71,6 +53,16 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
   public Tensor frontWheelVelocity() {
     if (steerColumnTracker.isCalibratedAndHealthy()) {
       if (lidarLocalizationModule != null) {
+        AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(steerColumnTracker.getSteerColumnEncoderCentered());
+        {
+          Tensor velocity = lidarLocalizationModule.getVelocity();
+          Tensor frontLeftVel = axleConfiguration.wheel(0).adjoint(velocity);
+          // TODO prevent division by zero
+          // Scalar slip = frontLeftVel.Get(1).divide(frontLeftVel.Get(0)); // vy == side slip
+          // Scalar force = new Pacejka3(5, 3).apply(slip);
+          Tensor frontRightVel = axleConfiguration.wheel(1).adjoint(velocity);
+          new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.5)); // 1 means unfiltered
+        }
         Scalar zero = Quantity.of(0, SI.METER);
         Scalar minus1 = RealScalar.of(-1);
         Tensor velocity = lidarLocalizationModule.getVelocity().extract(0, 2);
@@ -119,6 +111,4 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
         HapticSteerConfig.GLOBAL.dynamicCompensationBoundary);
     return SteerPutEvent.createOn(term1.add(term2));
   }
-  // return Optional.of(SteerPutEvent.createOn(Quantity.of(diffRelRckPos > 0 ? 0.3 : -0.3, "SCT")));
-  // }
 }

@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.jfree.chart.ChartUtils;
 
@@ -24,11 +22,7 @@ import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vlp16RayChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
-import ch.ethz.idsc.gokart.offline.pose.GokartPosePostChannel;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
-import ch.ethz.idsc.sophus.group.LieDifferences;
-import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
-import ch.ethz.idsc.sophus.group.Se2Group;
 import ch.ethz.idsc.sophus.math.WindowCenterSampler;
 import ch.ethz.idsc.subare.util.HtmlUtf8;
 import ch.ethz.idsc.subare.util.plot.ListPlot;
@@ -38,73 +32,60 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Unprotect;
 import ch.ethz.idsc.tensor.alg.Accumulate;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.ListConvolve;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
-import ch.ethz.idsc.tensor.io.Get;
-import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
 
 public class HtmlLogReport {
   private static final int WIDTH = 854;
   private static final int HEIGHT = 360; // 480;
-
   // ---
-  public static void generate(File directory) throws IOException {
-    new HtmlLogReport(directory);
-  }
-
-  // ---
-  private final File plot;
+  private final File images;
   private final Map<SingleChannelInterface, Tensor> map;
 
-  private HtmlLogReport(File directory) throws IOException {
-    plot = new File(directory, "plot");
-    plot.mkdir();
-    map = StaticHelper.SINGLE_CHANNEL_INTERFACES.stream() //
-        .collect(Collectors.toMap(Function.identity(), singleChannelInterface -> {
-          try {
-            return Import.of(new File(directory, singleChannelInterface.exportName() + StaticHelper.EXTENSION));
-          } catch (Exception exception) {
-            throw new RuntimeException();
-          }
-        }));
-    try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(directory, "index.html"))) {
-      htmlUtf8.appendln("<h1>" + directory.getName() + "</h1>");
-      Tensor tensor = Get.of(new File(directory, StaticHelper.LOG_START_TIME));
-      htmlUtf8.appendln("<p>Absolute time of start of log recording: " + tensor + " [us] <small>since 1970-01-01</small></p>");
+  /** @param gokartLcmMap
+   * @param title
+   * @param target directory
+   * @throws IOException */
+  public HtmlLogReport(GokartLcmMap gokartLcmMap, String title, File target) throws IOException {
+    this.map = gokartLcmMap.map;
+    images = new File(target, "images");
+    images.mkdir();
+    try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(target, "index.html"))) {
+      htmlUtf8.appendln("<h1>" + title + "</h1>");
+      htmlUtf8.appendln("<p>Absolute time of start of log recording: " + gokartLcmMap.utime + " [us] <small>since 1970-01-01</small></p>");
       htmlUtf8.appendln("<p><small>report generated: " + new Date() + "</small>");
       htmlUtf8.appendln("<h2>Steering</h2>");
-      htmlUtf8.appendln("<img src='plot/status.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/status.png'/><br/><br/>");
       // htmlUtf8.appendln("<img src='plot/status_diff.png'/><br/><br/>");
-      htmlUtf8.appendln("<img src='plot/steerget.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/steerget.png'/><br/><br/>");
       htmlUtf8.appendln("<h2>Rear Wheel Motors</h2>");
-      htmlUtf8.appendln("<img src='plot/rimoput.png'/><br/><br/>");
-      htmlUtf8.appendln("<img src='plot/rimoget.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/rimoput.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/rimoget.png'/><br/><br/>");
       htmlUtf8.appendln("<h2>Brake</h2>");
-      htmlUtf8.appendln("<img src='plot/linmotPosition.png'/><br/><br/>");
-      htmlUtf8.appendln("<img src='plot/linmotTemperature.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/linmotPosition.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/linmotTemperature.png'/><br/><br/>");
       htmlUtf8.appendln("<h2>VMU931 IMU</h2>");
-      htmlUtf8.appendln("<img src='plot/vmu931acc.png'/><br/><br/>");
-      htmlUtf8.appendln("<img src='plot/vmu931gyro.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/vmu931acc.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/vmu931gyro.png'/><br/><br/>");
       htmlUtf8.appendln("<h2>Localization</h2>");
-      htmlUtf8.appendln("<img src='plot/pose_raw.png'/><br/><br/>");
-      htmlUtf8.appendln("<img src='plot/pose_smooth.png'/><br/><br/>");
-      htmlUtf8.appendln("<img src='plot/speeds.png'/><br/><br/>");
-      htmlUtf8.appendln("<img src='plot/vmu931accSmooth.png' /><br/><br/>");
-      htmlUtf8.appendln("<img src='plot/poseQuality.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/pose_raw.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/speeds.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/vmu931accSmooth.png' /><br/><br/>");
+      htmlUtf8.appendln("<img src='images/poseQuality.png'/><br/><br/>");
       htmlUtf8.appendln("<h2>VLP16</h2>");
-      htmlUtf8.appendln("<img src='plot/vlp16timing.png'/><br/><br/>");
-      htmlUtf8.appendln("<img src='plot/vlp16rotation.png'/><br/><br/>");
-      htmlUtf8.appendln("<img src='plot/vlp16rate.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/vlp16timing.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/vlp16rotation.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/vlp16rate.png'/><br/><br/>");
       htmlUtf8.appendln("<h2>Davis240C</h2>");
-      htmlUtf8.appendln("<img src='plot/davisPolarity.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/davisPolarity.png'/><br/><br/>");
       htmlUtf8.appendln("<h2>Labjack</h2>");
-      htmlUtf8.appendln("<img src='plot/labjackAdc.png'/><br/><br/>");
+      htmlUtf8.appendln("<img src='images/labjackAdc.png'/><br/><br/>");
     }
     exportStatus();
-    // exportStatusDiff();
     exportSteerGet();
     exportRimoPut();
     exportRimoGet();
@@ -113,8 +94,7 @@ public class HtmlLogReport {
     exportVmu931acc();
     exportVmu931accSmooth();
     exportPose();
-    exportPoseSmooth();
-    exportPoseDerivative();
+    exportVelocity();
     exportLabjackAdc();
     exportPoseQuality();
     exportDavisPolarityIntegral();
@@ -128,7 +108,7 @@ public class HtmlLogReport {
   }
 
   private void exportListPlot(String filename, VisualSet visualSet, int height) throws IOException {
-    ChartUtils.saveChartAsPNG(new File(plot, filename), ListPlot.of(visualSet), WIDTH, height);
+    ChartUtils.saveChartAsPNG(new File(images, filename), ListPlot.of(visualSet), WIDTH, height);
   }
 
   public void exportStatus() throws IOException {
@@ -247,12 +227,9 @@ public class HtmlLogReport {
     visualSet.setAxesLabelY("acceleration [m*s^-2]");
     Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
     Tensor domain = tensor.get(Tensor.ALL, 0);
-    // if (!Tensors.isEmpty(domain))
-    {
-      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
-      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
-      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("z (up)");
-    }
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("z (up)");
     exportListPlot("vmu931acc.png", visualSet);
   }
 
@@ -263,12 +240,9 @@ public class HtmlLogReport {
     visualSet.setAxesLabelY("gyroscope [s^-1]");
     Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
     Tensor domain = tensor.get(Tensor.ALL, 0);
-    // if (!Tensors.isEmpty(domain))
-    {
-      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
-      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
-      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("z (up)");
-    }
+    visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("x (forward)");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("y (left)");
+    visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("z (up)");
     exportListPlot("vmu931acc.png", visualSet);
   }
 
@@ -280,16 +254,13 @@ public class HtmlLogReport {
     {
       Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
-      // if (!Tensors.isEmpty(domain))
-      {
-        Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
-        Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
-        Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
-        Tensor smoothZ = ListConvolve.of(mask, tensor.get(Tensor.ALL, 4));
-        visualSet.add(domain.extract(0, smoothX.length()), smoothX).setLabel("x (forward)");
-        visualSet.add(domain.extract(0, smoothY.length()), smoothY).setLabel("y (left)");
-        visualSet.add(domain.extract(0, smoothZ.length()), smoothZ).setLabel("z (up)");
-      }
+      Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
+      Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
+      Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
+      Tensor smoothZ = ListConvolve.of(mask, tensor.get(Tensor.ALL, 4));
+      visualSet.add(domain.extract(0, smoothX.length()), smoothX).setLabel("x (forward)");
+      visualSet.add(domain.extract(0, smoothY.length()), smoothY).setLabel("y (left)");
+      visualSet.add(domain.extract(0, smoothZ.length()), smoothZ).setLabel("z (up)");
     }
     exportListPlot("vmu931accSmooth.png", visualSet);
   }
@@ -306,37 +277,17 @@ public class HtmlLogReport {
     exportListPlot("pose_raw.png", visualSet);
   }
 
-  public void exportPoseSmooth() throws IOException {
-    VisualSet visualSet = new VisualSet();
-    visualSet.setPlotLabel("Smoothed Pose");
-    visualSet.setAxesLabelX("time [s]");
-    File file = new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz");
-    if (file.isFile()) {
-      Tensor tensor = Import.of(file);
+  public void exportVelocity() throws IOException {
+    Tensor tensor = map.get(GokartPoseChannel.INSTANCE);
+    if (5 < Unprotect.dimension1(tensor)) {
+      Tensor speeds = Tensor.of(tensor.stream().map(row -> row.extract(5, 8)));
       Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("global x position [m]");
-      visualSet.add(domain, tensor.get(Tensor.ALL, 2)).setLabel("global y position [m]");
-      visualSet.add(domain, tensor.get(Tensor.ALL, 3)).setLabel("global heading [rad]");
-      exportListPlot("pose_smooth.png", visualSet);
-    }
-  }
-
-  public void exportPoseDerivative() throws IOException {
-    final Scalar hertz = RealScalar.of(20.0);
-    File file = new File(plot.getParentFile(), StaticHelper.GOKART_POSE_SMOOTH + ".csv.gz");
-    if (file.isFile()) {
-      Tensor tensor = Import.of(file);
-      LieDifferences lieDifferences = new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
-      Tensor refined = Tensor.of(tensor.stream().map(row -> row.extract(1, 4)));
-      Tensor speeds = lieDifferences.apply(refined);
-      Tensor times = tensor.get(Tensor.ALL, 0);
-      Tensor domain = times.extract(0, tensor.length() - 1);
       {
         VisualSet visualSet = new VisualSet();
-        visualSet.setPlotLabel("Derivatives from Smoothed Pose");
+        visualSet.setPlotLabel("Velocity");
         visualSet.setAxesLabelX("time [s]");
-        visualSet.add(domain, speeds.get(Tensor.ALL, 0).multiply(hertz)).setLabel("tangent velocity [m/s]");
-        visualSet.add(domain, speeds.get(Tensor.ALL, 1).multiply(hertz)).setLabel("side slip [m/s]");
+        visualSet.add(domain, speeds.get(Tensor.ALL, 0)).setLabel("tangent velocity [m/s]");
+        visualSet.add(domain, speeds.get(Tensor.ALL, 1)).setLabel("side slip [m/s]");
         exportListPlot("speeds.png", visualSet);
       }
       {
@@ -345,17 +296,14 @@ public class HtmlLogReport {
         visualSet.setAxesLabelX("time [s]");
         visualSet.setAxesLabelY("gyro [rad*s^-1]");
         {
-          VisualRow visualRow = visualSet.add(domain, speeds.get(Tensor.ALL, 2).multiply(hertz));
-          visualRow.setLabel("from smoothed pose [rad/s]");
+          VisualRow visualRow = visualSet.add(domain, speeds.get(Tensor.ALL, 2));
+          visualRow.setLabel("from pose [rad/s]");
           visualRow.setStroke(new BasicStroke(2f));
         }
         {
           Tensor vmu931 = map.get(Vmu931ImuVehicleChannel.INSTANCE);
           Tensor vmu931_domain = vmu931.get(Tensor.ALL, 0);
-          // if (!Tensors.isEmpty(vmu931_domain))
-          {
-            visualSet.add(vmu931_domain, vmu931.get(Tensor.ALL, 4)).setLabel("from VMU931");
-          }
+          visualSet.add(vmu931_domain, vmu931.get(Tensor.ALL, 4)).setLabel("from VMU931");
         }
         exportListPlot("vmu931gyro.png", visualSet);
       }
@@ -371,11 +319,6 @@ public class HtmlLogReport {
       Tensor tensor = map.get(GokartPoseChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
       visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("live");
-    }
-    {
-      Tensor tensor = map.get(GokartPosePostChannel.INSTANCE);
-      Tensor domain = tensor.get(Tensor.ALL, 0);
-      visualSet.add(domain, tensor.get(Tensor.ALL, 4)).setLabel("post-processing");
     }
     exportListPlot("poseQuality.png", visualSet);
   }

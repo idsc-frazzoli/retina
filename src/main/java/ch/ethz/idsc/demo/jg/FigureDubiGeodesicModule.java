@@ -4,7 +4,7 @@ package ch.ethz.idsc.demo.jg;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.pure.CurveGeodesicPursuitModule;
+import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitModule;
 import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitModule;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
@@ -14,12 +14,17 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class FigureOvalGeodesicModule extends AbstractModule {
-  private final CurvePurePursuitModule pursuitModule = new CurveGeodesicPursuitModule(PursuitConfig.GLOBAL);
+public class FigureDubiGeodesicModule extends AbstractModule {
+  private final CurvePurePursuitModule pursuitModule = new CurveClothoidPursuitModule(PursuitConfig.GLOBAL);
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
-  public FigureOvalGeodesicModule() {
+  public FigureDubiGeodesicModule() {
     Tensor curve = DubendorfCurve.TRACK_OVAL_SE2;
+    setCurve(curve);
+  }
+
+  /** @param curve reference trajectory */
+  public void setCurve(Tensor curve) {
     pursuitModule.setCurve(Optional.of(curve));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setCurve(Tensor.of(curve.stream().map(Extract2D.FUNCTION)));

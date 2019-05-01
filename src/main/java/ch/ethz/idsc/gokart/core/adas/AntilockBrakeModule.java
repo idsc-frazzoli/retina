@@ -35,6 +35,15 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
   private final Timing timing = Timing.started();
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  private final HapticSteerConfig hapticSteerConfig;
+
+  public AntilockBrakeModule() {
+    this(HapticSteerConfig.GLOBAL);
+  }
+
+  public AntilockBrakeModule(HapticSteerConfig hapticSteerConfig) {
+    this.hapticSteerConfig = hapticSteerConfig;
+  }
 
   @Override // from AbstractModule
   protected void first() {
@@ -68,32 +77,34 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
       Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
       Tensor oneTensor = Tensors.vector(1.0, 1.0);
       // Slip = 0 if velocity of tire equals velocity of the gokart, Slip = 1 if velocity of tire is zero
-      Tensor slip = Tensors.of( //
-          oneTensor.add((angularRate_Y_pair.Get(0).divide(angularRate_Origin)).negate()), //
-          oneTensor.add((angularRate_Y_pair.Get(1).divide(angularRate_Origin)).negate()));
+      // TODO risk of dividing by 0
+      Tensor slip = oneTensor.subtract(angularRate_Y_pair.divide(angularRate_Origin)); //
+      // Tensors.of( //
+      // oneTensor.add((angularRate_Y_pair.Get(0).divide(angularRate_Origin)).negate()), //
+      // oneTensor.add((angularRate_Y_pair.Get(1).divide(angularRate_Origin)).negate()));
       // the brake cannot be constantly applied otherwise the brake motor heats up too much
       // was ist der Unterschied von .todouble zu .number().doubleValue?
       double slip1 = Magnitude.ONE.toDouble(slip.Get(0));
       double slip2 = Magnitude.ONE.toDouble(slip.Get(1));
       // ABS system
-      double frequency = HapticSteerConfig.GLOBAL.absFrequency.number().doubleValue();
-      double amplitude = HapticSteerConfig.GLOBAL.absAmplitude.number().doubleValue();
+      double frequency = hapticSteerConfig.absFrequency.number().doubleValue();
+      double amplitude = hapticSteerConfig.absAmplitude.number().doubleValue();
       double time = timing.seconds();
       double radian = (2 * Math.PI) * frequency * time;
       // mean value of 0.5, amplitude of 0.2
       double sinFunction = (0.5 + amplitude * Math.sin(radian));
       LinmotPutEvent relativePosition = LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.of(sinFunction));
-      if (slip1 > HapticSteerConfig.GLOBAL.criticalSlip) {
+      if (slip1 > hapticSteerConfig.criticalSlip.number().doubleValue()) {
         // if the slip condition is fulfilled, the ABS acts for 1sec, afterwards,
         // the condition is checked again
         double duration = timing.seconds();
-        while (duration < HapticSteerConfig.GLOBAL.absDuration) {
+        while (duration < hapticSteerConfig.absDuration) {
           return Optional.of(relativePosition);
         }
       }
-      if (slip2 > HapticSteerConfig.GLOBAL.criticalSlip) {
+      if (slip2 > hapticSteerConfig.criticalSlip.number().doubleValue()) {
         double duration = timing.seconds();
-        while (duration < HapticSteerConfig.GLOBAL.absDuration) {
+        while (duration < hapticSteerConfig.absDuration) {
           return Optional.of(relativePosition);
         }
       }
@@ -103,9 +114,9 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
         Scalar angleGrad = steerMapping.getAngleFromSCE(angleSCE);
         double angleGradDouble = Magnitude.DEGREE_ANGLE.toDouble(angleGrad);
         double angleDifference = (Math.abs(angleGradDouble) - Math.abs(velocityAngle));
-        if (angleDifference > HapticSteerConfig.GLOBAL.criticalAngle) {
+        if (angleDifference > Magnitude.ONE.toDouble(hapticSteerConfig.criticalAngle())) {
           double duration = timing.seconds();
-          while (duration < HapticSteerConfig.GLOBAL.absDuration) {
+          while (duration < hapticSteerConfig.absDuration) {
             return Optional.of(relativePosition);
           }
         }

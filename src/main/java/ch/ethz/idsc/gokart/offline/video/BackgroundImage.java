@@ -23,9 +23,9 @@ public class BackgroundImage {
   public final BufferedImage bufferedImage;
   public final Tensor model2pixel;
 
-  /* package */ BackgroundImage(BufferedImage bufferedImage, Tensor model2pixel) {
+  public BackgroundImage(BufferedImage bufferedImage, Tensor model2pixel) {
     this.bufferedImage = bufferedImage;
-    this.model2pixel = model2pixel;
+    this.model2pixel = model2pixel.unmodifiable();
   }
 
   public Dimension dimension() {
