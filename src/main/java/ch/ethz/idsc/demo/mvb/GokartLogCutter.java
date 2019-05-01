@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.sys;
+package ch.ethz.idsc.demo.mvb;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,18 +7,19 @@ import java.io.IOException;
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.gokart.offline.gui.GokartLcmLogCutter;
 import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum GokartLogCutter {
   ;
   public static void main(String[] args) throws IOException {
     GokartLogFile gokartLogFile = GokartLogFile._20190404T143912_39258d17;
-    File file = DatahakiLogFileLocator.file(gokartLogFile);
-    file = new File("/media/datahaki/media/ethz/gokartlogs/20190401", "20190401T115537_411917b6.lcm.00");
-    // file = new File("/media/datahaki/media/ethz/gokart/topic/racing2r", "20180820T143852_1.lcm");
+    File file = HomeDirectory.file( //
+        "0_ETH/01_MasterThesis/Logs_GoKart/LogData/dynamics", //
+        gokartLogFile.getFilename());
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //
         gokartLogFileIndexer, //
-        new File("/media/datahaki/data/gokart/cuts3"), //
-        "20190401T115537");
+        HomeDirectory.file("0_ETH/01_MasterThesis/Logs_GoKart/LogData/dynamics/cuts"), //
+        gokartLogFile.getTitle());
   }
 }

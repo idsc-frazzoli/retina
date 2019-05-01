@@ -11,8 +11,6 @@ import ch.ethz.idsc.owl.math.planar.InterpolationEntryFinder;
 import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
-import ch.ethz.idsc.sophus.curve.ClothoidCurve;
-import ch.ethz.idsc.sophus.math.GeodesicInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
@@ -39,7 +37,6 @@ public class PursuitConfig {
   @FieldSubdivide(start = "30[s^-1]", end = "70[s^-1]", intervals = 4)
   public Scalar rateFollower = Quantity.of(50.0, SI.PER_SECOND);
   // ---
-  public final GeodesicInterface geodesicInterface = ClothoidCurve.INSTANCE;
   public final TrajectoryEntryFinder trajectoryEntryFinder = new InterpolationEntryFinder(0);
 
   // ---
