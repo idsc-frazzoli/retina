@@ -15,16 +15,16 @@ import ch.ethz.idsc.retina.util.pose.PoseInterface;
   private final SlamEventCounter slamEventCounter;
   private final SlamCoreContainer slamCoreContainer;
   private final SlamPrcContainer slamPrcContainer;
-  private final PoseInterface gokartLidarPose;
+  private final PoseInterface poseInterface;
   private final String filename;
   private final List<double[]> logData = new ArrayList<>();
 
   SlamLogSave(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
-      PoseInterface gokartPoseInterface, SlamEventCounter slamEventCounter) {
+      PoseInterface poseInterface, SlamEventCounter slamEventCounter) {
     this.slamEventCounter = slamEventCounter;
     this.slamCoreContainer = slamCoreContainer;
     this.slamPrcContainer = slamPrcContainer;
-    this.gokartLidarPose = gokartPoseInterface;
+    this.poseInterface = poseInterface;
     filename = SlamDvsConfig.eventCamera.slamCoreConfig.dvsConfig.logFilename();
   }
 

@@ -37,5 +37,4 @@ public enum GokartLcmChannel {
   /** the joystick was in use until end of 2018 after which
    * the labjack u3 was available for readout of the throttle */
   public static final String JOYSTICK = "joystick.generic_xbox_pad";
-  public static final String POSE_POST = "gokart.pose.post";
 }
