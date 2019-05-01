@@ -5,9 +5,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -30,7 +30,7 @@ import junit.framework.TestCase;
 public class SensorsConfigTest extends TestCase {
   public void testSimple() {
     VectorQ.ofLength(SensorsConfig.GLOBAL.vlp16_pose, 3);
-    GokartPoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose);
+    PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose);
     SensorsConfig.GLOBAL.vlp16Gokart();
     Clips.interval(Quantity.of(0.05, SI.METER), Quantity.of(0.15, SI.METER)).requireInside(SensorsConfig.GLOBAL.vlp16_pose.Get(0));
     assertTrue(Scalars.isZero(SensorsConfig.GLOBAL.vlp16_pose.Get(1)));

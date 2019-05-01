@@ -19,9 +19,6 @@ import ch.ethz.idsc.tensor.sca.Round;
       Quantity.of(0.0, SI.VELOCITY), //
       Quantity.of(0.0, SI.VELOCITY), //
       Quantity.of(0.0, SI.PER_SECOND)).unmodifiable();
-  private static final Tensor VELOCITY_XY_ZERO = Tensors.of( //
-      Quantity.of(0.0, SI.VELOCITY), //
-      Quantity.of(0.0, SI.VELOCITY)).unmodifiable();
   private static final Scalar GYROZ_ZERO = Quantity.of(0.0, SI.PER_SECOND);
   // ---
   private final double x;

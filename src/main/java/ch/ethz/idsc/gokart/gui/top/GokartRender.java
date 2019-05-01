@@ -11,7 +11,6 @@ import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoWheelConfigurations;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
@@ -31,6 +30,7 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -81,7 +81,7 @@ public abstract class GokartRender implements RenderInterface {
       graphics.setStroke(new BasicStroke());
       AxleConfiguration axleConfiguration = RimoAxleConfiguration.rear();
       for (int wheel = 0; wheel < 2; ++wheel) {
-        geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
+        geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
         // ---
         geometricLayer.pushMatrix(Se2Utils.toSE2Translation(OFFSET_TORQUE[wheel]));
         graphics.setColor(Color.BLUE);
@@ -112,7 +112,7 @@ public abstract class GokartRender implements RenderInterface {
       graphics.setStroke(new BasicStroke());
       // draw wheels
       for (WheelConfiguration wheelConfiguration : RimoWheelConfigurations.fromSCE(gokartStatusEvent.getSteerColumnEncoderCentered())) {
-        geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(wheelConfiguration.local()));
+        geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(wheelConfiguration.local()));
         // draw tire
         graphics.setColor(COLOR_WHEEL);
         graphics.fill(geometricLayer.toPath2D(wheelConfiguration.tireConfiguration().footprint()));

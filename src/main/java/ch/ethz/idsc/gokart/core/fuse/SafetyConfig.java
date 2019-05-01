@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.fuse;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -14,6 +13,7 @@ import ch.ethz.idsc.owl.car.math.ClearanceTracker;
 import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -64,7 +64,7 @@ public class SafetyConfig {
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
       return new CircleClearanceTracker( //
           speed, half, angle, //
-          GokartPoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose), getClearanceClip());
+          PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose), getClearanceClip());
     }
     return EmptyClearanceTracker.INSTANCE;
   }

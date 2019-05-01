@@ -5,11 +5,11 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.owl.data.BoundedLinkedList;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.Tensors;
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     synchronized (boundedLinkedList) {
-      boundedLinkedList.add(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
+      boundedLinkedList.add(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
     }
   }
 

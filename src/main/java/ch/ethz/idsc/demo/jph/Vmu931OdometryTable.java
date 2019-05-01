@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.slam.Vmu931Odometry;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -15,6 +14,7 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
@@ -33,7 +33,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       vmu931Odometry.vmu931ImuFrame(vmu931ImuFrame);
       tableBuilder.appendRow( //
           Magnitude.SECOND.apply(time), //
-          GokartPoseHelper.toUnitless(vmu931Odometry.getPose()));
+          PoseHelper.toUnitless(vmu931Odometry.getPose()));
     }
   }
 

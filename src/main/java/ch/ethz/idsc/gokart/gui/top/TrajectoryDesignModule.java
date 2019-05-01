@@ -13,9 +13,9 @@ import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.jg.FigureDubiGeodesicModule;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pure.FigureBaseModule;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -92,7 +92,7 @@ public class TrajectoryDesignModule extends AbstractModule {
       trajectoryDesign.timerFrame.jToolBar.addSeparator();
       JButton jButton = new JButton("import");
       jButton.setToolTipText("import control points");
-      jButton.addActionListener(actionEvent -> importTensor().map(tensor -> Tensor.of(tensor.stream().map(GokartPoseHelper::toUnitless))) //
+      jButton.addActionListener(actionEvent -> importTensor().map(tensor -> Tensor.of(tensor.stream().map(PoseHelper::toUnitless))) //
           .ifPresent(this.trajectoryDesign::setControl));
       trajectoryDesign.timerFrame.jToolBar.add(jButton);
     }

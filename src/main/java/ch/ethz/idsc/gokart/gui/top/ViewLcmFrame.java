@@ -8,10 +8,10 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.GuiConfig;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.group.Se2Utils;
@@ -55,7 +55,7 @@ import ch.ethz.idsc.tensor.sca.Round;
             // System.out.println(Pretty.of(model2pixel.map(Round._3)));
             Tensor newPose = LinearSolve.of(MODEL2PIXEL_INITIAL, model2pixel);
             // System.out.println(Pretty.of(newPose.map(Round._3)));
-            Tensor xya = GokartPoseHelper.attachUnits(Se2Utils.fromSE2Matrix(newPose));
+            Tensor xya = PoseHelper.attachUnits(Se2Utils.fromSE2Matrix(newPose));
             System.out.println(xya.map(Round._7));
           }
         });
@@ -70,9 +70,9 @@ import ch.ethz.idsc.tensor.sca.Round;
   private void setPose() {
     Tensor model2pixel = geometricComponent.getModel2Pixel(); // quantify drag by user
     Tensor init = lidarLocalizationModule.getPose(); // {x[m], y[m], angle}
-    Tensor gokart = GokartPoseHelper.toSE2Matrix(init);
+    Tensor gokart = PoseHelper.toSE2Matrix(init);
     Tensor newPose = LinearSolve.of(MODEL2PIXEL_INITIAL, model2pixel.dot(gokart));
-    lidarLocalizationModule.resetPose(GokartPoseHelper.attachUnits(Se2Utils.fromSE2Matrix(newPose)));
+    lidarLocalizationModule.resetPose(PoseHelper.attachUnits(Se2Utils.fromSE2Matrix(newPose)));
     geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL); // undo drag by user
   }
 }

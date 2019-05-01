@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.curve.FourPointCurveSubdivision;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
@@ -89,13 +89,13 @@ public enum DubendorfCurve2 {
 
   private static Tensor tires_track_a() {
     Tensor poly = ResourceData.of("/dubilab/controlpoints/tires/20190116.csv");
-    poly = Tensor.of(poly.stream().map(GokartPoseHelper::attachUnits));
+    poly = Tensor.of(poly.stream().map(PoseHelper::attachUnits));
     return project_se2_r2(Nest.of(SUBDIVISION_SE2, poly, 4)).unmodifiable();
   }
 
   private static Tensor tires_track_b() {
     Tensor poly = ResourceData.of("/dubilab/controlpoints/tires/20190117.csv");
-    poly = Tensor.of(poly.stream().map(GokartPoseHelper::attachUnits));
+    poly = Tensor.of(poly.stream().map(PoseHelper::attachUnits));
     return project_se2_r2(Nest.of(SUBDIVISION_SE2, poly, 4)).unmodifiable();
   }
 
