@@ -11,10 +11,10 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** class is the default choice for geodesic pursuit when driving along a curve in global
  * coordinates while the pose is updated periodically from a localization method. */
-public class CurveGeodesicPursuitModule extends CurvePurePursuitModule {
+public class CurveClothoidPursuitModule extends CurvePurePursuitModule {
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
-  public CurveGeodesicPursuitModule(PursuitConfig pursuitConfig) {
+  public CurveClothoidPursuitModule(PursuitConfig pursuitConfig) {
     super(pursuitConfig);
   }
 
@@ -22,12 +22,11 @@ public class CurveGeodesicPursuitModule extends CurvePurePursuitModule {
   protected synchronized Optional<Scalar> getRatio(Tensor pose) {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent()) {
-      Optional<GeodesicPlan> plan = CurveGeodesicPursuitHelper.getPlan( //
+      Optional<ClothoidPlan> plan = CurveClothoidPursuitHelper.getPlan( //
           pose, //
           speed, //
           optionalCurve.get(), //
           isForward, //
-          pursuitConfig.geodesicInterface, //
           pursuitConfig.trajectoryEntryFinder, //
           PursuitConfig.ratioLimits());
       if (Objects.nonNull(globalViewLcmModule))
