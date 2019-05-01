@@ -5,8 +5,8 @@ import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.demo.mg.slam.core.PeriodicSlamStep;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.retina.util.pose.PoseInterface;
 
 /** save CSV logs with timestamps provided by DavisDvsEvent stream. This is suitable for online log processing
  * when dvs timestamps represent "true" time, or for offline log processing when the DVS timestamps represent the time at which
@@ -15,7 +15,7 @@ public class DvsTimerLogCollection extends PeriodicSlamStep implements StartAndS
   private final SlamLogSave slamLogSave;
 
   public DvsTimerLogCollection(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
-      GokartPoseInterface gokartPoseInterface, SlamEventCounter slamEventCounter) {
+      PoseInterface gokartPoseInterface, SlamEventCounter slamEventCounter) {
     super(slamCoreContainer, SlamDvsConfig.eventCamera.slamCoreConfig.logCollectionUpdateRate);
     slamLogSave = new SlamLogSave(slamCoreContainer, slamPrcContainer, gokartPoseInterface, slamEventCounter);
   }

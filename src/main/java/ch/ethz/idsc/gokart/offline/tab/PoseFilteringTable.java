@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.filter.GeodesicCenter;
 import ch.ethz.idsc.sophus.filter.GeodesicCenterFilter;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
@@ -34,7 +34,7 @@ public class PoseFilteringTable implements OfflineTableSupplier {
       Tensor pose = gokartPoseInterface.getPose();
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND), //
-          GokartPoseHelper.toUnitless(pose), //
+          PoseHelper.toUnitless(pose), //
           gokartPoseInterface.getQuality());
     }
   }

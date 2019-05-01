@@ -3,9 +3,9 @@ package ch.ethz.idsc.demo.mg.slam.core;
 
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -33,7 +33,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
 
   @Override // from PeriodicSlamStep
   protected void periodicTask(int currentTimeStamp, int lastComputationTimeStamp) {
-    Tensor vehiclePosition = GokartPoseHelper.attachUnits(slamCoreContainer.getPoseUnitless()).extract(0, 2);
+    Tensor vehiclePosition = PoseHelper.attachUnits(slamCoreContainer.getPoseUnitless()).extract(0, 2);
     getCurrentCorners();
     Tensor positionDifference = SlamMapMoveUtil.computePositionDifference(//
         vehiclePosition, corner, cornerHigh, mapMoveVector, padding);

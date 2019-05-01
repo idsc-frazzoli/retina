@@ -1,11 +1,10 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.pos;
+package ch.ethz.idsc.retina.util.pose;
 
 import ch.ethz.idsc.tensor.Tensor;
 
-// TODO JPH rename to PoseInterface
 @FunctionalInterface
-public interface GokartPoseInterface {
+public interface PoseInterface {
   /** @return {x[m], y[m], angle} */
   Tensor getPose();
 }

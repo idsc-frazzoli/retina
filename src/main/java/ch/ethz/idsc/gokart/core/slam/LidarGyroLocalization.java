@@ -6,9 +6,9 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -49,7 +49,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
    * @param points
    * @return */
   Optional<GokartPoseEvent> handle(Tensor pose, Tensor velocity, Tensor points) {
-    Tensor model = GokartPoseHelper.toSE2Matrix(pose);
+    Tensor model = PoseHelper.toSE2Matrix(pose);
     Tensor rate = velocity.divide(lidarRate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getResample() //
         .apply(points).getPointsSpin(SensorsConfig.GLOBAL.vlp16_relativeZero, rate.Get(2));
@@ -65,7 +65,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
       model = model.dot(poseDelta); // advance gokart
       Tensor result = Se2Utils.fromSE2Matrix(model);
       return Optional.of(GokartPoseEvents.offlineV1( //
-          GokartPoseHelper.attachUnits(result), //
+          PoseHelper.attachUnits(result), //
           slamResult.getQuality()));
     }
     System.err.println("few points " + sum);

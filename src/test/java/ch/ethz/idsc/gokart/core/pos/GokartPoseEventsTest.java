@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.pos;
 
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -28,7 +29,7 @@ public class GokartPoseEventsTest extends TestCase {
   /***************************************************/
   public void testCreateV1() {
     GokartPoseEvent gokartPoseEvent = //
-        GokartPoseEvents.offlineV1(GokartPoseHelper.attachUnits(Tensors.vector(1, 2, 3)), RealScalar.ONE);
+        GokartPoseEvents.offlineV1(PoseHelper.attachUnits(Tensors.vector(1, 2, 3)), RealScalar.ONE);
     assertFalse(gokartPoseEvent instanceof GokartPoseEventV2);
   }
 

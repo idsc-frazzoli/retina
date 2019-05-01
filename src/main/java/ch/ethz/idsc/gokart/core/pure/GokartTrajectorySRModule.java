@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -57,6 +56,7 @@ import ch.ethz.idsc.owl.sim.LidarRaytracer;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -192,7 +192,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   @Override // from AbstractClockedModule
   protected void runAlgo() {
     if (Objects.nonNull(gokartPoseEvent)) {
-      Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).copy();
+      Tensor xya = PoseHelper.toUnitless(gokartPoseEvent.getPose()).copy();
       xya.append(RealScalar.of(INIT_VEL)); // Zero init velocity
       Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
       boolean isResetPressed = optional.isPresent() && optional.get().isResetPressed();

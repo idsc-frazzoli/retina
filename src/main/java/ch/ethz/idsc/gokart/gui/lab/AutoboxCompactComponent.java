@@ -12,7 +12,6 @@ import javax.swing.JToolBar;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
@@ -34,6 +33,7 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -200,7 +200,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       jButtonAppend.addActionListener(actionEvent -> {
         if (Objects.nonNull(gokartPoseEvent)) {
           Tensor state = gokartPoseEvent.getPose();
-          state = GokartPoseHelper.toUnitless(state);
+          state = PoseHelper.toUnitless(state);
           state.set(Round._2, 0);
           state.set(Round._2, 1);
           state.set(Round._6, 2);

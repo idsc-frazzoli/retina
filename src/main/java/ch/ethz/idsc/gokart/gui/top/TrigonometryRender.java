@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
@@ -19,6 +18,7 @@ import ch.ethz.idsc.owl.car.math.TurningGeometry;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -37,7 +37,7 @@ public class TrigonometryRender implements RenderInterface {
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
-      geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
+      geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
       final Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       Optional<Scalar> optional = TurningGeometry.offset_y(ChassisGeometry.GLOBAL.xAxleRtoF, angle);
       if (optional.isPresent()) { // draw point of rotation when assuming no slip

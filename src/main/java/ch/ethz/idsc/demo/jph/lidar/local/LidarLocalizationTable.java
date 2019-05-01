@@ -4,13 +4,13 @@ package ch.ethz.idsc.demo.jph.lidar.local;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationCore;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     if (channel.equals(Vmu931ImuChannel.INSTANCE.channel()))
       tableBuilderOdom.appendRow( //
           Magnitude.SECOND.apply(time), //
-          GokartPoseHelper.toUnitless(lidarLocalizationCore.getPose()), //
+          PoseHelper.toUnitless(lidarLocalizationCore.getPose()), //
           VelocityHelper.toUnitless(lidarLocalizationCore.getVelocity()), //
           lidarLocalizationCore.getGyroZ_vmu931().map(Magnitude.PER_SECOND));
     else //

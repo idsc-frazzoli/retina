@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.slam.ImageScore;
 import ch.ethz.idsc.gokart.core.slam.SlamScore;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -15,6 +14,7 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -39,7 +39,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   /** @param map_image
    * @param pose {x[m], y[m], angle} */
   public OfflineLocalize(BufferedImage map_image, Tensor pose) {
-    this.model = GokartPoseHelper.toSE2Matrix(pose);
+    this.model = PoseHelper.toSE2Matrix(pose);
     // ---
     if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
       throw new RuntimeException();

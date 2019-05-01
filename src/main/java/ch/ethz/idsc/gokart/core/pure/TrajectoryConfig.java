@@ -1,9 +1,9 @@
 // code by ynager
 package ch.ethz.idsc.gokart.core.pure;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.curve.BSpline2CurveSubdivision;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
@@ -57,7 +57,7 @@ public class TrajectoryConfig {
    * @throws Exception if waypoints cannot be retrieved from resources */
   public Tensor getWaypoints() {
     // oval shape
-    Tensor wyap = Tensor.of(ResourceData.of(waypoints).stream().map(GokartPoseHelper::attachUnits));
+    Tensor wyap = Tensor.of(ResourceData.of(waypoints).stream().map(PoseHelper::attachUnits));
     wyap = ResourceData.of(waypoints);
     return new BSpline2CurveSubdivision(Se2Geodesic.INSTANCE).cyclic(wyap);
     // around tires

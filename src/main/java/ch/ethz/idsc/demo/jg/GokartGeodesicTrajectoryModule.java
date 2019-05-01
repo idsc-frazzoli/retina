@@ -16,7 +16,6 @@ import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitModule;
@@ -64,6 +63,7 @@ import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.curve.BSpline1CurveSubdivision;
@@ -178,7 +178,7 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
     if (Objects.nonNull(gokartPoseEvent)) {
       final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
       System.out.println("setup planner, tangent speed=" + tangentSpeed);
-      final Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
+      final Tensor xya = PoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
       final List<TrajectorySample> head;
       Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
       boolean isResetPressed = optional.isPresent() && optional.get().isResetPressed();

@@ -10,8 +10,8 @@ import java.util.Arrays;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.sophus.app.api.ClothoidCurveDisplay;
 import ch.ethz.idsc.sophus.app.api.GeodesicDisplay;
@@ -65,7 +65,7 @@ public class TrajectoryDesign extends CurvatureDemo {
 
   /** @return control points of the form {x[m], y[m], heading} */
   public Tensor controlPoints() {
-    return Tensor.of(control().stream().map(GokartPoseHelper::attachUnits));
+    return Tensor.of(control().stream().map(PoseHelper::attachUnits));
   }
 
   public Tensor getCurve() {

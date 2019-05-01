@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.pos;
+package ch.ethz.idsc.retina.util.pose;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -8,11 +8,10 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-// TODO JPH (only jan) rename to PoseHelper and relocate to ch.ethz.idsc.retina.util.pose
-public enum GokartPoseHelper {
+public enum PoseHelper {
   ;
   /** Example:
-   * GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose())
+   * PoseHelper.toSE2Matrix(gokartPoseEvent.getPose())
    * 
    * @param state vector with units {x[m], y[m], angle[]}
    * @return */

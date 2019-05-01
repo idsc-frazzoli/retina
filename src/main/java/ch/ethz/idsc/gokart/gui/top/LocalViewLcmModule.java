@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -11,6 +10,7 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
@@ -52,7 +52,7 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
     {
-      VelocityIndicatorRender velocityIndicatorRender = new VelocityIndicatorRender(GokartPoseHelper.toUnitless(POSE));
+      VelocityIndicatorRender velocityIndicatorRender = new VelocityIndicatorRender(PoseHelper.toUnitless(POSE));
       rimoGetLcmClient.addListener(velocityIndicatorRender);
       timerFrame.geometricComponent.addRenderInterface(velocityIndicatorRender);
     }

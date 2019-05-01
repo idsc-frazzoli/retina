@@ -7,10 +7,10 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateListener;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -41,7 +41,7 @@ public class MPCPredictionRender implements MPCControlUpdateListener, RenderInte
         Tensor accelerations = controlAndPredictionSteps.toAccelerations();
         Tensor xyas = controlAndPredictionSteps.toXYA();
         for (int index = 0; index < accelerations.length(); ++index) {
-          geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(xyas.get(index)));
+          geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(xyas.get(index)));
           Color color = Sign.isPositiveOrZero(accelerations.Get(index)) //
               ? Color.GREEN
               : Color.RED;

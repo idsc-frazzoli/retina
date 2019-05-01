@@ -12,7 +12,6 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -30,6 +29,7 @@ import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -110,7 +110,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.jButtonMapUpdate.setEnabled(resampledLidarRender.updatedMap.nonEmpty());
       // resampledLidarRender.trackSupplier = () -> viewLcmFrame.jToggleButton.isSelected();
       resampledLidarRender.setPointSize(2);
-      resampledLidarRender.setReference(() -> GokartPoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
+      resampledLidarRender.setReference(() -> PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
       resampledLidarRender.setColor(new Color(255, 0, 128, 128));
       LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
       LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();

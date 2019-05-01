@@ -12,7 +12,6 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.core.perc.GokartSegmentProjection;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
@@ -27,6 +26,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -70,7 +70,7 @@ public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
       BufferedImage frameImage = new BufferedImage(640, 640, BufferedImage.TYPE_3BYTE_BGR);
       Graphics2D frameGraphics = frameImage.createGraphics();
       GeometricLayer geometricLayer = GeometricLayer.of(model2Pixel);
-      geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
+      geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
       geometricLayer.pushMatrix(SensorsConfig.GLOBAL.vlp16Gokart());
       {
         {
