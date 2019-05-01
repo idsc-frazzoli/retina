@@ -57,7 +57,7 @@ public class AntilockBrakeCheckConditions extends AbstractModule implements Stee
   public ProviderRank getProviderRank() {
     return ProviderRank.MANUAL;
   }
-  
+
   public Optional<SteerPutEvent> vibrate() {
     double frequency = HapticSteerConfig.GLOBAL.vibrationFrequency.number().doubleValue();
     double amplitude = HapticSteerConfig.GLOBAL.vibrationAmplitude.number().doubleValue();
@@ -72,20 +72,21 @@ public class AntilockBrakeCheckConditions extends AbstractModule implements Stee
       if (lidarLocalizationModule != null) {
         Tensor angularRate_Y_pair = rimoGetEvent.getAngularRate_Y_pair();
         // 0:left, 1: right
-        Tensor VelocityOrigin = lidarLocalizationModule.getVelocity();
-        Scalar angularRate_Origin = VelocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
+        Tensor velocityOrigin = lidarLocalizationModule.getVelocity();
+        Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
         Tensor angularRage_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
         Tensor slip = angularRate_Y_pair.subtract(angularRage_Origin_pair);
         // the brake cannot be constantly applied otherwise the brake motor heats up too much
         double slip1 = Magnitude.ONE.toDouble(slip.Get(0));
         double slip2 = Magnitude.ONE.toDouble(slip.Get(1));
-        if (slip1 > hapticSteerConfig.criticalSlip) {
+        // TODO check sign
+        if (slip1 > hapticSteerConfig.criticalSlip.number().doubleValue()) {
           vibrate();
         }
-        if (slip2 > hapticSteerConfig.criticalSlip) {
+        if (slip2 > hapticSteerConfig.criticalSlip.number().doubleValue()) {
           vibrate();
         }
-        double velocityAngle = Math.atan2(Magnitude.VELOCITY.toDouble(VelocityOrigin.Get(1)), Magnitude.VELOCITY.toDouble(VelocityOrigin.Get(0)));
+        double velocityAngle = Math.atan2(Magnitude.VELOCITY.toDouble(velocityOrigin.Get(1)), Magnitude.VELOCITY.toDouble(velocityOrigin.Get(0)));
         // velocityAngle is in radian
         Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
         Scalar angleGrad = steerMapping.getAngleFromSCE(angleSCE);

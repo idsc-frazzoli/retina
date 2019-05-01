@@ -9,6 +9,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
+import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class HapticSteerConfig {
   public static final HapticSteerConfig GLOBAL = AppResources.load(new HapticSteerConfig());
@@ -26,7 +28,7 @@ public class HapticSteerConfig {
   /** Values for Vibration Mode */
   public Scalar vibrationAmplitude = RealScalar.of(0.4);
   public Scalar vibrationFrequency = RealScalar.of(12);
-  public double criticalSlip = 0.2;
+  public Scalar criticalSlip = RealScalar.of(0.2);
   /** access value via {@link #criticalAngle()} */
   public Scalar criticalAngleDeg = Quantity.of(12, NonSI.DEGREE_ANGLE);
   public Scalar absFrequency = RealScalar.of(5);
@@ -35,5 +37,9 @@ public class HapticSteerConfig {
 
   public Scalar criticalAngle() {
     return UnitSystem.SI().apply(criticalAngleDeg);
+  }
+
+  public Clip criticalSlipClip() {
+    return Clips.interval(criticalSlip.negate(), criticalSlip);
   }
 }

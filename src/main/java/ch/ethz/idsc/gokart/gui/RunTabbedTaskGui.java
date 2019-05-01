@@ -18,8 +18,8 @@ import ch.ethz.idsc.demo.mp.pid.PIDTestTrackModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
-import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
-import ch.ethz.idsc.gokart.core.adas.PowerSteeringModuleVersion2;
+import ch.ethz.idsc.gokart.core.adas.PowerSteeringV1Module;
+import ch.ethz.idsc.gokart.core.adas.PowerSteeringV2Module;
 import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
@@ -118,8 +118,8 @@ enum RunTabbedTaskGui {
       DriftThrustManualModule.class, //
       ImprovedNormalizedTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
-      PowerSteeringModule.class, //
-      PowerSteeringModuleVersion2.class, //
+      PowerSteeringV1Module.class, //
+      PowerSteeringV2Module.class, //
       SteeringExperimentModule.class, //
       AntilockBrakeCheckConditions.class, //
       AntilockBrakeModule.class //
