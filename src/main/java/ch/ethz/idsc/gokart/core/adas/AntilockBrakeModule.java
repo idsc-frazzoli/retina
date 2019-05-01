@@ -94,7 +94,7 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
       // mean value of 0.5, amplitude of 0.2
       double sinFunction = (0.5 + amplitude * Math.sin(radian));
       LinmotPutEvent relativePosition = LinmotPutOperation.INSTANCE.toRelativePosition(RealScalar.of(sinFunction));
-      if (slip1 > hapticSteerConfig.criticalSlip) {
+      if (slip1 > hapticSteerConfig.criticalSlip.number().doubleValue()) {
         // if the slip condition is fulfilled, the ABS acts for 1sec, afterwards,
         // the condition is checked again
         double duration = timing.seconds();
@@ -102,7 +102,7 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
           return Optional.of(relativePosition);
         }
       }
-      if (slip2 > hapticSteerConfig.criticalSlip) {
+      if (slip2 > hapticSteerConfig.criticalSlip.number().doubleValue()) {
         double duration = timing.seconds();
         while (duration < hapticSteerConfig.absDuration) {
           return Optional.of(relativePosition);

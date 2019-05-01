@@ -11,11 +11,11 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
   ;
   public static void main(String[] args) throws IOException {
     /** original log file */
-    File file = new File("/Users/antoniamosberger/Documents/01_6_Semester/Bachelorarbeit/20190404/20190404T143912_39258d17.lcm.00");
+    File file = new File("/Users/antoniamosberger/Documents/01_6_Semester/Bachelorarbeit/20190418(1)/20190418T145229p2/log.lcm");
     /** destination folder */
     File dest = new File("/Users/antoniamosberger/Documents/01_6_Semester/Bachelorarbeit/cuts1");
     /** title of subdirectory, usually identical to log file name above */
-    String name = "20190404T143912";
+    String name = "20190418_2";
     dest.mkdir();
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter(gokartLogFileIndexer, dest, name);

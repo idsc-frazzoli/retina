@@ -9,15 +9,11 @@ import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.gokart.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
@@ -31,23 +27,10 @@ import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Cos;
 import ch.ethz.idsc.tensor.sca.Sin;
 
-public class PowerSteeringModule extends AbstractModule implements SteerGetListener, SteerPutProvider {
+public class PowerSteeringV1Module extends PowerSteeringBaseModule {
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-
-  @Override
-  protected void first() {
-    SteerSocket.INSTANCE.addGetListener(this);
-    SteerSocket.INSTANCE.addPutProvider(this);
-  }
-
-  @Override
-  protected void last() {
-    SteerSocket.INSTANCE.removeGetListener(this);
-    SteerSocket.INSTANCE.removePutProvider(this);
-  }
-
   private SteerGetEvent prev;
   private double diffRelRckPos;
 
@@ -57,11 +40,6 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
       diffRelRckPos = getEvent.getGcpRelRckPos() - prev.getGcpRelRckPos();
     }
     prev = getEvent;
-  }
-
-  @Override
-  public ProviderRank getProviderRank() {
-    return ProviderRank.MANUAL;
   }
 
   @Override
@@ -133,6 +111,4 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
         HapticSteerConfig.GLOBAL.dynamicCompensationBoundary);
     return SteerPutEvent.createOn(term1.add(term2));
   }
-  // return Optional.of(SteerPutEvent.createOn(Quantity.of(diffRelRckPos > 0 ? 0.3 : -0.3, "SCT")));
-  // }
 }
