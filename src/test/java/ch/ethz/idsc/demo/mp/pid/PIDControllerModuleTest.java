@@ -26,8 +26,7 @@ public class PIDControllerModuleTest extends TestCase {
 
   public void testHeading() {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
-    Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL.stream().map(Extract2D.FUNCTION));
-    // System.out.println(curve);
+    Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL_SE2.stream());
     pidControllerModule.setCurve(Optional.ofNullable(curve));
     System.out.println(curve);
     pidControllerModule.first();
@@ -45,10 +44,13 @@ public class PIDControllerModuleTest extends TestCase {
   }
 
   public void testCurve() { // Not going trough this if function not starting with "test-"
-    Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL.stream().map(Extract2D.FUNCTION));
+    Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL_R2.stream().map(Extract2D.FUNCTION));
     for (int index = 0; index < curve.length(); index++) {
       // System.out.println(curve.get(index));
     }
     // System.out.println(curve.length());
+  }
+
+  public void testDistance() {
   }
 }

@@ -15,6 +15,7 @@ import lcm.logging.LogPlayerConfig;
     LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
     File file;
     file = new File("/home/maximilien/Downloads/20190215T150920_380160a9.lcm.00");
+    file = new File("/home/maximilien/Downloads/20190401T101109_411917b6.lcm.00");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
     logPlayerConfig.speed_denominator = 1;

@@ -9,8 +9,10 @@ import ch.ethz.idsc.owl.bot.se2.Se2Wrap;
 import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm2Squared;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
@@ -39,7 +41,8 @@ public class PIDTrajectoryControl extends StateTrajectoryControl {
     Tensor traj = Tensor.of(trailAhead.stream() //
         .map(TrajectorySample::stateTime) //
         .map(StateTime::state));
-    PIDTrajectory pidTrajectory = new PIDTrajectory(pidIndex, this.pidTrajectory, pidGains, traj, stateTime);
+    StateTime unitST = new StateTime(stateTime.state(), Quantity.of(stateTime.time(), SI.SECOND));
+    PIDTrajectory pidTrajectory = new PIDTrajectory(pidIndex, this.pidTrajectory, pidGains, traj, unitST);
     Scalar ratePerMeter = pidTrajectory.angleOut();
     if (clip.isInside(ratePerMeter))
       return Optional.of(CarHelper.singleton(speed, ratePerMeter).getU());

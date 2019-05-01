@@ -4,10 +4,13 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Unprotect;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -56,5 +59,18 @@ public class DubendorfCurveTest extends TestCase {
     testCurve(DubendorfCurve2.HYPERLOOP_OVAL);
     testCurve(DubendorfCurve2.TIRES_TRACK_A);
     testCurve(DubendorfCurve2.TIRES_TRACK_B);
+  }
+
+  public void testDim1() {
+    assertEquals(Unprotect.dimension1(DubendorfCurve.TRACK_OVAL_R2), 2);
+    assertEquals(Unprotect.dimension1(DubendorfCurve.TRACK_OVAL_SE2), 3);
+    GokartPoseHelper.toUnitless(DubendorfCurve.TRACK_OVAL_SE2.get(2));
+  }
+
+  public void testUnits() {
+    Magnitude.METER.apply(DubendorfCurve.TRACK_OVAL_R2.Get(0, 0));
+    Magnitude.METER.apply(DubendorfCurve.TRACK_OVAL_R2.Get(0, 1));
+    Magnitude.METER.apply(DubendorfCurve.TRACK_OVAL_SE2.Get(0, 0));
+    Magnitude.METER.apply(DubendorfCurve.TRACK_OVAL_SE2.Get(0, 1));
   }
 }
