@@ -29,7 +29,11 @@ public class HapticSteerConfig {
   public Scalar vibrationAmplitude = RealScalar.of(0.4);
   public Scalar vibrationFrequency = RealScalar.of(12);
   public Scalar criticalSlip = RealScalar.of(0.2);
+  /** Values for AntilockBrakeModule */
   /** access value via {@link #criticalAngle()} */
+  public Scalar minSlip = RealScalar.of(0.1);
+  public Scalar maxSlip = RealScalar.of(0.25);
+  public Scalar fullBraking = RealScalar.of(0.85);
   public Scalar criticalAngleDeg = Quantity.of(12, NonSI.DEGREE_ANGLE);
   public Scalar absFrequency = RealScalar.of(5);
   public Scalar absAmplitude = RealScalar.of(0.2);
