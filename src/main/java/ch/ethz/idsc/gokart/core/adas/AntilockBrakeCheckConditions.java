@@ -79,10 +79,11 @@ public class AntilockBrakeCheckConditions extends AbstractModule implements Stee
         // the brake cannot be constantly applied otherwise the brake motor heats up too much
         double slip1 = Magnitude.ONE.toDouble(slip.Get(0));
         double slip2 = Magnitude.ONE.toDouble(slip.Get(1));
-        if (slip1 > hapticSteerConfig.criticalSlip) {
+        double minSlip = Magnitude.ONE.toDouble(HapticSteerConfig.GLOBAL.minSlip);
+        if (slip1 > minSlip) {
           vibrate();
         }
-        if (slip2 > hapticSteerConfig.criticalSlip) {
+        if (slip2 > minSlip) {
           vibrate();
         }
         double velocityAngle = Math.atan2(Magnitude.VELOCITY.toDouble(VelocityOrigin.Get(1)), Magnitude.VELOCITY.toDouble(VelocityOrigin.Get(0)));
