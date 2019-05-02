@@ -10,6 +10,7 @@ import ch.ethz.idsc.owl.math.planar.ArgMinVariable;
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
+import ch.ethz.idsc.owl.math.planar.PseudoSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
@@ -45,10 +46,13 @@ public enum CurveClothoidPursuitHelper {
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
       mirrorAndReverse(tensor);
+    /*
     Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
     TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
     Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, GeodesicPursuitParams.GLOBAL.getOptimizationSteps()).apply(tensor);
     Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
+    */
+    Optional<Tensor> lookAhead = new PseudoSe2CurveIntersection(GeodesicPursuitParams.GLOBAL.minDistance).string(tensor);
     return lookAhead.map(vector -> ClothoidPlan.from(vector, pose, isForward).orElse(null));
   }
 
