@@ -2,6 +2,7 @@
 package ch.ethz.idsc.owl.bot.se2.pid;
 
 import ch.ethz.idsc.owl.math.planar.Extract2D;
+import ch.ethz.idsc.sophus.planar.Se2ParametricDistance;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Norm;
