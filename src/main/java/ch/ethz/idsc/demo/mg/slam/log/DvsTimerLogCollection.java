@@ -15,9 +15,9 @@ public class DvsTimerLogCollection extends PeriodicSlamStep implements StartAndS
   private final SlamLogSave slamLogSave;
 
   public DvsTimerLogCollection(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
-      PoseInterface gokartPoseInterface, SlamEventCounter slamEventCounter) {
+      PoseInterface poseInterface, SlamEventCounter slamEventCounter) {
     super(slamCoreContainer, SlamDvsConfig.eventCamera.slamCoreConfig.logCollectionUpdateRate);
-    slamLogSave = new SlamLogSave(slamCoreContainer, slamPrcContainer, gokartPoseInterface, slamEventCounter);
+    slamLogSave = new SlamLogSave(slamCoreContainer, slamPrcContainer, poseInterface, slamEventCounter);
   }
 
   @Override // from PeriodicSlamStep

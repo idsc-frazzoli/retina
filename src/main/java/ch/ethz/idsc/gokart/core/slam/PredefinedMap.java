@@ -48,9 +48,9 @@ public enum PredefinedMap implements LocalizationImage {
   // DUBILAB_LOCALIZATION_20180912(7.5), //
   /** tents at parking position */
   DUBILAB_LOCALIZATION_20181128(7.5), //
-  /** tents at parking position */
   // DUBILAB_LOCALIZATION_20190307(7.5), //
-  // DUBILAB_LOCALIZATION_20190309(7.5), //
+  /** more details in swiss loop area */
+  DUBILAB_LOCALIZATION_20190309(7.5), //
   /** dust proof wall */
   DUBILAB_LOCALIZATION_20190314(7.5), //
   // TODO EPHEMERAL 023

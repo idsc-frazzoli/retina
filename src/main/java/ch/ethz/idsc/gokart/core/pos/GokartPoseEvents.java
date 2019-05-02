@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.pos;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.gokart.offline.pose.LogPosePostInject;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -54,8 +53,7 @@ public enum GokartPoseEvents {
   /***************************************************/
   /** Hint: do not use function during live operation!
    * 
-   * The function is intended for log file event injection,
-   * for instance in {@link LogPosePostInject}.
+   * The function is intended for log file event injection.
    * 
    * @param pose {x[m], y[m], alpha}
    * @param quality in the interval [0, 1]
