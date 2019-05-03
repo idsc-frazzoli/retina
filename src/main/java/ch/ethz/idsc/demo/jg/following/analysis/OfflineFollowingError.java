@@ -8,20 +8,25 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Norm;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ abstract class OfflineFollowingError implements OfflineLogListener {
   private Tensor reference = Tensors.empty();
   private Tensor errors = Tensors.empty();
   // ---
-  private Tensor times = Tensors.of(DoubleScalar.POSITIVE_INFINITY, DoubleScalar.NEGATIVE_INFINITY);
+  private Tensor times = Tensors.of( //
+      Quantity.of(DoubleScalar.POSITIVE_INFINITY, SI.SECOND), //
+      Quantity.of(DoubleScalar.NEGATIVE_INFINITY, SI.SECOND));
 
   /** @param reference curve or trajectory */
   protected void setReference(Tensor reference) {
@@ -55,10 +60,10 @@ import ch.ethz.idsc.tensor.red.Norm;
     return errors.stream().map(Scalar.class::cast).reduce(Scalar::add).get();
   }
 
-  public String report() {
+  public String getReport() {
     return "following error (" + this.getClass().getSimpleName() + ")\n" + //
-        "\ttime:\t" + times.Get(0) + " - " + times.Get(1) + "\n" + //
-        "\taverage error:\t" + averageError() + "\n" + //
-        "\taccumulated error:\t" + accumulatedError();
+        "\ttime:\t" + times.Get(0).map(Round._2) + " - " + times.Get(1).map(Round._2) + "\n" + //
+        "\taverage error:\t" + averageError().map(Round._4) + "\n" + //
+        "\taccumulated error:\t" + accumulatedError().map(Round._4);
   }
 }
