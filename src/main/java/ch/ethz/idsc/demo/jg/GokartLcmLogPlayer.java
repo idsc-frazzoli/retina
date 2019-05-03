@@ -16,7 +16,7 @@ import javax.swing.*;
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
-    Optional<File> file = open();
+    Optional<File> file = open(args);
     if (file.isPresent()) {
       logPlayerConfig.logFile = file.get().toString();
       logPlayerConfig.speed_numerator = 1;
@@ -30,7 +30,19 @@ import javax.swing.*;
     }
   }
 
-  public static Optional<File> open() {
+  public static Optional<File> open(String[] args) {
+    if (args.length > 0) {
+      File file = new File(args[0]);
+      if (file.isFile()) {
+        System.out.println("INFO open " + file.getAbsolutePath());
+        return Optional.of(file);
+      }
+      System.err.println("WARN unable to find " + file.getAbsolutePath());
+    }
+    return choose();
+  }
+
+  public static Optional<File> choose() {
     JFileChooser fileChooser = new JFileChooser();
     int returnVal = fileChooser.showOpenDialog(fileChooser);
     if (returnVal == JFileChooser.APPROVE_OPTION)
