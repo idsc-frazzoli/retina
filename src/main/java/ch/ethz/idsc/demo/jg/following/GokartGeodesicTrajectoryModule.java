@@ -1,5 +1,5 @@
 // code by ynager and jph
-package ch.ethz.idsc.demo.jg;
+package ch.ethz.idsc.demo.jg.following;
 
 import java.awt.Dimension;
 import java.util.ArrayList;

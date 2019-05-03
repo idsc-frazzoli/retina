@@ -10,13 +10,11 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 
-import javax.swing.*;
-
 /* package */ enum GokartLcmLogPlayer {
   ;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
-    Optional<File> file = open(args);
+    Optional<File> file = FileHelper.open(args);
     if (file.isPresent()) {
       logPlayerConfig.logFile = file.get().toString();
       logPlayerConfig.speed_numerator = 1;
@@ -28,29 +26,5 @@ import javax.swing.*;
       logPlayer.jFrame.setLocation(100, 100);
       logPlayer.standalone();
     }
-  }
-
-  public static Optional<File> open(String[] args) {
-    if (args.length > 0) {
-      File file = new File(args[0]);
-      if (file.isFile()) {
-        System.out.println("INFO open " + file.getAbsolutePath());
-        return Optional.of(file);
-      }
-      System.err.println("WARN unable to find " + file.getAbsolutePath());
-    }
-    return choose();
-  }
-
-  public static Optional<File> choose() {
-    JFileChooser fileChooser = new JFileChooser();
-    int returnVal = fileChooser.showOpenDialog(fileChooser);
-    if (returnVal == JFileChooser.APPROVE_OPTION)
-      try {
-        return Optional.of(fileChooser.getSelectedFile());
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
-    return Optional.empty();
   }
 }

@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import ch.ethz.idsc.demo.jg.FigureDubiGeodesicModule;
-import ch.ethz.idsc.demo.jg.GokartGeodesicTrajectoryModule;
+import ch.ethz.idsc.demo.jg.following.FigureDubiGeodesicModule;
+import ch.ethz.idsc.demo.jg.following.GokartGeodesicTrajectoryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamVisualModule;
