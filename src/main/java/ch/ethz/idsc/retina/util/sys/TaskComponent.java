@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
+import javax.swing.ScrollPaneConstants;
 
 /** used in tabbed task gui */
 /* package */ class TaskComponent {
@@ -21,8 +22,8 @@ import javax.swing.JToggleButton;
   private final JPanel jpanel = new JPanel();
   private final JPanel top = new JPanel(new BorderLayout());
   final JScrollPane jScrollPane = new JScrollPane(top, //
-      JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, //
-      JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, //
+      ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
   public TaskComponent(List<Class<? extends AbstractModule>> modules, Properties properties) {
     jpanel.setLayout(new GridLayout(modules.size(), 1));

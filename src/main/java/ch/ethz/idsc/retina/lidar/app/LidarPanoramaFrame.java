@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
@@ -34,7 +35,8 @@ public class LidarPanoramaFrame implements LidarPanoramaListener, AutoCloseable 
       spinnerLabel.addToComponentReduced(jToolBar, new Dimension(120, 28), "history");
       jPanel.add("North", jToolBar);
     }
-    JScrollPane jScrollPane = new JScrollPane(lpc.jComponent, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+    JScrollPane jScrollPane = new JScrollPane(lpc.jComponent, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
     jPanel.add("Center", jScrollPane);
     jFrame.setContentPane(jPanel);
   }

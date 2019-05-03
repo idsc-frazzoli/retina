@@ -1782,6 +1782,20 @@ public enum GokartLogFile implements LogFile {
   /** slow pursuit */
   _20190429T163418_25103376,
   /***************************************************/
+  /* 2019-05-02 */
+  /** geodesic pursuit */
+  _20190502T105037_bdbf8063,
+  /** geodesic pursuit */
+  _20190502T110217_bdbf8063,
+  /** fast manual driving */
+  _20190502T113816_923429be,
+  /** geodesic pursuit */
+  _20190502T115238_3839b112,
+  /** geodesic pursuit */
+  _20190502T133418_3839b112,
+  /** power steering test */
+  _20190502T135355_622e8d75,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

@@ -34,7 +34,7 @@ public class StaticBrakeFunctionTest extends TestCase {
     System.out.println("braking position: " + brakepos);
     System.out.println("wa1: " + wa1);
     System.out.println("wa2: " + wa2);
-    System.out.println("[0-1]: " + StaticBrakeFunction.getRelativePosition(brakepos));
+    System.out.println("[0-1]: " + AbstractBrakeFunction.getRelativePosition(brakepos));
     Chop._10.requireClose(wa1, wa2);
   }
 
@@ -46,7 +46,7 @@ public class StaticBrakeFunctionTest extends TestCase {
     System.out.println("braking position (with fading): " + brakepos);
     System.out.println("wa1: " + wa1);
     System.out.println("wa2: " + wa2);
-    System.out.println("[0-1]: " + StaticBrakeFunction.getRelativePosition(brakepos));
+    System.out.println("[0-1]: " + AbstractBrakeFunction.getRelativePosition(brakepos));
     Chop._10.requireClose(wa1, wa2);
   }
 
@@ -72,15 +72,15 @@ public class StaticBrakeFunctionTest extends TestCase {
   }
 
   public void testGetRelative() {
-    Scalar scalar = StaticBrakeFunction.getRelativePosition(Quantity.of(0.02, "m"));
+    Scalar scalar = AbstractBrakeFunction.getRelativePosition(Quantity.of(0.02, "m"));
     Chop._08.requireClose(scalar, RealScalar.of(0.33333333333333326));
-    scalar = StaticBrakeFunction.getRelativePosition(Quantity.of(0.05, "m"));
+    scalar = AbstractBrakeFunction.getRelativePosition(Quantity.of(0.05, "m"));
     Chop._08.requireClose(scalar, RealScalar.of(1));
-    scalar = StaticBrakeFunction.getRelativePosition(Quantity.of(0.1, "m"));
+    scalar = AbstractBrakeFunction.getRelativePosition(Quantity.of(0.1, "m"));
     Chop._08.requireClose(scalar, RealScalar.of(1));
-    scalar = StaticBrakeFunction.getRelativePosition(Quantity.of(0.0, "m"));
+    scalar = AbstractBrakeFunction.getRelativePosition(Quantity.of(0.0, "m"));
     Chop._08.requireClose(scalar, RealScalar.of(0));
-    scalar = StaticBrakeFunction.getRelativePosition(Quantity.of(-0.3, "m"));
+    scalar = AbstractBrakeFunction.getRelativePosition(Quantity.of(-0.3, "m"));
     Chop._08.requireClose(scalar, RealScalar.of(0));
   }
 }
