@@ -9,7 +9,7 @@ public class GlobalViewLcmModuleTest extends TestCase {
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
     globalViewLcmModule.first();
     Thread.sleep(1000);
-    globalViewLcmModule.setCurve(DubendorfCurve2.OVAL);
+    globalViewLcmModule.setPlan(DubendorfCurve2.OVAL);
     Thread.sleep(1000);
     globalViewLcmModule.last();
   }

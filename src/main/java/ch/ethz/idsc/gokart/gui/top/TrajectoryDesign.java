@@ -68,7 +68,8 @@ public class TrajectoryDesign extends CurvatureDemo {
     return Tensor.of(control().stream().map(PoseHelper::attachUnits));
   }
 
-  public Tensor getCurve() {
+  /** @return refined curve */
+  public Tensor getRefinedCurve() {
     Tensor control = controlPoints();
     int degree = spinnerLabelDegree.getValue();
     CurveSubdivision curveSubdivision = new LaneRiesenfeldCurveSubdivision(geodesicDisplay().geodesicInterface(), degree);
@@ -80,7 +81,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   public Tensor protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     renderControlPoints(geometricLayer, graphics);
     GeodesicDisplay geodesicDisplay = geodesicDisplay();
-    Tensor refined = getCurve();
+    Tensor refined = getRefinedCurve();
     Tensor render = Tensor.of(refined.stream().map(geodesicDisplay::toPoint));
     CurveCurvatureRender.of(render, true, COMB_SCALE, geometricLayer, graphics);
     return refined;

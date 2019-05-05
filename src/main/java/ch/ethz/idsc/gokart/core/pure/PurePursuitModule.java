@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 public abstract class PurePursuitModule extends AbstractClockedModule {
-  private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   protected final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
@@ -29,7 +29,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   @Override // from AbstractModule
   protected final void first() {
     protected_first();
-    joystickLcmProvider.start();
+    manualControlProvider.start();
     purePursuitRimo.start();
     purePursuitSteer.start();
   }
@@ -38,7 +38,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   protected final void last() {
     purePursuitRimo.stop();
     purePursuitSteer.stop();
-    joystickLcmProvider.stop();
+    manualControlProvider.stop();
     protected_last();
   }
 
@@ -49,7 +49,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   /***************************************************/
   @Override // from AbstractClockedModule
   protected final void runAlgo() {
-    final Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
+    final Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     Optional<Scalar> heading = deriveHeading();
     if (heading.isPresent())
       purePursuitSteer.setHeading(heading.get());
