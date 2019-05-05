@@ -7,7 +7,6 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
-import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -20,7 +19,6 @@ public class PIDModule extends AbstractModule implements MPCBSplineTrackListener
   private static final int RESOLUTION = 200;
   private final TrackReconModule trackReconModule = ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   private final PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
-  private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
   @Override // from AbstractModule
   protected void first() {
@@ -36,8 +34,6 @@ public class PIDModule extends AbstractModule implements MPCBSplineTrackListener
     pidControllerModule.terminate();
     if (Objects.nonNull(trackReconModule))
       trackReconModule.listenersRemove(this);
-    if (Objects.nonNull(globalViewLcmModule))
-      globalViewLcmModule.setCurve(null);
   }
 
   @Override // from MPCBSplineTrackListener
@@ -50,7 +46,5 @@ public class PIDModule extends AbstractModule implements MPCBSplineTrackListener
       System.out.println("center line no waypoints");
     }
     pidControllerModule.setCurve(Optional.ofNullable(curve));
-    if (Objects.nonNull(globalViewLcmModule))
-      globalViewLcmModule.setCurve(curve);
   }
 }
