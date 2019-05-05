@@ -17,11 +17,10 @@ public class PowerSteeringV2ModuleTest extends TestCase {
   public void testSimple1() {
     PowerSteeringV2Module powerSteeringModule = new PowerSteeringV2Module();
     powerSteeringModule.first();
-    powerSteeringModule.putEvent(Quantity.of(0.2, "SCE"),
-        Tensors.of( //
-            Quantity.of(0.1, SI.VELOCITY), //
-            Quantity.of(1, SI.VELOCITY), //
-            Quantity.of(1, SI.PER_SECOND)),//
+    powerSteeringModule.putEvent(Quantity.of(0.2, "SCE"), Tensors.of( //
+        Quantity.of(0.1, SI.VELOCITY), //
+        Quantity.of(1, SI.VELOCITY), //
+        Quantity.of(1, SI.PER_SECOND)), //
         0);
     powerSteeringModule.last();
   }

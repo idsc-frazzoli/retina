@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
-import ch.ethz.idsc.owl.math.planar.ArgMinVariable;
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
@@ -18,7 +17,6 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
@@ -46,12 +44,10 @@ public enum CurveClothoidPursuitHelper {
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
       mirrorAndReverse(tensor);
-    /*
-    Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
-    TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
-    Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, GeodesicPursuitParams.GLOBAL.getOptimizationSteps()).apply(tensor);
-    Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point;
-    */
+    /* Predicate<Scalar> isCompliant = isCompliant(ratioLimits, pose, speed);
+     * TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
+     * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, GeodesicPursuitParams.GLOBAL.getOptimizationSteps()).apply(tensor);
+     * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
     Optional<Tensor> lookAhead = new PseudoSe2CurveIntersection(GeodesicPursuitParams.GLOBAL.minDistance).string(tensor);
     return lookAhead.map(vector -> ClothoidPlan.from(vector, pose, isForward).orElse(null));
   }

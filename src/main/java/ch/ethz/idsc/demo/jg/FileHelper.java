@@ -1,14 +1,14 @@
 // code by gjoel
 package ch.ethz.idsc.demo.jg;
 
-import javax.swing.JFileChooser;
 import java.io.File;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.swing.JFileChooser;
+
 public enum FileHelper {
   ;
-
   public static Optional<File> open(String[] args) {
     return open(args.length > 0 ? args[0] : null);
   }

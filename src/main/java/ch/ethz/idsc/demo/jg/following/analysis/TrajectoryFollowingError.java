@@ -15,7 +15,7 @@ import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class TrajectoryFollowingError extends OfflineFollowingError{
+public class TrajectoryFollowingError extends OfflineFollowingError {
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     super.event(time, channel, byteBuffer);

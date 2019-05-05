@@ -7,7 +7,6 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.sca.Clip;
