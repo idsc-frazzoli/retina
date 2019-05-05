@@ -43,7 +43,7 @@ import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
-import ch.ethz.idsc.gokart.core.pure.FigureDubiModule;
+import ch.ethz.idsc.gokart.core.pure.FigureBaseModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -133,7 +133,7 @@ enum RunTabbedTaskGui {
       CenterLinePursuitModule.class, //
       PIDModule.class, //
       PIDTestTrackModule.class, //
-      FigureDubiModule.class, //
+      FigureBaseModule.class, //
       GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //

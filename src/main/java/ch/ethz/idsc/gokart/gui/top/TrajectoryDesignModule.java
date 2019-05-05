@@ -13,7 +13,6 @@ import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.jg.following.FigureDubiGeodesicModule;
-import ch.ethz.idsc.gokart.core.pure.FigureBaseModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
@@ -75,8 +74,6 @@ public class TrajectoryDesignModule extends AbstractModule {
         FigureDubiGeodesicModule geodesicModule = ModuleAuto.INSTANCE.getInstance(FigureDubiGeodesicModule.class);
         if (Objects.nonNull(geodesicModule))
           geodesicModule.setCurve(curve);
-        ModuleAuto.INSTANCE.getExtensions(FigureBaseModule.class) //
-            .forEach(figureBaseModule -> figureBaseModule.setCurve(curve));
       });
       trajectoryDesign.timerFrame.jToolBar.add(jButton);
     }
