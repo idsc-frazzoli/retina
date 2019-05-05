@@ -12,7 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.jg.FigureDubiGeodesicModule;
+import ch.ethz.idsc.demo.jg.following.FigureDubiGeodesicModule;
 import ch.ethz.idsc.gokart.core.pure.FigureBaseModule;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;

@@ -1,5 +1,5 @@
 // code by jph, gjoel
-package ch.ethz.idsc.demo.jg;
+package ch.ethz.idsc.demo.jg.following;
 
 import java.util.Objects;
 import java.util.Optional;
