@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -89,7 +90,8 @@ public class GokartLcmLogCutter {
       }
     }
   };
-  private final JScrollPane jScrollPane = new JScrollPane(jComponent, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+  private final JScrollPane jScrollPane = new JScrollPane(jComponent, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+      ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
   private final MouseAdapter mouseListener = new MouseAdapter() {
     private Point pressed = null;
 

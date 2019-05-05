@@ -16,6 +16,7 @@ import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.tensor.Scalar;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 class CountLidarRayBlockListener implements LidarRayBlockListener {
@@ -25,7 +26,7 @@ class CountLidarRayBlockListener implements LidarRayBlockListener {
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     int limit_f = lidarRayBlockEvent.floatBuffer.limit();
     int limit_b = lidarRayBlockEvent.byteBuffer.limit();
-    TestCase.assertEquals(limit_f, limit_b * 2);
+    Assert.assertEquals(limit_f, limit_b * 2);
     ++block_count;
   }
 }
