@@ -30,6 +30,7 @@ import ch.ethz.idsc.tensor.io.MatrixForm;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.Inverse;
+import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class TrajectoryDesignModule extends AbstractModule {
@@ -49,14 +50,14 @@ public class TrajectoryDesignModule extends AbstractModule {
     {
       final File file = AppCustomization.file(getClass(), "controlpoints.tensor");
       try {
-        trajectoryDesign.setControl(Get.of(file));
+        trajectoryDesign.setControlPointsSe2(Get.of(file));
       } catch (Exception exception) {
         // ---
       }
       trajectoryDesign.timerFrame.jFrame.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosed(WindowEvent windowEvent) {
-          exportTensor(file, trajectoryDesign.control());
+          exportTensor(file, trajectoryDesign.getControlPointsSe2().map(N.DOUBLE::of));
         }
       });
     }
@@ -69,7 +70,7 @@ public class TrajectoryDesignModule extends AbstractModule {
         Se2CurveLcm.publish(GokartLcmChannel.PURSUIT_CURVE_SE2, curve);
         System.out.println(Dimensions.of(curve));
         System.out.println("---");
-        System.out.println(MatrixForm.of(trajectoryDesign.controlPoints().map(Round._4), ",", "", ""));
+        System.out.println(MatrixForm.of(trajectoryDesign.getControlPointsPose().map(Round._4), ",", "", ""));
         // ---
         FigureDubiGeodesicModule geodesicModule = ModuleAuto.INSTANCE.getInstance(FigureDubiGeodesicModule.class);
         if (Objects.nonNull(geodesicModule))
@@ -83,7 +84,7 @@ public class TrajectoryDesignModule extends AbstractModule {
       jButton.setToolTipText("export control points");
       jButton.addActionListener(actionEvent -> {
         File file = HomeDirectory.file("Desktop", "controlpoints_" + SystemTimestamp.asString(new Date()) + ".tensor");
-        exportTensor(file, trajectoryDesign.controlPoints().unmodifiable());
+        exportTensor(file, trajectoryDesign.getControlPointsPose().unmodifiable());
         System.out.println("exported control points to " + file.getAbsolutePath());
       });
       trajectoryDesign.timerFrame.jToolBar.add(jButton);
@@ -93,7 +94,7 @@ public class TrajectoryDesignModule extends AbstractModule {
       JButton jButton = new JButton("import");
       jButton.setToolTipText("import control points");
       jButton.addActionListener(actionEvent -> importTensor().map(tensor -> Tensor.of(tensor.stream().map(PoseHelper::toUnitless))) //
-          .ifPresent(this.trajectoryDesign::setControl));
+          .ifPresent(this.trajectoryDesign::setControlPointsSe2));
       trajectoryDesign.timerFrame.jToolBar.add(jButton);
     }
     try {

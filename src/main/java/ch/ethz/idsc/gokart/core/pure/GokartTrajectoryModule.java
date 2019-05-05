@@ -47,10 +47,10 @@ import ch.ethz.idsc.owl.glc.core.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.core.StateTimeRaster;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
-import ch.ethz.idsc.owl.math.Lexicographic;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
+import ch.ethz.idsc.owl.math.order.VectorLexicographic;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
@@ -227,7 +227,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
             STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, //
             plannerConstraint, multiCostGoalInterface, //
-            new LexicographicRelabelDecision(Lexicographic.COMPARATOR));
+            new LexicographicRelabelDecision(VectorLexicographic.COMPARATOR));
         // Do Planning
         StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
         trajectoryPlanner.insertRoot(root);
