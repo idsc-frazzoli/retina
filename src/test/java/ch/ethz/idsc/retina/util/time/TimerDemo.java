@@ -13,22 +13,22 @@ class TimerDemo {
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
-        if (!semaphore.tryAcquire()) {
+        if (semaphore.tryAcquire()) {
+          System.out.println("task acquire req");
+          System.out.println("task acquired");
+          // if (true)
+          // throw new RuntimeException();
+          try {
+            Thread.sleep(2000);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+          System.out.println("task release");
+          semaphore.release();
+        } else {
           System.out.println("task acquire fail");
-          return;
         }
-        System.out.println("task acquire req");
-        System.out.println("task acquired");
-        // if (true)
-        // throw new RuntimeException();
-        try {
-          Thread.sleep(2000);
-        } catch (InterruptedException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-        System.out.println("task release");
-        semaphore.release();
       }
     }, 10, 10);
   }

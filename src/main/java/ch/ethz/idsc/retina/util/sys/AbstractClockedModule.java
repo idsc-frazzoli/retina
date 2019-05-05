@@ -44,10 +44,12 @@ public abstract class AbstractClockedModule extends AbstractModule {
     TimerTask timerTask = new TimerTask() {
       @Override
       public void run() {
-        if (!semaphore.tryAcquire())
-          return;
-        runAlgo(); // if this throws an exception, the semaphore is in trouble
-        semaphore.release();
+        if (semaphore.tryAcquire())
+          try {
+            runAlgo(); // if this throws an exception, the semaphore is in trouble
+          } finally {
+            semaphore.release();
+          }
       }
     };
     timer.schedule(timerTask, 0, Magnitude.MILLI_SECOND.toLong(getPeriod()));
