@@ -14,6 +14,8 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.demo.jg.following.FigureDubiGeodesicModule;
 import ch.ethz.idsc.gokart.core.pure.FigureBaseModule;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
@@ -64,7 +66,8 @@ public class TrajectoryDesignModule extends AbstractModule {
       JButton jButton = new JButton("set curve");
       jButton.setToolTipText("override pursuit curve");
       jButton.addActionListener(actionEvent -> {
-        Tensor curve = trajectoryDesign.getCurve().unmodifiable();
+        Tensor curve = trajectoryDesign.getRefinedCurve().unmodifiable();
+        Se2CurveLcm.publish(GokartLcmChannel.PURSUIT_CURVE_SE2, curve);
         System.out.println(Dimensions.of(curve));
         System.out.println("---");
         System.out.println(MatrixForm.of(trajectoryDesign.controlPoints().map(Round._4), ",", "", ""));

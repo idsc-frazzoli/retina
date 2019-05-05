@@ -1,3 +1,4 @@
+// code by jph
 package ch.ethz.idsc.retina.util.time;
 
 import java.util.Timer;
@@ -16,12 +17,9 @@ class TimerDemo {
         if (semaphore.tryAcquire()) {
           System.out.println("task acquire req");
           System.out.println("task acquired");
-          // if (true)
-          // throw new RuntimeException();
           try {
             Thread.sleep(2000);
           } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
           }
           System.out.println("task release");
