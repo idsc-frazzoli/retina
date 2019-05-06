@@ -15,9 +15,9 @@ import ch.ethz.idsc.tensor.sca.Clips;
 public class PIDTuningParams {
   public static final PIDTuningParams GLOBAL = AppResources.load(new PIDTuningParams());
   // ---
-  public Scalar Kp = Quantity.of(.1, SI.PER_METER);
+  public Scalar Kp = Quantity.of(.5, SI.PER_METER);
   public Scalar Ki = RealScalar.ZERO;
-  public Scalar Kd = Quantity.of(10.0, "s*m^-1");
+  public Scalar Kd = Quantity.of(4.0, "s*m^-1");
   public PIDGains pidGains = new PIDGains(Kp, Ki, Kd);
   public final Scalar updatePeriod = Quantity.of(0.2, SI.SECOND); // 0.2[s] == 5[Hz]
   // ---
