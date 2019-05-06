@@ -51,7 +51,7 @@ public enum ReferenceTrajectory {
     mpcRequestPublisher.publishOptimizationParameter(optimizationParameterDynamic);
     // lcmMPCControlClient.registerControlUpdateLister(MPCInformationProvider.getInstance());
     Tensor position = gokartState.getCenterPosition();
-    MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0.5, SI.METER),
+    MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(1, SI.METER),
         Quantity.of(-0.5, SI.ONE), RealScalar.of(0.7));
     mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
     for (int i = 0; i < steps; i++) {
