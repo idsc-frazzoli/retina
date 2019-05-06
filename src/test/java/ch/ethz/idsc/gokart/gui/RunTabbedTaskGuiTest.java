@@ -6,14 +6,16 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
+import ch.ethz.idsc.gokart.core.fuse.LocalizationEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.SysidSignalsModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCAbstractDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
-import ch.ethz.idsc.gokart.dev.u3.LabjackU3LcmModule;
+import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
@@ -27,15 +29,17 @@ public class RunTabbedTaskGuiTest extends TestCase {
     assertTrue(RunTabbedTaskGui.MODULES_DEV.contains(MiscEmergencyWatchdog.class));
   }
 
-  public void testAutonomous() throws InterruptedException {
-    for (Class<? extends AbstractModule> cls : RunTabbedTaskGui.MODULES_AUT) {
-      ModuleAuto.INSTANCE.runOne(cls);
-      Thread.sleep(150); // needs time to start thread that invokes first()
-      ModuleAuto.INSTANCE.endOne(cls);
-    }
+  public void testAutonomous() throws Exception {
+    for (Class<? extends AbstractModule> module : RunTabbedTaskGui.MODULES_AUT)
+      // skip MPC related modules in tests
+      if (!MPCAbstractDrivingModule.class.isAssignableFrom(module)) {
+        ModuleAuto.INSTANCE.runOne(module);
+        Thread.sleep(150); // needs time to start thread that invokes first()
+        ModuleAuto.INSTANCE.endOne(module);
+      }
   }
 
-  public void testJoystick() throws InterruptedException {
+  public void testJoystick() throws Exception {
     for (Class<? extends AbstractModule> cls : RunTabbedTaskGui.MODULES_MAN)
       if (!cls.equals(SysidSignalsModule.class)) {
         ModuleAuto.INSTANCE.runOne(cls);
@@ -54,12 +58,13 @@ public class RunTabbedTaskGuiTest extends TestCase {
         PoseLcmServerModule.class, //
         LoggerModule.class, //
         // GenericXboxPadLcmServerModule.class, //
-        LabjackU3LcmModule.class, //
+        LabjackU3Module.class, //
         SteerCalibrationWatchdog.class, //
         MiscEmergencyWatchdog.class, //
         Vlp16PassiveSlowing.class, //
-        LidarLocalizationModule.class, //
         LinmotSafetyModule.class, //
+        LidarLocalizationModule.class, //
+        LocalizationEmergencyModule.class, //
         ManualResetModule.class //
     // AutonomySafetyModule.class //
     );

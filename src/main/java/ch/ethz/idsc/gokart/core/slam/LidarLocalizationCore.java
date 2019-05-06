@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.PoseVelocityInterface;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
@@ -19,6 +18,7 @@ import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.group.LieDifferences;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
@@ -32,8 +32,11 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/** match the most recent lidar scan to static geometry of a pre-recorded map
- * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
+/** localization algorithm 3rd gen. fusing of two sources of information:
+ * 1) inertial measurements acc and gyro from VMU931 sensor at 1000[Hz], and
+ * 2) lidar-based pose and velocity estimates at 20[Hz]
+ * 
+ * PoseVelocityInterface provides fused (and therefore filtered) pose and velocity */
 public class LidarLocalizationCore implements //
     LidarRayBlockListener, Vmu931ImuFrameListener, Runnable, PoseVelocityInterface {
   /** the constant 0.1 was established in post-processing
@@ -63,7 +66,7 @@ public class LidarLocalizationCore implements //
    * containing the cross-section of the static geometry
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
-  private Scalar quality = RealScalar.ZERO;
+  /* package for testing */ Scalar quality = RealScalar.ZERO;
   private GeodesicIIR1Filter geodesicIIR1Filter = //
       new GeodesicIIR1Filter(RnGeodesic.INSTANCE, IIR1_FILTER_GYROZ);
   private Scalar gyroZ_vmu931 = Quantity.of(0.0, SI.PER_SECOND);
@@ -102,8 +105,10 @@ public class LidarLocalizationCore implements //
           DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size());
       thread.interrupt();
     }
-    if (!tracking)
+    if (!tracking) {
       vmu931Odometry.resetVelocity();
+      quality = RealScalar.ZERO; // pose quality is zero when tracking is off
+    }
   }
 
   /***************************************************/
@@ -118,13 +123,15 @@ public class LidarLocalizationCore implements //
   @Override // from Runnable
   public void run() {
     do {
-      Tensor points = points2d_ferry;
+      Tensor points = points2d_ferry; // only updated when tracking == true
       if (Objects.nonNull(points)) {
         points2d_ferry = null;
         fit(points);
       } else
         try {
-          Thread.sleep(2000); // is interrupted once data arrives
+          Thread.sleep(1000); // sleep is interrupted once data arrives
+          // 1[s] of no lidar data indicates sensor failure
+          quality = RealScalar.ZERO;
         } catch (Exception exception) {
           // ---
         }
@@ -134,7 +141,7 @@ public class LidarLocalizationCore implements //
   private GokartPoseEvent prevResult = null;
 
   private void fit(Tensor points) {
-    Optional<GokartPoseEvent> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), getGyroZ(), points);
+    Optional<GokartPoseEvent> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), getVelocity(), points);
     if (optional.isPresent()) {
       GokartPoseEvent slamResult = optional.get();
       quality = slamResult.getQuality();
@@ -169,12 +176,7 @@ public class LidarLocalizationCore implements //
 
   @Override // from PoseVelocityInterface
   public Tensor getVelocity() {
-    return vmu931Odometry.getVelocity();
-  }
-
-  @Override // from PoseVelocityInterface
-  public Tensor getVelocityXY() {
-    return vmu931Odometry.getVelocityXY();
+    return vmu931Odometry.velocityXY().append(gyroZ_filtered);
   }
 
   @Override // from PoseVelocityInterface
@@ -182,8 +184,9 @@ public class LidarLocalizationCore implements //
     return gyroZ_filtered;
   }
 
+  /** @return instance of GokartPoseEvent with current pose, quality and velocity */
   public GokartPoseEvent createPoseEvent() {
-    return GokartPoseEvents.create(getPose(), quality, getVelocityXY(), getGyroZ());
+    return GokartPoseEvents.create(getPose(), quality, getVelocity());
   }
 
   /** function called when operator initializes pose
@@ -192,12 +195,11 @@ public class LidarLocalizationCore implements //
   public void resetPose(Tensor pose) {
     // System.out.println("reset pose=" + pose.map(Round._5));
     vmu931Odometry.resetPose(pose);
-    quality = _1;
     prevResult = null;
   }
 
   /***************************************************/
-  /** Hint: only use function during post-processing.
+  /** Hint: only use function in post-processing.
    * DO NOT use function during operation of the gokart
    * 
    * @return unfiltered gyroZ value with unit "s^-1" */

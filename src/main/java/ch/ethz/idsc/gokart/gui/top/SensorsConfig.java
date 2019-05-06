@@ -14,8 +14,8 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16FromPolarCoordinates;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16ToPolarCoordinates;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppResources;
-import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -32,7 +32,7 @@ public class SensorsConfig {
   public final Scalar vlp16_twist = RealScalar.of(-1.61);
   /** transformation from center of rear-axle to vlp16 in (x,y)-plane
    * the third, i.e. angle coordinate has to be zero. */
-  public final Tensor vlp16 = Tensors.vector(0.09, 0.0, 0.0);
+  public final Tensor vlp16_pose = Tensors.fromString("{0.09[m], 0.0[m], 0.0}");
   /** vlp16_incline is the rotation of tilt around the y-axis of the gokart
    * 
    * due to the small magnitude of vlp16_incline, the approximations hold
@@ -57,12 +57,10 @@ public class SensorsConfig {
   public final Scalar vlp16_relativeZero = DoubleScalar.of(0.75);
   // ---
   public final Scalar davis_imu_rate = Quantity.of(1000, SI.PER_SECOND);
-  // TODO the location of the frustum is not final
   public final Tensor davis_frustum = Tensors.fromString("{0[m],7[m]}");
   /** 20181212: the value for the imu bias was established from
    * the first 60[s] of the logs from December 6. and 11. */
   public final Scalar davis_imuY_bias = Quantity.of(0.0142, SI.PER_SECOND);
-  // TODO create a conversion formula from inclination to scaling factor (will have singularity)
   /** due to the inclined mounting of the davis camera,
    * the imuY measurement may have to be scaled.
    * until 20180507 the factor was 1 because the davis camera
@@ -94,7 +92,7 @@ public class SensorsConfig {
 
   /** @return 3x3 matrix transforming points in lidar frame to gokart frame */
   public Tensor vlp16Gokart() {
-    return Se2Utils.toSE2Matrix(vlp16).unmodifiable();
+    return PoseHelper.toSE2Matrix(vlp16_pose);
   }
 
   public int imuSamplesPerLidarScan() {

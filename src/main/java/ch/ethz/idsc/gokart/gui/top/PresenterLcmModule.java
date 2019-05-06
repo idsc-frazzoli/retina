@@ -34,6 +34,7 @@ import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -109,7 +110,7 @@ public class PresenterLcmModule extends AbstractModule {
     // ---
     {
       ParallelLidarRender lidarRender = new ParallelLidarRender();
-      lidarRender.setReference(() -> SensorsConfig.GLOBAL.vlp16);
+      lidarRender.setReference(() -> PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
       lidarRender.setColor(new Color(0, 0, 128, 128));
       lidarRender.setObstacleColor(new Color(128, 0, 128, 128));
       lidarRender.pointSize = 1;
@@ -265,8 +266,8 @@ public class PresenterLcmModule extends AbstractModule {
   }
 
   public static void main(String[] args) throws Exception {
-    PresenterLcmModule globalViewLcmModule = new PresenterLcmModule();
-    globalViewLcmModule.first();
-    globalViewLcmModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    PresenterLcmModule presenterLcmModule = new PresenterLcmModule();
+    presenterLcmModule.first();
+    presenterLcmModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 }

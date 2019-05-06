@@ -12,7 +12,6 @@ import java.util.TreeSet;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -22,7 +21,7 @@ import ch.ethz.idsc.retina.lidar.LidarSectorProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16PolarProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** class interprets sensor data from lidar */
@@ -75,8 +74,8 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()) && //
         !pointsPolar.isEmpty()) {
-      geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
-      geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(SensorsConfig.GLOBAL.vlp16));
+      geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
+      geometricLayer.pushMatrix(SensorsConfig.GLOBAL.vlp16Gokart());
       // ---
       Tensor polygon = polygon();
       // TODO apply filter? median, min, ...

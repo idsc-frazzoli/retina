@@ -1699,6 +1699,103 @@ public enum GokartLogFile implements LogFile {
   /** trajectory planning with moving obstacles */
   _20190401T115537_411917b6,
   /***************************************************/
+  /* 2019-04-04 */
+  /** manual and mpc drive */
+  _20190404T133714_39258d17,
+  /** mpc */
+  _20190404T143912_39258d17,
+  /** mostly manual drive but without localization
+   * start at {26.0749605[m], 30.1878686[m], -1.1216625} */
+  _20190404T154558_eb6eadfe,
+  /***************************************************/
+  /* 2019-04-08 */
+  /** mpc with challenging track */
+  _20190408T103556_eb6eadfe,
+  /** mh thesis benchmarking: dynamic kinematic */
+  _20190408T104821_eb6eadfe, //
+  /** slow manual driving with localization failure */
+  _20190408T111457_eb6eadfe,
+  /** fast manual driving with localization failure */
+  _20190408T123841_eb6eadfe,
+  /** mh thesis benchmarking: human centerline kinematic */
+  _20190408T124954_eb6eadfe,
+  /***************************************************/
+  /* 2019-04-15 */
+  /* steer battery was found discharged */
+  /***************************************************/
+  /* 2019-04-18 */
+  /** geodesic pursuit */
+  _20190418T141321_b6a70baf,
+  /** geodesic pursuit, slow manual driving */
+  _20190418T142758_b6a70baf,
+  /** testing steering but without localization */
+  _20190418T144403_b6a70baf,
+  /** testing steering but without localization
+   * start at {28.9864287[m], 27.5183134[m], -1.1886032} */
+  _20190418T145229_b6a70baf,
+  /** geodesic pursuit */
+  _20190418T155607_b6a70baf,
+  /** geodesic pursuit, drift in accelerometer */
+  _20190418T160410_b6a70baf,
+  /** geodesic pursuit */
+  _20190418T160707_b6a70baf,
+  /** geodesic pursuit */
+  _20190418T161148_b6a70baf,
+  /***************************************************/
+  /* 2019-04-24 */
+  /** geodesic pursuit */
+  _20190424T130849_b486c368,
+  /** geodesic pursuit */
+  _20190424T131353_aa45eece,
+  /** geodesic pursuit */
+  _20190424T144517_f0590cf6,
+  /** geodesic pursuit */
+  _20190424T144844_f0590cf6,
+  /** geodesic pursuit */
+  _20190424T155214_3262e93a,
+  /** geodesic pursuit */
+  _20190424T161815_3262e93a,
+  /** geodesic pursuit */
+  _20190424T162520_3262e93a,
+  /***************************************************/
+  /* 2019-04-25 */
+  /** with HighPowerSteerPid, each 2 times slow, 2 times fast
+   * pure pursuit
+   * geodesic pursuit, minimal distance [m] 3, 4, 5, 6, 7 */
+  _20190425T133500_7cf20bb2,
+  /** geodesic pursuit, minimal distance [m] 3, 6, with default SteerPositionControl, each slow and fast */
+  _20190425T135709_7cf20bb2,
+  /** fast manual drive */
+  _20190425T140358_7cf20bb2,
+  /** fast manual drive */
+  _20190425T141045_7cf20bb2,
+  /***************************************************/
+  /* 2019-04-29 */
+  /** slow pursuit */
+  _20190429T111737_37db3fce,
+  /** slow pursuit */
+  _20190429T141452_70dfcdda,
+  /** slow pursuit */
+  _20190429T142046_70dfcdda,
+  /** slow pursuit */
+  _20190429T154513_3c0dfa28,
+  /** slow pursuit */
+  _20190429T163418_25103376,
+  /***************************************************/
+  /* 2019-05-02 */
+  /** geodesic pursuit */
+  _20190502T105037_bdbf8063,
+  /** geodesic pursuit */
+  _20190502T110217_bdbf8063,
+  /** fast manual driving */
+  _20190502T113816_923429be,
+  /** geodesic pursuit */
+  _20190502T115238_3839b112,
+  /** geodesic pursuit */
+  _20190502T133418_3839b112,
+  /** power steering test */
+  _20190502T135355_622e8d75,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

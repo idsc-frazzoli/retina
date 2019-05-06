@@ -1,5 +1,8 @@
-// code by mh
+// code by mh, jph
 package ch.ethz.idsc.gokart.core.mpc;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
@@ -8,6 +11,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class MPCOptimizationParameterKinematicTest extends TestCase {
+  public void testBasic() {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[7 * 4]);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.putFloat(1.5f);
+    byteBuffer.putFloat(2.5f);
+    byteBuffer.position(0);
+    MPCOptimizationParameterKinematic mpcOptimizationParameterKinematic = //
+        new MPCOptimizationParameterKinematic(byteBuffer);
+    assertEquals(mpcOptimizationParameterKinematic.speedLimit(), Quantity.of(1.5, SI.VELOCITY));
+    assertEquals(mpcOptimizationParameterKinematic.xAccLimit(), Quantity.of(2.5, SI.ACCELERATION));
+  }
+
   public void testSimple() throws Exception {
     // only sends a simple message
     // uncomment if you are able to compile the binary

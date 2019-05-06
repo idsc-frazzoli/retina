@@ -19,6 +19,7 @@ import ch.ethz.idsc.tensor.red.Norm;
  * Tensors.vector(0, 0); */
 public class RobustSlip implements SlipInterface, Serializable {
   private static final TensorUnaryOperator NORMALIZE = NormalizeUnlessZero.with(Norm._2);
+  // ---
   private final Tensor mu;
 
   /** if U == {rtw, 0} that means no slip

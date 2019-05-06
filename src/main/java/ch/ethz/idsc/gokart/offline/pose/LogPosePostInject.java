@@ -15,6 +15,7 @@ import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
 import ch.ethz.idsc.gokart.lcm.MessageConsistency;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -30,9 +31,10 @@ import lcm.logging.LogEventWriter;
 public class LogPosePostInject implements GokartPoseListener {
   private GokartPoseEvent gokartPoseEvent = null;
 
-  public void process(File src, File dst, OfflineLogListener offlineLogListener) throws Exception {
-    Log log = new Log(src.toString(), "r");
-    LogEventWriter logEventWriter = new LogEventWriter(dst);
+  public void process(File source, File target, OfflineLogListener offlineLogListener) throws Exception {
+    Log log = new Log(source.toString(), "r");
+    target.delete(); // delete is mandatory with the current lcm-java library implementation
+    LogEventWriter logEventWriter = new LogEventWriter(target);
     Set<String> set = new HashSet<>();
     Long tic = null;
     System.out.println("start");
@@ -67,14 +69,15 @@ public class LogPosePostInject implements GokartPoseListener {
               Event post_event = new Event();
               post_event.utime = event.utime;
               post_event.data = Arrays.copyOf(encodeBuffer.getBuffer(), encodeBuffer.size());
-              post_event.channel = GokartPosePostChannel.INSTANCE.channel();
+              post_event.channel = GokartPoseChannel.INSTANCE.channel();
               logEventWriter.write(post_event);
               // ---
               gokartPoseEvent = null;
             }
           }
         }
-        logEventWriter.write(event);
+        if (!event.channel.equals(GokartPoseChannel.INSTANCE.channel()))
+          logEventWriter.write(event);
       }
     } catch (Exception exception) {
       String message = exception.getMessage();
@@ -83,7 +86,7 @@ public class LogPosePostInject implements GokartPoseListener {
     }
     logEventWriter.close();
     // ---
-    OfflineLogPlayer.process(dst, MessageConsistency.INSTANCE);
+    OfflineLogPlayer.process(target, MessageConsistency.INSTANCE);
   }
 
   @Override // from GokartPoseListener

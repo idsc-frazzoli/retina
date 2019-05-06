@@ -2,7 +2,6 @@
 package ch.ethz.idsc.demo.mh;
 
 import java.io.File;
-import java.io.IOException;
 
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
@@ -13,7 +12,7 @@ import lcm.logging.LogPlayerConfig;
 
 /* package */ enum GokartLcmLogPlayerWithTrajectoryMapping {
   ;
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws Exception {
     LogPlayerConfig cfg = new LogPlayerConfig();
     // File file;
     // file = UserHome.file("20181203T142514_70097ce1.lcm.00");

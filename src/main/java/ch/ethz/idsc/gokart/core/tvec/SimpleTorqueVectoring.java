@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.tvec;
 
+import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.Times;
@@ -14,23 +15,14 @@ public class SimpleTorqueVectoring implements TorqueVectoringInterface {
   }
 
   @Override // from TorqueVectoringInterface
-  public Tensor powers(Scalar expectedRotationPerMeterDriven, Scalar meanTangentSpeed, Scalar angularSlip, Scalar wantedPower, Scalar realRotation) {
+  public Tensor powers(AngularSlip angularSlip, Scalar wantedPower) {
     // compute differential torque (in ARMS as we do not use the power function yet)
-    // Scalar dynamicComponent = angularSlip.multiply(torqueVectoringConfig.dynamicCorrection);
-    Scalar dynamicComponent = getDynamicComponent(angularSlip);
-    // Scalar lateralAcceleration = Times.of(expectedRotationPerMeterDriven, meanTangentSpeed, meanTangentSpeed);
-    // Scalar staticComponent = lateralAcceleration.multiply(torqueVectoringConfig.staticCompensation);
-    Scalar staticComponent = getStaticComponent(expectedRotationPerMeterDriven, meanTangentSpeed);
+    Scalar dynamicComponent = getDynamicComponent(angularSlip.angularSlip());
+    Scalar staticComponent = getStaticComponent(angularSlip.rotationPerMeterDriven(), angularSlip.tangentSpeed());
     // ---
-    Scalar wantedZTorque = wantedZTorque( //
-        dynamicComponent.add(staticComponent), // One
-        realRotation);
+    Scalar wantedZTorque = wantedZTorque(dynamicComponent.add(staticComponent), angularSlip.gyroZ());
     // left and right power prefer power over Z-torque
-    Scalar power = Clips.absoluteOne().apply(wantedPower);
-    return TorqueVectoringClip.of( //
-        power.subtract(wantedZTorque), // unit one
-        power.add(wantedZTorque) // unit one
-    );
+    return TorqueVectoringClip.from(Clips.absoluteOne().apply(wantedPower), wantedZTorque);
   }
 
   /** @param angularSlip [1/s]
@@ -50,7 +42,7 @@ public class SimpleTorqueVectoring implements TorqueVectoringInterface {
   }
 
   /** @param wantedZTorque TODO MH state unit
-   * @param realRotation TODO MH state unit
+   * @param realRotation s^-1
    * @return quantity with unit same as wantedZTorque */
   Scalar wantedZTorque(Scalar wantedZTorque, Scalar realRotation) {
     return wantedZTorque; // simple implementation

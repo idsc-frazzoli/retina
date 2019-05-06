@@ -40,3 +40,4 @@ Definition: The following is a classification of code, aka a *bug*, that is repo
 * [20180309_bug_1.pdf](https://github.com/idsc-frazzoli/retina/files/1801723/20180309_bug_1.pdf)
 * [20180309_bug_2.pdf](https://github.com/idsc-frazzoli/retina/files/1801725/20180309_bug_2.pdf)
 * [20180608_bug_3.pdf](https://github.com/idsc-frazzoli/retina/files/2083168/20180608_bug_3.pdf)
+* [20190417_bug_4.pdf](https://github.com/idsc-frazzoli/retina/files/3089486/20190417_bug_4.pdf)

@@ -10,6 +10,7 @@ import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** base class for pure pursuit trajectory following motor and steering control */
+// TODO JPH there is nothing PurePursuit-specific in this class -> rename
 abstract class PurePursuitBase<PE> implements StartAndStoppable, PutProvider<PE> {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   /** status default false */

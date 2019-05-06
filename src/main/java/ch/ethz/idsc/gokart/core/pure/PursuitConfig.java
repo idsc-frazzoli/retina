@@ -9,11 +9,8 @@ import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.bot.se2.glc.StaticRatioLimit;
 import ch.ethz.idsc.owl.math.planar.InterpolationEntryFinder;
 import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
-import ch.ethz.idsc.sophus.curve.ClothoidCurve;
-import ch.ethz.idsc.sophus.math.GeodesicInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
@@ -40,19 +37,10 @@ public class PursuitConfig {
   @FieldSubdivide(start = "30[s^-1]", end = "70[s^-1]", intervals = 4)
   public Scalar rateFollower = Quantity.of(50.0, SI.PER_SECOND);
   // ---
-  public final GeodesicInterface geodesicInterface = ClothoidCurve.INSTANCE;
   public final TrajectoryEntryFinder trajectoryEntryFinder = new InterpolationEntryFinder(0);
 
   // ---
   public static final List<DynamicRatioLimit> ratioLimits() {
-    // TODO GJOEL don't remove unit m^-1
-    return Collections.singletonList(new StaticRatioLimit( //
-        Magnitude.PER_METER.apply(SteerConfig.GLOBAL.turningRatioMax)));
-  }
-
-  /***************************************************/
-  /** @return unitless look ahead distance with interpretation in meters */
-  public Scalar lookAheadMeter() {
-    return Magnitude.METER.apply(lookAhead);
+    return Collections.singletonList(new StaticRatioLimit(SteerConfig.GLOBAL.turningRatioMax));
   }
 }

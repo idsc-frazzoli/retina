@@ -23,12 +23,12 @@ public abstract class LidarPanoramaProvider implements LidarRayDataListener, Lid
     lidarPanoramaListeners.add(lidarPanoramaListener);
   }
 
-  @Override
+  @Override // from LidarRayDataListener
   public final void timestamp(int usec, int type) {
     // ---
   }
 
-  @Override
+  @Override // from LidarRotationListener
   public final void lidarRotation(LidarRotationEvent lidarRotationEvent) {
     lidarPanoramaListeners.forEach(listener -> listener.lidarPanorama(lidarPanorama));
     lidarPanorama = supplier.get();

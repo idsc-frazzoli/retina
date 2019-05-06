@@ -6,7 +6,6 @@ import java.nio.FloatBuffer;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
@@ -14,6 +13,7 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.UserName;
@@ -46,7 +46,7 @@ public class LidarClustering implements LidarRayBlockListener, GokartPoseListene
     final int position = floatBuffer.position();
     Tensor points = Tensors.empty();
     Tensor state = gokartPoseEvent.getPose(); // state if of the form {x[m], y[m], angle[]}
-    GeometricLayer geometricLayer = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(state));
+    GeometricLayer geometricLayer = GeometricLayer.of(PoseHelper.toSE2Matrix(state));
     geometricLayer.pushMatrix(lidar);
     while (floatBuffer.hasRemaining()) {
       float x = floatBuffer.get();

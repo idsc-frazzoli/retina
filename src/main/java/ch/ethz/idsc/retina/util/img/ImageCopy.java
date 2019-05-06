@@ -27,7 +27,7 @@ public class ImageCopy {
           bufferedImage.getWidth(), //
           bufferedImage.getHeight(), //
           bufferedImage.getType());
-    // TODO this doesn't work for images with transparency
+    // TODO JPH this doesn't work for images with transparency
     copy.createGraphics().drawImage(bufferedImage, 0, 0, null);
   }
 

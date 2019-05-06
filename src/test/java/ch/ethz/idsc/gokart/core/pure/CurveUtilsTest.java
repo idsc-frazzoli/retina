@@ -4,11 +4,13 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Degree;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class CurveUtilsTest extends TestCase {
@@ -46,20 +48,26 @@ public class CurveUtilsTest extends TestCase {
   }
 
   public void testAnglePass() {
-    Tensor xyz = Tensors.vector(35.200, 44.933, Degree.of(55).number().doubleValue());
+    Tensor xyz = Tensors.of( //
+        Quantity.of(35.200, SI.METER), //
+        Quantity.of(44.933, SI.METER), //
+        Degree.of(55));
     TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(xyz).inverse();
-    Tensor tensor = Tensor.of(DubendorfCurve.OVAL.stream().map(tensorUnaryOperator));
-    Optional<Tensor> optional = CurveUtils.getAheadTrail(tensor, RealScalar.of(3));
+    Tensor tensor = Tensor.of(DubendorfCurve2.OVAL.stream().map(tensorUnaryOperator));
+    Optional<Tensor> optional = CurveUtils.getAheadTrail(tensor, Quantity.of(3, SI.METER));
     assertTrue(optional.isPresent());
   }
 
   public void testAngleFail() {
     Tensor degrees = Tensors.vector(90 + 55, 180, 0, -20, 180 + 55);
     for (Tensor deg : degrees) {
-      Tensor xyz = Tensors.vector(35.200, 44.933, Degree.of(deg.Get().number().doubleValue()).number().doubleValue());
+      Tensor xyz = Tensors.of( //
+          Quantity.of(35.200, SI.METER), //
+          Quantity.of(44.933, SI.METER), //
+          Degree.of(deg.Get()));
       TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(xyz).inverse();
-      Tensor tensor = Tensor.of(DubendorfCurve.OVAL.stream().map(tensorUnaryOperator));
-      Optional<Tensor> optional = CurveUtils.getAheadTrail(tensor, RealScalar.of(3));
+      Tensor tensor = Tensor.of(DubendorfCurve2.OVAL.stream().map(tensorUnaryOperator));
+      Optional<Tensor> optional = CurveUtils.getAheadTrail(tensor, Quantity.of(3, SI.METER));
       assertFalse(optional.isPresent());
     }
   }

@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class LocalViewLcmModuleTest extends TestCase {
-  public void testSimple() throws InterruptedException {
+  public void testSimple() throws Exception {
     ModuleAuto.INSTANCE.runOne(LocalViewLcmModule.class);
     Thread.sleep(200);
     ModuleAuto.INSTANCE.endOne(LocalViewLcmModule.class);

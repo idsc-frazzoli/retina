@@ -5,8 +5,8 @@ import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** container for the objects that are passed between different modules of
@@ -83,7 +83,7 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
    * 
    * @param pose {x[m], y[m], angle[]} */
   public void setPose(Tensor pose) {
-    this.poseUnitless = GokartPoseHelper.toUnitless(pose);
+    this.poseUnitless = PoseHelper.toUnitless(pose);
   }
 
   public void setLabels(Mat labels) {

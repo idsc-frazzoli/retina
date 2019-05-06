@@ -5,7 +5,7 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** ante 20190408 */
+/** ante 20190208 */
 public enum NativePlanarVmu931Imu implements PlanarVmu931Imu {
   INSTANCE;
   // ---

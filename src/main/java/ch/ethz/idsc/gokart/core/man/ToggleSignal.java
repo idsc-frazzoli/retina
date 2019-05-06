@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-// TODO ToggleSignal seems to be a special case of VectorSignal
+// TODO JPH ToggleSignal seems to be a special case of VectorSignal
 /* package */ class ToggleSignal implements ScalarUnaryOperator {
   private static final Tensor SIGNAL = Tensors.vector(1, 0, 0, -1, 0, 0).unmodifiable();
   private static final Mod MOD = Mod.function(SIGNAL.length());

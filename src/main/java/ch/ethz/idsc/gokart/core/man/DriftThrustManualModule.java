@@ -7,7 +7,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringClip;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
@@ -56,12 +55,10 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> imp
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, //
       ManualControlInterface manualControlInterface) {
-    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()))
-      return Optional.of(derive( //
-          Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
-          gokartPoseEvent.getGyroZ(), //
-          DriftRatio.of(gokartPoseEvent.getVelocityXY())));
-    return Optional.empty();
+    return Optional.of(derive( //
+        Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
+        gokartPoseEvent.getGyroZ(), //
+        DriftRatio.of(gokartPoseEvent.getVelocity())));
   }
 
   /** @param ahead in the interval [-1, 1]
@@ -73,8 +70,7 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> imp
     Scalar overDrift = Ramp.of(Abs.of(driftRatio).subtract(ManualConfig.GLOBAL.driftAvoidStart));
     Scalar driftfactor = Ramp.of(RealScalar.ONE.subtract(overDrift.multiply(ManualConfig.GLOBAL.driftAvoidRamp)));
     delta = driftfactor.multiply(delta);
-    Tensor power = TorqueVectoringClip.of(ahead.add(delta), ahead.subtract(delta)) //
-        .multiply(ManualConfig.GLOBAL.torqueLimit);
+    Tensor power = TorqueVectoringClip.from(ahead, delta.negate()).multiply(ManualConfig.GLOBAL.torqueLimit);
     short arms_rawL = Magnitude.ARMS.toShort(power.Get(0));
     short arms_rawR = Magnitude.ARMS.toShort(power.Get(1));
     return RimoPutHelper.operationTorque( //

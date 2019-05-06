@@ -51,7 +51,7 @@ public class LinmotTakeoverModuleTest extends TestCase {
     ModuleAuto.INSTANCE.endOne(LinmotTakeoverModule.class);
   }
 
-  public void testAll() throws Exception {
+  public void testAll() throws InterruptedException {
     ModuleAuto.INSTANCE.runAll(Arrays.asList(LinmotTakeoverModule.class));
     Thread.sleep(100);
     ModuleAuto.INSTANCE.endAll();

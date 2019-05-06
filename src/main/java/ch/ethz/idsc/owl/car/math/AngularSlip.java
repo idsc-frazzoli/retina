@@ -2,22 +2,56 @@
 package ch.ethz.idsc.owl.car.math;
 
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.sca.Tan;
 
-// TODO JPH lot's of improvements possible: see where AngularSlip is used currently
-public enum AngularSlip {
-  ;
-  /** @param theta steering angle of imaginary front wheel
-   * @param xAxleRtoF with unit m
-   * @param gyroZ with unit s^-1
-   * @param tangentSpeed with unit m*s^-1
-   * @return */
-  public static Scalar of(Scalar theta, Scalar xAxleRtoF, Scalar gyroZ, Scalar tangentSpeed) {
-    // theta has interpretation in rad/m but is encoded in true SI units: "m^-1"
-    Scalar rotationPerMeterDriven = Tan.FUNCTION.apply(theta).divide(xAxleRtoF); // m^-1
-    // compute wanted motor torques / no-slip behavior (sorry jan for corrective factor)
-    Scalar wantedRotationRate = rotationPerMeterDriven.multiply(tangentSpeed); // unit s^-1
-    // compute (negative) angular slip
+public class AngularSlip {
+  private final Scalar tangentSpeed;
+  private final Scalar rotationPerMeterDriven;
+  private final Scalar wantedRotationRate;
+  private final Scalar gyroZ;
+
+  /** @param tangentSpeed m*s^-1
+   * @param rotationPerMeterDriven m^-1
+   * @param gyroZ s^-1 */
+  public AngularSlip(Scalar tangentSpeed, Scalar rotationPerMeterDriven, Scalar gyroZ) {
+    this.tangentSpeed = tangentSpeed;
+    this.rotationPerMeterDriven = rotationPerMeterDriven;
+    wantedRotationRate = rotationPerMeterDriven.multiply(tangentSpeed); // unit s^-1
+    this.gyroZ = gyroZ;
+  }
+
+  /** USE ONLY FOR TESTS !!! BECAUSE wantedRotationRate
+   * SHOULD BE COMPUTED FROM OTHER TWO PARAMETERS:
+   * wantedRotationRate = rotationPerMeterDriven.multiply(tangentSpeed);
+   * 
+   * @param tangentSpeed m*s^-1
+   * @param rotationPerMeterDriven m^-1
+   * @param wantedRotationRate [== rotationPerMeterDriven.multiply(tangentSpeed)]
+   * @param gyroZ */
+  // TODO JPH this constructor should be made obsolete
+  public AngularSlip(Scalar tangentSpeed, Scalar rotationPerMeterDriven, Scalar wantedRotationRate, Scalar gyroZ) {
+    this.tangentSpeed = tangentSpeed;
+    this.rotationPerMeterDriven = rotationPerMeterDriven;
+    this.wantedRotationRate = wantedRotationRate; // unit s^-1
+    this.gyroZ = gyroZ;
+  }
+
+  public Scalar tangentSpeed() {
+    return tangentSpeed;
+  }
+
+  public Scalar rotationPerMeterDriven() {
+    return rotationPerMeterDriven;
+  }
+
+  public Scalar wantedRotationRate() {
+    return wantedRotationRate;
+  }
+
+  public Scalar gyroZ() {
+    return gyroZ;
+  }
+
+  public Scalar angularSlip() {
     return wantedRotationRate.subtract(gyroZ);
   }
 }

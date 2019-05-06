@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -85,6 +85,6 @@ public class SlamParticle {
    * 
    * @param pose {x[m], y[m], heading[]} */
   public void setPose(Tensor pose) {
-    setPoseUnitless(GokartPoseHelper.toUnitless(pose));
+    setPoseUnitless(PoseHelper.toUnitless(pose));
   }
 }

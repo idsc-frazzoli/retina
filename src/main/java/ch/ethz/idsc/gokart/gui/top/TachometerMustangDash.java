@@ -41,7 +41,7 @@ public class TachometerMustangDash implements RenderInterface, RimoGetListener {
     this.matrix = matrix;
   }
 
-  @Override
+  @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     GraphicsUtil.setQualityHigh(graphics);
     geometricLayer.pushMatrix(matrix);
@@ -70,8 +70,7 @@ public class TachometerMustangDash implements RenderInterface, RimoGetListener {
       Tensor vector = AngleVector.of(angle);
       Path2D path2d = geometricLayer.toPath2D(Tensors.of( //
           vector.multiply(RealScalar.of(10.8)), //
-          vector.multiply(RealScalar.of(11.7) //
-          )));
+          vector.multiply(RealScalar.of(11.7))));
       graphics.draw(path2d);
       count++;
       if (steps < count)

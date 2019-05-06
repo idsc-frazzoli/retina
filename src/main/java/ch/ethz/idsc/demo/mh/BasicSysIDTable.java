@@ -20,6 +20,7 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -44,19 +45,18 @@ import ch.ethz.idsc.tensor.sca.Round;
       Vmu931ImuFrame vmu931ImuFrame = new Vmu931ImuFrame(byteBuffer);
       // append to table
       if (gokartPoseEvent != null)
-        tableBuilder.appendRow( //
-            time.map(Magnitude.SECOND).map(Round._6), //
-            RealScalar.of(vmu931ImuFrame.timestamp_ms()), //
-            gokartPoseEvent.getVelocityXY().map(Magnitude.VELOCITY).map(Round._5), //
-            gokartPoseEvent.getGyroZ().map(Magnitude.PER_SECOND).map(Round._5), //
-            SensorsConfig.getPlanarVmu931Imu().accXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), //
-            RealScalar.of(steerPosition.number().floatValue()), //
-            powerPair.map(Magnitude.ARMS).map(Round._5), //
-            powerAccelerationLeft.map(Magnitude.ACCELERATION).map(Round._5), //
-            powerAccelerationRight.map(Magnitude.ACCELERATION).map(Round._5), //
-            wheelSpeed.map(Magnitude.VELOCITY).map(Round._5), //
-            gokartPoseEvent.getPose().extract(0, 2).map(Magnitude.METER).map(Round._7),
-            gokartPoseEvent.getPose().Get(2).map(Round._7));
+      tableBuilder.appendRow( //
+          time.map(Magnitude.SECOND).map(Round._6), //
+          RealScalar.of(vmu931ImuFrame.timestamp_ms()), //
+          VelocityHelper.toUnitless(gokartPoseEvent.getVelocity()).map(Round._5),
+          SensorsConfig.getPlanarVmu931Imu().accXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), //
+          RealScalar.of(steerPosition.number().floatValue()), //
+          powerPair.map(Magnitude.ARMS).map(Round._5), //
+          powerAccelerationLeft.map(Magnitude.ACCELERATION).map(Round._5), //
+          powerAccelerationRight.map(Magnitude.ACCELERATION).map(Round._5), //
+          wheelSpeed.map(Magnitude.VELOCITY).map(Round._5),
+          gokartPoseEvent.getPose().extract(0, 2).map(Magnitude.METER).map(Round._7),
+          gokartPoseEvent.getPose().Get(2).map(Round._7));
       // System.out.println("vmu time: "+time);
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {

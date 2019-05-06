@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pos;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.DataEventInterface;
+import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.tensor.Scalar;
 
 /** an instance of {@link GokartPoseEvent} is immutable */

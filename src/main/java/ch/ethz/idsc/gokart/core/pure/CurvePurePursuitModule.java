@@ -7,15 +7,15 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Sign;
 
@@ -24,10 +24,11 @@ import ch.ethz.idsc.tensor.sca.Sign;
 public class CurvePurePursuitModule extends PurePursuitModule implements GokartPoseListener {
   private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   /** forward motion is determined by odometry:
    * noise in the measurements around zero are also mapped to "forward" */
   protected boolean isForward = true;
-  protected Scalar speed = RealScalar.ZERO;
+  protected Scalar speed = Quantity.of(0, SI.VELOCITY);
   /* package */ final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent rimoGetEvent) {
@@ -44,16 +45,17 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
     super(pursuitConfig);
   }
 
-  @Override // from AbstractModule
+  @Override // from PurePursuitModule
   protected final void protected_first() {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
-    RimoSocket.INSTANCE.addGetListener(rimoGetListener);
+    rimoGetLcmClient.addListener(rimoGetListener);
+    rimoGetLcmClient.startSubscriptions();
   }
 
-  @Override // from AbstractModule
-  protected final void protected_last() {
-    RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
+  @Override // from PurePursuitModule
+  protected void protected_last() {
+    rimoGetLcmClient.stopSubscriptions();
     gokartPoseLcmClient.stopSubscriptions();
   }
 
@@ -62,26 +64,21 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
     GokartPoseEvent gokartPoseEvent = this.gokartPoseEvent; // copy reference instead of synchronize
     // System.err.println("check isOperational");
     if (Objects.nonNull(gokartPoseEvent)) { // is localization pose available?
-      final Scalar quality = gokartPoseEvent.getQuality();
-      if (LocalizationConfig.GLOBAL.isQualityOk(quality)) { // is localization quality sufficient?
-        Tensor pose = gokartPoseEvent.getPose(); // latest pose
-        Optional<Scalar> ratio = getRatio(pose);
-        if (ratio.isPresent()) { // is look ahead beacon available?
-          Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio.get());
-          if (angleClip.isInside(angle)) // is look ahead beacon within steering range?
-            return Optional.of(angle);
-          System.err.println("beacon outside steering range");
-        }
-      } else
-        System.err.println("pose quality insufficient");
+      Tensor pose = gokartPoseEvent.getPose(); // latest pose
+      Optional<Scalar> ratio = getRatio(pose);
+      if (ratio.isPresent()) { // is look ahead beacon available?
+        Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio.get());
+        if (angleClip.isInside(angle)) // is look ahead beacon within steering range?
+          return Optional.of(angle);
+        System.err.println("beacon outside steering range");
+      }
     }
     return Optional.empty(); // autonomous operation denied
   }
 
-  // TODO JPH function should return a scalar with unit "m^-1"...
-  // right now, "curve" does not have "m" as unit but entries are unitless.
-  /** @param pose
-   * @return */
+  // TODO JPH right now, "curve" does not have "m" as unit but entries are unitless.
+  /** @param pose of vehicle {x[m], y[m], angle}
+   * @return ratio rate [rad*m^-1] */
   protected synchronized Optional<Scalar> getRatio(Tensor pose) {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent())
@@ -90,7 +87,7 @@ public class CurvePurePursuitModule extends PurePursuitModule implements GokartP
           optionalCurve.get(), //
           closed, //
           isForward, //
-          pursuitConfig.lookAheadMeter());
+          pursuitConfig.lookAhead);
     System.err.println("no curve in pure pursuit");
     return Optional.empty();
   }

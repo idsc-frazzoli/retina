@@ -1,10 +1,10 @@
 // code by jph
 package ch.ethz.idsc.gokart.calib.power;
 
+import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.MatrixQ;
@@ -20,9 +20,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   ;
   public static void main(String[] args) throws IOException {
     int div = 1;
-    Clip CLIP_VEL = Clips.interval( //
-        Quantity.of(-10, SI.VELOCITY), //
-        Quantity.of(+10, SI.VELOCITY));
+    Clip CLIP_VEL = PowerLookupTable.CLIP_VEL;
     {
       Clip clipARMS = Clips.interval(Quantity.of(-2316, "ARMS"), Quantity.of(+2316, "ARMS"));
       Tensor si = Subdivide.increasing(clipARMS, 900 / div);
@@ -31,24 +29,25 @@ import ch.ethz.idsc.tensor.sca.Round;
           Tensors.matrix((i, j) -> PowerLookupTable.getInstance().getAcceleration(si.Get(i), sj.Get(j)), si.length(), sj.length()) //
               .map(Magnitude.ACCELERATION).map(Round._6);
       MatrixQ.require(matrix);
-      Export.of(HomeDirectory.file("powerlookup", "forward", "cur_vel_to_acc.csv"), matrix);
-      Export.of(HomeDirectory.file("powerlookup", "forward", "cur.csv"), si.map(Magnitude.ARMS));
-      Export.of(HomeDirectory.file("powerlookup", "forward", "vel.csv"), sj.map(Magnitude.VELOCITY));
+      File folder = HomeDirectory.file("powerlookup", "forward");
+      folder.mkdirs();
+      Export.of(new File(folder, "cur_vel_to_acc.csv"), matrix);
+      Export.of(new File(folder, "cur.csv"), si.map(Magnitude.ARMS));
+      Export.of(new File(folder, "vel.csv"), sj.map(Magnitude.VELOCITY));
     }
     {
-      Clip CLIP_ACC = Clips.interval( //
-          Quantity.of(-2, SI.ACCELERATION), //
-          Quantity.of(+2, SI.ACCELERATION));
+      Clip CLIP_ACC = PowerLookupTable.CLIP_ACC;
       Tensor si = Subdivide.increasing(CLIP_ACC, 950 / div);
       Tensor sj = Subdivide.increasing(CLIP_VEL, 850 / div);
-      // PowerLookupTable.getInstance().getNeededCurrent(wantedAcceleration, velocity);
       Tensor matrix = //
           Tensors.matrix((i, j) -> PowerLookupTable.getInstance().getNeededCurrent(si.Get(i), sj.Get(j)), si.length(), sj.length()) //
               .map(Magnitude.ARMS).map(Round._6);
       MatrixQ.require(matrix);
-      Export.of(HomeDirectory.file("powerlookup", "inverse", "acc_vel_to_cur.csv"), matrix);
-      Export.of(HomeDirectory.file("powerlookup", "inverse", "acc.csv"), si.map(Magnitude.ACCELERATION));
-      Export.of(HomeDirectory.file("powerlookup", "inverse", "vel.csv"), sj.map(Magnitude.VELOCITY));
+      File folder = HomeDirectory.file("powerlookup", "inverse");
+      folder.mkdirs();
+      Export.of(new File(folder, "acc_vel_to_cur.csv"), matrix);
+      Export.of(new File(folder, "acc.csv"), si.map(Magnitude.ACCELERATION));
+      Export.of(new File(folder, "vel.csv"), sj.map(Magnitude.VELOCITY));
     }
   }
 }

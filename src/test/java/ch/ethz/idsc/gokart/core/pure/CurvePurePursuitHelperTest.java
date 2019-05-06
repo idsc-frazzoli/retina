@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -14,7 +15,7 @@ import junit.framework.TestCase;
 public class CurvePurePursuitHelperTest extends TestCase {
   public void testSpecific1() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 1}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAheadMeter());
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     // assertTrue(Clip.function( // for look ahead 3.9[m]
@@ -27,7 +28,7 @@ public class CurvePurePursuitHelperTest extends TestCase {
 
   public void testSpecific2() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 0.9}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAheadMeter());
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
     assertTrue(Clips.interval( //
@@ -37,41 +38,41 @@ public class CurvePurePursuitHelperTest extends TestCase {
 
   public void testLookAheadFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 42.9[m], 2.9}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAheadMeter());
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
     assertFalse(optional.isPresent());
   }
 
   public void testLookAheadDistanceFail() throws Exception {
     Tensor pose = Tensors.fromString("{35.1[m], 420.9[m], 2.9}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.OVAL, true, PursuitConfig.GLOBAL.lookAheadMeter());
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
     assertFalse(optional.isPresent());
   }
 
   public void testSpecificHLE() throws Exception {
     Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 0.0}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, true, PursuitConfig.GLOBAL.lookAheadMeter());
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.HYPERLOOP_EIGHT, true, PursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
-    Clips.interval(0.062, 0.069).requireInside(lookAhead);
+    Clips.interval(Quantity.of(0.062, SI.PER_METER), Quantity.of(0.069, SI.PER_METER)).requireInside(lookAhead);
   }
 
   public void testSpecificHLE_R() throws Exception {
     Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 0.0}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT, false, PursuitConfig.GLOBAL.lookAheadMeter());
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.HYPERLOOP_EIGHT, false, PursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
-    Clips.interval(0.0096, 0.015).requireInside(lookAhead);
+    Clips.interval(Quantity.of(0.0096, SI.PER_METER), Quantity.of(0.015, SI.PER_METER)).requireInside(lookAhead);
   }
 
   public void testSpecificHLER() throws Exception {
     Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 3.1415926535897932385}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, true, PursuitConfig.GLOBAL.lookAheadMeter());
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.HYPERLOOP_EIGHT_REVERSE, true, PursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
-    Clips.interval(-0.015, -0.0096).requireInside(lookAhead);
+    Clips.interval(Quantity.of(-0.015, SI.PER_METER), Quantity.of(-0.0096, SI.PER_METER)).requireInside(lookAhead);
   }
 
   public void testSpecificHLER_R() throws Exception {
     Tensor pose = Tensors.fromString("{50.0[m], 48.6[m], 3.1415926535897932385}");
-    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve.HYPERLOOP_EIGHT_REVERSE, false, PursuitConfig.GLOBAL.lookAheadMeter());
+    Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.HYPERLOOP_EIGHT_REVERSE, false, PursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
-    Clips.interval(-0.069, -0.062).requireInside(lookAhead);
+    Clips.interval(Quantity.of(-0.069, SI.PER_METER), Quantity.of(-0.062, SI.PER_METER)).requireInside(lookAhead);
   }
 }

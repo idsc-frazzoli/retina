@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.curve.BSpline2CurveSubdivision;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;
@@ -12,6 +13,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
@@ -34,7 +36,7 @@ public class TrajectoryConfig {
    * 20181025: reduced value to 15[deg/m] */
   public Scalar maxRotation = Quantity.of(15, "deg*m^-1");
   /** half angle of conic goal region */
-  public Scalar coneHalfAngle = RealScalar.of(Math.PI / 10);
+  public Scalar coneHalfAngle = Degree.of(18);
   public Tensor goalRadiusFactor = Tensors.vector(4, 4, 2);
   public String waypoints = "/dubilab/waypoints/20190325.csv";
 
@@ -55,7 +57,9 @@ public class TrajectoryConfig {
    * @throws Exception if waypoints cannot be retrieved from resources */
   public Tensor getWaypoints() {
     // oval shape
-    return new BSpline2CurveSubdivision(Se2Geodesic.INSTANCE).cyclic(ResourceData.of(waypoints).unmodifiable());
+    Tensor wyap = Tensor.of(ResourceData.of(waypoints).stream().map(PoseHelper::attachUnits));
+    wyap = ResourceData.of(waypoints);
+    return new BSpline2CurveSubdivision(Se2Geodesic.INSTANCE).cyclic(wyap);
     // around tires
     // return ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").unmodifiable();
   }

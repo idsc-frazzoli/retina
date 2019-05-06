@@ -20,7 +20,7 @@ public class Vlp16PolarProvider extends VelodynePolarProvider {
       if (limit_lo <= distance) {
         // TODO JPH only convert values where needed
         coords[0] = azimuth * FACTOR; // azimuth in [rad]
-        coords[1] = (float) Math.toRadians(StaticHelper.degree(laser)); // elevation in [rad]
+        coords[1] = (float) Math.toRadians(Vlp16Helper.degree(laser)); // elevation in [rad]
         coords[2] = distance * VelodyneStatics.TO_METER_FLOAT; // distance in [m]
         LidarPolarEvent lidarPolarEvent = new LidarPolarEvent(usec, coords, intensity);
         listeners.forEach(listener -> listener.lidarPolar(lidarPolarEvent));

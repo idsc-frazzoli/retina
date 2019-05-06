@@ -22,16 +22,23 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class LinmotStatusTable implements OfflineTableSupplier {
+/** prints linmot status information during a specified time interval
+ * 
+ * class was used to investigate anomalous behavior of the linmot.
+ * ultimately, a bug was identified in the micro-autobox simulink model.
+ * 
+ * the bug was documented in
+ * https://github.com/idsc-frazzoli/retina/files/2083168/20180608_bug_3.pdf */
+/* package */ class LinmotStatusTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Clip range;
   // ---
   private boolean isFused = false;
   private Integer failure_index = null;
 
-  // TODO JPH what does offset do?
-  public LinmotStatusTable(Scalar offset) {
-    range = Clips.interval(offset, offset.add(Quantity.of(0.2, SI.SECOND)));
+  /** @param min with unit "s" */
+  public LinmotStatusTable(Scalar min) {
+    range = Clips.interval(min, min.add(Quantity.of(0.2, SI.SECOND)));
   }
 
   @Override

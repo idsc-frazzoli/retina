@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -89,7 +90,8 @@ public class GokartLcmLogCutter {
       }
     }
   };
-  private final JScrollPane jScrollPane = new JScrollPane(jComponent, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+  private final JScrollPane jScrollPane = new JScrollPane(jComponent, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+      ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
   private final MouseAdapter mouseListener = new MouseAdapter() {
     private Point pressed = null;
 
@@ -121,6 +123,7 @@ public class GokartLcmLogCutter {
     }
   };
   boolean csv = false;
+  boolean htm = false;
   private final ActionListener actionListener = new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
@@ -172,7 +175,15 @@ public class GokartLcmLogCutter {
             for (File file : lcmLogFileCutter.files()) {
               File dest_folder = new File(file.getParentFile(), "csv");
               dest_folder.mkdir();
-              ChannelCsvExport.of(new File(file.getParentFile(), "log.lcm"), dest_folder);
+              File lcmFile = new File(file.getParentFile(), "log.lcm");
+              ChannelCsvExport.of(new GokartLcmMap(lcmFile), dest_folder);
+            }
+          if (htm)
+            for (File file : lcmLogFileCutter.files()) {
+              File dest_folder = new File(file.getParentFile(), "htm");
+              dest_folder.mkdir();
+              File lcmFile = new File(file.getParentFile(), "log.lcm");
+              new HtmlLogReport(new GokartLcmMap(lcmFile), file.getParentFile().getName(), dest_folder);
             }
         } catch (Exception exception) {
           exception.printStackTrace();
@@ -208,6 +219,12 @@ public class GokartLcmLogCutter {
         JCheckBox jCheckBox = new JCheckBox("csv");
         jCheckBox.setSelected(csv);
         jCheckBox.addActionListener(actionEvent -> csv = jCheckBox.isSelected());
+        jToolBar.add(jCheckBox);
+      }
+      {
+        JCheckBox jCheckBox = new JCheckBox("htm");
+        jCheckBox.setSelected(htm);
+        jCheckBox.addActionListener(actionEvent -> htm = jCheckBox.isSelected());
         jToolBar.add(jCheckBox);
       }
       {

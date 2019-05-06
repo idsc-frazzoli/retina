@@ -4,11 +4,11 @@ package ch.ethz.idsc.gokart.core.perc;
 import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** the purpose of the class is filter lidar points that are
@@ -34,7 +34,7 @@ public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
    * @param xya */
   public void setPose(Tensor xya) {
     geometricLayer = GeometricLayer.of(predefinedMap.getModel2Pixel());
-    geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(xya));
+    geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(xya));
     geometricLayer.pushMatrix(LIDAR);
   }
 
