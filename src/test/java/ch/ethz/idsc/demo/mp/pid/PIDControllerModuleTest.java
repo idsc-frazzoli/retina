@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Pretty;
+import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -31,14 +32,16 @@ public class PIDControllerModuleTest extends TestCase {
     pidControllerModule.setCurve(Optional.ofNullable(curve));
     pidControllerModule.first();
     Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
-    System.out.println(Pretty.of(curve));
+    if (UserName.is("maximilien"))
+      System.out.println(Pretty.of(curve));
     for (int index = 0; index < 100; index++) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
       Scalar heading = pidControllerModule.pidSteer.getHeading();
       // System.out.println("Heading: " + heading);
-      System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
+      if (UserName.is("maximilien"))
+        System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, heading));
       // System.out.println("Pose: " + pose);
       // TODO MCP Solve issue with if gokart does multiple rotations (+pi factor)
