@@ -5,21 +5,18 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.jg.following.FigureDubiGeodesicModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -71,10 +68,6 @@ public class TrajectoryDesignModule extends AbstractModule {
         System.out.println(Dimensions.of(curve));
         System.out.println("---");
         System.out.println(MatrixForm.of(trajectoryDesign.getControlPointsPose().map(Round._4), ",", "", ""));
-        // ---
-        FigureDubiGeodesicModule geodesicModule = ModuleAuto.INSTANCE.getInstance(FigureDubiGeodesicModule.class);
-        if (Objects.nonNull(geodesicModule))
-          geodesicModule.setCurve(curve);
       });
       trajectoryDesign.timerFrame.jToolBar.add(jButton);
     }

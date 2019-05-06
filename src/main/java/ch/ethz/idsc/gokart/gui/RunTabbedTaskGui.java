@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import ch.ethz.idsc.demo.jg.following.FigureDubiGeodesicModule;
+import ch.ethz.idsc.demo.jg.following.FigureClothoidModule;
 import ch.ethz.idsc.demo.jg.following.GokartGeodesicTrajectoryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
@@ -43,7 +43,7 @@ import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
-import ch.ethz.idsc.gokart.core.pure.FigureBaseModule;
+import ch.ethz.idsc.gokart.core.pure.FigurePureModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -126,14 +126,14 @@ enum RunTabbedTaskGui {
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       GokartGeodesicTrajectoryModule.class, //
-      FigureDubiGeodesicModule.class, //
+      FigureClothoidModule.class, //
       MPCKinematicDrivingModule.class, //
       MPCDynamicDrivingModule.class, //
       GokartTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       PIDModule.class, //
       PIDTestTrackModule.class, //
-      FigureBaseModule.class, //
+      FigurePureModule.class, //
       GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //
