@@ -14,6 +14,7 @@ public class PIDTrajectory {
   private Scalar angleOut;
   private Scalar deriv = RealScalar.ZERO;
   private Scalar prop;
+  private Tensor closest;
 
   public PIDTrajectory(int pidIndex, PIDTrajectory previousPID, PIDGains pidGains, Tensor traj, StateTime stateTime) {
     this.time = stateTime.time();
@@ -21,7 +22,7 @@ public class PIDTrajectory {
     TensorUnaryOperator tuo = new Se2GroupElement(stateXYphi).inverse()::combine;
     Tensor curveLocally = Tensor.of(traj.stream().map(tuo));
     // Tensor closest = trajInMeter.get(Se2CurveHelper.closest(trajInMeter, stateXYphi));
-    Tensor closest = curveLocally.get(Se2CurveHelper.closestEuclid(curveLocally));
+    closest = curveLocally.get(Se2CurveHelper.closestEuclid(curveLocally));
     // TODO MCP unfortunately Se2CoveringParametricDistance ignores heading if xy are correct
     // ClothoidCurve
     this.errorPose = closest.Get(1);
@@ -31,7 +32,7 @@ public class PIDTrajectory {
       deriv = pidGains.Kd.multiply((errorPose.subtract(previousPID.errorPose)).divide(dt));
     }
     angleOut = prop.add(deriv);
-    angleOut = RnUnitCircle.convert(angleOut);
+    // angleOut = RnUnitCircle.convert(angleOut);
   }
 
   public Scalar angleOut() {
@@ -44,5 +45,9 @@ public class PIDTrajectory {
 
   public Scalar getDeriv() {
     return deriv;
+  }
+
+  public Scalar getError() {
+    return errorPose;
   }
 }
