@@ -62,7 +62,6 @@ public class TrajectoryDesign extends CurvatureDemo {
       }
     });
     timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    timerFrame.jFrame.setVisible(true);
   }
 
   /** @return control points of the form {x[m], y[m], heading} */
@@ -97,5 +96,6 @@ public class TrajectoryDesign extends CurvatureDemo {
   public static void main(String[] args) {
     TrajectoryDesign trajectoryDesign = new TrajectoryDesign();
     trajectoryDesign.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    trajectoryDesign.timerFrame.jFrame.setVisible(true);
   }
 }

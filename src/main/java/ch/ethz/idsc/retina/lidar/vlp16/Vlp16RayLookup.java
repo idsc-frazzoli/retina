@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
   /** @param bits
    * @param flip
    * @param angle_offset
-   * @param tiltY in radians
+   * @param tiltY in radian
    * @param emulation_deg in degree */
   public Vlp16RayLookup(int bits, boolean flip, double angle_offset, double tiltY, double emulation_deg) {
     this.bits = bits;

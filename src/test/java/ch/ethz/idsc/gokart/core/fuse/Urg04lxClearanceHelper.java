@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.Tensors;
     return true;
   }
 
-  /** @param angle without unit but interpretation as radians
+  /** @param angle without unit but interpretation as radian
    * @param floatBuffer
    * @return */
   static boolean isPathObstructed(Scalar angle, FloatBuffer floatBuffer) {

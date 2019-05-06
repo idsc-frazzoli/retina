@@ -4,6 +4,7 @@ package ch.ethz.idsc.owl.bot.se2.pid;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.opt.Pi;
+import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class RnUnitCircleTest extends TestCase {
@@ -12,7 +13,7 @@ public class RnUnitCircleTest extends TestCase {
     angle = RnUnitCircle.convert(angle);
     System.out.println(angle);
     System.out.println(Pi.HALF);
-    assertEquals(Pi.HALF.negate(), angle); // TODO JPH how do remove diff in error
+    Chop._10.requireClose(Pi.HALF, angle);
   }
 
   public void testConvertNeg() {
@@ -20,6 +21,6 @@ public class RnUnitCircleTest extends TestCase {
     angle = RnUnitCircle.convert(angle);
     System.out.println(angle);
     System.out.println(Pi.HALF.negate());
-    assertEquals(Pi.HALF.negate(), angle); // TODO JPH how do remove diff in error
+    Chop._12.requireClose(Pi.HALF.negate(), angle);
   }
 }
