@@ -113,7 +113,7 @@ The gokart is operated at Innovation Park Duebendorf since December 2017.
 
 Sensor interfaces
 
-![retina](https://user-images.githubusercontent.com/4012178/51981593-d7c03080-2493-11e9-92d8-bb2066575f2c.png)
+![retina](https://user-images.githubusercontent.com/4012178/57229063-846ef880-7015-11e9-84f7-976b31d924a9.png)
 
 ## Features
 

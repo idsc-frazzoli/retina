@@ -1796,6 +1796,19 @@ public enum GokartLogFile implements LogFile {
   /** power steering test */
   _20190502T135355_622e8d75,
   /***************************************************/
+  /* 2019-05-06 */
+  /** tuning of power steering
+   * [abrupt log termination] */
+  _20190506T101748_99afbf25,
+  /** tuning of power steering */
+  _20190506T102339_99afbf25,
+  /** racing with and without power steering */
+  _20190506T134816_99afbf25,
+  /** manual driving, pursuit */
+  _20190506T141135_99afbf25,
+  /** pursuit */
+  _20190506T151117_dd899454,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
