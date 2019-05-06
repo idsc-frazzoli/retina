@@ -9,7 +9,6 @@ import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoWheelConfigurations;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
@@ -19,6 +18,7 @@ import ch.ethz.idsc.owl.car.core.WheelConfiguration;
 import ch.ethz.idsc.owl.data.BoundedLinkedList;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -29,7 +29,7 @@ class CombinedEvent {
 
   CombinedEvent(GokartPoseEvent gokartPoseEvent, GokartStatusEvent gokartStatusEvent) {
     this.gokartPoseEvent = gokartPoseEvent;
-    matrix = GokartPoseHelper.toSE2Matrix(gokartPoseEvent.getPose());
+    matrix = PoseHelper.toSE2Matrix(gokartPoseEvent.getPose());
     this.gokartStatusEvent = gokartStatusEvent;
   }
 }
@@ -65,7 +65,7 @@ class CombinedEvent {
         if (combinedEvent.gokartStatusEvent.isSteerColumnCalibrated()) {
           int count = 0;
           for (WheelConfiguration wheelConfiguration : RimoWheelConfigurations.fromSCE(combinedEvent.gokartStatusEvent.getSteerColumnEncoderCentered())) {
-            geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(wheelConfiguration.local()));
+            geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(wheelConfiguration.local()));
             // draw slip
             Tensor tensor = wheelConfiguration.adjoint(combinedEvent.gokartPoseEvent.getVelocity());
             graphics.setColor(count < 2 //

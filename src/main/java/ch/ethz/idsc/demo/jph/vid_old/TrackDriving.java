@@ -13,7 +13,6 @@ import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AxisAlignedBox;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
@@ -25,6 +24,7 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -89,7 +89,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     Tensor row = row(render_index);
     Tensor xya = row.extract(10, 13); // unitless
     if (extrusion) {
-      GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(GokartPoseHelper.attachUnits(xya), RealScalar.ONE);
+      GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(PoseHelper.attachUnits(xya), RealScalar.ONE);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
       extrudedFootprintRender.gokartStatusListener.getEvent(new GokartStatusEvent(row.Get(8).number().floatValue()));
       extrudedFootprintRender.render(geometricLayer, graphics);
@@ -124,7 +124,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       AxleConfiguration axleConfiguration = RimoAxleConfiguration.rear();
       graphics.setColor(new Color(0, 0, 255, 128));
       for (int wheel = 0; wheel < 2; ++wheel) {
-        geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
+        geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
         graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongX(torquePair.Get(wheel))));
         geometricLayer.popMatrix();
       }
@@ -133,7 +133,8 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       graphics.setStroke(new BasicStroke(2.5f));
       Scalar factor = Ramp.FUNCTION.apply(row.Get(9).negate().subtract(RealScalar.of(0.02))).divide(RealScalar.of(-0.06));
       graphics.setColor(new Color(255, 0, 0, 128));
-      graphics.draw(geometricLayer.toVector(Tensors.vector(1, 0), UnitVector.of(2, 0).multiply(factor)));
+      Tensor p = Tensors.vector(1, 0);
+      graphics.draw(geometricLayer.toLine2D(p, p.add(UnitVector.of(2, 0).multiply(factor))));
     }
     {
       graphics.setStroke(new BasicStroke());
@@ -141,7 +142,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       graphics.setColor(new Color(128, 128, 128, 128));
       for (int wheel = 0; wheel < 2; ++wheel) {
         WheelConfiguration wheelConfiguration = axleConfiguration.wheel(wheel);
-        geometricLayer.pushMatrix(GokartPoseHelper.toSE2Matrix(wheelConfiguration.local()));
+        geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(wheelConfiguration.local()));
         graphics.fill(geometricLayer.toPath2D(SLIM));
         geometricLayer.popMatrix();
       }

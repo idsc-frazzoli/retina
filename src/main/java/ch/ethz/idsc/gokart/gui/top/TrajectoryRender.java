@@ -42,7 +42,8 @@ public class TrajectoryRender implements RenderInterface, TrajectoryListener {
         Tensor uscaled = flow.get().getU().multiply(U_SCALE);
         while (uscaled.length() < 2)
           uscaled.append(RealScalar.ZERO);
-        graphics.draw(geometricLayer.toVector(trajectorySample.stateTime().state(), uscaled));
+        Tensor p = trajectorySample.stateTime().state();
+        graphics.draw(geometricLayer.toLine2D(p, p.add(uscaled)));
       }
     }
     { // draw trajectory as thick green line with white background

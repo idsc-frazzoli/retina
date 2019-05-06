@@ -7,11 +7,11 @@ import java.util.TimerTask;
 import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseInterface;
 
 /** saving logs with timestamps provided by a timer. Suitable for offline log processing
  * when we are interested in algorithm run time */
@@ -27,9 +27,9 @@ public class TimerLogCollection implements StartAndStoppable, DavisDvsListener {
   private final long periodicSavePeriod;
   private final int initialTimestamp;
 
-  public TimerLogCollection(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, GokartPoseInterface gokartPoseInterface,
+  public TimerLogCollection(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, PoseInterface poseInterface,
       SlamEventCounter slamEventCounter) {
-    slamLogSave = new SlamLogSave(slamCoreContainer, slamPrcContainer, gokartPoseInterface, slamEventCounter);
+    slamLogSave = new SlamLogSave(slamCoreContainer, slamPrcContainer, poseInterface, slamEventCounter);
     periodicSavePeriod = Magnitude.MILLI_SECOND.toLong(SlamDvsConfig.eventCamera.slamCoreConfig.logCollectionUpdateRate);
     timer.scheduleAtFixedRate(logSaveTask, 0, periodicSavePeriod);
     initialTimestamp = (int) System.currentTimeMillis();

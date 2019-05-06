@@ -8,23 +8,23 @@ import ch.ethz.idsc.demo.mg.slam.SlamCoreContainer;
 import ch.ethz.idsc.demo.mg.slam.SlamFileLocations;
 import ch.ethz.idsc.demo.mg.slam.SlamPrcContainer;
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseInterface;
+import ch.ethz.idsc.retina.util.pose.PoseInterface;
 
 @SuppressWarnings("unused")
 /* package */ class SlamLogSave {
   private final SlamEventCounter slamEventCounter;
   private final SlamCoreContainer slamCoreContainer;
   private final SlamPrcContainer slamPrcContainer;
-  private final GokartPoseInterface gokartLidarPose;
+  private final PoseInterface poseInterface;
   private final String filename;
   private final List<double[]> logData = new ArrayList<>();
 
   SlamLogSave(SlamCoreContainer slamCoreContainer, SlamPrcContainer slamPrcContainer, //
-      GokartPoseInterface gokartPoseInterface, SlamEventCounter slamEventCounter) {
+      PoseInterface poseInterface, SlamEventCounter slamEventCounter) {
     this.slamEventCounter = slamEventCounter;
     this.slamCoreContainer = slamCoreContainer;
     this.slamPrcContainer = slamPrcContainer;
-    this.gokartLidarPose = gokartPoseInterface;
+    this.poseInterface = poseInterface;
     filename = SlamDvsConfig.eventCamera.slamCoreConfig.dvsConfig.logFilename();
   }
 

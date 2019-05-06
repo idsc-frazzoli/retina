@@ -2,8 +2,8 @@
 package ch.ethz.idsc.gokart.core.slam;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.PoseVelocityInterface;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
 import ch.ethz.idsc.sophus.group.Se2Geodesic;

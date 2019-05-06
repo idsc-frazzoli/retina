@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryEvents;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -30,6 +29,7 @@ import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.curve.BSpline1CurveSubdivision;
 import ch.ethz.idsc.sophus.filter.GeodesicCenter;
 import ch.ethz.idsc.sophus.filter.GeodesicCenterFilter;
@@ -74,7 +74,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
-      Tensor pose = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose());
+      Tensor pose = PoseHelper.toUnitless(gokartPoseEvent.getPose());
       trail.append(pose);
       times.append(time);
     } else //

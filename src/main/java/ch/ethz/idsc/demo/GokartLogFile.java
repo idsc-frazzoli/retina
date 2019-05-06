@@ -1704,7 +1704,8 @@ public enum GokartLogFile implements LogFile {
   _20190404T133714_39258d17,
   /** mpc */
   _20190404T143912_39258d17,
-  /** mostly manual drive but without localization */
+  /** mostly manual drive but without localization
+   * start at {26.0749605[m], 30.1878686[m], -1.1216625} */
   _20190404T154558_eb6eadfe,
   /***************************************************/
   /* 2019-04-08 */
@@ -1768,6 +1769,32 @@ public enum GokartLogFile implements LogFile {
   _20190425T140358_7cf20bb2,
   /** fast manual drive */
   _20190425T141045_7cf20bb2,
+  /***************************************************/
+  /* 2019-04-29 */
+  /** slow pursuit */
+  _20190429T111737_37db3fce,
+  /** slow pursuit */
+  _20190429T141452_70dfcdda,
+  /** slow pursuit */
+  _20190429T142046_70dfcdda,
+  /** slow pursuit */
+  _20190429T154513_3c0dfa28,
+  /** slow pursuit */
+  _20190429T163418_25103376,
+  /***************************************************/
+  /* 2019-05-02 */
+  /** geodesic pursuit */
+  _20190502T105037_bdbf8063,
+  /** geodesic pursuit */
+  _20190502T110217_bdbf8063,
+  /** fast manual driving */
+  _20190502T113816_923429be,
+  /** geodesic pursuit */
+  _20190502T115238_3839b112,
+  /** geodesic pursuit */
+  _20190502T133418_3839b112,
+  /** power steering test */
+  _20190502T135355_622e8d75,
   /***************************************************/
   ;
   // ---

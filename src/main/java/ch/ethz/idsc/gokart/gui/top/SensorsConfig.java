@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.gui.top;
 import ch.ethz.idsc.gokart.calib.vmu931.FlippedPlanarVmu931Imu;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
@@ -15,6 +14,7 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16FromPolarCoordinates;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16ToPolarCoordinates;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -92,7 +92,7 @@ public class SensorsConfig {
 
   /** @return 3x3 matrix transforming points in lidar frame to gokart frame */
   public Tensor vlp16Gokart() {
-    return GokartPoseHelper.toSE2Matrix(vlp16_pose);
+    return PoseHelper.toSE2Matrix(vlp16_pose);
   }
 
   public int imuSamplesPerLidarScan() {

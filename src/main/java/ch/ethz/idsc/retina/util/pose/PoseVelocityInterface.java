@@ -1,10 +1,10 @@
 // code by mh, jph
-package ch.ethz.idsc.gokart.core.pos;
+package ch.ethz.idsc.retina.util.pose;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public interface PoseVelocityInterface extends GokartPoseInterface {
+public interface PoseVelocityInterface extends PoseInterface {
   /** getVelocity() provides the time derivative of the pose.
    * Since the pose is an element in SE(2), the derivative is
    * a vector in the 3-dimensional Lie-Algebra se(2).

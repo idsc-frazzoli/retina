@@ -12,12 +12,12 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.AffineTransforms;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.RadiusXY;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -108,7 +108,7 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   /** set vehicle pose w.r.t world frame
    * @param pose vector of the form {px, py, heading} */
   public synchronized final void setPose(Tensor pose) {
-    gokart2world = GokartPoseHelper.toSE2Matrix(pose);
+    gokart2world = PoseHelper.toSE2Matrix(pose);
     lidar2cellLayer.popMatrix();
     lidar2cellLayer.popMatrix();
     lidar2cellLayer.pushMatrix(gokart2world);

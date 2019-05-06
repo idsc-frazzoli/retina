@@ -4,10 +4,10 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.List;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -41,7 +41,7 @@ public final class Tse2CurvePurePursuitModule extends CurvePurePursuitModule {
     // gokartPoseEvent is non-null at this point, implied by
     // PurePursuitModule.runAlgo, and CurvePurePursuitModule.deriveHeading
     Tensor pose = gokartPoseEvent.getPose(); // latest pose
-    TensorUnaryOperator toLocal = new Se2Bijection(GokartPoseHelper.toUnitless(pose)).inverse();
+    TensorUnaryOperator toLocal = new Se2Bijection(PoseHelper.toUnitless(pose)).inverse();
     synchronized (lock) {
       Optional<Tensor> curve = getCurve();
       if (curve.isPresent()) {

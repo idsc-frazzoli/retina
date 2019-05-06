@@ -12,8 +12,8 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
+import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
@@ -30,6 +30,7 @@ import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -38,6 +39,7 @@ import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.planar.Arrowhead;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.ref.TensorListener;
 
 public class GlobalViewLcmModule extends AbstractModule {
   private static final Tensor CROP_REGION = ResourceData.of( //
@@ -56,9 +58,11 @@ public class GlobalViewLcmModule extends AbstractModule {
   private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
       TrajectoryLcmClient.xyat(), //
       TrajectoryLcmClient.xyavt());
+  private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final PathRender pathRender = new PathRender(Color.YELLOW);
+  private final PathRender planRender = new PathRender(Color.MAGENTA);
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
@@ -66,8 +70,8 @@ public class GlobalViewLcmModule extends AbstractModule {
   public final TrackReconRender trackReconRender = new TrackReconRender();
 
   /** @param curve may be null */
-  public void setCurve(Tensor curve) {
-    pathRender.setCurve(curve, true);
+  public void setPlan(Tensor curve) {
+    planRender.setCurve(curve, false);
   }
 
   /** @param waypoints may be null */
@@ -85,6 +89,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     }
     {
       viewLcmFrame.geometricComponent.addRenderInterface(pathRender);
+      viewLcmFrame.geometricComponent.addRenderInterface(planRender);
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
     {
@@ -103,7 +108,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.jButtonMapUpdate.setEnabled(resampledLidarRender.updatedMap.nonEmpty());
       // resampledLidarRender.trackSupplier = () -> viewLcmFrame.jToggleButton.isSelected();
       resampledLidarRender.setPointSize(2);
-      resampledLidarRender.setReference(() -> GokartPoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
+      resampledLidarRender.setReference(() -> PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
       resampledLidarRender.setColor(new Color(255, 0, 128, 128));
       LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
       LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
@@ -121,6 +126,16 @@ public class GlobalViewLcmModule extends AbstractModule {
     {
       mpcControlUpdateLcmClient.addListener(lcmMPCPredictionRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lcmMPCPredictionRender);
+    }
+    {
+      TensorListener tensorListener = new TensorListener() {
+        @Override
+        public void tensorReceived(Tensor tensor) {
+          pathRender.setCurve(tensor, true);
+        }
+      };
+      curveSe2PursuitLcmClient.addListener(tensorListener);
+      curveSe2PursuitLcmClient.startSubscriptions();
     }
     {
       TrajectoryRender trajectoryRender = new TrajectoryRender();
@@ -176,6 +191,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
     gokartStatusLcmClient.stopSubscriptions();
+    curveSe2PursuitLcmClient.stopSubscriptions();
     // ---
     vlp16LcmHandler.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();

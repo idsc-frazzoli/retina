@@ -1,5 +1,5 @@
 // code by ynager and jph
-package ch.ethz.idsc.demo.jg;
+package ch.ethz.idsc.demo.jg.following;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -16,11 +16,9 @@ import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.core.pure.CurveGeodesicPursuitModule;
-import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitModule;
+import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitModule;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
@@ -52,10 +50,10 @@ import ch.ethz.idsc.owl.glc.core.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.core.StateTimeRaster;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
-import ch.ethz.idsc.owl.math.Lexicographic;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
+import ch.ethz.idsc.owl.math.order.VectorLexicographic;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
@@ -65,6 +63,7 @@ import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.curve.BSpline1CurveSubdivision;
@@ -102,7 +101,7 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
   private final FlowsInterface flowsInterface;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  final CurvePurePursuitModule pursuitModule = new CurveGeodesicPursuitModule(PursuitConfig.GLOBAL);
+  final CurveClothoidPursuitModule pursuitModule = new CurveClothoidPursuitModule(PursuitConfig.GLOBAL);
   private final AbstractMapping mapping = // SightLineMapping.defaultObstacle();
       GenericBayesianMapping.createObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
@@ -179,7 +178,7 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
     if (Objects.nonNull(gokartPoseEvent)) {
       final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
       System.out.println("setup planner, tangent speed=" + tangentSpeed);
-      final Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
+      final Tensor xya = PoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
       final List<TrajectorySample> head;
       Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
       boolean isResetPressed = optional.isPresent() && optional.get().isResetPressed();
@@ -231,7 +230,7 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
             STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, //
             plannerConstraint, multiCostGoalInterface, //
-            new LexicographicRelabelDecision(Lexicographic.COMPARATOR));
+            new LexicographicRelabelDecision(VectorLexicographic.COMPARATOR));
         // Do Planning
         StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
         trajectoryPlanner.insertRoot(root);

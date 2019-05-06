@@ -5,7 +5,6 @@ import java.io.File;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
@@ -15,6 +14,7 @@ import ch.ethz.idsc.gokart.offline.slam.LocalizationResult;
 import ch.ethz.idsc.gokart.offline.slam.LocalizationResultListener;
 import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeWrap;
 import ch.ethz.idsc.gokart.offline.slam.VoidScatterImage;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ enum LogPosePostInjectSingle {
@@ -41,7 +41,7 @@ import ch.ethz.idsc.tensor.Tensor;
     offlineLocalizeWrap.offlineLocalize.addListener(new LocalizationResultListener() {
       @Override
       public void localizationCallback(LocalizationResult localizationResult) {
-        Tensor pose = GokartPoseHelper.attachUnits(localizationResult.pose_xyt);
+        Tensor pose = PoseHelper.attachUnits(localizationResult.pose_xyt);
         GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, localizationResult.quality);
         logPosePostInject.getEvent(gokartPoseEvent);
       }

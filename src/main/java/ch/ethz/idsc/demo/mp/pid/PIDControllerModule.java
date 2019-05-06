@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.owl.bot.se2.pid.PIDTrajectory;
@@ -22,7 +21,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private Optional<Tensor> optionalCurve = Optional.empty();
   private int pidIndex;
   private PIDTrajectory previousPID;
-  private StateTime previousStateTime = new StateTime(Tensors.vector(0, 0, 0), Quantity.of(0, SI.SECOND));
+  // FIXME MCP systematic error
+  private StateTime previousStateTime = new StateTime(Tensors.fromString("{0[m], 0[m], 0}"), Quantity.of(0, SI.SECOND));
 
   public PIDControllerModule(PIDTuningParams pidTuningParams) {
     super(pidTuningParams);
@@ -49,7 +49,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     if (Objects.nonNull(gokartPoseEvent) && //
         optionalCurve.isPresent()) {
       StateTime stateTime = new StateTime( //
-          GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()), // TODO Check this
+          gokartPoseEvent.getPose(), //
           previousStateTime.time().add(PIDTuningParams.GLOBAL.updatePeriod));
       //
       PIDTrajectory pidTrajectory = new PIDTrajectory( //

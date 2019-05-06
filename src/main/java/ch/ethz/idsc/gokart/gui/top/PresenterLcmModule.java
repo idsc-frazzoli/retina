@@ -18,7 +18,6 @@ import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
 import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
@@ -35,6 +34,7 @@ import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -110,7 +110,7 @@ public class PresenterLcmModule extends AbstractModule {
     // ---
     {
       ParallelLidarRender lidarRender = new ParallelLidarRender();
-      lidarRender.setReference(() -> GokartPoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
+      lidarRender.setReference(() -> PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
       lidarRender.setColor(new Color(0, 0, 128, 128));
       lidarRender.setObstacleColor(new Color(128, 0, 128, 128));
       lidarRender.pointSize = 1;

@@ -10,9 +10,9 @@ import ch.ethz.idsc.demo.mg.slam.MapProvider;
 import ch.ethz.idsc.demo.mg.slam.SlamParticle;
 import ch.ethz.idsc.demo.mg.util.calibration.GokartToImageInterface;
 import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.Inverse;
@@ -62,8 +62,8 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
     // use of hash set since we want a list of unique cells
     Set<Integer> seenCells = new HashSet<>();
     // find all cells in the map which were seen on the sensor with current or last expected pose
-    GeometricLayer layerCurrent = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(lastExpectedPose));
-    GeometricLayer layerLast = GeometricLayer.of(GokartPoseHelper.toSE2Matrix(currentExpectedPose));
+    GeometricLayer layerCurrent = GeometricLayer.of(PoseHelper.toSE2Matrix(lastExpectedPose));
+    GeometricLayer layerLast = GeometricLayer.of(PoseHelper.toSE2Matrix(currentExpectedPose));
     for (int i = 0; i < width; i++) {
       for (int j = 0; j < height; j++) {
         double[] gokartCoord = imageToGokartLookup.imageToGokart(i, j);
@@ -85,8 +85,8 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
     }
     // for the center of all these cells, compute image plane location for last and current expected pose and compute norm
     synchronized (seenCells) {
-      GeometricLayer layerCurrentInverse = GeometricLayer.of(Inverse.of(GokartPoseHelper.toSE2Matrix(currentExpectedPose)));
-      GeometricLayer layerLastInverse = GeometricLayer.of(Inverse.of(GokartPoseHelper.toSE2Matrix(lastExpectedPose)));
+      GeometricLayer layerCurrentInverse = GeometricLayer.of(Inverse.of(PoseHelper.toSE2Matrix(currentExpectedPose)));
+      GeometricLayer layerLastInverse = GeometricLayer.of(Inverse.of(PoseHelper.toSE2Matrix(lastExpectedPose)));
       for (Integer cell : seenCells) {
         // find world coordinates of cell middle point
         double[] cellWorldCoord = normalizationMap.getCellCoord(cell);

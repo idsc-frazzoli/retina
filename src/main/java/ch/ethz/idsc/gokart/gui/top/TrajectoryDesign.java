@@ -10,8 +10,8 @@ import java.util.Arrays;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.sophus.app.api.ClothoidCurveDisplay;
 import ch.ethz.idsc.sophus.app.api.GeodesicDisplay;
@@ -20,12 +20,14 @@ import ch.ethz.idsc.sophus.app.misc.CurveCurvatureRender;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.sophus.curve.CurveSubdivision;
 import ch.ethz.idsc.sophus.curve.LaneRiesenfeldCurveSubdivision;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Nest;
+import ch.ethz.idsc.tensor.sca.N;
 
 public class TrajectoryDesign extends CurvatureDemo {
   private static final Scalar COMB_SCALE = Quantity.of(-1.0, "m^2");
@@ -64,12 +66,18 @@ public class TrajectoryDesign extends CurvatureDemo {
   }
 
   /** @return control points of the form {x[m], y[m], heading} */
-  public Tensor controlPoints() {
-    return Tensor.of(control().stream().map(GokartPoseHelper::attachUnits));
+  public Tensor getControlPointsPose() {
+    return Tensor.of(getControlPointsSe2().map(N.DOUBLE::of).stream().map(PoseHelper::attachUnits));
+  }
+  
+  @Override
+  public Tensor getControlPointShape() {
+    return geodesicDisplay().shape().multiply(RealScalar.of(2));
   }
 
-  public Tensor getCurve() {
-    Tensor control = controlPoints();
+  /** @return refined curve */
+  public Tensor getRefinedCurve() {
+    Tensor control = getControlPointsPose();
     int degree = spinnerLabelDegree.getValue();
     CurveSubdivision curveSubdivision = new LaneRiesenfeldCurveSubdivision(geodesicDisplay().geodesicInterface(), degree);
     int levels = spinnerLabelLevels.getValue();
@@ -80,7 +88,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   public Tensor protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     renderControlPoints(geometricLayer, graphics);
     GeodesicDisplay geodesicDisplay = geodesicDisplay();
-    Tensor refined = getCurve();
+    Tensor refined = getRefinedCurve();
     Tensor render = Tensor.of(refined.stream().map(geodesicDisplay::toPoint));
     CurveCurvatureRender.of(render, true, COMB_SCALE, geometricLayer, graphics);
     return refined;

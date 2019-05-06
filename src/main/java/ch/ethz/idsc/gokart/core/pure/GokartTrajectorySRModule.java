@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseHelper;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -57,6 +56,7 @@ import ch.ethz.idsc.owl.sim.LidarRaytracer;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -104,7 +104,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
       Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation), ACCELERATIONS);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
-  private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   private final Tse2CurvePurePursuitModule tse2CurvePurePursuitModule = //
       new Tse2CurvePurePursuitModule(PursuitConfig.GLOBAL);
   private GokartPoseEvent gokartPoseEvent = null;
@@ -176,7 +176,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     gokartPoseLcmClient.addListener(gokartPoseListener);
     // ---
     gokartPoseLcmClient.startSubscriptions();
-    joystickLcmProvider.start();
+    manualControlProvider.start();
     rimoGetLcmClient.startSubscriptions();
     // ---
     tse2CurvePurePursuitModule.launch();
@@ -186,15 +186,15 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   protected void last() {
     tse2CurvePurePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
-    joystickLcmProvider.stop();
+    manualControlProvider.stop();
   }
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
     if (Objects.nonNull(gokartPoseEvent)) {
-      Tensor xya = GokartPoseHelper.toUnitless(gokartPoseEvent.getPose()).copy();
+      Tensor xya = PoseHelper.toUnitless(gokartPoseEvent.getPose()).copy();
       xya.append(RealScalar.of(INIT_VEL)); // Zero init velocity
-      Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
+      Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
       boolean isResetPressed = optional.isPresent() && optional.get().isResetPressed();
       // ---
       if (Objects.isNull(trajectory) || isResetPressed) { // exists previous trajectory or reset pressed?
