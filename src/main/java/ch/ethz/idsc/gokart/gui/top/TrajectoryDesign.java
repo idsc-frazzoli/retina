@@ -69,7 +69,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   public Tensor getControlPointsPose() {
     return Tensor.of(getControlPointsSe2().map(N.DOUBLE::of).stream().map(PoseHelper::attachUnits));
   }
-  
+
   @Override
   public Tensor getControlPointShape() {
     return geodesicDisplay().shape().multiply(RealScalar.of(2));

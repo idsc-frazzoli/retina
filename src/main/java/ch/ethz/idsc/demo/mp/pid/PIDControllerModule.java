@@ -21,6 +21,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private Optional<Tensor> optionalCurve = Optional.empty();
   private int pidIndex;
   private PIDTrajectory previousPID;
+  private PIDTrajectory currentPID;
   // FIXME MCP systematic error
   private StateTime previousStateTime = new StateTime(Tensors.fromString("{0[m], 0[m], 0}"), Quantity.of(0, SI.SECOND));
 
@@ -52,20 +53,20 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           gokartPoseEvent.getPose(), //
           previousStateTime.time().add(PIDTuningParams.GLOBAL.updatePeriod));
       //
-      PIDTrajectory pidTrajectory = new PIDTrajectory( //
+      currentPID = new PIDTrajectory( //
           pidIndex, //
           previousPID, //
           PIDTuningParams.GLOBAL.pidGains, //
           optionalCurve.get(), //
           stateTime); //
       //
-      Scalar angleOut = pidTrajectory.angleOut(); // TODO comment on unit? -> test
+      Scalar angleOut = currentPID.angleOut(); // TODO comment on unit? -> test
       if (PIDTuningParams.GLOBAL.clip.isInside(angleOut)) {
-        this.previousPID = pidTrajectory;
+        this.previousPID = currentPID;
         pidIndex++;
         return Optional.of(angleOut);
       }
-      this.previousPID = pidTrajectory;
+      this.previousPID = currentPID;
       pidIndex++;
       return Optional.empty();
     }
@@ -81,5 +82,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   /* package */ final Optional<Tensor> getCurve() {
     return optionalCurve;
+  }
+
+  public PIDTrajectory getPID() { // used for debug
+    return currentPID;
   }
 }
