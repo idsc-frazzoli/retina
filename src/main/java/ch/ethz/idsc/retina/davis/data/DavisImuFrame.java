@@ -39,7 +39,7 @@ public class DavisImuFrame extends DataEvent {
   private final short accelZ;
   /** temperature in degree Celsius */
   private final short temperature;
-  /** radians per seconds */
+  /** radian per seconds */
   private final short gyroX;
   private final short gyroY;
   private final short gyroZ;

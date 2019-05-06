@@ -16,7 +16,7 @@ public abstract class RimoRateControllerWrap implements RimoGetListener {
   }
 
   /** @param rate_target desired average rate of left and right rear wheel in unit "s^-1"
-   * @param angle of steering without unit but with interpretation in radians
+   * @param angle of steering without unit but with interpretation in radian
    * @return */
   public final Optional<RimoPutEvent> iterate(Scalar rate_target, Scalar angle) {
     if (Objects.nonNull(rimoGetEvent))
@@ -25,7 +25,7 @@ public abstract class RimoRateControllerWrap implements RimoGetListener {
   }
 
   /** @param rate_target desired average rate of left and right rear wheel in unit "s^-1"
-   * @param angle of steering wheel without unit but with interpretation of radians
+   * @param angle of steering wheel without unit but with interpretation of radian
    * @param rimoGetEvent non-null
    * @return */
   protected abstract RimoPutEvent protected_getRimoPutEvent( //

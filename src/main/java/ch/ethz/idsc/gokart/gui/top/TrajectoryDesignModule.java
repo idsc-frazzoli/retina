@@ -105,6 +105,7 @@ public class TrajectoryDesignModule extends AbstractModule {
       exception.printStackTrace();
     }
     trajectoryDesign.timerFrame.geometricComponent.addRenderInterface(Dubilab.GRID_RENDER);
+    trajectoryDesign.timerFrame.jFrame.setVisible(true);
   }
 
   @Override // from AbstractModule
@@ -112,7 +113,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     trajectoryDesign.timerFrame.close();
   }
 
-  private void exportTensor(File file, Tensor tensor) {
+  private static void exportTensor(File file, Tensor tensor) {
     try {
       Put.of(file, tensor);
     } catch (Exception exception) {
@@ -120,7 +121,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     }
   }
 
-  private Optional<Tensor> importTensor() {
+  private static Optional<Tensor> importTensor() {
     JFileChooser fileChooser = new JFileChooser();
     int returnVal = fileChooser.showOpenDialog(fileChooser);
     if (returnVal == JFileChooser.APPROVE_OPTION)
