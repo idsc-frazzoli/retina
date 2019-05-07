@@ -4,6 +4,8 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 
@@ -21,6 +23,7 @@ import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
+import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.MatrixForm;
@@ -31,6 +34,7 @@ import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class TrajectoryDesignModule extends AbstractModule {
+  private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
   public static final Tensor _20190401 = Tensors.of( //
       Tensors.vector(3.6677994336284594, 3.5436206505034793, -190.05265224432887), //
       Tensors.vector(3.5436206505034793, -3.6677994336284594, 74.03647376620074), //
@@ -77,7 +81,7 @@ public class TrajectoryDesignModule extends AbstractModule {
       jButton.setToolTipText("export control points");
       jButton.addActionListener(actionEvent -> {
         File file = HomeDirectory.file("Desktop", "controlpoints_" + SystemTimestamp.asString(new Date()) + ".tensor");
-        exportTensor(file, trajectoryDesign.getControlPointsPose().unmodifiable());
+        exportTensor(file, trajectoryDesign.getControlPointsPose());
         System.out.println("exported control points to " + file.getAbsolutePath());
       });
       trajectoryDesign.timerFrame.jToolBar.add(jButton);
@@ -87,8 +91,25 @@ public class TrajectoryDesignModule extends AbstractModule {
       JButton jButton = new JButton("import");
       jButton.setToolTipText("import control points");
       jButton.addActionListener(actionEvent -> importTensor().map(tensor -> Tensor.of(tensor.stream().map(PoseHelper::toUnitless))) //
-          .ifPresent(this.trajectoryDesign::setControlPointsSe2));
+          .ifPresent(trajectoryDesign::setControlPointsSe2));
       trajectoryDesign.timerFrame.jToolBar.add(jButton);
+    }
+    {
+      trajectoryDesign.timerFrame.jToolBar.addSeparator();
+      File folder = new File("src/main/resources/dubilab/waypoints");
+      folder.mkdirs();
+      File file = new File(folder, DATE_FORMAT.format(new Date()) + ".csv");
+      JButton jButton = new JButton("save waypoints");
+      jButton.setToolTipText("save to " + file);
+      jButton.addActionListener(actionEvent -> {
+        try {
+          Export.of(file, Tensor.of(trajectoryDesign.getControlPointsPose().stream().map(PoseHelper::toUnitless)).map(Round._4));
+        } catch (Exception exception) {
+          exception.printStackTrace();
+        }
+      });
+      trajectoryDesign.timerFrame.jToolBar.add(jButton);
+      //
     }
     try {
       BackgroundImage backgroundImage = get20190408();

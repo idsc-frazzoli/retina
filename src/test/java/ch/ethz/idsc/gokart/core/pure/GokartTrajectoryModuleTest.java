@@ -41,7 +41,7 @@ public class GokartTrajectoryModuleTest extends TestCase {
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig();
     trajectoryConfig.waypoints = "/dubilab/controlpoints/tires/20190116.csv";
     {
-      PoseHelper.toUnitless(trajectoryConfig.getWaypoints().get(2));
+      PoseHelper.toUnitless(trajectoryConfig.getWaypointsPose().get(2));
     }
     GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule(trajectoryConfig);
     gokartTrajectoryModule.first();

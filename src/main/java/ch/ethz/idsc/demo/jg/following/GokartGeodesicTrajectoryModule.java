@@ -123,7 +123,7 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
   /* package */ GokartGeodesicTrajectoryModule(TrajectoryConfig trajectoryConfig) {
     this.trajectoryConfig = trajectoryConfig;
     flowsInterface = Se2CarFlows.forward(SPEED, Magnitude.PER_METER.apply(trajectoryConfig.maxRotation));
-    this.waypoints = trajectoryConfig.getWaypoints();
+    this.waypoints = trajectoryConfig.getWaypointsPose();
     waypointCost = WaypointDistanceCost.of( //
         Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), true, // 1 round of refinement
         RealScalar.of(1), // width of virtual lane in model coordinates

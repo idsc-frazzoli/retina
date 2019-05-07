@@ -120,7 +120,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     this.trajectoryConfig = trajectoryConfig;
     flowsInterface = Se2CarFlows.forward(SPEED, Magnitude.PER_METER.apply(trajectoryConfig.maxRotation));
     // TODO obtain waypoints from TrajectoryDesignModule
-    waypoints = Tensor.of(trajectoryConfig.getWaypoints().stream().map(PoseHelper::toUnitless));
+    waypoints = Tensor.of(trajectoryConfig.getWaypointsPose().stream().map(PoseHelper::toUnitless));
     waypointCost = WaypointDistanceCost.of( //
         Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), //
         true, // 1 round of refinement
