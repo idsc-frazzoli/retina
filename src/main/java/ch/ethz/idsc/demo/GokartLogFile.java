@@ -1808,6 +1808,19 @@ public enum GokartLogFile implements LogFile {
   _20190506T141135_99afbf25,
   /** pursuit */
   _20190506T151117_dd899454,
+  /** pd control trajectory pursuit */
+  _20190506T162944_9c0e80e3,
+  /** pd control trajectory pursuit */
+  _20190506T165554_9c0e80e3,
+  /***************************************************/
+  /* 2019-05-07 */
+  /** test for demo with occupancy grid mapping */
+  _20190507T091621_c817d5db,
+  /** test for demo with sight lines mapping */
+  _20190507T092002_c817d5db,
+  /** demo trajectory planning
+   * data collection for steering mapping */
+  _20190507T094525_c817d5db,
   /***************************************************/
   ;
   // ---

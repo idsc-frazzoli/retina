@@ -26,13 +26,6 @@ public class SteerConfigTest extends TestCase {
     assertEquals(QuantityUnit.of(SteerConfig.GLOBAL.columnMax), Unit.of("SCE"));
   }
 
-  public void testSCEfromAngle() {
-    SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-    Scalar q = steerMapping.getSCEfromAngle(Quantity.of(1, ""));
-    assertEquals(QuantityUnit.of(q), Unit.of("SCE"));
-    assertTrue(1.1 < q.number().doubleValue());
-  }
-
   public void testAngleLimit() {
     Clip clip = SteerConfig.GLOBAL.getAngleLimit();
     assertEquals(clip.min(), clip.max().negate());
