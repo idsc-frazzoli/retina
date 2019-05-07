@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.red.Norm;
 
 /** implementation is similar to CurvePurePursuitModule with the additional
  * feature that the trajectory is annotated with velocity */
-public final class Tse2CurvePurePursuitModule extends CurvePurePursuitModule {
+public final class Tse2CurvePurePursuitModule extends CurvePursuitModule {
   private final Object lock = new Object();
   private List<TrajectorySample> trajectory;
 

@@ -21,7 +21,7 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
   private static final int RESOLUTION = 200;
   // ---
   private final TrackReconModule trackReconModule = ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  private final CurvePurePursuitModule curvePurePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
+  private final CurvePursuitModule curvePurePursuitModule = new CurvePursuitModule(PursuitConfig.GLOBAL);
 
   @Override
   protected void first() {

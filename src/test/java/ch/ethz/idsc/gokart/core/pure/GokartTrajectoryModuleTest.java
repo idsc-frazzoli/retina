@@ -87,7 +87,7 @@ public class GokartTrajectoryModuleTest extends TestCase {
     {
       Optional<SteerPutEvent> optional = gokartTrajectoryModule.purePursuitModule.purePursuitSteer.private_putEvent( //
           new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
-      CurvePurePursuitModuleTest._checkFallback(optional);
+      CurvePursuitModuleTest._checkFallback(optional);
     }
     {
       SteerColumnInterface steerColumnInterface = new SteerColumnAdapter(true, Quantity.of(0.3, "SCE"));
