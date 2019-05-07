@@ -84,6 +84,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO make configurable as parameter
+// TODO resuse GokartTrajectoryModule and make only CurvePursuitModule different
 public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
   private static final VehicleModel STANDARD = RimoSinusIonModel.standard();
   private static final Tensor PARTITIONSCALE = Tensors.of( //

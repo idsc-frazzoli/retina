@@ -18,6 +18,7 @@ import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.retina.util.io.ByteArrayConsumer;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -40,7 +41,7 @@ public class GokartTrajectoryModuleTest extends TestCase {
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig();
     trajectoryConfig.waypoints = "/dubilab/controlpoints/tires/20190116.csv";
     {
-      // GokartPoseHelper.toUnitless(trajectoryConfig.getWaypoints().get(2));
+      PoseHelper.toUnitless(trajectoryConfig.getWaypoints().get(2));
     }
     GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule(trajectoryConfig);
     gokartTrajectoryModule.first();
@@ -58,13 +59,11 @@ public class GokartTrajectoryModuleTest extends TestCase {
       assertTrue(optional.isPresent());
       Tensor curve = optional.get();
       List<Integer> dims = Dimensions.of(curve);
-      assertEquals(dims.get(1), Integer.valueOf(2));
+      assertEquals(dims.get(1), Integer.valueOf(3));
       assertTrue(15 < dims.get(0));
     }
     assertFalse(gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
     assertFalse(gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_isOperational());
-    // if (true)
-    // return;
     AllGunsBlazing.publishAutonomous();
     gokartTrajectoryModule.curvePursuitModule.runAlgo();
     assertTrue(gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
