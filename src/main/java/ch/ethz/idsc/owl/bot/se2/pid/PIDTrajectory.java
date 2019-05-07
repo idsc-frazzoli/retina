@@ -47,7 +47,7 @@ public class PIDTrajectory {
     return deriv;
   }
 
-  public Scalar getError() {
+  public Scalar getError() { // for debug
     return errorPose;
   }
 }
