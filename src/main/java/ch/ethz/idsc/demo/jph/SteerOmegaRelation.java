@@ -20,7 +20,13 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-public class SteerOmegaRelation implements OfflineTableSupplier {
+/** using:
+ * calibrated steering
+ * imu gryo z rotational rate
+ * 
+ * 20190507: map from x[SCE] to turning ratio is
+ * 0.8284521034333863` x - 0.33633373640449604` x^3 */
+/* package */ class SteerOmegaRelation implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
 
@@ -45,7 +51,7 @@ public class SteerOmegaRelation implements OfflineTableSupplier {
   }
 
   public static void main(String[] args) throws IOException {
-    File root = new File("/media/datahaki/data/gokart/cuts5/20190506");
+    File root = new File("/media/datahaki/data/gokart/cuts5/20190507m");
     File target = HomeDirectory.Documents("steeromega");
     target.mkdirs();
     for (File folder : root.listFiles()) {
