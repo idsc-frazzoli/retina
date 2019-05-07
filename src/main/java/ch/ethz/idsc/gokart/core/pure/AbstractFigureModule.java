@@ -8,11 +8,11 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.ref.TensorListener;
 
 /** listens to curves for pursuit */
-public class AbstractFigureModule extends AbstractModule implements TensorListener {
+public abstract class AbstractFigureModule extends AbstractModule implements TensorListener {
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
-  private final CurvePurePursuitModule curvePursuitModule;
+  private final CurvePursuitModule curvePursuitModule;
 
-  protected AbstractFigureModule(CurvePurePursuitModule curvePursuitModule) {
+  protected AbstractFigureModule(CurvePursuitModule curvePursuitModule) {
     this.curvePursuitModule = curvePursuitModule;
   }
 

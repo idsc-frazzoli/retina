@@ -53,12 +53,11 @@ public class TrajectoryConfig {
     return planningPeriod.multiply(expandFraction);
   }
 
-  /** @return matrix with dimensions N x 3
+  /** @return matrix with dimensions N x 3 where each row is of the form {wx[m], wy[m], wangle}
    * @throws Exception if waypoints cannot be retrieved from resources */
   public Tensor getWaypoints() {
     // oval shape
     Tensor wyap = Tensor.of(ResourceData.of(waypoints).stream().map(PoseHelper::attachUnits));
-    wyap = ResourceData.of(waypoints);
     return new BSpline2CurveSubdivision(Se2Geodesic.INSTANCE).cyclic(wyap);
     // around tires
     // return ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").unmodifiable();

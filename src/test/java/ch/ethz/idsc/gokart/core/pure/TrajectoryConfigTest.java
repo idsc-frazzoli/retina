@@ -5,6 +5,7 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.IntegerQ;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -49,6 +50,7 @@ public class TrajectoryConfigTest extends TestCase {
     // System.out.println(dims);
     assertTrue(1 < dims.get(0));
     assertEquals((int) dims.get(1), 3); // {x, y, theta}
+    Tensor.of(tensor.stream().map(PoseHelper::toUnitless));
   }
 
   public void testExpandFraction() {
