@@ -130,7 +130,7 @@ public class TrackReconManagement {
              * } */
             Tensor newTrackDataXYR = trackRefinement.getRefinedTrack( //
                 Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER)))), //
-                RealScalar.of(8), 1, closedTrack, constraints);
+                RealScalar.of(8), 10, closedTrack, constraints);
             if (Objects.nonNull(newTrackDataXYR)) {
               trackDataXYR = newTrackDataXYR;
               newSolutionNeeded = false;
