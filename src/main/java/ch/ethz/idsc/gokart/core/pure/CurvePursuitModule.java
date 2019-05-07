@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
 /** class is the default choice for pure pursuit when driving along a curve in global
  * coordinates while the pose is updated periodically from a localization method. */
-public class CurvePursuitModule extends PurePursuitModule implements GokartPoseListener {
+public abstract class CurvePursuitModule extends PurePursuitModule implements GokartPoseListener {
   private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
@@ -76,21 +76,9 @@ public class CurvePursuitModule extends PurePursuitModule implements GokartPoseL
     return Optional.empty(); // autonomous operation denied
   }
 
-  // TODO JPH right now, "curve" does not have "m" as unit but entries are unitless.
   /** @param pose of vehicle {x[m], y[m], angle}
-   * @return ratio rate [rad*m^-1] */
-  protected synchronized Optional<Scalar> getRatio(Tensor pose) {
-    Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
-    if (optionalCurve.isPresent())
-      return CurvePurePursuitHelper.getRatio( //
-          pose, //
-          optionalCurve.get(), //
-          closed, //
-          isForward, //
-          pursuitConfig.lookAhead);
-    System.err.println("no curve in pure pursuit");
-    return Optional.empty();
-  }
+   * @return ratio rate [m^-1] */
+  protected abstract Optional<Scalar> getRatio(Tensor pose);
 
   /** @param curve world frame coordinates */
   public synchronized final void setCurve(Optional<Tensor> curve) {

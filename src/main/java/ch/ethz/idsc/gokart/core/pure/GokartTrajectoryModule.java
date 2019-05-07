@@ -98,7 +98,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final FlowsInterface flowsInterface;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  final CurvePursuitModule purePursuitModule = new CurvePursuitModule(PursuitConfig.GLOBAL);
+  final CurvePursuitModule curvePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
   private final AbstractMapping mapping = // SightLineMapping.defaultObstacle();
       GenericBayesianMapping.createObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
@@ -154,12 +154,12 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     gokartPoseLcmClient.startSubscriptions();
     manualControlProvider.start();
     // ---
-    purePursuitModule.launch();
+    curvePursuitModule.launch();
   }
 
   @Override // from AbstractClockedModule
   protected void last() {
-    purePursuitModule.terminate();
+    curvePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
     manualControlProvider.stop();
     // ---
@@ -239,7 +239,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       }
     }
     System.err.println("no curve because no pose");
-    purePursuitModule.setCurve(Optional.empty());
+    curvePursuitModule.setCurve(Optional.empty());
     PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }
 
@@ -277,7 +277,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
           .map(TrajectorySample::stateTime) //
           .map(StateTime::state) //
           .map(Extract2D.FUNCTION));
-      purePursuitModule.setCurve(Optional.of(curve));
+      curvePursuitModule.setCurve(Optional.of(curve));
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
       // failure to reach goal

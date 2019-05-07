@@ -54,47 +54,47 @@ public class GokartTrajectoryModuleTest extends TestCase {
       Thread.sleep(500);
     }
     {
-      Optional<Tensor> optional = gokartTrajectoryModule.purePursuitModule.getCurve();
+      Optional<Tensor> optional = gokartTrajectoryModule.curvePursuitModule.getCurve();
       assertTrue(optional.isPresent());
       Tensor curve = optional.get();
       List<Integer> dims = Dimensions.of(curve);
       assertEquals(dims.get(1), Integer.valueOf(2));
       assertTrue(15 < dims.get(0));
     }
-    assertFalse(gokartTrajectoryModule.purePursuitModule.purePursuitRimo.private_isOperational());
-    assertFalse(gokartTrajectoryModule.purePursuitModule.purePursuitSteer.private_isOperational());
-    if (true)
-      return;
+    assertFalse(gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
+    assertFalse(gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_isOperational());
+    // if (true)
+    // return;
     AllGunsBlazing.publishAutonomous();
-    gokartTrajectoryModule.purePursuitModule.runAlgo();
-    assertTrue(gokartTrajectoryModule.purePursuitModule.purePursuitRimo.private_isOperational());
-    assertTrue(gokartTrajectoryModule.purePursuitModule.purePursuitSteer.private_isOperational());
+    gokartTrajectoryModule.curvePursuitModule.runAlgo();
+    assertTrue(gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
+    assertTrue(gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_isOperational());
     {
-      Optional<RimoPutEvent> optional = gokartTrajectoryModule.purePursuitModule.purePursuitRimo.private_putEvent( //
+      Optional<RimoPutEvent> optional = gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_putEvent( //
           new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
       assertFalse(optional.isPresent());
     }
     {
       SteerColumnInterface steerColumnInterface = new SteerColumnAdapter(true, Quantity.of(0.3, "SCE"));
       assertTrue(steerColumnInterface.isSteerColumnCalibrated());
-      assertTrue(gokartTrajectoryModule.purePursuitModule.purePursuitRimo.private_isOperational());
+      assertTrue(gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
       RimoGetEvent rge = RimoGetEvents.create(123, 234);
-      gokartTrajectoryModule.purePursuitModule.purePursuitRimo.rimoRateControllerWrap.getEvent(rge);
+      gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.rimoRateControllerWrap.getEvent(rge);
       Optional<RimoPutEvent> optional = //
-          gokartTrajectoryModule.purePursuitModule.purePursuitRimo.private_putEvent(steerColumnInterface);
+          gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_putEvent(steerColumnInterface);
       assertTrue(optional.isPresent());
     }
     {
-      Optional<SteerPutEvent> optional = gokartTrajectoryModule.purePursuitModule.purePursuitSteer.private_putEvent( //
+      Optional<SteerPutEvent> optional = gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_putEvent( //
           new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
-      CurvePursuitModuleTest._checkFallback(optional);
+      CurvePurePursuitModuleTest._checkFallback(optional);
     }
     {
       SteerColumnInterface steerColumnInterface = new SteerColumnAdapter(true, Quantity.of(0.3, "SCE"));
       assertTrue(steerColumnInterface.isSteerColumnCalibrated());
-      assertTrue(gokartTrajectoryModule.purePursuitModule.purePursuitSteer.private_isOperational());
+      assertTrue(gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_isOperational());
       Optional<SteerPutEvent> optional = //
-          gokartTrajectoryModule.purePursuitModule.purePursuitSteer.private_putEvent(steerColumnInterface);
+          gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_putEvent(steerColumnInterface);
       assertTrue(optional.isPresent());
     }
     {
@@ -104,7 +104,7 @@ public class GokartTrajectoryModuleTest extends TestCase {
           GokartPoseEvents.offlineV1(Tensors.fromString("{31.8[m], 38.2[m], 0.8}"), RealScalar.ONE).asArray());
       Thread.sleep(1000);
       gokartTrajectoryModule.runAlgo();
-      Optional<Tensor> optional = gokartTrajectoryModule.purePursuitModule.getCurve();
+      Optional<Tensor> optional = gokartTrajectoryModule.curvePursuitModule.getCurve();
       assertTrue(optional.isPresent());
     }
     gokartTrajectoryModule.last();
