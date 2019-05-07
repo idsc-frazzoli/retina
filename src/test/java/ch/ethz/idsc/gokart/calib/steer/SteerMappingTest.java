@@ -10,13 +10,17 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityUnit;
+import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class SteerMappingTest extends TestCase {
   private static final List<SteerMapping> STEER_MAPPINGS = Arrays.asList( //
-      LinearSteerMapping.INSTANCE, CubicSteerMapping.approximation());
+      LinearSteerMapping.INSTANCE, //
+      CubicSteerMapping.approximation(), //
+      FittedSteerMapping.instance());
 
   public void testAdvancedFormulaCenter() {
     for (SteerMapping steerMapping : STEER_MAPPINGS) {
@@ -49,6 +53,22 @@ public class SteerMappingTest extends TestCase {
       Clips.interval(-.5, -.4).requireInside(angle);
       Scalar sce = steerMapping.getSCEfromAngle(angle);
       assertTrue(Scalars.lessThan(sce.subtract(sceIn).abs(), Quantity.of(0.05, "SCE")));
+    }
+  }
+
+  public void testExtremePos() {
+    for (SteerMapping steerMapping : STEER_MAPPINGS) {
+      Scalar q = steerMapping.getSCEfromAngle(Quantity.of(+0.45, ""));
+      assertEquals(QuantityUnit.of(q), Unit.of("SCE"));
+      assertTrue(0.64 < q.number().doubleValue());
+    }
+  }
+
+  public void testExtremeNeg() {
+    for (SteerMapping steerMapping : STEER_MAPPINGS) {
+      Scalar q = steerMapping.getSCEfromAngle(Quantity.of(-0.45, ""));
+      assertEquals(QuantityUnit.of(q), Unit.of("SCE"));
+      assertTrue(q.number().doubleValue() < -0.64);
     }
   }
 
