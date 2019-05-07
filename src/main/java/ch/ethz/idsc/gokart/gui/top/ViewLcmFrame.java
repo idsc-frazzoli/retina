@@ -16,6 +16,7 @@ import ch.ethz.idsc.retina.util.sys.GuiConfig;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -44,7 +45,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         jToggleButton.addActionListener(actionEvent -> lidarLocalizationModule.setTracking(jToggleButton.isSelected()));
         jToolBar.add(jToggleButton);
       }
-      {
+      if (UserName.is("datahaki")) {
         JButton jButton = GuiConfig.GLOBAL.createButton("get");
         jButton.addActionListener(new ActionListener() {
           @Override

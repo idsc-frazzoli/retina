@@ -74,7 +74,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 
 /** RunTabbedTaskGui is a program that is typically for offline processing.
  * The window in a convenient way to launch files. */
-enum RunTabbedTaskGui {
+/* package */ enum RunTabbedTaskGui {
   ;
   /** file contains plain text brief description of modules */
   static final Properties PROPERTIES = //
@@ -104,13 +104,13 @@ enum RunTabbedTaskGui {
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
+      TrajectoryDesignModule.class, //
       TrackReconModule.class, //
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
       SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      VoiceOutputModule.class, //
-      TrajectoryDesignModule.class //
+      VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       UltimateTorqueVectoringModule.class, //
@@ -125,15 +125,15 @@ enum RunTabbedTaskGui {
       AntilockBrakeModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
-      GokartGeodesicTrajectoryModule.class, //
       FigureClothoidModule.class, //
-      MPCKinematicDrivingModule.class, //
+      FigurePureModule.class, //
       MPCDynamicDrivingModule.class, //
+      MPCKinematicDrivingModule.class, //
       GokartTrajectoryModule.class, //
+      GokartGeodesicTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       PIDModule.class, //
       PIDTestTrackModule.class, //
-      FigurePureModule.class, //
       GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //

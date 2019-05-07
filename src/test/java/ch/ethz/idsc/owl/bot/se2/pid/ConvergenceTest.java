@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.Pretty;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -48,9 +49,8 @@ public class ConvergenceTest extends TestCase {
       pose = Se2CoveringIntegrator.INSTANCE. // Euler
           spin(pose, vel.multiply(Quantity.of(dt, SI.SECOND)));
       stateTime = new StateTime(pose, stateTime.time().add(Quantity.of(dt, SI.SECOND)));
-      System.out.println(pose);
+      System.out.println(Pretty.of(pose));
       tableBuilder.appendRow(pose);
-      // System.out.println("angle out " + angleOut);
       // System.out.println(pidTrajectory.getProp());
       // System.out.println(pidTrajectory.getDeriv());
       // System.out.println("------------------_");

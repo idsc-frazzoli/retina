@@ -12,16 +12,16 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 public enum CurvePurePursuitHelper {
   ;
-  /** @param pose of vehicle
+  /** @param pose of vehicle {x[m], y[m], heading}
    * @param curve in world coordinates with points of the form {x[m], y[m], [...]}
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @param distance for instance PursuitConfig.GLOBAL.lookAhead with unit [m]
-   * @return ratio rate [rad*m^-1] */
+   * @return ratio rate [m^-1] */
   public static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward, Scalar distance) {
     return getRatio(pose, curve, true, isForward, distance);
   }
 
-  /** @param pose
+  /** @param pose {x[m], y[m], heading}
    * @param curve in world coordinates with points of the form {x[m], y[m], [...]}
    * @param closed
    * @param isForward

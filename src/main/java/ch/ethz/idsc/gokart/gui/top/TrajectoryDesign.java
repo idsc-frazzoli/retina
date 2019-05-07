@@ -25,11 +25,14 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
+import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Nest;
+import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.N;
 
 public class TrajectoryDesign extends CurvatureDemo {
+  private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   private static final Scalar COMB_SCALE = Quantity.of(-1.0, "m^2");
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
@@ -62,14 +65,22 @@ public class TrajectoryDesign extends CurvatureDemo {
       }
     });
     timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    timerFrame.jFrame.setVisible(true);
+  }
+
+  /** @param xya
+   * @return {x[m], y[m], angle in the interval [-pi, pi)} */
+  static Tensor se2CtoSe2WithUnits(Tensor xya) {
+    xya = PoseHelper.attachUnits(xya.map(N.DOUBLE));
+    xya.set(MOD_DISTANCE, 2);
+    return xya;
   }
 
   /** @return control points of the form {x[m], y[m], heading} */
   public Tensor getControlPointsPose() {
-    return Tensor.of(getControlPointsSe2().map(N.DOUBLE::of).stream().map(PoseHelper::attachUnits));
+    return Tensor.of(getControlPointsSe2().stream() //
+        .map(TrajectoryDesign::se2CtoSe2WithUnits));
   }
-  
+
   @Override
   public Tensor getControlPointShape() {
     return geodesicDisplay().shape().multiply(RealScalar.of(2));
@@ -97,5 +108,6 @@ public class TrajectoryDesign extends CurvatureDemo {
   public static void main(String[] args) {
     TrajectoryDesign trajectoryDesign = new TrajectoryDesign();
     trajectoryDesign.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    trajectoryDesign.timerFrame.jFrame.setVisible(true);
   }
 }

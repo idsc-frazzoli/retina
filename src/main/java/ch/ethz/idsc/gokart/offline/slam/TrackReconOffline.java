@@ -113,8 +113,8 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       BufferedImage bufferedImage = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
       double zoom = 3;
       GeometricLayer geometricLayer = GeometricLayer.of(Tensors.matrix(new Number[][] { //
-          { 7.5 * zoom, 0., -640 }, //
-          { 0., -7.5 * zoom, 640 + 640 }, //
+          { 7.5 * zoom, 0., -540 }, //
+          { 0., -7.5 * zoom, 540 + 640 }, //
           { 0., 0., 1. }, //
       }));
       final File file = new File(DIRECTORY, "fielddata" + count + ".csv");
@@ -132,7 +132,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       bayesianOccupancyGridThin.render(geometricLayer, graphics);
       gokartRender.render(geometricLayer, graphics);
       trackReconRender.render(geometricLayer, graphics);
-      trackLayoutInitialGuess.render(geometricLayer, graphics);
+      // trackLayoutInitialGuess.render(geometricLayer, graphics);
       // ---
       bayesianOccupancyGridThin.genObstacleMap();
       bayesianOccupancyGridThic.genObstacleMap();

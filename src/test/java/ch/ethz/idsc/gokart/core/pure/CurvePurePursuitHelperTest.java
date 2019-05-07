@@ -21,9 +21,7 @@ public class CurvePurePursuitHelperTest extends TestCase {
     // assertTrue(Clip.function( // for look ahead 3.9[m]
     // Quantity.of(-0.018, ""), //
     // Quantity.of(-0.016, "")).isInside(angle));
-    assertTrue(Clips.interval( //
-        Quantity.of(-0.014, ""), //
-        Quantity.of(-0.013, "")).isInside(angle));
+    assertTrue(Clips.interval(-0.014, -0.013).isInside(angle));
   }
 
   public void testSpecific2() throws Exception {
@@ -31,9 +29,7 @@ public class CurvePurePursuitHelperTest extends TestCase {
     Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
-    assertTrue(Clips.interval( //
-        Quantity.of(0.04, ""), //
-        Quantity.of(0.07, "")).isInside(angle));
+    assertTrue(Clips.interval(0.04, 0.07).isInside(angle));
   }
 
   public void testLookAheadFail() throws Exception {

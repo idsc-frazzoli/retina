@@ -65,13 +65,13 @@ public class PowerSteeringV2Module extends PowerSteeringBaseModule {
     Scalar latFrontLeftVel = axleConfiguration.wheel(0).adjoint(filteredVel).Get(1);
     Scalar latFrontRightVel = axleConfiguration.wheel(1).adjoint(filteredVel).Get(1);
     Scalar term1 = currangle.multiply(hapticSteerConfig.staticCompensation);
-    System.out.println(term1);
+    // System.out.println(term1);
     Scalar term2 = hapticSteerConfig.dynamicCompensationBoundaryClip().apply(//
         RealScalar.of(diffRelRckPos).multiply(hapticSteerConfig.dynamicCompensation));
-    System.out.println(term2);
+    // System.out.println(term2);
     Scalar term3 = hapticSteerConfig.latForceCompensationBoundaryClip().apply(//
         (latFrontLeftVel.add(latFrontRightVel)).multiply(hapticSteerConfig.latForceCompensation));
-    System.out.println(term3);
+    // System.out.println(term3);
     return SteerPutEvent.createOn(term1.add(term2).add(term3));
   }
 }

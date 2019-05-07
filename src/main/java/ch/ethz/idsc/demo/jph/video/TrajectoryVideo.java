@@ -60,7 +60,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       GeodesicCenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, SmoothingKernel.GAUSSIAN), 5);
   private static final Scalar METER2PIXEL = RealScalar.of(30);
   private static final ColorDataIndexed COLOR_DATA_INDEXED = ColorDataLists._097.cyclic();
-  final Tensor waypoints = Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, TrajectoryConfig.GLOBAL.getWaypoints(), 1);
+  final Tensor waypoints = Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, TrajectoryConfig.GLOBAL.getWaypointsPose(), 1);
   private static final Tensor ARROW_HEAD = Arrowhead.of(.4);
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);

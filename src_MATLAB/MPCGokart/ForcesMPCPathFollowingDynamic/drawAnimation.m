@@ -78,6 +78,9 @@ for iff = 1:frames
     plot(rbwpr(1,:),rbwpr(2,:),'-g');
     
     drawnow
+    if(mod(iff,10)==0)
+        print(strcat(num2str(iff),'trackbg.png'),'-dpng','-r600')
+    end
     F = getframe(gcf); 
     writeVideo(vidfile,F);
 end

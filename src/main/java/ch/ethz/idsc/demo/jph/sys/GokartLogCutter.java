@@ -11,14 +11,14 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
 /* package */ enum GokartLogCutter {
   ;
   public static void main(String[] args) throws IOException {
-    GokartLogFile gokartLogFile = GokartLogFile._20190309T160311_a9dcd8dc;
+    GokartLogFile gokartLogFile = GokartLogFile._20190507T094525_c817d5db;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
     // file = new File("/media/datahaki/media/ethz/gokartlogs/20190401", "20190401T115537_411917b6.lcm.00");
     // file = new File("/media/datahaki/media/ethz/gokart/topic/racing2r", "20180820T143852_1.lcm");
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //
         gokartLogFileIndexer, //
-        new File("/media/datahaki/data/gokart/cuts4"), //
+        new File("/media/datahaki/data/gokart/cuts5"), //
         gokartLogFile.getTitle());
   }
 }

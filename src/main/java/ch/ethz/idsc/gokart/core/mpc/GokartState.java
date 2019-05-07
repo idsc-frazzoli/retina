@@ -218,7 +218,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     return Quantity.of(Y, SI.METER);
   }
 
-  /** @return heading of vehicle with interpretation in radians */
+  /** @return heading of vehicle with interpretation in radian */
   public Scalar getPsi() {
     return RealScalar.of(Psi);
   }

@@ -6,11 +6,8 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.TabbedTaskGui;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
-/** Important: QuickStartGui only works when connected to the real gokart hardware.
- * 
- * the setup procedure for joystick control is detailed in
- * doc/gokart_software_setup.md */
-enum QuickStartGui {
+/** Important: QuickStartGui only works when connected to the real gokart hardware. */
+/* package */ enum QuickStartGui {
   ;
   public static void main(String[] args) {
     WindowConfiguration windowConfiguration = //
