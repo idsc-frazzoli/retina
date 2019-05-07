@@ -36,7 +36,7 @@ public enum CurveClothoidPursuitHelper {
    * @param trajectoryEntryFinder strategy to find best re-entry point
    * @param ratioLimits depending on pose and speed
    * @return geodesic plan */
-  static Optional<ClothoidPlan> getPlan( //
+  public static Optional<ClothoidPlan> getPlan( //
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {

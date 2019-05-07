@@ -8,7 +8,7 @@ import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/* package */ class ClothoidPlan {
+public class ClothoidPlan {
   private static final int REFINEMENT = 2;
 
   /** @param lookAhead
