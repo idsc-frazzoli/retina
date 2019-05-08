@@ -39,7 +39,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     if (!optional.isPresent())
       return Optional.empty();
     Tensor steering = optional.get();
-    Scalar theta = steerMapping.getAngleFromSCE(steering.Get(0)); // steering angle of imaginary front wheel
+    Scalar theta = steerMapping.getRatioFromSCE(steering.Get(0)); // steering angle of imaginary front wheel
     Scalar tangentialSpeed = mpcStateEstimationProvider.getState().getUx();
     // compute (negative) angular slip
     Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1

@@ -21,7 +21,7 @@ public class TrajectoryConfigTest extends TestCase {
   public void testSimple() {
     Scalar scalar = //
         Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation);
-    SteerConfig.GLOBAL.getAngleLimit().requireInside(Quantity.of(scalar, ""));
+    SteerConfig.GLOBAL.getRatioLimit().requireInside(Quantity.of(scalar, ""));
   }
 
   public void testCutoff() {

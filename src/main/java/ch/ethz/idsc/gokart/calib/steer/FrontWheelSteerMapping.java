@@ -27,17 +27,17 @@ public enum FrontWheelSteerMapping implements SteerMapping {
   }
 
   @Override // from SteerMapping
-  public Scalar getAngleFromSCE(SteerColumnInterface steerColumnInterface) {
-    return getAngleFromSCE(steerColumnInterface.getSteerColumnEncoderCentered());
+  public Scalar getRatioFromSCE(SteerColumnInterface steerColumnInterface) {
+    return getRatioFromSCE(steerColumnInterface.getSteerColumnEncoderCentered());
   }
 
   @Override // from SteerMapping
-  public Scalar getAngleFromSCE(Scalar scalar) {
+  public Scalar getRatioFromSCE(Scalar scalar) {
     return scalarUnaryOperator.apply(scalar);
   }
 
   @Override // from SteerMapping
-  public Scalar getSCEfromAngle(Scalar angle) {
+  public Scalar getSCEfromRatio(Scalar angle) {
     throw new UnsupportedOperationException();
   }
 }

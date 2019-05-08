@@ -66,7 +66,7 @@ public class RimoSlipTable implements OfflineTableSupplier {
             time.map(Magnitude.SECOND), //
             rpe.getTorque_Y_pair().map(Magnitude.ARMS), //
             rates.map(Magnitude.PER_SECOND), //
-            steerMapping.getAngleFromSCE(gse), //
+            steerMapping.getRatioFromSCE(gse), //
             speed.map(Magnitude.VELOCITY), //
             rate.map(Magnitude.PER_SECOND), //
             dif.gyroImageFrame().map(Magnitude.PER_SECOND) //

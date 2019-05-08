@@ -76,7 +76,7 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
    * @param gyroZ
    * @return */
   final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Scalar gyroZ) {
-    Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
+    Scalar theta = steerMapping.getRatioFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     // Scalar rotationPerMeterDriven = bicycleAngularSlip.rotationPerMeterDriven(theta); // m^-1
     // compute (negative) angular slip
     AngularSlip angularSlip = bicycleAngularSlip.getAngularSlip(theta, meanTangentSpeed, gyroZ);

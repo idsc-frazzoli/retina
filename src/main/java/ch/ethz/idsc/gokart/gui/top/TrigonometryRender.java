@@ -38,7 +38,7 @@ public class TrigonometryRender implements RenderInterface {
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
-      final Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
+      final Scalar angle = steerMapping.getRatioFromSCE(gokartStatusEvent); // <- calibration checked
       Optional<Scalar> optional = TurningGeometry.offset_y(ChassisGeometry.GLOBAL.xAxleRtoF, angle);
       if (optional.isPresent()) { // draw point of rotation when assuming no slip
         Scalar offset_y = Magnitude.METER.apply(optional.get());

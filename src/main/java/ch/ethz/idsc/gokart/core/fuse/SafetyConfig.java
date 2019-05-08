@@ -60,7 +60,7 @@ public class SafetyConfig {
   public ClearanceTracker getClearanceTracker(Scalar speed, GokartStatusEvent gokartStatusEvent) {
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
       SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-      Scalar angle = steerMapping.getAngleFromSCE(gokartStatusEvent);
+      Scalar angle = steerMapping.getRatioFromSCE(gokartStatusEvent);
       Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
       return new CircleClearanceTracker( //
           speed, half, angle, //

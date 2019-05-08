@@ -81,7 +81,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     purePursuitModule.runAlgo();
     assertTrue(purePursuitModule.purePursuitSteer.private_isOperational());
     assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
-    Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
+    Scalar heading = purePursuitModule.purePursuitSteer.getRatio();
     // System.out.println(heading);
     // assertEquals(Quantity.of(-0.013455281968592674, ""), heading);
     Clip clip = Clips.interval(Quantity.of(-0.02, ""), Quantity.of(-0.01, ""));
@@ -100,7 +100,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     purePursuitModule.runAlgo();
     assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
     assertFalse(purePursuitModule.purePursuitRimo.private_isOperational());
-    Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
+    Scalar heading = purePursuitModule.purePursuitSteer.getRatio();
     assertTrue(Scalars.isZero(heading));
     _checkFallback(purePursuitModule.purePursuitSteer.putEvent());
     assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
@@ -116,7 +116,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     purePursuitModule.runAlgo();
     assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
     assertFalse(purePursuitModule.purePursuitRimo.private_isOperational());
-    Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
+    Scalar heading = purePursuitModule.purePursuitSteer.getRatio();
     assertTrue(Scalars.isZero(heading));
     _checkFallback(purePursuitModule.purePursuitSteer.putEvent());
     assertFalse(purePursuitModule.purePursuitRimo.putEvent().isPresent());
@@ -134,7 +134,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     purePursuitModule.runAlgo();
     assertTrue(purePursuitModule.purePursuitSteer.private_isOperational());
     assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
-    Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
+    Scalar heading = purePursuitModule.purePursuitSteer.getRatio();
     // System.out.println(heading);
     Clip clip = Clips.interval(Quantity.of(-0.16, ""), Quantity.of(-0.12, ""));
     clip.requireInside(heading);
@@ -154,7 +154,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     purePursuitModule.runAlgo();
     assertTrue(purePursuitModule.purePursuitSteer.private_isOperational());
     assertTrue(purePursuitModule.purePursuitRimo.private_isOperational());
-    Scalar heading = purePursuitModule.purePursuitSteer.getHeading();
+    Scalar heading = purePursuitModule.purePursuitSteer.getRatio();
     // System.out.println(heading);
     Clip clip = Clips.interval(Quantity.of(-0.15, ""), Quantity.of(-0.10, ""));
     clip.requireInside(heading);

@@ -43,7 +43,7 @@ public class SteerTurnRender implements RenderInterface {
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(matrix);
     if (gokartStatusEvent.isSteerColumnCalibrated() && gokartPoseEvent.hasVelocity()) {
-      Scalar theta = steerMapping.getAngleFromSCE(gokartStatusEvent.getSteerColumnEncoderCentered());
+      Scalar theta = steerMapping.getRatioFromSCE(gokartStatusEvent.getSteerColumnEncoderCentered());
       graphics.setColor(Color.MAGENTA);
       graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, AngleVector.of(theta))));
       Scalar rotationRate = bicycleAngularSlip.wantedRotationRate(theta, gokartPoseEvent.getVelocity().Get(0));

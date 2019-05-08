@@ -17,7 +17,7 @@ public class GokartStatusEventTest extends TestCase {
     assertFalse(gokartStatusEvent.isSteerColumnCalibrated());
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
     try {
-      steerMapping.getAngleFromSCE(gokartStatusEvent);
+      steerMapping.getRatioFromSCE(gokartStatusEvent);
       fail();
     } catch (Exception exception) {
       // ---
@@ -28,7 +28,7 @@ public class GokartStatusEventTest extends TestCase {
     GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(0.1f);
     assertTrue(gokartStatusEvent.isSteerColumnCalibrated());
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-    Scalar scalar = steerMapping.getAngleFromSCE(gokartStatusEvent);
+    Scalar scalar = steerMapping.getRatioFromSCE(gokartStatusEvent);
     assertFalse(scalar instanceof Quantity);
     Clips.interval(0.05, 0.1).requireInside(scalar);
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4]);

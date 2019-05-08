@@ -89,7 +89,7 @@ public class AntilockBrakeCheckConditions extends AbstractModule implements Stee
         double velocityAngle = Math.atan2(Magnitude.VELOCITY.toDouble(velocityOrigin.Get(1)), Magnitude.VELOCITY.toDouble(velocityOrigin.Get(0)));
         // velocityAngle is in radian
         Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
-        Scalar angleGrad = steerMapping.getAngleFromSCE(angleSCE);
+        Scalar angleGrad = steerMapping.getRatioFromSCE(angleSCE);
         double angleGradDouble = Magnitude.DEGREE_ANGLE.toDouble(angleGrad);
         double angleDifference = (Math.abs(angleGradDouble) - Math.abs(velocityAngle));
         if (angleDifference > Magnitude.ONE.toDouble(hapticSteerConfig.criticalAngle())) {

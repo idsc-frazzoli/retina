@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.Tensors;
   static boolean isPathObstructed(SteerColumnInterface steerColumnInterface, FloatBuffer floatBuffer) {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
       SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-      Scalar angle = steerMapping.getAngleFromSCE(steerColumnInterface); // <- calibration checked
+      Scalar angle = steerMapping.getRatioFromSCE(steerColumnInterface); // <- calibration checked
       return isPathObstructed(angle, floatBuffer);
     }
     return true;
