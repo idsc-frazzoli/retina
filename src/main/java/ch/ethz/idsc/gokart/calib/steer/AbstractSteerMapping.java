@@ -15,17 +15,17 @@ public abstract class AbstractSteerMapping implements SteerMapping {
   }
 
   @Override // from SteerMapping
-  public final Scalar getAngleFromSCE(SteerColumnInterface steerColumnInterface) {
-    return getAngleFromSCE(steerColumnInterface.getSteerColumnEncoderCentered());
+  public final Scalar getRatioFromSCE(SteerColumnInterface steerColumnInterface) {
+    return getRatioFromSCE(steerColumnInterface.getSteerColumnEncoderCentered());
   }
 
   @Override // from SteerMapping
-  public final Scalar getAngleFromSCE(Scalar scalar) {
+  public final Scalar getRatioFromSCE(Scalar scalar) {
     return column2steer.apply(scalar);
   }
 
   @Override // from SteerMapping
-  public final Scalar getSCEfromAngle(Scalar angle) {
+  public final Scalar getSCEfromRatio(Scalar angle) {
     return steer2column.apply(angle);
   }
 }

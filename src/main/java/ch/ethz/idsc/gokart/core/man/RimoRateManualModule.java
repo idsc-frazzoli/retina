@@ -48,7 +48,7 @@ import ch.ethz.idsc.tensor.Scalar;
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
     Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(manualControlInterface.getAheadAverage());
-    Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface);
+    Scalar theta = steerMapping.getRatioFromSCE(steerColumnInterface);
     return rimoRateControllerWrap.iterate(speed, theta);
   }
 }

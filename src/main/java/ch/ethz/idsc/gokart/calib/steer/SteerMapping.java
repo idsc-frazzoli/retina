@@ -6,16 +6,15 @@ import ch.ethz.idsc.tensor.Scalar;
 
 public interface SteerMapping {
   /** @param steerColumnInterface
-   * @return angle of imaginary center front wheel without unit but with interpretation in radian
+   * @return turning ratio for every meter driven with unit [m^-1]
    * @throws Exception if {@link SteerColumnInterface#isSteerColumnCalibrated()} returns false */
-  Scalar getAngleFromSCE(SteerColumnInterface steerColumnInterface);
+  Scalar getRatioFromSCE(SteerColumnInterface steerColumnInterface);
 
   /** @param scalar with unit SCE
-   * @return angle of imaginary center front wheel without unit but with interpretation in radian */
-  Scalar getAngleFromSCE(Scalar scalar);
+   * @return turning ratio for every meter driven with unit [m^-1] */
+  Scalar getRatioFromSCE(Scalar scalar);
 
-  /** @param angle of imaginary center front wheel unitless with interpretation in radian
+  /** @param turning ratio for every meter driven with unit [m^-1]
    * @return steer column encoder value with unit "SCE" */
-  // FIXME JPH "fromAngle" in fact receives turning ratio m^-1 !?
-  Scalar getSCEfromAngle(Scalar angle);
+  Scalar getSCEfromRatio(Scalar ratio);
 }

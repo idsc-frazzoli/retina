@@ -9,8 +9,9 @@ import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
-import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO JPH there is nothing PurePursuit-specific in this class -> rename
 final class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
@@ -29,23 +30,23 @@ final class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 
-  private Scalar angle = RealScalar.of(0.0);
+  private Scalar ratio = Quantity.of(0.0, SI.PER_METER);
 
-  /** @param angle unitless with interpretation in radian */
-  /* package */ void setHeading(Scalar angle) {
-    this.angle = angle;
+  /** @param ratio of turning with unit [m^-1] */
+  /* package */ void setRatio(Scalar ratio) {
+    this.ratio = ratio;
   }
 
   // function testing
-  /* package */ Scalar getHeading() {
-    return angle;
+  /* package */ Scalar getRatio() {
+    return ratio;
   }
 
   /***************************************************/
   @Override // from PurePursuitBase
   Optional<SteerPutEvent> control(SteerColumnInterface steerColumnInterface) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-    Scalar desPos = steerMapping.getSCEfromAngle(angle);
+    Scalar desPos = steerMapping.getSCEfromRatio(ratio);
     Scalar difference = desPos.subtract(currAngle);
     Scalar torqueCmd = steerPositionController.iterate(difference);
     return Optional.of(SteerPutEvent.createOn(torqueCmd));

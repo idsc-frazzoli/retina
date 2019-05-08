@@ -12,8 +12,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class CubicSteerMapping extends AbstractSteerMapping {
   /** DO NOT MODIFY CONSTANTS BUT CREATE SECOND VERSION IF NEEDED */
   private static final SteerMapping INSTANCE = new CubicSteerMapping( //
-      Quantity.of(+0.9189766407706671, "SCE^-1"), Quantity.of(-0.5606503091815459, "SCE^-3"), //
-      Quantity.of(+0.9755773866318296, "SCE"), Quantity.of(+2.325797449027361, "SCE"));
+      Quantity.of(+0.9189766407706671, "SCE^-1*m^-1"), Quantity.of(-0.5606503091815459, "SCE^-3*m^-1"), //
+      Quantity.of(+0.9755773866318296, "SCE*m"), Quantity.of(+2.325797449027361, "SCE*m^3"));
 
   public static SteerMapping instance() {
     return INSTANCE;

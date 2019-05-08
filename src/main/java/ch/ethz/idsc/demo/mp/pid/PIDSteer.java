@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.Scalar;
   public Optional<SteerPutEvent> putEvent() {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-      Scalar desPos = steerMapping.getSCEfromAngle(heading);
+      Scalar desPos = steerMapping.getSCEfromRatio(heading);
       Scalar difference = desPos.subtract(currAngle);
       Scalar torqueCmd = steerPositionController.iterate(difference);
       return Optional.of(SteerPutEvent.createOn(torqueCmd));

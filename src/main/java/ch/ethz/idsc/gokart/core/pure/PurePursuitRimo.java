@@ -51,7 +51,7 @@ class PurePursuitRimo extends PurePursuitBase<RimoPutEvent> {
   Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface) {
     return rimoRateControllerWrap.iterate( //
         speed, // average target velocity
-        steerMapping.getAngleFromSCE(steerColumnInterface)); // steering angle
+        steerMapping.getRatioFromSCE(steerColumnInterface)); // steering angle
   }
 
   @Override // from PurePursuitBase

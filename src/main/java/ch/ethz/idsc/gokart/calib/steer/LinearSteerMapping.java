@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /** the linear steer mapping was in use from 2017-12 until at least 2018-09 */
 public enum LinearSteerMapping implements SteerMapping {
   /** conversion factor from measured steer column angle to front wheel angle */
-  INSTANCE(Quantity.of(0.6, "SCE^-1"));
+  INSTANCE(Quantity.of(0.6, "SCE^-1*m^-1"));
   // ---
   private final Scalar column2steer;
 
@@ -19,17 +19,17 @@ public enum LinearSteerMapping implements SteerMapping {
   }
 
   @Override // from SteerMapping
-  public Scalar getAngleFromSCE(SteerColumnInterface steerColumnInterface) {
-    return getAngleFromSCE(steerColumnInterface.getSteerColumnEncoderCentered());
+  public Scalar getRatioFromSCE(SteerColumnInterface steerColumnInterface) {
+    return getRatioFromSCE(steerColumnInterface.getSteerColumnEncoderCentered());
   }
 
   @Override // from SteerMapping
-  public Scalar getAngleFromSCE(Scalar scalar) {
+  public Scalar getRatioFromSCE(Scalar scalar) {
     return scalar.multiply(column2steer);
   }
 
   @Override // from SteerMapping
-  public Scalar getSCEfromAngle(Scalar angle) {
-    return angle.divide(column2steer);
+  public Scalar getSCEfromRatio(Scalar ratio) {
+    return ratio.divide(column2steer);
   }
 }
