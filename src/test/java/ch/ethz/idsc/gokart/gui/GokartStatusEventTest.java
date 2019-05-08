@@ -6,8 +6,8 @@ import java.nio.ByteOrder;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
@@ -29,8 +29,7 @@ public class GokartStatusEventTest extends TestCase {
     assertTrue(gokartStatusEvent.isSteerColumnCalibrated());
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
     Scalar scalar = steerMapping.getRatioFromSCE(gokartStatusEvent);
-    assertFalse(scalar instanceof Quantity);
-    Clips.interval(0.05, 0.1).requireInside(scalar);
+    Clips.interval(0.05, 0.1).requireInside(Magnitude.PER_METER.apply(scalar));
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4]);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     gokartStatusEvent.insert(byteBuffer);

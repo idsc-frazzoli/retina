@@ -1,16 +1,12 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
-import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.owl.car.math.ClearanceTracker;
-import ch.ethz.idsc.owl.car.math.EmptyClearanceTracker;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
@@ -57,16 +53,11 @@ public class SafetyConfig {
   /** @param speed
    * @param gokartStatusEvent non-null
    * @return */
-  public ClearanceTracker getClearanceTracker(Scalar speed, GokartStatusEvent gokartStatusEvent) {
-    if (gokartStatusEvent.isSteerColumnCalibrated()) {
-      SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-      Scalar angle = steerMapping.getRatioFromSCE(gokartStatusEvent);
-      Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
-      return new CircleClearanceTracker( //
-          speed, half, angle, //
-          PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose), getClearanceClip());
-    }
-    return EmptyClearanceTracker.INSTANCE;
+  public ClearanceTracker getClearanceTracker(Scalar speed, Scalar ratio) {
+    Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
+    return new CircleClearanceTracker( //
+        speed, half, ratio, //
+        PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose), getClearanceClip());
   }
 
   /** convenient way for the application layer to obtain an instance
