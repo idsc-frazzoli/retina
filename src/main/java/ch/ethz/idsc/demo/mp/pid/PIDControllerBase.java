@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.Scalar;
   public final void runAlgo() {
     Optional<Scalar> heading = deriveHeading();
     if (heading.isPresent())
-      pidSteer.setHeading(heading.get());
+      pidSteer.setRatio(heading.get());
   }
 
   @Override // from AbstractModule
