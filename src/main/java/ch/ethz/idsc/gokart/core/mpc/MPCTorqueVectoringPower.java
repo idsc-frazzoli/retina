@@ -9,7 +9,6 @@ import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedPredictiveTorqueVectoring
 import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.tensor.Scalar;
@@ -17,7 +16,6 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ class MPCTorqueVectoringPower extends MPCPower {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  private final BicycleAngularSlip bicycleAngularSlip = ChassisGeometry.GLOBAL.getBicycleAngularSlip();
   private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
       new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
   private final MPCSteering mpcSteering;
@@ -37,12 +35,12 @@ import ch.ethz.idsc.tensor.Tensor;
     Optional<Tensor> optional = mpcSteering.getSteering(time);
     if (!optional.isPresent())
       return Optional.empty();
-    Scalar theta = steerMapping.getRatioFromSCE(optional.get().Get(0)); // steering angle of imaginary front wheel
+    Scalar ratio = steerMapping.getRatioFromSCE(optional.get().Get(0)); // steering angle of imaginary front wheel
     Scalar tangentialSpeed = mpcStateEstimationProvider.getState().getUx();
     // compute (negative) angular slip
     Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
     Scalar wantedAcceleration = cnsStep.gokartControl().getaB();
-    AngularSlip angularSlip = bicycleAngularSlip.getAngularSlip(theta, tangentialSpeed, gyroZ);
+    AngularSlip angularSlip = BicycleAngularSlip.getAngularSlip(tangentialSpeed, ratio, gyroZ);
     return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(angularSlip, wantedAcceleration));
   }
 }

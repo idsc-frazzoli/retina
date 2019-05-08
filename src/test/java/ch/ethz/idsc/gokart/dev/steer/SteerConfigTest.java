@@ -29,7 +29,7 @@ public class SteerConfigTest extends TestCase {
   public void testAngleLimit() {
     Clip clip = SteerConfig.GLOBAL.getRatioLimit();
     assertEquals(clip.min(), clip.max().negate());
-    clip.requireInside(RealScalar.of(0.37));
+    clip.requireInside(Quantity.of(0.37, SI.PER_METER));
   }
 
   public void testConversion() {
@@ -38,12 +38,16 @@ public class SteerConfigTest extends TestCase {
     assertTrue(clip.isInside(radius));
   }
 
-  public void testTurningAtLimitCubic() {
+  public void testTurningAtLimit() {
     // according to our model
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(SteerConfig.GLOBAL.turningRatioMax);
-    // angle == 0.4521892315592385[rad]
+    // angle == 0.4521892315592385
+    Clips.interval(0.45, 0.455).requireInside(angle);
+  }
+
+  public void testTurningAtLimitCubic() {
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-    Scalar encoder = steerMapping.getSCEfromRatio(angle);
+    Scalar encoder = steerMapping.getSCEfromRatio(SteerConfig.GLOBAL.turningRatioMax);
     // encoder == 0.6561921674138146[SCE]
     // our simple, linear steering model tells us an encoder value outside the max range
     // conclusion: we should build a more accurate model that maps [encoder <-> effective steering angle]

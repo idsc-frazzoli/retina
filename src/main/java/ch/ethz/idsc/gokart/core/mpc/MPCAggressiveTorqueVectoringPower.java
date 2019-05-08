@@ -9,7 +9,6 @@ import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedPredictiveTorqueVectoring
 import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.tensor.Scalar;
@@ -17,7 +16,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
 /* package */ class MPCAggressiveTorqueVectoringPower extends MPCPower {
-  private final BicycleAngularSlip bicycleAngularSlip = ChassisGeometry.GLOBAL.getBicycleAngularSlip();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
       new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
@@ -39,7 +37,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     if (!optional.isPresent())
       return Optional.empty();
     Tensor steering = optional.get();
-    Scalar theta = steerMapping.getRatioFromSCE(steering.Get(0)); // steering angle of imaginary front wheel
+    Scalar ratio = steerMapping.getRatioFromSCE(steering.Get(0)); // steering angle of imaginary front wheel
     Scalar tangentialSpeed = mpcStateEstimationProvider.getState().getUx();
     // compute (negative) angular slip
     Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
@@ -48,7 +46,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar midpoint = (Scalar) Mean.of(minmax);
     // more tame version
-    AngularSlip angularSlip = bicycleAngularSlip.getAngularSlip(theta, tangentialSpeed, gyroZ);
+    AngularSlip angularSlip = BicycleAngularSlip.getAngularSlip(tangentialSpeed, ratio, gyroZ);
     return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(angularSlip, Ramp.FUNCTION.apply(wantedAcceleration)));
   }
 }

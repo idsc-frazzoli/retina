@@ -5,7 +5,6 @@ import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.owl.car.math.AckermannSteering;
-import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owl.car.math.TurningGeometry;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -20,6 +19,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.ArcTan;
+import ch.ethz.idsc.tensor.sca.Tan;
 
 /** parameters in this config class are final because they
  * correspond to immutable characteristic of the gokart.
@@ -79,10 +79,6 @@ public class ChassisGeometry {
     return new AckermannSteering(xAxleRtoF, yTireFront);
   }
 
-  public BicycleAngularSlip getBicycleAngularSlip() {
-    return new BicycleAngularSlip(xAxleRtoF);
-  }
-
   /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r
    * inverse function of {@link TurningGeometry}
    * @param ratio [m^-1]
@@ -90,6 +86,13 @@ public class ChassisGeometry {
    * @return steering angle unitless */
   public Scalar steerAngleForTurningRatio(Scalar ratio) {
     return ArcTan.of(xAxleRtoF.multiply(ratio));
+  }
+
+  /** @param theta steering angle of imaginary front wheel
+   * @return scalar with unit m^-1 */
+  public Scalar rotationPerMeterDriven(Scalar theta) {
+    // theta has interpretation in rad/m but is encoded in true SI units: "m^-1"
+    return Tan.FUNCTION.apply(theta).divide(xAxleRtoF); // m^-1
   }
 
   /** @param rimoGetEvent
