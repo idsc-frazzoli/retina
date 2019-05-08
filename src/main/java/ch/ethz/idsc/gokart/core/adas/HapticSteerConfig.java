@@ -7,7 +7,6 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -20,8 +19,8 @@ public class HapticSteerConfig {
   public Scalar staticCompensation = Quantity.of(0.6, "SCT*SCE^-1");
   public Scalar dynamicCompensation = Quantity.of(90, "SCT");
   public Scalar dynamicCompensationBoundary = Quantity.of(0.1, "SCT");
-  public Scalar latForceCompensation = Quantity.of(0.1, "SCT*s*m^-1");
-  public Scalar latForceCompensationBoundary = Quantity.of(3, "SCT");
+  public Scalar latForceCompensation = Quantity.of(0.1, "SCT*s*m^-1"); // so far 0.2
+  public Scalar latForceCompensationBoundary = Quantity.of(3, "SCT"); // 5
   public Scalar velocityFilter = RealScalar.of(0.4);
   /** Constant Torque for Experiment */
   @FieldSubdivide(start = "-7/10[SCT]", end = "7/10[SCT]", intervals = 14)
