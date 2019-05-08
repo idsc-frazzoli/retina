@@ -11,6 +11,7 @@ public class SelfCalibratingBrakeFunction extends AbstractBrakeFunction {
 
   @Override // from AbstractBrakeFunction
   Scalar getDeceleration(Scalar brakingPosition) {
+    // TODO JPH test
     return getDeceleration(brakingPosition, curveCorrectionFactor);
   }
 
