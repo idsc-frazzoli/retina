@@ -10,14 +10,14 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
-/* package */ enum CurvePurePursuitHelper {
+public enum CurvePurePursuitHelper {
   ;
   /** @param pose of vehicle {x[m], y[m], heading}
    * @param curve in world coordinates with points of the form {x[m], y[m], [...]}
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @param distance for instance PursuitConfig.GLOBAL.lookAhead with unit [m]
    * @return ratio rate [m^-1] */
-  static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward, Scalar distance) {
+  public static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean isForward, Scalar distance) {
     return getRatio(pose, curve, true, isForward, distance);
   }
 
@@ -27,7 +27,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
    * @param isForward
    * @param distance
    * @return */
-  static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean closed, boolean isForward, Scalar distance) {
+  public static Optional<Scalar> getRatio(Tensor pose, Tensor curve, boolean closed, boolean isForward, Scalar distance) {
     TensorUnaryOperator toLocal = new Se2Bijection(pose).inverse();
     Tensor tensor = Tensor.of(curve.stream().map(toLocal));
     if (!isForward) { // if measured tangent speed is negative
