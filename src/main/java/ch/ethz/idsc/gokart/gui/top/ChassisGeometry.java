@@ -81,8 +81,8 @@ public class ChassisGeometry {
 
   /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r
    * inverse function of {@link TurningGeometry}
-   * @param ratio [m^-1]
-   * see for instance SteerConfig.GLOBAL.turningRatioMax
+   * 
+   * @param ratio [m^-1] see for instance SteerConfig.GLOBAL.turningRatioMax
    * @return steering angle unitless */
   public Scalar steerAngleForTurningRatio(Scalar ratio) {
     return ArcTan.of(xAxleRtoF.multiply(ratio));
