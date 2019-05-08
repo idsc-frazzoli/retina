@@ -18,8 +18,7 @@ import ch.ethz.idsc.demo.mp.pid.PIDTestTrackModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
-import ch.ethz.idsc.gokart.core.adas.PowerSteeringV1Module;
-import ch.ethz.idsc.gokart.core.adas.PowerSteeringV2Module;
+import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
@@ -118,8 +117,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       DriftThrustManualModule.class, //
       ImprovedNormalizedTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
-      PowerSteeringV1Module.class, //
-      PowerSteeringV2Module.class, //
+      PowerSteeringModule.class, //
       SteeringExperimentModule.class, //
       AntilockBrakeCheckConditions.class, //
       AntilockBrakeModule.class //
