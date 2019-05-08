@@ -7,9 +7,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class BicycleAngularSlipTest extends TestCase {
+public class AngularSlipTest extends TestCase {
   public void testSimple() {
-    AngularSlip scalar = BicycleAngularSlip.getAngularSlip( //
+    AngularSlip scalar = new AngularSlip( //
         Quantity.of(2, SI.VELOCITY), //
         Quantity.of(0.37, SI.PER_METER), //
         Quantity.of(0.4, SI.PER_SECOND));

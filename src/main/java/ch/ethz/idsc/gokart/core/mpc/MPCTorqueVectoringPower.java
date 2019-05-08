@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
-import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -40,7 +39,7 @@ import ch.ethz.idsc.tensor.Tensor;
     // compute (negative) angular slip
     Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
     Scalar wantedAcceleration = cnsStep.gokartControl().getaB();
-    AngularSlip angularSlip = BicycleAngularSlip.getAngularSlip(tangentialSpeed, ratio, gyroZ);
+    AngularSlip angularSlip = new AngularSlip(tangentialSpeed, ratio, gyroZ);
     return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(angularSlip, wantedAcceleration));
   }
 }

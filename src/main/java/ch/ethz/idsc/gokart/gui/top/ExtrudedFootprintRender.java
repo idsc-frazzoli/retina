@@ -21,6 +21,7 @@ import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -54,8 +55,8 @@ public class ExtrudedFootprintRender implements RenderInterface {
       Scalar YHW = ChassisGeometry.GLOBAL.yHalfWidthMeter(); // half width
       final Tensor p1;
       final Tensor p2;
-      final Scalar angle = steerMapping.getRatioFromSCE(gokartStatusEvent); // <- calibration checked
-      if (Sign.isPositive(angle)) {
+      final Scalar ratio = steerMapping.getRatioFromSCE(gokartStatusEvent); // <- calibration checked
+      if (Sign.isPositive(ratio)) {
         p1 = Tensors.of(RealScalar.ZERO, YHW, RealScalar.ONE);
         p2 = Tensors.of(XAD, YHW.negate(), RealScalar.ONE);
       } else {
@@ -65,7 +66,7 @@ public class ExtrudedFootprintRender implements RenderInterface {
       // center of rear axle
       StateTime CENTER = new StateTime(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
       {
-        final Flow flow_forward = singleton(RealScalar.ONE, angle);
+        final Flow flow_forward = singleton(RealScalar.ONE, Magnitude.PER_METER.apply(ratio));
         final Tensor center_forward = //
             Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
@@ -80,7 +81,7 @@ public class ExtrudedFootprintRender implements RenderInterface {
         graphics.draw(geometricLayer.toPath2D(w2));
       }
       {
-        final Flow flow_reverse = singleton(RealScalar.ONE.negate(), angle);
+        final Flow flow_reverse = singleton(RealScalar.ONE.negate(), Magnitude.PER_METER.apply(ratio));
         final Tensor center_reverse = //
             Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
@@ -98,8 +99,11 @@ public class ExtrudedFootprintRender implements RenderInterface {
     }
   }
 
-  /* package for testing */ static Flow singleton(Scalar speed, Tensor rate) {
+  /** @param speed [m*s^-1]
+   * @param ratio [m^-1]
+   * @return */
+  /* package for testing */ static Flow singleton(Scalar speed, Tensor ratio) {
     return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, //
-        N.DOUBLE.of(Tensors.of(speed, RealScalar.ZERO, rate.multiply(speed))));
+        N.DOUBLE.of(Tensors.of(speed, speed.zero(), ratio.multiply(speed))));
   }
 }
