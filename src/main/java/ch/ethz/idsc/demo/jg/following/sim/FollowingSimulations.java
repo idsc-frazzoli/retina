@@ -10,17 +10,14 @@ import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
+import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.ArgMax;
-import ch.ethz.idsc.tensor.red.ArgMin;
-import ch.ethz.idsc.tensor.sca.Chop;
-import ch.ethz.idsc.tensor.sca.Clip;
-import ch.ethz.idsc.tensor.sca.Clips;
+import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 public enum FollowingSimulations implements ErrorInterface {
@@ -78,14 +75,9 @@ public enum FollowingSimulations implements ErrorInterface {
     return Optional.ofNullable(ratios);
   }
 
-  /** @return clip of min to max ratio [m^-1] */
-  public Optional<Clip> ratioRange() {
-    if (ratios().isPresent()) {
-      int idx_min = ArgMin.of(ratios);
-      int idx_max = ArgMax.of(ratios);
-      return Optional.of(Clips.interval(ratios.Get(idx_min), ratios.Get(idx_max)));
-    }
-    return Optional.empty();
+  /** @return min and max ratio [m^-1] */
+  public Optional<MinMax> ratioRange() {
+    return ratios().map(MinMax::of);
   }
 
   @Override // from ErrorInterface
@@ -100,10 +92,10 @@ public enum FollowingSimulations implements ErrorInterface {
 
   @Override // from ErrorInterface
   public String getReport() {
-    Optional<Clip> ratioRange = ratioRange();
+    Optional<MinMax> ratioRange = ratioRange();
     if (ratioRange.isPresent())
       return followingError.getReport() + //
-          "\n\tratios:\tmin = " + Chop._04.of(ratioRange.get().min()) + ", max = " + Chop._04.of(ratioRange.get() .max());
+          "\n\tratios:\tmin = " + Round._4.apply(ratioRange.get().min().Get()) + ", max = " + Round._4.apply(ratioRange.get().max().Get());
     return " not yet run";
   }
 
