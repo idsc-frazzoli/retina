@@ -33,7 +33,7 @@ class MapSingular implements TensorScalarFunction {
 }
 
 public class Se2AxisYProject implements TensorScalarFunction {
-  /** @param u == {vx, 0, rate} with units {[m*s^-1], ?, [rad*s^-1]}
+  /** @param u == {vx, 0, rate} with units {[m*s^-1], ?, [s^-1]}
    * @param p == {px, py} with units {[m], [m]}
    * @return time to arrival of a point on the y axis that is subject to flow x to reach p.
    * negative return values are also possible. */
