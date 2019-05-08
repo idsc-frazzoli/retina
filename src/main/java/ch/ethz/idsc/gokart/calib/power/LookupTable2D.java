@@ -124,6 +124,7 @@ public class LookupTable2D implements Serializable {
    * @param otherValue the value that is set at the other dimension
    * @return a tensor containing the minimum and maximum value along the dimension */
   public Tensor getExtremalValues1(Scalar otherValue) {
+    // TODO JPH test
     return Tensors.of( //
         lookup(otherValue, clip1.min()), //
         lookup(otherValue, clip1.max()));

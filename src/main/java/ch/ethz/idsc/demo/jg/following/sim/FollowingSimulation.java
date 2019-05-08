@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitHelper;
 import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
@@ -78,7 +79,7 @@ public class FollowingSimulation {
     return CurveClothoidPursuitHelper.getPlan(pose, SPEED, CURVE, //
         Sign.isPositiveOrZero(SPEED), //
         PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-        PursuitConfig.ratioLimits()).map(p -> p.ratio);
+        PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
   }
 
   /** @param tensor to be exported
