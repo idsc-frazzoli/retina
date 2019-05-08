@@ -16,5 +16,6 @@ public interface SteerMapping {
 
   /** @param angle of imaginary center front wheel unitless with interpretation in radian
    * @return steer column encoder value with unit "SCE" */
+  // FIXME JPH "fromAngle" in fact receives turning ratio m^-1 !?
   Scalar getSCEfromAngle(Scalar angle);
 }

@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
-import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
+import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
@@ -98,8 +98,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   final CurvePursuitModule curvePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
-  private final AbstractMapping mapping = // SightLineMapping.defaultObstacle();
-      GenericBayesianMapping.createObstacleMapping();
+  /** sight lines mapping was successfully used for trajectory planning in a demo on 20190507 */
+  private final AbstractMapping mapping = SightLinesMapping.defaultObstacle();
+  // GenericBayesianMapping.createObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   /** waypoints are stored without units */
