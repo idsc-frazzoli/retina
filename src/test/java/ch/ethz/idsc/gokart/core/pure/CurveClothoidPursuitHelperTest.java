@@ -22,7 +22,7 @@ public class CurveClothoidPursuitHelperTest extends TestCase {
     Optional<Scalar> optional = CurveClothoidPursuitHelper.getPlan( //
         pose, speed, DubendorfCurve.TRACK_OVAL_SE2, true, //
         PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-        PursuitConfig.ratioLimits()).map(plan -> plan.ratio);
+        PursuitConfig.ratioLimits()).map(plan -> plan.ratio());
     Scalar ratio = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
     System.out.println("angle=" + angle);
@@ -36,7 +36,7 @@ public class CurveClothoidPursuitHelperTest extends TestCase {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 0.9}");
     Scalar speed = Quantity.of(1, SI.VELOCITY);
     Optional<Scalar> optional = CurveClothoidPursuitHelper.getPlan(pose, speed, DubendorfCurve.TRACK_OVAL_SE2, true, //
-        PursuitConfig.GLOBAL.trajectoryEntryFinder, PursuitConfig.ratioLimits()).map(plan -> plan.ratio);
+        PursuitConfig.GLOBAL.trajectoryEntryFinder, PursuitConfig.ratioLimits()).map(plan -> plan.ratio());
     Scalar ratio = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
     // FIXME GJOEL/JPH strange different values!!!

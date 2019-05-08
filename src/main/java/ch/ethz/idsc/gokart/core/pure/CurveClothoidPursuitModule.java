@@ -31,8 +31,8 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule {
           pursuitConfig.trajectoryEntryFinder, //
           PursuitConfig.ratioLimits());
       if (Objects.nonNull(globalViewLcmModule))
-        globalViewLcmModule.setPlan(plan.map(p -> p.curve).orElse(null));
-      return plan.map(p -> p.ratio);
+        globalViewLcmModule.setPlan(plan.map(ClothoidPlan::curve).orElse(null));
+      return plan.map(ClothoidPlan::ratio);
     }
     System.err.println("no curve in geodesic pursuit");
     return Optional.empty();
