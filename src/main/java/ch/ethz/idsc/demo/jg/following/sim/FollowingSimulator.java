@@ -1,8 +1,6 @@
 // code by gjoel
 package ch.ethz.idsc.demo.jg.following.sim;
 
-import javax.swing.JButton;
-import javax.swing.WindowConstants;
 import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -15,6 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
+
+import javax.swing.JButton;
+import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.gui.top.GeneralImageRender;
 import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
@@ -48,7 +49,8 @@ public class FollowingSimulator extends TrajectoryDesignModule {
   // ---
   private final Map<String, FollowingSimulations> map = new HashMap<>();
   private final RenderInterface renderInterface = new RenderInterface() {
-    @Override public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    @Override
+    public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
       int i = 0;
       for (Map.Entry<String, FollowingSimulations> entry : map.entrySet()) {
         Optional<Tensor> trail = entry.getValue().trail();

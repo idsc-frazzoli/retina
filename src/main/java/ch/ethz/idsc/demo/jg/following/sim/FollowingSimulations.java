@@ -36,7 +36,6 @@ public enum FollowingSimulations implements ErrorInterface {
           PursuitConfig.ratioLimits()).map(p -> p.ratio);
     }
   };
-
   private Tensor trail;
   private Tensor ratios;
   private FollowingError followingError;
