@@ -36,7 +36,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEvent> //
     implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  private final BicycleAngularSlip bicycleAngularSlip = ChassisGeometry.GLOBAL.getBicycleAngularSlip();
   private final TorqueVectoringInterface torqueVectoringInterface;
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = //
       ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
@@ -76,10 +75,10 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
    * @param gyroZ
    * @return */
   final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Scalar gyroZ) {
-    Scalar theta = steerMapping.getAngleFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
+    Scalar ratio = steerMapping.getRatioFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     // Scalar rotationPerMeterDriven = bicycleAngularSlip.rotationPerMeterDriven(theta); // m^-1
     // compute (negative) angular slip
-    AngularSlip angularSlip = bicycleAngularSlip.getAngularSlip(theta, meanTangentSpeed, gyroZ);
+    AngularSlip angularSlip = BicycleAngularSlip.getAngularSlip(meanTangentSpeed, ratio, gyroZ);
     // ---
     Tensor powers = torqueVectoringInterface.powers(angularSlip, power);
     Tensor torquesARMS = powers.multiply(ManualConfig.GLOBAL.torqueLimit); // vector of length 2

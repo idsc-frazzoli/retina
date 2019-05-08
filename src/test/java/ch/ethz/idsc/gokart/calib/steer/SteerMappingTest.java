@@ -6,7 +6,8 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -24,10 +25,10 @@ public class SteerMappingTest extends TestCase {
 
   public void testAdvancedFormulaCenter() {
     for (SteerMapping steerMapping : STEER_MAPPINGS) {
-      Scalar angle = steerMapping.getAngleFromSCE( //
+      Scalar angle = steerMapping.getRatioFromSCE( //
           new SteerColumnAdapter(true, Quantity.of(0, "SCE")));
-      assertEquals(angle, RealScalar.ZERO);
-      Scalar sce = steerMapping.getSCEfromAngle(angle);
+      assertEquals(angle, Quantity.of(0, SI.PER_METER));
+      Scalar sce = steerMapping.getSCEfromRatio(angle);
       assertTrue(Scalars.isZero(sce));
     }
   }
@@ -35,11 +36,11 @@ public class SteerMappingTest extends TestCase {
   public void testAdvancedFormulaSign() {
     for (SteerMapping steerMapping : STEER_MAPPINGS) {
       Scalar sceIn = Quantity.of(0.1, "SCE");
-      Scalar angle = steerMapping.getAngleFromSCE( //
+      Scalar ratio = steerMapping.getRatioFromSCE( //
           new SteerColumnAdapter(true, sceIn));
-      assertTrue(Sign.isPositive(angle));
-      Clips.interval(.05, .1).requireInside(angle);
-      Scalar sce = steerMapping.getSCEfromAngle(angle);
+      assertTrue(Sign.isPositive(ratio));
+      Clips.interval(.05, .1).requireInside(Magnitude.PER_METER.apply(ratio));
+      Scalar sce = steerMapping.getSCEfromRatio(ratio);
       assertTrue(Scalars.lessThan(sce.subtract(sceIn).abs(), Quantity.of(0.01, "SCE")));
     }
   }
@@ -47,18 +48,18 @@ public class SteerMappingTest extends TestCase {
   public void testAdvancedFormulaNegative() {
     for (SteerMapping steerMapping : STEER_MAPPINGS) {
       Scalar sceIn = Quantity.of(-0.7, "SCE");
-      Scalar angle = steerMapping.getAngleFromSCE( //
+      Scalar ratio = steerMapping.getRatioFromSCE( //
           new SteerColumnAdapter(true, sceIn));
-      assertTrue(Sign.isNegative(angle));
-      Clips.interval(-.5, -.4).requireInside(angle);
-      Scalar sce = steerMapping.getSCEfromAngle(angle);
+      assertTrue(Sign.isNegative(ratio));
+      Clips.interval(-.5, -.4).requireInside(Magnitude.PER_METER.apply(ratio));
+      Scalar sce = steerMapping.getSCEfromRatio(ratio);
       assertTrue(Scalars.lessThan(sce.subtract(sceIn).abs(), Quantity.of(0.05, "SCE")));
     }
   }
 
   public void testExtremePos() {
     for (SteerMapping steerMapping : STEER_MAPPINGS) {
-      Scalar q = steerMapping.getSCEfromAngle(Quantity.of(+0.45, ""));
+      Scalar q = steerMapping.getSCEfromRatio(Quantity.of(+0.45, SI.PER_METER));
       assertEquals(QuantityUnit.of(q), Unit.of("SCE"));
       assertTrue(0.64 < q.number().doubleValue());
     }
@@ -66,7 +67,7 @@ public class SteerMappingTest extends TestCase {
 
   public void testExtremeNeg() {
     for (SteerMapping steerMapping : STEER_MAPPINGS) {
-      Scalar q = steerMapping.getSCEfromAngle(Quantity.of(-0.45, ""));
+      Scalar q = steerMapping.getSCEfromRatio(Quantity.of(-0.45, "m^-1"));
       assertEquals(QuantityUnit.of(q), Unit.of("SCE"));
       assertTrue(q.number().doubleValue() < -0.64);
     }

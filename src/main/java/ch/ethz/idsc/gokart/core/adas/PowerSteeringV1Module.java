@@ -81,7 +81,7 @@ public class PowerSteeringV1Module extends PowerSteeringBaseModule {
         Tensor frontTireVelocityRight = velocity.add(crossProductRight);
         // angle between front and velocity
         Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
-        Scalar angleGrad = steerMapping.getAngleFromSCE(angleSCE);
+        Scalar angleGrad = steerMapping.getRatioFromSCE(angleSCE);
         Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(angleGrad);
         Scalar angleL = pair.Get(0);
         Scalar angleR = pair.Get(1);

@@ -30,6 +30,6 @@ public class HtmlLogReportTest extends TestCase {
     File target = new File(root, cachedLog.title());
     target.mkdirs();
     new HtmlLogReport(gokartLcmMap, cachedLog.title(), target);
-    DeleteDirectory.of(root, 3, 30);
+    DeleteDirectory.of(root, 3, 60);
   }
 }

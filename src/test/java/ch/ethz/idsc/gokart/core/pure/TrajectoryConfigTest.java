@@ -13,15 +13,15 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.UnitSystem;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class TrajectoryConfigTest extends TestCase {
   public void testSimple() {
-    Scalar scalar = //
-        Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation);
-    SteerConfig.GLOBAL.getAngleLimit().requireInside(Quantity.of(scalar, ""));
+    Scalar scalar = UnitSystem.SI().apply(TrajectoryConfig.GLOBAL.maxRotation);
+    SteerConfig.GLOBAL.getRatioLimit().requireInside(scalar);
   }
 
   public void testCutoff() {

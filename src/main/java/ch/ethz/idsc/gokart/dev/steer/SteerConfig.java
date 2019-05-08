@@ -67,8 +67,8 @@ public class SteerConfig {
   }
 
   /** @return */
-  public Clip getAngleLimit() {
-    Scalar angleMax = getSteerMapping().getAngleFromSCE(columnMax);
-    return Clips.interval(angleMax.negate(), angleMax);
+  public Clip getRatioLimit() {
+    Scalar ratioMax = getSteerMapping().getRatioFromSCE(columnMax);
+    return Clips.interval(ratioMax.negate(), ratioMax);
   }
 }

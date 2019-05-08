@@ -9,12 +9,15 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -25,6 +28,7 @@ import ch.ethz.idsc.tensor.Tensors;
 /** renders point of rotation as small dot in plane */
 // TODO class could be improved a lot: filter points in listener
 class Vlp16ClearanceRender extends LidarRender {
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private GokartStatusEvent gokartStatusEvent;
   public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
   private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
@@ -38,9 +42,10 @@ class Vlp16ClearanceRender extends LidarRender {
         Tensor points = Tensor.of(_points.stream().filter(predicate::isObstacle)); // in reference frame of lidar
         // ---
         Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();
+        Scalar ratio = steerMapping.getRatioFromSCE(gokartStatusEvent);
         CircleClearanceTracker[] circleClearanceCollectors = new CircleClearanceTracker[] { //
-            (CircleClearanceTracker) SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(+1), gokartStatusEvent), //
-            (CircleClearanceTracker) SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(-1), gokartStatusEvent) //
+            (CircleClearanceTracker) SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(+1), Magnitude.PER_METER.apply(ratio)), //
+            (CircleClearanceTracker) SafetyConfig.GLOBAL.getClearanceTracker(DoubleScalar.of(-1), Magnitude.PER_METER.apply(ratio)) //
         };
         Color[] colors = new Color[] { Color.RED, Color.ORANGE };
         for (int count = 0; count < colors.length; ++count) {

@@ -19,7 +19,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
-  protected final Clip angleClip = SteerConfig.GLOBAL.getAngleLimit();
+  protected final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
   protected final PursuitConfig pursuitConfig;
 
   PurePursuitModule(PursuitConfig pursuitConfig) {
@@ -52,7 +52,7 @@ public abstract class PurePursuitModule extends AbstractClockedModule {
     final Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     Optional<Scalar> heading = deriveHeading();
     if (heading.isPresent())
-      purePursuitSteer.setHeading(heading.get());
+      purePursuitSteer.setRatio(heading.get());
     // ---
     final boolean status = optional.isPresent() && heading.isPresent();
     purePursuitSteer.setOperational(status);

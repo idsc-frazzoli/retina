@@ -65,11 +65,11 @@ public abstract class CurvePursuitModule extends PurePursuitModule implements Go
     // System.err.println("check isOperational");
     if (Objects.nonNull(gokartPoseEvent)) { // is localization pose available?
       Tensor pose = gokartPoseEvent.getPose(); // latest pose
-      Optional<Scalar> ratio = getRatio(pose);
-      if (ratio.isPresent()) { // is look ahead beacon available?
-        Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio.get());
-        if (angleClip.isInside(angle)) // is look ahead beacon within steering range?
-          return Optional.of(angle);
+      Optional<Scalar> optional = getRatio(pose);
+      if (optional.isPresent()) { // is look ahead beacon available?
+        Scalar ratio = optional.get(); // ChassisGeometry.GLOBAL.steerAngleForTurningRatio();
+        if (ratioClip.isInside(ratio)) // is look ahead beacon within steering range?
+          return Optional.of(ratio);
         System.err.println("beacon outside steering range");
       }
     }

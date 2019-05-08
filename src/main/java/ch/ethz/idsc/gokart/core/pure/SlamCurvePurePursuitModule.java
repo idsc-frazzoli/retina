@@ -35,7 +35,7 @@ public final class SlamCurvePurePursuitModule extends PurePursuitModule {
     Optional<Scalar> ratio = getRatio();
     if (ratio.isPresent()) { // is look ahead beacon available?
       Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio.get());
-      if (angleClip.isInside(angle)) // is look ahead beacon within steering range?
+      if (ratioClip.isInside(angle)) // is look ahead beacon within steering range?
         return Optional.of(angle);
       System.err.println("beacon outside steering range");
     }
