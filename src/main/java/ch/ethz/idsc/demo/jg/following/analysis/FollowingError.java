@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Round;
 
-public class FollowingError {
+public class FollowingError implements ErrorInterface {
   private Tensor reference = Tensors.empty();
   private Tensor errors = Tensors.empty();
   // ---
@@ -24,18 +24,22 @@ public class FollowingError {
       Quantity.of(DoubleScalar.POSITIVE_INFINITY, SI.SECOND), //
       Quantity.of(DoubleScalar.NEGATIVE_INFINITY, SI.SECOND));
 
+  public FollowingError() {
+    System.err.println(String.format("WARN %s produces only an approximation of the actual error", this.getClass().getSimpleName()));
+  }
+
   /** @param reference curve or trajectory */
-  protected void setReference(Tensor reference) {
+  public void setReference(Tensor reference) {
     this.reference = Tensor.of(reference.stream().map(Extract2D.FUNCTION)).unmodifiable();
   }
 
-  protected Tensor getReference() {
+  public Tensor getReference() {
     return reference.unmodifiable();
   }
 
   /** @param time [s]
    * @param pose of vehicle {x[m], y[m], angle} */
-  protected void insert(Scalar time, Tensor pose) {
+  public void insert(Scalar time, Tensor pose) {
     times.set(Min.of(times.Get(0), time), 0);
     times.set(Max.of(times.Get(1), time), 1);
     error(pose).ifPresent(errors::append);
@@ -49,14 +53,17 @@ public class FollowingError {
     return distances.stream().reduce(Min::of).map(Tensor::Get);
   }
 
-  public Scalar averageError() {
+  @Override // from ErrorInterface
+  public final Scalar averageError() {
     return Mean.of(errors).Get();
   }
 
-  public Scalar accumulatedError() {
+  @Override // from ErrorInterface
+  public final Scalar accumulatedError() {
     return errors.stream().map(Scalar.class::cast).reduce(Scalar::add).get();
   }
 
+  @Override // from ErrorInterface
   public String getReport() {
     return "following error (" + this.getClass().getSimpleName() + ")\n" + //
         "\ttime:\t" + times.Get(0).map(Round._2) + " - " + times.Get(1).map(Round._2) + "\n" + //

@@ -21,7 +21,6 @@ import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
@@ -39,6 +38,8 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
+
+// TODO investigate bug when reference curve is reset and resimulated
 
 public class FollowingSimulator extends TrajectoryDesignModule {
   private static final ColorDataIndexed COLORS = ColorDataLists._001.cyclic();
@@ -58,7 +59,7 @@ public class FollowingSimulator extends TrajectoryDesignModule {
           graphics.drawString(entry.getKey(), 0, (++i + 1) * graphics.getFont().getSize());
           graphics.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 9 }, 0) {
           });
-          graphics.draw(geometricLayer.toPath2D(Tensor.of(trail.get().stream().map(Extract2D.FUNCTION))));
+          graphics.draw(geometricLayer.toPath2D(trail.get()));
         }
       }
     }
@@ -151,6 +152,7 @@ public class FollowingSimulator extends TrajectoryDesignModule {
                 spinnerLabelRate.getValue().reciprocal());
             map.put(simulation.name(), simulation);
             export(simulation.trail().get(), simulation.name().toLowerCase());
+            System.out.println(simulation.getReport());
           }
         } else
           System.out.println("no curve found!");
