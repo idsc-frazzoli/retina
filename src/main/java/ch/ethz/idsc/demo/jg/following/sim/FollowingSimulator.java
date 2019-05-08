@@ -39,8 +39,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
 
-// TODO investigate bug when reference curve is reset and resimulated
-
 public class FollowingSimulator extends TrajectoryDesignModule {
   private static final ColorDataIndexed COLORS = ColorDataLists._001.cyclic();
   // ---

@@ -18,6 +18,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.ArgMax;
 import ch.ethz.idsc.tensor.red.ArgMin;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
@@ -39,10 +40,9 @@ public enum FollowingSimulations implements ErrorInterface {
     }
   };
 
-  private Tensor trail = Tensors.empty();
-  private Tensor ratios = Tensors.empty();
-  // ---
-  public FollowingError followingError = new FollowingError();
+  private Tensor trail;
+  private Tensor ratios;
+  private FollowingError followingError;
 
   /** @param curve reference
    * @param initialPose of vehicle {x[m], y[m], angle}
@@ -50,6 +50,10 @@ public enum FollowingSimulations implements ErrorInterface {
    * @param duration of simulation [s]
    * @param timeStep of simulation [s] */
   public void run(Tensor curve, Tensor initialPose, Scalar speed, Scalar duration, Scalar timeStep) {
+    trail = Tensors.empty();
+    ratios = Tensors.empty();
+    followingError = new FollowingError();
+    // ---
     followingError.setReference(curve);
     Tensor pose = initialPose;
     Scalar ratio = Quantity.of(0, SI.PER_METER);
@@ -66,21 +70,17 @@ public enum FollowingSimulations implements ErrorInterface {
 
   /** @return vehicle trail {{x[m], y[m], angle}, ...} */
   public Optional<Tensor> trail() {
-    if (Tensors.nonEmpty(trail))
-      return Optional.of(trail);
-    return Optional.empty();
+    return Optional.ofNullable(trail);
   }
 
   /** @return ratios {[m^-1], ...} */
   public Optional<Tensor> ratios() {
-    if (Tensors.nonEmpty(ratios))
-      return Optional.of(ratios);
-    return Optional.empty();
+    return Optional.ofNullable(ratios);
   }
 
   /** @return clip of min to max ratio [m^-1] */
   public Optional<Clip> ratioRange() {
-    if (Tensors.nonEmpty(ratios)) {
+    if (ratios().isPresent()) {
       int idx_min = ArgMin.of(ratios);
       int idx_max = ArgMax.of(ratios);
       return Optional.of(Clips.interval(ratios.Get(idx_min), ratios.Get(idx_max)));
@@ -100,7 +100,11 @@ public enum FollowingSimulations implements ErrorInterface {
 
   @Override // from ErrorInterface
   public String getReport() {
-    return followingError.getReport();
+    Optional<Clip> ratioRange = ratioRange();
+    if (ratioRange.isPresent())
+      return followingError.getReport() + //
+          "\n\tratios:\tmin = " + Chop._04.of(ratioRange.get().min()) + ", max = " + Chop._04.of(ratioRange.get() .max());
+    return " not yet run";
   }
 
   /** @param pose of vehicle {x[m], y[m], angle}

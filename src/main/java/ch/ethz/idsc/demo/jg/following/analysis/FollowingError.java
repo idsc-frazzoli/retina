@@ -25,7 +25,7 @@ public class FollowingError implements ErrorInterface {
       Quantity.of(DoubleScalar.NEGATIVE_INFINITY, SI.SECOND));
 
   public FollowingError() {
-    System.err.println(String.format("WARN %s produces only an approximation of the actual error", this.getClass().getSimpleName()));
+    System.err.println(String.format("WARN %s provides only an approximation of the actual error", this.getClass().getSimpleName())); // I told you
   }
 
   /** @param reference curve or trajectory */
