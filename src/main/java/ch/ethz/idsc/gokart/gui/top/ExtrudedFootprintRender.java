@@ -21,6 +21,7 @@ import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -65,7 +66,7 @@ public class ExtrudedFootprintRender implements RenderInterface {
       // center of rear axle
       StateTime CENTER = new StateTime(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
       {
-        final Flow flow_forward = singleton(RealScalar.ONE, ratio);
+        final Flow flow_forward = singleton(RealScalar.ONE, Magnitude.PER_METER.apply(ratio));
         final Tensor center_forward = //
             Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
@@ -80,7 +81,7 @@ public class ExtrudedFootprintRender implements RenderInterface {
         graphics.draw(geometricLayer.toPath2D(w2));
       }
       {
-        final Flow flow_reverse = singleton(RealScalar.ONE.negate(), ratio);
+        final Flow flow_reverse = singleton(RealScalar.ONE.negate(), Magnitude.PER_METER.apply(ratio));
         final Tensor center_reverse = //
             Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
