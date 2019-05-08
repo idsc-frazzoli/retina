@@ -24,6 +24,8 @@ public class FittedSteerMapping extends AbstractSteerMapping {
       Scalar steer2column1, Scalar steer2column3, Scalar steer2column5) {
     super( //
         Series.of(Tensors.of(RealScalar.ZERO, column2steer1, RealScalar.ZERO, column2steer3)), //
-        Series.of(Tensors.of(RealScalar.ZERO, steer2column1, RealScalar.ZERO, steer2column3, RealScalar.ZERO, steer2column5)));
+        new InverseSteerCubic(column2steer1, column2steer3)
+    // Series.of(Tensors.of(RealScalar.ZERO, steer2column1, RealScalar.ZERO, steer2column3, RealScalar.ZERO, steer2column5))
+    );
   }
 }

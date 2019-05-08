@@ -15,7 +15,7 @@ public class CubicSteerMapping extends AbstractSteerMapping {
       Quantity.of(+0.9189766407706671, "SCE^-1"), Quantity.of(-0.5606503091815459, "SCE^-3"), //
       Quantity.of(+0.9755773866318296, "SCE"), Quantity.of(+2.325797449027361, "SCE"));
 
-  public static SteerMapping approximation() {
+  public static SteerMapping instance() {
     return INSTANCE;
   }
 
