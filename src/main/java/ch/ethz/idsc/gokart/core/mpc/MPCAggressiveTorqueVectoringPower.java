@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
-import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Ramp;
@@ -46,7 +45,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar midpoint = (Scalar) Mean.of(minmax);
     // more tame version
-    AngularSlip angularSlip = BicycleAngularSlip.getAngularSlip(tangentialSpeed, ratio, gyroZ);
+    AngularSlip angularSlip = new AngularSlip(tangentialSpeed, ratio, gyroZ);
     return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(angularSlip, Ramp.FUNCTION.apply(wantedAcceleration)));
   }
 }

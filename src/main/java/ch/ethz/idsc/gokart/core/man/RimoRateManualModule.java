@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
+import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.Scalar;
 
@@ -48,7 +49,8 @@ import ch.ethz.idsc.tensor.Scalar;
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
     Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(manualControlInterface.getAheadAverage());
-    Scalar theta = steerMapping.getRatioFromSCE(steerColumnInterface);
+    Scalar ratio = steerMapping.getRatioFromSCE(steerColumnInterface);
+    Scalar theta = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
     return rimoRateControllerWrap.iterate(speed, theta);
   }
 }
