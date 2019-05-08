@@ -16,6 +16,8 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.ArgMax;
 import ch.ethz.idsc.tensor.red.ArgMin;
+import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 public enum FollowingSimulations {
@@ -35,8 +37,8 @@ public enum FollowingSimulations {
     }
   };
 
-  public Tensor trail = Tensors.empty();
-  public Tensor ratios = Tensors.empty();
+  private Tensor trail = Tensors.empty();
+  private Tensor ratios = Tensors.empty();
 
   /** @param curve reference
    * @param initialPose of vehicle {x[m], y[m], angle}
@@ -54,9 +56,30 @@ public enum FollowingSimulations {
       ratios.append(ratio);
       pose = Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, ratio), pose, timeStep);
     }
-    int idx_min = ArgMin.of(ratios);
-    int idx_max = ArgMax.of(ratios);
-    System.out.println(this.toString().toLowerCase() + ":\tmin = " + ratios.Get(idx_min) + ", max = " + ratios.Get(idx_max));
+  }
+
+  /** @return vehicle trail {{x[m], y[m], angle}, ...} */
+  public Optional<Tensor> trail() {
+    if (Tensors.nonEmpty(trail))
+      return Optional.of(trail);
+    return Optional.empty();
+  }
+
+  /** @return ratios {[m^-1], ...} */
+  public Optional<Tensor> ratios() {
+    if (Tensors.nonEmpty(ratios))
+      return Optional.of(ratios);
+    return Optional.empty();
+  }
+
+  /** @return clip of min to max ratio [m^-1] */
+  public Optional<Clip> ratioRange() {
+    if (Tensors.nonEmpty(ratios)) {
+      int idx_min = ArgMin.of(ratios);
+      int idx_max = ArgMax.of(ratios);
+      return Optional.of(Clips.interval(ratios.Get(idx_min), ratios.Get(idx_max)));
+    }
+    return Optional.empty();
   }
 
   /** @param pose of vehicle {x[m], y[m], angle}
