@@ -19,6 +19,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent = null;
   private Optional<Tensor> optionalCurve = Optional.empty();
+  // ---
   private int pidIndex;
   private PIDTrajectory previousPID;
   private PIDTrajectory currentPID;
@@ -61,15 +62,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           stateTime); //
       //
       Scalar angleOut = currentPID.angleOut(); // TODO comment on unit? -> test
-      if (PIDTuningParams.GLOBAL.clip.isInside(angleOut)) {
-        this.previousPID = currentPID;
-        pidIndex++;
-        return Optional.of(angleOut);
-      }
       this.previousPID = currentPID;
       pidIndex++;
-      return Optional.empty();
+      return Optional.of(angleOut);
     }
+    this.previousPID = currentPID;
+    pidIndex++;
     return Optional.empty();
   }
 
