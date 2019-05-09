@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.dev.steer;
 
-import ch.ethz.idsc.gokart.calib.steer.CubicSteerMapping;
+import ch.ethz.idsc.gokart.calib.steer.FittedSteerMapping;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
@@ -48,11 +48,15 @@ public class SteerConfig {
   public final Scalar columnMax = Quantity.of(SteerColumnTracker.SOFT / 2, SteerPutEvent.UNIT_ENCODER);
   /** 0.5 corresponds to 50% of torque limit */
   public final Scalar stepOfLimit = RealScalar.of(0.5);
-  /** max turning rate per meter driven under the assumption of no slip
+  /** .
+   * ante 20190509:
+   * max turning rate per meter driven under the assumption of no slip
    * the numeric value was determined in an experiment documented in the report below
    * https://github.com/idsc-frazzoli/retina/files/1958724/20180429_minimum_turning_radius.pdf
-   * The reciprocal gives the minimum turning radius to be approx. 2.45[m]. */
-  public final Scalar turningRatioMax = Quantity.of(0.4082, SI.PER_METER);
+   * The reciprocal gives the minimum turning radius to be approx. 2.45[m].
+   * post 20190509:
+   * https://github.com/idsc-frazzoli/retina/files/3160474/20190509_steering_turning_ratio.pdf */
+  public final Scalar turningRatioMax = Quantity.of(0.45, SI.PER_METER);
 
   /***************************************************/
   /** @return voltage operating range of battery */
@@ -63,12 +67,12 @@ public class SteerConfig {
   /***************************************************/
   /** @return default steer mapping */
   public SteerMapping getSteerMapping() {
-    return CubicSteerMapping.approximation();
+    return FittedSteerMapping.instance();
   }
 
   /** @return */
-  public Clip getAngleLimit() {
-    Scalar angleMax = getSteerMapping().getAngleFromSCE(columnMax);
-    return Clips.interval(angleMax.negate(), angleMax);
+  public Clip getRatioLimit() {
+    Scalar ratioMax = getSteerMapping().getRatioFromSCE(columnMax);
+    return Clips.interval(ratioMax.negate(), ratioMax);
   }
 }

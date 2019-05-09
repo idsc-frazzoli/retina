@@ -26,31 +26,30 @@ public class SteerConfigTest extends TestCase {
     assertEquals(QuantityUnit.of(SteerConfig.GLOBAL.columnMax), Unit.of("SCE"));
   }
 
-  public void testSCEfromAngle() {
-    SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-    Scalar q = steerMapping.getSCEfromAngle(Quantity.of(1, ""));
-    assertEquals(QuantityUnit.of(q), Unit.of("SCE"));
-    assertTrue(1.1 < q.number().doubleValue());
-  }
-
   public void testAngleLimit() {
-    Clip clip = SteerConfig.GLOBAL.getAngleLimit();
+    Clip clip = SteerConfig.GLOBAL.getRatioLimit();
     assertEquals(clip.min(), clip.max().negate());
-    clip.requireInside(RealScalar.of(0.37));
+    clip.requireInside(Quantity.of(0.37, SI.PER_METER));
   }
 
   public void testConversion() {
     Scalar radius = UnitSystem.SI().apply(SteerConfig.GLOBAL.turningRatioMax.reciprocal());
-    Clip clip = Clips.interval(Quantity.of(2.4, SI.METER), Quantity.of(2.5, SI.METER));
+    Clip clip = Clips.interval(Quantity.of(2.12, SI.METER), Quantity.of(2.4, SI.METER));
     assertTrue(clip.isInside(radius));
   }
 
-  public void testTurningAtLimitCubic() {
+  public void testTurningAtLimit() {
     // according to our model
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(SteerConfig.GLOBAL.turningRatioMax);
-    // angle == 0.4521892315592385[rad]
+    // angle == 0.45218923155923850 ante 20190509
+    // angle == 0.49164265965082177 post 20190509
+    // System.out.println(angle);
+    Clips.interval(0.48, 0.5).requireInside(angle);
+  }
+
+  public void testTurningAtLimitCubic() {
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-    Scalar encoder = steerMapping.getSCEfromAngle(angle);
+    Scalar encoder = steerMapping.getSCEfromRatio(SteerConfig.GLOBAL.turningRatioMax);
     // encoder == 0.6561921674138146[SCE]
     // our simple, linear steering model tells us an encoder value outside the max range
     // conclusion: we should build a more accurate model that maps [encoder <-> effective steering angle]

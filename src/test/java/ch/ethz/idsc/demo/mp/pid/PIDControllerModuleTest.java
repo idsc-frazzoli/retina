@@ -13,6 +13,8 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Pretty;
+import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -28,23 +30,29 @@ public class PIDControllerModuleTest extends TestCase {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
     Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL_SE2.stream());
     pidControllerModule.setCurve(Optional.ofNullable(curve));
-    System.out.println(curve);
     pidControllerModule.first();
-    Tensor pose = Tensors.fromString("{40[m], 30[m], 1}");
+    Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
+    if (UserName.is("maximilien"))
+      System.out.println(Pretty.of(curve));
     for (int index = 0; index < 100; index++) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
-      Scalar heading = pidControllerModule.pidSteer.getHeading();
-      // System.out.println(heading);
-      pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, heading.divide(RealScalar.of(10))));
-      // System.out.println(pose);
-      // TODO Solve issue with if gokart does multiple rotations (+pi factor)
+      Scalar ratio = pidControllerModule.pidSteer.getRatio();
+      // System.out.println("Heading: " + heading);
+      if (UserName.is("maximilien") || UserName.is("datahaki")) {
+        System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
+        System.out.println("Heading: " + ratio);
+        System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
+      }
+      pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, ratio));
+      // System.out.println("Pose: " + pose);
+      // TODO MCP Solve issue with if gokart does multiple rotations (+pi factor)
     }
   }
 
-  public void testCurve() { // Not going trough this if function not starting with "test-"
-    Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL_R2.stream().map(Extract2D.FUNCTION));
+  public void testCurve() {
+    Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL_SE2.stream().map(Extract2D.FUNCTION));
     for (int index = 0; index < curve.length(); index++) {
       // System.out.println(curve.get(index));
     }

@@ -2,7 +2,7 @@
 package ch.ethz.idsc.gokart.calib.steer;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
-import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -13,60 +13,60 @@ import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
-public class CubicSteerMappingTest extends TestCase {
+public class CubicAngleMappingTest extends TestCase {
   public void testAdvancedFormulaCenter() {
-    SteerMapping steerMapping = CubicSteerMapping.approximation();
-    Scalar angle = steerMapping.getAngleFromSCE( //
+    AngleMapping angleMapping = CubicAngleMapping.instance();
+    Scalar ratio = angleMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, Quantity.of(0, "SCE")));
-    assertEquals(angle, RealScalar.ZERO);
-    Scalar sce = steerMapping.getSCEfromAngle(angle);
+    assertEquals(ratio, Quantity.of(0, SI.ONE));
+    Scalar sce = angleMapping.getSCEfromAngle(ratio);
     assertTrue(Scalars.isZero(sce));
   }
 
   public void testAdvancedFormulaSign() {
-    SteerMapping steerMapping = CubicSteerMapping.approximation();
+    AngleMapping angleMapping = CubicAngleMapping.instance();
     Scalar sceIn = Quantity.of(0.1, "SCE");
-    Scalar angle = steerMapping.getAngleFromSCE( //
+    Scalar ratio = angleMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, sceIn));
-    assertTrue(Sign.isPositive(angle));
-    Clips.interval(.08, .15).requireInside(angle);
-    Scalar sce = steerMapping.getSCEfromAngle(angle);
+    assertTrue(Sign.isPositive(ratio));
+    Clips.interval(.08, .15).requireInside(ratio);
+    Scalar sce = angleMapping.getSCEfromAngle(ratio);
     assertTrue(Scalars.lessThan(sce.subtract(sceIn).abs(), Quantity.of(0.01, "SCE")));
   }
 
   public void testAdvancedFormulaNegative() {
-    SteerMapping steerMapping = CubicSteerMapping.approximation();
+    AngleMapping angleMapping = CubicAngleMapping.instance();
     Scalar sceIn = Quantity.of(-0.7, "SCE");
-    Scalar angle = steerMapping.getAngleFromSCE( //
+    Scalar angle = angleMapping.getAngleFromSCE( //
         new SteerColumnAdapter(true, sceIn));
     assertTrue(Sign.isNegative(angle));
     Clips.interval(-.5, -.4).requireInside(angle);
-    Scalar sce = steerMapping.getSCEfromAngle(angle);
+    Scalar sce = angleMapping.getSCEfromAngle(angle);
     assertTrue(Scalars.lessThan(sce.subtract(sceIn).abs(), Quantity.of(0.05, "SCE")));
   }
 
   public void testSceError() {
-    SteerMapping steerMapping = CubicSteerMapping.approximation();
+    AngleMapping angleMapping = CubicAngleMapping.instance();
     Scalar max = Quantity.of(0, "SCE");
     for (Tensor s : Subdivide.of(-0.68847, 0.68847, 100)) {
       Scalar sceIn = Quantity.of(s.Get(), "SCE");
-      Scalar angle = steerMapping.getAngleFromSCE(new SteerColumnAdapter(true, sceIn));
-      Scalar error = sceIn.subtract(steerMapping.getSCEfromAngle(angle)).abs();
+      Scalar angle = angleMapping.getAngleFromSCE(new SteerColumnAdapter(true, sceIn));
+      Scalar error = sceIn.subtract(angleMapping.getSCEfromAngle(angle)).abs();
       max = Max.of(max, error);
     }
     assertTrue(Scalars.lessThan(max, Quantity.of(0.04, "SCE")));
   }
 
   public void testAngleError() {
-    SteerMapping steerMapping = CubicSteerMapping.approximation();
-    Scalar max = RealScalar.ZERO;
-    for (Tensor s : Subdivide.of(-0.45, 0.45, 100)) {
-      Scalar angleIn = s.Get();
-      Scalar sce = steerMapping.getSCEfromAngle(angleIn);
-      Scalar angle = steerMapping.getAngleFromSCE(new SteerColumnAdapter(true, sce));
-      Scalar error = angleIn.subtract(angle).abs();
+    AngleMapping angleMapping = CubicAngleMapping.instance();
+    Scalar max = Quantity.of(0, SI.ONE);
+    for (Tensor s : Subdivide.of(Quantity.of(-0.45, SI.ONE), Quantity.of(0.45, SI.ONE), 100)) {
+      Scalar ratioIn = s.Get();
+      Scalar sce = angleMapping.getSCEfromAngle(ratioIn);
+      Scalar ratio = angleMapping.getAngleFromSCE(new SteerColumnAdapter(true, sce));
+      Scalar error = ratioIn.subtract(ratio).abs();
       max = Max.of(max, error);
     }
-    assertTrue(Scalars.lessThan(max, RealScalar.of(0.011)));
+    assertTrue(Scalars.lessThan(max, Quantity.of(0.011, SI.ONE)));
   }
 }

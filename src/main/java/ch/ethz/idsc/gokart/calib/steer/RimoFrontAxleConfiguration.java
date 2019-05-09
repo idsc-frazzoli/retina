@@ -15,12 +15,12 @@ import ch.ethz.idsc.tensor.Tensors;
         new WheelConfiguration(Tensors.of( //
             ChassisGeometry.GLOBAL.xAxleRtoF, //
             ChassisGeometry.GLOBAL.yTireFront, //
-            FrontWheelSteerMapping._LEFT.getAngleFromSCE(scalar)), //
+            FrontWheelAngleMapping._LEFT.getAngleFromSCE(scalar)), //
             RimoTireConfiguration.FRONT), //
         new WheelConfiguration(Tensors.of( //
             ChassisGeometry.GLOBAL.xAxleRtoF, //
             ChassisGeometry.GLOBAL.yTireFront.negate(), //
-            FrontWheelSteerMapping.RIGHT.getAngleFromSCE(scalar)), //
+            FrontWheelAngleMapping.RIGHT.getAngleFromSCE(scalar)), //
             RimoTireConfiguration.FRONT) };
   }
 

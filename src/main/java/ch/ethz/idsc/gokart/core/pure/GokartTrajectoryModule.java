@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
-import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -47,11 +46,10 @@ import ch.ethz.idsc.owl.glc.core.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.core.StateTimeRaster;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
-import ch.ethz.idsc.owl.math.Lexicographic;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
-import ch.ethz.idsc.owl.math.planar.Extract2D;
+import ch.ethz.idsc.owl.math.order.VectorLexicographic;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
@@ -98,11 +96,14 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final FlowsInterface flowsInterface;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  final CurvePurePursuitModule purePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
-  private final AbstractMapping mapping = // SightLineMapping.defaultObstacle();
-      GenericBayesianMapping.createObstacleMapping();
+  final CurvePursuitModule curvePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
+  /** sight lines mapping was successfully used for trajectory planning in a demo on 20190507 */
+  private final AbstractMapping mapping;
+  // = SightLinesMapping.defaultObstacle();
+  // GenericBayesianMapping.createObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
+  /** waypoints are stored without units */
   private final Tensor waypoints;
   private PlannerConstraint plannerConstraint;
   private final Tensor goalRadius;
@@ -119,9 +120,12 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   /* package */ GokartTrajectoryModule(TrajectoryConfig trajectoryConfig) {
     this.trajectoryConfig = trajectoryConfig;
     flowsInterface = Se2CarFlows.forward(SPEED, Magnitude.PER_METER.apply(trajectoryConfig.maxRotation));
-    this.waypoints = trajectoryConfig.getWaypoints();
+    mapping = trajectoryConfig.getAbstractMapping();
+    // TODO obtain waypoints from TrajectoryDesignModule
+    waypoints = Tensor.of(trajectoryConfig.getWaypointsPose().stream().map(PoseHelper::toUnitless));
     waypointCost = WaypointDistanceCost.of( //
-        Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), true, // 1 round of refinement
+        Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), //
+        true, // 1 round of refinement
         RealScalar.of(1), // width of virtual lane in model coordinates
         RealScalar.of(7.5), // model2pixel conversion factor
         new Dimension(640, 640)); // resolution of image
@@ -154,12 +158,12 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
     gokartPoseLcmClient.startSubscriptions();
     manualControlProvider.start();
     // ---
-    purePursuitModule.launch();
+    curvePursuitModule.launch();
   }
 
   @Override // from AbstractClockedModule
   protected void last() {
-    purePursuitModule.terminate();
+    curvePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
     manualControlProvider.stop();
     // ---
@@ -227,7 +231,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
             STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, //
             plannerConstraint, multiCostGoalInterface, //
-            new LexicographicRelabelDecision(Lexicographic.COMPARATOR));
+            new LexicographicRelabelDecision(VectorLexicographic.COMPARATOR));
         // Do Planning
         StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
         trajectoryPlanner.insertRoot(root);
@@ -239,7 +243,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       }
     }
     System.err.println("no curve because no pose");
-    purePursuitModule.setCurve(Optional.empty());
+    curvePursuitModule.setCurve(Optional.empty());
     PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }
 
@@ -276,8 +280,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
       Tensor curve = Tensor.of(trajectory.stream() //
           .map(TrajectorySample::stateTime) //
           .map(StateTime::state) //
-          .map(Extract2D.FUNCTION));
-      purePursuitModule.setCurve(Optional.of(curve));
+          .map(row -> row.extract(0, 3)) //
+          .map(PoseHelper::attachUnits));
+      curvePursuitModule.setCurve(Optional.of(curve));
       PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
       // failure to reach goal

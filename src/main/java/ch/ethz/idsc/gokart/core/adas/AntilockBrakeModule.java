@@ -116,7 +116,8 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
         }
         LinmotPutEvent relativePosition = LinmotPutOperation.INSTANCE.toRelativePosition(brakePosition);
         return Optional.of(relativePosition);
-      }    }
+      }
+    }
     return Optional.empty();
   }
 }

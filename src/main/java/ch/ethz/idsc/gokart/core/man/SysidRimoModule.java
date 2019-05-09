@@ -23,20 +23,20 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 /* package */ class SysidRimoModule extends AbstractModule implements PutProvider<RimoPutEvent> {
   private static final Scalar MAGNITUDE = Quantity.of(1500, NonSI.ARMS);
   // ---
-  private final ManualControlProvider joystickLcmProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   private final Timing timing = Timing.started();
   private ScalarUnaryOperator signal = SysidSignals.CHIRP_SLOW.get();
 
   @Override // from AbstractModule
   protected void first() {
-    joystickLcmProvider.start();
+    manualControlProvider.start();
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
   protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
-    joystickLcmProvider.stop();
+    manualControlProvider.stop();
   }
 
   /** @param signal */
@@ -51,7 +51,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
   @Override // from PutProvider
   public Optional<RimoPutEvent> putEvent() {
-    Optional<ManualControlInterface> optional = joystickLcmProvider.getManualControl();
+    Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     if (optional.isPresent())
       return fromJoystick(optional.get());
     return Optional.empty();

@@ -39,6 +39,7 @@ public class HapticSteerConfig {
   public Scalar absAmplitude = RealScalar.of(0.2);
   public double absDuration = 1;
 
+  /***************************************************/
   public Scalar criticalAngle() {
     SI.ANGULAR_ACCELERATION.add(SI.VELOCITY.negate());
     return UnitSystem.SI().apply(criticalAngleDeg);

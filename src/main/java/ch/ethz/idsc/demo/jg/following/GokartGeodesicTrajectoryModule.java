@@ -1,5 +1,5 @@
 // code by ynager and jph
-package ch.ethz.idsc.demo.jg;
+package ch.ethz.idsc.demo.jg.following;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -50,10 +50,10 @@ import ch.ethz.idsc.owl.glc.core.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.core.StateTimeRaster;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
-import ch.ethz.idsc.owl.math.Lexicographic;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
+import ch.ethz.idsc.owl.math.order.VectorLexicographic;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
@@ -84,6 +84,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO make configurable as parameter
+// TODO resuse GokartTrajectoryModule and make only CurvePursuitModule different
 public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
   private static final VehicleModel STANDARD = RimoSinusIonModel.standard();
   private static final Tensor PARTITIONSCALE = Tensors.of( //
@@ -122,7 +123,7 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
   /* package */ GokartGeodesicTrajectoryModule(TrajectoryConfig trajectoryConfig) {
     this.trajectoryConfig = trajectoryConfig;
     flowsInterface = Se2CarFlows.forward(SPEED, Magnitude.PER_METER.apply(trajectoryConfig.maxRotation));
-    this.waypoints = trajectoryConfig.getWaypoints();
+    this.waypoints = trajectoryConfig.getWaypointsPose();
     waypointCost = WaypointDistanceCost.of( //
         Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), true, // 1 round of refinement
         RealScalar.of(1), // width of virtual lane in model coordinates
@@ -230,7 +231,7 @@ public class GokartGeodesicTrajectoryModule extends AbstractClockedModule {
         TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
             STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, //
             plannerConstraint, multiCostGoalInterface, //
-            new LexicographicRelabelDecision(Lexicographic.COMPARATOR));
+            new LexicographicRelabelDecision(VectorLexicographic.COMPARATOR));
         // Do Planning
         StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
         trajectoryPlanner.insertRoot(root);

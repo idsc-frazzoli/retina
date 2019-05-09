@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
+import ch.ethz.idsc.owl.car.math.AckermannSteering;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -94,7 +95,9 @@ public class ChassisGeometryTest extends TestCase {
   }
 
   public void testAckermann() {
-    Tensor pair = ChassisGeometry.GLOBAL.getAckermannSteering().pair(RealScalar.of(0.3));
+    AckermannSteering ackermannSteering = //
+        new AckermannSteering(ChassisGeometry.GLOBAL.xAxleRtoF, ChassisGeometry.GLOBAL.yTireFront);
+    Tensor pair = ackermannSteering.pair(RealScalar.of(0.3));
     assertTrue(Chop._10.close(pair, Tensors.vector(0.3397325320025735, 0.2683854870479421)));
   }
 }

@@ -18,7 +18,7 @@ public class Se2MultiresGrids {
   private final List<Se2Grid> list = new ArrayList<>();
 
   /** @param shift may be in physical space or pixel space
-   * @param angle in radians
+   * @param angle in radian
    * @param fan
    * @param levels */
   public Se2MultiresGrids(Scalar shift, Scalar angle, final int fan, int levels) {

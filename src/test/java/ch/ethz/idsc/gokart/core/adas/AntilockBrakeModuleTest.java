@@ -28,19 +28,17 @@ public class AntilockBrakeModuleTest extends TestCase {
     antilockBrakeModule.putEvent();
     antilockBrakeModule.last();
   }
-  
+
   public void testSimple2() {
     AntilockBrakeModule antilockBrakeModule = new AntilockBrakeModule();
     antilockBrakeModule.first();
-    antilockBrakeModule.putEvent1(
-        Tensors.of(//
-            Quantity.of(1, SI.PER_SECOND), //
-            Quantity.of(1, SI.PER_SECOND)), //
+    antilockBrakeModule.putEvent1(Tensors.of(//
+        Quantity.of(1, SI.PER_SECOND), //
+        Quantity.of(1, SI.PER_SECOND)), //
         Tensors.of( //
             Quantity.of(0.1, SI.VELOCITY), //
             Quantity.of(1, SI.VELOCITY), //
             Quantity.of(1, SI.PER_SECOND)));
     antilockBrakeModule.last();
   }
-
 }

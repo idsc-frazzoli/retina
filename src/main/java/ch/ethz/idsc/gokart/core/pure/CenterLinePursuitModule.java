@@ -8,7 +8,6 @@ import ch.ethz.idsc.gokart.core.map.BSplineTrack;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
-import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -22,8 +21,7 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
   private static final int RESOLUTION = 200;
   // ---
   private final TrackReconModule trackReconModule = ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  private final CurvePurePursuitModule curvePurePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
-  private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
+  private final CurvePursuitModule curvePurePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
 
   @Override
   protected void first() {
@@ -41,8 +39,6 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
     // ---
     if (Objects.nonNull(trackReconModule))
       trackReconModule.listenersRemove(this);
-    if (Objects.nonNull(globalViewLcmModule))
-      globalViewLcmModule.setCurve(null);
   }
 
   @Override // from MPCBSplineTrackListener
@@ -58,7 +54,6 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
       System.out.println("center line no waypoints");
     }
     curvePurePursuitModule.setCurve(Optional.ofNullable(curve), closed);
-    if (Objects.nonNull(globalViewLcmModule))
-      globalViewLcmModule.setCurve(curve);
+    // TODO JPH publish
   }
 }

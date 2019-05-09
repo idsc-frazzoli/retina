@@ -25,4 +25,10 @@ public class AbstractClockedModuleTest extends TestCase {
     assertEquals(value, RealScalar.of(20));
     assertEquals(value.number().longValue(), 20);
   }
+
+  public void testClockedModuleWithException() throws Exception {
+    ModuleAuto.INSTANCE.runOne(FailClockedModule.class);
+    Thread.sleep(100);
+    ModuleAuto.INSTANCE.endOne(FailClockedModule.class);
+  }
 }

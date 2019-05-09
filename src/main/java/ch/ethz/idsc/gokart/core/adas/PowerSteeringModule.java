@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class PowerSteeringV2Module extends PowerSteeringBaseModule {
+public class PowerSteeringModule extends PowerSteeringBaseModule {
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final GeodesicIIR1Filter geodesicIIR1Filter; // 1 means unfiltered
@@ -28,11 +28,11 @@ public class PowerSteeringV2Module extends PowerSteeringBaseModule {
   private final HapticSteerConfig hapticSteerConfig;
   private double diffRelRckPos;
 
-  public PowerSteeringV2Module() {
+  public PowerSteeringModule() {
     this(HapticSteerConfig.GLOBAL);
   }
 
-  public PowerSteeringV2Module(HapticSteerConfig hapticSteerConfig) {
+  PowerSteeringModule(HapticSteerConfig hapticSteerConfig) {
     this.hapticSteerConfig = hapticSteerConfig;
     geodesicIIR1Filter = new GeodesicIIR1Filter( //
         RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
@@ -40,9 +40,8 @@ public class PowerSteeringV2Module extends PowerSteeringBaseModule {
 
   @Override
   public void getEvent(SteerGetEvent getEvent) {
-    if (prev != null) {
+    if (prev != null)
       diffRelRckPos = getEvent.getGcpRelRckPos() - prev.getGcpRelRckPos();
-    }
     prev = getEvent;
   }
 
@@ -56,22 +55,26 @@ public class PowerSteeringV2Module extends PowerSteeringBaseModule {
         : Optional.empty();
   }
 
-  public SteerPutEvent putEvent(Scalar currangle, Tensor velocity, double diffRelRckPos) {
+  /** @param currangle with unit "SCE"
+   * @param velocity {vx[m*s^-1], vy[m*s^-1], omega[s^-1]}
+   * @param diffRelRckPos
+   * @return */
+  /* package */ SteerPutEvent putEvent(Scalar currangle, Tensor velocity, double diffRelRckPos) {
     // term1 is the static compensation of the restoring force, depending on the current angle
     // term2 is the compensation depending on the velocity of the steering wheel
     // term3 compensates the force caused by the lateral velocity in each front wheel
-    AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
     Tensor filteredVel = geodesicIIR1Filter.apply(velocity);
-    Scalar latFrontLeftVel = axleConfiguration.wheel(0).adjoint(filteredVel).Get(1);
-    Scalar latFrontRightVel = axleConfiguration.wheel(1).adjoint(filteredVel).Get(1);
     Scalar term1 = currangle.multiply(hapticSteerConfig.staticCompensation);
-    System.out.println(term1);
+    // System.out.println(term1);
     Scalar term2 = hapticSteerConfig.dynamicCompensationBoundaryClip().apply(//
         RealScalar.of(diffRelRckPos).multiply(hapticSteerConfig.dynamicCompensation));
-    System.out.println(term2);
-    Scalar term3 = hapticSteerConfig.latForceCompensationBoundaryClip().apply(//
-        (latFrontLeftVel.add(latFrontRightVel)).multiply(hapticSteerConfig.latForceCompensation));
-    System.out.println(term3);
+    // System.out.println(term2);
+    AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
+    Scalar latFront_LeftVel = axleConfiguration.wheel(0).adjoint(filteredVel).Get(1);
+    Scalar latFrontRightVel = axleConfiguration.wheel(1).adjoint(filteredVel).Get(1);
+    Scalar term3 = hapticSteerConfig.latForceCompensationBoundaryClip().apply( //
+        latFront_LeftVel.add(latFrontRightVel).multiply(hapticSteerConfig.latForceCompensation));
+    // System.out.println(term3);
     return SteerPutEvent.createOn(term1.add(term2).add(term3));
   }
 }

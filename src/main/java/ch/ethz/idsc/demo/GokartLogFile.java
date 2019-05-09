@@ -1782,6 +1782,55 @@ public enum GokartLogFile implements LogFile {
   /** slow pursuit */
   _20190429T163418_25103376,
   /***************************************************/
+  /* 2019-05-02 */
+  /** geodesic pursuit */
+  _20190502T105037_bdbf8063,
+  /** geodesic pursuit */
+  _20190502T110217_bdbf8063,
+  /** fast manual driving */
+  _20190502T113816_923429be,
+  /** geodesic pursuit */
+  _20190502T115238_3839b112,
+  /** geodesic pursuit */
+  _20190502T133418_3839b112,
+  /** power steering test */
+  _20190502T135355_622e8d75,
+  /***************************************************/
+  /* 2019-05-06 */
+  /** tuning of power steering
+   * [abrupt log termination] */
+  _20190506T101748_99afbf25,
+  /** tuning of power steering */
+  _20190506T102339_99afbf25,
+  /** racing with and without power steering */
+  _20190506T134816_99afbf25,
+  /** manual driving, pursuit */
+  _20190506T141135_99afbf25,
+  /** pursuit */
+  _20190506T151117_dd899454,
+  /** pd control trajectory pursuit */
+  _20190506T162944_9c0e80e3,
+  /** pd control trajectory pursuit */
+  _20190506T165554_9c0e80e3,
+  /***************************************************/
+  /* 2019-05-07 */
+  /** test for demo with occupancy grid mapping */
+  _20190507T091621_c817d5db,
+  /** test for demo with sight lines mapping */
+  _20190507T092002_c817d5db,
+  /** demo trajectory planning
+   * data collection for steering mapping */
+  _20190507T094525_c817d5db,
+  /** fast manual driving */
+  _20190507T122145_06a2a5f4,
+  /** mpc */
+  _20190507T142359_06a2a5f4,
+  /** mpc, localization failure
+   * TODO investigate: system block? */
+  _20190507T155931_06a2a5f4,
+  /** short mpc, manual driving */
+  _20190507T161525_06a2a5f4,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

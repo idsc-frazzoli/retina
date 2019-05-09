@@ -11,8 +11,9 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** class is the default choice for geodesic pursuit when driving along a curve in global
  * coordinates while the pose is updated periodically from a localization method. */
-public class CurveClothoidPursuitModule extends CurvePurePursuitModule {
-  private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
+public class CurveClothoidPursuitModule extends CurvePursuitModule {
+  private final GlobalViewLcmModule globalViewLcmModule = //
+      ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
 
   public CurveClothoidPursuitModule(PursuitConfig pursuitConfig) {
     super(pursuitConfig);
@@ -30,8 +31,8 @@ public class CurveClothoidPursuitModule extends CurvePurePursuitModule {
           pursuitConfig.trajectoryEntryFinder, //
           PursuitConfig.ratioLimits());
       if (Objects.nonNull(globalViewLcmModule))
-        globalViewLcmModule.setPlan(plan.map(p -> p.curve).orElse(null));
-      return plan.map(p -> p.ratio);
+        globalViewLcmModule.setPlan(plan.map(ClothoidPlan::curve).orElse(null));
+      return plan.map(ClothoidPlan::ratio);
     }
     System.err.println("no curve in geodesic pursuit");
     return Optional.empty();

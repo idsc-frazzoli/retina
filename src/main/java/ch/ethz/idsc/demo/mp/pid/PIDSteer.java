@@ -12,8 +12,9 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ class PIDSteer implements SteerPutProvider, StartAndStoppable {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
@@ -29,7 +30,7 @@ import ch.ethz.idsc.tensor.Scalar;
   public Optional<SteerPutEvent> putEvent() {
     if (steerColumnInterface.isSteerColumnCalibrated()) {
       Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-      Scalar desPos = steerMapping.getSCEfromAngle(heading);
+      Scalar desPos = steerMapping.getSCEfromRatio(ratio);
       Scalar difference = desPos.subtract(currAngle);
       Scalar torqueCmd = steerPositionController.iterate(difference);
       return Optional.of(SteerPutEvent.createOn(torqueCmd));
@@ -47,13 +48,13 @@ import ch.ethz.idsc.tensor.Scalar;
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 
-  private Scalar heading = RealScalar.of(0.0);
+  private Scalar ratio = Quantity.of(0.0, SI.PER_METER);
 
-  /* package */ void setHeading(Scalar heading) {
-    this.heading = heading;
+  /* package */ void setRatio(Scalar ratio) {
+    this.ratio = ratio;
   }
 
-  /* package */ Scalar getHeading() {
-    return heading;
+  /* package */ Scalar getRatio() {
+    return ratio;
   }
 }
