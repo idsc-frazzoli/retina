@@ -18,13 +18,13 @@ import ch.ethz.idsc.tensor.Scalar;
 
   protected abstract void protected_last();
 
-  protected abstract Optional<Scalar> deriveHeading();
+  protected abstract Optional<Scalar> deriveRatio();
 
   @Override // from AbstractClockedModule
   public final void runAlgo() {
-    Optional<Scalar> heading = deriveHeading();
-    if (heading.isPresent())
-      pidSteer.setRatio(heading.get());
+    Optional<Scalar> ratio = deriveRatio();
+    if (ratio.isPresent())
+      pidSteer.setRatio(ratio.get());
   }
 
   @Override // from AbstractModule

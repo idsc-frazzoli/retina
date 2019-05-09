@@ -47,7 +47,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   @Override
-  protected Optional<Scalar> deriveHeading() {
+  protected Optional<Scalar> deriveRatio() {
     if (Objects.nonNull(gokartPoseEvent) && //
         optionalCurve.isPresent()) {
       StateTime stateTime = new StateTime( //
@@ -61,10 +61,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           optionalCurve.get(), //
           stateTime); //
       //
-      Scalar angleOut = currentPID.angleOut(); // TODO comment on unit? -> test
+      Scalar ratioOut = currentPID.ratioOut(); // TODO comment on unit? -> test
       this.previousPID = currentPID;
       pidIndex++;
-      return Optional.of(angleOut);
+      return Optional.of(ratioOut);
     }
     this.previousPID = currentPID;
     pidIndex++;

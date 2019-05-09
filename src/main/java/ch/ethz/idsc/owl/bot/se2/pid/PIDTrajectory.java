@@ -8,11 +8,11 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
-//TODO implementation does not use I-part
+//TODO mcp implementation does not use I-part
 public class PIDTrajectory {
   private final Scalar time;
   private final Scalar errorPose;
-  private Scalar angleOut;
+  private Scalar ratioOut;
   private Scalar deriv = RealScalar.ZERO;
   private Scalar prop;
   private Tensor closest;
@@ -22,22 +22,25 @@ public class PIDTrajectory {
     Tensor stateXYphi = stateTime.state();
     TensorUnaryOperator tuo = new Se2GroupElement(stateXYphi).inverse()::combine;
     Tensor curveLocally = Tensor.of(traj.stream().map(tuo));
-    // Tensor closest = trajInMeter.get(Se2CurveHelper.closest(trajInMeter, stateXYphi));
+    // --
+    // Distance metric
     closest = curveLocally.get(Se2CurveHelper.closestEuclid(curveLocally));
     // TODO MCP unfortunately Se2CoveringParametricDistance ignores heading if xy are correct
-    // ClothoidCurve
+    // Idea: ClothoidCurve
+    // --
     this.errorPose = closest.Get(1);
     prop = pidGains.Kp.multiply(errorPose);
     if (pidIndex > 1) {
       Scalar dt = time.subtract(previousPID.time);
       deriv = pidGains.Kd.multiply((errorPose.subtract(previousPID.errorPose)).divide(dt));
     }
-    angleOut = prop.add(deriv);
-    // angleOut = RnUnitCircle.convert(angleOut);
+    ratioOut = prop.add(deriv); 
+    // angleOut = RnUnitCircle.convert(angleOut); //TODO mcp Check if need to add
+    
   }
 
-  public Scalar angleOut() {
-    return angleOut;
+  public Scalar ratioOut() {
+    return ratioOut;
   }
 
   public Scalar getProp() {
