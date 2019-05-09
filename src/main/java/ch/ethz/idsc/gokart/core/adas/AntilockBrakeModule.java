@@ -19,13 +19,14 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.sca.Clips;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
 public class AntilockBrakeModule extends AbstractModule implements LinmotPutProvider {
@@ -62,62 +63,43 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
   }
 
   // button is pressed -> full brake
-  double brakePositionDouble = Magnitude.ONE.toDouble(HapticSteerConfig.GLOBAL.fullBraking);
-  Scalar brakePosition = RealScalar.of(brakePositionDouble);
+  private Scalar brakePosition = HapticSteerConfig.GLOBAL.fullBraking;
 
-  Optional<LinmotPutEvent> putEvent1() {
+  @Override
+  public Optional<LinmotPutEvent> putEvent() {
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     if (optional.isPresent()) {
       ManualControlInterface manualControlInterface = optional.get();
-      if (manualControlInterface.isAutonomousPressed()) {
-        return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(brakePosition));
+      if (manualControlInterface.isAutonomousPressed() && lidarLocalizationModule != null) {
+        return smartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
       }
-      return Optional.empty();
+      // reset to full Braking value for next braking maneuvre
+      brakePosition = HapticSteerConfig.GLOBAL.fullBraking;
     }
     return Optional.empty();
   }
 
-  @Override // from LinmotPutProvider
-  public Optional<LinmotPutEvent> putEvent() {
-    if (steerColumnTracker.isCalibratedAndHealthy()) {
-      Optional.of(putEvent1(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity()));
-    }
-    return Optional.empty();
-  }
-
-  public Optional<LinmotPutEvent> putEvent1(Tensor angularRate_Y_pair, Tensor velocityOrigin) {
-    if (lidarLocalizationModule != null) {
-      Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
-      Tensor angularRate_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
-      Tensor slip = angularRate_Y_pair.subtract(angularRate_Origin_pair);
-      // the brake cannot be constantly applied otherwise the brake motor heats up too much
-      double slip1 = Magnitude.ONE.toDouble(slip.Get(0));
-      double slip2 = Magnitude.ONE.toDouble(slip.Get(1));
-      double minSlip = Magnitude.ONE.toDouble(hapticSteerConfig.minSlip);
-      double maxSlip = Magnitude.ONE.toDouble(hapticSteerConfig.maxSlip);
-      // there is a desired range for slip (in theory 0.1-0.25)
-      // if the slip is outside this range, the position of the brake is increased/decreased
-      if ((slip1 < minSlip) || (slip1 > maxSlip)) {
-        if (slip1 < minSlip) {
-          brakePositionDouble += 0.05;
-        }
-        if (slip1 > maxSlip) {
-          brakePositionDouble -= 0.05;
-        }
-        LinmotPutEvent relativePosition = LinmotPutOperation.INSTANCE.toRelativePosition(brakePosition);
-        return Optional.of(relativePosition);
+  /** @param angularRate_Y_pair
+   * @param velocityOrigin
+   * @return braking command with suitable relative position */
+  Optional<LinmotPutEvent> smartBraking(Tensor angularRate_Y_pair, Tensor velocityOrigin) {
+    Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
+    Tensor angularRate_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
+    Tensor slip = angularRate_Origin_pair.subtract(angularRate_Y_pair); // vector of length 2 with entries of unit [s^-1]
+    System.out.println(slip.map(Round._3) + " " + brakePosition);
+    // the brake cannot be constantly applied otherwise the brake motor heats up too much
+    // there is a desired range for slip (in theory 0.1-0.25)
+    // if the slip is outside this range, the position of the brake is increased/decreased
+    // if (hapticSteerConfig.slipClip().isOutside(slip.Get(0)))
+    for (int i = 0; i < 2; i++) {
+      if (Scalars.lessThan(slip.Get(i), hapticSteerConfig.minSlip)) {
+        brakePosition = Clips.unit().apply(brakePosition.add(HapticSteerConfig.GLOBAL.incrBraking));
       }
-      if ((slip2 < minSlip) || (slip2 > maxSlip)) {
-        if (slip2 < minSlip) {
-          brakePositionDouble += 0.05;
-        }
-        if (slip2 > maxSlip) {
-          brakePositionDouble -= 0.05;
-        }
-        LinmotPutEvent relativePosition = LinmotPutOperation.INSTANCE.toRelativePosition(brakePosition);
-        return Optional.of(relativePosition);
+      if (Scalars.lessThan(hapticSteerConfig.maxSlip, slip.Get(i))) {
+        brakePosition = Clips.unit().apply(brakePosition.subtract(HapticSteerConfig.GLOBAL.incrBraking));
       }
     }
-    return Optional.empty();
+    LinmotPutEvent relativePosition = LinmotPutOperation.INSTANCE.toRelativePosition(brakePosition);
+    return Optional.of(relativePosition);
   }
 }

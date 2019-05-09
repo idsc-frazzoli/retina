@@ -32,7 +32,7 @@ public class AntilockBrakeModuleTest extends TestCase {
   public void testSimple2() {
     AntilockBrakeModule antilockBrakeModule = new AntilockBrakeModule();
     antilockBrakeModule.first();
-    antilockBrakeModule.putEvent1(Tensors.of(//
+    antilockBrakeModule.smartBraking(Tensors.of( //
         Quantity.of(1, SI.PER_SECOND), //
         Quantity.of(1, SI.PER_SECOND)), //
         Tensors.of( //
