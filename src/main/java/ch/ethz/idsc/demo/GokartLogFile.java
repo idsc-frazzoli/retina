@@ -1821,6 +1821,10 @@ public enum GokartLogFile implements LogFile {
   /** demo trajectory planning
    * data collection for steering mapping */
   _20190507T094525_c817d5db,
+  /** fast manual driving */
+  _20190507T122145_06a2a5f4,
+  /** mpc */
+  _20190507T142359_06a2a5f4,
   /***************************************************/
   ;
   // ---
