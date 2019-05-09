@@ -1825,6 +1825,11 @@ public enum GokartLogFile implements LogFile {
   _20190507T122145_06a2a5f4,
   /** mpc */
   _20190507T142359_06a2a5f4,
+  /** mpc, localization failure
+   * TODO investigate: system block? */
+  _20190507T155931_06a2a5f4,
+  /** short mpc, manual driving */
+  _20190507T161525_06a2a5f4,
   /***************************************************/
   ;
   // ---
