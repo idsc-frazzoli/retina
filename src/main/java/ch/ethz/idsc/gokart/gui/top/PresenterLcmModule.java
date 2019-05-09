@@ -19,7 +19,7 @@ import ch.ethz.idsc.gokart.core.perc.ClusterCollection;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
-import ch.ethz.idsc.gokart.core.pure.PureTrajectoryModule;
+import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -66,8 +66,8 @@ public class PresenterLcmModule extends AbstractModule {
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
   private final TrackReconRender trackReconRender = new TrackReconRender();
-  private final PureTrajectoryModule pureTrajectoryModule = //
-      ModuleAuto.INSTANCE.getInstance(PureTrajectoryModule.class);
+  private final GokartTrajectoryModule trajectoryModule = //
+      ModuleAuto.INSTANCE.getExtensions(GokartTrajectoryModule.class).findFirst().orElse(null);
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   // ---
@@ -88,8 +88,8 @@ public class PresenterLcmModule extends AbstractModule {
       ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
     }
-    if (Objects.nonNull(pureTrajectoryModule))
-      timerFrame.geometricComponent.addRenderInterface(pureTrajectoryModule.obstacleMapping());
+    if (Objects.nonNull(trajectoryModule))
+      timerFrame.geometricComponent.addRenderInterface(trajectoryModule.obstacleMapping());
     {
       if (Objects.nonNull(gokartTrackReconModule)) {
         timerFrame.geometricComponent.addRenderInterface(gokartTrackReconModule.trackMapping());

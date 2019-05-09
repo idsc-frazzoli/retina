@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.jg.following;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
@@ -39,6 +40,7 @@ public class ClothoidTrajectoryModule extends GokartTrajectoryModule {
       // post 20181025: keep old trajectory
       System.err.println("use old trajectory");
     }
-    curvePursuitModule.setTrajectory(trajectory);
+    if (Objects.nonNull(trajectory))
+      curvePursuitModule.setTrajectory(trajectory);
   }
 }
