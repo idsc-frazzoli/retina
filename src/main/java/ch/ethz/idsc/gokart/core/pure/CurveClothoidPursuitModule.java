@@ -38,7 +38,7 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule {
     return Optional.empty();
   }
 
-  @Override // from PurePursuitModule
+  @Override // from PursuitModule
   protected final void protected_last() {
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setPlan(null);

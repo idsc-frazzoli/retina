@@ -1,16 +1,6 @@
 // code by ynager and jph
 package ch.ethz.idsc.gokart.core.pure;
 
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
@@ -34,13 +24,10 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.data.Lists;
 import ch.ethz.idsc.owl.glc.adapter.EtaRaster;
 import ch.ethz.idsc.owl.glc.adapter.Expand;
-import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;
 import ch.ethz.idsc.owl.glc.adapter.LexicographicRelabelDecision;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
-import ch.ethz.idsc.owl.glc.adapter.Trajectories;
 import ch.ethz.idsc.owl.glc.adapter.VectorCostGoalAdapter;
 import ch.ethz.idsc.owl.glc.core.CostFunction;
-import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.GoalInterface;
 import ch.ethz.idsc.owl.glc.core.PlannerConstraint;
 import ch.ethz.idsc.owl.glc.core.StateTimeRaster;
@@ -78,8 +65,18 @@ import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 // TODO make configurable as parameter
-public class GokartTrajectoryModule extends AbstractClockedModule {
+public abstract class GokartTrajectoryModule extends AbstractClockedModule {
   private static final VehicleModel STANDARD = RimoSinusIonModel.standard();
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
@@ -96,13 +93,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   private final FlowsInterface flowsInterface;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-  final CurvePursuitModule curvePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
+  protected final CurvePursuitModule curvePursuitModule;
   /** sight lines mapping was successfully used for trajectory planning in a demo on 20190507 */
   private final AbstractMapping mapping;
   // = SightLinesMapping.defaultObstacle();
   // GenericBayesianMapping.createObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
-  private List<TrajectorySample> trajectory = null;
+  protected List<TrajectorySample> trajectory = null;
   /** waypoints are stored without units */
   private final Tensor waypoints;
   private PlannerConstraint plannerConstraint;
@@ -113,12 +110,13 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   /** arrives at 50[Hz] */
   private final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
 
-  public GokartTrajectoryModule() {
-    this(TrajectoryConfig.GLOBAL);
+  public GokartTrajectoryModule(CurvePursuitModule curvePursuitModule) {
+    this(TrajectoryConfig.GLOBAL, curvePursuitModule);
   }
 
-  /* package */ GokartTrajectoryModule(TrajectoryConfig trajectoryConfig) {
+  public GokartTrajectoryModule(TrajectoryConfig trajectoryConfig, CurvePursuitModule curvePursuitModule) {
     this.trajectoryConfig = trajectoryConfig;
+    this.curvePursuitModule = curvePursuitModule;
     flowsInterface = Se2CarFlows.forward(SPEED, Magnitude.PER_METER.apply(trajectoryConfig.maxRotation));
     mapping = trajectoryConfig.getAbstractMapping();
     // TODO obtain waypoints from TrajectoryDesignModule
@@ -187,7 +185,7 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         // no: plan from current position
         System.out.println("plan from current position");
         StateTime stateTime = new StateTime(xya, RealScalar.ZERO);
-        head = Arrays.asList(TrajectorySample.head(stateTime));
+        head = Collections.singletonList(TrajectorySample.head(stateTime));
       } else {
         // yes: plan from closest point + cutoffDist on previous trajectory
         System.out.println("plan from closest point + cutoffDist on previous trajectory");
@@ -266,30 +264,9 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
         .collect(Collectors.toList());
   }
 
-  @Override
+  @Override // from AbstractClockedModule
   protected final Scalar getPeriod() {
     return trajectoryConfig.planningPeriod;
-  }
-
-  public void expandResult(List<TrajectorySample> head, TrajectoryPlanner trajectoryPlanner) {
-    Optional<GlcNode> optional = trajectoryPlanner.getBest();
-    if (optional.isPresent()) { // goal reached
-      List<TrajectorySample> tail = //
-          GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
-      trajectory = Trajectories.glue(head, tail);
-      Tensor curve = Tensor.of(trajectory.stream() //
-          .map(TrajectorySample::stateTime) //
-          .map(StateTime::state) //
-          .map(row -> row.extract(0, 3)) //
-          .map(PoseHelper::attachUnits));
-      curvePursuitModule.setCurve(Optional.of(curve));
-      PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
-    } else {
-      // failure to reach goal
-      // ante 20181025: previous trajectory was cleared
-      // post 20181025: keep old trajectory
-      System.err.println("use old trajectory");
-    }
   }
 
   Collection<Flow> getFlows(int resolution) {
@@ -299,4 +276,6 @@ public class GokartTrajectoryModule extends AbstractClockedModule {
   public List<TrajectorySample> currentTrajectory() {
     return Collections.unmodifiableList(trajectory);
   }
+
+  protected abstract void expandResult(List<TrajectorySample> head, TrajectoryPlanner trajectoryPlanner);
 }

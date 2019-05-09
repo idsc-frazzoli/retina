@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Properties;
 
 import ch.ethz.idsc.demo.jg.following.FigureClothoidModule;
-import ch.ethz.idsc.demo.jg.following.GokartGeodesicTrajectoryModule;
+import ch.ethz.idsc.demo.jg.following.ClothoidTrajectoryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamVisualModule;
@@ -43,7 +43,7 @@ import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
 import ch.ethz.idsc.gokart.core.pure.FigurePureModule;
-import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
+import ch.ethz.idsc.gokart.core.pure.PureTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
@@ -127,8 +127,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       FigurePureModule.class, //
       MPCDynamicDrivingModule.class, //
       MPCKinematicDrivingModule.class, //
-      GokartTrajectoryModule.class, //
-      GokartGeodesicTrajectoryModule.class, //
+      PureTrajectoryModule.class, //
+      ClothoidTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       PIDModule.class, //
       PIDTestTrackModule.class, //
