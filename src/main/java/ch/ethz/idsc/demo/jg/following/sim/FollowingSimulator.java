@@ -151,8 +151,8 @@ public class FollowingSimulator extends TrajectoryDesignModule {
                 spinnerLabelDuration.getValue(), //
                 spinnerLabelRate.getValue().reciprocal());
             map.put(simulation.name(), simulation);
-            export(simulation.trail().get(), simulation.name().toLowerCase());
             System.out.println(simulation.getReport());
+            export(simulation.trail().get(), simulation.name().toLowerCase());
           }
         } else
           System.out.println("no curve found!");
