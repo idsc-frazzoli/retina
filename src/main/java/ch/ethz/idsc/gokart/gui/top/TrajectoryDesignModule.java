@@ -34,17 +34,17 @@ import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class TrajectoryDesignModule extends AbstractModule {
-  private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-  public static final Tensor _20190401 = Tensors.of( //
+  protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+  private static final Tensor _20190401 = Tensors.of( //
       Tensors.vector(3.6677994336284594, 3.5436206505034793, -190.05265224432887), //
       Tensors.vector(3.5436206505034793, -3.6677994336284594, 74.03647376620074), //
       Tensors.vector(0.0, 0.0, 1.0));
 
-  public static BackgroundImage get20190408() {
+  protected static BackgroundImage get20190408() {
     return new BackgroundImage(ResourceData.bufferedImage("/dubilab/obstacles/20190408.png"), _20190401);
   }
 
-  private final TrajectoryDesign trajectoryDesign = new TrajectoryDesign();
+  protected final TrajectoryDesign trajectoryDesign = new TrajectoryDesign();
 
   @Override // from AbstractModule
   protected void first() {
@@ -127,7 +127,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     trajectoryDesign.timerFrame.close();
   }
 
-  private static void exportTensor(File file, Tensor tensor) {
+  protected static void exportTensor(File file, Tensor tensor) {
     try {
       Put.of(file, tensor);
     } catch (Exception exception) {
@@ -135,7 +135,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     }
   }
 
-  private static Optional<Tensor> importTensor() {
+  protected static Optional<Tensor> importTensor() {
     JFileChooser fileChooser = new JFileChooser();
     int returnVal = fileChooser.showOpenDialog(fileChooser);
     if (returnVal == JFileChooser.APPROVE_OPTION)

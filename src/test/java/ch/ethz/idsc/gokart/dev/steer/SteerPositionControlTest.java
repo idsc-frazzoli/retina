@@ -5,6 +5,7 @@ import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
@@ -43,7 +44,7 @@ public class SteerPositionControlTest extends TestCase {
       SteerPutEvent.RTORQUE.apply(torque);
       currentSpd = currentSpd.add(torque.multiply(torque2Acc).multiply(SteerPositionControl.DT));
       currentPos = currentSpd.multiply(SteerPositionControl.DT);
-      if (index % 1000 == 0) {
+      if (index % 1000 == 0 && UserName.is("datahaki")) {
         System.out.println("current Speed: " + currentSpd);
         System.out.println("current Position " + currentPos);
       }

@@ -36,8 +36,8 @@ public class PIDControllerModuleTest extends TestCase {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
-      Scalar heading = pidControllerModule.pidSteer.getHeading();
-      if (UserName.is("maximilien")) {
+      Scalar heading = pidControllerModule.pidSteer.getRatio(); //TODO mcp fix
+      if (UserName.is("maximilien") || UserName.is("datahaki")) {
         System.out.println("Heading: " + heading);
         System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
       }
@@ -56,7 +56,7 @@ public class PIDControllerModuleTest extends TestCase {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
-      Scalar heading = pidControllerModule.pidSteer.getHeading();
+      Scalar heading = pidControllerModule.pidSteer.getRatio(); //TODO mcp fix
       if (UserName.is("maximilien")) {
         // System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
         // System.out.println("Pose: " + Pretty.of(pose));

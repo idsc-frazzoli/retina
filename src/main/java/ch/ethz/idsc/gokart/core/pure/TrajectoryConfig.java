@@ -1,6 +1,9 @@
 // code by ynager
 package ch.ethz.idsc.gokart.core.pure;
 
+import ch.ethz.idsc.gokart.core.map.AbstractMapping;
+import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
+import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
@@ -36,6 +39,9 @@ public class TrajectoryConfig {
   /** half angle of conic goal region */
   public Scalar coneHalfAngle = Degree.of(18);
   public Tensor goalRadiusFactor = Tensors.vector(4, 4, 2);
+  /** true = SightLinesMapping
+   * false = GenericBayesianMapping */
+  public Boolean mapSightLines = true;
   /** file that stores se2 waypoints without units
    * (this allows that the file can also be generated or imported by other software)
    * units will be attached in the function {@link #getWaypointsPose()} */
@@ -65,5 +71,11 @@ public class TrajectoryConfig {
   /** @return */
   public static PredefinedMap getPredefinedMapObstacles() {
     return PredefinedMap.DUBILAB_OBSTACLES_20190314;
+  }
+
+  public AbstractMapping getAbstractMapping() {
+    return mapSightLines //
+        ? SightLinesMapping.defaultObstacle()
+        : GenericBayesianMapping.createObstacleMapping();
   }
 }

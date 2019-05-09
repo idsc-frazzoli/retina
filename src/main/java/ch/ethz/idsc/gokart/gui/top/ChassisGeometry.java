@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.gui.top;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.owl.car.math.AckermannSteering;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owl.car.math.TurningGeometry;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -74,15 +73,10 @@ public class ChassisGeometry {
     return DifferentialSpeed.fromSI(xAxleRtoF, yTireRear);
   }
 
-  // TODO JPH obsolete, rather use RimoAxleConfiguration
-  public AckermannSteering getAckermannSteering() {
-    return new AckermannSteering(xAxleRtoF, yTireFront);
-  }
-
   /** function ArcTan[d * r] approx. d * r for d ~ 1 and small r
    * inverse function of {@link TurningGeometry}
-   * @param ratio [m^-1]
-   * see for instance SteerConfig.GLOBAL.turningRatioMax
+   * 
+   * @param ratio [m^-1] see for instance SteerConfig.GLOBAL.turningRatioMax
    * @return steering angle unitless */
   public Scalar steerAngleForTurningRatio(Scalar ratio) {
     return ArcTan.of(xAxleRtoF.multiply(ratio));

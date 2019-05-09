@@ -17,7 +17,6 @@ import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
-import ch.ethz.idsc.owl.car.math.BicycleAngularSlip;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -78,7 +77,7 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
     Scalar ratio = steerMapping.getRatioFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     // Scalar rotationPerMeterDriven = bicycleAngularSlip.rotationPerMeterDriven(theta); // m^-1
     // compute (negative) angular slip
-    AngularSlip angularSlip = BicycleAngularSlip.getAngularSlip(meanTangentSpeed, ratio, gyroZ);
+    AngularSlip angularSlip = new AngularSlip(meanTangentSpeed, ratio, gyroZ);
     // ---
     Tensor powers = torqueVectoringInterface.powers(angularSlip, power);
     Tensor torquesARMS = powers.multiply(ManualConfig.GLOBAL.torqueLimit); // vector of length 2
