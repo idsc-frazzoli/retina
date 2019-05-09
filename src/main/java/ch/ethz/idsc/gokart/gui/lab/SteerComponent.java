@@ -29,6 +29,7 @@ import ch.ethz.idsc.tensor.Scalar;
   // ---
   private final SteerInitButton steerInitButton = new SteerInitButton();
   private final JToggleButton jToggleController = new JToggleButton("controller");
+  private final JToggleButton jToggleTorque = new JToggleButton("const torque");
   private final SpinnerLabel<Word> spinnerLabelLw = new SpinnerLabel<>();
   private final SliderExt sliderPosition;
   private final JTextField torquePut;
@@ -49,6 +50,8 @@ import ch.ethz.idsc.tensor.Scalar;
       // ---
       jToggleController.setEnabled(false);
       jToolBar.add(jToggleController);
+      jToggleTorque.setEnabled(false);
+      jToolBar.add(jToggleTorque);
     }
     {
       JToolBar jToolBar = createRow("Command");
@@ -103,6 +106,7 @@ import ch.ethz.idsc.tensor.Scalar;
     final boolean isCalibrated = steerColumnTracker.isSteerColumnCalibrated();
     final boolean isHealthy = steerColumnTracker.isCalibratedAndHealthy();
     jToggleController.setEnabled(isCalibrated);
+    jToggleTorque.setEnabled(isCalibrated);
     // ---
     {
       rangeWidth.setText("" + steerColumnTracker.getIntervalWidth());
@@ -145,7 +149,8 @@ import ch.ethz.idsc.tensor.Scalar;
   public Optional<SteerPutEvent> putEvent() {
     if (steerColumnTracker.isSteerColumnCalibrated()) {
       final Scalar currAngle = steerColumnTracker.getSteerColumnEncoderCentered(); // SCE
-      Scalar desPos = RationalScalar.of(-sliderPosition.jSlider.getValue(), RESOLUTION) //
+      Scalar ratio = RationalScalar.of(-sliderPosition.jSlider.getValue(), RESOLUTION);
+      Scalar desPos = ratio //
           .multiply(SteerConfig.GLOBAL.columnMax);
       // System.out.println("here " + desPos);
       Scalar errPos = desPos.subtract(currAngle);
@@ -153,6 +158,9 @@ import ch.ethz.idsc.tensor.Scalar;
       ControllerInfoPublish.publish(desPos, currAngle); // TODO not permanent, only for tuning
       if (jToggleController.isSelected())
         return Optional.of(SteerPutEvent.create(spinnerLabelLw.getValue(), torqueCmd));
+      if (jToggleTorque.isSelected()) {
+        return Optional.of(SteerPutEvent.create(spinnerLabelLw.getValue(), ratio.multiply(SteerConfig.GLOBAL.calibration)));
+      }
     }
     return Optional.empty();
   }

@@ -34,15 +34,17 @@ public class SteerConfigTest extends TestCase {
 
   public void testConversion() {
     Scalar radius = UnitSystem.SI().apply(SteerConfig.GLOBAL.turningRatioMax.reciprocal());
-    Clip clip = Clips.interval(Quantity.of(2.4, SI.METER), Quantity.of(2.5, SI.METER));
+    Clip clip = Clips.interval(Quantity.of(2.12, SI.METER), Quantity.of(2.4, SI.METER));
     assertTrue(clip.isInside(radius));
   }
 
   public void testTurningAtLimit() {
     // according to our model
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(SteerConfig.GLOBAL.turningRatioMax);
-    // angle == 0.4521892315592385
-    Clips.interval(0.45, 0.455).requireInside(angle);
+    // angle == 0.45218923155923850 ante 20190509
+    // angle == 0.49164265965082177 post 20190509
+    // System.out.println(angle);
+    Clips.interval(0.48, 0.5).requireInside(angle);
   }
 
   public void testTurningAtLimitCubic() {
