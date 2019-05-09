@@ -34,9 +34,8 @@ public class PIDTrajectory {
       Scalar dt = time.subtract(previousPID.time);
       deriv = pidGains.Kd.multiply((errorPose.subtract(previousPID.errorPose)).divide(dt));
     }
-    ratioOut = prop.add(deriv); 
-    // angleOut = RnUnitCircle.convert(angleOut); //TODO mcp Check if need to add
-    
+    ratioOut = prop.add(deriv);
+    // ratioOut = RnUnitCircle.convert(ratioOut); //TODO mcp Check if need to add
   }
 
   public Scalar ratioOut() {

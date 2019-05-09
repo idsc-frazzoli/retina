@@ -22,15 +22,17 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class PIDConvergenceTest extends TestCase {
-  /** A = Import["posepid.csv"];
-   * ListPlot[A[[All, {1, 2}]], AspectRatio -> 1, PlotRange -> All] */
+  /** PID Gains found by try and error */
   private PIDGains pidGains = new PIDGains( //
       Quantity.of(.7, "m^-2"), //
-      RealScalar.ZERO, // 
+      RealScalar.ZERO, //
       Quantity.of(5, "s*m^-2"));
   private TableBuilder tableBuilder = new TableBuilder();
   Tensor pose = Tensors.fromString("{0[m],2[m],1.57}");
 
+  /** Mathematica plots
+   * A = Import["posepid.csv"];
+   * ListPlot[A[[All, {1, 2}]], AspectRatio -> 1, PlotRange -> All] */
   public void testSimplePlotter() throws IOException {
     PIDTrajectory pidTrajectory = null;
     Tensor traj = Tensors.vector(i -> Tensors.of(Quantity.of(i / 10, SI.METER), Quantity.of(1, SI.METER), Pi.HALF), 2000);

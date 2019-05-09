@@ -31,12 +31,11 @@ public class PIDControllerModuleTest extends TestCase {
     pidControllerModule.setCurve(Optional.ofNullable(curve));
     pidControllerModule.first();
     Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
-    
     for (int index = 0; index < 100; index++) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
-      Scalar ratio = pidControllerModule.pidSteer.getRatio(); //TODO mcp fix
+      Scalar ratio = pidControllerModule.pidSteer.getRatio(); // TODO mcp fix
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
         System.out.println("Heading: " + ratio);
         System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
@@ -45,19 +44,18 @@ public class PIDControllerModuleTest extends TestCase {
       // TODO MCP Solve issue with if gokart does multiple rotations (+pi factor)
     }
   }
-  
+
   public void testPoseError() {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
     pidControllerModule.setCurve(Optional.ofNullable(curve));
     pidControllerModule.first();
     Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
-    
     for (int index = 0; index < 100; index++) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
-      Scalar ratio = pidControllerModule.pidSteer.getRatio(); //TODO mcp fix
-      if (UserName.is("maximilien")) {
+      Scalar ratio = pidControllerModule.pidSteer.getRatio(); // TODO mcp fix
+      if (UserName.is("maximilien") || UserName.is("datahaki")) {
         // System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
         // System.out.println("Pose: " + Pretty.of(pose));
       }
