@@ -2,19 +2,15 @@
 package ch.ethz.idsc.owl.bot.se2.pid;
 
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.opt.Pi;
+import ch.ethz.idsc.tensor.sca.Mod;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /*package*/ enum RnUnitCircle {
   ;
+  private static final ScalarUnaryOperator MOD = Mod.function(Pi.TWO, Pi.VALUE.negate());
+
   public static Scalar convert(Scalar angleOut) {
-    while (!(Scalars.lessEquals(angleOut, Pi.VALUE) && Scalars.lessEquals(Pi.VALUE.negate(), angleOut))) {
-      if (Scalars.lessEquals(Pi.VALUE, angleOut)) {
-        angleOut = angleOut.add(Pi.TWO.negate());
-      } else if (Scalars.lessEquals(angleOut, Pi.VALUE.negate())) {
-        angleOut = angleOut.add(Pi.TWO);
-      }
-    }
-    return angleOut;
+    return MOD.apply(angleOut);
   }
 }

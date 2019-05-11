@@ -22,11 +22,14 @@ public class PIDTuningParams {
   // ---
   public final Scalar updatePeriod = Quantity.of(0.2, SI.SECOND); // 0.2[s] == 5[Hz]
   // ---
-  // TODO Not used // not needed
+  public Scalar maxSteerAngleSafetyRatio = RealScalar.of(.9); // Avoid limit of actuator
   final Scalar maxSteerAngle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio( //
       SteerConfig.GLOBAL.turningRatioMax);
-  final Scalar maxSteerAngleSafetyRatio = RealScalar.of(.9); // Avoid limit of actuator
-  public final Clip clip = Clips.interval( //
-      maxSteerAngle.multiply(maxSteerAngleSafetyRatio).negate(), //
-      maxSteerAngle.multiply(maxSteerAngleSafetyRatio));
+
+  // TODO MCP not yet used. is this needed?
+  public final Clip clipAngle() {
+    return Clips.interval( //
+        maxSteerAngle.multiply(maxSteerAngleSafetyRatio).negate(), //
+        maxSteerAngle.multiply(maxSteerAngleSafetyRatio));
+  }
 }
