@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class PIDControllerModuleTest extends TestCase {
-  private Tensor curve = Tensor.of(DubendorfCurve.TRACK_OVAL_SE2.stream());
+  private static final Tensor CURVE = DubendorfCurve.TRACK_OVAL_SE2;
 
   public void testFirstAlgoLast() {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
@@ -28,7 +28,7 @@ public class PIDControllerModuleTest extends TestCase {
 
   public void testHeadingError() {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
-    pidControllerModule.setCurve(Optional.ofNullable(curve));
+    pidControllerModule.setCurve(Optional.ofNullable(CURVE));
     pidControllerModule.first();
     Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
     for (int index = 0; index < 100; index++) {
@@ -38,7 +38,7 @@ public class PIDControllerModuleTest extends TestCase {
       Scalar ratio = pidControllerModule.pidSteer.getRatio(); // TODO mcp fix
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
         System.out.println("Heading: " + ratio);
-        System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
+        System.out.println("Error: " + pidControllerModule.getPID().getError());
       }
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, ratio));
       // TODO MCP Solve issue with if gokart does multiple rotations (+pi factor)
@@ -47,7 +47,7 @@ public class PIDControllerModuleTest extends TestCase {
 
   public void testPoseError() {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
-    pidControllerModule.setCurve(Optional.ofNullable(curve));
+    pidControllerModule.setCurve(Optional.ofNullable(CURVE));
     pidControllerModule.first();
     Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
     for (int index = 0; index < 100; index++) {

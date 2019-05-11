@@ -32,8 +32,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   @Override // from GoKartPoseListener
-  public void getEvent(GokartPoseEvent getEvent) {
-    this.gokartPoseEvent = getEvent;
+  public void getEvent(GokartPoseEvent gokartPoseEvent) {
+    this.gokartPoseEvent = gokartPoseEvent;
   }
 
   @Override // from PIDControllerModule
@@ -73,10 +73,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   public void setCurve(Optional<Tensor> curve) {
-    if (RnCurveHelper.isSe2Curve(curve.get())) {
-      optionalCurve = curve;
-    }
-    optionalCurve = Optional.empty();
+    // TODO MCP write test for this function since there was a bug here
+    boolean isValid = RnCurveHelper.isSe2Curve(curve.get());
+    optionalCurve = isValid //
+        ? curve
+        : Optional.empty();
+    if (!isValid)
+      System.err.println("curve does not have se2 format");
   }
 
   /* package */ final Optional<Tensor> getCurve() {
