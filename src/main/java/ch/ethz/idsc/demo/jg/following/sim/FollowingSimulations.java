@@ -114,22 +114,21 @@ public enum FollowingSimulations implements ErrorInterface {
   }
 
   @Override // from ErrorInterface
-  public final Tensor averageError() {
+  public final Optional<Tensor> averageError() {
     return followingError.averageError();
   }
 
   @Override // from ErrorInterface
-  public final Tensor accumulatedError() {
+  public final Optional<Tensor> accumulatedError() {
     return followingError.accumulatedError();
   }
 
   @Override // from ErrorInterface
-  public String getReport() {
-    Optional<MinMax> ratioRange = ratioRange();
-    if (ratioRange.isPresent())
-      return name() + " " + followingError.getReport() + //
-          "\n\tratios:\tmin = " + Round._4.apply(ratioRange.get().min().Get()) + ", max = " + Round._4.apply(ratioRange.get().max().Get());
-    return name() + " not yet run";
+  public Optional<String> getReport() {
+    return followingError.getReport().map(report -> //
+        name() + ratioRange().map(range -> " " + report + //
+            "\n\tratios:\tmin = " + Round._4.apply(range.min().Get()) + ", max = " + Round._4.apply(range.max().Get())) //
+            .orElse(" not yet run"));
   }
 
   /** @param pose of vehicle {x[m], y[m], angle}

@@ -1,6 +1,8 @@
 // code by gjoel
 package ch.ethz.idsc.demo.jg.following.analysis;
 
+import java.util.Optional;
+
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -60,22 +62,28 @@ public class FollowingError implements ErrorInterface {
   }
 
   @Override // from ErrorInterface
-  public final Tensor averageError() {
-    return Mean.of(errors);
+  public final Optional<Tensor> averageError() {
+    if (errors.length() > 0)
+      return Optional.of(Mean.of(errors));
+    return Optional.empty();
   }
 
   @Override // from ErrorInterface
-  public final Tensor accumulatedError() {
-    return errors.stream().reduce(Tensor::add).get();
+  public final Optional<Tensor> accumulatedError() {
+    return errors.stream().reduce(Tensor::add);
   }
 
   @Override // from ErrorInterface
-  public String getReport() {
-    Tensor average = averageError().map(Round._4);
-    Tensor accumulated = accumulatedError().map(Round._4);
-    return "following error (" + this.getClass().getSimpleName() + ")\n" + //
-        "\ttime:\t" + times.Get(0).map(Round._2) + " - " + times.Get(1).map(Round._2) + "\n" + //
-        "\taverage error:\tposition: " + average.Get(0) + ",\theading: " + average.Get(1) + "\n" + //
-        "\taccumulated error:\tposition: " + accumulated.Get(0) + ",\theading: " + accumulated.Get(1);
+  public Optional<String> getReport() {
+    Optional<Tensor> averageError = averageError();
+    if (averageError.isPresent()) {
+      Tensor average = averageError.get().map(Round._4);
+      Tensor accumulated = accumulatedError().get().map(Round._4);
+      return Optional.of("following error (" + this.getClass().getSimpleName() + ")\n" + //
+          "\ttime:\t" + times.Get(0).map(Round._2) + " - " + times.Get(1).map(Round._2) + "\n" + //
+          "\taverage error:\tposition: " + average.Get(0) + ",\theading: " + average.Get(1) + "\n" + //
+          "\taccumulated error:\tposition: " + accumulated.Get(0) + ",\theading: " + accumulated.Get(1));
+    }
+    return Optional.empty();
   }
 }

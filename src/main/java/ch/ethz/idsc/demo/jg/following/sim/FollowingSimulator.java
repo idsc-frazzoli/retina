@@ -53,7 +53,7 @@ public class FollowingSimulator extends TrajectoryDesignModule {
   private static final Scalar SIGMA_POS = Quantity.of(1, SI.METER);
   private static final Scalar DELTA_ANGLE = Pi.VALUE.divide(RealScalar.of(4));
   // ---
-  private static final ColorDataIndexed COLORS = ColorDataLists._001.cyclic();
+  private static final ColorDataIndexed COLORS = ColorDataLists._250.cyclic();
   // ---
   private final SpinnerLabel<Scalar> spinnerLabelRate = new SpinnerLabel<>();
   private final SpinnerLabel<Scalar> spinnerLabelDuration = new SpinnerLabel<>();
@@ -172,7 +172,7 @@ public class FollowingSimulator extends TrajectoryDesignModule {
                 spinnerLabelDuration.getValue(), //
                 spinnerLabelRate.getValue().reciprocal());
             map.put(simulation.name(), simulation);
-            System.out.println(simulation.getReport());
+            System.out.println(simulation.getReport().get());
             export(simulation.trail().get(), simulation.name().toLowerCase());
           }
         } else
@@ -195,7 +195,7 @@ public class FollowingSimulator extends TrajectoryDesignModule {
    * @return randomized initial pose */
   private Tensor initialPose(Tensor curve) {
     int idx = RandomVariate.of(UniformDistribution.of(0, curve.length())).number().intValue();
-    Tensor initialPose = curve.get(idx); // TODO GJOEL randomize
+    Tensor initialPose = curve.get(idx);
     Tensor rnd = RandomVariate.of(NormalDistribution.of(Quantity.of(0, SI.METER), SIGMA_POS), 2);
     rnd.append(RandomVariate.of(UniformDistribution.of(DELTA_ANGLE.negate(), DELTA_ANGLE)));
     return initialPose.add(rnd);
