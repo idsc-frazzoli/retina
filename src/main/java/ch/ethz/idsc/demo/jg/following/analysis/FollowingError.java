@@ -1,22 +1,26 @@
 // code by gjoel
 package ch.ethz.idsc.demo.jg.following.analysis;
 
-import java.util.Optional;
-
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Norm;
+import ch.ethz.idsc.tensor.sca.Abs;
+import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class FollowingError implements ErrorInterface {
+  private static final Mod MOD = Mod.function(Pi.TWO);
+  // ---
   private Tensor reference = Tensors.empty();
   private Tensor errors = Tensors.empty();
   // ---
@@ -30,7 +34,7 @@ public class FollowingError implements ErrorInterface {
 
   /** @param reference curve or trajectory */
   public void setReference(Tensor reference) {
-    this.reference = Tensor.of(reference.stream().map(Extract2D.FUNCTION)).unmodifiable();
+    this.reference = reference.unmodifiable();
   }
 
   public Tensor getReference() {
@@ -42,32 +46,36 @@ public class FollowingError implements ErrorInterface {
   public void insert(Scalar time, Tensor pose) {
     times.set(Min.of(times.Get(0), time), 0);
     times.set(Max.of(times.Get(1), time), 1);
-    error(pose).ifPresent(errors::append);
+    errors.append(error(pose));
   }
 
   /** @param pose of vehicle
    * @return approximation of error by distance to closest reference point */
-  private Optional<Scalar> error(Tensor pose) {
+  private Tensor error(Tensor pose) {
     Tensor pose2D = Extract2D.FUNCTION.apply(pose);
-    Tensor distances = Tensor.of(reference.stream().map(tensor -> tensor.subtract(pose2D)).map(Norm._2::ofVector));
-    return distances.stream().reduce(Min::of).map(Tensor::Get);
+    Tensor distances = Tensor.of(reference.stream().map(Extract2D.FUNCTION).map(tensor -> tensor.subtract(pose2D)).map(Norm._2::ofVector));
+    int idx = ArgMin.of(distances);
+    Scalar heading_error = Abs.of(MOD.apply(pose.Get(2)).subtract(MOD.apply(reference.get(idx).Get(2))));
+    return Tensors.of(distances.get(idx), heading_error);
   }
 
   @Override // from ErrorInterface
-  public final Scalar averageError() {
-    return Mean.of(errors).Get();
+  public final Tensor averageError() {
+    return Mean.of(errors);
   }
 
   @Override // from ErrorInterface
-  public final Scalar accumulatedError() {
-    return errors.stream().map(Scalar.class::cast).reduce(Scalar::add).get();
+  public final Tensor accumulatedError() {
+    return errors.stream().reduce(Tensor::add).get();
   }
 
   @Override // from ErrorInterface
   public String getReport() {
+    Tensor average = averageError().map(Round._4);
+    Tensor accumulated = accumulatedError().map(Round._4);
     return "following error (" + this.getClass().getSimpleName() + ")\n" + //
         "\ttime:\t" + times.Get(0).map(Round._2) + " - " + times.Get(1).map(Round._2) + "\n" + //
-        "\taverage error:\t" + averageError().map(Round._4) + "\n" + //
-        "\taccumulated error:\t" + accumulatedError().map(Round._4);
+        "\taverage error:\tposition: " + average.Get(0) + ",\theading: " + average.Get(1) + "\n" + //
+        "\taccumulated error:\tposition: " + accumulated.Get(0) + ",\theading: " + accumulated.Get(1);
   }
 }

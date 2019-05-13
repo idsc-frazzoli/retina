@@ -114,12 +114,12 @@ public enum FollowingSimulations implements ErrorInterface {
   }
 
   @Override // from ErrorInterface
-  public final Scalar averageError() {
+  public final Tensor averageError() {
     return followingError.averageError();
   }
 
   @Override // from ErrorInterface
-  public final Scalar accumulatedError() {
+  public final Tensor accumulatedError() {
     return followingError.accumulatedError();
   }
 
@@ -129,7 +129,7 @@ public enum FollowingSimulations implements ErrorInterface {
     if (ratioRange.isPresent())
       return name() + " " + followingError.getReport() + //
           "\n\tratios:\tmin = " + Round._4.apply(ratioRange.get().min().Get()) + ", max = " + Round._4.apply(ratioRange.get().max().Get());
-    return " not yet run";
+    return name() + " not yet run";
   }
 
   /** @param pose of vehicle {x[m], y[m], angle}

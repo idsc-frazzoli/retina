@@ -1,12 +1,12 @@
 // code by gjoel
 package ch.ethz.idsc.demo.jg.following.analysis;
 
-import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 
 public interface ErrorInterface {
-  Scalar averageError();
+  Tensor averageError();
 
-  Scalar accumulatedError();
+  Tensor accumulatedError();
 
   String getReport();
 }
