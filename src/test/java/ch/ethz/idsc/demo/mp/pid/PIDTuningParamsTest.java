@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 public class PIDTuningParamsTest extends TestCase {
   public void testClip() {
-    Scalar angle = PIDTuningParams.GLOBAL.clip.apply(Quantity.of(.2, ""));
+    Scalar angle = PIDTuningParams.GLOBAL.clipAngle().apply(Quantity.of(.2, ""));
     System.out.println(angle);
   }
 }

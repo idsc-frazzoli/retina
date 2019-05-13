@@ -17,6 +17,8 @@ import ch.ethz.idsc.tensor.red.Norm;
         .map(curvePoint -> Se2ParametricDistance.INSTANCE.distance(curvePoint, pose))));
   }
 
+  /** @param curve
+   * @return index of closest point to origin */
   public static int closestEuclid(Tensor curve) {
     return ArgMin.of(Tensor.of(curve.stream() //
         .map(Extract2D.FUNCTION).map(Norm._2::ofVector)));

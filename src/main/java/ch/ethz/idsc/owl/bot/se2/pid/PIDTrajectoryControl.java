@@ -18,7 +18,6 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 /** PID control */
-// TODO implementation does not use I-part
 public class PIDTrajectoryControl extends StateTrajectoryControl {
   private final Clip clip;
   private final PIDGains pidGains;
@@ -43,7 +42,7 @@ public class PIDTrajectoryControl extends StateTrajectoryControl {
         .map(StateTime::state));
     StateTime unitST = new StateTime(stateTime.state(), Quantity.of(stateTime.time(), SI.SECOND));
     PIDTrajectory pidTrajectory = new PIDTrajectory(pidIndex, this.pidTrajectory, pidGains, traj, unitST);
-    Scalar ratePerMeter = pidTrajectory.angleOut();
+    Scalar ratePerMeter = pidTrajectory.ratioOut();
     if (clip.isInside(ratePerMeter))
       return Optional.of(CarHelper.singleton(speed, ratePerMeter).getU());
     this.pidTrajectory = pidTrajectory;

@@ -12,8 +12,7 @@ public class PIDTestTrackModule extends AbstractModule {
 
   @Override // from AbstractModule
   public void first() {
-    // TODO MCP use TRACK_OVAL_SE2_UNITS
-    Tensor curve = DubendorfCurve.TRACK_OVAL_R2;
+    Tensor curve = DubendorfCurve.TRACK_OVAL_SE2;
     pidControllerModule.setCurve(Optional.of(curve));
     pidControllerModule.launch();
   }
