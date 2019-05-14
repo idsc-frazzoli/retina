@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.dev.steer;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.DataEvent;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -20,13 +21,19 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class SteerGetEvent extends DataEvent {
   /* package */ static final int LENGTH = 44;
   // ---
-  /** variable typically in the range [-100, 100] */
+  /** motAsp indicates the rotational velocity of the steering wheel.
+   * the value ranges in the interval [-100, 100]. */
+  // TODO investigate unit
   public final float motAsp_CANInput;
   /** during nominal operation motAsp_Qual is constant 2f
    * a value of 0f was observed briefly during failure instant */
   public final float motAsp_Qual;
-  /** variable typically in the range [-8, 8] */
-  public final float tsuTrq_CANInput;
+  /** tsuTrq_CANInput indicates the torque exerted by the driver.
+   * the value ranges in the interval [-8, 8].
+   * When the driver does not touch the steering wheel, the value is close to 0.
+   * A positive value indicates a drag to the left, ccw.
+   * A negative value indicates a drag to the right, clockwise. */
+  private final float tsuTrq_CANInput;
   /** during nominal operation motAsp_Qual is constant 2f
    * a value of 0f was observed briefly during failure instant */
   public final float tsuTrq_Qual;
@@ -36,12 +43,12 @@ public class SteerGetEvent extends DataEvent {
    * as commanded by {@link SteerPutEvent}. Due to communication,
    * there is a time delay until the demanded torque is considered
    * as "reference" by the steering actuator. */
-  public final float refMotTrq_CANInput;
+  private final float refMotTrq_CANInput;
   /** when the device {@link #isActive()} then the difference between
    * "estMotTrq_CANInput - refMotTrq_CANInput" is typically small.
    * When the torque command is disabled, the value estMotTrq_CANInput
    * takes an arbitrary value that should be ignored. */
-  public final float estMotTrq_CANInput;
+  private final float estMotTrq_CANInput;
   /** {@link SteerPutEvent} commands the steer actuator to be passive or active.
    * In passive mode, no torque is applied by the device.
    * 
@@ -150,6 +157,16 @@ public class SteerGetEvent extends DataEvent {
    * takes an arbitrary value that should be ignored. */
   public Scalar estMotTrq() {
     return Quantity.of(estMotTrq_CANInput, SteerPutEvent.UNIT_RTORQUE);
+  }
+
+  /** tsuTrq_CANInput indicates the torque exerted by the driver.
+   * the value ranges in the interval [-8, 8].
+   * When the driver does not touch the steering wheel, the value is close to 0.
+   * A positive value indicates a drag to the left, ccw.
+   * A negative value indicates a drag to the right, clockwise. */
+  // TODO establish unit, or conversion factor to SCT
+  public Scalar tsuTrq() {
+    return RealScalar.of(tsuTrq_CANInput);
   }
 
   /** @return vector of length 11 */
