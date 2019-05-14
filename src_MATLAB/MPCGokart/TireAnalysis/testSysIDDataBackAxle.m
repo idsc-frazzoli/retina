@@ -128,8 +128,8 @@ close all
 figure
 title('backaxle')
 hold on
-minAx = -1;
-maxAx = 1;
+minAx = -2;
+maxAx = 2;
 sel = sax>minAx & sax<maxAx & vx > 2 & abs(pl-pr)<0.3;
 magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
 scatter(vy(sel)./vx(sel),-say(sel),'b');
@@ -138,8 +138,8 @@ scatter(-vy(sel)./vx(sel),say(sel),'b');
 %scatter(vy(selb)./vx(selb),-say(selb),'r');
 
 B2 = 5.2;
-C2 = 1.4;
-D2 = 10.4;
+C2 = 1.1;
+D2 = 10;
 
 capfactor = @(taccx)(1-satfun((taccx/D)^2))^(1/2);
 simpleslip = @(VELY,VELX,taccx)-(1/capfactor(taccx))*VELY/(VELX+0.001);
