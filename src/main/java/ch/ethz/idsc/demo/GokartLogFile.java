@@ -1831,6 +1831,20 @@ public enum GokartLogFile implements LogFile {
   /** short mpc, manual driving */
   _20190507T161525_06a2a5f4,
   /***************************************************/
+  /* 2019-05-09 */
+  /** demo of trajectory planner and mpc */
+  _20190509T102655_56443d8b,
+  /** steering static force test */
+  _20190509T113253_dced107a,
+  /** steering static force test */
+  _20190509T121107_dced107a,
+  /** steering static force test */
+  _20190509T123210_dced107a,
+  /** steering static force test */
+  _20190509T124117_dced107a,
+  /** steering static force test [no] */
+  _20190509T124910_dced107a,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

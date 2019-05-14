@@ -4,8 +4,10 @@ package ch.ethz.idsc.gokart.dev.steer;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.DataEvent;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** information received from micro-autobox about steering
  * 
@@ -18,12 +20,12 @@ import ch.ethz.idsc.tensor.Tensors;
 public class SteerGetEvent extends DataEvent {
   /* package */ static final int LENGTH = 44;
   // ---
-  /** variable */
+  /** variable typically in the range [-100, 100] */
   public final float motAsp_CANInput;
   /** during nominal operation motAsp_Qual is constant 2f
    * a value of 0f was observed briefly during failure instant */
   public final float motAsp_Qual;
-  /** variable */
+  /** variable typically in the range [-8, 8] */
   public final float tsuTrq_CANInput;
   /** during nominal operation motAsp_Qual is constant 2f
    * a value of 0f was observed briefly during failure instant */
@@ -88,7 +90,7 @@ public class SteerGetEvent extends DataEvent {
     halfRckPos = byteBuffer.getFloat();
   }
 
-  @Override
+  @Override // from BufferInsertable
   public void insert(ByteBuffer byteBuffer) {
     byteBuffer.putFloat(motAsp_CANInput);
     byteBuffer.putFloat(motAsp_Qual);
@@ -104,7 +106,7 @@ public class SteerGetEvent extends DataEvent {
     byteBuffer.putFloat(halfRckPos);
   }
 
-  @Override
+  @Override // from BufferInsertable
   public int length() {
     return LENGTH;
   }
@@ -130,6 +132,24 @@ public class SteerGetEvent extends DataEvent {
    * @return true if the device is operational */
   public boolean isRelRckQual() {
     return SteerGetStatus.OPERATIONAL.of(gcpRelRckQual);
+  }
+
+  /** post processing of data has shown that refMotTrq_CANInput
+   * allows the interpretation of reference motor torque.
+   * refMotTrq_CANInput closely correlates to the demanded torque
+   * as commanded by {@link SteerPutEvent}. Due to communication,
+   * there is a time delay until the demanded torque is considered
+   * as "reference" by the steering actuator. */
+  public Scalar refMotTrq() {
+    return Quantity.of(refMotTrq_CANInput, SteerPutEvent.UNIT_RTORQUE);
+  }
+
+  /** when the device {@link #isActive()} then the difference between
+   * "estMotTrq_CANInput - refMotTrq_CANInput" is typically small.
+   * When the torque command is disabled, the value estMotTrq_CANInput
+   * takes an arbitrary value that should be ignored. */
+  public Scalar estMotTrq() {
+    return Quantity.of(estMotTrq_CANInput, SteerPutEvent.UNIT_RTORQUE);
   }
 
   /** @return vector of length 11 */
