@@ -22,8 +22,7 @@ public class SteerGetEvent extends DataEvent {
   /* package */ static final int LENGTH = 44;
   // ---
   /** motAsp indicates the rotational velocity of the steering wheel.
-   * the value ranges in the interval [-100, 100]. */
-  // TODO investigate unit
+   * The value ranges in the interval [-100, 100]. */
   public final float motAsp_CANInput;
   /** during nominal operation motAsp_Qual is constant 2f
    * a value of 0f was observed briefly during failure instant */
@@ -159,11 +158,20 @@ public class SteerGetEvent extends DataEvent {
     return Quantity.of(estMotTrq_CANInput, SteerPutEvent.UNIT_RTORQUE);
   }
 
+  /** motAsp indicates the rotational velocity of the steering wheel.
+   * The value ranges in the interval [-100, 100]. */
+  // TODO investigate unit
+  public Scalar motAsp() {
+    return RealScalar.of(motAsp_CANInput);
+  }
+
   /** tsuTrq_CANInput indicates the torque exerted by the driver.
    * the value ranges in the interval [-8, 8].
    * When the driver does not touch the steering wheel, the value is close to 0.
    * A positive value indicates a drag to the left, ccw.
-   * A negative value indicates a drag to the right, clockwise. */
+   * A negative value indicates a drag to the right, clockwise.
+   * 
+   * @return value in the interval [-8, 8] */
   // TODO establish unit, or conversion factor to SCT
   public Scalar tsuTrq() {
     return RealScalar.of(tsuTrq_CANInput);

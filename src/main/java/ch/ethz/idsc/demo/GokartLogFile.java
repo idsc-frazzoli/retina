@@ -1862,13 +1862,17 @@ public enum GokartLogFile implements LogFile {
   _20190514T090101_ce869540,
   /** mpc with localization failure */
   _20190514T092148_ce869540,
-  /** mpc */
+  /** mpc with camera team
+   * 1st part: start set incorrectly
+   * 2nd part: good performance */
   _20190514T102650_ce869540,
-  /** mpc */
+  /** mpc with camera team */
   _20190514T103657_ce869540,
-  /** mpc */
+  /** mpc with camera team
+   * good performance, localization failure */
   _20190514T105746_ce869540,
-  /** mpc */
+  /** mpc with camera team
+   * good performance */
   _20190514T111152_ce869540,
   /** mpc */
   _20190514T141121_b942849a,
@@ -1877,6 +1881,10 @@ public enum GokartLogFile implements LogFile {
   /** steer static force test
    * using pid with autonomous button pressed */
   _20190514T152853_b942849a,
+  /** manual drive with power steering */
+  _20190514T162756_577662b6,
+  /** manual drive with power steering */
+  _20190514T164612_577662b6,
   /***************************************************/
   ;
   // ---
