@@ -7,13 +7,19 @@ function dx = interstagedx(x,u,p)
     
     
 
-    B1 = 15;
-    C1 = 1.1;
-    D1 = 9.4;
+    %B1 = 15;
+    %C1 = 1.1;
+    %D1 = 9.4;
+    B1 = 9;
+    C1 = 1;
+    D1 = 10;
 
     B2 = 5.2;
-    C2 = 1.4;
-    D2 = 10.4;
+    C2 = 1.1;
+    D2 = 10;
+    %B2 = 5.2;
+    %C2 = 1.4;
+    %D2 = 10.4;
     param = [B1,C1,D1,B2,C2,D2,Cf];
 
     %[ab,dotbeta,ds,brake / x,y,theta,v,beta,s,braketemp]

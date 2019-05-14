@@ -20,8 +20,11 @@ end
 if(0)
     folders{end+1} = '/retina_out/understeerTest/';
 end
-if(1)
+if(0)
     folders{end+1} = '/retina_out/newSysID5.lcm/';
+end
+if(1)
+    folders{end+1} = '/retina_out/sysidTWO.lcm/';
 end
 N = numel(folders);
 tic;
@@ -82,7 +85,8 @@ figure
 title('acc comparison')
 hold on
 plot(t,sax,'DisplayName', 'a-X')
-plot(t,mean([pal,par],2),'DisplayName', 'power a-X')
+plot(t,par,'DisplayName', 'power a-X right')
+plot(t,pal,'DisplayName', 'power a-X left')
 legend show
 hold off
 
@@ -140,9 +144,9 @@ B = 5;
 D = 1*9.81;
 Ic = 1;
 
-B1 = 15;
-C1 = 1.1;
-D1 = 9.4;
+B1 = 9;
+C1 = 1;
+D1 = 10;
 
 capfactor = @(taccx)(1-satfun((taccx/D)^2))^(1/2);
 simpleslip = @(VELY,VELX,taccx)-(1/capfactor(taccx))*VELY/(VELX+0.001);

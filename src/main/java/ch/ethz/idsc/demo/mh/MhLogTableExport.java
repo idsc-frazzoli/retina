@@ -70,10 +70,13 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     // files.add(HomeDirectory.file("newSysID4.lcm"));
     // files.add(HomeDirectory.file("newSysID5.lcm"));
     // files.add(HomeDirectory.file("newSysID6.lcm"));
-    files.add(HomeDirectory.file("/Downloads/ensemblelaps/humanlaps/human.lcm"));
-    files.add(HomeDirectory.file("/Downloads/ensemblelaps/centerlaps/center.lcm"));
-    files.add(HomeDirectory.file("/Downloads/ensemblelaps/kinematiclaps/kinematic.lcm"));
-    files.add(HomeDirectory.file("/Downloads/ensemblelaps/dynamiclaps/dynamic.lcm"));
+    //files.add(HomeDirectory.file("/Downloads/ensemblelaps/humanlaps/human.lcm"));
+    //files.add(HomeDirectory.file("/Downloads/ensemblelaps/centerlaps/center.lcm"));
+    //files.add(HomeDirectory.file("/Downloads/ensemblelaps/kinematiclaps/kinematic.lcm"));
+    //files.add(HomeDirectory.file("/Downloads/ensemblelaps/dynamiclaps/dynamic.lcm"));
+    files.add(HomeDirectory.file("/sysid/sysidONE.lcm"));
+    files.add(HomeDirectory.file("/sysid/sysidTWO.lcm"));
+    //files.add(HomeDirectory.file("/Downloads/ensemblelaps/dynamiclaps/dynamic.lcm"));
     // files.add(new File("/media/datahaki/data/gokart/cuts/20190308/20190308T163555_01/post.lcm"));
     for (File inputFile : files)
       try {
