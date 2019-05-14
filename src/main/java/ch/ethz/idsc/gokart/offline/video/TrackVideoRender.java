@@ -45,7 +45,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(20);
   private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
   private final DriftLinesRender driftLinesRender = new DriftLinesRender(100);
-  private final SlipLinesRender slipLinesRender = new SlipLinesRender(1000);
+  private final SlipLinesRender slipLinesRender = new SlipLinesRender(100);
   private final GokartRender gokartRender = new GlobalGokartRender();
   private final AccelerationRender accelerationRender;
   private final GroundSpeedRender groundSpeedRender;
