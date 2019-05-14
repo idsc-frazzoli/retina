@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Pretty;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
@@ -35,13 +36,14 @@ public class PIDControllerModuleTest extends TestCase {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
-      Scalar ratio = pidControllerModule.pidSteer.getRatio(); // TODO mcp fix
+      Scalar ratio = pidControllerModule.pidSteer.getRatio();
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
-        System.out.println("Heading: " + ratio);
-        System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
+        System.out.println("Heading: " + Pretty.of(ratio));
+        // System.out.println("Error: " + pidControllerModule.getPID().getError()); FIXME MCP
       }
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, ratio));
-      // TODO MCP Solve issue with if gokart does multiple rotations (+pi factor)
+      // Heading: 0.0[m^-1]
+      // FIXME MCP bug in heading
     }
   }
 
@@ -54,10 +56,10 @@ public class PIDControllerModuleTest extends TestCase {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
-      Scalar ratio = pidControllerModule.pidSteer.getRatio(); // TODO mcp fix
+      Scalar ratio = pidControllerModule.pidSteer.getRatio();
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
-        // System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
-        // System.out.println("Pose: " + Pretty.of(pose));
+        // System.out.println("Error: " + pidControllerModule.getPID().getError().toString()); FIXME MCP
+        System.out.println("Pose: " + Pretty.of(pose));
       }
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, ratio));
     }

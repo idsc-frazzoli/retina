@@ -8,7 +8,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.owl.bot.se2.pid.PIDTrajectory;
-import ch.ethz.idsc.owl.bot.se2.pid.RnCurveHelper;
+import ch.ethz.idsc.owl.bot.se2.pid.Se2CurveUnitCheck;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -62,7 +62,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           optionalCurve.get(), //
           stateTime); //
       //
-      Scalar ratioOut = currentPID.ratioOut(); // TODO comment on unit? -> test
+      Scalar ratioOut = currentPID.ratioOut(); 
+      // TODO assert units are correct (comment on unit? -> test)
       this.previousPID = currentPID;
       pidIndex++;
       return Optional.of(ratioOut);
@@ -73,7 +74,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   public void setCurve(Optional<Tensor> curve) {
-    if (RnCurveHelper.isSe2Curve(curve.get())) {
+    // TODO if invalid -> optionalCurve = Optional.empty() return false;
+    // TODO either demand that se2 curve is provided or append angles ...
+    if (Se2CurveUnitCheck.that(curve.get(), SI.METER)) {
       optionalCurve = curve;
     }
     optionalCurve = Optional.empty();
@@ -84,6 +87,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   public PIDTrajectory getPID() {
+    if (!Objects.isNull(currentPID))
+      return currentPID;
     return currentPID;
   }
 }

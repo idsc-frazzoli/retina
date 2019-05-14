@@ -35,7 +35,7 @@ public class PIDConvergenceTest extends TestCase {
    * ListPlot[A[[All, {1, 2}]], AspectRatio -> 1, PlotRange -> All] */
   public void testSimplePlotter() throws IOException {
     PIDTrajectory pidTrajectory = null;
-    Tensor traj = Tensors.vector(i -> Tensors.of(Quantity.of(i / 10, SI.METER), Quantity.of(1, SI.METER), Pi.HALF), 2000);
+    Tensor traj = Tensors.vector(i -> Tensors.of(Quantity.of(i, SI.METER), Quantity.of(1, SI.METER), Pi.HALF), 2000);
     for (int index = 0; index < 100; ++index) {
       StateTime stateTime = new StateTime(pose, Quantity.of(index, SI.SECOND));
       PIDTrajectory _pidTrajectory = new PIDTrajectory(index, pidTrajectory, pidGains, traj, stateTime);
@@ -68,7 +68,7 @@ public class PIDConvergenceTest extends TestCase {
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
         System.out.println(" Pose: " + Pretty.of(pose));
       }
-      Tensor traj = Tensors.vector(i -> Tensors.of(Quantity.of(i / 10, SI.METER), Quantity.of(1, SI.METER), Pi.HALF), 2000);
+      Tensor traj = Tensors.vector(i -> Tensors.of(Quantity.of(i, SI.METER), Quantity.of(1, SI.METER), Pi.HALF), 2000);
       for (int index = 0; index < 100; ++index) {
         StateTime stateTime = new StateTime(pose, Quantity.of(index, SI.SECOND));
         PIDTrajectory _pidTrajectory = new PIDTrajectory(index, pidTrajectory, pidGains, traj, stateTime);
@@ -101,7 +101,7 @@ public class PIDConvergenceTest extends TestCase {
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
         System.out.println("PoseId: " + poseId + " Pose: " + Pretty.of(pose));
       }
-      Tensor traj = Tensors.vector(i -> Tensors.of(Quantity.of(i / 10, SI.METER), Quantity.of(1, SI.METER), Pi.HALF), 2000);
+      Tensor traj = Tensors.vector(i -> Tensors.of(Quantity.of(i, SI.METER), Quantity.of(1, SI.METER), Pi.HALF), 2000);
       for (int index = 0; index < 100; ++index) {
         StateTime stateTime = new StateTime(pose, Quantity.of(index, SI.SECOND));
         PIDTrajectory _pidTrajectory = new PIDTrajectory(index, pidTrajectory, pidGains, traj, stateTime);
