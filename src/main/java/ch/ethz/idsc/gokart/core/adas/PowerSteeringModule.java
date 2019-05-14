@@ -66,7 +66,7 @@ public class PowerSteeringModule extends PowerSteeringBaseModule {
     Tensor filteredVel = geodesicIIR1Filter.apply(velocity);
     Scalar term1 = currangle.multiply(hapticSteerConfig.staticCompensation);
     // System.out.println(term1);
-    Scalar term2 = hapticSteerConfig.dynamicCompensationBoundaryClip().apply(//
+    Scalar term2 = hapticSteerConfig.dynamicCompensationBoundaryClip().apply( //
         RealScalar.of(diffRelRckPos).multiply(hapticSteerConfig.dynamicCompensation));
     // System.out.println(term2);
     AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
@@ -75,6 +75,7 @@ public class PowerSteeringModule extends PowerSteeringBaseModule {
     Scalar term3 = hapticSteerConfig.latForceCompensationBoundaryClip().apply( //
         latFront_LeftVel.add(latFrontRightVel).multiply(hapticSteerConfig.latForceCompensation));
     // System.out.println(term3);
-    return SteerPutEvent.createOn(term1.add(term2).add(term3));
+    Scalar term4 = prev.tsuTrq().multiply(hapticSteerConfig.tsuFactor);
+    return SteerPutEvent.createOn(term1.add(term2).add(term3).add(term4));
   }
 }

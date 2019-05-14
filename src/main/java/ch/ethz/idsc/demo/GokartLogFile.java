@@ -1870,6 +1870,13 @@ public enum GokartLogFile implements LogFile {
   _20190514T105746_ce869540,
   /** mpc */
   _20190514T111152_ce869540,
+  /** mpc */
+  _20190514T141121_b942849a,
+  /** mpc localization failure */
+  _20190514T143608_b942849a,
+  /** steer static force test
+   * using pid with autonomous button pressed */
+  _20190514T152853_b942849a,
   /***************************************************/
   ;
   // ---
