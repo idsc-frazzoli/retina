@@ -1831,6 +1831,61 @@ public enum GokartLogFile implements LogFile {
   /** short mpc, manual driving */
   _20190507T161525_06a2a5f4,
   /***************************************************/
+  /* 2019-05-09 */
+  /** demo of trajectory planner and mpc */
+  _20190509T102655_56443d8b,
+  /** steering static force test */
+  _20190509T113253_dced107a,
+  /** steering static force test */
+  _20190509T121107_dced107a,
+  /** steering static force test */
+  _20190509T123210_dced107a,
+  /** steering static force test */
+  _20190509T124117_dced107a,
+  /** steering static force test [no] */
+  _20190509T124910_dced107a,
+  /***************************************************/
+  /* 2019-05-13 */
+  /** manual driving */
+  _20190513T112548_ac099b4a,
+  /** manual driving and mpc */
+  _20190513T114553_0026208f,
+  /** mpc */
+  _20190513T150620_0026208f,
+  /** mpc */
+  _20190513T151627_0026208f,
+  /** mpc */
+  _20190513T185714_0026208f,
+  /***************************************************/
+  /* 2019-05-14 */
+  /** mpc */
+  _20190514T090101_ce869540,
+  /** mpc with localization failure */
+  _20190514T092148_ce869540,
+  /** mpc with camera team
+   * 1st part: start set incorrectly
+   * 2nd part: good performance */
+  _20190514T102650_ce869540,
+  /** mpc with camera team */
+  _20190514T103657_ce869540,
+  /** mpc with camera team
+   * good performance, localization failure */
+  _20190514T105746_ce869540,
+  /** mpc with camera team
+   * good performance */
+  _20190514T111152_ce869540,
+  /** mpc */
+  _20190514T141121_b942849a,
+  /** mpc localization failure */
+  _20190514T143608_b942849a,
+  /** steer static force test
+   * using pid with autonomous button pressed */
+  _20190514T152853_b942849a,
+  /** manual drive with power steering */
+  _20190514T162756_577662b6,
+  /** manual drive with power steering */
+  _20190514T164612_577662b6,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

@@ -23,11 +23,13 @@ public class VibrateModule extends AbstractModule implements SteerPutProvider {
   @Override
   protected void first() {
     SteerSocket.INSTANCE.addPutProvider(this);
+    manualControlProvider.start();
   }
 
   @Override
   protected void last() {
     SteerSocket.INSTANCE.removePutProvider(this);
+    manualControlProvider.stop();
   }
 
   @Override

@@ -15,11 +15,12 @@ import ch.ethz.idsc.tensor.sca.Clips;
 public class HapticSteerConfig {
   public static final HapticSteerConfig GLOBAL = AppResources.load(new HapticSteerConfig());
   /***************************************************/
-  /** Value to amplify the Input in the PowerSteeringModule */
-  public Scalar staticCompensation = Quantity.of(0.6, "SCT*SCE^-1");
-  public Scalar dynamicCompensation = Quantity.of(90, "SCT");
+  /** value to amplify the input in the PowerSteeringModule */
+  public Scalar staticCompensation = Quantity.of(0.7, "SCT*SCE^-1");
+  public Scalar dynamicCompensation = Quantity.of(0, "SCT");
   public Scalar dynamicCompensationBoundary = Quantity.of(0.5, "SCT");
-  public Scalar latForceCompensation = Quantity.of(0.3, "SCT*s*m^-1"); // so far 0.2
+  public Scalar tsuFactor = Quantity.of(0.12, "SCT");
+  public Scalar latForceCompensation = Quantity.of(0.0, "SCT*s*m^-1"); // so far 0.2
   public Scalar latForceCompensationBoundary = Quantity.of(2, "SCT"); // 5
   public Scalar velocityFilter = RealScalar.of(0.2);
   /** Constant Torque for Experiment */

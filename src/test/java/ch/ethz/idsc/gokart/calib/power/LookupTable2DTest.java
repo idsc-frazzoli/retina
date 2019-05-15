@@ -11,6 +11,8 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -175,5 +177,17 @@ public class LookupTable2DTest extends TestCase {
         System.out.println("x=" + x + " /xb=" + xb);
       }
     }
+  }
+
+  public void testExtremeValues1() {
+    BinaryOperator<Scalar> function = (u, v) -> v;
+    LookupTable2D lookupTable2D = LookupTable2D.build(//
+        function, //
+        200, //
+        100, //
+        Clips.interval(-0.3, 1.2), //
+        Clips.interval(-0.7, 3.1));
+    Tensor extremalValues1 = lookupTable2D.getExtremalValues1(RealScalar.of(-0.2));
+    assertEquals(extremalValues1, Tensors.vector(-0.7, 3.1));
   }
 }

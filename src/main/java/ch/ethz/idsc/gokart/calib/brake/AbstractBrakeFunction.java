@@ -38,10 +38,9 @@ public abstract class AbstractBrakeFunction {
   }
 
   /** @param brakingPosition [m]
-   * @param factor
+   * @param factor unitless
    * @return braking deceleration in [m*s^-2] */
   static Scalar getDeceleration(Scalar brakingPosition, Scalar factor) {
-    // TODO JPH test
     return decelerationFromPos(brakingPosition).multiply(factor);
   }
 
