@@ -40,21 +40,6 @@ public enum CurveClothoidPursuitHelper {
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {
-    return getPlan(pose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits, GeodesicPursuitParams.GLOBAL.minDistance);
-  }
-
-  /** @param pose of vehicle {x[m], y[m], angle}
-   * @param speed of vehicle [m*s^-1]
-   * @param curve in world coordinates
-   * @param isForward driving direction, true when forward or stopped, false when driving backwards
-   * @param trajectoryEntryFinder strategy to find best re-entry point
-   * @param ratioLimits depending on pose and speed
-   * @param minDistance [m]
-   * @return geodesic plan */
-  public static Optional<ClothoidPlan> getPlan( //
-      Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
-      TrajectoryEntryFinder trajectoryEntryFinder, //
-      List<DynamicRatioLimit> ratioLimits, Scalar minDistance) {
     TensorUnaryOperator tensorUnaryOperator = new Se2GroupElement(pose).inverse()::combine;
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
@@ -63,7 +48,7 @@ public enum CurveClothoidPursuitHelper {
      * TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
      * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, GeodesicPursuitParams.GLOBAL.getOptimizationSteps()).apply(tensor);
      * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
-    Optional<Tensor> lookAhead = new PseudoSe2CurveIntersection(minDistance).string(tensor);
+    Optional<Tensor> lookAhead = new PseudoSe2CurveIntersection(GeodesicPursuitParams.GLOBAL.minDistance).string(tensor);
     return lookAhead.map(vector -> ClothoidPlan.from(vector, pose, isForward).orElse(null));
   }
 

@@ -8,6 +8,7 @@ import ch.ethz.idsc.demo.jg.following.analysis.FollowingError;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitHelper;
 import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
+import ch.ethz.idsc.gokart.core.pure.GeodesicPursuitParams;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
@@ -33,41 +34,41 @@ public enum FollowingSimulations implements ErrorInterface {
   CLOTHOID_05 {
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(.5, SI.METER);
       return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits(), //
-          Quantity.of(.5, SI.METER)).map(ClothoidPlan::ratio);
+          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_3 {
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(3, SI.METER);
       return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits(), //
-          Quantity.of(3, SI.METER)).map(ClothoidPlan::ratio);
+          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_5 {
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(5, SI.METER);
       return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits(), //
-          Quantity.of(5, SI.METER)).map(ClothoidPlan::ratio);
+          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_7 {
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(7, SI.METER);
       return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits(), //
-          Quantity.of(7, SI.METER)).map(ClothoidPlan::ratio);
+          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   };
   private Tensor trail;
