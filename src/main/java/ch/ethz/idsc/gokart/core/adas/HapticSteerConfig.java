@@ -16,9 +16,8 @@ public class HapticSteerConfig {
   public static final HapticSteerConfig GLOBAL = AppResources.load(new HapticSteerConfig());
   /***************************************************/
   /** value to amplify the input in the PowerSteeringModule */
-  public Scalar staticCompensation = Quantity.of(0.7, "SCT*SCE^-1");
-  public Scalar dynamicCompensation = Quantity.of(0, "SCT");
-  public Scalar dynamicCompensationBoundary = Quantity.of(0.5, "SCT");
+  public Scalar staticCompensation1 = Quantity.of(0.968725, "SCT*SCE^-1");
+  public Scalar staticCompensation3 = Quantity.of(-0.414766, "SCT*SCE^-3");
   public Scalar tsuFactor = Quantity.of(0.12, "SCT");
   public Scalar latForceCompensation = Quantity.of(0.0, "SCT*s*m^-1"); // so far 0.2
   public Scalar latForceCompensationBoundary = Quantity.of(2, "SCT"); // 5
@@ -48,10 +47,6 @@ public class HapticSteerConfig {
 
   public Clip criticalSlipClip() {
     return Clips.absolute(criticalSlip);
-  }
-
-  public Clip dynamicCompensationBoundaryClip() {
-    return Clips.absolute(dynamicCompensationBoundary);
   }
 
   public Clip latForceCompensationBoundaryClip() {
