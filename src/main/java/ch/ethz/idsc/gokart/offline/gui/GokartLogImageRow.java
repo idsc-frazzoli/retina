@@ -20,4 +20,6 @@ abstract class GokartLogImageRow implements Supplier<Scalar> {
   }
 
   public abstract ColorDataGradient getColorDataGradient();
+
+  public abstract String getName();
 }

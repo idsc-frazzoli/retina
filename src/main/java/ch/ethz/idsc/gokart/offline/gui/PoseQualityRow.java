@@ -28,4 +28,9 @@ import ch.ethz.idsc.tensor.sca.Clips;
   public ColorDataGradient getColorDataGradient() {
     return ColorDataGradients.AVOCADO;
   }
+
+  @Override
+  public String getName() {
+    return "pose quality";
+  }
 }

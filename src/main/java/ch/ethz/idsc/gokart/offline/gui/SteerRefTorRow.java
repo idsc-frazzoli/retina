@@ -31,4 +31,9 @@ import ch.ethz.idsc.tensor.sca.Clips;
   public ColorDataGradient getColorDataGradient() {
     return ColorDataGradients.THERMOMETER;
   }
+
+  @Override
+  public String getName() {
+    return "steer ref tor";
+  }
 }
