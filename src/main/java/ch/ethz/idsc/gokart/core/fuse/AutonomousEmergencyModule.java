@@ -40,7 +40,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class AutonomousEmergencyModule extends AbstractModule {
   // TODO
   private static final Scalar BRAKINGTHRESHOLD = Quantity.of(0.5, SI.VELOCITY);
-  private static final Scalar BRAKINGVALUE = RealScalar.of(1);
+  private static final Scalar BRAKINGVALUE = RealScalar.of(0.95);
   /** timeout 0.3[s] */
   private final Watchdog localizationWatchdog = SoftWatchdog.barking(0.3);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -82,7 +82,7 @@ public class AutonomousEmergencyModule extends AbstractModule {
       // trigger fuse
       boolean instantStop = Scalars.isZero(gokartPoseEvent.getQuality());
       if (boostPushed) {
-        isLocalizationBroken = true;
+        isLocalizationBroken = false;
         boostPushed = false;
       }
       isLocalizationBroken = instantStop || isLocalizationBroken || localizationWatchdog.isBarking();
