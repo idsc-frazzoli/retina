@@ -71,11 +71,11 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
         : Optional.empty();
   }
 
-      /** @param currangle with unit "SCE"
-       * @param velocity {vx[m*s^-1], vy[m*s^-1], omega[s^-1]}
-       * @param diffRelRckPos
-       * @return scalar with unit SCT */
-      /* package */ Scalar putEvent(Scalar currangle, Tensor velocity) {
+  /** @param currangle with unit "SCE"
+   * @param velocity {vx[m*s^-1], vy[m*s^-1], omega[s^-1]}
+   * @param diffRelRckPos
+   * @return scalar with unit SCT */
+  /* package */ Scalar putEvent(Scalar currangle, Tensor velocity) {
     // term1 is the static compensation of the restoring force, depending on the current angle
     // term2 is the compensation depending on the velocity of the steering wheel
     // term3 compensates the force caused by the lateral velocity in each front wheel

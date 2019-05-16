@@ -19,8 +19,8 @@ public class HapticSteerConfig {
   public Scalar staticCompensation1 = Quantity.of(0.968725, "SCT*SCE^-1");
   public Scalar staticCompensation3 = Quantity.of(-0.414766, "SCT*SCE^-3");
   public Scalar tsuFactor = Quantity.of(0.1, "SCT");
-  public Scalar latForceCompensation = Quantity.of(0.7, "SCT*s*m^-1"); // so far 0.2
-  public Scalar latForceCompensationBoundary = Quantity.of(0.7, "SCT"); // 5
+  public Scalar latForceCompensation = Quantity.of(0.7, "SCT*s*m^-1");
+  public Scalar latForceCompensationBoundary = Quantity.of(0.7, "SCT");
   public Scalar velocityFilter = RealScalar.of(0.2);
   /** Constant Torque for Experiment */
   @FieldSubdivide(start = "-7/10[SCT]", end = "7/10[SCT]", intervals = 14)
@@ -31,10 +31,10 @@ public class HapticSteerConfig {
   public Scalar criticalSlip = RealScalar.of(0.2);
   /** Values for AntilockBrakeModule */
   /** access value via {@link #criticalAngle()} */
-  public Scalar minSlip = Quantity.of(0.1, SI.PER_SECOND);
-  public Scalar maxSlip = Quantity.of(0.25, SI.PER_SECOND);
-  public Scalar fullBraking = RealScalar.of(0.85);
-  public Scalar incrBraking = RealScalar.of(0.05);
+  public Scalar minSlip = Quantity.of(0.7, SI.PER_SECOND);
+  public Scalar maxSlip = Quantity.of(1.4, SI.PER_SECOND);
+  public Scalar fullBraking = RealScalar.of(0.83);
+  public Scalar incrBraking = RealScalar.of(0.003);
   public Scalar criticalAngle = Quantity.of(12, NonSI.DEGREE_ANGLE);
   public Scalar absFrequency = RealScalar.of(5);
   public Scalar absAmplitude = RealScalar.of(0.2);
