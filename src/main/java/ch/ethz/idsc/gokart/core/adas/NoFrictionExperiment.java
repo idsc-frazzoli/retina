@@ -32,7 +32,8 @@ public class NoFrictionExperiment extends AbstractModule implements SteerPutProv
   public ProviderRank getProviderRank() {
     return ProviderRank.MANUAL;
   }
- // the applied torque goes slowly from -0.7 to +0.7 and back to -0.7
+
+  // the applied torque goes slowly from -0.7 to +0.7 and back to -0.7
   @Override // from PutProvider
   public Optional<SteerPutEvent> putEvent() {
     if (steerColumnTracker.isCalibratedAndHealthy()) {

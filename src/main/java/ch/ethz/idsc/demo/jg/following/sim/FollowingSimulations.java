@@ -127,9 +127,9 @@ public enum FollowingSimulations implements ErrorInterface {
   @Override // from ErrorInterface
   public Optional<String> getReport() {
     return followingError.getReport().map(report -> //
-        name() + ratioRange().map(range -> " " + report + //
-            "\n\tratios:\tmin = " + Round._4.apply(range.min().Get()) + ", max = " + Round._4.apply(range.max().Get())) //
-            .orElse(" not yet run"));
+    name() + ratioRange().map(range -> " " + report + //
+        "\n\tratios:\tmin = " + Round._4.apply(range.min().Get()) + ", max = " + Round._4.apply(range.max().Get())) //
+        .orElse(" not yet run"));
   }
 
   /** @param pose of vehicle {x[m], y[m], angle}

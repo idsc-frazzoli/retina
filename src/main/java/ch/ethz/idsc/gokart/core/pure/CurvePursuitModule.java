@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -12,16 +13,19 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
+import ch.ethz.idsc.owl.math.state.StateTime;
+import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-/** class is the default choice for pure pursuit when driving along a curve in global
+/** class is the default choice for pursuit when driving along a curve in global
  * coordinates while the pose is updated periodically from a localization method. */
-public abstract class CurvePursuitModule extends PurePursuitModule implements GokartPoseListener {
+public abstract class CurvePursuitModule extends PursuitModule implements GokartPoseListener {
   private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
@@ -45,7 +49,7 @@ public abstract class CurvePursuitModule extends PurePursuitModule implements Go
     super(pursuitConfig);
   }
 
-  @Override // from PurePursuitModule
+  @Override // from PursuitModule
   protected final void protected_first() {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
@@ -53,13 +57,13 @@ public abstract class CurvePursuitModule extends PurePursuitModule implements Go
     rimoGetLcmClient.startSubscriptions();
   }
 
-  @Override // from PurePursuitModule
+  @Override // from PursuitModule
   protected void protected_last() {
     rimoGetLcmClient.stopSubscriptions();
     gokartPoseLcmClient.stopSubscriptions();
   }
 
-  @Override // from PurePursuitModule
+  @Override // from PursuitModule
   protected final Optional<Scalar> deriveHeading() {
     GokartPoseEvent gokartPoseEvent = this.gokartPoseEvent; // copy reference instead of synchronize
     // System.err.println("check isOperational");
@@ -88,6 +92,19 @@ public abstract class CurvePursuitModule extends PurePursuitModule implements Go
   public synchronized final void setCurve(Optional<Tensor> curve, boolean closed) {
     optionalCurve = curve;
     this.closed = closed;
+  }
+
+  public synchronized final void setTrajectory(List<TrajectorySample> trajectory) {
+    setTrajectory(trajectory, true);
+  }
+
+  public synchronized final void setTrajectory(List<TrajectorySample> trajectory, boolean closed) {
+    Tensor curve = Tensor.of(trajectory.stream() //
+        .map(TrajectorySample::stateTime) //
+        .map(StateTime::state) //
+        .map(row -> row.extract(0, 3)) //
+        .map(PoseHelper::attachUnits));
+    setCurve(Optional.of(curve), closed);
   }
 
   @Override // from GokartPoseListener

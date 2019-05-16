@@ -28,13 +28,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
-public class GokartTrajectoryModuleTest extends TestCase {
+public class PureTrajectoryModuleTest extends TestCase {
   private static final ByteArrayConsumer BYTE_ARRAY_CONSUMER = new BinaryBlobPublisher(GokartLcmChannel.POSE_LIDAR);
 
   public void testSimple() throws Exception {
-    GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule();
-    gokartTrajectoryModule.first();
-    gokartTrajectoryModule.last();
+    PureTrajectoryModule pureTrajectoryModule = new PureTrajectoryModule();
+    pureTrajectoryModule.first();
+    pureTrajectoryModule.last();
   }
 
   public void testPose() throws Exception {
@@ -45,57 +45,57 @@ public class GokartTrajectoryModuleTest extends TestCase {
     {
       PoseHelper.toUnitless(trajectoryConfig.getWaypointsPose().get(2));
     }
-    GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule(trajectoryConfig);
-    gokartTrajectoryModule.first();
+    PureTrajectoryModule pureTrajectoryModule = new PureTrajectoryModule(trajectoryConfig);
+    pureTrajectoryModule.first();
     {
       BYTE_ARRAY_CONSUMER.accept( //
           GokartPoseEvents.offlineV1(Tensors.fromString("{36.8[m], 44.2[m], 0.8}"), RealScalar.ONE).asArray());
       RimoLcmServer.INSTANCE.getEvent( //
           RimoGetEvents.create(500, 500));
       Thread.sleep(50);
-      gokartTrajectoryModule.runAlgo();
+      pureTrajectoryModule.runAlgo();
       Thread.sleep(500);
     }
     {
-      Optional<Tensor> optional = gokartTrajectoryModule.curvePursuitModule.getCurve();
+      Optional<Tensor> optional = pureTrajectoryModule.curvePursuitModule.getCurve();
       assertTrue(optional.isPresent());
       Tensor curve = optional.get();
       List<Integer> dims = Dimensions.of(curve);
       assertEquals(dims.get(1), Integer.valueOf(3));
       assertTrue(15 < dims.get(0));
     }
-    assertFalse(gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
-    assertFalse(gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_isOperational());
+    assertFalse(pureTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
+    assertFalse(pureTrajectoryModule.curvePursuitModule.purePursuitSteer.private_isOperational());
     AllGunsBlazing.publishAutonomous();
-    gokartTrajectoryModule.curvePursuitModule.runAlgo();
-    assertTrue(gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
-    assertTrue(gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_isOperational());
+    pureTrajectoryModule.curvePursuitModule.runAlgo();
+    assertTrue(pureTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
+    assertTrue(pureTrajectoryModule.curvePursuitModule.purePursuitSteer.private_isOperational());
     {
-      Optional<RimoPutEvent> optional = gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_putEvent( //
+      Optional<RimoPutEvent> optional = pureTrajectoryModule.curvePursuitModule.purePursuitRimo.private_putEvent( //
           new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
       assertFalse(optional.isPresent());
     }
     {
       SteerColumnInterface steerColumnInterface = new SteerColumnAdapter(true, Quantity.of(0.3, "SCE"));
       assertTrue(steerColumnInterface.isSteerColumnCalibrated());
-      assertTrue(gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
+      assertTrue(pureTrajectoryModule.curvePursuitModule.purePursuitRimo.private_isOperational());
       RimoGetEvent rge = RimoGetEvents.create(123, 234);
-      gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.rimoRateControllerWrap.getEvent(rge);
+      pureTrajectoryModule.curvePursuitModule.purePursuitRimo.rimoRateControllerWrap.getEvent(rge);
       Optional<RimoPutEvent> optional = //
-          gokartTrajectoryModule.curvePursuitModule.purePursuitRimo.private_putEvent(steerColumnInterface);
+          pureTrajectoryModule.curvePursuitModule.purePursuitRimo.private_putEvent(steerColumnInterface);
       assertTrue(optional.isPresent());
     }
     {
-      Optional<SteerPutEvent> optional = gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_putEvent( //
+      Optional<SteerPutEvent> optional = pureTrajectoryModule.curvePursuitModule.purePursuitSteer.private_putEvent( //
           new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
       CurvePurePursuitModuleTest._checkFallback(optional);
     }
     {
       SteerColumnInterface steerColumnInterface = new SteerColumnAdapter(true, Quantity.of(0.3, "SCE"));
       assertTrue(steerColumnInterface.isSteerColumnCalibrated());
-      assertTrue(gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_isOperational());
+      assertTrue(pureTrajectoryModule.curvePursuitModule.purePursuitSteer.private_isOperational());
       Optional<SteerPutEvent> optional = //
-          gokartTrajectoryModule.curvePursuitModule.purePursuitSteer.private_putEvent(steerColumnInterface);
+          pureTrajectoryModule.curvePursuitModule.purePursuitSteer.private_putEvent(steerColumnInterface);
       assertTrue(optional.isPresent());
     }
     {
@@ -104,16 +104,16 @@ public class GokartTrajectoryModuleTest extends TestCase {
       BYTE_ARRAY_CONSUMER.accept( //
           GokartPoseEvents.offlineV1(Tensors.fromString("{31.8[m], 38.2[m], 0.8}"), RealScalar.ONE).asArray());
       Thread.sleep(1000);
-      gokartTrajectoryModule.runAlgo();
-      Optional<Tensor> optional = gokartTrajectoryModule.curvePursuitModule.getCurve();
+      pureTrajectoryModule.runAlgo();
+      Optional<Tensor> optional = pureTrajectoryModule.curvePursuitModule.getCurve();
       assertTrue(optional.isPresent());
     }
-    gokartTrajectoryModule.last();
+    pureTrajectoryModule.last();
   }
 
   public void testFlows() {
-    GokartTrajectoryModule gokartTrajectoryModule = new GokartTrajectoryModule();
-    Collection<Flow> collection = gokartTrajectoryModule.getFlows(4);
+    PureTrajectoryModule pureTrajectoryModule = new PureTrajectoryModule();
+    Collection<Flow> collection = pureTrajectoryModule.getFlows(4);
     assertEquals(collection.size(), 5);
     for (Flow flow : collection) {
       Tensor u = flow.getU();

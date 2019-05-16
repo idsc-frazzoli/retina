@@ -15,14 +15,14 @@ import ch.ethz.idsc.tensor.red.Times;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-public abstract class PurePursuitModule extends AbstractClockedModule {
+public abstract class PursuitModule extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   protected final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
   protected final PursuitConfig pursuitConfig;
 
-  PurePursuitModule(PursuitConfig pursuitConfig) {
+  PursuitModule(PursuitConfig pursuitConfig) {
     this.pursuitConfig = pursuitConfig;
   }
 
