@@ -61,9 +61,8 @@ public class AutonomousEmergencyModule extends AbstractModule implements GokartP
       fastEnoughToBrake = Scalars.lessThan(BRAKINGTHRESHOLD, ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent));
     }
   };
-  
-  //ManualControlLcmClient manualControlLcmClient
 
+  // ManualControlLcmClient manualControlLcmClient
   @Override // from AbstractModule
   protected void first() {
     gokartPoseLcmClient.addListener(this);
@@ -93,7 +92,7 @@ public class AutonomousEmergencyModule extends AbstractModule implements GokartP
       localizationWatchdog.notifyWatchdog();
     // trigger fuse
     boolean instantStop = Scalars.isZero(gokartPoseEvent.getQuality());
-    if(boostPushed) {
+    if (boostPushed) {
       isLocalizationBroken = true;
       boostPushed = false;
     }
