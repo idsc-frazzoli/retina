@@ -19,8 +19,8 @@ import ch.ethz.idsc.tensor.Scalars;
 
 /** prevents driving if pose is has insufficient quality for timeout duration */
 public class LocalizationEmergencyModule extends AbstractModule implements GokartPoseListener, RimoPutProvider {
-  /** timeout 1[s] */
-  private final Watchdog watchdog = SoftWatchdog.barking(1.0);
+  /** timeout 0.3[s] */
+  private final Watchdog watchdog = SoftWatchdog.barking(0.3);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
 
