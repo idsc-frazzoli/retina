@@ -24,7 +24,7 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule<ClothoidPursu
   protected synchronized Optional<Scalar> getRatio(Tensor pose) {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent()) {
-      Optional<ClothoidPlan> plan = planner.getPlan( //
+      Optional<ClothoidPlan> clothoidPlan = planner.getPlan( //
           pose, //
           speed, //
           optionalCurve.get(), //
@@ -32,8 +32,8 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule<ClothoidPursu
           pursuitConfig.trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits());
       if (Objects.nonNull(globalViewLcmModule))
-        globalViewLcmModule.setPlan(plan.map(ClothoidPlan::curve).orElse(null));
-      return plan.map(ClothoidPlan::ratio);
+        globalViewLcmModule.setPlan(clothoidPlan.map(ClothoidPlan::curve).orElse(null));
+      return clothoidPlan.map(plan -> plan.bestRatio(pose));
     }
     System.err.println("no curve in geodesic pursuit");
     return Optional.empty();

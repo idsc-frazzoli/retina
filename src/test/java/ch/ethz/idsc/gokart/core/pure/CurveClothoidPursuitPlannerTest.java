@@ -27,8 +27,6 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
     Scalar ratio = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
     Clips.interval(-0.75, -0.72).requireInside(angle);
-    // FIXME GJOEL/JPH strange different values!!!
-    // Clips.interval(-0.38, -0.37).requireInside(angle);
   }
 
   public void testSpecific2() throws Exception {
@@ -38,8 +36,7 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
         ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     Scalar ratio = optional.get();
     Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
-    // FIXME GJOEL/JPH strange different values!!!
-    // Clips.interval(-0.68, -0.62).requireInside(angle);
+    Clips.interval(-0.68, -0.62).requireInside(angle);
   }
 
   public void testTransform() {

@@ -1,5 +1,5 @@
 // code by gjoel
-package ch.ethz.idsc.demo.jg;
+package ch.ethz.idsc.demo.jg.following;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -17,13 +17,14 @@ import junit.framework.TestCase;
 public class FollowingErrorTest extends TestCase {
   private final static Tensor BASE_TENSOR = Tensors.vector(1, 0, 0).unmodifiable();
   private final static Tensor ERROR = Tensors.vector(0, 1, 1).unmodifiable();
-  private final static Tensor REFERENCE = Tensor.of(IntStream.range(0, 100).mapToObj(RealScalar::of).map(BASE_TENSOR::multiply)).unmodifiable();
+  private final static int N = 100;
+  private final static Tensor REFERENCE = Tensor.of(IntStream.range(0, N).mapToObj(RealScalar::of).map(BASE_TENSOR::multiply)).unmodifiable();
 
   public void testSimple() {
     FollowingError followingError = setup();
     Tensor trajectory = Tensor.of(REFERENCE.stream().map(ERROR::add)).unmodifiable();
     AtomicInteger timer = new AtomicInteger(0);
-    trajectory.forEach(pose -> followingError.insert(Quantity.of(timer.getAndIncrement() / 100, SI.SECOND), pose));
+    trajectory.forEach(pose -> followingError.insert(Quantity.of(timer.getAndIncrement() / N, SI.SECOND), pose));
     // ---
     assertTrue(followingError.averageError().isPresent());
     assertEquals(followingError.averageError().get().Get(0), Norm._2.ofVector(ERROR.extract(0, 2)));

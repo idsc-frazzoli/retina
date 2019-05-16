@@ -43,19 +43,16 @@ public class CurveClothoidPursuitPlanner {
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {
     if (plan.isPresent()) {
-      if (Scalars.lessEquals(ClothoidPursuitConfig.GLOBAL.minDistance, CurveClothoidPursuitHelper.distanceDriven(plan.get(), pose))) // TODO maybe introduce some margin
+      ClothoidPlan clothoidPlan = plan.get();
+      if (Scalars.lessEquals(ClothoidPursuitConfig.GLOBAL.minDistance, CurveClothoidPursuitHelper.distanceDriven(clothoidPlan, pose))) // TODO maybe introduce some margin
         replanning(pose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
       else {
-        Scalar deviation = plan.get().curve().stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector).reduce(Min::of).get();
+        Scalar deviation = clothoidPlan.curve().stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector).reduce(Min::of).get();
         if (Scalars.lessEquals(ClothoidPursuitConfig.GLOBAL.deviationLimit, deviation))
           replanning(pose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
       }
     } else
       replanning(pose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
-    if (plan.isPresent()) {
-      Scalar progress = CurveClothoidPursuitHelper.distanceDriven(plan.get(), pose).divide(plan.get().length());
-      plan.get().ratio(progress);
-    }
     return plan;
   }
 

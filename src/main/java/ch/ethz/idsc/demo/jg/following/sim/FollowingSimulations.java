@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.demo.jg.following.analysis.ErrorInterface;
 import ch.ethz.idsc.demo.jg.following.analysis.FollowingError;
-import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
 import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
@@ -45,7 +44,7 @@ public enum FollowingSimulations implements ErrorInterface {
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+          ClothoidPursuitConfig.ratioLimits()).map(plan -> plan.bestRatio(pose));
     }
 
     @Override
@@ -61,7 +60,7 @@ public enum FollowingSimulations implements ErrorInterface {
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+          ClothoidPursuitConfig.ratioLimits()).map(plan -> plan.bestRatio(pose));
     }
 
     @Override
@@ -77,7 +76,7 @@ public enum FollowingSimulations implements ErrorInterface {
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+          ClothoidPursuitConfig.ratioLimits()).map(plan -> plan.bestRatio(pose));
     }
 
     @Override
@@ -93,7 +92,7 @@ public enum FollowingSimulations implements ErrorInterface {
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+          ClothoidPursuitConfig.ratioLimits()).map(plan -> plan.bestRatio(pose));
     }
 
     @Override

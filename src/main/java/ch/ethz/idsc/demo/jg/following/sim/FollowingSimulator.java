@@ -183,7 +183,7 @@ public class FollowingSimulator extends TrajectoryDesignModule {
 
   /** @param curve reference
    * @return randomized initial pose */
-  private static Tensor initialPose(Tensor curve) {
+  /* package */ static Tensor initialPose(Tensor curve) {
     int idx = RandomVariate.of(UniformDistribution.of(0, curve.length())).number().intValue();
     Tensor initialPose = curve.get(idx);
     Tensor rnd = RandomVariate.of(NormalDistribution.of(Quantity.of(0, SI.METER), SIGMA_POS), 2);

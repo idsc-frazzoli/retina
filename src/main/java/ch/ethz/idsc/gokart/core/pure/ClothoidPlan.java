@@ -1,16 +1,16 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.pure;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
+import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
-import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.sophus.planar.SignedCurvature2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.opt.LinearInterpolation;
-import ch.ethz.idsc.tensor.sca.Clips;
+import ch.ethz.idsc.tensor.red.ArgMin;
+import ch.ethz.idsc.tensor.red.Norm;
 
 public class ClothoidPlan {
   private static final int REFINEMENT = 6;
@@ -31,7 +31,6 @@ public class ClothoidPlan {
   // ---
   private final Tensor ratios;
   private final Tensor curve;
-  private Scalar length;
 
   /** @param ratios [m^-1] start and end, used to derive future heading in good precision
    * @param curve sparse planned to be followed */
@@ -45,22 +44,28 @@ public class ClothoidPlan {
   }
 
   public Scalar ratio() {
-    return ratio(RealScalar.ZERO);
+    return ratio(0);
   }
 
-  /** @param progress [0, 1]
+  /** @param idx
    * @return ratio [m^-1] */
-  public Scalar ratio(Scalar progress) {
-    return LinearInterpolation.of(ratios).At(Clips.interval(0, 1).requireInside(progress));
+  public Scalar ratio(int idx) {
+    if (idx == 0)
+      return ratios.Get(0);
+    if (idx == curve.length() - 1)
+      return ratios.Get(1);
+    Tensor curve2D = Tensor.of(curve.stream().map(Extract2D.FUNCTION));
+    return SignedCurvature2D.of(curve2D.get(idx - 1), curve2D.get(idx), curve2D.get(idx + 1)).get();
+  }
+
+  /** @param pose of vehicle {x[m], y[m], angle}
+   * @return ratio [m^-1] */
+  public Scalar bestRatio(Tensor pose) {
+    int idx = ArgMin.of(Tensor.of(curve.stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector)));
+    return ratio(idx);
   }
 
   public Tensor curve() {
     return curve;
-  }
-
-  public Scalar length() {
-    if (Objects.isNull(length))
-      length = CurveClothoidPursuitHelper.curveLength(curve);
-    return length;
   }
 }
