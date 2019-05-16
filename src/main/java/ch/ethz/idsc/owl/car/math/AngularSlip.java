@@ -19,22 +19,6 @@ public class AngularSlip {
     this.gyroZ = gyroZ;
   }
 
-  /** USE ONLY FOR TESTS !!! BECAUSE wantedRotationRate
-   * SHOULD BE COMPUTED FROM OTHER TWO PARAMETERS:
-   * wantedRotationRate = rotationPerMeterDriven.multiply(tangentSpeed);
-   * 
-   * @param tangentSpeed m*s^-1
-   * @param rotationPerMeterDriven m^-1
-   * @param wantedRotationRate [== rotationPerMeterDriven.multiply(tangentSpeed)]
-   * @param gyroZ */
-  // TODO JPH this constructor should be made obsolete
-  public AngularSlip(Scalar tangentSpeed, Scalar rotationPerMeterDriven, Scalar wantedRotationRate, Scalar gyroZ) {
-    this.tangentSpeed = tangentSpeed;
-    this.rotationPerMeterDriven = rotationPerMeterDriven;
-    this.wantedRotationRate = wantedRotationRate; // unit s^-1
-    this.gyroZ = gyroZ;
-  }
-
   public Scalar tangentSpeed() {
     return tangentSpeed;
   }

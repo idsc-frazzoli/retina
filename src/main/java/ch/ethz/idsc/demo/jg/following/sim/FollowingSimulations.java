@@ -8,6 +8,7 @@ import ch.ethz.idsc.demo.jg.following.analysis.FollowingError;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitHelper;
 import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
+import ch.ethz.idsc.gokart.core.pure.GeodesicPursuitParams;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
@@ -33,41 +34,41 @@ public enum FollowingSimulations implements ErrorInterface {
   CLOTHOID_05 {
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(.5, SI.METER);
       return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits(), //
-          Quantity.of(.5, SI.METER)).map(ClothoidPlan::ratio);
+          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_3 {
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(3, SI.METER);
       return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits(), //
-          Quantity.of(3, SI.METER)).map(ClothoidPlan::ratio);
+          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_5 {
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(5, SI.METER);
       return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits(), //
-          Quantity.of(5, SI.METER)).map(ClothoidPlan::ratio);
+          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_7 {
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(7, SI.METER);
       return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits(), //
-          Quantity.of(7, SI.METER)).map(ClothoidPlan::ratio);
+          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   };
   private Tensor trail;
@@ -114,22 +115,21 @@ public enum FollowingSimulations implements ErrorInterface {
   }
 
   @Override // from ErrorInterface
-  public final Scalar averageError() {
+  public final Optional<Tensor> averageError() {
     return followingError.averageError();
   }
 
   @Override // from ErrorInterface
-  public final Scalar accumulatedError() {
+  public final Optional<Tensor> accumulatedError() {
     return followingError.accumulatedError();
   }
 
   @Override // from ErrorInterface
-  public String getReport() {
-    Optional<MinMax> ratioRange = ratioRange();
-    if (ratioRange.isPresent())
-      return name() + " " + followingError.getReport() + //
-          "\n\tratios:\tmin = " + Round._4.apply(ratioRange.get().min().Get()) + ", max = " + Round._4.apply(ratioRange.get().max().Get());
-    return " not yet run";
+  public Optional<String> getReport() {
+    return followingError.getReport().map(report -> //
+    name() + ratioRange().map(range -> " " + report + //
+        "\n\tratios:\tmin = " + Round._4.apply(range.min().Get()) + ", max = " + Round._4.apply(range.max().Get())) //
+        .orElse(" not yet run"));
   }
 
   /** @param pose of vehicle {x[m], y[m], angle}

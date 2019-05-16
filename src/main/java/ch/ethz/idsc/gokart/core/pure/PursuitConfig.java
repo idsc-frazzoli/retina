@@ -41,6 +41,7 @@ public class PursuitConfig {
 
   // ---
   public static final List<DynamicRatioLimit> ratioLimits() {
+    // TODO maybe need to leave some margin to steering controller
     return Collections.singletonList(new StaticRatioLimit(SteerConfig.GLOBAL.turningRatioMax));
   }
 }

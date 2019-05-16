@@ -57,6 +57,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private final TableBuilder raster2isSteerActive = new TableBuilder();
   private final TableBuilder raster2poseQuality = new TableBuilder();
   private final TableBuilder raster2steerAngle = new TableBuilder();
+  private final TableBuilder raster2steerForce = new TableBuilder();
   private final TableBuilder raster2speed = new TableBuilder();
   private final TableBuilder raster2gyroZ = new TableBuilder();
   // ---
@@ -65,6 +66,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private Scalar stact = RealScalar.ZERO;
   private Scalar poseq = RealScalar.ZERO;
   private Scalar steer = RealScalar.ZERO;
+  private Scalar sfrce = RealScalar.ZERO;
   private Scalar gyroz = RealScalar.ZERO;
   private Tensor rates = Array.zeros(2);
 
@@ -79,6 +81,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     raster2isSteerActive.appendRow(stact);
     raster2poseQuality.appendRow(poseq);
     raster2steerAngle.appendRow(steer);
+    raster2steerForce.appendRow(sfrce);
     raster2gyroZ.appendRow(gyroz);
     raster2speed.appendRow(rates);
   }
@@ -102,6 +105,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
       SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
       stact = Boole.of(steerGetEvent.isActive());
+      sfrce = SteerPutEvent.RTORQUE.apply(steerGetEvent.refMotTrq());
     } else //
     // if (channel.equals(GokartLcmChannel.JOYSTICK)) {
     // JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
@@ -143,6 +147,10 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   public Stream<Tensor> raster2steerAngle() {
     return raster2steerAngle.stream();
+  }
+
+  public Stream<Tensor> raster2steerForce() {
+    return raster2steerForce.stream();
   }
 
   public Stream<Tensor> raster2gyroZ() {

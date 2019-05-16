@@ -15,12 +15,13 @@ import ch.ethz.idsc.tensor.sca.Clips;
 public class HapticSteerConfig {
   public static final HapticSteerConfig GLOBAL = AppResources.load(new HapticSteerConfig());
   /***************************************************/
-  /** Value to amplify the Input in the PowerSteeringModule */
-  public Scalar staticCompensation = Quantity.of(0.6, "SCT*SCE^-1");
-  public Scalar dynamicCompensation = Quantity.of(90, "SCT");
+  /** value to amplify the input in the PowerSteeringModule */
+  public Scalar staticCompensation = Quantity.of(0.7, "SCT*SCE^-1");
+  public Scalar dynamicCompensation = Quantity.of(0, "SCT");
   public Scalar dynamicCompensationBoundary = Quantity.of(0.5, "SCT");
-  public Scalar latForceCompensation = Quantity.of(0.3, "SCT*s*m^-1");
-  public Scalar latForceCompensationBoundary = Quantity.of(2, "SCT");
+  public Scalar tsuFactor = Quantity.of(0.12, "SCT");
+  public Scalar latForceCompensation = Quantity.of(0.0, "SCT*s*m^-1"); // so far 0.2
+  public Scalar latForceCompensationBoundary = Quantity.of(2, "SCT"); // 5
   public Scalar velocityFilter = RealScalar.of(0.2);
   /** Constant Torque for Experiment */
   @FieldSubdivide(start = "-7/10[SCT]", end = "7/10[SCT]", intervals = 14)
@@ -31,17 +32,18 @@ public class HapticSteerConfig {
   public Scalar criticalSlip = RealScalar.of(0.2);
   /** Values for AntilockBrakeModule */
   /** access value via {@link #criticalAngle()} */
-  public Scalar minSlip = RealScalar.of(0.1);
-  public Scalar maxSlip = RealScalar.of(0.25);
+  public Scalar minSlip = Quantity.of(0.1, SI.PER_SECOND);
+  public Scalar maxSlip = Quantity.of(0.25, SI.PER_SECOND);
   public Scalar fullBraking = RealScalar.of(0.85);
-  public Scalar criticalAngleDeg = Quantity.of(12, NonSI.DEGREE_ANGLE);
+  public Scalar incrBraking = RealScalar.of(0.05);
+  public Scalar criticalAngle = Quantity.of(12, NonSI.DEGREE_ANGLE);
   public Scalar absFrequency = RealScalar.of(5);
   public Scalar absAmplitude = RealScalar.of(0.2);
   public double absDuration = 1;
 
+  /***************************************************/
   public Scalar criticalAngle() {
-    SI.ANGULAR_ACCELERATION.add(SI.VELOCITY.negate());
-    return UnitSystem.SI().apply(criticalAngleDeg);
+    return UnitSystem.SI().apply(criticalAngle);
   }
 
   public Clip criticalSlipClip() {
@@ -54,5 +56,9 @@ public class HapticSteerConfig {
 
   public Clip latForceCompensationBoundaryClip() {
     return Clips.interval(latForceCompensationBoundary.negate(), latForceCompensationBoundary);
+  }
+
+  public Clip slipClip() {
+    return Clips.interval(minSlip, maxSlip);
   }
 }
