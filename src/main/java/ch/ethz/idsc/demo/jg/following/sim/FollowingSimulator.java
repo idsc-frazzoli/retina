@@ -70,8 +70,7 @@ public class FollowingSimulator extends TrajectoryDesignModule {
         if (trail.isPresent()) {
           graphics.setColor(COLORS.getColor(i));
           graphics.drawString(entry.getKey(), 0, (++i + 1) * graphics.getFont().getSize());
-          graphics.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 9 }, 0) {
-          });
+          graphics.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 9 }, 0));
           graphics.draw(geometricLayer.toPath2D(trail.get()));
         }
         if (Tensors.nonEmpty(initialPose)) {
@@ -193,7 +192,7 @@ public class FollowingSimulator extends TrajectoryDesignModule {
 
   /** @param curve reference
    * @return randomized initial pose */
-  private Tensor initialPose(Tensor curve) {
+  private static Tensor initialPose(Tensor curve) {
     int idx = RandomVariate.of(UniformDistribution.of(0, curve.length())).number().intValue();
     Tensor initialPose = curve.get(idx);
     Tensor rnd = RandomVariate.of(NormalDistribution.of(Quantity.of(0, SI.METER), SIGMA_POS), 2);

@@ -41,7 +41,7 @@ public class FollowingErrorTest extends TestCase {
     assertFalse(followingError.averageError().isPresent());
   }
 
-  private FollowingError setup() {
+  private static FollowingError setup() {
     FollowingError followingError = new FollowingError();
     followingError.setReference(REFERENCE);
     return followingError;
