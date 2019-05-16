@@ -2,10 +2,12 @@
 package ch.ethz.idsc.demo.jg.following.sim;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.Path2D;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
@@ -27,6 +29,9 @@ import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
+import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.planar.Arrowhead;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -36,17 +41,25 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.mat.Inverse;
+import ch.ethz.idsc.tensor.opt.Pi;
+import ch.ethz.idsc.tensor.pdf.NormalDistribution;
+import ch.ethz.idsc.tensor.pdf.RandomVariate;
+import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class FollowingSimulator extends TrajectoryDesignModule {
-  private static final ColorDataIndexed COLORS = ColorDataLists._001.cyclic();
+  private static final Scalar SIGMA_POS = Quantity.of(1, SI.METER);
+  private static final Scalar DELTA_ANGLE = Pi.VALUE.divide(RealScalar.of(4));
+  // ---
+  private static final ColorDataIndexed COLORS = ColorDataLists._250.cyclic();
   // ---
   private final SpinnerLabel<Scalar> spinnerLabelRate = new SpinnerLabel<>();
   private final SpinnerLabel<Scalar> spinnerLabelDuration = new SpinnerLabel<>();
   private final SpinnerLabel<Scalar> spinnerLabelSpeed = new SpinnerLabel<>();
   // ---
+  private Tensor initialPose = Tensors.empty();
   private final Map<String, FollowingSimulations> map = new HashMap<>();
   private final RenderInterface renderInterface = new RenderInterface() {
     @Override
@@ -60,6 +73,14 @@ public class FollowingSimulator extends TrajectoryDesignModule {
           graphics.setStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 9 }, 0) {
           });
           graphics.draw(geometricLayer.toPath2D(trail.get()));
+        }
+        if (Tensors.nonEmpty(initialPose)) {
+          geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(PoseHelper.toUnitless(initialPose)));
+          Path2D path2d = geometricLayer.toPath2D(Arrowhead.of(.75));
+          path2d.closePath();
+          graphics.setColor(Color.MAGENTA);
+          graphics.fill(path2d);
+          geometricLayer.popMatrix();
         }
       }
     }
@@ -144,15 +165,15 @@ public class FollowingSimulator extends TrajectoryDesignModule {
         Tensor curve = trajectoryDesign.getRefinedCurve().unmodifiable();
         if (Tensors.nonEmpty(curve)) {
           export(curve, "reference");
-          Tensor initialPose = curve.get(0); // TODO GJOEL randomize
+          initialPose = initialPose(curve);
           for (FollowingSimulations simulation : FollowingSimulations.values()) {
             simulation.run(curve, initialPose, //
                 spinnerLabelSpeed.getValue(), //
                 spinnerLabelDuration.getValue(), //
                 spinnerLabelRate.getValue().reciprocal());
             map.put(simulation.name(), simulation);
+            System.out.println(simulation.getReport().get());
             export(simulation.trail().get(), simulation.name().toLowerCase());
-            System.out.println(simulation.getReport());
           }
         } else
           System.out.println("no curve found!");
@@ -168,6 +189,16 @@ public class FollowingSimulator extends TrajectoryDesignModule {
     }
     trajectoryDesign.timerFrame.geometricComponent.addRenderInterface(renderInterface);
     trajectoryDesign.timerFrame.jFrame.setVisible(true);
+  }
+
+  /** @param curve reference
+   * @return randomized initial pose */
+  private Tensor initialPose(Tensor curve) {
+    int idx = RandomVariate.of(UniformDistribution.of(0, curve.length())).number().intValue();
+    Tensor initialPose = curve.get(idx);
+    Tensor rnd = RandomVariate.of(NormalDistribution.of(Quantity.of(0, SI.METER), SIGMA_POS), 2);
+    rnd.append(RandomVariate.of(UniformDistribution.of(DELTA_ANGLE.negate(), DELTA_ANGLE)));
+    return initialPose.add(rnd);
   }
 
   /** @param tensor to be exported
