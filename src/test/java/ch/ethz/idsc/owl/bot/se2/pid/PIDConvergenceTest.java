@@ -60,7 +60,7 @@ public class PIDConvergenceTest extends TestCase {
     }
   }
 
-  public void testRatioConvergenceMultiplePoseY() throws IOException {
+  public void testRatioConvergenceMultiplePoseY() {
     Scalar ratioOut = RealScalar.ZERO;
     PIDTrajectory pidTrajectory = null;
     for (int poseId = -10; poseId <= 10; ++poseId) {
@@ -88,7 +88,7 @@ public class PIDConvergenceTest extends TestCase {
     }
   }
 
-  public void testRatioConvergenceMultiplePoseAngle() throws IOException {
+  public void testRatioConvergenceMultiplePoseAngle() {
     Scalar ratioOut = RealScalar.ZERO;
     PIDTrajectory pidTrajectory = null;
     double size = 5;

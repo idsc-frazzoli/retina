@@ -89,8 +89,8 @@ public class AntilockBrakeV2CheckConditions extends AbstractModule implements St
       double angleDifference = (Math.abs(angleGradDouble) - Math.abs(velocityAngle));
       if (angleDifference > Magnitude.ONE.toDouble(hapticSteerConfig.criticalAngle())) {
         return vibrate();
-      } else
-        return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
+      }
+      return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
     }
     return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
   }

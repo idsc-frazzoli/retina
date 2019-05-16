@@ -66,8 +66,8 @@ public class PresenterLcmModule extends AbstractModule {
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
   private final TrackReconRender trackReconRender = new TrackReconRender();
-  private final GokartTrajectoryModule gokartTrajectoryModule = //
-      ModuleAuto.INSTANCE.getInstance(GokartTrajectoryModule.class);
+  private final GokartTrajectoryModule trajectoryModule = //
+      ModuleAuto.INSTANCE.getExtensions(GokartTrajectoryModule.class).findFirst().orElse(null);
   private final TrackReconModule gokartTrackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   // ---
@@ -88,8 +88,8 @@ public class PresenterLcmModule extends AbstractModule {
       ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
     }
-    if (Objects.nonNull(gokartTrajectoryModule))
-      timerFrame.geometricComponent.addRenderInterface(gokartTrajectoryModule.obstacleMapping());
+    if (Objects.nonNull(trajectoryModule))
+      timerFrame.geometricComponent.addRenderInterface(trajectoryModule.obstacleMapping());
     {
       if (Objects.nonNull(gokartTrackReconModule)) {
         timerFrame.geometricComponent.addRenderInterface(gokartTrackReconModule.trackMapping());

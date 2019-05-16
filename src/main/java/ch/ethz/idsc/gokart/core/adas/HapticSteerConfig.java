@@ -27,8 +27,8 @@ public class HapticSteerConfig {
   @FieldSubdivide(start = "-7/10[SCT]", end = "7/10[SCT]", intervals = 14)
   public Scalar constantTorque = Quantity.of(0, "SCT");
   /** Values for Vibration Mode */
-  public Scalar vibrationAmplitude = RealScalar.of(0.4);
-  public Scalar vibrationFrequency = RealScalar.of(12);
+  public Scalar vibrationAmplitude = Quantity.of(0.4, "SCT");
+  public Scalar vibrationFrequency = Quantity.of(12, SI.PER_SECOND);
   public Scalar criticalSlip = RealScalar.of(0.2);
   /** Values for AntilockBrakeModule */
   /** access value via {@link #criticalAngle()} */

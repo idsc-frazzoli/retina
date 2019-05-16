@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -12,14 +13,17 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
+import ch.ethz.idsc.owl.math.state.StateTime;
+import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-/** class is the default choice for pure pursuit when driving along a curve in global
+/** class is the default choice for pursuit when driving along a curve in global
  * coordinates while the pose is updated periodically from a localization method. */
 public abstract class CurvePursuitModule<T extends PursuitConfig> extends PursuitModule<T> implements GokartPoseListener {
   private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
@@ -88,6 +92,19 @@ public abstract class CurvePursuitModule<T extends PursuitConfig> extends Pursui
   public synchronized final void setCurve(Optional<Tensor> curve, boolean closed) {
     optionalCurve = curve;
     this.closed = closed;
+  }
+
+  public synchronized final void setTrajectory(List<TrajectorySample> trajectory) {
+    setTrajectory(trajectory, true);
+  }
+
+  public synchronized final void setTrajectory(List<TrajectorySample> trajectory, boolean closed) {
+    Tensor curve = Tensor.of(trajectory.stream() //
+        .map(TrajectorySample::stateTime) //
+        .map(StateTime::state) //
+        .map(row -> row.extract(0, 3)) //
+        .map(PoseHelper::attachUnits));
+    setCurve(Optional.of(curve), closed);
   }
 
   @Override // from GokartPoseListener

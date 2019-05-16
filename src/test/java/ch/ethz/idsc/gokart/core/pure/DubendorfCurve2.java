@@ -57,16 +57,6 @@ public enum DubendorfCurve2 {
     return Nest.of(SUBDIVISION_RN, poly, 6).unmodifiable();
   }
 
-  private static Tensor oval_demoday() {
-    Tensor poly = Tensors.of( //
-        Tensors.vector(42.000, 38.533), //
-        Tensors.vector(36.133, 45.200), //
-        Tensors.vector(51.633, 59.400), //
-        Tensors.vector(57.067, 54.133));
-    poly = poly.map(scalar -> Quantity.of(scalar, SI.METER));
-    return Nest.of(SUBDIVISION_RN, poly, 6).unmodifiable();
-  }
-
   private static Tensor eight_demoday() {
     Tensor poly_pre = Tensors.of( //
         Tensors.vector(42.000, 38.533), //
