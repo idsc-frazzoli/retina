@@ -11,19 +11,23 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
+import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Sin;
 
-public class VibrateModule extends AbstractModule implements SteerPutProvider {
-  private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
+public class SteerVibrationModule extends AbstractModule implements SteerPutProvider {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final Timing timing = Timing.started();
 
   @Override
   protected void first() {
-    SteerSocket.INSTANCE.addPutProvider(this);
     manualControlProvider.start();
+    SteerSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override
@@ -39,23 +43,19 @@ public class VibrateModule extends AbstractModule implements SteerPutProvider {
 
   @Override
   public Optional<SteerPutEvent> putEvent() {
-    if (steerColumnTracker.isCalibratedAndHealthy()) {
-      return steerEvent(manualControlProvider.getManualControl());
+    Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
+    if (steerColumnTracker.isCalibratedAndHealthy() && optional.isPresent()) {
+      ManualControlInterface manualControlInterface = optional.get();
+      if (manualControlInterface.isAutonomousPressed())
+        return Optional.of(SteerPutEvent.createOn(time2torque(Quantity.of(timing.seconds(), SI.SECOND))));
     }
     return Optional.empty();
   }
 
-  Optional<SteerPutEvent> steerEvent(Optional<ManualControlInterface> optional) {
-    if (optional.isPresent()) {
-      ManualControlInterface manualControlInterface = optional.get();
-      if (manualControlInterface.isAutonomousPressed()) {
-        double frequency = HapticSteerConfig.GLOBAL.vibrationFrequency.number().doubleValue();
-        double amplitude = HapticSteerConfig.GLOBAL.vibrationAmplitude.number().doubleValue();
-        double time = timing.seconds();
-        double radian = (2 * Math.PI) * frequency * time;
-        return Optional.of(SteerPutEvent.createOn(Quantity.of((float) Math.sin(radian) * amplitude, "SCT")));
-      }
-    }
-    return Optional.empty();
+  /* package */ Scalar time2torque(Scalar time) {
+    Scalar frequency = HapticSteerConfig.GLOBAL.vibrationFrequency;
+    Scalar amplitude = HapticSteerConfig.GLOBAL.vibrationAmplitude;
+    Scalar radian = frequency.multiply(time).multiply(Pi.TWO);
+    return Sin.FUNCTION.apply(radian).multiply(amplitude);
   }
 }

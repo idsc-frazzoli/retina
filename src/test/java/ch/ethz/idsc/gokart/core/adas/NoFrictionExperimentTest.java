@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.adas;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -17,13 +18,11 @@ public class NoFrictionExperimentTest extends TestCase {
 
   public void testTime2Torque() {
     NoFrictionExperiment noFrictionExperiment = new NoFrictionExperiment();
-    assertEquals(noFrictionExperiment.time2torque(0), Quantity.of(0, "SCT"));
-    Subdivide.of(0.0, 500.0, 300).stream() //
+    assertEquals(noFrictionExperiment.time2torque(Quantity.of(0, SI.SECOND)), Quantity.of(0, "SCT"));
+    Subdivide.of(Quantity.of(0.0, SI.SECOND), Quantity.of(500, SI.SECOND), 300).stream() //
         .map(Scalar.class::cast) //
-        .map(Scalar::number) //
-        .mapToDouble(Number::doubleValue) //
-        .mapToObj(noFrictionExperiment::time2torque) //
+        .map(noFrictionExperiment::time2torque) //
         .forEach(SteerPutEvent.RTORQUE::apply);
-    assertEquals(noFrictionExperiment.time2torque(10000), Quantity.of(0, "SCT"));
+    assertEquals(noFrictionExperiment.time2torque(Quantity.of(10000, SI.SECOND)), Quantity.of(0, "SCT"));
   }
 }
