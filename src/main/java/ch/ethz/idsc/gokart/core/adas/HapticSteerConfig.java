@@ -18,9 +18,9 @@ public class HapticSteerConfig {
   /** value to amplify the input in the PowerSteeringModule */
   public Scalar staticCompensation1 = Quantity.of(0.968725, "SCT*SCE^-1");
   public Scalar staticCompensation3 = Quantity.of(-0.414766, "SCT*SCE^-3");
-  public Scalar tsuFactor = Quantity.of(0.12, "SCT");
-  public Scalar latForceCompensation = Quantity.of(0.0, "SCT*s*m^-1"); // so far 0.2
-  public Scalar latForceCompensationBoundary = Quantity.of(2, "SCT"); // 5
+  public Scalar tsuFactor = Quantity.of(0.1, "SCT");
+  public Scalar latForceCompensation = Quantity.of(0.7, "SCT*s*m^-1"); // so far 0.2
+  public Scalar latForceCompensationBoundary = Quantity.of(0.7, "SCT"); // 5
   public Scalar velocityFilter = RealScalar.of(0.2);
   /** Constant Torque for Experiment */
   @FieldSubdivide(start = "-7/10[SCT]", end = "7/10[SCT]", intervals = 14)
