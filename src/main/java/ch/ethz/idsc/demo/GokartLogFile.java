@@ -1895,6 +1895,24 @@ public enum GokartLogFile implements LogFile {
   _20190516T111058_fc897d70,
   /** stationary experiment to calibrate steering */
   _20190516T111841_fc897d70,
+  /** driving with power steering */
+  _20190516T150252_3bedf2ab,
+  /** testing with anti lock braking */
+  _20190516T154712_fc897d70,
+  /** testing with anti lock braking */
+  _20190516T163447_fc897d70,
+  /** manual driving with brake activity */
+  _20190516T171253_a2d004c0,
+  /** mpc */
+  _20190516T172206_a2d004c0,
+  /** slow manual driving */
+  _20190516T173006_a2d004c0,
+  /** mpc with contact */
+  _20190516T173400_a2d004c0,
+  /** mpc */
+  _20190516T182806_bcf7fd52,
+  /** driving with power steering */
+  _20190516T185634_bcf7fd52,
   /***************************************************/
   ;
   // ---
