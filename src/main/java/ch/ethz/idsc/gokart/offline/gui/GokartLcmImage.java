@@ -3,9 +3,6 @@ package ch.ethz.idsc.gokart.offline.gui;
 
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
@@ -36,19 +33,6 @@ public enum GokartLcmImage {
       Tensor stact = Transpose.of(gokartLogImageRow.tensor());
       System.out.println("stact=" + Dimensions.of(stact));
       tensor.append(ImageResize.nearest(stact.map(gokartLogImageRow.getColorDataGradient()), FX, 1));
-    }
-    {
-      Clip clip = Clips.interval(0.5, 1);
-      Tensor poseq = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2poseQuality()).map(clip::rescale));
-      System.out.println("poseq=" + Dimensions.of(poseq));
-      tensor.append(ImageResize.nearest(poseq.map(ColorDataGradients.AVOCADO), FX, 1));
-    }
-    {
-      Scalar limit = SteerPutEvent.RTORQUE.apply(SteerConfig.GLOBAL.calibration);
-      double value = limit.number().doubleValue();
-      Clip clip = Clips.absolute(value);
-      Tensor steer = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2steerForce()).map(clip::rescale));
-      tensor.append(ImageResize.nearest(steer.map(ColorDataGradients.THERMOMETER), FX, 1));
     }
     {
       Clip clip = Clips.absolute(+1);

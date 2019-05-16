@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
-import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.u3.GokartLabjackFrame;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
@@ -41,7 +41,9 @@ import ch.ethz.idsc.tensor.sca.Round;
 public class GokartLogFileIndexer implements OfflineLogListener {
   public static GokartLogFileIndexer create(File file) throws IOException {
     GokartLogFileIndexer gokartLogFileIndexer = new GokartLogFileIndexer(file);
+    gokartLogFileIndexer.addGokartPoseListener(new PoseQualityRow());
     gokartLogFileIndexer.addSteerGetListener(new SteerActiveRow());
+    gokartLogFileIndexer.addSteerGetListener(new SteerRefTorRow());
     gokartLogFileIndexer.addGokartStatusListener(new SteerAngleRow());
     // ---
     gokartLogFileIndexer.append(0);
@@ -60,18 +62,15 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private final File file;
   private final List<Integer> raster2event = new ArrayList<>();
   private final TableBuilder raster2autoButton = new TableBuilder();
-  private final TableBuilder raster2poseQuality = new TableBuilder();
-  private final TableBuilder raster2steerForce = new TableBuilder();
   private final TableBuilder raster2speed = new TableBuilder();
   private final TableBuilder raster2gyroZ = new TableBuilder();
   final List<GokartLogImageRow> gokartLogImageRows = new LinkedList<>();
   private final List<SteerGetListener> steerGetListeners = new LinkedList<>();
   private final List<GokartStatusListener> gokartStatusListeners = new LinkedList<>();
+  private final List<GokartPoseListener> gokartPoseListeners = new LinkedList<>();
   // ---
   private int event_count;
   private Scalar auton = RealScalar.ZERO;
-  private Scalar poseq = RealScalar.ZERO;
-  private Scalar sfrce = RealScalar.ZERO;
   private Scalar gyroz = RealScalar.ZERO;
   private Tensor rates = Array.zeros(2);
 
@@ -79,7 +78,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     this.file = file;
   }
 
-  void addSteerGetListener(SteerGetListener steerGetListener) {
+  private void addSteerGetListener(SteerGetListener steerGetListener) {
     gokartLogImageRows.add((GokartLogImageRow) steerGetListener);
     steerGetListeners.add(steerGetListener);
   }
@@ -89,12 +88,15 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartStatusListeners.add(gokartStatusListener);
   }
 
+  private void addGokartPoseListener(GokartPoseListener gokartPoseListener) {
+    gokartLogImageRows.add((GokartLogImageRow) gokartPoseListener);
+    gokartPoseListeners.add(gokartPoseListener);
+  }
+
   private void append(int count) {
     raster2event.add(count);
     gokartLogImageRows.forEach(GokartLogImageRow::append);
     raster2autoButton.appendRow(auton);
-    raster2poseQuality.appendRow(poseq);
-    raster2steerForce.appendRow(sfrce);
     raster2gyroZ.appendRow(gyroz);
     raster2speed.appendRow(rates);
   }
@@ -113,13 +115,11 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
-      poseq = gokartPoseEvent.getQuality();
+      gokartPoseListeners.forEach(gokartPoseListener -> gokartPoseListener.getEvent(gokartPoseEvent));
     } else //
     if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
       SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
       steerGetListeners.forEach(steerGetListener -> steerGetListener.getEvent(steerGetEvent));
-      // stact = Boole.of(steerGetEvent.isActive());
-      sfrce = SteerPutEvent.RTORQUE.apply(steerGetEvent.refMotTrq());
     } else //
     // if (channel.equals(GokartLcmChannel.JOYSTICK)) {
     // JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
@@ -147,14 +147,6 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   public Stream<Tensor> raster2autoButton() {
     return raster2autoButton.stream();
-  }
-
-  public Stream<Tensor> raster2poseQuality() {
-    return raster2poseQuality.stream();
-  }
-
-  public Stream<Tensor> raster2steerForce() {
-    return raster2steerForce.stream();
   }
 
   public Stream<Tensor> raster2gyroZ() {
