@@ -16,6 +16,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -71,26 +72,21 @@ public class AntilockBrakeV2CheckConditions extends AbstractModule implements St
       Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
       Tensor angularRage_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
       Tensor slip = angularRate_Y_pair.subtract(angularRage_Origin_pair);
+      System.out.println(slip);
       // the brake cannot be constantly applied otherwise the brake motor heats up too much
       double slip1 = Magnitude.ONE.toDouble(slip.Get(0));
       double slip2 = Magnitude.ONE.toDouble(slip.Get(1));
-      double minSlip = Magnitude.ONE.toDouble(HapticSteerConfig.GLOBAL.minSlip);
-      if (slip1 > minSlip) {
+      double minSlip = Magnitude.ONE.toDouble(hapticSteerConfig.minSlip);
+      if (slip1 > minSlip)
         return vibrate();
-      }
-      if (slip2 > minSlip) {
+      if (slip2 > minSlip)
         return vibrate();
-      }
-      double velocityAngle = Math.atan2(Magnitude.VELOCITY.toDouble(velocityOrigin.Get(1)), Magnitude.VELOCITY.toDouble(velocityOrigin.Get(0)));
-      // velocityAngle is in radian
       Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
-      Scalar angleGrad = steerMapping.getRatioFromSCE(angleSCE); // FIXME units have changed
-      double angleGradDouble = Magnitude.DEGREE_ANGLE.toDouble(angleGrad);
-      double angleDifference = (Math.abs(angleGradDouble) - Math.abs(velocityAngle));
-      if (angleDifference > Magnitude.ONE.toDouble(hapticSteerConfig.criticalAngle())) {
-        return vibrate();
-      }
-      return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
+      Scalar ratio = steerMapping.getRatioFromSCE(angleSCE);
+      AngularSlip angularSlip = new AngularSlip(velocityOrigin.Get(0), ratio, velocityOrigin.Get(2));
+      if (angularSlip != null)
+        System.out.println(angularSlip);
+      return vibrate();
     }
     return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
   }
