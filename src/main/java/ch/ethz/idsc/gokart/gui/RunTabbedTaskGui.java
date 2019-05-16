@@ -98,7 +98,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
       PoseLcmServerModule.class, // publishes pose
-      AutonomousEmergencyModule.class, //
       ManualResetModule.class //
   // AutonomySafetyModule.class // <- dead man switch
   );
@@ -114,6 +113,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
+      AutonomousEmergencyModule.class, //
       UltimateTorqueVectoringModule.class, //
       RimoThrustManualModule.class, //
       DriftThrustManualModule.class, //
