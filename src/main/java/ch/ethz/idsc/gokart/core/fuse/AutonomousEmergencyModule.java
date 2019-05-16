@@ -55,7 +55,7 @@ public class AutonomousEmergencyModule extends AbstractModule {
   private final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent getEvent) {
-      fastEnoughToBrake = Scalars.lessThan(BRAKINGTHRESHOLD, // 
+      fastEnoughToBrake = Scalars.lessThan(BRAKINGTHRESHOLD, //
           ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent).abs());
     }
   };
@@ -63,7 +63,7 @@ public class AutonomousEmergencyModule extends AbstractModule {
     @Override // from RimoPutProvider
     public Optional<RimoPutEvent> putEvent() {
       Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
-      boostPushed = optional.get().isResetPressed();
+      boostPushed = optional.isPresent() && optional.get().isResetPressed();
       return !safeToDrive()//
           ? Optional.of(RimoPutEvent.PASSIVE)//
           : Optional.empty();

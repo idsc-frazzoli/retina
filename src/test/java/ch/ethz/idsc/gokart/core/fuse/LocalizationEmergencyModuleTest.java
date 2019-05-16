@@ -21,20 +21,20 @@ public class LocalizationEmergencyModuleTest extends TestCase {
   }
 
   public void testSimple() {
-    AutonomousEmergencyModule localizationEmergencyModule = new AutonomousEmergencyModule();
+    AutonomousEmergencyModule autonomousEmergencyModule = new AutonomousEmergencyModule();
     final int providerSize = RimoSocket.INSTANCE.getPutProviderSize();
-    localizationEmergencyModule.first();
+    autonomousEmergencyModule.first();
     assertEquals(providerSize + 1, RimoSocket.INSTANCE.getPutProviderSize());
     {
-      Optional<RimoPutEvent> putEvent = localizationEmergencyModule.rimoPutProvider.putEvent();
-      assertTrue(putEvent.isPresent());
-    }
-    localizationEmergencyModule.gokartPoseListener.getEvent(GokartPoseEvents.create(Tensors.fromString("{2[m], 3[m], 4}"), RealScalar.ONE));
-    {
-      Optional<RimoPutEvent> putEvent = localizationEmergencyModule.rimoPutProvider.putEvent();
+      Optional<RimoPutEvent> putEvent = autonomousEmergencyModule.rimoPutProvider.putEvent();
       assertFalse(putEvent.isPresent());
     }
-    localizationEmergencyModule.last();
+    autonomousEmergencyModule.gokartPoseListener.getEvent(GokartPoseEvents.create(Tensors.fromString("{2[m], 3[m], 4}"), RealScalar.ONE));
+    {
+      Optional<RimoPutEvent> putEvent = autonomousEmergencyModule.rimoPutProvider.putEvent();
+      assertFalse(putEvent.isPresent());
+    }
+    autonomousEmergencyModule.last();
     assertEquals(providerSize, RimoSocket.INSTANCE.getPutProviderSize());
   }
 }
