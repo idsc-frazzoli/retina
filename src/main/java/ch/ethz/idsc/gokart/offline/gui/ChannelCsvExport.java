@@ -12,6 +12,11 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Put;
 
+/** used to export all tabular channels as csv files
+ * the tabular channels include:
+ * actuator commands, actuator feedback, adc readouts, ...
+ * 
+ * sophisticated sensors such as Vlp16 are not included in the export */
 public enum ChannelCsvExport {
   ;
   /** @param file

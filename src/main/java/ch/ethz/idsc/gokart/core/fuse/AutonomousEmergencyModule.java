@@ -31,21 +31,18 @@ import ch.ethz.idsc.retina.util.data.SoftWatchdog;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** prevents driving if pose is has insufficient quality for timeout duration */
-public class AutonomousEmergencyModule extends AbstractModule implements GokartPoseListener, RimoPutProvider {
+public class AutonomousEmergencyModule extends AbstractModule {
+  // TODO
+  private static final Scalar BRAKINGTHRESHOLD = Quantity.of(0.5, SI.VELOCITY);
+  private static final Scalar BRAKINGVALUE = RealScalar.of(1);
   /** timeout 0.3[s] */
   private final Watchdog localizationWatchdog = SoftWatchdog.barking(0.3);
-  private static final Scalar BRAKINGTHRESHOLD = Quantity.of(0.5, SI.VELOCITY);
-  private static final Scalar BRAKINGVALUE = Quantity.of(1, SI.ONE);
-  // when watchdog is triggered, the fuse is set to true.
-  private boolean isLocalizationBroken = false;
-  private boolean isTemperatureOperationSafe = true;
-  private boolean fastEnoughToBrake = true;
-  private boolean boostPushed = false;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
   private final LinmotGetListener linmotGetListener = new LinmotGetListener() {
@@ -58,17 +55,52 @@ public class AutonomousEmergencyModule extends AbstractModule implements GokartP
   private final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent getEvent) {
-      fastEnoughToBrake = Scalars.lessThan(BRAKINGTHRESHOLD, ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent));
+      fastEnoughToBrake = Scalars.lessThan(BRAKINGTHRESHOLD, // 
+          ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent).abs());
     }
   };
+  final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
+    @Override // from RimoPutProvider
+    public Optional<RimoPutEvent> putEvent() {
+      Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
+      boostPushed = optional.get().isResetPressed();
+      return !safeToDrive()//
+          ? Optional.of(RimoPutEvent.PASSIVE)//
+          : Optional.empty();
+    }
+
+    @Override // from RimoPutProvider
+    public ProviderRank getProviderRank() {
+      return ProviderRank.EMERGENCY;
+    }
+  };
+  final GokartPoseListener gokartPoseListener = new GokartPoseListener() {
+    @Override // from GokartPoseListener
+    public void getEvent(GokartPoseEvent gokartPoseEvent) {
+      if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()))
+        localizationWatchdog.notifyWatchdog();
+      // trigger fuse
+      boolean instantStop = Scalars.isZero(gokartPoseEvent.getQuality());
+      if (boostPushed) {
+        isLocalizationBroken = true;
+        boostPushed = false;
+      }
+      isLocalizationBroken = instantStop || isLocalizationBroken || localizationWatchdog.isBarking();
+    }
+  };
+  // when watchdog is triggered, the fuse is set to true.
+  private boolean isLocalizationBroken = false;
+  private boolean isTemperatureOperationSafe = true;
+  private boolean fastEnoughToBrake = true;
+  private boolean boostPushed = false;
 
   // ManualControlLcmClient manualControlLcmClient
   @Override // from AbstractModule
   protected void first() {
-    gokartPoseLcmClient.addListener(this);
+    gokartPoseLcmClient.addListener(gokartPoseListener);
     gokartPoseLcmClient.startSubscriptions();
     manualControlProvider.start();
-    RimoSocket.INSTANCE.addPutProvider(this);
+    RimoSocket.INSTANCE.addPutProvider(rimoPutProvider);
     RimoSocket.INSTANCE.addGetListener(rimoGetListener);
     LinmotSocket.INSTANCE.addGetListener(linmotGetListener);
     LinmotSocket.INSTANCE.addPutProvider(linmotPutProvider);
@@ -77,7 +109,7 @@ public class AutonomousEmergencyModule extends AbstractModule implements GokartP
 
   @Override // from AbstractModule
   protected void last() {
-    RimoSocket.INSTANCE.removePutProvider(this);
+    RimoSocket.INSTANCE.removePutProvider(rimoPutProvider);
     RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
     gokartPoseLcmClient.stopSubscriptions();
     manualControlProvider.stop();
@@ -86,38 +118,11 @@ public class AutonomousEmergencyModule extends AbstractModule implements GokartP
     SteerSocket.INSTANCE.removePutProvider(steerPutProvider);
   }
 
-  @Override // from GokartPoseListener
-  public void getEvent(GokartPoseEvent gokartPoseEvent) {
-    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()))
-      localizationWatchdog.notifyWatchdog();
-    // trigger fuse
-    boolean instantStop = Scalars.isZero(gokartPoseEvent.getQuality());
-    if (boostPushed) {
-      isLocalizationBroken = true;
-      boostPushed = false;
-    }
-    isLocalizationBroken = instantStop || isLocalizationBroken || localizationWatchdog.isBarking();
-  }
-
   private boolean safeToDrive() {
     return isTemperatureOperationSafe && !isLocalizationBroken;
   }
 
-  @Override // from RimoPutProvider
-  public ProviderRank getProviderRank() {
-    return ProviderRank.EMERGENCY;
-  }
-
-  @Override // from RimoPutProvider
-  public Optional<RimoPutEvent> putEvent() {
-    Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
-    boostPushed = optional.get().isResetPressed();
-    return !safeToDrive()//
-        ? Optional.of(RimoPutEvent.PASSIVE)//
-        : Optional.empty();
-  }
-
-  private SteerPutProvider steerPutProvider = new SteerPutProvider() {
+  private final SteerPutProvider steerPutProvider = new SteerPutProvider() {
     @Override
     public Optional<SteerPutEvent> putEvent() {
       return !safeToDrive() //
@@ -130,10 +135,10 @@ public class AutonomousEmergencyModule extends AbstractModule implements GokartP
       return ProviderRank.EMERGENCY;
     }
   };
-  private LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
+  private final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
     @Override
     public Optional<LinmotPutEvent> putEvent() {
-      return !safeToDrive() && fastEnoughToBrake//
+      return !safeToDrive() && fastEnoughToBrake //
           ? Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(BRAKINGVALUE))//
           : Optional.empty();
     }

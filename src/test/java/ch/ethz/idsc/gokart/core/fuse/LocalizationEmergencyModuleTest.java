@@ -26,12 +26,12 @@ public class LocalizationEmergencyModuleTest extends TestCase {
     localizationEmergencyModule.first();
     assertEquals(providerSize + 1, RimoSocket.INSTANCE.getPutProviderSize());
     {
-      Optional<RimoPutEvent> putEvent = localizationEmergencyModule.putEvent();
+      Optional<RimoPutEvent> putEvent = localizationEmergencyModule.rimoPutProvider.putEvent();
       assertTrue(putEvent.isPresent());
     }
-    localizationEmergencyModule.getEvent(GokartPoseEvents.create(Tensors.fromString("{2[m], 3[m], 4}"), RealScalar.ONE));
+    localizationEmergencyModule.gokartPoseListener.getEvent(GokartPoseEvents.create(Tensors.fromString("{2[m], 3[m], 4}"), RealScalar.ONE));
     {
-      Optional<RimoPutEvent> putEvent = localizationEmergencyModule.putEvent();
+      Optional<RimoPutEvent> putEvent = localizationEmergencyModule.rimoPutProvider.putEvent();
       assertFalse(putEvent.isPresent());
     }
     localizationEmergencyModule.last();

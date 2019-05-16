@@ -19,8 +19,12 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Series;
+import ch.ethz.idsc.tensor.sca.Round;
 
 public class PowerSteeringModule extends AbstractModule implements SteerGetListener, SteerPutProvider {
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
@@ -76,19 +80,18 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
     // term2 is the compensation depending on the velocity of the steering wheel
     // term3 compensates the force caused by the lateral velocity in each front wheel
     Tensor filteredVel = geodesicIIR1Filter.apply(velocity);
-    Scalar term1 = currangle.multiply(hapticSteerConfig.staticCompensation);
-    // System.out.println(term1);
-    Scalar term2 = hapticSteerConfig.dynamicCompensationBoundaryClip().apply( //
-        steerGetEvent.motAsp().multiply(hapticSteerConfig.dynamicCompensation));
-    // System.out.println(term2);
+    Scalar term1 = Series.of(Tensors.of(RealScalar.ZERO, //
+        hapticSteerConfig.staticCompensation1, //
+        RealScalar.ZERO, //
+        hapticSteerConfig.staticCompensation3)).apply(currangle);
     AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
     Scalar latFront_LeftVel = axleConfiguration.wheel(0).adjoint(filteredVel).Get(1);
     Scalar latFrontRightVel = axleConfiguration.wheel(1).adjoint(filteredVel).Get(1);
     Scalar term3 = hapticSteerConfig.latForceCompensationBoundaryClip().apply( //
         latFront_LeftVel.add(latFrontRightVel).multiply(hapticSteerConfig.latForceCompensation));
-    // System.out.println(term3);
     Scalar term4 = steerGetEvent.tsuTrq().multiply(hapticSteerConfig.tsuFactor);
-    return term1.add(term2).add(term3).add(term4);
+    System.out.println(Tensors.of(term1, term3, term4).map(Round._3));
+    return term1.add(term3).add(term4);
   }
 
   @Override // from SteerPutProvider

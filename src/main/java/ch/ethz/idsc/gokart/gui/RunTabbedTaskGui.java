@@ -22,10 +22,10 @@ import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
 import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
+import ch.ethz.idsc.gokart.core.fuse.AutonomousEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
-import ch.ethz.idsc.gokart.core.fuse.AutonomousEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
@@ -97,7 +97,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       Vmu931CalibrationWatchdog.class, //
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
-      AutonomousEmergencyModule.class, //
       PoseLcmServerModule.class, // publishes pose
       ManualResetModule.class //
   // AutonomySafetyModule.class // <- dead man switch
@@ -114,6 +113,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
+      AutonomousEmergencyModule.class, //
       UltimateTorqueVectoringModule.class, //
       RimoThrustManualModule.class, //
       DriftThrustManualModule.class, //
