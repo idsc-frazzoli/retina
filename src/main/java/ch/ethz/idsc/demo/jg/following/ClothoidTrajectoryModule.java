@@ -27,6 +27,7 @@ public class ClothoidTrajectoryModule extends GokartTrajectoryModule {
     super(trajectoryConfig, new CurveClothoidPursuitModule(PursuitConfig.GLOBAL));
   }
 
+  @Override
   public void expandResult(List<TrajectorySample> head, TrajectoryPlanner trajectoryPlanner) {
     Optional<GlcNode> optional = trajectoryPlanner.getBest();
     if (optional.isPresent()) { // goal reached
