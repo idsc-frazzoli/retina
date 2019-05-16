@@ -56,7 +56,7 @@ public class TachometerMustangDash implements RenderInterface, RimoGetListener {
       graphics.draw(path2d);
     }
     Scalar speed = SCALAR_UNARY_OPERATOR.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
-    Clip clip = Clips.interval(0, 60);
+    Clip clip = Clips.positive(60);
     speed = clip.apply(speed);
     final int steps = speed.number().intValue();
     int count = 0;

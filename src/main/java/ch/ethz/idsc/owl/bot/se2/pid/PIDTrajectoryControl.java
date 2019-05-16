@@ -25,7 +25,7 @@ public class PIDTrajectoryControl extends StateTrajectoryControl {
   private int pidIndex;
 
   public PIDTrajectoryControl(Scalar maxTurningRate, PIDGains pidGains) {
-    this.clip = Clips.interval(maxTurningRate.negate(), maxTurningRate);
+    this.clip = Clips.absolute(maxTurningRate);
     this.pidGains = pidGains;
   }
 

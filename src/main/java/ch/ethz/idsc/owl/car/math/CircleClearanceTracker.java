@@ -36,7 +36,7 @@ public class CircleClearanceTracker implements ClearanceTracker, Serializable {
    * @param xya reference frame of sensor as 3-vector {px, py, angle}
    * @param clip_time with min and max with unit [s] */
   public CircleClearanceTracker(Scalar speed, Scalar half, Scalar ratio, Tensor xya, Clip clip_time) {
-    clip_Y = Clips.interval(half.negate(), half); // TODO JPH there is a small error as gokart turns
+    clip_Y = Clips.absolute(half); // TODO JPH there is a small error as gokart turns
     this.clip_X = clip_time;
     // [m*s^-1], [m*s^-1], [s^-1]
     u = Tensors.of(speed, speed.zero(), ratio.multiply(speed)).unmodifiable();

@@ -14,9 +14,8 @@ import ch.ethz.idsc.tensor.sca.Clips;
 public enum SlamCurveUtil {
   ;
   /** curvature interval that the vehicle can drive */
-  private static final Clip CURVATURE_CLIP = Clips.interval( //
-      Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax.negate()), //
-      Magnitude.PER_METER.toDouble(SteerConfig.GLOBAL.turningRatioMax));
+  private static final Clip CURVATURE_CLIP = //
+      Clips.absolute(Magnitude.PER_METER.apply(SteerConfig.GLOBAL.turningRatioMax));
 
   /** computes curvature. Curvature at first and last point cannot be computed and is set to the
    * neighboring value

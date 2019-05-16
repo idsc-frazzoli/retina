@@ -28,8 +28,6 @@ public class PIDTuningParams {
 
   // TODO MCP not yet used. is this needed?
   public final Clip clipAngle() {
-    return Clips.interval( //
-        maxSteerAngle.multiply(maxSteerAngleSafetyRatio).negate(), //
-        maxSteerAngle.multiply(maxSteerAngleSafetyRatio));
+    return Clips.absolute(maxSteerAngle.multiply(maxSteerAngleSafetyRatio));
   }
 }
