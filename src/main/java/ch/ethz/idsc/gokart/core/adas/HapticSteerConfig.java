@@ -47,15 +47,15 @@ public class HapticSteerConfig {
   }
 
   public Clip criticalSlipClip() {
-    return Clips.interval(criticalSlip.negate(), criticalSlip);
+    return Clips.absolute(criticalSlip);
   }
 
   public Clip dynamicCompensationBoundaryClip() {
-    return Clips.interval(dynamicCompensationBoundary.negate(), dynamicCompensationBoundary);
+    return Clips.absolute(dynamicCompensationBoundary);
   }
 
   public Clip latForceCompensationBoundaryClip() {
-    return Clips.interval(latForceCompensationBoundary.negate(), latForceCompensationBoundary);
+    return Clips.absolute(latForceCompensationBoundary);
   }
 
   public Clip slipClip() {

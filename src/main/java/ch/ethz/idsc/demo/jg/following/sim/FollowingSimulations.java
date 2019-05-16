@@ -93,7 +93,7 @@ public enum FollowingSimulations implements ErrorInterface {
       followingError.insert(time, pose);
       Optional<Scalar> optional = setup(pose, speed, curve);
       if (optional.isPresent())
-        ratio = Clips.interval(SteerConfig.GLOBAL.turningRatioMax.negate(), SteerConfig.GLOBAL.turningRatioMax).apply(optional.get());
+        ratio = Clips.absolute(SteerConfig.GLOBAL.turningRatioMax).apply(optional.get());
       ratios.append(ratio);
       pose = Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, ratio), pose, timeStep);
     }

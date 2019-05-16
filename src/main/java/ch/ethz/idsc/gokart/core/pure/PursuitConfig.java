@@ -37,7 +37,7 @@ public class PursuitConfig {
   @FieldSubdivide(start = "30[s^-1]", end = "70[s^-1]", intervals = 4)
   public Scalar rateFollower = Quantity.of(50.0, SI.PER_SECOND);
   // ---
-  public final TrajectoryEntryFinder trajectoryEntryFinder = new InterpolationEntryFinder(0);
+  public final TrajectoryEntryFinder trajectoryEntryFinder = new InterpolationEntryFinder();
 
   // ---
   public static final List<DynamicRatioLimit> ratioLimits() {
