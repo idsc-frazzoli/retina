@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 /* package */ enum SpeedClip implements ScalarUnaryOperator {
   FUNCTION;
   // ---
-  private static final Clip CLIP = Clips.interval(0, 6);
+  private static final Clip CLIP = Clips.positive(6);
 
   @Override
   public Scalar apply(Scalar scalar) {

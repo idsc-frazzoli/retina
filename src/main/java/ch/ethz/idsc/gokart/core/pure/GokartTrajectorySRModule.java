@@ -94,7 +94,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal(), RealScalar.of(10)).unmodifiable();
   static final FixedStateIntegrator FIXEDSTATEINTEGRATOR = FixedStateIntegrator.create( //
-      new Tse2Integrator(Clips.interval(MAX_SPEED.zero(), MAX_SPEED)), RationalScalar.of(1, 15), 3);
+      new Tse2Integrator(Clips.positive(MAX_SPEED)), RationalScalar.of(1, 15), 3);
   // private static final Se2Wrap SE2WRAP = Se2Wrap.INSTANCE;
   private static final StateTimeRaster STATE_TIME_RASTER = //
       new EtaRaster(PARTITIONSCALE, StateTimeTensorFunction.state(Tse2Wrap.INSTANCE::represent));

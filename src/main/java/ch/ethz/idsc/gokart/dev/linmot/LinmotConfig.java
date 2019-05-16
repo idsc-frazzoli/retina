@@ -67,5 +67,5 @@ public class LinmotConfig {
 
   /** bounds established using experimentation */
   // TODO make 20000 configurable
-  public static final Clip NOMINAL_POSITION_DELTA = Clips.interval(-20000, 20000);
+  public static final Clip NOMINAL_POSITION_DELTA = Clips.absolute(20000);
 }

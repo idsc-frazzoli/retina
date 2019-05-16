@@ -31,9 +31,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
  * </ul> */
 public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<LinmotPutEvent> implements RimoGetListener {
   // TODO magic const to filter slip
-  private static final Clip CLIP = Clips.interval( //
-      Quantity.of(0, SI.VELOCITY), //
-      Quantity.of(6, SI.VELOCITY));
+  private static final Clip CLIP = Clips.positive(Quantity.of(6, SI.VELOCITY));
   // ---
   public static final EmergencyBrakeProvider INSTANCE = new EmergencyBrakeProvider();
   // ---

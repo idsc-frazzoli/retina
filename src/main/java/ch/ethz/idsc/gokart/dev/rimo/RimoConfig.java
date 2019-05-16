@@ -48,7 +48,7 @@ public class RimoConfig {
   /***************************************************/
   /** @return clip interval for permitted torque */
   public Clip torqueLimitClip() {
-    return Clips.interval(torqueLimit.negate(), torqueLimit);
+    return Clips.absolute(torqueLimit);
   }
 
   /** @return chop for tangent speed values */

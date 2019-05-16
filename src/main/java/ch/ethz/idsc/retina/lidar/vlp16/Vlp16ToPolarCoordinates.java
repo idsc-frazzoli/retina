@@ -42,7 +42,7 @@ public class Vlp16ToPolarCoordinates implements TensorUnaryOperator {
      * Norm._2.of(Tensors.of(x, y, z))); */
     return Tensors.of( //
         MOD_TWO_PI.apply(twist.subtract(ArcTan.of(x, y))), //
-        ArcTan.of(Hypot.BIFUNCTION.apply(x, y), z), //
+        ArcTan.of(Hypot.of(x, y), z), //
         Norm._2.ofVector(xyz));
   }
 }

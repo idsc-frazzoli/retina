@@ -14,9 +14,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 /** implementation feeds the values provided by the VMU931 sensor
  * into the inertial odometry */
 public class Vmu931Odometry extends InertialOdometry implements Vmu931ImuFrameListener {
-  private static final Clip VMU931_CLIP_TIME = Clips.interval( //
-      Quantity.of(0.00, SI.SECOND), //
-      Quantity.of(0.01, SI.SECOND));
+  private static final Clip VMU931_CLIP_TIME = Clips.positive(Quantity.of(0.01, SI.SECOND));
   // ---
   private final PlanarVmu931Imu planarVmu931Imu;
   /** the initial value 0 is a systematic error.

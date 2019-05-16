@@ -37,7 +37,7 @@ public class ClothoidPursuitConfig extends PursuitConfig{
     super(Quantity.of(0.01, SI.SECOND));
   }
 
-  public final TrajectoryEntryFinder trajectoryEntryFinder = new InterpolationEntryFinder(0);
+  public final TrajectoryEntryFinder trajectoryEntryFinder = new InterpolationEntryFinder();
 
   public static final List<DynamicRatioLimit> ratioLimits() {
     return Collections.singletonList(new StaticRatioLimit(SteerConfig.GLOBAL.turningRatioMax));

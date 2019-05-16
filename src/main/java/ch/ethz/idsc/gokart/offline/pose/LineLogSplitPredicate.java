@@ -25,7 +25,7 @@ public class LineLogSplitPredicate extends PoseLogSplitPredicate {
    * @param y_width with unit [m] */
   public LineLogSplitPredicate(Tensor linePose, Scalar y_width) {
     inverse = new Se2GroupElement(linePose).inverse();
-    clip_y = Clips.interval(y_width.negate(), y_width);
+    clip_y = Clips.absolute(y_width);
   }
 
   @Override // from PoseLogSplitPredicate

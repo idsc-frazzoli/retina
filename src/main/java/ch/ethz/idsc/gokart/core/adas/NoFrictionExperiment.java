@@ -55,7 +55,7 @@ public class NoFrictionExperiment extends AbstractModule implements SteerPutProv
   /** @param time with unit [s]
    * @return */
   /* package */ Scalar time2torque(Scalar time) {
-    Scalar scalar = Clips.interval(0, signal.length() - 1).apply(time.divide(SAMPLE_DURATION));
+    Scalar scalar = Clips.positive(signal.length() - 1).apply(time.divide(SAMPLE_DURATION));
     return interpolation.At(scalar);
   }
 }

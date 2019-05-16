@@ -42,24 +42,24 @@ public enum GokartLcmImage {
     {
       Scalar limit = SteerPutEvent.ENCODER.apply(SteerConfig.GLOBAL.columnMax);
       double value = limit.number().doubleValue();
-      Clip clip = Clips.interval(-value, value);
+      Clip clip = Clips.absolute(value);
       Tensor steer = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2steerAngle()).map(clip::rescale));
       tensor.append(ImageResize.nearest(steer.map(ColorDataGradients.THERMOMETER), FX, 1));
     }
     {
       Scalar limit = SteerPutEvent.RTORQUE.apply(SteerConfig.GLOBAL.calibration);
       double value = limit.number().doubleValue();
-      Clip clip = Clips.interval(-value, value);
+      Clip clip = Clips.absolute(value);
       Tensor steer = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2steerForce()).map(clip::rescale));
       tensor.append(ImageResize.nearest(steer.map(ColorDataGradients.THERMOMETER), FX, 1));
     }
     {
-      Clip clip = Clips.interval(-1, +1);
+      Clip clip = Clips.absolute(+1);
       Tensor gyroz = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2gyroZ()).map(clip::rescale));
       tensor.append(ImageResize.nearest(gyroz.map(ColorDataGradients.THERMOMETER), FX, 1));
     }
     {
-      Clip clip = Clips.interval(0, 40);
+      Clip clip = Clips.positive(40);
       Tensor speed = Transpose.of(Tensor.of(gokartLogFileIndexer.raster2speed()).map(clip::rescale));
       tensor.append(ImageResize.nearest(speed.map(ColorDataGradients.CLASSIC), FX, 1));
     }
