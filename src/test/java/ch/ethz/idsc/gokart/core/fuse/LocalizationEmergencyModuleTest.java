@@ -14,14 +14,14 @@ import junit.framework.TestCase;
 public class LocalizationEmergencyModuleTest extends TestCase {
   public void testAuto() throws Exception {
     final int providerSize = RimoSocket.INSTANCE.getPutProviderSize();
-    ModuleAuto.INSTANCE.runOne(LocalizationEmergencyModule.class);
+    ModuleAuto.INSTANCE.runOne(AutonomousEmergencyModule.class);
     assertEquals(providerSize + 1, RimoSocket.INSTANCE.getPutProviderSize());
-    ModuleAuto.INSTANCE.endOne(LocalizationEmergencyModule.class);
+    ModuleAuto.INSTANCE.endOne(AutonomousEmergencyModule.class);
     assertEquals(providerSize, RimoSocket.INSTANCE.getPutProviderSize());
   }
 
   public void testSimple() {
-    LocalizationEmergencyModule localizationEmergencyModule = new LocalizationEmergencyModule();
+    AutonomousEmergencyModule localizationEmergencyModule = new AutonomousEmergencyModule();
     final int providerSize = RimoSocket.INSTANCE.getPutProviderSize();
     localizationEmergencyModule.first();
     assertEquals(providerSize + 1, RimoSocket.INSTANCE.getPutProviderSize());
