@@ -14,24 +14,24 @@ import junit.framework.TestCase;
 public class LocalizationEmergencyModuleTest extends TestCase {
   public void testAuto() throws Exception {
     final int providerSize = RimoSocket.INSTANCE.getPutProviderSize();
-    ModuleAuto.INSTANCE.runOne(LocalizationEmergencyModule.class);
+    ModuleAuto.INSTANCE.runOne(AutonomousEmergencyModule.class);
     assertEquals(providerSize + 1, RimoSocket.INSTANCE.getPutProviderSize());
-    ModuleAuto.INSTANCE.endOne(LocalizationEmergencyModule.class);
+    ModuleAuto.INSTANCE.endOne(AutonomousEmergencyModule.class);
     assertEquals(providerSize, RimoSocket.INSTANCE.getPutProviderSize());
   }
 
   public void testSimple() {
-    LocalizationEmergencyModule localizationEmergencyModule = new LocalizationEmergencyModule();
+    AutonomousEmergencyModule localizationEmergencyModule = new AutonomousEmergencyModule();
     final int providerSize = RimoSocket.INSTANCE.getPutProviderSize();
     localizationEmergencyModule.first();
     assertEquals(providerSize + 1, RimoSocket.INSTANCE.getPutProviderSize());
     {
-      Optional<RimoPutEvent> putEvent = localizationEmergencyModule.putEvent();
+      Optional<RimoPutEvent> putEvent = localizationEmergencyModule.rimoPutProvider.putEvent();
       assertTrue(putEvent.isPresent());
     }
-    localizationEmergencyModule.getEvent(GokartPoseEvents.create(Tensors.fromString("{2[m], 3[m], 4}"), RealScalar.ONE));
+    localizationEmergencyModule.gokartPoseListener.getEvent(GokartPoseEvents.create(Tensors.fromString("{2[m], 3[m], 4}"), RealScalar.ONE));
     {
-      Optional<RimoPutEvent> putEvent = localizationEmergencyModule.putEvent();
+      Optional<RimoPutEvent> putEvent = localizationEmergencyModule.rimoPutProvider.putEvent();
       assertFalse(putEvent.isPresent());
     }
     localizationEmergencyModule.last();
