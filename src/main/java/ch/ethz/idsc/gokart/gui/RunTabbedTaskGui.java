@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import ch.ethz.idsc.demo.jg.FigureDubiGeodesicModule;
-import ch.ethz.idsc.demo.jg.GokartGeodesicTrajectoryModule;
+import ch.ethz.idsc.demo.jg.following.ClothoidTrajectoryModule;
+import ch.ethz.idsc.demo.jg.following.FigureClothoidModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamVisualModule;
@@ -18,8 +18,9 @@ import ch.ethz.idsc.demo.mp.pid.PIDTestTrackModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
-import ch.ethz.idsc.gokart.core.adas.PowerSteeringV1Module;
-import ch.ethz.idsc.gokart.core.adas.PowerSteeringV2Module;
+import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
+import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
+import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
 import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
@@ -43,9 +44,9 @@ import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
-import ch.ethz.idsc.gokart.core.pure.FigureDubiModule;
-import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
+import ch.ethz.idsc.gokart.core.pure.FigurePureModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
+import ch.ethz.idsc.gokart.core.pure.PureTrajectoryModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
 import ch.ethz.idsc.gokart.core.sound.VoiceOutputModule;
@@ -74,7 +75,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 
 /** RunTabbedTaskGui is a program that is typically for offline processing.
  * The window in a convenient way to launch files. */
-enum RunTabbedTaskGui {
+/* package */ enum RunTabbedTaskGui {
   ;
   /** file contains plain text brief description of modules */
   static final Properties PROPERTIES = //
@@ -104,13 +105,13 @@ enum RunTabbedTaskGui {
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
+      TrajectoryDesignModule.class, //
       TrackReconModule.class, //
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
       SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      VoiceOutputModule.class, //
-      TrajectoryDesignModule.class //
+      VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       UltimateTorqueVectoringModule.class, //
@@ -118,22 +119,23 @@ enum RunTabbedTaskGui {
       DriftThrustManualModule.class, //
       ImprovedNormalizedTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
-      PowerSteeringV1Module.class, //
-      PowerSteeringV2Module.class, //
+      PowerSteeringModule.class, //
+      NoFrictionExperiment.class, //
+      SteerVibrationModule.class, //
       SteeringExperimentModule.class, //
       AntilockBrakeCheckConditions.class, //
       AntilockBrakeModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
-      GokartGeodesicTrajectoryModule.class, //
-      FigureDubiGeodesicModule.class, //
-      MPCKinematicDrivingModule.class, //
+      FigureClothoidModule.class, //
+      FigurePureModule.class, //
       MPCDynamicDrivingModule.class, //
-      GokartTrajectoryModule.class, //
+      MPCKinematicDrivingModule.class, //
+      PureTrajectoryModule.class, //
+      ClothoidTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       PIDModule.class, //
       PIDTestTrackModule.class, //
-      FigureDubiModule.class, //
       GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //

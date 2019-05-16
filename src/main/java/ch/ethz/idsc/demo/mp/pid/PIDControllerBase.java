@@ -8,23 +8,17 @@ import ch.ethz.idsc.tensor.Scalar;
 
 /* package */ abstract class PIDControllerBase extends AbstractClockedModule {
   final PIDSteer pidSteer = new PIDSteer();
-  final PIDTuningParams pidTuningParams;
+  private final PIDTuningParams pidTuningParams;
 
   public PIDControllerBase(PIDTuningParams pidTuningParams) {
     this.pidTuningParams = pidTuningParams;
   }
 
-  protected abstract void protected_first();
-
-  protected abstract void protected_last();
-
-  protected abstract Optional<Scalar> deriveHeading();
-
   @Override // from AbstractClockedModule
   public final void runAlgo() {
-    Optional<Scalar> heading = deriveHeading();
-    if (heading.isPresent())
-      pidSteer.setHeading(heading.get());
+    Optional<Scalar> ratio = deriveRatio();
+    if (ratio.isPresent())
+      pidSteer.setRatio(ratio.get());
   }
 
   @Override // from AbstractModule
@@ -43,4 +37,11 @@ import ch.ethz.idsc.tensor.Scalar;
   protected Scalar getPeriod() {
     return pidTuningParams.updatePeriod;
   }
+
+  protected abstract void protected_first();
+
+  protected abstract void protected_last();
+
+  /** @return */
+  protected abstract Optional<Scalar> deriveRatio();
 }

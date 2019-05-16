@@ -25,4 +25,13 @@ public enum RnCurveHelper {
     }
     return value;
   }
+
+  public static boolean isSe2Curve(Tensor curve) {
+    // System.out.println(Pretty.of(curve.get()));
+    curve.iterator().next();
+    // TODO expect that curve has proper units (?)
+    // TODO either demand that se2 curve is provided or append angles ...
+    // TODO if invalid -> optionalCurve = Optional.empty() return false;
+    return true;
+  }
 }

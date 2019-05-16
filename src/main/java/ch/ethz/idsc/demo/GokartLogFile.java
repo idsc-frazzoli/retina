@@ -1782,6 +1782,110 @@ public enum GokartLogFile implements LogFile {
   /** slow pursuit */
   _20190429T163418_25103376,
   /***************************************************/
+  /* 2019-05-02 */
+  /** geodesic pursuit */
+  _20190502T105037_bdbf8063,
+  /** geodesic pursuit */
+  _20190502T110217_bdbf8063,
+  /** fast manual driving */
+  _20190502T113816_923429be,
+  /** geodesic pursuit */
+  _20190502T115238_3839b112,
+  /** geodesic pursuit */
+  _20190502T133418_3839b112,
+  /** power steering test */
+  _20190502T135355_622e8d75,
+  /***************************************************/
+  /* 2019-05-06 */
+  /** tuning of power steering
+   * [abrupt log termination] */
+  _20190506T101748_99afbf25,
+  /** tuning of power steering */
+  _20190506T102339_99afbf25,
+  /** racing with and without power steering */
+  _20190506T134816_99afbf25,
+  /** manual driving, pursuit */
+  _20190506T141135_99afbf25,
+  /** pursuit */
+  _20190506T151117_dd899454,
+  /** pd control trajectory pursuit */
+  _20190506T162944_9c0e80e3,
+  /** pd control trajectory pursuit */
+  _20190506T165554_9c0e80e3,
+  /***************************************************/
+  /* 2019-05-07 */
+  /** test for demo with occupancy grid mapping */
+  _20190507T091621_c817d5db,
+  /** test for demo with sight lines mapping */
+  _20190507T092002_c817d5db,
+  /** demo trajectory planning
+   * data collection for steering mapping */
+  _20190507T094525_c817d5db,
+  /** fast manual driving */
+  _20190507T122145_06a2a5f4,
+  /** mpc */
+  _20190507T142359_06a2a5f4,
+  /** mpc, localization failure
+   * TODO investigate: system block? */
+  _20190507T155931_06a2a5f4,
+  /** short mpc, manual driving */
+  _20190507T161525_06a2a5f4,
+  /***************************************************/
+  /* 2019-05-09 */
+  /** demo of trajectory planner and mpc */
+  _20190509T102655_56443d8b,
+  /** steering static force test */
+  _20190509T113253_dced107a,
+  /** steering static force test */
+  _20190509T121107_dced107a,
+  /** steering static force test */
+  _20190509T123210_dced107a,
+  /** steering static force test */
+  _20190509T124117_dced107a,
+  /** steering static force test [no] */
+  _20190509T124910_dced107a,
+  /***************************************************/
+  /* 2019-05-13 */
+  /** manual driving */
+  _20190513T112548_ac099b4a,
+  /** manual driving and mpc */
+  _20190513T114553_0026208f,
+  /** mpc */
+  _20190513T150620_0026208f,
+  /** mpc */
+  _20190513T151627_0026208f,
+  /** mpc */
+  _20190513T185714_0026208f,
+  /***************************************************/
+  /* 2019-05-14 */
+  /** mpc */
+  _20190514T090101_ce869540,
+  /** mpc with localization failure */
+  _20190514T092148_ce869540,
+  /** mpc with camera team
+   * 1st part: start set incorrectly
+   * 2nd part: good performance */
+  _20190514T102650_ce869540,
+  /** mpc with camera team */
+  _20190514T103657_ce869540,
+  /** mpc with camera team
+   * good performance, localization failure */
+  _20190514T105746_ce869540,
+  /** mpc with camera team
+   * good performance */
+  _20190514T111152_ce869540,
+  /** mpc */
+  _20190514T141121_b942849a,
+  /** mpc localization failure */
+  _20190514T143608_b942849a,
+  /** steer static force test
+   * using pid with autonomous button pressed */
+  _20190514T152853_b942849a,
+  /** manual drive with power steering */
+  _20190514T162756_577662b6,
+  /** manual drive with power steering */
+  _20190514T164612_577662b6,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

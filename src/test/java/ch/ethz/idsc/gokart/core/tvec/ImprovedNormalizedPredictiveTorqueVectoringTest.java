@@ -28,7 +28,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedPredictiveTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     Tensor powers = torqueVectoringInterface.powers( //
-        new AngularSlip(Quantity.of(0, "m*s^-1"), Quantity.of(0, "m^-1"), Quantity.of(0, "s^-1"), Quantity.of(0, "s^-1")), //
+        new AngularSlip(Quantity.of(0, "m*s^-1"), Quantity.of(0, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
     Chop._08.requireClose(Total.of(powers), power);
     assertEquals(powers, Tensors.vector(0, 0));
@@ -43,7 +43,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     Scalar power = RealScalar.ZERO;
     Scalar velocity = Quantity.of(1, SI.VELOCITY);
     Tensor powers = torqueVectoringInterface.powers( //
-        new AngularSlip(velocity, Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1"), Quantity.of(0, "s^-1")), //
+        new AngularSlip(velocity, Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
     // more complicated test
     Scalar maxcurr = ManualConfig.GLOBAL.torqueLimit;
@@ -64,19 +64,19 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     Scalar power = RealScalar.ZERO;
     Scalar velocity = Quantity.of(1, SI.VELOCITY);
     Tensor powers0 = torqueVectoringInterface.powers( //
-        new AngularSlip(velocity, Quantity.of(1, "m^-1"), Quantity.of(1, "s^-1"), Quantity.of(0, "s^-1")), //
+        new AngularSlip(velocity, Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
     Thread.sleep(100);
     Tensor powers1 = torqueVectoringInterface.powers( //
-        new AngularSlip(velocity, Quantity.of(1, "m^-1"), Quantity.of(1, "s^-1"), Quantity.of(0, "s^-1")), //
+        new AngularSlip(velocity, Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
     Thread.sleep(200);
     Tensor powers2 = torqueVectoringInterface.powers( //
-        new AngularSlip(velocity, Quantity.of(1.5, "m^-1"), Quantity.of(1, "s^-1"), Quantity.of(0, "s^-1")), //
+        new AngularSlip(velocity, Quantity.of(1.5, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
     Thread.sleep(200);
     Tensor powers3 = torqueVectoringInterface.powers( //
-        new AngularSlip(velocity, Quantity.of(1.5, "m^-1"), Quantity.of(1, "s^-1"), Quantity.of(0, "s^-1")), //
+        new AngularSlip(velocity, Quantity.of(1.5, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
     Scalar power1l = PowerLookupTable.getInstance().getAcceleration(powers1.Get(0).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
     Scalar power1r = PowerLookupTable.getInstance().getAcceleration(powers1.Get(1).multiply(ManualConfig.GLOBAL.torqueLimit), velocity);
@@ -97,7 +97,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
         new ImprovedNormalizedPredictiveTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ONE;
     Tensor powers = torqueVectoringInterface.powers( //
-        new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(3, "s^-1"), Quantity.of(0, "s^-1")), //
+        new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
     // it's 0.9999999...
     Scalar between = Norm._2.between(powers, Tensors.vector(1, 1));
@@ -113,7 +113,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
         new ImprovedNormalizedPredictiveTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ONE.negate();
     Tensor powers = torqueVectoringInterface.powers( //
-        new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(3, "s^-1"), Quantity.of(0, "s^-1")), //
+        new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
     Scalar between = Norm._2.between(powers, Tensors.vector(-1, -1));
     assertTrue(Scalars.lessThan(between, RealScalar.of(0.02)));
@@ -132,7 +132,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     Scalar power = RealScalar.ZERO;
     // brutal oversteering -> reaction should be that there is no differential torque
     Tensor powers = torqueVectoringInterface.powers( //
-        new AngularSlip(Quantity.of(3, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(1, "s^-1"), Quantity.of(0, "s^-1")), //
+        new AngularSlip(Quantity.of(3, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
     assertTrue(Scalars.lessThan(powers.Get(0), powers.Get(1)));
   }
@@ -145,7 +145,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     Scalar power = RealScalar.ZERO;
     // brutal oversteering -> reaction should be that there is no differential torque
     Tensor powers = torqueVectoringInterface.powers( //
-        new AngularSlip(Quantity.of(3, "m*s^-1"), Quantity.of(-1, "m^-1"), Quantity.of(1, "s^-1"), Quantity.of(3, "s^-1")), //
+        new AngularSlip(Quantity.of(3, "m*s^-1"), Quantity.of(-1, "m^-1"), Quantity.of(3, "s^-1")), //
         power);
     assertEquals(powers.Get(0), powers.Get(1));
   }

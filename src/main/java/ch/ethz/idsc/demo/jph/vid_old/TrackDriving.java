@@ -133,7 +133,8 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       graphics.setStroke(new BasicStroke(2.5f));
       Scalar factor = Ramp.FUNCTION.apply(row.Get(9).negate().subtract(RealScalar.of(0.02))).divide(RealScalar.of(-0.06));
       graphics.setColor(new Color(255, 0, 0, 128));
-      graphics.draw(geometricLayer.toVector(Tensors.vector(1, 0), UnitVector.of(2, 0).multiply(factor)));
+      Tensor p = Tensors.vector(1, 0);
+      graphics.draw(geometricLayer.toLine2D(p, p.add(UnitVector.of(2, 0).multiply(factor))));
     }
     {
       graphics.setStroke(new BasicStroke());

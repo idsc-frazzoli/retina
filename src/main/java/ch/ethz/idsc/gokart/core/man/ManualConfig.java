@@ -32,7 +32,7 @@ public class ManualConfig {
   /***************************************************/
   /** @return clip interval for permitted torque */
   public Clip torqueLimitClip() {
-    return Clips.interval(torqueLimit.negate(), torqueLimit);
+    return Clips.absolute(torqueLimit);
   }
 
   /** .

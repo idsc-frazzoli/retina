@@ -26,17 +26,16 @@ public class SelfCalibratingBrakeFunction extends AbstractBrakeFunction {
   /** do correction step
    * only call function when in active use
    * 
-   * @param expectedBrakingDeceleration
-   * @param realBrakingDeceleration
-   * @param gokartSpeed
-   * @param wheelSpeed */
-  public void correctBraking( //
+   * @param expectedBrakingDeceleration with unit [m*s^-2]
+   * @param realBrakingDeceleration with unit [m*s^-2]
+   * @param gokartSpeed with unit [m*s^-1]
+   * @param wheelSpeed with unit [m*s^-1] */
+  public boolean correctBraking( //
       Scalar expectedBrakingDeceleration, //
       Scalar realBrakingDeceleration, //
       Scalar gokartSpeed, //
       Scalar wheelSpeed) {
-    Scalar slipRatio = wheelSpeed.divide(gokartSpeed);
-    // ystem.out.println(slipRatio);
+    Scalar slipRatio = wheelSpeed.divide(gokartSpeed); // unitless
     boolean lockedUp = Scalars.lessThan( //
         slipRatio, //
         BrakeFunctionConfig.GLOBAL.lockupRatio);
@@ -46,12 +45,14 @@ public class SelfCalibratingBrakeFunction extends AbstractBrakeFunction {
     boolean notEnoughBraking = Scalars.lessThan( //
         expectedBrakingDeceleration, //
         BrakeFunctionConfig.GLOBAL.decelerationThreshold);
-    // System.out.println(expectedBrakingDeceleration + "/" + realBrakingDeceleration);
-    if (!lockedUp && !tooSlow && !notEnoughBraking) {
-      Scalar newCurveCorrectionFactor = realBrakingDeceleration.divide(expectedBrakingDeceleration).multiply(curveCorrectionFactor);
+    boolean correct = !lockedUp && !tooSlow && !notEnoughBraking;
+    if (correct) {
+      Scalar newCurveCorrectionFactor = //
+          realBrakingDeceleration.divide(expectedBrakingDeceleration).multiply(curveCorrectionFactor);
       Scalar alpha = BrakeFunctionConfig.GLOBAL.geodesicFilterAlpha;
-      curveCorrectionFactor = RnGeodesic.INSTANCE.split(curveCorrectionFactor, newCurveCorrectionFactor, alpha).Get();
-      // System.out.println(curveCorrectionFactor);
+      curveCorrectionFactor = RnGeodesic.INSTANCE.split( //
+          curveCorrectionFactor, newCurveCorrectionFactor, alpha).Get();
     }
+    return correct;
   }
 }

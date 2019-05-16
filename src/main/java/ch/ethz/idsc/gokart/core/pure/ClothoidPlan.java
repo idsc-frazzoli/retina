@@ -8,10 +8,10 @@ import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/* package */ class ClothoidPlan {
+public class ClothoidPlan {
   private static final int REFINEMENT = 2;
 
-  /** @param lookAhead
+  /** @param lookAhead {x[m], y[m], angle}
    * @param pose of vehicle {x[m], y[m], angle}
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @return ClothoidPlan */
@@ -32,13 +32,21 @@ import ch.ethz.idsc.tensor.Tensor;
   }
 
   // ---
-  public final Scalar ratio;
-  public final Tensor curve;
+  private final Scalar ratio;
+  private final Tensor curve;
 
   /** @param ratio [m^-1] used to derive future heading in good precision
    * @param curve sparse planned to be followed */
   private ClothoidPlan(Scalar ratio, Tensor curve) {
     this.ratio = ratio;
     this.curve = curve;
+  }
+
+  public Scalar ratio() {
+    return ratio;
+  }
+
+  public Tensor curve() {
+    return curve;
   }
 }

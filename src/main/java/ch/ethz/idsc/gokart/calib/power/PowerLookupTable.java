@@ -27,8 +27,8 @@ public class PowerLookupTable {
   private static final Scalar MAX_VEL = Quantity.of(+10, SI.VELOCITY);
   private static final Scalar MAX_ACC = Quantity.of(+2, SI.ACCELERATION);
   /** min and max values for lookup tables */
-  public static final Clip CLIP_VEL = Clips.interval(MAX_VEL.negate(), MAX_VEL);
-  public static final Clip CLIP_ACC = Clips.interval(MAX_ACC.negate(), MAX_ACC);
+  public static final Clip CLIP_VEL = Clips.absolute(MAX_VEL);
+  public static final Clip CLIP_ACC = Clips.absolute(MAX_ACC);
   private static final int RES = 1000;
   private static final PowerLookupTable INSTANCE = new PowerLookupTable();
 

@@ -40,15 +40,19 @@ public enum RunVideoBackground {
   public static final Tensor _20190401 = Se2Utils.toSE2Translation(Tensors.vector(0, +120)).dot(Tensors.fromString( //
       "{{36.67799433628459, 35.43620650503479, -1900.5265224432885}, {35.43620650503479, -36.67799433628459, 620.3647376620074}, {0.0, 0.0, 1.0}}"));
   // ---
-  private static final File IMAGE_FILE = HomeDirectory.Pictures("20190408T000000_00.png");
+  private static final File IMAGE_FILE = HomeDirectory.Pictures("20190514T102650_00.png");
 
   public static BackgroundImage get20190414() throws IOException {
+    return BackgroundImage.from(HomeDirectory.Pictures("20190408T000000_00.png"), _20190401);
+  }
+
+  public static BackgroundImage get20190514() throws IOException {
     return BackgroundImage.from(IMAGE_FILE, _20190401);
   }
 
   public static void main(String[] args) throws IOException {
     GokartLogInterface gokartLogInterface = //
-        GokartLogAdapter.of(new File("/home/datahaki/ensemblelaps/pursuit/slow"), "m00.lcm");
+        GokartLogAdapter.of(new File("/media/datahaki/data/gokart/cuts/20190514/20190514T102650_00"), "log.lcm");
     Optional<ByteBuffer> optional = FirstLogMessage.of(gokartLogInterface.file(), GokartPoseChannel.INSTANCE.channel());
     BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = bufferedImage.createGraphics();
