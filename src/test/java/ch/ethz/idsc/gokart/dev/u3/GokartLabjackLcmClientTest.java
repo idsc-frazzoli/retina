@@ -15,9 +15,9 @@ public class GokartLabjackLcmClientTest extends TestCase {
   }
 
   public void testSimple() throws Exception {
-    GokartLabjackLcmClient labjackAdcLcmClient = new GokartLabjackLcmClient("asd", Quantity.of(0.2, SI.SECOND));
-    labjackAdcLcmClient.start();
+    GokartLabjackLcmClient gokartLabjackLcmClient = new GokartLabjackLcmClient("asd", Quantity.of(0.2, SI.SECOND));
+    gokartLabjackLcmClient.start();
     publishOne();
-    labjackAdcLcmClient.stop();
+    gokartLabjackLcmClient.stop();
   }
 }

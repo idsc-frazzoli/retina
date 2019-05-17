@@ -98,23 +98,23 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       append(event_count);
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
-      rimoGetListeners.forEach(rimoGetListener -> rimoGetListener.getEvent(rimoGetEvent));
+      rimoGetListeners.forEach(listener -> listener.getEvent(rimoGetEvent));
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
-      gokartPoseListeners.forEach(gokartPoseListener -> gokartPoseListener.getEvent(gokartPoseEvent));
+      gokartPoseListeners.forEach(listener -> listener.getEvent(gokartPoseEvent));
     } else //
     if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
       SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
-      steerGetListeners.forEach(steerGetListener -> steerGetListener.getEvent(steerGetEvent));
+      steerGetListeners.forEach(listener -> listener.getEvent(steerGetEvent));
     } else //
     if (channel.equals(GokartLcmChannel.LABJACK_U3_ADC)) {
       GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(byteBuffer);
-      manualControlListeners.forEach(manualControlListener -> manualControlListener.manualControl(gokartLabjackFrame));
+      manualControlListeners.forEach(listener -> listener.manualControl(gokartLabjackFrame));
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
       GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
-      gokartStatusListeners.forEach(gokartStatusListener -> gokartStatusListener.getEvent(gokartStatusEvent));
+      gokartStatusListeners.forEach(listener -> listener.getEvent(gokartStatusEvent));
     }
     ++event_count;
   }
