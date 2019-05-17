@@ -44,7 +44,7 @@ public class AutonomousEmergencyModule extends AbstractModule {
   /** timeout 0.3[s] */
   private final Watchdog localizationWatchdog = SoftWatchdog.barking(0.3);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final LinmotGetListener linmotGetListener = new LinmotGetListener() {
     @Override
     public void getEvent(LinmotGetEvent getEvent) {
@@ -99,7 +99,6 @@ public class AutonomousEmergencyModule extends AbstractModule {
   protected void first() {
     gokartPoseLcmClient.addListener(gokartPoseListener);
     gokartPoseLcmClient.startSubscriptions();
-    manualControlProvider.start();
     RimoSocket.INSTANCE.addPutProvider(rimoPutProvider);
     RimoSocket.INSTANCE.addGetListener(rimoGetListener);
     LinmotSocket.INSTANCE.addGetListener(linmotGetListener);
@@ -112,7 +111,6 @@ public class AutonomousEmergencyModule extends AbstractModule {
     RimoSocket.INSTANCE.removePutProvider(rimoPutProvider);
     RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
     gokartPoseLcmClient.stopSubscriptions();
-    manualControlProvider.stop();
     LinmotSocket.INSTANCE.removeGetListener(linmotGetListener);
     LinmotSocket.INSTANCE.removePutProvider(linmotPutProvider);
     SteerSocket.INSTANCE.removePutProvider(steerPutProvider);

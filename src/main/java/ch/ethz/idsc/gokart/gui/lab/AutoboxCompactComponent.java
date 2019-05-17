@@ -53,7 +53,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
@@ -224,8 +224,6 @@ import ch.ethz.idsc.tensor.sca.Round;
     linmotGetLcmClient.addListener(linmotGetListener);
     linmotGetLcmClient.startSubscriptions();
     // ---
-    manualControlProvider.start();
-    // ---
     gokartPoseLcmClient.addListener(gokartPoseListener);
     gokartPoseLcmClient.startSubscriptions();
     // ---
@@ -238,7 +236,6 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from StartAndStoppable
   public void stop() {
-    manualControlProvider.stop();
     linmotGetLcmClient.stopSubscriptions();
     rimoGetLcmClient.stopSubscriptions();
     gokartPoseLcmClient.stopSubscriptions();

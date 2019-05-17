@@ -92,7 +92,7 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
   private final TrajectoryConfig trajectoryConfig;
   private final FlowsInterface flowsInterface;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   protected final CurvePursuitModule curvePursuitModule;
   /** sight lines mapping was successfully used for trajectory planning in a demo on 20190507 */
   private final AbstractMapping mapping;
@@ -154,7 +154,6 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
     gokartPoseLcmClient.addListener(gokartPoseListener);
     // ---
     gokartPoseLcmClient.startSubscriptions();
-    manualControlProvider.start();
     // ---
     curvePursuitModule.launch();
   }
@@ -163,7 +162,6 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
   protected void last() {
     curvePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
-    manualControlProvider.stop();
     // ---
     mapping.stop();
     if (Objects.nonNull(globalViewLcmModule))

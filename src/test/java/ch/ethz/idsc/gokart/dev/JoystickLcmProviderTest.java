@@ -6,15 +6,11 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.dev.u3.LabjackU3Publisher;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.retina.joystick.JoystickEncoder;
 import ch.ethz.idsc.retina.joystick.JoystickType;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.u3.LabjackAdcFrame;
 import junit.framework.TestCase;
 
 public class JoystickLcmProviderTest extends TestCase {
@@ -36,7 +32,7 @@ public class JoystickLcmProviderTest extends TestCase {
   }
 
   public void testSimple() throws Exception {
-    ManualControlProvider manualControlProvider = createJoystickLcmProvider();
+    JoystickLcmProvider manualControlProvider = createJoystickLcmProvider();
     assertFalse(manualControlProvider.getManualControl().isPresent());
     manualControlProvider.start();
     assertFalse(manualControlProvider.getManualControl().isPresent());
@@ -48,18 +44,17 @@ public class JoystickLcmProviderTest extends TestCase {
     assertFalse(gokartJoystickInterface.isAutonomousPressed());
     manualControlProvider.stop();
   }
-
-  public void testAutonomous() {
-    ManualControlProvider joystickLcmClient = ManualConfig.GLOBAL.createProvider();
-    assertFalse(joystickLcmClient.getManualControl().isPresent());
-    joystickLcmClient.start();
-    assertFalse(joystickLcmClient.getManualControl().isPresent());
-    LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 0, 0, 0, 5, 0 }));
-    AllGunsBlazing.publishAutonomous();
-    Optional<ManualControlInterface> optional = joystickLcmClient.getManualControl();
-    assertTrue(optional.isPresent());
-    ManualControlInterface gokartJoystickInterface = optional.get();
-    assertTrue(gokartJoystickInterface.isAutonomousPressed());
-    joystickLcmClient.stop();
-  }
+  // public void testAutonomous() {
+  // ManualControlProvider joystickLcmClient = ManualConfig.GLOBAL.createProvider();
+  // assertFalse(joystickLcmClient.getManualControl().isPresent());
+  // // joystickLcmClient.start();
+  // assertFalse(joystickLcmClient.getManualControl().isPresent());
+  // LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 0, 0, 0, 5, 0 }));
+  // AllGunsBlazing.publishAutonomous();
+  // Optional<ManualControlInterface> optional = joystickLcmClient.getManualControl();
+  // assertTrue(optional.isPresent());
+  // ManualControlInterface gokartJoystickInterface = optional.get();
+  // assertTrue(gokartJoystickInterface.isAutonomousPressed());
+  // // joystickLcmClient.stop();
+  // }
 }

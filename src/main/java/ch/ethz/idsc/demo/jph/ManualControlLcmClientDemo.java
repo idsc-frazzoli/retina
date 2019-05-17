@@ -11,14 +11,12 @@ import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 /* package */ enum ManualControlLcmClientDemo {
   ;
   public static void main(String[] args) throws Exception {
-    ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
-    manualControlProvider.start();
+    ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
     for (int index = 0; index < 50; ++index) {
       Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
       System.out.println(optional.isPresent() ? optional.get() : "no control");
       Thread.sleep(250);
     }
-    manualControlProvider.stop();
     System.out.println("end");
   }
 }

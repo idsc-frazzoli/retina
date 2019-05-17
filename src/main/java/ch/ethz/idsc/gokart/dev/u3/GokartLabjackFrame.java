@@ -13,15 +13,16 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
+/** investigation pending */
 public final class GokartLabjackFrame implements ManualControlInterface {
   public static final ManualControlInterface PASSIVE = //
       new GokartLabjackFrame(new LabjackAdcFrame(new float[5]));
   /** 0.3[V] when not pressed, 2.45[V]
    * 1.1[V] when not pressed, 5.11[V] */
-  private static final float BOOST_BUTTON_TRESHOLD = 2f;
+  private static final float BOOST_BUTTON_TRESHOLD = 4.5f;
   private static final int BOOST_BUTTON_INDEX = 0;
   /** 1.1[V] when not pressed, 5.11[V] */
-  private static final float REVERSE_BUTTON_TRESHOLD = 2f;
+  private static final float REVERSE_BUTTON_TRESHOLD = 4.5f;
   private static final int REVERSE_BUTTON_INDEX = 1;
   /** log file analysis shows that the throttle signal at AIN2
    * ranges from {-0.075455[V], 5.11837[V]}.
@@ -29,7 +30,10 @@ public final class GokartLabjackFrame implements ManualControlInterface {
    * is insensitive to noise or minor activations of the throttle foot pedal. */
   private static final Clip THROTTLE_CLIP = Clips.interval(0.1, 5);
   private static final int THROTTLE_INDEX = 2;
-  private static final float AUTONOMOUS_BUTTON_TRESHOLD = 2f;
+  /**
+   * 
+   */
+  private static final float AUTONOMOUS_BUTTON_TRESHOLD = 7f;
   private static final int AUTONOMOUS_BUTTON_INDEX = 3;
   // ---
   private final LabjackAdcFrame labjackAdcFrame;
