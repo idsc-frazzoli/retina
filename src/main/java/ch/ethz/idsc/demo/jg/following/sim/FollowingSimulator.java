@@ -5,12 +5,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.geom.Path2D;
 import java.io.File;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,15 +16,11 @@ import java.util.stream.IntStream;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.gui.top.GeneralImageRender;
 import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
-import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.retina.util.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.sophus.group.Se2Utils;
 import ch.ethz.idsc.sophus.planar.Arrowhead;
@@ -38,16 +31,12 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 import ch.ethz.idsc.tensor.io.Export;
-import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
-import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.N;
-import ch.ethz.idsc.tensor.sca.Round;
 
 public class FollowingSimulator extends TrajectoryDesignModule {
   private static final Scalar SIGMA_POS = Quantity.of(1, SI.METER);
@@ -87,56 +76,7 @@ public class FollowingSimulator extends TrajectoryDesignModule {
 
   @Override // from AbstractModule
   protected void first() {
-    {
-      final File file = AppCustomization.file(getClass(), "controlpoints.tensor");
-      try {
-        trajectoryDesign.setControlPointsSe2(Get.of(file));
-      } catch (Exception exception) {
-        // ---
-      }
-      trajectoryDesign.timerFrame.jFrame.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosed(WindowEvent windowEvent) {
-          exportTensor(file, trajectoryDesign.getControlPointsSe2().map(N.DOUBLE::of));
-        }
-      });
-    }
-    {
-      trajectoryDesign.timerFrame.jToolBar.addSeparator();
-      JButton jButton = new JButton("export");
-      jButton.setToolTipText("export control points");
-      jButton.addActionListener(actionEvent -> {
-        File file = HomeDirectory.file("Desktop", "controlpoints_" + SystemTimestamp.asString(new Date()) + ".tensor");
-        exportTensor(file, trajectoryDesign.getControlPointsPose());
-        System.out.println("exported control points to " + file.getAbsolutePath());
-      });
-      trajectoryDesign.timerFrame.jToolBar.add(jButton);
-    }
-    {
-      trajectoryDesign.timerFrame.jToolBar.addSeparator();
-      JButton jButton = new JButton("import");
-      jButton.setToolTipText("import control points");
-      jButton.addActionListener(actionEvent -> importTensor().map(tensor -> Tensor.of(tensor.stream().map(PoseHelper::toUnitless))) //
-          .ifPresent(trajectoryDesign::setControlPointsSe2));
-      trajectoryDesign.timerFrame.jToolBar.add(jButton);
-    }
-    {
-      trajectoryDesign.timerFrame.jToolBar.addSeparator();
-      File folder = new File("src/main/resources/dubilab/waypoints");
-      folder.mkdirs();
-      File file = new File(folder, DATE_FORMAT.format(new Date()) + ".csv");
-      JButton jButton = new JButton("save waypoints");
-      jButton.setToolTipText("save to " + file);
-      jButton.addActionListener(actionEvent -> {
-        try {
-          Export.of(file, Tensor.of(trajectoryDesign.getControlPointsPose().stream().map(PoseHelper::toUnitless)).map(Round._4));
-        } catch (Exception exception) {
-          exception.printStackTrace();
-        }
-      });
-      trajectoryDesign.timerFrame.jToolBar.add(jButton);
-      //
-    }
+    super.first();
     {
       trajectoryDesign.timerFrame.jToolBar.addSeparator();
       {
@@ -179,15 +119,7 @@ public class FollowingSimulator extends TrajectoryDesignModule {
       });
       trajectoryDesign.timerFrame.jToolBar.add(jButton);
     }
-    try {
-      BackgroundImage backgroundImage = get20190408();
-      GeneralImageRender generalImageRender = new GeneralImageRender(backgroundImage.bufferedImage, Inverse.of(backgroundImage.model2pixel));
-      trajectoryDesign.timerFrame.geometricComponent.addRenderInterfaceBackground(generalImageRender);
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
     trajectoryDesign.timerFrame.geometricComponent.addRenderInterface(renderInterface);
-    trajectoryDesign.timerFrame.jFrame.setVisible(true);
   }
 
   /** @param curve reference
