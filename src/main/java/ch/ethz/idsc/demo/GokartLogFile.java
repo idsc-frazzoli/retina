@@ -1187,7 +1187,8 @@ public enum GokartLogFile implements LogFile {
   /** torque vectoring */
   _20181211T155230_f8690659,
   /***************************************************/
-  /* 2018-12-13 */
+  /* 2018-12-13
+   * labjack installed */
   /** demo manual driving, trajectory planning */
   _20181213T100655_add1a7bf,
   /** demo manual driving, trajectory planning */
