@@ -21,8 +21,8 @@ public class AntilockBrakeCheckConditionsTest extends TestCase {
         Quantity.of(1, SI.PER_SECOND), //
         Quantity.of(1, SI.PER_SECOND)), //
         Tensors.of( //
-            Quantity.of(0.1, SI.VELOCITY), //
-            Quantity.of(1, SI.VELOCITY), //
+            Quantity.of(3, SI.VELOCITY), //
+            Quantity.of(0.5, SI.VELOCITY), //
             Quantity.of(1, SI.PER_SECOND)));
     antilockBrakeModule.last();
   }
