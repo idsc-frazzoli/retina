@@ -33,13 +33,13 @@ import ch.ethz.idsc.tensor.sca.Round;
 public class GokartLogFileIndexer implements OfflineLogListener {
   public static GokartLogFileIndexer create(File file) throws IOException {
     GokartLogFileIndexer gokartLogFileIndexer = new GokartLogFileIndexer(file);
-    gokartLogFileIndexer.addManualControlListener(new AutonomousButtonRow());
-    gokartLogFileIndexer.addGokartPoseListener(new PoseQualityRow());
-    gokartLogFileIndexer.addSteerGetListener(new SteerActiveRow());
-    gokartLogFileIndexer.addSteerGetListener(new SteerRefTorRow());
-    gokartLogFileIndexer.addGokartStatusListener(new SteerAngleRow());
-    gokartLogFileIndexer.addRimoGetListeners(new RimoRateRow(0));
-    gokartLogFileIndexer.addRimoGetListeners(new RimoRateRow(1));
+    gokartLogFileIndexer.addRow(new AutonomousButtonRow());
+    gokartLogFileIndexer.addRow(new PoseQualityRow());
+    gokartLogFileIndexer.addRow(new SteerActiveRow());
+    gokartLogFileIndexer.addRow(new SteerRefTorRow());
+    gokartLogFileIndexer.addRow(new SteerAngleRow());
+    gokartLogFileIndexer.addRow(new RimoRateRow(0));
+    gokartLogFileIndexer.addRow(new RimoRateRow(1));
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -68,29 +68,22 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     this.file = file;
   }
 
-  private void addRimoGetListeners(RimoGetListener rimoGetListener) {
-    gokartLogImageRows.add((GokartLogImageRow) rimoGetListener);
-    rimoGetListeners.add(rimoGetListener);
-  }
-
-  private void addSteerGetListener(SteerGetListener steerGetListener) {
-    gokartLogImageRows.add((GokartLogImageRow) steerGetListener);
-    steerGetListeners.add(steerGetListener);
-  }
-
-  private void addGokartStatusListener(GokartStatusListener gokartStatusListener) {
-    gokartLogImageRows.add((GokartLogImageRow) gokartStatusListener);
-    gokartStatusListeners.add(gokartStatusListener);
-  }
-
-  private void addManualControlListener(ManualControlListener manualControlListener) {
-    gokartLogImageRows.add((GokartLogImageRow) manualControlListener);
-    manualControlListeners.add(manualControlListener);
-  }
-
-  private void addGokartPoseListener(GokartPoseListener gokartPoseListener) {
-    gokartLogImageRows.add((GokartLogImageRow) gokartPoseListener);
-    gokartPoseListeners.add(gokartPoseListener);
+  private void addRow(GokartLogImageRow gokartLogImageRow) {
+    gokartLogImageRows.add(gokartLogImageRow);
+    if (gokartLogImageRow instanceof RimoGetListener)
+      rimoGetListeners.add((RimoGetListener) gokartLogImageRow);
+    else //
+    if (gokartLogImageRow instanceof SteerGetListener)
+      steerGetListeners.add((SteerGetListener) gokartLogImageRow);
+    else //
+    if (gokartLogImageRow instanceof GokartStatusListener)
+      gokartStatusListeners.add((GokartStatusListener) gokartLogImageRow);
+    else //
+    if (gokartLogImageRow instanceof ManualControlListener)
+      manualControlListeners.add((ManualControlListener) gokartLogImageRow);
+    else //
+    if (gokartLogImageRow instanceof GokartPoseListener)
+      gokartPoseListeners.add((GokartPoseListener) gokartLogImageRow);
   }
 
   private void append(int count) {

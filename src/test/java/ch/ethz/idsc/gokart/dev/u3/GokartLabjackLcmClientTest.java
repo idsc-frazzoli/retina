@@ -2,6 +2,8 @@
 package ch.ethz.idsc.gokart.dev.u3;
 
 import ch.ethz.idsc.retina.u3.LabjackAdcFrame;
+import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class GokartLabjackLcmClientTest extends TestCase {
@@ -13,7 +15,7 @@ public class GokartLabjackLcmClientTest extends TestCase {
   }
 
   public void testSimple() throws Exception {
-    GokartLabjackLcmClient labjackAdcLcmClient = new GokartLabjackLcmClient("asd", 0.2);
+    GokartLabjackLcmClient labjackAdcLcmClient = new GokartLabjackLcmClient("asd", Quantity.of(0.2, SI.SECOND));
     labjackAdcLcmClient.start();
     publishOne();
     labjackAdcLcmClient.stop();
