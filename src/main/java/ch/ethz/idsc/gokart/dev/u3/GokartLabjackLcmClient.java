@@ -12,9 +12,12 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.SoftWatchdog;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Array;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 public final class GokartLabjackLcmClient extends BinaryLcmClient implements ManualControlProvider, StartAndStoppable {
   private static final Scalar HALF = RealScalar.of(0.5);
@@ -22,7 +25,7 @@ public final class GokartLabjackLcmClient extends BinaryLcmClient implements Man
    * the labjack adc frame is set to passive */
   private final Watchdog watchdog;
   // ---
-  private Tensor prevFrame = GokartLabjackFrame.ARRAY_PASSIVE;
+  private Tensor prevFrame = Array.of(i -> Quantity.of(0.0, SI.VOLT), 5);
   private ManualControlInterface manualControlInterface = null;
 
   /** @param channel
@@ -32,26 +35,26 @@ public final class GokartLabjackLcmClient extends BinaryLcmClient implements Man
     watchdog = SoftWatchdog.notified(Magnitude.SECOND.toDouble(timeout));
   }
 
-  @Override
+  @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
-    Tensor nextFrame = new LabjackAdcFrame(byteBuffer).asVector();
+    Tensor nextFrame = new LabjackAdcFrame(byteBuffer).allADC();
     manualControlInterface = // moving average of width 2
         new GokartLabjackFrame(nextFrame.add(prevFrame).multiply(HALF));
     prevFrame = nextFrame;
     watchdog.notifyWatchdog();
   }
 
-  @Override
+  @Override // from StartAndStoppable
   public void start() {
     startSubscriptions();
   }
 
-  @Override
+  @Override // from StartAndStoppable
   public void stop() {
     stopSubscriptions();
   }
 
-  @Override
+  @Override // from ManualControlProvider
   public Optional<ManualControlInterface> getManualControl() {
     return Optional.ofNullable(watchdog.isBarking() //
         ? null
