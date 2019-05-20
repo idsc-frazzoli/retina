@@ -177,17 +177,17 @@ import ch.ethz.idsc.tensor.sca.Round;
       JToolBar jToolBar = createRow("vmu931 ctrl");
       {
         JButton jButton = new JButton("status");
-        jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestStatus());
+        StaticHelper.actionListener(jButton, vmu931LcmServerModule::requestStatus);
         jToolBar.add(jButton);
       }
       {
         JButton jButton = new JButton("self-test");
-        jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestSelftest());
+        StaticHelper.actionListener(jButton, vmu931LcmServerModule::requestSelftest);
         jToolBar.add(jButton);
       }
       {
         JButton jButton = new JButton("calibration");
-        jButton.addActionListener(actionEvent -> vmu931LcmServerModule.requestCalibration());
+        StaticHelper.actionListener(jButton, vmu931LcmServerModule::requestCalibration);
         jToolBar.add(jButton);
       }
     }
