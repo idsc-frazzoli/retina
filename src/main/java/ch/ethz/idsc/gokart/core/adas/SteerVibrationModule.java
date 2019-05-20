@@ -20,20 +20,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Sin;
 
 public class SteerVibrationModule extends AbstractModule implements SteerPutProvider {
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final Timing timing = Timing.started();
 
   @Override
   protected void first() {
-    manualControlProvider.start();
     SteerSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override
   protected void last() {
     SteerSocket.INSTANCE.removePutProvider(this);
-    manualControlProvider.stop();
   }
 
   @Override

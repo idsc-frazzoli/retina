@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 public abstract class PursuitModule extends AbstractClockedModule {
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
   final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
   protected final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
@@ -29,7 +29,6 @@ public abstract class PursuitModule extends AbstractClockedModule {
   @Override // from AbstractModule
   protected final void first() {
     protected_first();
-    manualControlProvider.start();
     purePursuitRimo.start();
     purePursuitSteer.start();
   }
@@ -38,7 +37,6 @@ public abstract class PursuitModule extends AbstractClockedModule {
   protected final void last() {
     purePursuitRimo.stop();
     purePursuitSteer.stop();
-    manualControlProvider.stop();
     protected_last();
   }
 
