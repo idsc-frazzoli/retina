@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class GokartLabjackLcmClientTest extends TestCase {
@@ -18,7 +19,7 @@ public class GokartLabjackLcmClientTest extends TestCase {
         new GokartLabjackLcmClient(GokartLcmChannel.LABJACK_U3_ADC, Quantity.of(0.2, SI.SECOND));
     gokartLabjackLcmClient.start();
     assertFalse(gokartLabjackLcmClient.getManualControl().isPresent());
-    LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 5f, 5f, 5f, 8f, 5f }));
+    LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 5f, 5f, 5f, 10f, 5f }));
     Thread.sleep(30);
     {
       Optional<ManualControlInterface> optional = gokartLabjackLcmClient.getManualControl();
@@ -27,7 +28,7 @@ public class GokartLabjackLcmClientTest extends TestCase {
       assertFalse(manualControlInterface.isAutonomousPressed());
       assertFalse(manualControlInterface.isResetPressed());
     }
-    LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 5f, 5f, 5f, 8f, 5f }));
+    LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 5f, 5f, 5f, 10f, 5f }));
     Thread.sleep(30);
     {
       Optional<ManualControlInterface> optional = gokartLabjackLcmClient.getManualControl();
@@ -55,7 +56,7 @@ public class GokartLabjackLcmClientTest extends TestCase {
       Scalar scalar = manualControlInterface.getAheadAverage();
       assertEquals(scalar, RealScalar.ZERO);
     }
-    LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 5f, 5f, 5f, 8f, 5f }));
+    LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 5f, 5f, 5.1f, 10f, 5f }));
     Thread.sleep(30);
     {
       Optional<ManualControlInterface> optional = gokartLabjackLcmClient.getManualControl();
@@ -64,7 +65,7 @@ public class GokartLabjackLcmClientTest extends TestCase {
       assertFalse(manualControlInterface.isAutonomousPressed());
       assertFalse(manualControlInterface.isResetPressed());
       Scalar scalar = manualControlInterface.getAheadAverage();
-      assertEquals(scalar, RealScalar.ONE);
+      Chop._01.requireClose(scalar, RealScalar.ONE);
     }
     LabjackU3Publisher.accept(new LabjackAdcFrame(new float[5]));
     Thread.sleep(30);

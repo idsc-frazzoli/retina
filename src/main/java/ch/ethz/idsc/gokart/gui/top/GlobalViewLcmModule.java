@@ -13,6 +13,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
+import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -92,8 +93,10 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(planRender);
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
+    // if (true)
     {
       ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
+      extrudedFootprintRender.color = new Color(0, 255, 255, 128);
       gokartPoseLcmClient.addListener(extrudedFootprintRender.gokartPoseListener);
       gokartStatusLcmClient.addListener(extrudedFootprintRender.gokartStatusListener);
       viewLcmFrame.geometricComponent.addRenderInterface(extrudedFootprintRender);
@@ -199,6 +202,7 @@ public class GlobalViewLcmModule extends AbstractModule {
 
   public static void standalone() throws Exception {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
+    ModuleAuto.INSTANCE.runOne(PoseLcmServerModule.class);
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
     globalViewLcmModule.first();
     globalViewLcmModule.viewLcmFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -206,6 +210,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     globalViewLcmModule.viewLcmFrame.jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
+        ModuleAuto.INSTANCE.endOne(PoseLcmServerModule.class);
         ModuleAuto.INSTANCE.endOne(LidarLocalizationModule.class);
       }
     });
