@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.dev.rimo;
 
 import java.nio.ByteBuffer;
+import java.util.Optional;
 
 import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.tensor.Tensor;
@@ -14,6 +15,7 @@ public class RimoPutEvent extends DataEvent {
   /** instance of command to apply zero torque to the rear wheels */
   public static final RimoPutEvent PASSIVE = //
       new RimoPutEvent(RimoPutTire.PASSIVE, RimoPutTire.PASSIVE);
+  public static final Optional<RimoPutEvent> OPTIONAL_RIMO_PASSIVE = Optional.of(PASSIVE);
   // ---
   public final RimoPutTire putTireL;
   public final RimoPutTire putTireR;

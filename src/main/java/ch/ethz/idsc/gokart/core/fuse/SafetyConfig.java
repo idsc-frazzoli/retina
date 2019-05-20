@@ -34,6 +34,10 @@ public class SafetyConfig {
   /** rate limit is used in {@link SpeedLimitSafetyModule} */
   public Scalar rateLimit = Quantity.of(30, SI.PER_SECOND);
   public final Scalar penalty = Quantity.of(0.5, SI.SECOND);
+  /** {@link LocalizationEmergencyModule} */
+  public Boolean checkPoseQuality = true;
+  /** {@link AutonomousSafetyModule} */
+  public Boolean checkAutonomy = true;
 
   /***************************************************/
   /** @return */

@@ -51,9 +51,10 @@ public class LocalizationEmergencyModule extends AbstractModule implements Gokar
 
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
-    return watchdog.isBarking() // bad tracking
-        || Scalars.isZero(gokartPoseEvent.getQuality()) // systematic fault
-            ? Optional.of(RimoPutEvent.PASSIVE)
-            : Optional.empty();
+    if (SafetyConfig.GLOBAL.checkPoseQuality)
+      if (watchdog.isBarking() || // bad tracking
+          Scalars.isZero(gokartPoseEvent.getQuality())) // systematic fault
+        return RimoPutEvent.OPTIONAL_RIMO_PASSIVE;
+    return Optional.empty();
   }
 }

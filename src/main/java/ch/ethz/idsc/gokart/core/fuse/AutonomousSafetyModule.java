@@ -67,7 +67,7 @@ public class AutonomousSafetyModule extends AbstractModule {
       if (optional.isPresent() && optional.get().isResetPressed())
         isLocalizationBroken = false;
       return isUnsafeToDrive() //
-          ? Optional.of(RimoPutEvent.PASSIVE) //
+          ? RimoPutEvent.OPTIONAL_RIMO_PASSIVE //
           : Optional.empty();
     }
 
@@ -139,6 +139,8 @@ public class AutonomousSafetyModule extends AbstractModule {
   }
 
   private boolean isUnsafeToDrive() {
-    return !isTemperatureOperationSafe || isLocalizationBroken;
+    if (SafetyConfig.GLOBAL.checkAutonomy)
+      return !isTemperatureOperationSafe || isLocalizationBroken;
+    return false;
   }
 }

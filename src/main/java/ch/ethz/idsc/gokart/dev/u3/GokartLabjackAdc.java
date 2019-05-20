@@ -16,6 +16,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
    * 1.32312[V] when not pressed
    * 5.17674[V] when pressed */
   REVERSE(Quantity.of(4.5, SI.VOLT)), //
+  /** throttle pedal
+   * -0.06536[V] when not pressed
+   * +5.11837[V] when pressed */
   THROTTLE(null), //
   /** "autonomous" button next to driver
    * 1.30298[V] when not pressed
