@@ -27,18 +27,18 @@ import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
-public class AntilockBrakeModule extends AbstractModule implements LinmotPutProvider {
+public class AntilockBrakeV2Module extends AbstractModule implements LinmotPutProvider {
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final HapticSteerConfig hapticSteerConfig;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
 
-  public AntilockBrakeModule() {
+  public AntilockBrakeV2Module() {
     this(HapticSteerConfig.GLOBAL);
   }
 
-  public AntilockBrakeModule(HapticSteerConfig hapticSteerConfig) {
+  public AntilockBrakeV2Module(HapticSteerConfig hapticSteerConfig) {
     this.hapticSteerConfig = hapticSteerConfig;
   }
 
@@ -89,10 +89,10 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
     // if the slip is outside this range, the position of the brake is increased/decreased
     // if (hapticSteerConfig.slipClip().isOutside(slip.Get(0)))
     for (int i = 0; i < 2; i++) {
-      if (Scalars.lessThan(slip.Get(i), hapticSteerConfig.minSlip)) {
+      if (Scalars.lessThan(slip.Get(i), hapticSteerConfig.minSlipTheory.multiply(angularRate_Origin))) {
         brakePosition = Clips.unit().apply(brakePosition.add(HapticSteerConfig.GLOBAL.incrBraking));
       }
-      if (Scalars.lessThan(hapticSteerConfig.maxSlip, slip.Get(i))) {
+      if (Scalars.lessThan(hapticSteerConfig.maxSlipTheory.multiply(angularRate_Origin), slip.Get(i))) {
         brakePosition = Clips.unit().apply(brakePosition.subtract(HapticSteerConfig.GLOBAL.incrBraking));
       }
     }

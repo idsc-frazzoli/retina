@@ -36,6 +36,9 @@ public class HapticSteerConfig {
   /** access value via {@link #criticalAngle()} */
   public Scalar minSlip = Quantity.of(0.7, SI.PER_SECOND);
   public Scalar maxSlip = Quantity.of(1.4, SI.PER_SECOND);
+  /** minSlip and maxSlip depending on the current velocity */
+  public Scalar minSlipTheory = RealScalar.of(0.1);
+  public Scalar maxSlipTheory = RealScalar.of(0.25);
   public Scalar fullBraking = RealScalar.of(0.83);
   public Scalar incrBraking = RealScalar.of(0.003);
   public Scalar criticalAngle = Quantity.of(12, NonSI.DEGREE_ANGLE);
