@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
@@ -49,7 +50,8 @@ final class PurePursuitSteer extends PurePursuitBase<SteerPutEvent> {
     Scalar desPos = steerMapping.getSCEfromRatio(ratio);
     Scalar difference = desPos.subtract(currAngle);
     Scalar torqueCmd = steerPositionController.iterate(difference);
-    return Optional.of(SteerPutEvent.createOn(torqueCmd));
+    Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+    return Optional.of(SteerPutEvent.createOn(torqueCmd.add(feedForward)));
   }
 
   @Override // from PurePursuitBase
