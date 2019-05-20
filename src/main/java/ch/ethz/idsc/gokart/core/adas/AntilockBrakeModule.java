@@ -32,7 +32,7 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final HapticSteerConfig hapticSteerConfig;
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
 
   public AntilockBrakeModule() {
     this(HapticSteerConfig.GLOBAL);
@@ -46,14 +46,12 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
   protected void first() {
     LinmotSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(rimoGetListener);
-    manualControlProvider.start();
   }
 
   @Override // from AbstractModule
   protected void last() {
     RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
     LinmotSocket.INSTANCE.removePutProvider(this);
-    manualControlProvider.stop();
   }
 
   @Override // from LinmotPutProvider

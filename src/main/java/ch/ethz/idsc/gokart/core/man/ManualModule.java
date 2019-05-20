@@ -11,18 +11,16 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 /** abstract base class for modules that convert joystick events into actuation */
 /* package */ abstract class ManualModule<PE> extends AbstractModule implements PutProvider<PE> {
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
 
   @Override // from AbstractModule
   public final void first() {
-    manualControlProvider.start();
     protected_first();
   }
 
   @Override // from AbstractModule
   public final void last() {
     protected_last();
-    manualControlProvider.stop();
   }
 
   /** function invoked upon start of the module */

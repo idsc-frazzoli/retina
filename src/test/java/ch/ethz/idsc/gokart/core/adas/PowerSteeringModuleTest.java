@@ -36,7 +36,8 @@ public class PowerSteeringModuleTest extends TestCase {
     Scalar scalar = powerSteeringModule.putEvent(Quantity.of(0.2, "SCE"), Tensors.of( //
         Quantity.of(2, SI.VELOCITY), //
         Quantity.of(0.3, SI.VELOCITY), //
-        Quantity.of(1, SI.PER_SECOND)));
+        Quantity.of(1, SI.PER_SECOND)), //
+        Quantity.of(0.3, "SCT"));
     assertTrue(Scalars.nonZero(SteerPutEvent.RTORQUE.apply(scalar)));
     powerSteeringModule.last();
   }

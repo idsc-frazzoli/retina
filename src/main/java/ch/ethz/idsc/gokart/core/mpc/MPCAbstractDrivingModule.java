@@ -36,7 +36,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   private final Thread thread = new Thread(this);
   private final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
   private final MPCPreviewableTrack track;
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final MPCSteerProvider mpcSteerProvider;
   // ---
   final MPCRimoProvider mpcRimoProvider;
@@ -123,7 +123,6 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     mpcRequestPublisher.start();
     mpcControlUpdateLcmClient.startSubscriptions();
     mpcStateEstimationProvider.first();
-    manualControlProvider.start();
     // ---
     SteerSocket.INSTANCE.addPutProvider(mpcSteerProvider);
     RimoSocket.INSTANCE.addPutProvider(mpcRimoProvider);
@@ -153,7 +152,6 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     mpcRequestPublisher.stop();
     mpcControlUpdateLcmClient.stopSubscriptions();
     mpcStateEstimationProvider.last();
-    manualControlProvider.stop();
     // ---
     if (Objects.nonNull(trackReconModule))
       trackReconModule.listenersRemove(this);

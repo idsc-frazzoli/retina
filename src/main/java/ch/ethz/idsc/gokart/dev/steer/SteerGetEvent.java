@@ -165,16 +165,14 @@ public class SteerGetEvent extends DataEvent {
     return RealScalar.of(motAsp_CANInput);
   }
 
-  /** tsuTrq_CANInput indicates the torque exerted by the driver.
-   * the value ranges in the interval [-8, 8].
-   * When the driver does not touch the steering wheel, the value is close to 0.
+  /** tsuTrq indicates the torque exerted by the driver.
+   * When the driver does not touch the steering wheel, the value is close to 0[SCT].
    * A positive value indicates a drag to the left, ccw.
    * A negative value indicates a drag to the right, clockwise.
    * 
-   * @return value in the interval [-8, 8] */
-  // TODO establish unit, or conversion factor to SCT
+   * @return value in the interval [-1[SCT], 1[SCT]] */
   public Scalar tsuTrq() {
-    return RealScalar.of(tsuTrq_CANInput);
+    return Quantity.of(tsuTrq_CANInput * 0.125, SteerPutEvent.UNIT_RTORQUE);
   }
 
   /** @return vector of length 11 */

@@ -21,7 +21,7 @@ public final class AutonomySafetyModule extends AbstractModule {
   private final ManualControlProvider manualControlProvider;
 
   public AutonomySafetyModule() {
-    this(ManualConfig.GLOBAL.createProvider());
+    this(ManualConfig.GLOBAL.getProvider());
   }
 
   public AutonomySafetyModule(ManualControlProvider manualControlProvider) {
@@ -30,7 +30,6 @@ public final class AutonomySafetyModule extends AbstractModule {
 
   @Override // from AbstractModule
   protected void first() {
-    manualControlProvider.start();
     SteerSocket.INSTANCE.addPutProvider(autonomySafetySteer);
     RimoSocket.INSTANCE.addPutProvider(autonomySafetyRimo);
   }
@@ -39,7 +38,6 @@ public final class AutonomySafetyModule extends AbstractModule {
   protected void last() {
     SteerSocket.INSTANCE.removePutProvider(autonomySafetySteer);
     RimoSocket.INSTANCE.removePutProvider(autonomySafetyRimo);
-    manualControlProvider.stop();
   }
 
   private boolean isAutonomousPressed() {

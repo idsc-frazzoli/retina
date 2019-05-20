@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * the calibration procedure for the devices that are not calibrated.
  * the devices are: misc, linmot, and steer. */
 public class ManualResetModule extends AbstractClockedModule {
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
@@ -28,12 +28,12 @@ public class ManualResetModule extends AbstractClockedModule {
 
   @Override // from AbstractClockedModule
   protected void first() {
-    manualControlProvider.start();
+    // ---
   }
 
   @Override // from AbstractClockedModule
   protected void last() {
-    manualControlProvider.stop();
+    // ---
   }
 
   @Override // from AbstractClockedModule

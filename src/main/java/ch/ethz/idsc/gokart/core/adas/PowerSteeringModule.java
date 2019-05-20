@@ -67,7 +67,8 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
         ? lidarLocalizationModule.getVelocity() //
         : GokartPoseEvents.motionlessUninitialized().getVelocity();
     return steerColumnTracker.isCalibratedAndHealthy() && Objects.nonNull(steerGetEvent) //
-        ? Optional.of(SteerPutEvent.createOn(putEvent(steerColumnTracker.getSteerColumnEncoderCentered(), velocity))) //
+        ? Optional.of(SteerPutEvent.createOn(putEvent( //
+            steerColumnTracker.getSteerColumnEncoderCentered(), velocity, steerGetEvent.tsuTrq()))) //
         : Optional.empty();
   }
 
@@ -75,23 +76,26 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
    * @param velocity {vx[m*s^-1], vy[m*s^-1], omega[s^-1]}
    * @param diffRelRckPos
    * @return scalar with unit SCT */
-  /* package */ Scalar putEvent(Scalar currangle, Tensor velocity) {
-    // term1 is the static compensation of the restoring force, depending on the current angle
-    // term2 is the compensation depending on the velocity of the steering wheel
-    // term3 compensates the force caused by the lateral velocity in each front wheel
-    Tensor filteredVel = geodesicIIR1Filter.apply(velocity);
-    Scalar term1 = Series.of(Tensors.of(RealScalar.ZERO, //
+  /* package */ Scalar putEvent(Scalar currangle, Tensor velocity, Scalar tsu) {
+    // term0 is the static compensation of the restoring force, depending on the current angle
+    // term1 is the compensation depending on the velocity of the steering wheel
+    // term2 amplifies the torque exerted by the driver
+    Scalar term0 = Series.of(Tensors.of(RealScalar.ZERO, //
         hapticSteerConfig.staticCompensation1, //
         RealScalar.ZERO, //
         hapticSteerConfig.staticCompensation3)).apply(currangle);
+    // ---
     AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
+    Tensor filteredVel = geodesicIIR1Filter.apply(velocity);
     Scalar latFront_LeftVel = axleConfiguration.wheel(0).adjoint(filteredVel).Get(1);
     Scalar latFrontRightVel = axleConfiguration.wheel(1).adjoint(filteredVel).Get(1);
-    Scalar term3 = hapticSteerConfig.latForceCompensationBoundaryClip().apply( //
+    Scalar term1 = hapticSteerConfig.latForceCompensationBoundaryClip().apply( //
         latFront_LeftVel.add(latFrontRightVel).multiply(hapticSteerConfig.latForceCompensation));
-    Scalar term4 = steerGetEvent.tsuTrq().multiply(hapticSteerConfig.tsuFactor);
-    System.out.println(Tensors.of(term1, term3, term4).map(Round._3));
-    return term1.add(term3).add(term4);
+    // ---
+    Scalar term2 = tsu.multiply(hapticSteerConfig.tsuFactor);
+    if (hapticSteerConfig.printPower)
+      System.out.println(Tensors.of(term0, term1, term2).map(Round._3));
+    return term0.add(term1).add(term2);
   }
 
   @Override // from SteerPutProvider

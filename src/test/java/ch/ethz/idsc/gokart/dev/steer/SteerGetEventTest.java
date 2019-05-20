@@ -6,6 +6,7 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class SteerGetEventTest extends TestCase {
@@ -48,5 +49,45 @@ public class SteerGetEventTest extends TestCase {
     steerGetEvent.insert(byteBuffer);
     assertTrue(Arrays.equals(array, array2));
     assertEquals(steerGetEvent.length(), 44);
+  }
+
+  public void testTsuTrqPosLimit() {
+    byte[] array = new byte[44];
+    ByteBuffer byteBuffer = ByteBuffer.wrap(array);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(+8f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.flip();
+    SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
+    assertEquals(steerGetEvent.tsuTrq(), Quantity.of(1, "SCT"));
+  }
+
+  public void testTsuTrqNegLimit() {
+    byte[] array = new byte[44];
+    ByteBuffer byteBuffer = ByteBuffer.wrap(array);
+    byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(-8f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.putFloat(0f);
+    byteBuffer.flip();
+    SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
+    assertEquals(steerGetEvent.tsuTrq(), Quantity.of(-1, "SCT"));
   }
 }
