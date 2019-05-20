@@ -11,13 +11,13 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 /** torque needed to maintain position of steering column
  * 
  * maps a quantity of unit SCE to a quantity of unit SCE */
-// TODO AM state
+// TODO AM generate report that justifies the numbers
 public enum SteerFeedForward implements ScalarUnaryOperator {
   FUNCTION;
   // ---
   private final ScalarUnaryOperator series = Series.of(Tensors.of( //
       RealScalar.ZERO, //
-      Quantity.of(0.968725, "SCT*SCE^-1"), //
+      Quantity.of(+0.968725, "SCT*SCE^-1"), //
       RealScalar.ZERO, //
       Quantity.of(-0.414766, "SCT*SCE^-3")));
 

@@ -8,13 +8,19 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ enum GokartLabjackAdc {
-  /** 0.3[V] when not pressed, 2.45[V]
-   * 1.1[V] when not pressed, 5.11[V] */
+  /** "boost" button on steering wheel.
+   * 1.35280[V] when not pressed
+   * 5.15748[V] when pressed */
   BOOST(Quantity.of(4.5, SI.VOLT)), //
-  /** 1.1[V] when not pressed, 5.11[V] */
+  /** "reverse" button on steering wheel
+   * 1.32312[V] when not pressed
+   * 5.17674[V] when pressed */
   REVERSE(Quantity.of(4.5, SI.VOLT)), //
   THROTTLE(null), //
-  AUTONOMOUS(Quantity.of(7, SI.VOLT)), //
+  /** "autonomous" button next to driver
+   * 1.30298[V] when not pressed
+   * 10.2459[V] when pressed */
+  AUTONOMOUS(Quantity.of(9.5, SI.VOLT)), //
   /** not connected */
   _NC4(null), //
   ;

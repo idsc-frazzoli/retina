@@ -67,7 +67,7 @@ public class GokartLabjackFrameTest extends TestCase {
   }
 
   public void testAutonomousTrue() {
-    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 0f, 0f, 11.5f, 0f });
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 0f, 0f, 10.1f, 0f });
     GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertFalse(gokartLabjackFrame.isResetPressed());
     assertFalse(gokartLabjackFrame.isReversePressed());

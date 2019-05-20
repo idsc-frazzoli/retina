@@ -21,7 +21,9 @@ public final class GokartLabjackFrame implements ManualControlInterface {
    * ranges from {-0.075455[V], 5.11837[V]}.
    * the lower bound is deliberately increased so that the lower bound
    * is insensitive to noise or minor activations of the throttle foot pedal. */
-  private static final Clip THROTTLE_CLIP = Clips.interval(Quantity.of(0.1, SI.VOLT), Quantity.of(5, SI.VOLT));
+  private static final Clip THROTTLE_CLIP = Clips.interval( //
+      Quantity.of(0.025, SI.VOLT), //
+      Quantity.of(5.100, SI.VOLT));
   // ---
   private final Tensor allADC;
 
