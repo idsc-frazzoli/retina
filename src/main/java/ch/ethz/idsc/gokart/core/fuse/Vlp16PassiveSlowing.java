@@ -16,7 +16,7 @@ public final class Vlp16PassiveSlowing extends Vlp16ClearanceModule {
   @Override // from Vlp16ClearanceModule
   Optional<RimoPutEvent> penaltyAction() {
     return watchdog.isBarking() //
-        ? StaticHelper.OPTIONAL_RIMO_PASSIVE
+        ? RimoPutEvent.OPTIONAL_RIMO_PASSIVE
         : Optional.empty();
   }
 

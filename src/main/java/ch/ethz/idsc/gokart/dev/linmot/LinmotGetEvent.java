@@ -59,6 +59,7 @@ public class LinmotGetEvent extends DataEvent {
     return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, NonSI.DEGREE_CELSIUS);
   }
 
+  /** @return max temperature of windings with unit "degC" */
   public Scalar getWindingTemperatureMax() {
     return Max.of( //
         getWindingTemperature1(), //
