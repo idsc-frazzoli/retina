@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import java.io.File;
+
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
@@ -9,6 +11,9 @@ import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.Get;
+import ch.ethz.idsc.tensor.io.Put;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
@@ -24,12 +29,14 @@ public class LidarLocalizationModule extends AbstractModule implements PoseVeloc
     vmu931ImuLcmClient.startSubscriptions();
     // ---
     vlp16LcmClient.startSubscriptions();
+    loadPose();
     lidarLocalizationCore.isLaunched = true;
     lidarLocalizationCore.thread.start();
   }
 
   @Override // from AbstractModule
   protected void last() {
+    savePose();
     lidarLocalizationCore.isLaunched = false;
     lidarLocalizationCore.thread.interrupt();
     vlp16LcmClient.stopSubscriptions();
@@ -76,5 +83,29 @@ public class LidarLocalizationModule extends AbstractModule implements PoseVeloc
    * @param pose */
   public void resetPose(Tensor pose) {
     lidarLocalizationCore.resetPose(pose);
+  }
+
+  /***************************************************/
+  private static final File CACHE_LAST = new File("resources/cache/last.pose");
+
+  private void loadPose() {
+    if (CACHE_LAST.isFile())
+      try {
+        Tensor pose = Get.of(CACHE_LAST);
+        System.out.println("load pose=" + pose.map(Round._4));
+        lidarLocalizationCore.resetPose(pose);
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
+  }
+
+  private void savePose() {
+    try {
+      Tensor pose = lidarLocalizationCore.getPose();
+      System.out.println("save pose=" + pose.map(Round._4));
+      Put.of(CACHE_LAST, pose);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
   }
 }
