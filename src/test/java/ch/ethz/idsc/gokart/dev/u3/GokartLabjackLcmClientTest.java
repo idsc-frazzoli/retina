@@ -7,6 +7,8 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.u3.LabjackAdcFrame;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -50,6 +52,8 @@ public class GokartLabjackLcmClientTest extends TestCase {
       ManualControlInterface manualControlInterface = optional.get();
       assertFalse(manualControlInterface.isAutonomousPressed());
       assertFalse(manualControlInterface.isResetPressed());
+      Scalar scalar = manualControlInterface.getAheadAverage();
+      assertEquals(scalar, RealScalar.ZERO);
     }
     LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 5f, 5f, 5f, 8f, 5f }));
     Thread.sleep(30);
@@ -59,6 +63,8 @@ public class GokartLabjackLcmClientTest extends TestCase {
       ManualControlInterface manualControlInterface = optional.get();
       assertFalse(manualControlInterface.isAutonomousPressed());
       assertFalse(manualControlInterface.isResetPressed());
+      Scalar scalar = manualControlInterface.getAheadAverage();
+      assertEquals(scalar, RealScalar.ONE);
     }
     LabjackU3Publisher.accept(new LabjackAdcFrame(new float[5]));
     Thread.sleep(30);
