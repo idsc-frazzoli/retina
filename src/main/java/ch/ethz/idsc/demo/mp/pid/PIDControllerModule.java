@@ -50,16 +50,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   protected Optional<Scalar> deriveRatio() {
-    System.out.println("derivra");
-    System.out.println(gokartPoseEvent);
-    System.out.println(optionalCurve);
     if (Objects.nonNull(gokartPoseEvent) && //
         optionalCurve.isPresent()) {
       currentStateTime = new StateTime( //
           gokartPoseEvent.getPose(), //
           currentStateTime.time().add(PIDTuningParams.GLOBAL.updatePeriod));
       //
-      System.out.println("pid set");
       this.currentPID = new PIDTrajectory( //
           pidIndex, //
           previousPID, //
@@ -67,14 +63,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           optionalCurve.get(), //
           currentStateTime); //
       //
-      Scalar ratioOut = this.currentPID.ratioOut();
+      Scalar ratioOut = currentPID.ratioOut();
       GlobalAssert.that(Se2CurveUnitCheck.scalarHasUnits(ratioOut, SI.PER_METER));
-      //
-      this.previousPID = this.currentPID;
+      // 
+      this.previousPID = currentPID;
       pidIndex++;
       return Optional.of(ratioOut);
     }
-    this.previousPID = this.currentPID;
+    this.previousPID = currentPID;
     pidIndex++;
     return Optional.empty();
   }
