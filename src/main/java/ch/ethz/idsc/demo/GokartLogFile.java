@@ -1926,6 +1926,8 @@ public enum GokartLogFile implements LogFile {
   _20190521T101604_2055cb1b,
   /** guest manual driving, slow mpc */
   _20190521T105301_2055cb1b,
+  /** imu installed rot90 */
+  _20190521T150634_d2699045, //
   /***************************************************/
   ;
   // ---
