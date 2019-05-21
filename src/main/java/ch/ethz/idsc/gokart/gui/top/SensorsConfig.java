@@ -2,7 +2,7 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
-import ch.ethz.idsc.gokart.calib.vmu931.Rot90PlanarVmu931Imu;
+import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Type;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmClient;
@@ -74,6 +74,7 @@ public class SensorsConfig {
   public final Tensor vlp16_davis_t = Tensors.vectorDouble(0.2, 0, 0.5);
   public final Tensor vlp16_davis_w0 = Tensors.vectorDouble(1.57, 0.0, 0.0);
   public final Tensor vlp16_davis_w1 = Tensors.vectorDouble(0.0, 3.0, 0.0);
+  public String planarVmu931Type = PlanarVmu931Type.ROT90.name();
 
   /***************************************************/
   public Vlp16LcmHandler vlp16LcmHandler() {
@@ -119,8 +120,7 @@ public class SensorsConfig {
   /** .
    * ante 20190408: the vmu931 was mounted on the gokart with xyz aligned with the gokart coordinate system
    * post 20190408: the vmu931 is mounted rotated around U axis with 180[deg] */
-  public static PlanarVmu931Imu getPlanarVmu931Imu() {
-    return Rot90PlanarVmu931Imu.INSTANCE;
-    // FlippedPlanarVmu931Imu.INSTANCE;
+  public PlanarVmu931Imu getPlanarVmu931Imu() {
+    return PlanarVmu931Type.valueOf(planarVmu931Type).planarVmu931Imu();
   }
 }
