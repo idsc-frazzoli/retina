@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.gui;
 
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -12,18 +12,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class RimoRateRow extends GokartLogImageRow implements RimoGetListener {
-  private static final Clip CLIP = Clips.positive(Quantity.of(40, SI.PER_SECOND));
-  private final int index;
+/* package */ class LinmotPositionRow extends GokartLogImageRow implements LinmotGetListener {
+  private static final Clip CLIP = Clips.interval(Quantity.of(-0.05, SI.METER), Quantity.of(0.0, SI.METER));
   private Scalar scalar = RealScalar.ZERO;
 
-  public RimoRateRow(int index) {
-    this.index = index;
-  }
-
-  @Override
-  public void getEvent(RimoGetEvent rimoGetEvent) {
-    scalar = CLIP.rescale(rimoGetEvent.getAngularRate_Y_pair().Get(index).abs());
+  @Override // from LinmotGetListener
+  public void getEvent(LinmotGetEvent linmotGetEvent) {
+    scalar = RealScalar.ONE.subtract(CLIP.rescale(linmotGetEvent.getActualPosition()));
   }
 
   @Override
@@ -33,11 +28,11 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   @Override
   public ColorDataGradient getColorDataGradient() {
-    return ColorDataGradients.CLASSIC;
+    return ColorDataGradients.ROSE;
   }
 
   @Override
   public String getName() {
-    return "rimo rate " + index;
+    return "linmot position";
   }
 }

@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
-import ch.ethz.idsc.gokart.calib.vmu931.FlippedPlanarVmu931Imu;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
+import ch.ethz.idsc.gokart.calib.vmu931.Rot90PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmClient;
@@ -120,6 +120,7 @@ public class SensorsConfig {
    * ante 20190408: the vmu931 was mounted on the gokart with xyz aligned with the gokart coordinate system
    * post 20190408: the vmu931 is mounted rotated around U axis with 180[deg] */
   public static PlanarVmu931Imu getPlanarVmu931Imu() {
-    return FlippedPlanarVmu931Imu.INSTANCE;
+    return Rot90PlanarVmu931Imu.INSTANCE;
+    // FlippedPlanarVmu931Imu.INSTANCE;
   }
 }

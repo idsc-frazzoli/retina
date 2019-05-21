@@ -10,12 +10,12 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.qty.Boole;
 import ch.ethz.idsc.tensor.red.Max;
 
-/* package */ class AutonomousButtonRow extends GokartLogImageRow implements ManualControlListener {
+/* package */ class ResetButtonRow extends GokartLogImageRow implements ManualControlListener {
   private Scalar scalar = RealScalar.ZERO;
 
   @Override
   public void manualControl(ManualControlInterface manualControlInterface) {
-    scalar = Max.of(scalar, Boole.of(manualControlInterface.isAutonomousPressed()));
+    scalar = Max.of(scalar, Boole.of(manualControlInterface.isResetPressed()));
   }
 
   @Override
@@ -32,6 +32,6 @@ import ch.ethz.idsc.tensor.red.Max;
 
   @Override
   public String getName() {
-    return "autonomous button";
+    return "reset button";
   }
 }
