@@ -67,7 +67,7 @@ public class GokartLcmLogCutter {
         final int pix = jViewport.getViewPosition().x;
         graphics.setFont(FONT);
         graphics.setColor(Color.WHITE);
-        int piy = -2;
+        int piy = -1;
         int fx = GokartLcmImage.FX;
         for (GokartLogImageRow gokartLogImageRow : gokartLogFileIndexer.gokartLogImageRows)
           graphics.drawString(gokartLogImageRow.getName(), pix, piy += fx);

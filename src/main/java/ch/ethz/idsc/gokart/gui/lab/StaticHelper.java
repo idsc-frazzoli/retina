@@ -6,9 +6,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-public enum StaticHelper {
+/* package */ enum StaticHelper {
   ;
-  public static void actionListener(JButton jButton, Thunk thunk) {
+  public static void actionListener(JButton jButton, Thunk thunk, int sleep_ms) {
     jButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -18,7 +18,7 @@ public enum StaticHelper {
           @Override
           public void run() {
             try {
-              Thread.sleep(3000);
+              Thread.sleep(sleep_ms);
             } catch (Exception exception) {
               exception.printStackTrace();
             }
