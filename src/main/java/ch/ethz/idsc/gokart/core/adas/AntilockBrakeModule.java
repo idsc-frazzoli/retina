@@ -14,8 +14,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
-import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
-import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
@@ -33,9 +31,8 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
-  private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final HapticSteerConfig hapticSteerConfig;
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
 
   public AntilockBrakeModule() {
     this(HapticSteerConfig.GLOBAL);
@@ -86,7 +83,7 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
     Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
     Tensor angularRate_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
     Tensor slip = angularRate_Origin_pair.subtract(angularRate_Y_pair); // vector of length 2 with entries of unit [s^-1]
-    System.out.println(slip.map(Round._3) + " " + brakePosition);
+    System.out.println(slip.map(Round._3) + ", " + brakePosition + ", " + velocityOrigin.Get(0).map(Round._3));
     // the brake cannot be constantly applied otherwise the brake motor heats up too much
     // there is a desired range for slip (in theory 0.1-0.25)
     // if the slip is outside this range, the position of the brake is increased/decreased

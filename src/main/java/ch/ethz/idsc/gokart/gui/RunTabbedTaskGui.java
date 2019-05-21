@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import ch.ethz.idsc.demo.jg.following.ClothoidTrajectoryModule;
 import ch.ethz.idsc.demo.jg.following.FigureClothoidModule;
-import ch.ethz.idsc.demo.jg.following.GokartGeodesicTrajectoryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
 import ch.ethz.idsc.demo.mg.slam.online.DavisSlamVisualModule;
@@ -18,8 +18,11 @@ import ch.ethz.idsc.demo.mp.pid.PIDTestTrackModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
+import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
+import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
 import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
+import ch.ethz.idsc.gokart.core.fuse.AutonomousSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
@@ -43,8 +46,8 @@ import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
 import ch.ethz.idsc.gokart.core.pure.FigurePureModule;
-import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
+import ch.ethz.idsc.gokart.core.pure.PureTrajectoryModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
 import ch.ethz.idsc.gokart.core.sound.VoiceOutputModule;
@@ -95,8 +98,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       Vmu931CalibrationWatchdog.class, //
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
-      LocalizationEmergencyModule.class, //
       PoseLcmServerModule.class, // publishes pose
+      LocalizationEmergencyModule.class, //
       ManualResetModule.class //
   // AutonomySafetyModule.class // <- dead man switch
   );
@@ -112,12 +115,15 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
+      AutonomousSafetyModule.class, //
       UltimateTorqueVectoringModule.class, //
       RimoThrustManualModule.class, //
       DriftThrustManualModule.class, //
       ImprovedNormalizedTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
       PowerSteeringModule.class, //
+      NoFrictionExperiment.class, //
+      SteerVibrationModule.class, //
       SteeringExperimentModule.class, //
       AntilockBrakeCheckConditions.class, //
       AntilockBrakeModule.class //
@@ -127,8 +133,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       FigurePureModule.class, //
       MPCDynamicDrivingModule.class, //
       MPCKinematicDrivingModule.class, //
-      GokartTrajectoryModule.class, //
-      GokartGeodesicTrajectoryModule.class, //
+      PureTrajectoryModule.class, //
+      ClothoidTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       PIDModule.class, //
       PIDTestTrackModule.class, //

@@ -1190,6 +1190,7 @@ public enum GokartLogFile implements LogFile {
   /* 2018-12-13 */
   /** demo manual driving, trajectory planning */
   _20181213T100655_add1a7bf,
+  /* labjack installed */
   /** demo manual driving, trajectory planning */
   _20181213T133900_a04ee685,
   /** manual driving with throttle (short) */
@@ -1830,6 +1831,89 @@ public enum GokartLogFile implements LogFile {
   _20190507T155931_06a2a5f4,
   /** short mpc, manual driving */
   _20190507T161525_06a2a5f4,
+  /***************************************************/
+  /* 2019-05-09 */
+  /** demo of trajectory planner and mpc */
+  _20190509T102655_56443d8b,
+  /** steering static force test */
+  _20190509T113253_dced107a,
+  /** steering static force test */
+  _20190509T121107_dced107a,
+  /** steering static force test */
+  _20190509T123210_dced107a,
+  /** steering static force test */
+  _20190509T124117_dced107a,
+  /** steering static force test [no] */
+  _20190509T124910_dced107a,
+  /***************************************************/
+  /* 2019-05-13 */
+  /** manual driving */
+  _20190513T112548_ac099b4a,
+  /** manual driving and mpc */
+  _20190513T114553_0026208f,
+  /** mpc */
+  _20190513T150620_0026208f,
+  /** mpc */
+  _20190513T151627_0026208f,
+  /** mpc */
+  _20190513T185714_0026208f,
+  /***************************************************/
+  /* 2019-05-14 */
+  /** mpc */
+  _20190514T090101_ce869540,
+  /** mpc with localization failure */
+  _20190514T092148_ce869540,
+  /** mpc with camera team
+   * 1st part: start set incorrectly
+   * 2nd part: good performance */
+  _20190514T102650_ce869540,
+  /** mpc with camera team */
+  _20190514T103657_ce869540,
+  /** mpc with camera team
+   * good performance, localization failure */
+  _20190514T105746_ce869540,
+  /** mpc with camera team
+   * good performance */
+  _20190514T111152_ce869540,
+  /** mpc */
+  _20190514T141121_b942849a,
+  /** mpc localization failure */
+  _20190514T143608_b942849a,
+  /** steer static force test
+   * using pid with autonomous button pressed */
+  _20190514T152853_b942849a,
+  /** manual drive with power steering */
+  _20190514T162756_577662b6,
+  /** manual drive with power steering */
+  _20190514T164612_577662b6,
+  /***************************************************/
+  /* 2019-05-16 */
+  /** slow manual driving with power steering */
+  _20190516T104551_fc897d70,
+  /** slow manual driving with power steering */
+  _20190516T105636_fc897d70,
+  /** stationary experiment to calibrate steering */
+  _20190516T111058_fc897d70,
+  /** stationary experiment to calibrate steering */
+  _20190516T111841_fc897d70,
+  /** driving with power steering */
+  _20190516T150252_3bedf2ab,
+  /** testing with anti lock braking */
+  _20190516T154712_fc897d70,
+  /** testing with anti lock braking */
+  _20190516T163447_fc897d70,
+  /** manual driving with brake activity */
+  _20190516T171253_a2d004c0,
+  /** mpc */
+  _20190516T172206_a2d004c0,
+  /** slow manual driving */
+  _20190516T173006_a2d004c0,
+  /** mpc with contact */
+  _20190516T173400_a2d004c0,
+  /** mpc */
+  _20190516T182806_bcf7fd52,
+  /** driving with power steering */
+  _20190516T185634_bcf7fd52,
   /***************************************************/
   ;
   // ---

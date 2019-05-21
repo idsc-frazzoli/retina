@@ -119,10 +119,10 @@ import ch.ethz.idsc.tensor.Scalar;
     // ---
     jTextFields[0].setText("" + steerGetEvent.motAsp_CANInput);
     jTextFields[1].setText("" + steerGetEvent.motAsp_Qual);
-    jTextFields[2].setText("" + steerGetEvent.tsuTrq_CANInput);
+    jTextFields[2].setText("" + steerGetEvent.tsuTrq());
     jTextFields[3].setText("" + steerGetEvent.tsuTrq_Qual);
-    jTextFields[4].setText("" + steerGetEvent.refMotTrq_CANInput);
-    jTextFields[5].setText("" + steerGetEvent.estMotTrq_CANInput);
+    jTextFields[4].setText("" + steerGetEvent.refMotTrq());
+    jTextFields[5].setText("" + steerGetEvent.estMotTrq());
     {
       JTextField jTextField = jTextFields[6];
       boolean isActive = steerGetEvent.isActive();

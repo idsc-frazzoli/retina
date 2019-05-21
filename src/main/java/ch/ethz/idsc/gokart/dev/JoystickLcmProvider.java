@@ -8,11 +8,12 @@ import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
 import ch.ethz.idsc.retina.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.SoftWatchdog;
 import ch.ethz.idsc.retina.util.data.Watchdog;
 
 /** client to lcm channel with joystick information */
-/* package */ final class JoystickLcmProvider extends BinaryLcmClient implements ManualControlProvider {
+/* package */ final class JoystickLcmProvider extends BinaryLcmClient implements ManualControlProvider, StartAndStoppable {
   private final Watchdog watchdog;
   // ---
   private ManualControlInterface manualControlInterface = null;

@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.man;
 
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.ExactScalarQ;
 import ch.ethz.idsc.tensor.Scalar;
@@ -13,7 +14,7 @@ import junit.framework.TestCase;
 
 public class ManualConfigTest extends TestCase {
   public void testSimple() {
-    ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+    ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
     assertNotNull(manualControlProvider);
   }
 
@@ -29,5 +30,9 @@ public class ManualConfigTest extends TestCase {
     Clip clip = ManualConfig.GLOBAL.torqueLimitClip();
     clip.requireInside(Quantity.of(+234, NonSI.ARMS));
     clip.requireInside(Quantity.of(-198, NonSI.ARMS));
+  }
+
+  public void testTimeout() {
+    Clips.positive(0.5).requireInside(Magnitude.SECOND.apply(ManualConfig.GLOBAL.timeout));
   }
 }

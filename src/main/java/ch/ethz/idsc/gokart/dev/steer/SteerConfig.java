@@ -73,6 +73,6 @@ public class SteerConfig {
   /** @return */
   public Clip getRatioLimit() {
     Scalar ratioMax = getSteerMapping().getRatioFromSCE(columnMax);
-    return Clips.interval(ratioMax.negate(), ratioMax);
+    return Clips.absolute(ratioMax);
   }
 }

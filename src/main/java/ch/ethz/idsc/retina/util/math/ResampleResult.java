@@ -22,7 +22,7 @@ public class ResampleResult {
   public ResampleResult(Tensor points, List<Tensor> list) {
     interpolation = LinearInterpolation.of(points);
     this.list = list;
-    clip = Clips.interval(0, points.length());
+    clip = Clips.positive(points.length());
   }
 
   public List<Tensor> getParameters() {

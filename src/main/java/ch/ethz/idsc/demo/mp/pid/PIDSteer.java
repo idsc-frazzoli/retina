@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
 
   @Override
-  public ProviderRank getProviderRank() {
+  public final ProviderRank getProviderRank() {
     return ProviderRank.AUTONOMOUS;
   }
 

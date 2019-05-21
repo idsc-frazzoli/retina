@@ -33,8 +33,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   @Override // from GoKartPoseListener
-  public void getEvent(GokartPoseEvent getEvent) {
-    this.gokartPoseEvent = getEvent;
+  public void getEvent(GokartPoseEvent gokartPoseEvent) {
+    this.gokartPoseEvent = gokartPoseEvent;
   }
 
   @Override // from PIDControllerModule

@@ -5,9 +5,10 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
+import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** for testing purpose only */
-/* package */ class ConstantManualControlProvider implements ManualControlProvider {
+/* package */ class ConstantManualControlProvider implements ManualControlProvider, StartAndStoppable {
   private final ManualControlInterface manualControlInterface;
 
   public ConstantManualControlProvider(ManualControlInterface manualControlInterface) {

@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     int div = 1;
     Clip CLIP_VEL = PowerLookupTable.CLIP_VEL;
     {
-      Clip clipARMS = Clips.interval(Quantity.of(-2316, "ARMS"), Quantity.of(+2316, "ARMS"));
+      Clip clipARMS = Clips.absolute(Quantity.of(+2316, "ARMS"));
       Tensor si = Subdivide.increasing(clipARMS, 900 / div);
       Tensor sj = Subdivide.increasing(CLIP_VEL, 800 / div);
       Tensor matrix = //

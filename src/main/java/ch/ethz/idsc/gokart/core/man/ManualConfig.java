@@ -1,10 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.man;
 
-import ch.ethz.idsc.gokart.dev.u3.GokartLabjackLcmClient;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.dev.u3.StaticManualControlProvider;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
@@ -32,7 +30,7 @@ public class ManualConfig {
   /***************************************************/
   /** @return clip interval for permitted torque */
   public Clip torqueLimitClip() {
-    return Clips.interval(torqueLimit.negate(), torqueLimit);
+    return Clips.absolute(torqueLimit);
   }
 
   /** .
@@ -40,7 +38,7 @@ public class ManualConfig {
    * post 20181211: throttle pedal and boost button
    * 
    * @return manual control as configured on the gokart */
-  public ManualControlProvider createProvider() {
-    return new GokartLabjackLcmClient(GokartLcmChannel.LABJACK_U3_ADC, Magnitude.SECOND.toDouble(timeout));
+  public ManualControlProvider getProvider() {
+    return StaticManualControlProvider.INSTANCE;
   }
 }

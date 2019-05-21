@@ -57,6 +57,7 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
       graphics.setColor(Color.GRAY);
       graphics.drawString(String.format("time :%9s", time.map(Round._2)), 0, 25);
       mp4AnimationWriter.append(bufferedImage);
+      System.out.println(time.map(Round._3));
     }
   }
 

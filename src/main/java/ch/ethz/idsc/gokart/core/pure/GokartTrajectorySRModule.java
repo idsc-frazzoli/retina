@@ -94,7 +94,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal(), RealScalar.of(10)).unmodifiable();
   static final FixedStateIntegrator FIXEDSTATEINTEGRATOR = FixedStateIntegrator.create( //
-      new Tse2Integrator(Clips.interval(MAX_SPEED.zero(), MAX_SPEED)), RationalScalar.of(1, 15), 3);
+      new Tse2Integrator(Clips.positive(MAX_SPEED)), RationalScalar.of(1, 15), 3);
   // private static final Se2Wrap SE2WRAP = Se2Wrap.INSTANCE;
   private static final StateTimeRaster STATE_TIME_RASTER = //
       new EtaRaster(PARTITIONSCALE, StateTimeTensorFunction.state(Tse2Wrap.INSTANCE::represent));
@@ -104,7 +104,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
       Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation), ACCELERATIONS);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.createProvider();
+  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final Tse2CurvePurePursuitModule tse2CurvePurePursuitModule = //
       new Tse2CurvePurePursuitModule(PursuitConfig.GLOBAL);
   private GokartPoseEvent gokartPoseEvent = null;
@@ -176,7 +176,6 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
     gokartPoseLcmClient.addListener(gokartPoseListener);
     // ---
     gokartPoseLcmClient.startSubscriptions();
-    manualControlProvider.start();
     rimoGetLcmClient.startSubscriptions();
     // ---
     tse2CurvePurePursuitModule.launch();
@@ -186,7 +185,6 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   protected void last() {
     tse2CurvePurePursuitModule.terminate();
     gokartPoseLcmClient.stopSubscriptions();
-    manualControlProvider.stop();
   }
 
   @Override // from AbstractClockedModule

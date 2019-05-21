@@ -15,26 +15,31 @@ import ch.ethz.idsc.tensor.sca.Clips;
 public class HapticSteerConfig {
   public static final HapticSteerConfig GLOBAL = AppResources.load(new HapticSteerConfig());
   /***************************************************/
-  /** Value to amplify the Input in the PowerSteeringModule */
-  public Scalar staticCompensation = Quantity.of(0.6, "SCT*SCE^-1");
-  public Scalar dynamicCompensation = Quantity.of(90, "SCT");
-  public Scalar dynamicCompensationBoundary = Quantity.of(0.5, "SCT");
-  public Scalar latForceCompensation = Quantity.of(0.3, "SCT*s*m^-1"); // so far 0.2
-  public Scalar latForceCompensationBoundary = Quantity.of(2, "SCT"); // 5
+  /** value to amplify the input in the PowerSteeringModule */
+  public Boolean feedForward = true;
+  // ---
   public Scalar velocityFilter = RealScalar.of(0.2);
+  public Scalar latForceCompensation = Quantity.of(0.7, "SCT*s*m^-1");
+  public Scalar latForceCompensationBoundary = Quantity.of(0.7, "SCT");
+  /** tsuFactor in the interval [0,1] */
+  public Scalar tsuFactor = RealScalar.of(0.8);
+  public Boolean printPower = false;
   /** Constant Torque for Experiment */
   @FieldSubdivide(start = "-7/10[SCT]", end = "7/10[SCT]", intervals = 14)
   public Scalar constantTorque = Quantity.of(0, "SCT");
   /** Values for Vibration Mode */
-  public Scalar vibrationAmplitude = RealScalar.of(0.4);
-  public Scalar vibrationFrequency = RealScalar.of(12);
+  public Scalar vibrationAmplitude = Quantity.of(0.4, "SCT");
+  public Scalar vibrationFrequency = Quantity.of(12, SI.PER_SECOND);
   public Scalar criticalSlip = RealScalar.of(0.2);
   /** Values for AntilockBrakeModule */
   /** access value via {@link #criticalAngle()} */
-  public Scalar minSlip = Quantity.of(0.1, SI.PER_SECOND);
-  public Scalar maxSlip = Quantity.of(0.25, SI.PER_SECOND);
-  public Scalar fullBraking = RealScalar.of(0.85);
-  public Scalar incrBraking = RealScalar.of(0.05);
+  public Scalar minSlip = Quantity.of(0.7, SI.PER_SECOND);
+  public Scalar maxSlip = Quantity.of(1.4, SI.PER_SECOND);
+  /** minSlip and maxSlip depending on the current velocity */
+  public Scalar minSlipTheory = RealScalar.of(0.1);
+  public Scalar maxSlipTheory = RealScalar.of(0.25);
+  public Scalar fullBraking = RealScalar.of(0.83);
+  public Scalar incrBraking = RealScalar.of(0.003);
   public Scalar criticalAngle = Quantity.of(12, NonSI.DEGREE_ANGLE);
   public Scalar absFrequency = RealScalar.of(5);
   public Scalar absAmplitude = RealScalar.of(0.2);
@@ -46,15 +51,11 @@ public class HapticSteerConfig {
   }
 
   public Clip criticalSlipClip() {
-    return Clips.interval(criticalSlip.negate(), criticalSlip);
-  }
-
-  public Clip dynamicCompensationBoundaryClip() {
-    return Clips.interval(dynamicCompensationBoundary.negate(), dynamicCompensationBoundary);
+    return Clips.absolute(criticalSlip);
   }
 
   public Clip latForceCompensationBoundaryClip() {
-    return Clips.interval(latForceCompensationBoundary.negate(), latForceCompensationBoundary);
+    return Clips.absolute(latForceCompensationBoundary);
   }
 
   public Clip slipClip() {

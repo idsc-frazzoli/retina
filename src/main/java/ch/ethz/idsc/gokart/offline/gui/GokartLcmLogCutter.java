@@ -67,15 +67,10 @@ public class GokartLcmLogCutter {
         final int pix = jViewport.getViewPosition().x;
         graphics.setFont(FONT);
         graphics.setColor(Color.WHITE);
-        int piy = -2;
+        int piy = -1;
         int fx = GokartLcmImage.FX;
-        graphics.drawString("auton. button", pix, piy += fx);
-        graphics.drawString("active steering", pix, piy += fx);
-        graphics.drawString("pose quality", pix, piy += fx);
-        graphics.drawString("steer", pix, piy += fx);
-        graphics.drawString("gyro z", pix, piy += fx);
-        graphics.drawString("tire L", pix, piy += fx);
-        graphics.drawString("tire R", pix, piy += fx);
+        for (GokartLogImageRow gokartLogImageRow : gokartLogFileIndexer.gokartLogImageRows)
+          graphics.drawString(gokartLogImageRow.getName(), pix, piy += fx);
       }
       int ofsy = 28;
       synchronized (map) {

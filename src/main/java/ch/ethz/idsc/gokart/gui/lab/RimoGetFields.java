@@ -19,9 +19,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class RimoGetFields {
-  private static final Clip RATE_RANGE = Clips.interval( //
-      Quantity.of(-3, SI.PER_SECOND), //
-      Quantity.of(+3, SI.PER_SECOND));
+  private static final Clip RATE_RANGE = Clips.absolute(Quantity.of(3, SI.PER_SECOND));
   // ---
   JTextField jTF_status_word; // 2
   JTextField jTF_actual_speed; // 4
