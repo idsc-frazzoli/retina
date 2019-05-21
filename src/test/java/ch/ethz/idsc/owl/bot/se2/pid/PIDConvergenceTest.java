@@ -50,7 +50,7 @@ public class PIDConvergenceTest extends TestCase {
       pose = Se2CoveringIntegrator.INSTANCE. // Euler
           spin(pose, vel.multiply(Quantity.of(dt, SI.SECOND)));
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
-        System.out.println(Pretty.of(vel.multiply(Quantity.of(dt, SI.SECOND))));
+        System.out.println("vel: " + Pretty.of(vel.multiply(Quantity.of(dt, SI.SECOND))));
       }
       stateTime = new StateTime(pose, stateTime.time().add(Quantity.of(dt, SI.SECOND)));
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
