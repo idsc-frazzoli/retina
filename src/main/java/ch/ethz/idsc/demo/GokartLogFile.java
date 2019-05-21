@@ -1915,6 +1915,18 @@ public enum GokartLogFile implements LogFile {
   /** driving with power steering */
   _20190516T185634_bcf7fd52,
   /***************************************************/
+  /* 2019-05-21 */
+  /** manual driving, power steering, pure pursuit */
+  _20190521T093322_2055cb1b,
+  /** manual driving, power steering */
+  _20190521T094217_2055cb1b,
+  /** slow manual driving */
+  _20190521T094746_2055cb1b,
+  /** fast mpc */
+  _20190521T101604_2055cb1b,
+  /** guest manual driving, slow mpc */
+  _20190521T105301_2055cb1b,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

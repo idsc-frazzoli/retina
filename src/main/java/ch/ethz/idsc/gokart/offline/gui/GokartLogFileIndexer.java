@@ -45,6 +45,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogFileIndexer.addRow(new RimoRateRow(1));
     gokartLogFileIndexer.addRow(new LinmotPositionRow());
     gokartLogFileIndexer.addRow(new LinmotOperationalRow());
+    gokartLogFileIndexer.addRow(new ResetButtonRow());
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);

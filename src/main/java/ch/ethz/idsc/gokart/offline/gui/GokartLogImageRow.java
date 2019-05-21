@@ -1,25 +1,28 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.gui;
 
-import java.util.function.Supplier;
-
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradient;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-abstract class GokartLogImageRow implements Supplier<Scalar> {
+abstract class GokartLogImageRow {
   protected final TableBuilder tableBuilder = new TableBuilder();
 
   public final void append() {
-    tableBuilder.appendRow(get());
+    tableBuilder.appendRow(getScalar());
   }
 
   public final Tensor tensor() {
     return tableBuilder.toTable();
   }
 
+  /** @return value in the interval [0, 1] */
+  public abstract Scalar getScalar();
+
+  /** @return color data gradient */
   public abstract ColorDataGradient getColorDataGradient();
 
+  /** @return name */
   public abstract String getName();
 }
