@@ -41,6 +41,6 @@ public final class LinmotCoolingModule extends EmergencyModule<RimoPutEvent> imp
   public Optional<RimoPutEvent> putEvent() {
     return isTemperatureOperationSafe //
         ? Optional.empty()
-        : StaticHelper.OPTIONAL_RIMO_PASSIVE;
+        : RimoPutEvent.OPTIONAL_RIMO_PASSIVE;
   }
 }

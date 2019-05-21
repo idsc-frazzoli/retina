@@ -17,8 +17,8 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
 
   public static void main(String[] args) {
     for (GokartLogFile gokartLogFile : GokartLogFile.range( //
-        GokartLogFile._20190309T115037_d527c4a8, //
-        GokartLogFile._20190325T175100_61639f01)) {
+        GokartLogFile._20190502T105037_bdbf8063, //
+        GokartLogFile._20190516T185634_bcf7fd52)) {
       String title = gokartLogFile.getTitle() + ".png";
       File imageFile = new File(DIRECTORY, title);
       if (!imageFile.exists())

@@ -54,7 +54,7 @@ public class Vmu931CalibrationWatchdog extends EmergencyModule<RimoPutEvent> imp
   public Optional<RimoPutEvent> putEvent() {
     return isCalibrated.get() && !watchdog.isBarking() // calibrated and active
         ? Optional.empty()
-        : StaticHelper.OPTIONAL_RIMO_PASSIVE;
+        : RimoPutEvent.OPTIONAL_RIMO_PASSIVE;
   }
 
   @Override // from Vmu931ImuFrameListener

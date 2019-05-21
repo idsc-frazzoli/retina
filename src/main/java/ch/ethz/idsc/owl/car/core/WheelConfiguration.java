@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.owl.car.core;
 
-import ch.ethz.idsc.gokart.offline.video.TireConfiguration;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -10,6 +9,9 @@ public class WheelConfiguration {
   private final TireConfiguration tireConfiguration;
   private final Se2GroupElement se2GroupElement_inverse;
 
+  /** @param xya position of wheel in vehicle frame in the form {x[m], y[m], angle}
+   * if the wheel moves along the x-axis, i.e. the wheel axis is fixed to the y-axis the angle == 0
+   * @param tireConfiguration */
   public WheelConfiguration(Tensor xya, TireConfiguration tireConfiguration) {
     this.xya = xya;
     this.tireConfiguration = tireConfiguration;

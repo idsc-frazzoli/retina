@@ -5,6 +5,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.mat.HilbertMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
@@ -29,5 +30,21 @@ public class InertialOdometryTest extends TestCase {
         Tensors.fromString("{1.002984551145215818[m], 0.0010448466318511013[m], 0.03}"));
     Tensor velocity = inertialOdometry.getVelocity();
     Chop._10.requireClose(velocity, Tensors.fromString("{0.03[m*s^-1], 0.01[m*s^-1], 0.3[s^-1]}"));
+  }
+
+  public void testSetPoseFail() {
+    InertialOdometry inertialOdometry = new InertialOdometry();
+    try {
+      inertialOdometry.resetPose(Tensors.vector(1, 0, 0));
+      fail();
+    } catch (Exception exception) {
+      // ---
+    }
+    try {
+      inertialOdometry.resetPose(HilbertMatrix.of(3));
+      fail();
+    } catch (Exception exception) {
+      // ---
+    }
   }
 }

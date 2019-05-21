@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.calib.steer;
 
-import ch.ethz.idsc.gokart.offline.video.TireConfiguration;
+import ch.ethz.idsc.owl.car.core.TireConfiguration;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

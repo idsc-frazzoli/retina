@@ -46,7 +46,7 @@ public final class SteerBatteryWatchdog extends EmergencyModule<RimoPutEvent> im
   public Optional<RimoPutEvent> putEvent() {
     isBlown |= watchdog.isBarking();
     return isBlown //
-        ? StaticHelper.OPTIONAL_RIMO_PASSIVE
+        ? RimoPutEvent.OPTIONAL_RIMO_PASSIVE
         : Optional.empty();
   }
 }

@@ -59,6 +59,7 @@ public class LinmotGetEvent extends DataEvent {
     return Quantity.of(winding_temp2 * TO_DEGREE_CELSIUS, NonSI.DEGREE_CELSIUS);
   }
 
+  /** @return max temperature of windings with unit "degC" */
   public Scalar getWindingTemperatureMax() {
     return Max.of( //
         getWindingTemperature1(), //
@@ -80,6 +81,7 @@ public class LinmotGetEvent extends DataEvent {
     return LENGTH;
   }
 
+  /** @return brake pedal position in unit "m" */
   public Scalar getActualPosition() {
     return Quantity.of(actual_position * GET_POSITION_TO_METER, SI.METER);
   }

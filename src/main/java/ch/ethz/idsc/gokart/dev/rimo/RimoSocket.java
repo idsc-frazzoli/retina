@@ -30,9 +30,6 @@ public final class RimoSocket extends AutoboxSocket<RimoGetEvent, RimoPutEvent> 
   private RimoSocket() {
     super(RimoGetEvent.LENGTH, LOCAL_PORT);
     // ---
-    // FIXME JPH EmergencyBrakeProvider
-    // addGetListener(EmergencyBrakeProvider.INSTANCE);
-    // ---
     addPutProvider(RimoPutFallback.INSTANCE);
   }
 

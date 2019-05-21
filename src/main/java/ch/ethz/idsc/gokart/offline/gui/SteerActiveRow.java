@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.qty.Boole;
   }
 
   @Override
-  public Scalar get() {
+  public Scalar getScalar() {
     return scalar;
   }
 

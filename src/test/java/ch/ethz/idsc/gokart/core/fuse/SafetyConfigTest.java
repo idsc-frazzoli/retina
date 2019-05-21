@@ -33,4 +33,9 @@ public class SafetyConfigTest extends TestCase {
   public void testRateLimit() {
     assertTrue(Scalars.lessEquals(Quantity.of(1, SI.PER_SECOND), SafetyConfig.GLOBAL.rateLimit));
   }
+
+  public void testBooleans() {
+    assertTrue(SafetyConfig.GLOBAL.checkPoseQuality);
+    assertTrue(SafetyConfig.GLOBAL.checkAutonomy);
+  }
 }

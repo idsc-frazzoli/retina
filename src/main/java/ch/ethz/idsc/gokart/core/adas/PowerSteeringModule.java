@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
+import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
@@ -19,11 +20,9 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Series;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class PowerSteeringModule extends AbstractModule implements SteerGetListener, SteerPutProvider {
@@ -80,10 +79,10 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
     // term0 is the static compensation of the restoring force, depending on the current angle
     // term1 is the compensation depending on the velocity of the steering wheel
     // term2 amplifies the torque exerted by the driver
-    Scalar term0 = Series.of(Tensors.of(RealScalar.ZERO, //
-        hapticSteerConfig.staticCompensation1, //
-        RealScalar.ZERO, //
-        hapticSteerConfig.staticCompensation3)).apply(currangle);
+    Scalar feedForwardValue = SteerFeedForward.FUNCTION.apply(currangle);
+    Scalar term0 = hapticSteerConfig.feedForward //
+        ? feedForwardValue
+        : feedForwardValue.zero();
     // ---
     AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
     Tensor filteredVel = geodesicIIR1Filter.apply(velocity);

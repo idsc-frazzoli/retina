@@ -5,8 +5,11 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.DataEvent;
+import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** LabjackAdcFrame holds an arbitrary number of ADC readings
  * 
@@ -14,15 +17,18 @@ import ch.ethz.idsc.tensor.Tensors;
 public final class LabjackAdcFrame extends DataEvent implements Serializable {
   private final float[] array;
 
-  public LabjackAdcFrame(float[] array) {
-    this.array = array;
-  }
-
   public LabjackAdcFrame(ByteBuffer byteBuffer) {
     int n = byteBuffer.remaining() >> 2; // division by 4 == Float.BYTES
     array = new float[n];
     for (int index = 0; index < array.length; ++index)
       array[index] = byteBuffer.getFloat();
+  }
+
+  /** Hint: use constructor only in tests because the array is mutable
+   * 
+   * @param array */
+  public LabjackAdcFrame(float[] array) {
+    this.array = array;
   }
 
   @Override // from DataEvent
@@ -42,8 +48,13 @@ public final class LabjackAdcFrame extends DataEvent implements Serializable {
   }
 
   /** @param index
-   * @return voltage reading of ADC with given index */
-  public float getADC_V(int index) {
-    return array[index];
+   * @return voltage reading of ADC with given index and unit [V] */
+  public Scalar getADC(int index) {
+    return Quantity.of(array[index], SI.VOLT);
+  }
+
+  /** @return {ADC[0], ADC[1], ...} */
+  public Tensor allADC() {
+    return Tensors.vector(this::getADC, array.length);
   }
 }

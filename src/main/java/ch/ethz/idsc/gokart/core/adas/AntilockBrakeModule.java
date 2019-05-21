@@ -83,7 +83,7 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
     Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
     Tensor angularRate_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
     Tensor slip = angularRate_Origin_pair.subtract(angularRate_Y_pair); // vector of length 2 with entries of unit [s^-1]
-    System.out.println(slip.map(Round._3) + " " + brakePosition);
+    System.out.println(slip.map(Round._3) + ", " + brakePosition + ", " + velocityOrigin.Get(0).map(Round._3));
     // the brake cannot be constantly applied otherwise the brake motor heats up too much
     // there is a desired range for slip (in theory 0.1-0.25)
     // if the slip is outside this range, the position of the brake is increased/decreased

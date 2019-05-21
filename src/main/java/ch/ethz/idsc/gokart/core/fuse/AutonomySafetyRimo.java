@@ -15,6 +15,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
   public Optional<RimoPutEvent> putEvent() {
     return supplier.get() //
         ? Optional.empty()
-        : StaticHelper.OPTIONAL_RIMO_PASSIVE;
+        : RimoPutEvent.OPTIONAL_RIMO_PASSIVE;
   }
 }

@@ -18,7 +18,7 @@ import ch.ethz.idsc.owl.ani.api.ProviderRank;
   @Override // from RimoPutProvider
   public Optional<RimoPutEvent> putEvent() {
     return isActive //
-        ? Optional.of(RimoPutEvent.PASSIVE) //
+        ? RimoPutEvent.OPTIONAL_RIMO_PASSIVE
         : Optional.empty();
   }
 

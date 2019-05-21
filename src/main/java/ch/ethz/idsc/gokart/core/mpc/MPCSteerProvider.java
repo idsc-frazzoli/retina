@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
+import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
@@ -44,7 +45,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           currAngle, //
           steering.Get(0), //
           steering.Get(1));
-      return Optional.of(SteerPutEvent.createOn(torqueCmd));
+      Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+      return Optional.of(SteerPutEvent.createOn(torqueCmd.add(feedForward)));
     }
     return Optional.empty();
   }

@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   }
 
   @Override
-  public Scalar get() {
+  public Scalar getScalar() {
     return scalar;
   }
 

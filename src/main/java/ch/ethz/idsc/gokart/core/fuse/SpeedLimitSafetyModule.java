@@ -52,6 +52,6 @@ public final class SpeedLimitSafetyModule extends AbstractModule implements Rimo
   public Optional<RimoPutEvent> putEvent() {
     return watchdog.isBarking() //
         ? Optional.empty()
-        : StaticHelper.OPTIONAL_RIMO_PASSIVE;
+        : RimoPutEvent.OPTIONAL_RIMO_PASSIVE;
   }
 }
