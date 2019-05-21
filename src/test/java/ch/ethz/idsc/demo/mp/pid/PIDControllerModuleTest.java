@@ -38,7 +38,7 @@ public class PIDControllerModuleTest extends TestCase {
       pidControllerModule.runAlgo();
       Scalar ratio = pidControllerModule.pidSteer.getRatio();
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
-        System.out.println("Heading: " + Pretty.of(ratio));
+        // System.out.println("Heading: " + Pretty.of(ratio));
         // System.out.println("Error: " + pidControllerModule.getPID().getError()); FIXME MCP
       }
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, ratio));
@@ -58,8 +58,10 @@ public class PIDControllerModuleTest extends TestCase {
       pidControllerModule.runAlgo();
       Scalar ratio = pidControllerModule.pidSteer.getRatio();
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
-        // System.out.println("Error: " + pidControllerModule.getPID().getError().toString()); FIXME MCP
+        System.out.println("--------------------- new iter -------------------------");
+        System.out.println("Ratio out: " + ratio);
         System.out.println("Pose: " + Pretty.of(pose));
+        System.out.println("PID: " + pidControllerModule.getPID());
       }
       pose = Se2CoveringIntegrator.INSTANCE.spin(pose, Tensors.of(Quantity.of(1, SI.METER), RealScalar.ZERO, ratio));
     }

@@ -3,6 +3,7 @@ package ch.ethz.idsc.owl.bot.se2.pid;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 
@@ -15,7 +16,7 @@ public enum Se2CurveUnitCheck {
     for (int index = 0; index < curve.length(); ++index) {
       condition &= poseHasUnits(curve.get(index), units);
     }
-    if (!condition)
+    if (!condition && UserName.is("maximilien"))
       System.err.println("Curve with missing units");
     return condition;
   }

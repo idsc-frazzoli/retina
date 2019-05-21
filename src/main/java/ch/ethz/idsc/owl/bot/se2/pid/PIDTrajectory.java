@@ -16,8 +16,10 @@ public class PIDTrajectory {
   private Scalar deriv = RealScalar.ZERO;
   private Scalar prop;
   private Tensor closest;
+  public StateTime stateTime;
 
   public PIDTrajectory(int pidIndex, PIDTrajectory previousPID, PIDGains pidGains, Tensor traj, StateTime stateTime) {
+    this.stateTime = stateTime;
     this.time = stateTime.time();
     Tensor stateXYphi = stateTime.state();
     TensorUnaryOperator tuo = new Se2GroupElement(stateXYphi).inverse()::combine;
