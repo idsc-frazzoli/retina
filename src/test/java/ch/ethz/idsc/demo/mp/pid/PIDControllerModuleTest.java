@@ -26,6 +26,12 @@ public class PIDControllerModuleTest extends TestCase {
     pidControllerModule.runAlgo();
     pidControllerModule.last();
   }
+  
+  public void testSetCurve() {
+    PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
+    pidControllerModule.setCurve(Optional.ofNullable(CURVE));
+    assertTrue(pidControllerModule.getCurve().isPresent());    
+  }
 
   public void testHeadingError() {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
