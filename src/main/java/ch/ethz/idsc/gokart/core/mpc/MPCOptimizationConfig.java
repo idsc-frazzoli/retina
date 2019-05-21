@@ -20,11 +20,10 @@ public class MPCOptimizationConfig {
   /** The limit for the Go-kart speed */
   @FieldSubdivide(start = "4f[m*s^-1]", end = "10[m*s^-1]", intervals = 6)
   public Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
-  // FIXME MH/JPH
-  /** The limit for the Go-kart longitudonal acceleration */
+  /** The limit for the Go-kart lateral acceleration */
   @FieldSubdivide(start = "3f[m*s^-2]", end = "15[m*s^-2]", intervals = 48)
   public Scalar maxLatAcc = Quantity.of(6.25, SI.ACCELERATION);
-  /** The limit for the Go-kart lateral acceleration */
+  /** The limit for the Go-kart longitudinal acceleration */
   @FieldSubdivide(start = "3f[m*s^-2]", end = "15[m*s^-2]", intervals = 48)
   public Scalar maxLonAcc = Quantity.of(5.0, SI.ACCELERATION);
   /** The maximum corrected acceleration value for the front axle (to avoid understeering) */

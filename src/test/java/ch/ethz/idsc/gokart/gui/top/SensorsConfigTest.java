@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import ch.ethz.idsc.gokart.calib.vmu931.FlippedPlanarVmu931Imu;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -76,14 +77,14 @@ public class SensorsConfigTest extends TestCase {
   /** post 20190208: the sensor is flipped upside down and rotated by 90[deg]
    * in the XY plane, this corresponds to a mirror operation */
   public void testVmu931AccXY() {
-    PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
+    PlanarVmu931Imu planarVmu931Imu = FlippedPlanarVmu931Imu.INSTANCE;
     Tensor matrix = Tensor.of(IdentityMatrix.of(2).stream().map(planarVmu931Imu::accXY));
     assertEquals(Det.of(matrix), RealScalar.ONE.negate());
     assertEquals(planarVmu931Imu.accXY(Tensors.vector(1, 2)), Tensors.vector(-2, -1));
   }
 
   public void testVmu931GyroZ() {
-    PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
+    PlanarVmu931Imu planarVmu931Imu = FlippedPlanarVmu931Imu.INSTANCE;
     assertEquals(planarVmu931Imu.gyroZ(RealScalar.of(2)), RealScalar.of(-2));
   }
 
