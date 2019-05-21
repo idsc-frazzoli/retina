@@ -10,6 +10,8 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
@@ -20,6 +22,7 @@ import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.retina.joystick.ManualControlListener;
@@ -40,6 +43,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogFileIndexer.addRow(new SteerAngleRow());
     gokartLogFileIndexer.addRow(new RimoRateRow(0));
     gokartLogFileIndexer.addRow(new RimoRateRow(1));
+    gokartLogFileIndexer.addRow(new LinmotPositionRow());
+    gokartLogFileIndexer.addRow(new LinmotOperationalRow());
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -57,6 +62,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   // ---
   final List<GokartLogImageRow> gokartLogImageRows = new LinkedList<>();
   private final List<SteerGetListener> steerGetListeners = new LinkedList<>();
+  private final List<LinmotGetListener> linmotGetListeners = new LinkedList<>();
   private final List<GokartStatusListener> gokartStatusListeners = new LinkedList<>();
   private final List<ManualControlListener> manualControlListeners = new LinkedList<>();
   private final List<GokartPoseListener> gokartPoseListeners = new LinkedList<>();
@@ -70,11 +76,14 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   private void addRow(GokartLogImageRow gokartLogImageRow) {
     gokartLogImageRows.add(gokartLogImageRow);
-    if (gokartLogImageRow instanceof RimoGetListener)
-      rimoGetListeners.add((RimoGetListener) gokartLogImageRow);
-    else //
     if (gokartLogImageRow instanceof SteerGetListener)
       steerGetListeners.add((SteerGetListener) gokartLogImageRow);
+    else //
+    if (gokartLogImageRow instanceof LinmotGetListener)
+      linmotGetListeners.add((LinmotGetListener) gokartLogImageRow);
+    else //
+    if (gokartLogImageRow instanceof RimoGetListener)
+      rimoGetListeners.add((RimoGetListener) gokartLogImageRow);
     else //
     if (gokartLogImageRow instanceof GokartStatusListener)
       gokartStatusListeners.add((GokartStatusListener) gokartLogImageRow);
@@ -96,6 +105,14 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     int index = time.divide(RESOLUTION).number().intValue();
     if (raster2event.size() <= index)
       append(event_count);
+    if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
+      SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
+      steerGetListeners.forEach(listener -> listener.getEvent(steerGetEvent));
+    } else //
+    if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
+      LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
+      linmotGetListeners.forEach(listener -> listener.getEvent(linmotGetEvent));
+    } else //
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
       rimoGetListeners.forEach(listener -> listener.getEvent(rimoGetEvent));
@@ -103,10 +120,6 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       gokartPoseListeners.forEach(listener -> listener.getEvent(gokartPoseEvent));
-    } else //
-    if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
-      SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
-      steerGetListeners.forEach(listener -> listener.getEvent(steerGetEvent));
     } else //
     if (channel.equals(GokartLcmChannel.LABJACK_U3_ADC)) {
       GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(byteBuffer);

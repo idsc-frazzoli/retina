@@ -81,6 +81,7 @@ public class LinmotGetEvent extends DataEvent {
     return LENGTH;
   }
 
+  /** @return brake pedal position in unit "m" */
   public Scalar getActualPosition() {
     return Quantity.of(actual_position * GET_POSITION_TO_METER, SI.METER);
   }

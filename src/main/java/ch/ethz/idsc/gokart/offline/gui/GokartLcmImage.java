@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.alg.Flatten;
 import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.img.ImageResize;
@@ -23,7 +22,6 @@ public enum GokartLcmImage {
     Tensor tensor = Tensors.empty();
     for (GokartLogImageRow gokartLogImageRow : gokartLogFileIndexer.gokartLogImageRows) {
       Tensor stact = Transpose.of(gokartLogImageRow.tensor());
-      System.out.println("stact=" + Dimensions.of(stact));
       tensor.append(ImageResize.nearest(stact.map(gokartLogImageRow.getColorDataGradient()), FX, 1));
     }
     BufferedImage bufferedImage = ImageFormat.of(Flatten.of(tensor, 1));
