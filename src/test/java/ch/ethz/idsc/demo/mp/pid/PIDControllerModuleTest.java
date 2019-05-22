@@ -47,7 +47,9 @@ public class PIDControllerModuleTest extends TestCase {
       Tensor u = Tensors.of(vx, vx.zero(), ratio.multiply(vx));
       pose = Se2CoveringIntegrator.INSTANCE. // Euler
           spin(pose, u.multiply(Quantity.of(dt, SI.SECOND)));
-      // TODO MCP Test heading
+      if (UserName.is("maximilien") || UserName.is("datahaki")) {
+        System.out.println("Turning ratio: " + ratio + "   ");
+      }
     }
   }
 
@@ -67,14 +69,13 @@ public class PIDControllerModuleTest extends TestCase {
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
         // System.out.println("Ratio out: " + ratio);
         // System.out.println("Pose: " + Pretty.of(pose));
-        // System.out.println("PIDerror: " + pidControllerModule.getPID().getError());
+        System.out.println("PIDerror: " + pidControllerModule.getPID().getError());
       }
       double dt = 0.1;
       Scalar vx = Quantity.of(1, SI.VELOCITY);
       Tensor u = Tensors.of(vx, vx.zero(), ratio.multiply(vx));
       pose = Se2CoveringIntegrator.INSTANCE. // Euler
           spin(pose, u.multiply(Quantity.of(dt, SI.SECOND)));
-      System.out.println(pidControllerModule.getPID().getError());
     }
   }
 

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <unsupported/Eigen/MatrixFunctions> /*sqrt*/
+#include "TestUKF.h"
 
 #define NUMPAR 3
 
@@ -66,6 +67,11 @@ int main()
 
     ParameterVector p = P_wk_min.cwiseSqrt();
 
+
+    cout << "test UKF...... " << endl;
+
+    TestUKF testUkf;
+    testUkf.test();
 
 
 
