@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -39,6 +40,7 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogConfig;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TensorProperties;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -210,6 +212,17 @@ public class GokartLcmLogCutter {
       JToolBar jToolBar = new JToolBar();
       jToolBar.setFloatable(false);
       jToolBar.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
+      {
+        JButton jButton = new JButton("image");
+        jButton.addActionListener(actionEvent -> {
+          try {
+            ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures(title + ".png"));
+          } catch (Exception exception) {
+            exception.printStackTrace();
+          }
+        });
+        jToolBar.add(jButton);
+      }
       {
         JCheckBox jCheckBox = new JCheckBox("csv");
         jCheckBox.setSelected(csv);

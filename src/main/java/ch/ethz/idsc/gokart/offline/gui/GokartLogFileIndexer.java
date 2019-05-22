@@ -25,6 +25,8 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -46,6 +48,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogFileIndexer.addRow(new LinmotPositionRow());
     gokartLogFileIndexer.addRow(new LinmotOperationalRow());
     gokartLogFileIndexer.addRow(new ResetButtonRow());
+    gokartLogFileIndexer.addRow(new Vmu931AccRow(0));
+    gokartLogFileIndexer.addRow(new Vmu931AccRow(1));
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -68,6 +72,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private final List<ManualControlListener> manualControlListeners = new LinkedList<>();
   private final List<GokartPoseListener> gokartPoseListeners = new LinkedList<>();
   private final List<RimoGetListener> rimoGetListeners = new LinkedList<>();
+  private final List<Vmu931ImuFrameListener> vmu931ImuFrameListeners = new LinkedList<>();
   // ---
   private int event_count;
 
@@ -94,6 +99,9 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     else //
     if (gokartLogImageRow instanceof GokartPoseListener)
       gokartPoseListeners.add((GokartPoseListener) gokartLogImageRow);
+    else //
+    if (gokartLogImageRow instanceof Vmu931ImuFrameListener)
+      vmu931ImuFrameListeners.add((Vmu931ImuFrameListener) gokartLogImageRow);
   }
 
   private void append(int count) {
@@ -129,6 +137,10 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     if (channel.equals(GokartLcmChannel.STATUS)) {
       GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
       gokartStatusListeners.forEach(listener -> listener.getEvent(gokartStatusEvent));
+    } else //
+    if (channel.equals(GokartLcmChannel.VMU931_AG)) {
+      Vmu931ImuFrame vmu931ImuFrame = new Vmu931ImuFrame(byteBuffer);
+      vmu931ImuFrameListeners.forEach(listener -> listener.vmu931ImuFrame(vmu931ImuFrame));
     }
     ++event_count;
   }

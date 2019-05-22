@@ -19,6 +19,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
  * listens to acc and gyro messages
  * publishes acc and gyro data via lcm */
 public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Listener {
+  public static final Vmu931_G VMU931_G = Vmu931_G._16;
   private static final String PORT = "/dev/ttyACM0";
   // ---
   private final ByteArrayConsumer byteArrayConsumer = new BinaryBlobPublisher(GokartLcmChannel.VMU931_AG);
@@ -27,7 +28,7 @@ public class Vmu931LcmServerModule extends AbstractModule implements Vmu931Liste
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
   private final Vmu931 vmu931 = new Vmu931(PORT, //
       EnumSet.of(Vmu931Channel.ACCELEROMETER, Vmu931Channel.GYROSCOPE), //
-      Vmu931_DPS._250, Vmu931_G._16, this);
+      Vmu931_DPS._250, VMU931_G, this);
 
   public Vmu931LcmServerModule() {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
