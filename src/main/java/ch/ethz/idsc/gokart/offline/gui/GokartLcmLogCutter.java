@@ -74,15 +74,15 @@ public class GokartLcmLogCutter {
         for (GokartLogImageRow gokartLogImageRow : gokartLogFileIndexer.gokartLogImageRows)
           graphics.drawString(gokartLogImageRow.getName(), pix, piy += fx);
       }
-      int ofsy = 28;
+      int ofsy = 28 - 16;
       synchronized (map) {
         for (Entry<Integer, Integer> entry : map.entrySet()) {
           int x0 = entry.getKey();
           int width = Math.max(0, entry.getValue() - x0);
           graphics.setColor(new Color(0, 0, 255, 128));
-          graphics.fillRect(x0, ofsy, width, 32);
+          graphics.fillRect(x0, ofsy, width, 64);
           graphics.setColor(new Color(255, 255, 255, 128));
-          graphics.drawRect(x0, ofsy, width, 32);
+          graphics.drawRect(x0, ofsy, width, 64);
         }
       }
     }

@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-public class Vmu931AccRow extends GokartLogImageRow implements Vmu931ImuFrameListener {
+/* package */ class Vmu931AccRow extends GokartLogImageRow implements Vmu931ImuFrameListener {
   private static final Clip CLIP = Clips.positive(Vmu931LcmServerModule.VMU931_G.clip().max());
   // ---
   private final int index;

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
+import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionStepsMessage;
+import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
@@ -50,6 +53,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogFileIndexer.addRow(new ResetButtonRow());
     gokartLogFileIndexer.addRow(new Vmu931AccRow(0));
     gokartLogFileIndexer.addRow(new Vmu931AccRow(1));
+    gokartLogFileIndexer.addRow(new MpcCountRow());
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -73,6 +77,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private final List<GokartPoseListener> gokartPoseListeners = new LinkedList<>();
   private final List<RimoGetListener> rimoGetListeners = new LinkedList<>();
   private final List<Vmu931ImuFrameListener> vmu931ImuFrameListeners = new LinkedList<>();
+  private final List<MPCControlUpdateListener> mpcControlUpdateListeners = new LinkedList<>();
   // ---
   private int event_count;
 
@@ -102,6 +107,9 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     else //
     if (gokartLogImageRow instanceof Vmu931ImuFrameListener)
       vmu931ImuFrameListeners.add((Vmu931ImuFrameListener) gokartLogImageRow);
+    else //
+    if (gokartLogImageRow instanceof MPCControlUpdateListener)
+      mpcControlUpdateListeners.add((MPCControlUpdateListener) gokartLogImageRow);
   }
 
   private void append(int count) {
@@ -141,6 +149,11 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     if (channel.equals(GokartLcmChannel.VMU931_AG)) {
       Vmu931ImuFrame vmu931ImuFrame = new Vmu931ImuFrame(byteBuffer);
       vmu931ImuFrameListeners.forEach(listener -> listener.vmu931ImuFrame(vmu931ImuFrame));
+    } else //
+    if (channel.equals(GokartLcmChannel.MPC_FORCES_CNS)) {
+      ControlAndPredictionSteps controlAndPredictionSteps = //
+          new ControlAndPredictionStepsMessage(byteBuffer).getPayload();
+      mpcControlUpdateListeners.forEach(listener -> listener.getControlAndPredictionSteps(controlAndPredictionSteps));
     }
     ++event_count;
   }
