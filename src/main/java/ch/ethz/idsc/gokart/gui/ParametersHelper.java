@@ -7,6 +7,7 @@ import java.util.List;
 import ch.ethz.idsc.demo.mp.pid.PIDTuningParams;
 import ch.ethz.idsc.gokart.calib.brake.BrakeFunctionConfig;
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
+import ch.ethz.idsc.gokart.calib.steer.SteerFeedForwardConfig;
 import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
@@ -32,6 +33,7 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
       LinmotConfig.GLOBAL, //
       SteerConfig.GLOBAL, //
       SteerPid.GLOBAL, //
+      SteerFeedForwardConfig.GLOBAL, //
       HapticSteerConfig.GLOBAL, //
       HighPowerSteerPid.GLOBAL, //
       RimoConfig.GLOBAL, //
