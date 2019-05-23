@@ -37,7 +37,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   Tensor topDownMinSpeed;
   Tensor completionIndex;
   Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
-  Scalar minSpeed = Quantity.of(10, SI.VELOCITY);
+  Scalar minSpeed = Quantity.of(0, SI.VELOCITY);
   Scalar speedMargin = Quantity.of(1, SI.VELOCITY);
   Scalar maxPower;
   Scalar minPower;
@@ -61,7 +61,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
     Scalar minPower = Quantity.of(-2300, NonSI.ARMS);
     motorCurrentValues = Subdivide.of(minPower, maxPower, steps);
     bottomUpMaxSpeed = Tensors.vector((i) -> minSpeed, steps + 1);
-    bottomUpMaxSpeed = Tensors.vector((i) -> maxSpeed, steps + 1);
+    topDownMinSpeed = Tensors.vector((i) -> maxSpeed, steps + 1);
     completionIndex = Tensors.vector((i) -> RealScalar.ZERO, steps + 1);
     {
       // UI
@@ -80,6 +80,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
       jPanel.add(upbutton);
       // text area
       textarea = new JTextArea(completionIndex.toString());
+      textarea.setLineWrap(true);
       jPanel.add(textarea);
       jFrame.setContentPane(jPanel);
     }
@@ -118,7 +119,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
     } else {
       approachText = "Deceleration test.\n";
     }
-    textarea.setText(approachText + motorCurrentValues.Get(currentInd) + "\n" + completionIndex.toString());
+    textarea.setText(approachText + motorCurrentValues.Get(currentInd) + "\n" +bottomUpMaxSpeed.toString()+"\n"+topDownMinSpeed.toString()+"\n"+ completionIndex.toString());
   }
 
   @Override // from AbstractModule
