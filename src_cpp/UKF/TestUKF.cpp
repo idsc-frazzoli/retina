@@ -22,7 +22,7 @@ void TestUKF::test() {
             return parameter;
     };
 
-    for (int i = 0; i<= 10000; i++){
+    for (int i = 0; i<= 100; i++){
         std::cout << "iteration: " << i << std::endl;
         //parameter;
         double k = rand();
