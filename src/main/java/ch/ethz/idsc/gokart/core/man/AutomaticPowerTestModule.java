@@ -78,7 +78,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
       upbutton = new JButton("up");
       upbutton.addActionListener(ActionEvent -> switchupdown());
       jPanel.add(upbutton);
-      // textarea
+      // text area
       textarea = new JTextArea(completionIndex.toString());
       jPanel.add(textarea);
       jFrame.setContentPane(jPanel);
@@ -113,12 +113,12 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
 
   void updateText() {
     String approachText;
-    if(up) {
+    if (up) {
       approachText = "Acceleration test.\n";
-    }else {
+    } else {
       approachText = "Deceleration test.\n";
     }
-    textarea.setText(approachText+motorCurrentValues.Get(currentInd) + "\n" + completionIndex.toString());
+    textarea.setText(approachText + motorCurrentValues.Get(currentInd) + "\n" + completionIndex.toString());
   }
 
   @Override // from AbstractModule
