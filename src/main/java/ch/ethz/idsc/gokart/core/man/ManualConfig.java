@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.man;
 
-import ch.ethz.idsc.gokart.dev.rimo.RimoPutTires;
 import ch.ethz.idsc.gokart.dev.u3.StaticManualControlProvider;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -19,7 +18,7 @@ public class ManualConfig {
   /***************************************************/
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in {@link RimoThrustManualModule} */
-  public final Scalar torqueLimit = Quantity.of(RimoPutTires.MAX_TORQUE, NonSI.ARMS);
+  public final Scalar torqueLimit = Quantity.of(2315, NonSI.ARMS);
   public final Scalar timeout = Quantity.of(0.2, SI.SECOND);
   /** torquePerGyro factor is used in {@link DriftThrustManualModule} */
   public Scalar torquePerGyro = Quantity.of(-2, SI.SECOND);
