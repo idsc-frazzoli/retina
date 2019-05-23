@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -34,11 +35,13 @@ import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.lcm.LcmLogFileCutter;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
 import ch.ethz.idsc.gokart.offline.api.GokartLogConfig;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TensorProperties;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -72,15 +75,15 @@ public class GokartLcmLogCutter {
         for (GokartLogImageRow gokartLogImageRow : gokartLogFileIndexer.gokartLogImageRows)
           graphics.drawString(gokartLogImageRow.getName(), pix, piy += fx);
       }
-      int ofsy = 28;
+      int ofsy = 28 - 16;
       synchronized (map) {
         for (Entry<Integer, Integer> entry : map.entrySet()) {
           int x0 = entry.getKey();
           int width = Math.max(0, entry.getValue() - x0);
           graphics.setColor(new Color(0, 0, 255, 128));
-          graphics.fillRect(x0, ofsy, width, 32);
+          graphics.fillRect(x0, ofsy, width, 64);
           graphics.setColor(new Color(255, 255, 255, 128));
-          graphics.drawRect(x0, ofsy, width, 32);
+          graphics.drawRect(x0, ofsy, width, 64);
         }
       }
     }
@@ -119,6 +122,7 @@ public class GokartLcmLogCutter {
   };
   boolean csv = false;
   boolean htm = false;
+  boolean mpc = false;
   private final ActionListener actionListener = new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
@@ -180,6 +184,13 @@ public class GokartLcmLogCutter {
               File lcmFile = new File(file.getParentFile(), "log.lcm");
               new HtmlLogReport(new GokartLcmMap(lcmFile), file.getParentFile().getName(), dest_folder);
             }
+          if (mpc)
+            for (File file : lcmLogFileCutter.files()) {
+              File dest_folder = new File(file.getParentFile(), "mpc");
+              dest_folder.mkdir();
+              File lcmFile = new File(file.getParentFile(), "log.lcm");
+              OfflineLogPlayer.process(lcmFile, new MpcControlAndPredictionTables(dest_folder));
+            }
         } catch (Exception exception) {
           exception.printStackTrace();
         }
@@ -211,6 +222,17 @@ public class GokartLcmLogCutter {
       jToolBar.setFloatable(false);
       jToolBar.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
       {
+        JButton jButton = new JButton("image");
+        jButton.addActionListener(actionEvent -> {
+          try {
+            ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures(title + ".png"));
+          } catch (Exception exception) {
+            exception.printStackTrace();
+          }
+        });
+        jToolBar.add(jButton);
+      }
+      {
         JCheckBox jCheckBox = new JCheckBox("csv");
         jCheckBox.setSelected(csv);
         jCheckBox.addActionListener(actionEvent -> csv = jCheckBox.isSelected());
@@ -220,6 +242,12 @@ public class GokartLcmLogCutter {
         JCheckBox jCheckBox = new JCheckBox("htm");
         jCheckBox.setSelected(htm);
         jCheckBox.addActionListener(actionEvent -> htm = jCheckBox.isSelected());
+        jToolBar.add(jCheckBox);
+      }
+      {
+        JCheckBox jCheckBox = new JCheckBox("mpc");
+        jCheckBox.setSelected(mpc);
+        jCheckBox.addActionListener(actionEvent -> mpc = jCheckBox.isSelected());
         jToolBar.add(jCheckBox);
       }
       {

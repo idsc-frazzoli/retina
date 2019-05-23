@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** post [20190208 */
-public enum FlippedPlanarVmu931Imu implements PlanarVmu931Imu {
+/* package */ enum FlippedPlanarVmu931Imu implements PlanarVmu931Imu {
   INSTANCE;
   // ---
   @Override // from PlanarVmu931Imu

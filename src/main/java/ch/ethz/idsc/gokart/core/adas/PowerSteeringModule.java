@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
-import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
+import ch.ethz.idsc.gokart.calib.steer.SteerFeedForwardConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -85,7 +85,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
     // term0 is the static compensation of the restoring force, depending on the current angle
     // term1 is the compensation depending on the velocity of the steering wheel
     // term2 amplifies the torque exerted by the driver
-    Scalar feedForwardValue = SteerFeedForward.FUNCTION.apply(currangle);
+    Scalar feedForwardValue = SteerFeedForwardConfig.GLOBAL.series().apply(currangle);
     Scalar term0 = hapticSteerConfig.feedForward //
         ? feedForwardValue
         : feedForwardValue.zero();
