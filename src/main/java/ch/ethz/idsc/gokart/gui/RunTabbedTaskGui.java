@@ -22,7 +22,7 @@ import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
 import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
-import ch.ethz.idsc.gokart.core.fuse.AutonomousSafetyModule;
+import ch.ethz.idsc.gokart.core.fuse.AutonomySafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
@@ -35,8 +35,6 @@ import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
-import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
-import ch.ethz.idsc.gokart.core.man.LinmotManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
@@ -100,8 +98,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       LidarLocalizationModule.class, //
       PoseLcmServerModule.class, // publishes pose
       LocalizationEmergencyModule.class, //
-      ManualResetModule.class //
-  // AutonomySafetyModule.class // <- dead man switch
+      ManualResetModule.class, //
+      AutonomySafetyModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       IgnitionModule.class, // actuation monitoring
@@ -117,17 +115,15 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       UltimateTorqueVectoringModule.class, //
       PowerSteeringModule.class, //
-      LinmotManualModule.class, //
-      RimoThrustManualModule.class, //
-      DriftThrustManualModule.class, //
-      ImprovedNormalizedTorqueVectoringManualModule.class, //
-      LookupTableRimoThrustManualModule.class, //
+      // ImprovedNormalizedTorqueVectoringManualModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //
       SteeringExperimentModule.class, //
       AntilockBrakeCheckConditions.class, //
       AntilockBrakeModule.class, //
-      AutonomousSafetyModule.class //
+      RimoThrustManualModule.class, //
+      LookupTableRimoThrustManualModule.class, //
+      DriftThrustManualModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       FigureClothoidModule.class, //
