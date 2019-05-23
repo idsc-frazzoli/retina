@@ -34,7 +34,6 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Max;
 
 public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> implements RimoGetListener {
   private final Scalar maxSpeed = RimoConfig.GLOBAL.testMaxSpeed;
@@ -46,7 +45,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   private Tensor completionIndex;
   private Scalar maxPower;
   private Boolean slowDownTriggered = false;
-  //private Scalar minPower;
+  // private Scalar minPower;
   private int steps = 20;
   private int currentInd = 0;
   private boolean up = true;
@@ -161,7 +160,6 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
           }
         }
       } else { // !up
-        
         if (Scalars.lessThan(minSpeed.subtract(speedMargin), topDownMinSpeed.Get(currentInd))) {
           // we are slowing down
           // are we slower than last tested min value
