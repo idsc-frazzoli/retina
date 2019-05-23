@@ -1958,8 +1958,20 @@ public enum GokartLogFile implements LogFile {
   _20190523T122730_6a3866ff,
   /** imu on top of box */
   _20190523T150902_6a3866ff,
-  /** antilock test
+  /** brief driving
    * imu below bottom of box */
+  _20190523T162045_6a3866ff,
+  /** brief driving */
+  _20190523T162850_6a3866ff,
+  /** antilock brake test */
+  _20190523T163610_6a3866ff,
+  /** speed calibration module test */
+  _20190523T171534_96aa6eb3,
+  /** speed calibration module test
+   * fast manual driving */
+  _20190523T172023_96aa6eb3,
+  /** speed calibration module test */
+  _20190523T175108_d8284cff,
   /***************************************************/
   ;
   // ---
