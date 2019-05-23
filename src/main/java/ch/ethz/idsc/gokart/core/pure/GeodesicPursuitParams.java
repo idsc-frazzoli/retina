@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+// TODO JPH/GJOEL rename to GeodesicPursuitConfig
 public class GeodesicPursuitParams {
   public static final GeodesicPursuitParams GLOBAL = AppResources.load(new GeodesicPursuitParams());
   // ---

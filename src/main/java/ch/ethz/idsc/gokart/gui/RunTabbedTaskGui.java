@@ -36,6 +36,7 @@ import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
+import ch.ethz.idsc.gokart.core.man.LinmotManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
@@ -52,7 +53,6 @@ import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
 import ch.ethz.idsc.gokart.core.sound.VoiceOutputModule;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
-import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
@@ -110,23 +110,24 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       TrackReconModule.class, //
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
-      SeesLcmModule.class, //
+      // SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
       VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
-      AutonomousSafetyModule.class, //
       UltimateTorqueVectoringModule.class, //
+      PowerSteeringModule.class, //
+      LinmotManualModule.class, //
       RimoThrustManualModule.class, //
       DriftThrustManualModule.class, //
       ImprovedNormalizedTorqueVectoringManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
-      PowerSteeringModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //
       SteeringExperimentModule.class, //
       AntilockBrakeCheckConditions.class, //
-      AntilockBrakeModule.class //
+      AntilockBrakeModule.class, //
+      AutonomousSafetyModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       FigureClothoidModule.class, //
