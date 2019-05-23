@@ -28,13 +28,16 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
+import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.TensorListener;
 import ch.ethz.idsc.tensor.sca.Round;
 
 // TODO JPH the list here, in the image and the display in the cutter are redundant
@@ -54,6 +57,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogFileIndexer.addRow(new Vmu931AccRow(0));
     gokartLogFileIndexer.addRow(new Vmu931AccRow(1));
     gokartLogFileIndexer.addRow(new MpcCountRow());
+    gokartLogFileIndexer.addRow(new CurveMessageRow());
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -78,6 +82,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private final List<RimoGetListener> rimoGetListeners = new LinkedList<>();
   private final List<Vmu931ImuFrameListener> vmu931ImuFrameListeners = new LinkedList<>();
   private final List<MPCControlUpdateListener> mpcControlUpdateListeners = new LinkedList<>();
+  private final List<TensorListener> tensorListeners = new LinkedList<>();
   // ---
   private int event_count;
 
@@ -89,27 +94,22 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogImageRows.add(gokartLogImageRow);
     if (gokartLogImageRow instanceof SteerGetListener)
       steerGetListeners.add((SteerGetListener) gokartLogImageRow);
-    else //
     if (gokartLogImageRow instanceof LinmotGetListener)
       linmotGetListeners.add((LinmotGetListener) gokartLogImageRow);
-    else //
     if (gokartLogImageRow instanceof RimoGetListener)
       rimoGetListeners.add((RimoGetListener) gokartLogImageRow);
-    else //
     if (gokartLogImageRow instanceof GokartStatusListener)
       gokartStatusListeners.add((GokartStatusListener) gokartLogImageRow);
-    else //
     if (gokartLogImageRow instanceof ManualControlListener)
       manualControlListeners.add((ManualControlListener) gokartLogImageRow);
-    else //
     if (gokartLogImageRow instanceof GokartPoseListener)
       gokartPoseListeners.add((GokartPoseListener) gokartLogImageRow);
-    else //
     if (gokartLogImageRow instanceof Vmu931ImuFrameListener)
       vmu931ImuFrameListeners.add((Vmu931ImuFrameListener) gokartLogImageRow);
-    else //
     if (gokartLogImageRow instanceof MPCControlUpdateListener)
       mpcControlUpdateListeners.add((MPCControlUpdateListener) gokartLogImageRow);
+    if (gokartLogImageRow instanceof TensorListener)
+      tensorListeners.add((TensorListener) gokartLogImageRow);
   }
 
   private void append(int count) {
@@ -154,6 +154,10 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       ControlAndPredictionSteps controlAndPredictionSteps = //
           new ControlAndPredictionStepsMessage(byteBuffer).getPayload();
       mpcControlUpdateListeners.forEach(listener -> listener.getControlAndPredictionSteps(controlAndPredictionSteps));
+    } else //
+    if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2)) {
+      Tensor tensor = Se2CurveLcm.decode(byteBuffer).unmodifiable();
+      tensorListeners.forEach(listener -> listener.tensorReceived(tensor));
     }
     ++event_count;
   }
