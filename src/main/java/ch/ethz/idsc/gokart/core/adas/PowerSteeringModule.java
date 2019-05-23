@@ -5,9 +5,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
-import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
+import ch.ethz.idsc.gokart.calib.steer.SteerFeedForwardConfig;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
@@ -17,7 +20,6 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
@@ -26,9 +28,10 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class PowerSteeringModule extends AbstractModule implements SteerGetListener, SteerPutProvider {
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+  private GokartPoseListener gokartPoseListener = gokartPoseEvent -> this.gokartPoseEvent = gokartPoseEvent;
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
-  private final LidarLocalizationModule lidarLocalizationModule = //
-      ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
+  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final HapticSteerConfig hapticSteerConfig;
   private final GeodesicIIR1Filter geodesicIIR1Filter; // 1 means unfiltered
   // ---
@@ -45,12 +48,15 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
 
   @Override // from AbstractModule
   protected final void first() {
+    gokartPoseLcmClient.addListener(gokartPoseListener);
+    gokartPoseLcmClient.startSubscriptions();
     SteerSocket.INSTANCE.addGetListener(this);
     SteerSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
   protected final void last() {
+    gokartPoseLcmClient.stopSubscriptions();
     SteerSocket.INSTANCE.removeGetListener(this);
     SteerSocket.INSTANCE.removePutProvider(this);
   }
@@ -62,8 +68,8 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
 
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
-    Tensor velocity = Objects.nonNull(lidarLocalizationModule) //
-        ? lidarLocalizationModule.getVelocity() //
+    Tensor velocity = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()) //
+        ? gokartPoseEvent.getVelocity()
         : GokartPoseEvents.motionlessUninitialized().getVelocity();
     return steerColumnTracker.isCalibratedAndHealthy() && Objects.nonNull(steerGetEvent) //
         ? Optional.of(SteerPutEvent.createOn(putEvent( //
@@ -79,7 +85,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
     // term0 is the static compensation of the restoring force, depending on the current angle
     // term1 is the compensation depending on the velocity of the steering wheel
     // term2 amplifies the torque exerted by the driver
-    Scalar feedForwardValue = SteerFeedForward.FUNCTION.apply(currangle);
+    Scalar feedForwardValue = SteerFeedForwardConfig.GLOBAL.series().apply(currangle);
     Scalar term0 = hapticSteerConfig.feedForward //
         ? feedForwardValue
         : feedForwardValue.zero();

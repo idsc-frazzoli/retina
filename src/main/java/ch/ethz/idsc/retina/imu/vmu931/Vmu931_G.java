@@ -1,6 +1,11 @@
 // code by jph
 package ch.ethz.idsc.retina.imu.vmu931;
 
+import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
+
 /** resolution of gyroscope in g as gravitational constant 9.81[m*s^-2] */
 public enum Vmu931_G implements Vmu931Resolution {
   _2, //
@@ -19,5 +24,9 @@ public enum Vmu931_G implements Vmu931Resolution {
   @Override // from Vmu931Resolution
   public byte[] setActive() {
     return Vmu931Statics.command(command);
+  }
+
+  public Clip clip() {
+    return Clips.absolute(Quantity.of(mask * 2 * Vmu931ImuFrame.G_TO_M_S2, SI.ACCELERATION));
   }
 }

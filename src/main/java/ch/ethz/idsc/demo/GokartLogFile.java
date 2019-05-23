@@ -1926,6 +1926,40 @@ public enum GokartLogFile implements LogFile {
   _20190521T101604_2055cb1b,
   /** guest manual driving, slow mpc */
   _20190521T105301_2055cb1b,
+  /** imu installed rot90 */
+  _20190521T150634_d2699045, //
+  /** driving */
+  _20190521T155549_ade0cc11,
+  /** driving */
+  _20190521T162233_08f2154c,
+  /** driving */
+  _20190521T162815_08f2154c,
+  /** driving */
+  _20190521T163441_08f2154c,
+  /** driving */
+  _20190521T163700_08f2154c,
+  /** driving */
+  _20190521T164104_08f2154c,
+  /** driving */
+  _20190521T164721_08f2154c,
+  /** driving, clothoid pure pursuit */
+  _20190521T165154_ade0cc11,
+  /***************************************************/
+  /* 2019-05-23 */
+  /** power steering test */
+  _20190523T104827_f7d213db,
+  /** manual driving with backup
+   * imu on top of black gokart/CAN box below rear tire cover
+   * localization failures */
+  _20190523T114609_f7d213db,
+  /** driving without localization */
+  _20190523T120814_7e29435f,
+  /** driving, power steering, antilock */
+  _20190523T122730_6a3866ff,
+  /** imu on top of box */
+  _20190523T150902_6a3866ff,
+  /** antilock test
+   * imu below bottom of box */
   /***************************************************/
   ;
   // ---

@@ -14,6 +14,9 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
+import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
@@ -33,6 +36,7 @@ public class AntilockBrakeV2Module extends AbstractModule implements LinmotPutPr
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final HapticSteerConfig hapticSteerConfig;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
+  private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
 
   public AntilockBrakeV2Module() {
     this(HapticSteerConfig.GLOBAL);
@@ -56,7 +60,7 @@ public class AntilockBrakeV2Module extends AbstractModule implements LinmotPutPr
 
   @Override // from LinmotPutProvider
   public ProviderRank getProviderRank() {
-    return ProviderRank.TESTING;
+    return ProviderRank.EMERGENCY;
   }
 
   // button is pressed -> full brake
@@ -83,7 +87,9 @@ public class AntilockBrakeV2Module extends AbstractModule implements LinmotPutPr
     Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
     Tensor angularRate_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
     Tensor slip = angularRate_Origin_pair.subtract(angularRate_Y_pair); // vector of length 2 with entries of unit [s^-1]
-    System.out.println(slip.map(Round._3) + ", " + brakePosition + ", " + velocityOrigin.Get(0).map(Round._3));
+    binaryBlobPublisher.accept(VectorFloatBlob.encode(Tensors.of( //
+        slip.map(Round._3), brakePosition, velocityOrigin.Get(0).map(Round._3))));
+    System.out.println(slip.multiply(angularRate_Origin).map(Round._3) + " " + brakePosition + " " + velocityOrigin.Get(0).map(Round._3));
     // the brake cannot be constantly applied otherwise the brake motor heats up too much
     // there is a desired range for slip (in theory 0.1-0.25)
     // if the slip is outside this range, the position of the brake is increased/decreased
