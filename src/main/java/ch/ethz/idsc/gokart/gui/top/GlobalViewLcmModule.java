@@ -13,6 +13,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
+import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -92,8 +93,10 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(planRender);
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
     }
+    // if (true)
     {
       ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
+      extrudedFootprintRender.color = new Color(0, 255, 255, 128);
       gokartPoseLcmClient.addListener(extrudedFootprintRender.gokartPoseListener);
       gokartStatusLcmClient.addListener(extrudedFootprintRender.gokartStatusListener);
       viewLcmFrame.geometricComponent.addRenderInterface(extrudedFootprintRender);
@@ -106,7 +109,6 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.jButtonMapCreate.setEnabled(false);
       viewLcmFrame.jButtonMapUpdate.addActionListener(resampledLidarRender.action_mapUpdate);
       viewLcmFrame.jButtonMapUpdate.setEnabled(resampledLidarRender.updatedMap.nonEmpty());
-      // resampledLidarRender.trackSupplier = () -> viewLcmFrame.jToggleButton.isSelected();
       resampledLidarRender.setPointSize(2);
       resampledLidarRender.setReference(() -> PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
       resampledLidarRender.setColor(new Color(255, 0, 128, 128));
@@ -116,7 +118,6 @@ public class GlobalViewLcmModule extends AbstractModule {
       LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
       lidarRotationProvider.addListener(lidarAngularFiringCollector);
       lidarAngularFiringCollector.addListener(resampledLidarRender);
-      // vlp16LcmHandler.lidarAngularFiringCollector.addListener(lidarRender.lrbl);
       gokartPoseLcmClient.addListener(resampledLidarRender.gokartPoseListener);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarSpacialProvider);
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
@@ -168,7 +169,6 @@ public class GlobalViewLcmModule extends AbstractModule {
     mpcControlUpdateLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), viewLcmFrame.jFrame);
-    viewLcmFrame.configCoordinateOffset(400, 500);
     viewLcmFrame.jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
@@ -182,8 +182,6 @@ public class GlobalViewLcmModule extends AbstractModule {
   @Override // from AbstractModule
   public void last() {
     viewLcmFrame.close();
-    // if (Objects.nonNull(trackReconModule))
-    // trackReconModule.listenersRemove(trackReconRender);
   }
 
   private void private_windowClosed() {
@@ -204,6 +202,7 @@ public class GlobalViewLcmModule extends AbstractModule {
 
   public static void standalone() throws Exception {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
+    ModuleAuto.INSTANCE.runOne(PoseLcmServerModule.class);
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
     globalViewLcmModule.first();
     globalViewLcmModule.viewLcmFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -211,6 +210,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     globalViewLcmModule.viewLcmFrame.jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {
+        ModuleAuto.INSTANCE.endOne(PoseLcmServerModule.class);
         ModuleAuto.INSTANCE.endOne(LidarLocalizationModule.class);
       }
     });

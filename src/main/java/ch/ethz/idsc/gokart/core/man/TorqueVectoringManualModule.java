@@ -8,6 +8,8 @@ import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringInterface;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotPutProvider;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
@@ -40,6 +42,7 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
       ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final LidarLocalizationModule lidarLocalizationModule = //
       ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
+  private final LinmotPutProvider linmotPutProvider = new LinmotManualOverride();
   // ---
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
@@ -47,14 +50,16 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
     this.torqueVectoringInterface = torqueVectoring;
   }
 
-  @Override // from AbstractModule
+  @Override // from ManualModule
   final void protected_first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
+    LinmotSocket.INSTANCE.addPutProvider(linmotPutProvider);
   }
 
-  @Override // from AbstractModule
+  @Override // from ManualModule
   final void protected_last() {
+    LinmotSocket.INSTANCE.removePutProvider(linmotPutProvider);
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(this);
   }

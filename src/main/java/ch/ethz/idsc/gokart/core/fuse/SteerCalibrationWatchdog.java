@@ -29,6 +29,6 @@ public final class SteerCalibrationWatchdog extends EmergencyModule<RimoPutEvent
   static Optional<RimoPutEvent> create(SteerColumnTracker steerColumnTracker) {
     return steerColumnTracker.isCalibratedAndHealthy() //
         ? Optional.empty()
-        : StaticHelper.OPTIONAL_RIMO_PASSIVE; // deactivate throttle
+        : RimoPutEvent.OPTIONAL_RIMO_PASSIVE; // deactivate throttle
   }
 }

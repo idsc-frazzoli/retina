@@ -37,15 +37,16 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** prevents driving if pose is has insufficient quality for timeout duration */
-public class AutonomousEmergencyModule extends AbstractModule {
-  // TODO
+public class AutonomousSafetyModule extends AbstractModule {
+  private static final ProviderRank PROVIDER_RANK = ProviderRank.SAFETY;
+  // TODO move to config file
   private static final Scalar BRAKINGTHRESHOLD = Quantity.of(0.5, SI.VELOCITY);
   private static final Scalar BRAKINGVALUE = RealScalar.of(0.95);
   /** timeout 0.3[s] */
   private final Watchdog localizationWatchdog = SoftWatchdog.barking(0.3);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
-  private final LinmotGetListener linmotGetListener = new LinmotGetListener() {
+  final LinmotGetListener linmotGetListener = new LinmotGetListener() {
     @Override
     public void getEvent(LinmotGetEvent getEvent) {
       isTemperatureOperationSafe = //
@@ -63,15 +64,42 @@ public class AutonomousEmergencyModule extends AbstractModule {
     @Override // from RimoPutProvider
     public Optional<RimoPutEvent> putEvent() {
       Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
-      boostPushed = optional.isPresent() && optional.get().isResetPressed();
-      return !safeToDrive()//
-          ? Optional.of(RimoPutEvent.PASSIVE)//
+      if (optional.isPresent() && optional.get().isResetPressed())
+        isLocalizationBroken = false;
+      return isUnsafeToDrive() //
+          ? RimoPutEvent.OPTIONAL_RIMO_PASSIVE //
           : Optional.empty();
     }
 
     @Override // from RimoPutProvider
     public ProviderRank getProviderRank() {
-      return ProviderRank.EMERGENCY;
+      return PROVIDER_RANK;
+    }
+  };
+  private final SteerPutProvider steerPutProvider = new SteerPutProvider() {
+    @Override
+    public Optional<SteerPutEvent> putEvent() {
+      return isUnsafeToDrive() //
+          ? Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_0) //
+          : Optional.empty();
+    }
+
+    @Override
+    public ProviderRank getProviderRank() {
+      return PROVIDER_RANK;
+    }
+  };
+  private final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
+    @Override
+    public Optional<LinmotPutEvent> putEvent() {
+      return isUnsafeToDrive() && fastEnoughToBrake //
+          ? Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(BRAKINGVALUE))//
+          : Optional.empty();
+    }
+
+    @Override
+    public ProviderRank getProviderRank() {
+      return PROVIDER_RANK;
     }
   };
   final GokartPoseListener gokartPoseListener = new GokartPoseListener() {
@@ -81,20 +109,14 @@ public class AutonomousEmergencyModule extends AbstractModule {
         localizationWatchdog.notifyWatchdog();
       // trigger fuse
       boolean instantStop = Scalars.isZero(gokartPoseEvent.getQuality());
-      if (boostPushed) {
-        isLocalizationBroken = false;
-        boostPushed = false;
-      }
-      isLocalizationBroken = instantStop || isLocalizationBroken || localizationWatchdog.isBarking();
+      isLocalizationBroken |= instantStop || localizationWatchdog.isBarking();
     }
   };
   // when watchdog is triggered, the fuse is set to true.
-  private boolean isLocalizationBroken = false;
-  private boolean isTemperatureOperationSafe = true;
+  private boolean isLocalizationBroken = true;
+  private boolean isTemperatureOperationSafe = false;
   private boolean fastEnoughToBrake = true;
-  private boolean boostPushed = false;
 
-  // ManualControlLcmClient manualControlLcmClient
   @Override // from AbstractModule
   protected void first() {
     gokartPoseLcmClient.addListener(gokartPoseListener);
@@ -116,34 +138,9 @@ public class AutonomousEmergencyModule extends AbstractModule {
     SteerSocket.INSTANCE.removePutProvider(steerPutProvider);
   }
 
-  private boolean safeToDrive() {
-    return isTemperatureOperationSafe && !isLocalizationBroken;
+  private boolean isUnsafeToDrive() {
+    if (SafetyConfig.GLOBAL.checkAutonomy)
+      return !isTemperatureOperationSafe || isLocalizationBroken;
+    return false;
   }
-
-  private final SteerPutProvider steerPutProvider = new SteerPutProvider() {
-    @Override
-    public Optional<SteerPutEvent> putEvent() {
-      return !safeToDrive() //
-          ? Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_0)//
-          : Optional.empty();
-    }
-
-    @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.EMERGENCY;
-    }
-  };
-  private final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
-    @Override
-    public Optional<LinmotPutEvent> putEvent() {
-      return !safeToDrive() && fastEnoughToBrake //
-          ? Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(BRAKINGVALUE))//
-          : Optional.empty();
-    }
-
-    @Override
-    public ProviderRank getProviderRank() {
-      return ProviderRank.EMERGENCY;
-    }
-  };
 }

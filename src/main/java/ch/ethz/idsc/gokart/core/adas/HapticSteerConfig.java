@@ -16,8 +16,7 @@ public class HapticSteerConfig {
   public static final HapticSteerConfig GLOBAL = AppResources.load(new HapticSteerConfig());
   /***************************************************/
   /** value to amplify the input in the PowerSteeringModule */
-  public Scalar staticCompensation1 = Quantity.of(0.968725, "SCT*SCE^-1");
-  public Scalar staticCompensation3 = Quantity.of(-0.414766, "SCT*SCE^-3");
+  public Boolean feedForward = true;
   // ---
   public Scalar velocityFilter = RealScalar.of(0.2);
   public Scalar latForceCompensation = Quantity.of(0.7, "SCT*s*m^-1");

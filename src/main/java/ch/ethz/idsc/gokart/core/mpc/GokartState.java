@@ -280,7 +280,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override // from OfflineVectorInterface
   public Tensor asVector() {
-    return Tensors.vector(//
+    return Tensors.vectorFloat( //
         time, //
         Ux, //
         Uy, //

@@ -27,7 +27,7 @@ public final class ManualControlLcmClient implements LcmClientInterface {
     @Override // from BinaryLcmClient
     protected void messageReceived(ByteBuffer byteBuffer) {
       ManualControlInterface manualControlInterface = new GokartLabjackFrame(byteBuffer);
-      listeners.forEach(l -> l.manualControl(manualControlInterface));
+      listeners.forEach(listener -> listener.manualControl(manualControlInterface));
     }
   };
 

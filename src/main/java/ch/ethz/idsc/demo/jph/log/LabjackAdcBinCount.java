@@ -46,7 +46,7 @@ import ch.ethz.idsc.tensor.pdf.BinCounts;
 
   public static void main(String[] args) {
     for (GokartLogFile gokartLogFile : GokartLogFile.values())
-      if (GokartLogFile._20181213T100655_add1a7bf.ordinal() <= gokartLogFile.ordinal()) {
+      if (GokartLogFile._20181213T133900_a04ee685.ordinal() <= gokartLogFile.ordinal()) {
         File export = HomeDirectory.Documents("labjack", gokartLogFile.getTitle() + ".csv");
         if (!export.exists())
           try {

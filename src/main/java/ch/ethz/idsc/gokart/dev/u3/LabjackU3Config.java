@@ -15,8 +15,4 @@ public enum LabjackU3Config {
   public boolean isFeasible() {
     return getExecutableLcm().isFile();
   }
-
-  public File getExecutableTxt() {
-    return new File(directory, "u3adctxt");
-  }
 }

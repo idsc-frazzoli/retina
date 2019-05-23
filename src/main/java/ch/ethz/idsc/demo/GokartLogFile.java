@@ -1187,10 +1187,10 @@ public enum GokartLogFile implements LogFile {
   /** torque vectoring */
   _20181211T155230_f8690659,
   /***************************************************/
-  /* 2018-12-13
-   * labjack installed */
+  /* 2018-12-13 */
   /** demo manual driving, trajectory planning */
   _20181213T100655_add1a7bf,
+  /* labjack installed */
   /** demo manual driving, trajectory planning */
   _20181213T133900_a04ee685,
   /** manual driving with throttle (short) */
@@ -1914,6 +1914,36 @@ public enum GokartLogFile implements LogFile {
   _20190516T182806_bcf7fd52,
   /** driving with power steering */
   _20190516T185634_bcf7fd52,
+  /***************************************************/
+  /* 2019-05-21 */
+  /** manual driving, power steering, pure pursuit */
+  _20190521T093322_2055cb1b,
+  /** manual driving, power steering */
+  _20190521T094217_2055cb1b,
+  /** slow manual driving */
+  _20190521T094746_2055cb1b,
+  /** fast mpc */
+  _20190521T101604_2055cb1b,
+  /** guest manual driving, slow mpc */
+  _20190521T105301_2055cb1b,
+  /** imu installed rot90 */
+  _20190521T150634_d2699045, //
+  /** driving */
+  _20190521T155549_ade0cc11,
+  /** driving */
+  _20190521T162233_08f2154c,
+  /** driving */
+  _20190521T162815_08f2154c,
+  /** driving */
+  _20190521T163441_08f2154c,
+  /** driving */
+  _20190521T163700_08f2154c,
+  /** driving */
+  _20190521T164104_08f2154c,
+  /** driving */
+  _20190521T164721_08f2154c,
+  /** driving, clothoid pure pursuit */
+  _20190521T165154_ade0cc11,
   /***************************************************/
   ;
   // ---

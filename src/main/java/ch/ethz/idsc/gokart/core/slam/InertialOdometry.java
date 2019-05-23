@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.slam;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.sophus.group.RnGeodesic;
@@ -10,6 +11,7 @@ import ch.ethz.idsc.sophus.group.Se2Geodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -34,7 +36,10 @@ import ch.ethz.idsc.tensor.sca.Mod;
    * 
    * @param pose {x[m], y[m], angle[]} */
   public final synchronized void resetPose(Tensor pose) {
-    this.pose = pose.copy();
+    Magnitude.METER.apply(pose.Get(0));
+    Magnitude.METER.apply(pose.Get(1));
+    Magnitude.ONE.apply(pose.Get(2));
+    this.pose = VectorQ.requireLength(pose, 3).copy();
   }
 
   /** sets velocity to {0[m*s^-1], 0[m*s^-1]} */

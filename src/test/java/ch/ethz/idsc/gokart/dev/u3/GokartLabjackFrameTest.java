@@ -7,100 +7,110 @@ import junit.framework.TestCase;
 
 public class GokartLabjackFrameTest extends TestCase {
   public void testPassive() {
-    GokartLabjackFrame gokartLabjackFrame = //
-        new GokartLabjackFrame(new LabjackAdcFrame(new float[] { 1f, 1f, 0f, 1f, 1f }));
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 1f, 1f, 0f, 1f, 1f });
+    GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertFalse(gokartLabjackFrame.isResetPressed());
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.getBreakStrength(), RealScalar.ZERO);
     assertEquals(gokartLabjackFrame.toString(), "t=0.00");
   }
 
   public void testResetFalse() {
-    GokartLabjackFrame gokartLabjackFrame = //
-        new GokartLabjackFrame(new LabjackAdcFrame(new float[] { 2.5f, 0f, 0f, 0f, 0f }));
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 2.5f, 0f, 0f, 0f, 0f });
+    GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertFalse(gokartLabjackFrame.isResetPressed());
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.getBreakStrength(), RealScalar.ZERO);
     assertEquals(gokartLabjackFrame.toString(), "t=0.00");
   }
 
   public void testResetTrue() {
-    GokartLabjackFrame gokartLabjackFrame = //
-        new GokartLabjackFrame(new LabjackAdcFrame(new float[] { 4.7f, 0f, 0f, 0f, 0f }));
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 4.7f, 0f, 0f, 0f, 0f });
+    GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertTrue(gokartLabjackFrame.isResetPressed());
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.getBreakStrength(), RealScalar.ZERO);
     assertEquals(gokartLabjackFrame.toString(), "t=0.00 B");
   }
 
   public void testReverseFalse() {
-    GokartLabjackFrame gokartLabjackFrame = //
-        new GokartLabjackFrame(new LabjackAdcFrame(new float[] { 0f, 2.5f, 0f, 0f, 0f }));
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 2.5f, 0f, 0f, 0f });
+    GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertFalse(gokartLabjackFrame.isResetPressed());
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.getBreakStrength(), RealScalar.ZERO);
     assertEquals(gokartLabjackFrame.toString(), "t=0.00");
   }
 
   public void testReverseTrue() {
-    GokartLabjackFrame gokartLabjackFrame = //
-        new GokartLabjackFrame(new LabjackAdcFrame(new float[] { 0f, 4.7f, 0f, 0f, 0f }));
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 4.7f, 0f, 0f, 0f });
+    GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertFalse(gokartLabjackFrame.isResetPressed());
     assertTrue(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.getBreakStrength(), RealScalar.ZERO);
     assertEquals(gokartLabjackFrame.toString(), "t=0.00 R");
   }
 
   public void testAutonomousFalse() {
-    GokartLabjackFrame gokartLabjackFrame = //
-        new GokartLabjackFrame(new LabjackAdcFrame(new float[] { 0f, 0f, 0f, 2.5f, 0f }));
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 0f, 0f, 2.5f, 0f });
+    GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertFalse(gokartLabjackFrame.isResetPressed());
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.getBreakStrength(), RealScalar.ZERO);
     assertEquals(gokartLabjackFrame.toString(), "t=0.00");
   }
 
   public void testAutonomousTrue() {
-    GokartLabjackFrame gokartLabjackFrame = //
-        new GokartLabjackFrame(new LabjackAdcFrame(new float[] { 0f, 0f, 0f, 11.5f, 0f }));
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 0f, 0f, 10.1f, 0f });
+    GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertFalse(gokartLabjackFrame.isResetPressed());
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertTrue(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ZERO);
+    assertEquals(gokartLabjackFrame.getBreakStrength(), RealScalar.ZERO);
     assertEquals(gokartLabjackFrame.toString(), "t=0.00 A");
   }
 
   public void testThrottleForward() {
-    GokartLabjackFrame gokartLabjackFrame = //
-        new GokartLabjackFrame(new LabjackAdcFrame(new float[] { 0f, 0f, 5.2f, 0f, 0f }));
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 0f, 5.2f, 0f, 0f });
+    GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertFalse(gokartLabjackFrame.isResetPressed());
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ONE);
+    assertEquals(gokartLabjackFrame.getBreakStrength(), RealScalar.ZERO);
     assertEquals(gokartLabjackFrame.toString(), "t=1.00");
   }
 
   public void testThrottleForward2() {
-    GokartLabjackFrame gokartLabjackFrame = //
-        new GokartLabjackFrame(new LabjackAdcFrame(new float[] { 0f, 2.5f, 5.2f, 0f, 0f }));
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 2.5f, 5.2f, 0f, 0f });
+    GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertFalse(gokartLabjackFrame.isResetPressed());
     assertFalse(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ONE);
+    assertEquals(gokartLabjackFrame.getBreakStrength(), RealScalar.ZERO);
   }
 
   public void testThrottleReverse() {
-    GokartLabjackFrame gokartLabjackFrame = //
-        new GokartLabjackFrame(new LabjackAdcFrame(new float[] { 0f, 11.5f, 5.2f, 0f, 0f }));
+    LabjackAdcFrame labjackAdcFrame = new LabjackAdcFrame(new float[] { 0f, 11.5f, 5.2f, 0f, 0f });
+    GokartLabjackFrame gokartLabjackFrame = new GokartLabjackFrame(labjackAdcFrame.allADC());
     assertFalse(gokartLabjackFrame.isResetPressed());
     assertTrue(gokartLabjackFrame.isReversePressed());
     assertFalse(gokartLabjackFrame.isAutonomousPressed());
     assertEquals(gokartLabjackFrame.getAheadAverage(), RealScalar.ONE.negate());
+    assertEquals(gokartLabjackFrame.getBreakStrength(), RealScalar.ZERO);
   }
 }

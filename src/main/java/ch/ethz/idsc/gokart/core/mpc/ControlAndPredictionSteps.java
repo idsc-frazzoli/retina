@@ -60,4 +60,10 @@ public class ControlAndPredictionSteps implements BufferInsertable {
         .map(ControlAndPredictionStep::gokartState) //
         .map(GokartState::getPose));
   }
+
+  /** @return */
+  public Tensor asMatrix() {
+    return Tensor.of(Stream.of(steps) //
+        .map(ControlAndPredictionStep::asVector));
+  }
 }

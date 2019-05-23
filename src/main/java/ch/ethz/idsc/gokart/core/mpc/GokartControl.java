@@ -96,12 +96,12 @@ import ch.ethz.idsc.tensor.qty.Unit;
 
   @Override
   public Tensor asVector() {
-    return Tensors.of(//
-        getuL(), //
-        getuR(), //
-        getudotS(), //
-        getuB(), //
-        getaB());
+    return Tensors.vectorFloat( //
+        uL, //
+        uR, //
+        udotS, //
+        uB, //
+        aB);
   }
 
   @Override
