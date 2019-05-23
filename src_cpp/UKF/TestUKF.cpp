@@ -13,7 +13,7 @@ void TestUKF::test() {
     UKF::ParameterVec mean = UKF::ParameterVec::Zero();
     UKF::VarienceMat varience = UKF::VarienceMat::Identity()*1000;
     UKF ukf = UKF(mean, varience);
-    UKF::MeasurementVec groundTruth;
+    UKF::ParameterVec groundTruth;
     groundTruth<< 9, 1, 10 ;
 
 
@@ -40,7 +40,7 @@ void TestUKF::test() {
                     return measurementVec;
                 };
 
-        UKF::MesurmentMat measurementNoise = UKF::MesurmentMat::Identity();
+        UKF::MeasurmentMat measurementNoise = UKF::MeasurmentMat::Identity();
         UKF::VarienceMat processNoise = UKF::VarienceMat::Zero();
         UKF::MeasurementVec z = measureFunction(groundTruth);
 
