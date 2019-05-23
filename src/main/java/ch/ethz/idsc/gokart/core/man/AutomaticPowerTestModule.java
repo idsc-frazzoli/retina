@@ -44,7 +44,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   private Tensor topDownMinSpeed;
   private Tensor completionIndex;
   private Scalar maxPower;
-  private Scalar minPower;
+  //private Boolean slowDown
+  //private Scalar minPower;
   private int steps = 20;
   private int currentInd = 0;
   private boolean up = true;
@@ -58,7 +59,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   void protected_first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
-    Scalar maxPower = Quantity.of(RimoPutTires.MAX_TORQUE, NonSI.ARMS);
+    maxPower = Quantity.of(RimoPutTires.MAX_TORQUE, NonSI.ARMS);
     Scalar minPower = Quantity.of(RimoPutTires.MIN_TORQUE, NonSI.ARMS);
     motorCurrentValues = Subdivide.of(minPower, maxPower, steps).unmodifiable();
     bottomUpMaxSpeed = Tensors.vector(i -> minSpeed, steps + 1);
