@@ -1945,6 +1945,22 @@ public enum GokartLogFile implements LogFile {
   /** driving, clothoid pure pursuit */
   _20190521T165154_ade0cc11,
   /***************************************************/
+  /* 2019-05-23 */
+  /** power steering test */
+  _20190523T104827_f7d213db,
+  /** manual driving with backup
+   * imu on top of black gokart/CAN box below rear tire cover
+   * localization failures */
+  _20190523T114609_f7d213db,
+  /** driving without localization */
+  _20190523T120814_7e29435f,
+  /** driving, power steering, antilock */
+  _20190523T122730_6a3866ff,
+  /** imu on top of box */
+  _20190523T150902_6a3866ff,
+  /** antilock test
+   * imu below bottom of box */
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
