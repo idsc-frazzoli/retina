@@ -2,8 +2,6 @@
 package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.GridLayout;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -35,25 +33,25 @@ public class LinmotConstantPressTestModule extends AbstractModule {
     LinmotSocket.INSTANCE.addPutProvider(linmotConstantPressTestLinmot);
     {
       JPanel jPanel = new JPanel(new GridLayout(2, 2));
-      List<JButton> list = new ArrayList<>();
+      // List<JButton> list = new ArrayList<>();
       // button for previous test
       prev = new JButton("previous");
-      list.add(prev);
+      // list.add(prev);
       prev.addActionListener(actionEvent -> previous());
       jPanel.add(prev);
       // button for next test
       next = new JButton("next");
-      list.add(next);
+      // list.add(next);
       next.addActionListener(actionEvent -> next());
       jPanel.add(next);
       // button for test
       test = new JButton("set Active");
-      list.add(test);
+      // list.add(test);
       test.addActionListener(actionEvent -> switchActive());
       jPanel.add(test);
       // button for test
       setoff = new JButton("set off");
-      list.add(setoff);
+      // list.add(setoff);
       setoff.addActionListener(actionEvent -> switchOff());
       jPanel.add(setoff);
       updateButtons();
