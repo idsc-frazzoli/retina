@@ -60,7 +60,7 @@ public class AntilockBrakeV2Module extends AbstractModule implements LinmotPutPr
 
   @Override // from LinmotPutProvider
   public ProviderRank getProviderRank() {
-    return ProviderRank.TESTING;
+    return ProviderRank.EMERGENCY;
   }
 
   // button is pressed -> full brake
@@ -89,7 +89,7 @@ public class AntilockBrakeV2Module extends AbstractModule implements LinmotPutPr
     Tensor slip = angularRate_Origin_pair.subtract(angularRate_Y_pair); // vector of length 2 with entries of unit [s^-1]
     binaryBlobPublisher.accept(VectorFloatBlob.encode(Tensors.of( //
         slip.map(Round._3), brakePosition, velocityOrigin.Get(0).map(Round._3))));
-    System.out.println(slip.map(Round._3) + " " + brakePosition + " " + velocityOrigin.Get(0).map(Round._3));
+    System.out.println(slip.multiply(angularRate_Origin).map(Round._3) + " " + brakePosition + " " + velocityOrigin.Get(0).map(Round._3));
     // the brake cannot be constantly applied otherwise the brake motor heats up too much
     // there is a desired range for slip (in theory 0.1-0.25)
     // if the slip is outside this range, the position of the brake is increased/decreased
