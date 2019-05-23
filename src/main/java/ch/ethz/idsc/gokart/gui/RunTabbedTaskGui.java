@@ -35,6 +35,7 @@ import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
+import ch.ethz.idsc.gokart.core.man.AutomaticPowerTestModule;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
@@ -123,6 +124,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       AntilockBrakeCheckConditions.class, //
       AntilockBrakeModule.class, //
       AntilockBrakeV2Module.class, //
+      AutomaticPowerTestModule.class, //
       RimoThrustManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
       DriftThrustManualModule.class //
