@@ -34,6 +34,8 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.red.Min;
 
 public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> implements RimoGetListener {
   private final Scalar maxSpeed = RimoConfig.GLOBAL.testMaxSpeed;
@@ -162,7 +164,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
           } else {
             // accelerate with selected power
             arms_raw = Magnitude.ARMS.toShort(motorCurrentValues.Get(currentInd));
-            bottomUpMaxSpeed.set(meanTangentSpeed, currentInd);
+            Scalar newMaxSpeed = Max.of(meanTangentSpeed, bottomUpMaxSpeed.Get(currentInd));
+            bottomUpMaxSpeed.set(newMaxSpeed, currentInd);
           }
         }
       } else { // !up
@@ -178,7 +181,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
           } else {
             // decelerate with selected power
             arms_raw = Magnitude.ARMS.toShort(motorCurrentValues.Get(currentInd));
-            topDownMinSpeed.set(meanTangentSpeed, currentInd);
+            Scalar newMinSpeed = Min.of(meanTangentSpeed, topDownMinSpeed.Get(currentInd))
+            topDownMinSpeed.set(newMinSpeed, currentInd);
           }
         }
       }
