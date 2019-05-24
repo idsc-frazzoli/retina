@@ -44,8 +44,9 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   private Tensor topDownMinSpeed;
   private Tensor completionIndex;
   private Scalar maxPower;
+  private Scalar minPower;
   private Boolean slowDownTriggered = false;
-  // private Scalar minPower;
+  private Boolean slowDownCompleted = false;
   private int steps = 20;
   private int currentInd = 0;
   private boolean up = true;
@@ -60,7 +61,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
     maxPower = Quantity.of(RimoPutTires.MAX_TORQUE, NonSI.ARMS);
-    Scalar minPower = Quantity.of(RimoPutTires.MIN_TORQUE, NonSI.ARMS);
+    minPower = Quantity.of(RimoPutTires.MIN_TORQUE, NonSI.ARMS);
     motorCurrentValues = Subdivide.of(minPower, maxPower, steps).unmodifiable();
     bottomUpMaxSpeed = Tensors.vector(i -> minSpeed, steps + 1);
     topDownMinSpeed = Tensors.vector(i -> maxSpeed, steps + 1);
@@ -145,12 +146,17 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
     if (manualControlInterface.isAutonomousPressed()) {
       // logic
       if (up) {
-        if (Scalars.lessThan(bottomUpMaxSpeed.Get(currentInd), maxSpeed.add(speedMargin))) {
+        Boolean speedThreshold = Scalars.lessThan( //
+            meanTangentSpeed.add(speedMargin), //
+            bottomUpMaxSpeed.Get(currentInd));
+        if (!slowDownCompleted) {
+          // we have to slow down to last value first
+          arms_raw = Magnitude.ARMS.toShort(minPower);
+          slowDownCompleted = !speedThreshold;
+        } else if (Scalars.lessThan(bottomUpMaxSpeed.Get(currentInd), maxSpeed.add(speedMargin))) {
           // we are accelerating up
           // are we slower than last max tested value
-          if (Scalars.lessThan( //
-              meanTangentSpeed.add(speedMargin), //
-              bottomUpMaxSpeed.Get(currentInd))) {
+          if (speedThreshold) {
             // accelerate with max power
             arms_raw = Magnitude.ARMS.toShort(maxPower);
           } else {
@@ -178,6 +184,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
       }
     } else { // !manualControlInterface.isAutonomousPressed()
       slowDownTriggered = false;
+      slowDownCompleted = false;
       Scalar ahead = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0) //
           .multiply(ManualConfig.GLOBAL.torqueLimit);
       arms_raw = Magnitude.ARMS.toShort(ahead);
