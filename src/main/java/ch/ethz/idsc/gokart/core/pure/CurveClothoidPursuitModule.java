@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.Tensor;
 public class CurveClothoidPursuitModule extends CurvePursuitModule {
   private final GlobalViewLcmModule globalViewLcmModule = //
       ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
+  private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
 
   public CurveClothoidPursuitModule(PursuitConfig pursuitConfig) {
     super(pursuitConfig);
@@ -23,7 +24,7 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule {
   protected synchronized Optional<Scalar> getRatio(Tensor pose) {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent()) {
-      Optional<ClothoidPlan> plan = CurveClothoidPursuitHelper.getPlan( //
+      Optional<ClothoidPlan> plan = planner.getPlan( //
           pose, //
           speed, //
           optionalCurve.get(), //

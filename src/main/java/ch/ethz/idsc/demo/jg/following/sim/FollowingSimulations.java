@@ -6,7 +6,7 @@ import java.util.Optional;
 import ch.ethz.idsc.demo.jg.following.analysis.ErrorInterface;
 import ch.ethz.idsc.demo.jg.following.analysis.FollowingError;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
-import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitHelper;
+import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
 import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
 import ch.ethz.idsc.gokart.core.pure.GeodesicPursuitParams;
 import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
@@ -32,40 +32,48 @@ public enum FollowingSimulations implements ErrorInterface {
     }
   },
   CLOTHOID_05 {
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
+
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(.5, SI.METER);
-      return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
+      return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
           PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_3 {
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
+
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(3, SI.METER);
-      return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
+      return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
           PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_5 {
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
+
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(5, SI.METER);
-      return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
+      return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
           PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_7 {
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
+
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(7, SI.METER);
-      return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
+      return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           PursuitConfig.GLOBAL.trajectoryEntryFinder, //
           PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
