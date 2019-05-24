@@ -16,7 +16,7 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule {
       ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
   private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
 
-  public CurveClothoidPursuitModule(PursuitConfig pursuitConfig) {
+  public CurveClothoidPursuitModule(ClothoidPursuitConfig pursuitConfig) {
     super(pursuitConfig);
   }
 
@@ -29,8 +29,8 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule {
           speed, //
           optionalCurve.get(), //
           isForward, //
-          pursuitConfig.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits());
+          ((ClothoidPursuitConfig) pursuitConfig).trajectoryEntryFinder, //
+          ClothoidPursuitConfig.ratioLimits());
       if (Objects.nonNull(globalViewLcmModule))
         globalViewLcmModule.setPlan(plan.map(ClothoidPlan::curve).orElse(null));
       return plan.map(ClothoidPlan::ratio);

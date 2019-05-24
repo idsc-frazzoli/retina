@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitModule;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
-import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
@@ -24,7 +24,7 @@ public class ClothoidTrajectoryModule extends GokartTrajectoryModule {
   }
 
   /* package */ ClothoidTrajectoryModule(TrajectoryConfig trajectoryConfig) {
-    super(trajectoryConfig, new CurveClothoidPursuitModule(PursuitConfig.GLOBAL));
+    super(trajectoryConfig, new CurveClothoidPursuitModule(ClothoidPursuitConfig.GLOBAL));
   }
 
   @Override

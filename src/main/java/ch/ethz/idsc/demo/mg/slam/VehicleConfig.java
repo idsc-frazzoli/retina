@@ -1,7 +1,7 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
-/** TODO put in same format as e.g. PursuitConfig or SteerConfig, or include the parameters
+/** TODO put in same format as e.g. PurePursuitConfig or SteerConfig, or include the parameters
  * in such a file */
 // These values are not parameters but physical limits
 public enum VehicleConfig {
