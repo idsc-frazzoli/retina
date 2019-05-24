@@ -71,7 +71,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    currentAcceleration = SensorsConfig.getPlanarVmu931Imu().accXY(vmu931ImuFrame).Get(0);
+    currentAcceleration = SensorsConfig.GLOBAL.getPlanarVmu931Imu().accXY(vmu931ImuFrame).Get(0);
   }
 
   private Scalar wheelSpeed = Quantity.of(0, SI.VELOCITY);

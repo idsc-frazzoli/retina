@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 abstract class GuideManualModule<PE> extends ManualModule<PE> {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
 
-  @Override // from JoystickModule
+  @Override // from ManualModule
   final Optional<PE> translate(ManualControlInterface manualControlInterface) {
     return private_translate(steerColumnInterface, manualControlInterface);
   }

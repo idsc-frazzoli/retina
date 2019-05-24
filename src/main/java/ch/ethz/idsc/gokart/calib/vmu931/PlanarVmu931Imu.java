@@ -13,6 +13,8 @@ public interface PlanarVmu931Imu {
    * @return vector of length 2 of acceleration in gokart coordinates */
   Tensor accXY(Vmu931ImuFrame vmu931ImuFrame);
 
+  /** @param accXY vector of length 2
+   * @return */
   Tensor accXY(Tensor accXY);
 
   /** @param vmu931ImuFrame

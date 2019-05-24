@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 public enum Vmu931ImuVehicleChannel implements SingleChannelInterface {
   INSTANCE;
   // ---
-  private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
+  private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.GLOBAL.getPlanarVmu931Imu();
 
   @Override // from SingleChannelInterface
   public String channel() {

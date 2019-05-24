@@ -1,11 +1,7 @@
 // code by am, jph
 package ch.ethz.idsc.gokart.calib.steer;
 
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Series;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** torque needed to maintain position of steering column
@@ -15,11 +11,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 public enum SteerFeedForward implements ScalarUnaryOperator {
   FUNCTION;
   // ---
-  private final ScalarUnaryOperator series = Series.of(Tensors.of( //
-      RealScalar.ZERO, //
-      Quantity.of(+0.968725, "SCT*SCE^-1"), //
-      RealScalar.ZERO, //
-      Quantity.of(-0.414766, "SCT*SCE^-3")));
+  private final ScalarUnaryOperator series = SteerFeedForwardConfig.GLOBAL.series();
 
   @Override
   public Scalar apply(Scalar column) {

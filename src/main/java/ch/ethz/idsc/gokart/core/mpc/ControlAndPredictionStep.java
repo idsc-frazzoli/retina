@@ -4,8 +4,11 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
+import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
+import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Join;
 
-/* package */ class ControlAndPredictionStep implements BufferInsertable {
+/* package */ class ControlAndPredictionStep implements BufferInsertable, OfflineVectorInterface {
   static final int LENGTH = GokartControl.LENGTH + GokartState.LENGTH;
   // ---
   private final GokartControl gokartControl;
@@ -43,5 +46,10 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
   public GokartControl gokartControl() {
     return gokartControl;
+  }
+
+  @Override
+  public Tensor asVector() {
+    return Join.of(gokartControl.asVector(), gokartState.asVector());
   }
 }

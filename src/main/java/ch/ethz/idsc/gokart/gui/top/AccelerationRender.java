@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 public class AccelerationRender extends CrosshairRender implements Vmu931ImuFrameListener {
   private static final Scalar FILTER = RealScalar.of(0.02);
   // ---
-  private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.getPlanarVmu931Imu();
+  private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.GLOBAL.getPlanarVmu931Imu();
   private final GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, FILTER);
   private final Tensor matrix;
 

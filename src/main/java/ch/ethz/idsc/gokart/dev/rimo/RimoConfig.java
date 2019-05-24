@@ -44,6 +44,7 @@ public class RimoConfig {
   public Scalar torqueLimit = Quantity.of(1500, NonSI.ARMS);
   /** corresponds to tangent speed of 5[cm*s^-1] */
   public Scalar speedChop = Quantity.of(0.05, SI.VELOCITY);
+  public Scalar testMaxSpeed = Quantity.of(10, SI.VELOCITY);
 
   /***************************************************/
   /** @return clip interval for permitted torque */

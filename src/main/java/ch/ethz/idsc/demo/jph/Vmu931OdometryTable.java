@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
 /* package */ class Vmu931OdometryTable implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
-  private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
+  private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.GLOBAL.getPlanarVmu931Imu());
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {

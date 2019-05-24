@@ -49,7 +49,7 @@ import ch.ethz.idsc.tensor.sca.Round;
             time.map(Magnitude.SECOND).map(Round._6), //
             RealScalar.of(vmu931ImuFrame.timestamp_ms()), //
             VelocityHelper.toUnitless(gokartPoseEvent.getVelocity()).map(Round._5),
-            SensorsConfig.getPlanarVmu931Imu().accXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), //
+            SensorsConfig.GLOBAL.getPlanarVmu931Imu().accXY(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), //
             RealScalar.of(steerPosition.number().floatValue()), //
             powerPair.map(Magnitude.ARMS).map(Round._5), //
             powerAccelerationLeft.map(Magnitude.ACCELERATION).map(Round._5), //

@@ -3,6 +3,8 @@ package ch.ethz.idsc.retina.imu.vmu931;
 
 /* package */ enum Vmu931Statics {
   ;
+  /** factor from g to m*s^-2 */
+  static final double G_TO_M_S2 = 9.81;
   /** accelerometer */
   static final byte ID_ACCELEROMETER = 'a';
   /** gyroscope */
