@@ -51,4 +51,13 @@ public enum CurveClothoidPursuitHelper {
     int idx = ArgMin.of(Tensor.of(trajectory.stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector)));
     return idx > 0 ? curveLength(trajectory.extract(0, idx + 1)) : Quantity.of(0, SI.METER);
   }
+
+  /** @param clothoidPlan
+   * @param pose of vehicle {x[m], y[m], angle}
+   * @return [m] */
+  /* package */ static Scalar distanceToDrive(ClothoidPlan clothoidPlan, Tensor pose) {
+    Tensor trajectory = clothoidPlan.curve();
+    int idx = ArgMin.of(Tensor.of(trajectory.stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector)));
+    return idx < trajectory.length() - 1 ? curveLength(trajectory.extract(idx, trajectory.length())) : Quantity.of(0, SI.METER);
+  }
 }

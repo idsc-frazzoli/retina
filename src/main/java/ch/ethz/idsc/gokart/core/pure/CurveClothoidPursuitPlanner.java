@@ -44,7 +44,7 @@ public class CurveClothoidPursuitPlanner {
       List<DynamicRatioLimit> ratioLimits) {
     if (plan.isPresent()) {
       ClothoidPlan clothoidPlan = plan.get();
-      if (Scalars.lessEquals(ClothoidPursuitConfig.GLOBAL.minDistance, CurveClothoidPursuitHelper.distanceDriven(clothoidPlan, pose))) // TODO maybe introduce some margin
+      if (Scalars.lessEquals(CurveClothoidPursuitHelper.distanceToDrive(clothoidPlan, pose), ClothoidPursuitConfig.GLOBAL.minDistance))
         replanning(pose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
       else {
         Scalar deviation = clothoidPlan.curve().stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector).reduce(Min::of).get();
@@ -74,7 +74,7 @@ public class CurveClothoidPursuitPlanner {
      * TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
      * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, ClothoidPursuitConfig.GLOBAL.getOptimizationSteps()).apply(tensor);
      * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
-    Optional<Tensor> lookAhead = new PseudoSe2CurveIntersection(ClothoidPursuitConfig.GLOBAL.minDistance).string(tensor);
+    Optional<Tensor> lookAhead = new PseudoSe2CurveIntersection(ClothoidPursuitConfig.GLOBAL.lookAhead).string(tensor);
     plan = lookAhead.map(vector -> ClothoidPlan.from(vector, pose, isForward).orElse(null));
   }
 
@@ -83,7 +83,7 @@ public class CurveClothoidPursuitPlanner {
    * @param speed
    * @return quantity with unit [m] */
   public static Scalar dragonNightKingKnife(Tensor vector, Predicate<Scalar> isCompliant, Scalar speed) {
-    if (Scalars.lessThan(ClothoidPursuitConfig.GLOBAL.minDistance, Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)))) {
+    if (Scalars.lessThan(ClothoidPursuitConfig.GLOBAL.lookAhead, Norm._2.ofVector(Extract2D.FUNCTION.apply(vector)))) {
       GeodesicPursuitInterface geodesicPursuit = new ClothoidPursuit(vector);
       Tensor ratios = geodesicPursuit.ratios();
       if (ratios.stream().map(Tensor::Get).allMatch(isCompliant)) {

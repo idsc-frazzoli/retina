@@ -26,7 +26,9 @@ public class ClothoidPursuitConfig extends PursuitConfig{
   public static final ClothoidPursuitConfig GLOBAL = AppResources.load(new ClothoidPursuitConfig());
   /***************************************************/
   @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 20)
-  public Scalar minDistance = Quantity.of(3, SI.METER);
+  public Scalar lookAhead = Quantity.of(3, SI.METER);
+  @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 20)
+  public Scalar minDistance = Quantity.of(1, SI.METER);
   @FieldSubdivide(start = "0[m]", end = "1[m]", intervals = 10)
   public Scalar deviationLimit = Quantity.of(0.1, SI.METER);
   @FieldSubdivide(start = "0", end = "100", intervals = 100)
