@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
+import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
@@ -27,6 +29,7 @@ import ch.ethz.idsc.tensor.sca.Abs;
 // TODO JPH rename
 public class CurveClothoidPursuitPlanner {
   private static final int REFINEMENT = 2;
+  private static final Scalar REPLANNING_TIME = Quantity.of(.015, SI.SECOND); // TODO test or even update online
   // ---
   private Optional<ClothoidPlan> plan = Optional.empty();
 
@@ -37,13 +40,15 @@ public class CurveClothoidPursuitPlanner {
    * @param trajectoryEntryFinder strategy to find best re-entry point
    * @param ratioLimits depending on pose and speed
    * @return geodesic plan */
-  // TODO add option to estimate pose after replanning time
   // TODO publish lookAhead and (estimated) pose via lcm
   public Optional<ClothoidPlan> getPlan( //
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {
-    replanning(pose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
+    Tensor estimatedPose =  ClothoidPursuitConfig.GLOBAL.estimatePose && plan.isPresent() //
+        ? Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, plan.get().ratio()), pose, REPLANNING_TIME) //
+        : pose;
+    replanning(estimatedPose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
     return plan;
   }
 
