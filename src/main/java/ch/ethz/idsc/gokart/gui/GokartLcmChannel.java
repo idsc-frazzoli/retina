@@ -23,6 +23,7 @@ public enum GokartLcmChannel {
    * message is self contained: state, time, flow */
   public static final String TRAJECTORY_XYAVT_STATETIME = "gokart.trajectory.xyavt";
   public static final String PURSUIT_CURVE_SE2 = "pursuit.curve.se2";
+  public static final String PURSUIT_PLAN = "pursuit.plan";
   // ---
   public static final String MPC_FORCES_CNS = "mpc.forces.cns";
   // ---

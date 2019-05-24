@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.mod.PursuitPlanLcm;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
@@ -40,7 +42,6 @@ public class CurveClothoidPursuitPlanner {
    * @param trajectoryEntryFinder strategy to find best re-entry point
    * @param ratioLimits depending on pose and speed
    * @return geodesic plan */
-  // TODO publish lookAhead and (estimated) pose via lcm
   public Optional<ClothoidPlan> getPlan( //
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
@@ -65,7 +66,12 @@ public class CurveClothoidPursuitPlanner {
      * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, ClothoidPursuitConfig.GLOBAL.getOptimizationSteps()).apply(tensor);
      * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
     Optional<Tensor> lookAhead = new PseudoSe2CurveIntersection(ClothoidPursuitConfig.GLOBAL.lookAhead).string(tensor);
-    plan = lookAhead.map(vector -> ClothoidPlan.from(vector, pose, isForward).orElse(null));
+    if (lookAhead.isPresent()) {
+      plan = ClothoidPlan.from(lookAhead.get(), pose, isForward);
+      if (plan.isPresent())
+        PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get());
+    } else
+      plan = Optional.empty();
   }
 
   /** @param vector
