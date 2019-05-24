@@ -20,6 +20,7 @@ public class LinmotGetEventTest extends TestCase {
     LinmotStateVariable linmotStateVariable = linmotGetEvent.getStateVariable();
     assertEquals(linmotStateVariable.linmotStateVarMain, LinmotStateVarMain.OPERATION_ENABLED);
     assertEquals(linmotStateVariable.substate, 193);
+    assertEquals(linmotGetEvent.asVector().length(), 6);
   }
 
   public void testOperation() {
@@ -35,6 +36,7 @@ public class LinmotGetEventTest extends TestCase {
     assertTrue(LinmotConfig.GLOBAL.isTemperatureOperationSafe(temperature));
     assertTrue(LinmotConfig.GLOBAL.isTemperatureHardwareSafe(temperature));
     assertEquals(linmotGetEvent.getWindingTemperatureMax(), Quantity.of(50, "degC"));
+    assertEquals(linmotGetEvent.asVector().length(), 6);
   }
 
   public void testHardware() {

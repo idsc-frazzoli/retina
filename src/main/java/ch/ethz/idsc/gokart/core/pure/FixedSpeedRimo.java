@@ -14,7 +14,8 @@ class FixedSpeedRimo extends PurePursuitRimo {
   // ---
   private final Scalar wheelCircumference = WHEEL_DIAMETER.multiply(Pi.VALUE);
 
-  @Override // from PurePursuitRimo
+  @Override
+  // from PurePursuitRimo
   /* package */ void setSpeed(Scalar speed) {
     super.setSpeed(SAFETY.isInside(speed) ? Quantity.of(0, SI.PER_SECOND) : speedToRate(FixedSpeedParams.GLOBAL.speed));
   }
