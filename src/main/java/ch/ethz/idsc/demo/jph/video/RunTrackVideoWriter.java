@@ -26,8 +26,9 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     // HomeDirectory.file("20190514T102650_01.mp4"));
     // run(new File("/media/datahaki/data/gokart/cuts/20190514/20190514T103657_00/log.lcm"), //
     // HomeDirectory.file("20190514T103657_00.mp4"));
-    run(new File("/media/datahaki/data/gokart/tokio/20190310/20190310T220933_01/post.lcm"), //
-        HomeDirectory.file("20190310T220933_01.mp4"));
+    String name = "20190310T220933_02";
+    run(new File("/media/datahaki/data/gokart/tokio/20190310/" + name + "/post.lcm"), //
+        HomeDirectory.file(name + ".mp4"));
     System.out.println("[done.]");
   }
 }

@@ -52,6 +52,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final TachometerMustangDash tachometerMustangDash;
   private final TrajectoryRender trajectoryRender = new TrajectoryRender();
   private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
+  private final Se2ExpFixpointRender se2ExpFixpointRender = new Se2ExpFixpointRender();
   private final AccumulatedImageRender accumulatedImageRender = new AccumulatedImageRender();
   private final String poseChannel;
   // ---
@@ -112,6 +113,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       groundSpeedRender.getEvent(gokartPoseEvent);
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
+      se2ExpFixpointRender.getEvent(gokartPoseEvent);
     } else //
     if (channel.equals("davis240c.overview.dvs")) {
       accumulatedImageRender.davisDvsDatagramDecoder.decode(byteBuffer);
@@ -120,6 +122,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    accumulatedImageRender.render(geometricLayer, graphics);
     mpcPredictionSequenceRender.render(geometricLayer, graphics);
     mpcPredictionRender.render(geometricLayer, graphics);
     driftLinesRender.render(geometricLayer, graphics);
@@ -130,7 +133,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     accelerationRender.render(geometricLayer, graphics);
     groundSpeedRender.render(geometricLayer, graphics);
     tachometerMustangDash.render(geometricLayer, graphics);
-    accumulatedImageRender.render(geometricLayer, graphics);
+    se2ExpFixpointRender.render(geometricLayer, graphics);
     // ---
     graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
     graphics.setColor(Color.GRAY);
