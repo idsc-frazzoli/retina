@@ -36,7 +36,7 @@ import ch.ethz.idsc.tensor.Tensor;
     SensorsConfig.GLOBAL.planarVmu931Type = PlanarVmu931Type.FLIPPED.name();
     LocalizationConfig.GLOBAL.predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190309.name();
     // GokartLogInterface gokartLogInterface = GokartLogAdapter.of(new File("/media/datahaki/data/gokart/cuts/20190328/20190328T164433_01"));
-    File source = new File("/media/datahaki/data/gokart/tokio/20190310/20190310T220933_02", "log.lcm");
+    File source = new File("/media/datahaki/data/gokart/tokio/20190310/20190310T220933_00", "log.lcm");
     Optional<ByteBuffer> optional = FirstLogMessage.of(source, GokartPoseChannel.INSTANCE.channel());
     in( //
         source, //

@@ -44,14 +44,15 @@ import ch.ethz.idsc.tensor.sca.Round;
 /* package */ class TrackVideoRender implements OfflineLogListener, RenderInterface {
   private final MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(20);
   private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
-  private final DriftLinesRender driftLinesRender = new DriftLinesRender(100);
-  private final SlipLinesRender slipLinesRender = new SlipLinesRender(100);
+  private final DriftLinesRender driftLinesRender = new DriftLinesRender(250);
+  private final SlipLinesRender slipLinesRender = new SlipLinesRender(50);
   private final GokartRender gokartRender = new GlobalGokartRender();
   private final AccelerationRender accelerationRender;
   private final GroundSpeedRender groundSpeedRender;
   private final TachometerMustangDash tachometerMustangDash;
   private final TrajectoryRender trajectoryRender = new TrajectoryRender();
   private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
+  private final AccumulatedImageRender accumulatedImageRender = new AccumulatedImageRender();
   private final String poseChannel;
   // ---
   private LinmotGetEvent linmotGetEvent;
@@ -111,6 +112,9 @@ import ch.ethz.idsc.tensor.sca.Round;
       groundSpeedRender.getEvent(gokartPoseEvent);
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
+    } else //
+    if (channel.equals("davis240c.overview.dvs")) {
+      accumulatedImageRender.davisDvsDatagramDecoder.decode(byteBuffer);
     }
   }
 
@@ -126,6 +130,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     accelerationRender.render(geometricLayer, graphics);
     groundSpeedRender.render(geometricLayer, graphics);
     tachometerMustangDash.render(geometricLayer, graphics);
+    accumulatedImageRender.render(geometricLayer, graphics);
     // ---
     graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
     graphics.setColor(Color.GRAY);

@@ -25,6 +25,7 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
   private final TrackVideoRender trackVideoRender;
   private final BufferedImage bufferedImage;
   private final Graphics2D graphics;
+  private int frame = 0;
 
   /** @param backgroundImage
    * @param trackVideoConfig
@@ -58,6 +59,8 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
       graphics.drawString(String.format("time :%9s", time.map(Round._2)), 0, 25);
       mp4AnimationWriter.append(bufferedImage);
       System.out.println(time.map(Round._3));
+      if (500 < ++frame)
+        throw new RuntimeException();
     }
   }
 
