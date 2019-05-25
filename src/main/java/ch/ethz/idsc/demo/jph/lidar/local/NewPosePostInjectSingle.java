@@ -5,7 +5,11 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Type;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
@@ -29,8 +33,10 @@ import ch.ethz.idsc.tensor.Tensor;
   }
 
   public static void main(String[] args) throws Exception {
+    SensorsConfig.GLOBAL.planarVmu931Type = PlanarVmu931Type.FLIPPED.name();
+    LocalizationConfig.GLOBAL.predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190309.name();
     // GokartLogInterface gokartLogInterface = GokartLogAdapter.of(new File("/media/datahaki/data/gokart/cuts/20190328/20190328T164433_01"));
-    File source = new File("/media/datahaki/data/gokart/cuts4/20190309/20190309T160311_00/", "log.lcm");
+    File source = new File("/media/datahaki/data/gokart/tokio/20190310/20190310T220933_02", "log.lcm");
     Optional<ByteBuffer> optional = FirstLogMessage.of(source, GokartPoseChannel.INSTANCE.channel());
     in( //
         source, //
