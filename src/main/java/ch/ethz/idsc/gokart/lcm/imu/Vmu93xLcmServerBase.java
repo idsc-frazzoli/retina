@@ -17,7 +17,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 /** configures VMU931 IMU to 1000Hz readout
  * listens to acc and gyro messages
  * publishes acc and gyro data via lcm */
-public abstract class Vmu931LcmServerBase extends AbstractModule implements Vmu931Listener {
+public abstract class Vmu93xLcmServerBase extends AbstractModule implements Vmu931Listener {
   public static final Vmu931_G VMU931_G = Vmu931_G._16;
   // ---
   private final ByteArrayConsumer byteArrayConsumer;
@@ -26,7 +26,7 @@ public abstract class Vmu931LcmServerBase extends AbstractModule implements Vmu9
   private final ByteBuffer byteBuffer = ByteBuffer.wrap(data);
   private final Vmu931 vmu931;
 
-  public Vmu931LcmServerBase(String port, String channel) {
+  public Vmu93xLcmServerBase(String port, String channel) {
     vmu931 = new Vmu931(port, //
         EnumSet.of(Vmu931Channel.ACCELEROMETER, Vmu931Channel.GYROSCOPE), //
         Vmu931_DPS._250, VMU931_G, this);

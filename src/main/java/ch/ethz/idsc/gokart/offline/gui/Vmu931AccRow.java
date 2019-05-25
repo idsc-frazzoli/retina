@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.gui;
 
-import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerBase;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu93xLcmServerBase;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ class Vmu931AccRow extends GokartLogImageRow implements Vmu931ImuFrameListener {
-  private static final Clip CLIP = Clips.positive(Vmu931LcmServerBase.VMU931_G.clip().max());
+  private static final Clip CLIP = Clips.positive(Vmu93xLcmServerBase.VMU931_G.clip().max());
   // ---
   private final int index;
   private Scalar acc = RealScalar.ZERO;

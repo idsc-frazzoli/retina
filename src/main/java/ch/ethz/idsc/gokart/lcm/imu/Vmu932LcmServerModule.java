@@ -3,9 +3,11 @@ package ch.ethz.idsc.gokart.lcm.imu;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 
-/** primary imu */
-public class Vmu932LcmServerModule extends Vmu931LcmServerBase {
+/** backup imu */
+public class Vmu932LcmServerModule extends Vmu93xLcmServerBase {
+  private static final String PORT = "/dev/ttyACM1";
+
   public Vmu932LcmServerModule() {
-    super("/dev/ttyACM1", GokartLcmChannel.VMU932_AG);
+    super(PORT, GokartLcmChannel.VMU932_AG);
   }
 }
