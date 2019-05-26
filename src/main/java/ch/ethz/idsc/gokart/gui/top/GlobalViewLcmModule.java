@@ -84,7 +84,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   public void first() {
     viewLcmFrame.geometricComponent.setButtonDrag(MouseEvent.BUTTON1);
     {
-      PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+      PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
       RenderInterface renderInterface = new BufferedImageRender(predefinedMap.getImage());
       viewLcmFrame.geometricComponent.addRenderInterface(renderInterface);
     }
@@ -217,6 +217,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   }
 
   public static void main(String[] args) throws Exception {
+    LocalizationConfig.GLOBAL.predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190314.name();
     standalone();
   }
 }

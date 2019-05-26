@@ -9,7 +9,10 @@ public enum GokartLcmChannel {
   public static final String SEYE_OVERVIEW = "overview";
   /** the labjack u3 substitutes the joystick */
   public static final String LABJACK_U3_ADC = "labjack.u3.adc";
+  /** primary imu */
   public static final String VMU931_AG = "vmu931.ag";
+  /** backup imu */
+  public static final String VMU932_AG = "vmu932.ag";
   /** absolute steering column position {@link GokartStatusEvent} */
   public static final String STATUS = "gokart.status.get";
   /** {x, y, heading, quality} */

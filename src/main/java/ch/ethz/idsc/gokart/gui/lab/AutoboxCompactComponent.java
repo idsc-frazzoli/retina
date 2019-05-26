@@ -2,7 +2,9 @@
 package ch.ethz.idsc.gokart.gui.lab;
 
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,6 +29,8 @@ import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu932LcmServerModule;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu93xLcmServerBase;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
@@ -34,6 +38,7 @@ import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
+import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -172,23 +177,27 @@ import ch.ethz.idsc.tensor.sca.Round;
     jTF_ahead = createReading("Ahead");
     jTF_vmu931_acc = createReading("Vmu931 acc");
     jTF_vmu931_gyr = createReading("Vmu931 gyr");
-    Vmu931LcmServerModule vmu931LcmServerModule = ModuleAuto.INSTANCE.getInstance(Vmu931LcmServerModule.class);
-    if (Objects.nonNull(vmu931LcmServerModule)) {
-      JToolBar jToolBar = createRow("vmu931 ctrl");
-      {
-        JButton jButton = new JButton("status");
-        StaticHelper.actionListener(jButton, vmu931LcmServerModule::requestStatus, 3000);
-        jToolBar.add(jButton);
-      }
-      {
-        JButton jButton = new JButton("self-test");
-        StaticHelper.actionListener(jButton, vmu931LcmServerModule::requestSelftest, 3000);
-        jToolBar.add(jButton);
-      }
-      {
-        JButton jButton = new JButton("calibration");
-        StaticHelper.actionListener(jButton, vmu931LcmServerModule::requestCalibration, 3000);
-        jToolBar.add(jButton);
+    // ---
+    List<Class<? extends AbstractModule>> list = Arrays.asList(Vmu931LcmServerModule.class, Vmu932LcmServerModule.class);
+    for (Class<? extends AbstractModule> cls : list) {
+      Vmu93xLcmServerBase vmu931LcmServerBase = ModuleAuto.INSTANCE.getInstance(cls);
+      if (Objects.nonNull(vmu931LcmServerBase)) {
+        JToolBar jToolBar = createRow(cls.getSimpleName().substring(0, 6) + " ctrl");
+        {
+          JButton jButton = new JButton("status");
+          StaticHelper.actionListener(jButton, vmu931LcmServerBase::requestStatus, 3000);
+          jToolBar.add(jButton);
+        }
+        {
+          JButton jButton = new JButton("self-test");
+          StaticHelper.actionListener(jButton, vmu931LcmServerBase::requestSelftest, 3000);
+          jToolBar.add(jButton);
+        }
+        {
+          JButton jButton = new JButton("calibration");
+          StaticHelper.actionListener(jButton, vmu931LcmServerBase::requestCalibration, 3000);
+          jToolBar.add(jButton);
+        }
       }
     }
     jTF_localPose = createReading("Pose");
