@@ -15,7 +15,8 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
  * joystick/autonomous mode button is not pressed
  * 
  * The put providers are implemented as anonymous classes */
-public final class AutonomySafetyModule extends AbstractModule {
+@Deprecated
+final class AutonomySafetyModule extends AbstractModule {
   final AutonomySafetyRimo autonomySafetyRimo = new AutonomySafetyRimo(this::isAutonomousPressed);
   final AutonomySafetySteer autonomySafetySteer = new AutonomySafetySteer(this::isAutonomousPressed);
   private final ManualControlProvider manualControlProvider;

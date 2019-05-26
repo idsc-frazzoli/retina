@@ -143,7 +143,7 @@ public class AutonomousSafetyModule extends AbstractModule {
       if (!isTemperatureOperationSafe)
         System.err.println("linmot temperature");
       if (isLocalizationBroken)
-        System.err.println("localization broken");
+        System.err.println("localization broken - press reset");
       return !isTemperatureOperationSafe || isLocalizationBroken;
     }
     return false;

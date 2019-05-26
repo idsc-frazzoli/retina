@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
-import ch.ethz.idsc.gokart.core.fuse.AutonomySafetyModule;
+import ch.ethz.idsc.gokart.core.fuse.AutonomousSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LocalizationEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
@@ -42,7 +42,7 @@ public class QuickStartGuiTest extends TestCase {
       PoseLcmServerModule.class, // publishes pose
       LocalizationEmergencyModule.class, //
       ManualResetModule.class, //
-      AutonomySafetyModule.class //
+      AutonomousSafetyModule.class //
   ));
 
   public void testSimple() throws Exception {

@@ -23,7 +23,7 @@ import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
 import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
-import ch.ethz.idsc.gokart.core.fuse.AutonomySafetyModule;
+import ch.ethz.idsc.gokart.core.fuse.AutonomousSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
@@ -104,7 +104,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       PoseLcmServerModule.class, // publishes pose
       LocalizationEmergencyModule.class, //
       ManualResetModule.class, //
-      AutonomySafetyModule.class //
+      AutonomousSafetyModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       IgnitionModule.class, // actuation monitoring
