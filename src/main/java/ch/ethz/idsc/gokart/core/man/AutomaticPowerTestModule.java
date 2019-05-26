@@ -181,7 +181,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
           } else {
             // decelerate with selected power
             arms_raw = Magnitude.ARMS.toShort(motorCurrentValues.Get(currentInd));
-            Scalar newMinSpeed = Min.of(meanTangentSpeed, topDownMinSpeed.Get(currentInd))
+            Scalar newMinSpeed = Min.of(meanTangentSpeed, topDownMinSpeed.Get(currentInd));
             topDownMinSpeed.set(newMinSpeed, currentInd);
           }
         }
