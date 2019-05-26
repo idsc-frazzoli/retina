@@ -1,4 +1,4 @@
-// code by jph
+// code by mh
 package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
@@ -139,8 +139,13 @@ public class AutonomousSafetyModule extends AbstractModule {
   }
 
   private boolean isUnsafeToDrive() {
-    if (SafetyConfig.GLOBAL.checkAutonomy)
+    if (SafetyConfig.GLOBAL.checkAutonomy) {
+      if (!isTemperatureOperationSafe)
+        System.err.println("linmot temperature");
+      if (isLocalizationBroken)
+        System.err.println("localization broken");
       return !isTemperatureOperationSafe || isLocalizationBroken;
+    }
     return false;
   }
 }

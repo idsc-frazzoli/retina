@@ -154,10 +154,10 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
         if (!slowDownCompleted) {
           // we have to slow down to last value first
           arms_raw = Magnitude.ARMS.toShort(minPower);
-          if(speedThreshold) {
+          if (speedThreshold) {
             System.out.println("slowdown completed");
           }
-            slowDownCompleted = speedThreshold;
+          slowDownCompleted = speedThreshold;
         } else if (Scalars.lessThan(bottomUpMaxSpeed.Get(currentInd), maxSpeed.add(speedMargin))) {
           // we are accelerating up
           // are we slower than last max tested value
