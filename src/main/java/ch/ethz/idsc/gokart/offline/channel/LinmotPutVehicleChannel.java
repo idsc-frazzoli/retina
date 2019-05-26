@@ -16,6 +16,12 @@ public enum LinmotPutVehicleChannel implements SingleChannelInterface {
     return LinmotLcmServer.CHANNEL_PUT;
   }
 
+  @Override
+  public String exportName() {
+    // TODO JPH use different name!
+    return channel();
+  }
+
   @Override // from SingleChannelTable
   public Tensor row(ByteBuffer byteBuffer) {
     return new LinmotPutEvent(byteBuffer).getTargetPosition().map(Magnitude.METER).negate();

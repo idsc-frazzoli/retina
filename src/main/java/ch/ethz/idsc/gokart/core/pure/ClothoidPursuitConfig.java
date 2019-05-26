@@ -1,4 +1,4 @@
-// code by jph
+// code by jph, gjoel
 package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Collections;
@@ -34,6 +34,7 @@ public class ClothoidPursuitConfig extends PursuitConfig{
   @FieldSubdivide(start = "0", end = "100", intervals = 100)
   public Scalar optimizationSteps = RealScalar.of(25);
   public Scalar scale = Quantity.of(20, "m*s");
+  public Boolean estimatePose = true;
 
   public ClothoidPursuitConfig() {
     super(Quantity.of(0.01, SI.SECOND));
@@ -42,6 +43,7 @@ public class ClothoidPursuitConfig extends PursuitConfig{
   public final TrajectoryEntryFinder trajectoryEntryFinder = new InterpolationEntryFinder();
 
   public static final List<DynamicRatioLimit> ratioLimits() {
+    // TODO maybe need to leave some margin to steering controller
     return Collections.singletonList(new StaticRatioLimit(SteerConfig.GLOBAL.turningRatioMax));
   }
 

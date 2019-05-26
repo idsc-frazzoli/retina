@@ -47,7 +47,7 @@ public abstract class GokartRender implements RenderInterface {
   private static final Color COLOR_WHEEL = new Color(128, 128, 128, 128);
   private static final Color COLOR_SLIP = new Color(255, 128, 64, 128 + 64);
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
-  public static final Scalar SLIP_FACTOR = RealScalar.of(0.75);
+  public static final Scalar SLIP_FACTOR = RealScalar.of(0.20);
   // ---
   private static final AxisAlignedBox AXIS_ALIGNED_BOX = //
       new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.8)));

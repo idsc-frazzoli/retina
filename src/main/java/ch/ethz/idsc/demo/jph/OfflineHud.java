@@ -50,7 +50,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 // public because class is referenced outside of retina
 public class OfflineHud implements OfflineLogListener {
   public static final Dimension DIMENSION = new Dimension(1920, 480);
-  public static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.getPredefinedMap();
+  public static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.GLOBAL.getPredefinedMap();
   // ---
   private final Scalar delta;
   final RenderInterface renderInterface = new ImageRender( //

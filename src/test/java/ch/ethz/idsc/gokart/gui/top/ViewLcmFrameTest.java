@@ -13,6 +13,6 @@ public class ViewLcmFrameTest extends TestCase {
         { 7.5, 0, 0 }, //
         { 0, -7.5, 640 }, //
         { 0, 0, 1 } });
-    Chop._12.requireClose(LocalizationConfig.getPredefinedMap().getModel2Pixel(), model2pixel);
+    Chop._12.requireClose(LocalizationConfig.GLOBAL.getPredefinedMap().getModel2Pixel(), model2pixel);
   }
 }

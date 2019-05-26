@@ -39,8 +39,8 @@ public enum FollowingSimulations implements ErrorInterface {
   CLOTHOID_05 {
     private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
 
-    @Override public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(.5, SI.METER);
+    @Override
+    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
@@ -49,14 +49,15 @@ public enum FollowingSimulations implements ErrorInterface {
 
     @Override
     public PursuitConfig getConfig() {
+      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(.5, SI.METER);
       return ClothoidPursuitConfig.GLOBAL;
     }
   },
   CLOTHOID_3 {
     private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
 
-    @Override public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(3, SI.METER);
+    @Override
+    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
@@ -65,14 +66,15 @@ public enum FollowingSimulations implements ErrorInterface {
 
     @Override
     public PursuitConfig getConfig() {
+      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(3, SI.METER);
       return ClothoidPursuitConfig.GLOBAL;
     }
   },
   CLOTHOID_5 {
     private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
 
-    @Override public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(5, SI.METER);
+    @Override
+    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
@@ -81,14 +83,15 @@ public enum FollowingSimulations implements ErrorInterface {
 
     @Override
     public PursuitConfig getConfig() {
+      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(5, SI.METER);
       return ClothoidPursuitConfig.GLOBAL;
     }
   },
   CLOTHOID_7 {
     private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
 
-    @Override public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(7, SI.METER);
+    @Override
+    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
@@ -97,6 +100,7 @@ public enum FollowingSimulations implements ErrorInterface {
 
     @Override
     public PursuitConfig getConfig() {
+      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(7, SI.METER);
       return ClothoidPursuitConfig.GLOBAL;
     }
   };

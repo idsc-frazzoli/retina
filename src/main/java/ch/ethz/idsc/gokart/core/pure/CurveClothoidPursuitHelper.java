@@ -14,11 +14,11 @@ import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Norm;
 
 // TODO JPH rename
-public enum CurveClothoidPursuitHelper {
+/* package */ enum CurveClothoidPursuitHelper {
   ;
   /** mirror the points along the y axis and invert their orientation
    * @param se2points curve given by points {x,y,a} */
-  /* package */ static void mirrorAndReverse(Tensor se2points) {
+  public static void mirrorAndReverse(Tensor se2points) {
     se2points.set(Scalar::negate, Tensor.ALL, 0);
     se2points.set(Scalar::negate, Tensor.ALL, 2);
   }
@@ -27,7 +27,7 @@ public enum CurveClothoidPursuitHelper {
    * @param pose of vehicle {x[m], y[m], angle}
    * @param speed of vehicle [m*s^-1]
    * @return predicate to determine whether ratio is compliant with all posed turning ratio limits */
-  /* package */ static Predicate<Scalar> isCompliant(List<DynamicRatioLimit> ratioLimits, Tensor pose, Scalar speed) {
+  public static Predicate<Scalar> isCompliant(List<DynamicRatioLimit> ratioLimits, Tensor pose, Scalar speed) {
     return ratio -> ratioLimits.stream() //
         .map(dynamicRatioLimit -> dynamicRatioLimit.at(pose, speed)) //
         .allMatch(dynamicRatioLimit -> dynamicRatioLimit.isInside(ratio));
@@ -35,7 +35,7 @@ public enum CurveClothoidPursuitHelper {
 
   /** @param curve geodesic
    * @return approximated length of curve */
-  /* package */ static Scalar curveLength(Tensor curve) {
+  public static Scalar curveLength(Tensor curve) {
     Tensor curve_ = Tensor.of(curve.stream().map(Extract2D.FUNCTION));
     int n = curve_.length();
     return curve_.extract(1, n).subtract(curve_.extract(0, n - 1)).stream() //
@@ -46,7 +46,7 @@ public enum CurveClothoidPursuitHelper {
   /** @param clothoidPlan
    * @param pose of vehicle {x[m], y[m], angle}
    * @return [m] */
-  /* package */ static Scalar distanceDriven(ClothoidPlan clothoidPlan, Tensor pose) {
+  public static Scalar distanceDriven(ClothoidPlan clothoidPlan, Tensor pose) {
     Tensor trajectory = clothoidPlan.curve();
     int idx = ArgMin.of(Tensor.of(trajectory.stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector)));
     return idx > 0 ? curveLength(trajectory.extract(0, idx + 1)) : Quantity.of(0, SI.METER);
@@ -55,7 +55,7 @@ public enum CurveClothoidPursuitHelper {
   /** @param clothoidPlan
    * @param pose of vehicle {x[m], y[m], angle}
    * @return [m] */
-  /* package */ static Scalar distanceToDrive(ClothoidPlan clothoidPlan, Tensor pose) {
+  public static Scalar distanceToDrive(ClothoidPlan clothoidPlan, Tensor pose) {
     Tensor trajectory = clothoidPlan.curve();
     int idx = ArgMin.of(Tensor.of(trajectory.stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector)));
     return idx < trajectory.length() - 1 ? curveLength(trajectory.extract(idx, trajectory.length())) : Quantity.of(0, SI.METER);

@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.mod.PursuitPlanLcm;
+import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
+import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
@@ -28,6 +32,7 @@ import ch.ethz.idsc.tensor.sca.Abs;
 // TODO JPH rename
 public class CurveClothoidPursuitPlanner {
   private static final int REFINEMENT = 2;
+  private static final Scalar REPLANNING_TIME = Quantity.of(.015, SI.SECOND); // TODO test or even update online
   // ---
   private Optional<ClothoidPlan> plan = Optional.empty(); // TODO curve is very rough -> approximated deviation is way above actual value
 
@@ -42,26 +47,23 @@ public class CurveClothoidPursuitPlanner {
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {
+    Tensor estimatedPose = ClothoidPursuitConfig.GLOBAL.estimatePose && plan.isPresent() //
+        ? Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, plan.get().ratio()), pose, REPLANNING_TIME) //
+        : pose;
     if (plan.isPresent()) {
       ClothoidPlan clothoidPlan = plan.get();
       if (Scalars.lessEquals(CurveClothoidPursuitHelper.distanceToDrive(clothoidPlan, pose), ClothoidPursuitConfig.GLOBAL.minDistance))
-        replanning(pose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
+        replanning(estimatedPose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
       else {
         Scalar deviation = clothoidPlan.curve().stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector).reduce(Min::of).get();
         if (Scalars.lessEquals(ClothoidPursuitConfig.GLOBAL.deviationLimit, deviation))
-          replanning(pose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
+          replanning(estimatedPose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
       }
     } else
-      replanning(pose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
+      replanning(estimatedPose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
     return plan;
   }
 
-  /** @param pose of vehicle {x[m], y[m], angle}
-   * @param speed of vehicle [m*s^-1]
-   * @param curve in world coordinates
-   * @param isForward driving direction, true when forward or stopped, false when driving backwards
-   * @param trajectoryEntryFinder strategy to find best re-entry point
-   * @param ratioLimits depending on pose and speed */
   private void replanning( //
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
@@ -75,7 +77,12 @@ public class CurveClothoidPursuitPlanner {
      * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, ClothoidPursuitConfig.GLOBAL.getOptimizationSteps()).apply(tensor);
      * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
     Optional<Tensor> lookAhead = new PseudoSe2CurveIntersection(ClothoidPursuitConfig.GLOBAL.lookAhead).string(tensor);
-    plan = lookAhead.map(vector -> ClothoidPlan.from(vector, pose, isForward).orElse(null));
+    if (lookAhead.isPresent()) {
+      plan = ClothoidPlan.from(lookAhead.get(), pose, isForward);
+      if (plan.isPresent())
+        PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get());
+    } else
+      plan = Optional.empty();
   }
 
   /** @param vector

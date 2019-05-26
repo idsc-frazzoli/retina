@@ -35,6 +35,5 @@ import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
       Vmu931ImuVehicleChannel.INSTANCE, //
       LabjackAdcChannel.INSTANCE //
   );
-  static final String GOKART_POSE_SMOOTH = "gokart.pose.smooth";
   static final String LOG_START_TIME = "logStartTime_us.txt";
 }

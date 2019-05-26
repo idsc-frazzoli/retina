@@ -50,7 +50,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   private final ObstacleClusterTrackingRender octr;
 
   public ClusterAreaEvaluationListener(ClusterConfig clusterConfig) {
-    ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
+    ImageRegion imageRegion = LocalizationConfig.GLOBAL.getPredefinedMap().getImageRegion();
     RenderInterface create = RegionRenders.create(imageRegion);
     lidarClustering = new LidarClustering(clusterConfig, collection) {
       private LinearPredictor linearPredictor;

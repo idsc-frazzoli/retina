@@ -66,8 +66,10 @@ import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu932LcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
-import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
+import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
+import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.TabbedTaskGui;
@@ -84,7 +86,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   // ---
   static final List<Class<? extends AbstractModule>> MODULES_DEV = Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
-      Vlp16LcmServerModule.class, // sensing
+      Vlp16RayLcmServerModule.class, // sensing lidar
+      Vlp16PosLcmServerModule.class, // sensing gps
       Vmu931LcmServerModule.class, // vmu931 imu
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
@@ -112,7 +115,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       ParametersModule.class, // configure parameters
       // SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      VoiceOutputModule.class //
+      VoiceOutputModule.class, //
+      Vmu932LcmServerModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       UltimateTorqueVectoringModule.class, //

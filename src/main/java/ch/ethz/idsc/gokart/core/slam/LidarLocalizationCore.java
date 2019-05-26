@@ -50,7 +50,7 @@ public class LidarLocalizationCore implements //
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   private static final LidarGyroLocalization LIDAR_GYRO_LOCALIZATION = //
-      LidarGyroLocalization.of(LocalizationConfig.getPredefinedMap());
+      LidarGyroLocalization.of(LocalizationConfig.GLOBAL.getPredefinedMap());
   // ---
   public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   public final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);

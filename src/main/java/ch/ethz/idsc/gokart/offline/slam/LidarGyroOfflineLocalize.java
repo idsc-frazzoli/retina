@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.sca.N;
  * 
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class LidarGyroOfflineLocalize extends OfflineLocalize {
-  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
+  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.GLOBAL.getPredefinedMap().getModel2Pixel();
   private static final int MIN_POINTS = LocalizationConfig.GLOBAL.min_points.number().intValue();
   // ---
   /** 3x3 transformation matrix of lidar to center of rear axle */

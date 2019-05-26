@@ -109,7 +109,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
         Optional<MPCBSplineTrack> lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(0.05, SI.SECOND));
         trackReconRender.mpcBSplineTrack(lastTrack);
       }
-      PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+      PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
       BufferedImage bufferedImage = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
       double zoom = 3;
       GeometricLayer geometricLayer = GeometricLayer.of(Tensors.matrix(new Number[][] { //

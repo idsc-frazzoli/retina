@@ -77,7 +77,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
     }
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(delta);
-      PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+      PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
       scatterImage = new WallScatterImage(predefinedMap);
       BufferedImage image = scatterImage.getImage();
       GeometricLayer gl = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));

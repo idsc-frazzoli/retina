@@ -49,10 +49,10 @@ import ch.ethz.idsc.tensor.sca.Round;
       if (inWindow) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(String.format("<<< GET at time = %s\n", time.map(Round._6)));
-        stringBuilder.append(String.format(" statusWord = 0x%04x == %s\n", linmotGetEvent.status_word, linmotGetEvent.getStatusWordBits()));
+        stringBuilder.append(String.format(" statusWord = 0x%04x == %s\n", linmotGetEvent.statusWord(), linmotGetEvent.getStatusWordBits()));
         LinmotStateVariable lsv = linmotGetEvent.getStateVariable();
         stringBuilder
-            .append(String.format(" stateVar = 0x%04x == %s; substate = 0x%02x\n", linmotGetEvent.state_variable, lsv.linmotStateVarMain, lsv.substate));
+            .append(String.format(" stateVar = 0x%04x == %s; substate = 0x%02x\n", linmotGetEvent.stateVariable(), lsv.linmotStateVarMain, lsv.substate));
         stringBuilder.append(String.format(" actual_pos = %d\n", linmotGetEvent.actual_position));
         stringBuilder.append(String.format(" demand_pos = %d\n", linmotGetEvent.demand_position));
         stringBuilder.append(String.format(" windingT_1 = %s\n", linmotGetEvent.getWindingTemperature1().map(Round._1)));
@@ -74,8 +74,8 @@ import ch.ethz.idsc.tensor.sca.Round;
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND).map(Round._6), //
             StringScalar.of("GET"), //
-            RealScalar.of(linmotGetEvent.status_word), //
-            RealScalar.of(linmotGetEvent.state_variable), //
+            RealScalar.of(linmotGetEvent.statusWord()), //
+            RealScalar.of(linmotGetEvent.stateVariable()), //
             RealScalar.of(linmotGetEvent.actual_position), //
             RealScalar.of(linmotGetEvent.demand_position), //
             linmotGetEvent.getWindingTemperature1().map(Magnitude.DEGREE_CELSIUS).map(Round._1), //

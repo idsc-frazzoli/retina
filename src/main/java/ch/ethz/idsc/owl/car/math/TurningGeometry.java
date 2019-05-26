@@ -4,15 +4,22 @@ package ch.ethz.idsc.owl.car.math;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Tan;
 
 public enum TurningGeometry {
   ;
   /** 0.01[rad] will result in ~100[m] offset for x_front == 1[m] */
-  static final Scalar ANGLE_THRESHOLD = RealScalar.of(0.01);
+  static final Chop CHOP = Chop._02;
+
+  /** @param ratio with unit "m^-1"
+   * @return radius with unit "m" */
+  public static Optional<Scalar> offset_y(Scalar ratio) {
+    return CHOP.allZero(ratio) //
+        ? Optional.empty()
+        : Optional.of(ratio.reciprocal());
+  }
 
   /** inverse function of {@link ChassisGeometry#steerAngleForTurningRatio(Scalar)}
    * 
@@ -22,8 +29,8 @@ public enum TurningGeometry {
    * except when the vehicle is headed straight, in which case
    * Optional.empty() is returned */
   public static Optional<Scalar> offset_y(Scalar x_front, Scalar angle) {
-    if (Scalars.lessEquals(ANGLE_THRESHOLD, angle.abs()))
-      return Optional.of(x_front.divide(Tan.FUNCTION.apply(angle)));
-    return Optional.empty();
+    return CHOP.allZero(angle) //
+        ? Optional.empty()
+        : Optional.of(x_front.divide(Tan.FUNCTION.apply(angle)));
   }
 }
