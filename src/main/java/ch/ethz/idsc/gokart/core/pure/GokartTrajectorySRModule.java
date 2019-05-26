@@ -106,7 +106,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final Tse2CurvePurePursuitModule tse2CurvePurePursuitModule = //
-      new Tse2CurvePurePursuitModule(PursuitConfig.GLOBAL);
+      new Tse2CurvePurePursuitModule(PurePursuitConfig.GLOBAL);
   private GokartPoseEvent gokartPoseEvent = null;
   private List<TrajectorySample> trajectory = null;
   private final List<PlannerConstraint> constraints = new ArrayList<>();

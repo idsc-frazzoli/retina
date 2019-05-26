@@ -21,7 +21,7 @@ public final class Tse2CurvePurePursuitModule extends CurvePurePursuitModule {
   private final Object lock = new Object();
   private List<TrajectorySample> trajectory;
 
-  public Tse2CurvePurePursuitModule(PursuitConfig pursuitConfig) {
+  public Tse2CurvePurePursuitModule(PurePursuitConfig pursuitConfig) {
     super(pursuitConfig);
   }
 

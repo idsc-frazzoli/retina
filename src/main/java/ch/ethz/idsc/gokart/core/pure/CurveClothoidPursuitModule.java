@@ -14,8 +14,9 @@ import ch.ethz.idsc.tensor.Tensor;
 public class CurveClothoidPursuitModule extends CurvePursuitModule {
   private final GlobalViewLcmModule globalViewLcmModule = //
       ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
+  private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
 
-  public CurveClothoidPursuitModule(PursuitConfig pursuitConfig) {
+  public CurveClothoidPursuitModule(ClothoidPursuitConfig pursuitConfig) {
     super(pursuitConfig);
   }
 
@@ -23,13 +24,13 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule {
   protected synchronized Optional<Scalar> getRatio(Tensor pose) {
     Optional<Tensor> optionalCurve = this.optionalCurve; // copy reference instead of synchronize
     if (optionalCurve.isPresent()) {
-      Optional<ClothoidPlan> plan = CurveClothoidPursuitHelper.getPlan( //
+      Optional<ClothoidPlan> plan = planner.getPlan( //
           pose, //
           speed, //
           optionalCurve.get(), //
           isForward, //
-          pursuitConfig.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits());
+          ((ClothoidPursuitConfig) pursuitConfig).trajectoryEntryFinder, //
+          ClothoidPursuitConfig.ratioLimits());
       if (Objects.nonNull(globalViewLcmModule))
         globalViewLcmModule.setPlan(plan.map(ClothoidPlan::curve).orElse(null));
       return plan.map(ClothoidPlan::ratio);

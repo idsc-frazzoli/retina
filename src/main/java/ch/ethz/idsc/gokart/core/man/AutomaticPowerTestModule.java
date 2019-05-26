@@ -45,8 +45,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   private Tensor completionIndex;
   private Scalar maxPower;
   private Scalar minPower;
-  private Boolean slowDownTriggered = false;
-  private Boolean slowDownCompleted = false;
+  private boolean slowDownTriggered = false;
+  private boolean slowDownCompleted = false;
   private int steps = 20;
   private int currentInd = 0;
   private boolean up = true;
