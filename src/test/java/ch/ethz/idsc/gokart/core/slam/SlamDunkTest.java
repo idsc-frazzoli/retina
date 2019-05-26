@@ -36,7 +36,7 @@ public class SlamDunkTest extends TestCase {
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
-    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+    PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
     ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
     OfflineLocalize offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), GokartLogAdapterTest.SIMPLE.pose(), scatterImage);
     TableBuilder tableBuilder = new TableBuilder();

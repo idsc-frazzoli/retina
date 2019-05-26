@@ -7,6 +7,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class PurePursuitConfig extends PursuitConfig {
   public static final PurePursuitConfig GLOBAL = AppResources.load(new PurePursuitConfig());
+
   // ---
   public PurePursuitConfig() {
     /** look ahead distance for pure pursuit controller

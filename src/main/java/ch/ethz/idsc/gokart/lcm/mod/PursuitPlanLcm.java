@@ -12,9 +12,8 @@ import lcm.lcm.LCM;
 
 public enum PursuitPlanLcm {
   ;
-
   /** @param channel
-   * @param pose  {x[m], y[m], angle}
+   * @param pose {x[m], y[m], angle}
    * @param lookAhead {x[m], y[m], angle} */
   public static void publish(String channel, Tensor pose, Tensor lookAhead) {
     LCM.getSingleton().publish(channel, encode(Tensors.of(pose, lookAhead)));

@@ -37,6 +37,7 @@ public class LocalizationConfig {
   public final Scalar resampleDs = Quantity.of(0.4, SI.METER);
   /** threshold below which the pose estimate should not be trusted */
   public final Scalar qualityMin = RealScalar.of(0.55);
+  public String predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190314.name();
 
   /***************************************************/
   /** @return grid for localization in real-time */
@@ -75,7 +76,7 @@ public class LocalizationConfig {
 
   /***************************************************/
   /** @return predefined map with static geometry for lidar based localization */
-  public static PredefinedMap getPredefinedMap() {
-    return PredefinedMap.DUBILAB_LOCALIZATION_20190314;
+  public PredefinedMap getPredefinedMap() {
+    return PredefinedMap.valueOf(predefinedMap);
   }
 }

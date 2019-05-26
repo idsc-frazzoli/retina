@@ -28,8 +28,8 @@ import ch.ethz.idsc.tensor.sca.Round;
       LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
       tableBuilder.appendRow( //
           time.map(Magnitude.SECOND).map(Round._6), //
-          RealScalar.of(linmotGetEvent.status_word), //
-          RealScalar.of(linmotGetEvent.state_variable), //
+          RealScalar.of(linmotGetEvent.statusWord()), //
+          RealScalar.of(linmotGetEvent.stateVariable()), //
           RealScalar.of(linmotGetEvent.actual_position), //
           RealScalar.of(linmotGetEvent.demand_position), //
           linmotGetEvent.getWindingTemperature1().map(Magnitude.DEGREE_CELSIUS).map(Round._1), //

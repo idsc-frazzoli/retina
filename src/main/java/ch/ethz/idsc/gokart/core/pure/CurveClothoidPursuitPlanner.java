@@ -46,7 +46,7 @@ public class CurveClothoidPursuitPlanner {
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {
-    Tensor estimatedPose =  ClothoidPursuitConfig.GLOBAL.estimatePose && plan.isPresent() //
+    Tensor estimatedPose = ClothoidPursuitConfig.GLOBAL.estimatePose && plan.isPresent() //
         ? Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, plan.get().ratio()), pose, REPLANNING_TIME) //
         : pose;
     replanning(estimatedPose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
