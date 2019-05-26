@@ -58,7 +58,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
       AppCustomization.load(getClass(), new WindowConfiguration());
   private JTextArea textarea;
 
-  @Override // from AbstractModule
+  @Override // from AbstractModuleAutomaticPowerTestModule
   void protected_first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
@@ -124,8 +124,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
     } else {
       approachText = "Deceleration test.\n";
     }
-    textarea.setText(approachText + motorCurrentValues.Get(currentInd) + "\n" + bottomUpMaxSpeed.toString() + "\n" + topDownMinSpeed.toString() + "\n"
-        + completionIndex.toString());
+    textarea.setText(approachText + " [" + currentInd + "/" + (steps) + "] " + motorCurrentValues.Get(currentInd).number().floatValue() + "\n"
+        + bottomUpMaxSpeed.toString() + "\n" + topDownMinSpeed.toString() + "\n" + completionIndex.toString());
   }
 
   @Override // from AbstractModule
@@ -154,7 +154,10 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
         if (!slowDownCompleted) {
           // we have to slow down to last value first
           arms_raw = Magnitude.ARMS.toShort(minPower);
-          slowDownCompleted = !speedThreshold;
+          if(speedThreshold) {
+            System.out.println("slowdown completed");
+          }
+            slowDownCompleted = speedThreshold;
         } else if (Scalars.lessThan(bottomUpMaxSpeed.Get(currentInd), maxSpeed.add(speedMargin))) {
           // we are accelerating up
           // are we slower than last max tested value
@@ -215,5 +218,11 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   @Override
   public void getEvent(RimoGetEvent getEvent) {
     meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
+  }
+
+  public static void main(String[] args) throws Exception {
+    AutomaticPowerTestModule automaticPowerTestModule = new AutomaticPowerTestModule();
+    automaticPowerTestModule.first();
+    automaticPowerTestModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 }
