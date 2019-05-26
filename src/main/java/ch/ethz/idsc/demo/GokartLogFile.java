@@ -1990,6 +1990,10 @@ public enum GokartLogFile implements LogFile {
   _20190526T155154_7124a677,
   /** manual driving with backup imu */
   _20190526T160738_7124a677,
+  /** slow driving urban slam */
+  _20190526T164731_7f7422b3,
+  /** long straight driving */
+  _20190526T170036_7f7422b3,
   /***************************************************/
   ;
   // ---

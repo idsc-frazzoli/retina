@@ -101,6 +101,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       Vmu931CalibrationWatchdog.class, //
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
+      /* pose lcm server has to come after lidar localization module */
       PoseLcmServerModule.class, // publishes pose
       LocalizationEmergencyModule.class, //
       ManualResetModule.class, //
@@ -121,7 +122,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       UltimateTorqueVectoringModule.class, //
       PowerSteeringModule.class, //
-      // ImprovedNormalizedTorqueVectoringManualModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //
       SteeringExperimentModule.class, //
