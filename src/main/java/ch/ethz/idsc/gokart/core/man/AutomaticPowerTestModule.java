@@ -124,8 +124,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
     } else {
       approachText = "Deceleration test.\n";
     }
-    textarea.setText(approachText +" ["+ currentInd+"/"+(steps)+"] "+ motorCurrentValues.Get(currentInd).number().floatValue() + "\n" + bottomUpMaxSpeed.toString() + "\n" + topDownMinSpeed.toString() + "\n"
-        + completionIndex.toString());
+    textarea.setText(approachText + " [" + currentInd + "/" + (steps) + "] " + motorCurrentValues.Get(currentInd).number().floatValue() + "\n"
+        + bottomUpMaxSpeed.toString() + "\n" + topDownMinSpeed.toString() + "\n" + completionIndex.toString());
   }
 
   @Override // from AbstractModule
@@ -215,5 +215,11 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   @Override
   public void getEvent(RimoGetEvent getEvent) {
     meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
+  }
+
+  public static void main(String[] args) throws Exception {
+    AutomaticPowerTestModule automaticPowerTestModule = new AutomaticPowerTestModule();
+    automaticPowerTestModule.first();
+    automaticPowerTestModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 }
