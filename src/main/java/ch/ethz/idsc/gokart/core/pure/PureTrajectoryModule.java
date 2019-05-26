@@ -18,7 +18,7 @@ public class PureTrajectoryModule extends GokartTrajectoryModule {
   }
 
   /* package */ PureTrajectoryModule(TrajectoryConfig trajectoryConfig) {
-    super(trajectoryConfig, new CurvePurePursuitModule(PursuitConfig.GLOBAL));
+    super(trajectoryConfig, new CurvePurePursuitModule(PurePursuitConfig.GLOBAL));
   }
 
   @Override // from GokartTrajectoryModule

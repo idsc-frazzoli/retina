@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class CurvePurePursuitModule extends CurvePursuitModule {
-  public CurvePurePursuitModule(PursuitConfig pursuitConfig) {
+  public CurvePurePursuitModule(PurePursuitConfig pursuitConfig) {
     super(pursuitConfig);
   }
 

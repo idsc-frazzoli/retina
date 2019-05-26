@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 public class Tse2CurvePurePursuitModuleTest extends TestCase {
   public void testSimple() {
     Tse2CurvePurePursuitModule tse2CurvePurePursuitModule = //
-        new Tse2CurvePurePursuitModule(PursuitConfig.GLOBAL);
+        new Tse2CurvePurePursuitModule(PurePursuitConfig.GLOBAL);
     tse2CurvePurePursuitModule.gokartPoseEvent = GokartPoseEvents.offlineV1(Tensors.fromString("{1[m],2[m],3}"), RealScalar.of(.8));
     Scalar scalar = tse2CurvePurePursuitModule.getSpeedMultiplier();
     assertEquals(scalar, RealScalar.ZERO);

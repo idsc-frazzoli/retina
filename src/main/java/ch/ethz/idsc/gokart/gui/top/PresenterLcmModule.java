@@ -85,7 +85,7 @@ public class PresenterLcmModule extends AbstractModule {
     // sightLines.start();
     // }
     {
-      ImageRegion imageRegion = LocalizationConfig.getPredefinedMap().getImageRegion();
+      ImageRegion imageRegion = LocalizationConfig.GLOBAL.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
     }
     if (Objects.nonNull(trajectoryModule))

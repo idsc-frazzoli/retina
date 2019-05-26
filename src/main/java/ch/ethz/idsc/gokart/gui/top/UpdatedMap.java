@@ -30,7 +30,7 @@ public class UpdatedMap {
 
   public UpdatedMap() {
     ImageCopy imageCopy = new ImageCopy();
-    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+    PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
     imageCopy.update(predefinedMap.getImage());
     toPixel = toPixel(predefinedMap.getModel2Pixel());
     bufferedImage = imageCopy.get();

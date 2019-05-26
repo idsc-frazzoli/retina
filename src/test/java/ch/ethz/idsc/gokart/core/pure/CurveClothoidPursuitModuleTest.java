@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 public class CurveClothoidPursuitModuleTest extends TestCase {
   public void testSimple() {
-    CurveClothoidPursuitModule curveClothoidPursuitModule = new CurveClothoidPursuitModule(PursuitConfig.GLOBAL);
+    CurveClothoidPursuitModule curveClothoidPursuitModule = new CurveClothoidPursuitModule(ClothoidPursuitConfig.GLOBAL);
     curveClothoidPursuitModule.launch();
     {
       Optional<Scalar> ratio = curveClothoidPursuitModule.getRatio(DubendorfCurve.TRACK_OVAL_SE2.get(3));
