@@ -20,8 +20,6 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
   @Override // from AbstractModule
   protected final void last() {
-    if (Objects.nonNull(startAndStoppable)) {
-      startAndStoppable.stop();
-    }
+    startAndStoppable.stop();
   }
 }

@@ -35,9 +35,9 @@ public class SafetyConfig {
   public Scalar rateLimit = Quantity.of(30, SI.PER_SECOND);
   public final Scalar penalty = Quantity.of(0.5, SI.SECOND);
   /** {@link LocalizationEmergencyModule} */
-  public Boolean checkPoseQuality = false;
+  public Boolean checkPoseQuality = true;
   /** {@link AutonomousSafetyModule} */
-  public Boolean checkAutonomy = false;
+  public Boolean checkAutonomy = true;
 
   /***************************************************/
   /** @return */
