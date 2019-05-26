@@ -3,26 +3,18 @@ package ch.ethz.idsc.gokart.lcm.mod;
 
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmServers;
-import ch.ethz.idsc.retina.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.lidar.VelodyneStatics;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 /* package */ abstract class VelodyneLcmServerModule extends AbstractModule {
-  private final VelodyneModel velodyneModel;
-  private final String channel;
-  // ---
-  private StartAndStoppable startAndStoppable = null;
+  private final StartAndStoppable startAndStoppable;
 
-  public VelodyneLcmServerModule(VelodyneModel velodyneModel, String channel) {
-    this.velodyneModel = velodyneModel;
-    this.channel = channel;
+  public VelodyneLcmServerModule(StartAndStoppable startAndStoppable) {
+    this.startAndStoppable = Objects.requireNonNull(startAndStoppable);
   }
 
   @Override // from AbstractModule
   protected final void first() {
-    startAndStoppable = VelodyneLcmServers.ray(velodyneModel, channel, VelodyneStatics.RAY_DEFAULT_PORT);
     startAndStoppable.start();
   }
 
@@ -30,7 +22,6 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
   protected final void last() {
     if (Objects.nonNull(startAndStoppable)) {
       startAndStoppable.stop();
-      startAndStoppable = null;
     }
   }
 }

@@ -17,7 +17,7 @@ import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
-import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
+import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import junit.framework.TestCase;
@@ -51,7 +51,7 @@ public class RunTabbedTaskGuiTest extends TestCase {
   public void testAutonomousSafety() {
     List<Class<?>> list = Arrays.asList( //
         AutoboxSocketModule.class, //
-        Vlp16LcmServerModule.class, //
+        Vlp16RayLcmServerModule.class, //
         AutoboxLcmServerModule.class, //
         GokartStatusLcmModule.class, //
         PoseLcmServerModule.class, //
