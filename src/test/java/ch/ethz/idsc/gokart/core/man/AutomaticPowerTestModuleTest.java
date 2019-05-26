@@ -8,7 +8,7 @@ public class AutomaticPowerTestModuleTest extends TestCase {
     AutomaticPowerTestModule testModule = new AutomaticPowerTestModule();
     testModule.first();
     try {
-      Thread.sleep(1000);
+      Thread.sleep(100000);
     } catch (InterruptedException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

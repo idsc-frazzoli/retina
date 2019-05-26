@@ -58,7 +58,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
       AppCustomization.load(getClass(), new WindowConfiguration());
   private JTextArea textarea;
 
-  @Override // from AbstractModule
+  @Override // from AbstractModuleAutomaticPowerTestModule
   void protected_first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
@@ -124,7 +124,7 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
     } else {
       approachText = "Deceleration test.\n";
     }
-    textarea.setText(approachText + motorCurrentValues.Get(currentInd) + "\n" + bottomUpMaxSpeed.toString() + "\n" + topDownMinSpeed.toString() + "\n"
+    textarea.setText(approachText +" ["+ currentInd+"/"+(steps)+"] "+ motorCurrentValues.Get(currentInd).number().floatValue() + "\n" + bottomUpMaxSpeed.toString() + "\n" + topDownMinSpeed.toString() + "\n"
         + completionIndex.toString());
   }
 
