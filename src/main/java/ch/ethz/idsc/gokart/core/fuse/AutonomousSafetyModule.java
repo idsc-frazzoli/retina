@@ -116,10 +116,10 @@ public class AutonomousSafetyModule extends AbstractModule {
 
   private boolean isSafeToDrive() {
     if (SafetyConfig.GLOBAL.checkAutonomy) {
-      if (!isTemperatureOperationSafe)
-        System.err.println("linmot temperature");
-      if (isLocalizationBroken)
-        System.err.println("localization broken - press reset");
+      // if (!isTemperatureOperationSafe)
+      // System.err.println("linmot temperature");
+      // if (isLocalizationBroken)
+      // System.err.println("localization broken - press reset");
       return isTemperatureOperationSafe && !isLocalizationBroken;
     }
     return true;

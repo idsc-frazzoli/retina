@@ -35,7 +35,7 @@ public class Vmu931 implements Runnable {
   private final Vmu931Listener vmu931Listener;
   private final Thread thread = new Thread(this);
   private SerialPortWrap serialPortWrap;
-  private boolean isLaunched = true;
+  private volatile boolean isLaunched = true;
   private boolean isConfigured = false;
 
   /** @param port
@@ -81,7 +81,8 @@ public class Vmu931 implements Runnable {
   }
 
   public void requestStatus() {
-    serialPortWrap.write(Vmu931Statics.requestStatus());
+    int len = serialPortWrap.write(Vmu931Statics.requestStatus());
+    System.out.println("requestStatus: " + len);
   }
 
   @Override // from Runnable
@@ -136,9 +137,10 @@ public class Vmu931 implements Runnable {
         }
       }
     } catch (Exception exception) {
-      // exception.printStackTrace();
-      System.out.println("VMU931 readout terminated");
+      exception.printStackTrace();
+      System.out.println("VMU931 readout terminated exception");
     }
+    System.out.println("VMU931 readout terminated");
   }
 
   public void handle_data(byte[] data) {
@@ -229,10 +231,11 @@ public class Vmu931 implements Runnable {
   }
 
   public void close() {
+    System.out.println();
     isLaunched = false;
+    thread.interrupt();
     if (Objects.nonNull(serialPortWrap))
       serialPortWrap.close();
-    thread.interrupt();
   }
 
   public boolean isCalibrated() {

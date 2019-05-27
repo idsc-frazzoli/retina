@@ -16,7 +16,9 @@ import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
 import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vlp16RayChannel;
+import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
+import ch.ethz.idsc.gokart.offline.channel.Vmu932ImuChannel;
 
 /* package */ enum StaticHelper {
   ;
@@ -32,6 +34,8 @@ import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
       LinmotGetVehicleChannel.INSTANCE, //
       DavisDvsChannel.INSTANCE, //
       Vlp16RayChannel.INSTANCE, //
+      Vmu931ImuChannel.INSTANCE, //
+      Vmu932ImuChannel.INSTANCE, //
       Vmu931ImuVehicleChannel.INSTANCE, //
       LabjackAdcChannel.INSTANCE //
   );

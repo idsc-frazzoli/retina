@@ -10,15 +10,14 @@ import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
-import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import junit.framework.TestCase;
 
 public class QuickStartGuiTest extends TestCase {
-  static final Set<Class<? extends AbstractModule>> HARDWARE = new HashSet<>(Arrays.asList( //
+  private static final Set<Class<? extends AbstractModule>> HARDWARE = new HashSet<>(Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
-      Vmu931LcmServerModule.class, // vmu931 imu
+      // Vmu931LcmServerModule.class, // vmu931 imu
       GokartTimestampModule.class, //
       LoggerModule.class, //
       LabjackU3Module.class, //
@@ -32,5 +31,11 @@ public class QuickStartGuiTest extends TestCase {
         ModuleAuto.INSTANCE.endOne(cls);
       }
     ModuleAuto.INSTANCE.endOne(LidarLocalizationModule.class);
+  }
+
+  public void testContainment() {
+    for (Class<? extends AbstractModule> cls : HARDWARE) {
+      assertTrue(RunTabbedTaskGui.MODULES_DEV.contains(cls));
+    }
   }
 }

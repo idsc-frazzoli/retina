@@ -1,15 +1,17 @@
 // code by jph
-package ch.ethz.idsc.gokart.lcm.mod;
+package ch.ethz.idsc.retina.util.sys;
 
 import java.util.Objects;
 
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
-/* package */ abstract class VelodyneLcmServerModule extends AbstractModule {
+/** wrap for StartAndStoppable */
+public class StartAndStoppableModule extends AbstractModule {
   private final StartAndStoppable startAndStoppable;
 
-  public VelodyneLcmServerModule(StartAndStoppable startAndStoppable) {
+  /** @param startAndStoppable non-null
+   * @throws Exception if given startAndStoppable is null */
+  protected StartAndStoppableModule(StartAndStoppable startAndStoppable) {
     this.startAndStoppable = Objects.requireNonNull(startAndStoppable);
   }
 
