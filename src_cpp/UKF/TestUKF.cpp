@@ -22,10 +22,11 @@ void TestUKF::test() {
             return parameter;
     };
 
-    for (int i = 0; i<= 10; i++){
+    for (int i = 0; i<= 10000; i++){
         std::cout << "------------------------------iteration: " << i << std::endl;
         //parameter;
-        double k = 10*rand();
+        double k = 1*rand();
+        std::cout << "k: " << k << std::endl;
 
         std::function<UKF::MeasurementVec(UKF::ParameterVec)> measureFunction
                 = [k](UKF::ParameterVec parameter){
