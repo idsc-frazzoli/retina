@@ -2000,6 +2000,8 @@ public enum GokartLogFile implements LogFile {
   _20190527T145700_8a0e8702,
   /** manual drive with backup imu, davis 240c */
   _20190527T161637_8a0e8702,
+  /** pursuit */
+  _20190527T163523_9e8335de,
   /***************************************************/
   ;
   // ---
