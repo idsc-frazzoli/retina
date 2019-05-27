@@ -30,12 +30,12 @@ public class AutonomousSafetyModuleTest extends TestCase {
     autonomousSafetyModule.first();
     assertEquals(providerSize + 1, RimoSocket.INSTANCE.getPutProviderSize());
     {
-      Optional<RimoPutEvent> putEvent = autonomousSafetyModule.rimoPutProvider.putEvent();
+      Optional<RimoPutEvent> putEvent = autonomousSafetyModule.autonomySafetyRimo.putEvent();
       assertTrue(putEvent.isPresent());
     }
     autonomousSafetyModule.gokartPoseListener.getEvent(GokartPoseEvents.create(Tensors.fromString("{2[m], 3[m], 4}"), RealScalar.ONE));
     {
-      Optional<RimoPutEvent> putEvent = autonomousSafetyModule.rimoPutProvider.putEvent();
+      Optional<RimoPutEvent> putEvent = autonomousSafetyModule.autonomySafetyRimo.putEvent();
       assertTrue(putEvent.isPresent());
     }
     {
@@ -46,7 +46,7 @@ public class AutonomousSafetyModuleTest extends TestCase {
       autonomousSafetyModule.linmotGetListener.getEvent(new LinmotGetEvent(byteBuffer));
     }
     {
-      Optional<RimoPutEvent> putEvent = autonomousSafetyModule.rimoPutProvider.putEvent();
+      Optional<RimoPutEvent> putEvent = autonomousSafetyModule.autonomySafetyRimo.putEvent();
       assertTrue(putEvent.isPresent());
     }
     {
@@ -57,8 +57,9 @@ public class AutonomousSafetyModuleTest extends TestCase {
       LabjackU3Publisher.accept(new LabjackAdcFrame(new float[] { 5f, 5f, 5f, 8f, 5f }));
       Thread.sleep(10);
     }
+    autonomousSafetyModule.gokartPoseListener.getEvent(GokartPoseEvents.create(Tensors.fromString("{2[m], 3[m], 4}"), RealScalar.ONE));
     {
-      Optional<RimoPutEvent> putEvent = autonomousSafetyModule.rimoPutProvider.putEvent();
+      Optional<RimoPutEvent> putEvent = autonomousSafetyModule.autonomySafetyRimo.putEvent();
       assertFalse(putEvent.isPresent());
     }
     autonomousSafetyModule.last();

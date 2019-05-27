@@ -1973,6 +1973,28 @@ public enum GokartLogFile implements LogFile {
   /** speed calibration module test */
   _20190523T175108_d8284cff,
   /***************************************************/
+  /* 2019-05-26 */
+  /** long straight driving */
+  _20190526T132921_67a43c47,
+  /** long straight driving */
+  _20190526T134720_3023c456,
+  /** long straight driving */
+  _20190526T135416_3023c456,
+  /** sys id */
+  _20190526T143509_9ad47fca,
+  /** slow driving and mpc */
+  _20190526T145040_9ad47fca,
+  /** mpc old model, new rear tires */
+  _20190526T145924_9ad47fca,
+  /** manual driving with backup imu */
+  _20190526T155154_7124a677,
+  /** manual driving with backup imu */
+  _20190526T160738_7124a677,
+  /** slow driving urban slam */
+  _20190526T164731_7f7422b3,
+  /** long straight driving */
+  _20190526T170036_7f7422b3,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
