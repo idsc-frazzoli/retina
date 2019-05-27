@@ -193,22 +193,22 @@ import ch.ethz.idsc.tensor.sca.Round;
     // ---
     List<Class<? extends AbstractModule>> list = Arrays.asList(Vmu931LcmServerModule.class, Vmu932LcmServerModule.class);
     for (Class<? extends AbstractModule> cls : list) {
-      Vmu93xLcmServerBase vmu931LcmServerBase = ModuleAuto.INSTANCE.getInstance(cls);
-      if (Objects.nonNull(vmu931LcmServerBase)) {
+      Vmu93xLcmServerBase vmu93xLcmServerBase = ModuleAuto.INSTANCE.getInstance(cls);
+      if (Objects.nonNull(vmu93xLcmServerBase)) {
         JToolBar jToolBar = createRow(cls.getSimpleName().substring(0, 6) + " ctrl");
         {
           JButton jButton = new JButton("status");
-          StaticHelper.actionListener(jButton, vmu931LcmServerBase::requestStatus, 3000);
+          StaticHelper.actionListener(jButton, vmu93xLcmServerBase::requestStatus, 3000);
           jToolBar.add(jButton);
         }
         {
           JButton jButton = new JButton("self-test");
-          StaticHelper.actionListener(jButton, vmu931LcmServerBase::requestSelftest, 3000);
+          StaticHelper.actionListener(jButton, vmu93xLcmServerBase::requestSelftest, 3000);
           jToolBar.add(jButton);
         }
         {
           JButton jButton = new JButton("calibration");
-          StaticHelper.actionListener(jButton, vmu931LcmServerBase::requestCalibration, 3000);
+          StaticHelper.actionListener(jButton, vmu93xLcmServerBase::requestCalibration, 3000);
           jToolBar.add(jButton);
         }
       }
