@@ -88,7 +88,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       AutoboxSocketModule.class, // sensing and actuation
       Vlp16RayLcmServerModule.class, // sensing lidar
       Vlp16PosLcmServerModule.class, // sensing gps
-      Vmu931LcmServerModule.class, // vmu931 imu
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
       GokartTimestampModule.class, //
@@ -108,6 +107,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       AutonomousSafetyModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
+      Vmu931LcmServerModule.class, // vmu931 imu
+      Vmu932LcmServerModule.class, // vmu932 imu
       IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       TrajectoryDesignModule.class, //
@@ -116,8 +117,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       ParametersModule.class, // configure parameters
       // SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      VoiceOutputModule.class, //
-      Vmu932LcmServerModule.class //
+      VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       UltimateTorqueVectoringModule.class, //
