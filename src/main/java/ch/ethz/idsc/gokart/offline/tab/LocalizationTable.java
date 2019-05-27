@@ -17,6 +17,7 @@ import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.VelodynePosEvent;
+import ch.ethz.idsc.retina.util.gps.Gprmc;
 import ch.ethz.idsc.retina.util.gps.WGS84toCH1903LV03Plus;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -74,13 +75,15 @@ public class LocalizationTable implements OfflineTableSupplier {
       // System.out.println(vpe.nmea());
       if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(vpe) && //
           (Objects.nonNull(gpe) || !usePose) && //
-          Objects.nonNull(dif) && vpe.isValid()) {
+          Objects.nonNull(dif) // && vpe.isValid()
+      ) {
         // System.out.println("export " + time.number().doubleValue());
+        Gprmc gprmc = vpe.gprmc();
         time_next = time.add(delta);
         Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
         Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
-        Scalar degX = vpe.gpsX();
-        Scalar degY = vpe.gpsY();
+        Scalar degX = gprmc.gpsX();
+        Scalar degY = gprmc.gpsY();
         Tensor metric = WGS84toCH1903LV03Plus.transform(degX, degY);
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND).map(Round._6), //
@@ -90,8 +93,8 @@ public class LocalizationTable implements OfflineTableSupplier {
             degX.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
             degY.map(Magnitude.DEGREE_ANGLE).map(Round._6), //
             metric.map(Magnitude.METER).map(Round._2), //
-            vpe.speed().map(Magnitude.VELOCITY).map(Round._3), //
-            vpe.course().map(Magnitude.ONE).map(Round._6), //
+            gprmc.speed().map(Magnitude.VELOCITY).map(Round._3), //
+            gprmc.course().map(Magnitude.ONE).map(Round._6), //
             dif.gyroImageFrame().map(Magnitude.PER_SECOND).map(Round._5) //
         );
         System.out.println(tableBuilder.getRowCount());
