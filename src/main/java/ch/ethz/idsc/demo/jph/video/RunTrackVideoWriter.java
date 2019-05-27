@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   ;
   private static void run(File file, File dest) throws IOException, Exception {
     try (TrackVideoWriter trackVideoWriter = new TrackVideoWriter( //
-        RunVideoBackground.get20190310(), new TrackVideoConfig(), dest)) {
+        RunVideoBackground.get20190527(), new TrackVideoConfig(), dest)) {
       OfflineLogPlayer.process(file, trackVideoWriter);
     }
   }
@@ -26,9 +26,9 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     // HomeDirectory.file("20190514T102650_01.mp4"));
     // run(new File("/media/datahaki/data/gokart/cuts/20190514/20190514T103657_00/log.lcm"), //
     // HomeDirectory.file("20190514T103657_00.mp4"));
-    String name = "20190310T220933_02";
-    run(new File("/media/datahaki/data/gokart/tokio/20190310/" + name + "/post.lcm"), //
-        HomeDirectory.file(name + ".mp4"));
+    // String name = "20190310T220933_02";
+    run(new File("/media/datahaki/data/gokart/davis240c/20190527/20190527T161637_02/log.lcm"), //
+        HomeDirectory.file("manual.mp4"));
     System.out.println("[done.]");
   }
 }

@@ -24,6 +24,7 @@ public class PIDTuningParams {
   public Scalar maxSteerTurningRatioSafetyFactor = RealScalar.of(.9); // Avoid limit of actuator
   public Scalar maxSteerTurningRatio = //
       SteerConfig.GLOBAL.turningRatioMax.multiply(maxSteerTurningRatioSafetyFactor);
+
   public final Clip clipRatio() {
     return Clips.absolute(maxSteerTurningRatio);
   }
