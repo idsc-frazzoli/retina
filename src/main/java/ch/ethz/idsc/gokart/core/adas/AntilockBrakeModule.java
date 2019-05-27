@@ -56,7 +56,7 @@ public class AntilockBrakeModule extends AbstractModule implements LinmotPutProv
 
   @Override // from LinmotPutProvider
   public ProviderRank getProviderRank() {
-    return ProviderRank.TESTING;
+    return ProviderRank.EMERGENCY;
   }
 
   // button is pressed -> full brake

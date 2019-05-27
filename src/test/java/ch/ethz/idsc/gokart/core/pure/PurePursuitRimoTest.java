@@ -44,8 +44,8 @@ public class PurePursuitRimoTest extends TestCase {
       assertFalse(optional.isPresent()); // because speed reading is missing
     }
     RimoGetEvent rge = RimoGetEvents.create(340, 320);
-    ppr.setSpeed(PursuitConfig.GLOBAL.rateFollower);
-    assertEquals(ppr.getSpeed(), PursuitConfig.GLOBAL.rateFollower);
+    ppr.setSpeed(PurePursuitConfig.GLOBAL.rateFollower);
+    assertEquals(ppr.getSpeed(), PurePursuitConfig.GLOBAL.rateFollower);
     ppr.rimoRateControllerWrap.getEvent(rge);
     {
       Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));

@@ -114,13 +114,13 @@ import ch.ethz.idsc.tensor.sca.Round;
   @Override // from GetListener
   public void getEvent(LinmotGetEvent linmotGetEvent) {
     linmotInitButton.updateEnabled();
-    jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.status_word));
+    jTextFieldStatusWord.setText(String.format("%04X", linmotGetEvent.statusWord()));
     jTextFieldStatusWord.setBackground(linmotGetEvent.isOperational() ? Color.GREEN : Color.RED);
     for (LinmotStatusWordBit lsw : LinmotStatusWordBit.values()) {
-      boolean selected = (linmotGetEvent.status_word & (1 << lsw.ordinal())) != 0;
+      boolean selected = (linmotGetEvent.statusWord() & (1 << lsw.ordinal())) != 0;
       jCheckBoxStatusWord[lsw.ordinal()].setSelected(selected);
     }
-    jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.state_variable));
+    jTextFieldStateVariable.setText(String.format("%04X", linmotGetEvent.stateVariable()));
     jTextFieldActualPosition.setText(Integer.toString(linmotGetEvent.actual_position));
     jTextFieldDemandPosition.setText(Integer.toString(linmotGetEvent.demand_position));
     Scalar scalar = RealScalar.of(linmotGetEvent.getPositionDiscrepancyRaw());

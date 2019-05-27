@@ -18,6 +18,7 @@ import ch.ethz.idsc.demo.mp.pid.PIDTestTrackModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
+import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV2Module;
 import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
@@ -34,8 +35,8 @@ import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
+import ch.ethz.idsc.gokart.core.man.AutomaticPowerTestModule;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
-import ch.ethz.idsc.gokart.core.man.ImprovedNormalizedTorqueVectoringManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
@@ -52,7 +53,6 @@ import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
 import ch.ethz.idsc.gokart.core.sound.VoiceOutputModule;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
-import ch.ethz.idsc.gokart.dev.SeesLcmModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
@@ -66,8 +66,10 @@ import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu932LcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
-import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
+import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
+import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.TabbedTaskGui;
@@ -84,7 +86,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   // ---
   static final List<Class<? extends AbstractModule>> MODULES_DEV = Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
-      Vlp16LcmServerModule.class, // sensing
+      Vlp16RayLcmServerModule.class, // sensing lidar
+      Vlp16PosLcmServerModule.class, // sensing gps
       Vmu931LcmServerModule.class, // vmu931 imu
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
@@ -98,10 +101,11 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       Vmu931CalibrationWatchdog.class, //
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
+      /* pose lcm server has to come after lidar localization module */
       PoseLcmServerModule.class, // publishes pose
       LocalizationEmergencyModule.class, //
-      ManualResetModule.class //
-  // AutonomySafetyModule.class // <- dead man switch
+      ManualResetModule.class, //
+      AutonomousSafetyModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       IgnitionModule.class, // actuation monitoring
@@ -110,23 +114,24 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       TrackReconModule.class, //
       LocalViewLcmModule.class, //
       ParametersModule.class, // configure parameters
-      SeesLcmModule.class, //
+      // SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      VoiceOutputModule.class //
+      VoiceOutputModule.class, //
+      Vmu932LcmServerModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
-      AutonomousSafetyModule.class, //
       UltimateTorqueVectoringModule.class, //
-      RimoThrustManualModule.class, //
-      DriftThrustManualModule.class, //
-      ImprovedNormalizedTorqueVectoringManualModule.class, //
-      LookupTableRimoThrustManualModule.class, //
       PowerSteeringModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //
       SteeringExperimentModule.class, //
       AntilockBrakeCheckConditions.class, //
-      AntilockBrakeModule.class //
+      AntilockBrakeModule.class, //
+      AntilockBrakeV2Module.class, //
+      AutomaticPowerTestModule.class, //
+      RimoThrustManualModule.class, //
+      LookupTableRimoThrustManualModule.class, //
+      DriftThrustManualModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       FigureClothoidModule.class, //

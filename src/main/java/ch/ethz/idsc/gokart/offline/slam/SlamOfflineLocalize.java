@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.sca.N;
 
 /** localization using only lidar */
 public class SlamOfflineLocalize extends OfflineLocalize {
-  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
+  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.GLOBAL.getPredefinedMap().getModel2Pixel();
   private static final Se2MultiresGrids SE2_MULTIRES_GRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();

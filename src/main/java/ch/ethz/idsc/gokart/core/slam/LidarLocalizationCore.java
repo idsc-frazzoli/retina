@@ -50,13 +50,13 @@ public class LidarLocalizationCore implements //
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   private static final LidarGyroLocalization LIDAR_GYRO_LOCALIZATION = //
-      LidarGyroLocalization.of(LocalizationConfig.getPredefinedMap());
+      LidarGyroLocalization.of(LocalizationConfig.GLOBAL.getPredefinedMap());
   // ---
   public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   public final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
   private final LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-  private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.getPlanarVmu931Imu());
+  private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.GLOBAL.getPlanarVmu931Imu());
   // ---
   private boolean tracking = false;
   private boolean flagSnap = false;

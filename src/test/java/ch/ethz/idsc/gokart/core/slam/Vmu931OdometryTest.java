@@ -1,8 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
-import ch.ethz.idsc.gokart.calib.vmu931.FlippedPlanarVmu931Imu;
-import ch.ethz.idsc.gokart.calib.vmu931.NativePlanarVmu931Imu;
+import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Type;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrames;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
@@ -14,7 +13,7 @@ import junit.framework.TestCase;
 
 public class Vmu931OdometryTest extends TestCase {
   public void testInitial() {
-    Vmu931Odometry vmu931Odometry = new Vmu931Odometry(FlippedPlanarVmu931Imu.INSTANCE);
+    Vmu931Odometry vmu931Odometry = new Vmu931Odometry(PlanarVmu931Type.FLIPPED.planarVmu931Imu());
     assertEquals(vmu931Odometry.getPose(), Tensors.fromString("{0[m], 0[m], 0}"));
     assertEquals(vmu931Odometry.getVelocity(), Tensors.fromString("{0[m*s^-1], 0[m*s^-1], 0[s^-1]}"));
     vmu931Odometry.resetPose(PoseHelper.attachUnits(Tensors.vector(1, 2, 3)));
@@ -24,7 +23,7 @@ public class Vmu931OdometryTest extends TestCase {
   }
 
   public void testIntegrate() {
-    Vmu931Odometry vmu931Odometry = new Vmu931Odometry(FlippedPlanarVmu931Imu.INSTANCE);
+    Vmu931Odometry vmu931Odometry = new Vmu931Odometry(PlanarVmu931Type.FLIPPED.planarVmu931Imu());
     vmu931Odometry.resetPose(PoseHelper.attachUnits(Tensors.vector(1, 0, 0)));
     vmu931Odometry.integrateImu( //
         Tensors.fromString("{0.3[m*s^-2], 0.1[m*s^-2]}"), Quantity.of(0.3, SI.PER_SECOND), Quantity.of(0.1, SI.SECOND));
@@ -35,7 +34,7 @@ public class Vmu931OdometryTest extends TestCase {
   }
 
   public void testIntegrateVmu931() {
-    Vmu931Odometry vmu931Odometry = new Vmu931Odometry(NativePlanarVmu931Imu.INSTANCE);
+    Vmu931Odometry vmu931Odometry = new Vmu931Odometry(PlanarVmu931Type.NATIVE.planarVmu931Imu());
     vmu931Odometry.resetPose(PoseHelper.attachUnits(Tensors.vector(1, 0, 0)));
     vmu931Odometry.vmu931ImuFrame(Vmu931ImuFrames.create( //
         123_000, //

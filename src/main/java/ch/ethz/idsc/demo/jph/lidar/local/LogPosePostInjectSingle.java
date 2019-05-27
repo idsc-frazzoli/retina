@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.Tensor;
   ;
   public static OfflineLocalizeWrap of(Tensor pose) {
     return new OfflineLocalizeWrap(new LidarGyroOfflineLocalize( //
-        LocalizationConfig.getPredefinedMap().getImageExtruded(), //
+        LocalizationConfig.GLOBAL.getPredefinedMap().getImageExtruded(), //
         pose, //
         StaticHelper.offlineSe2MultiresGrids(4), //
         VoidScatterImage.INSTANCE));

@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pos;
 
+import java.util.Objects;
+
+import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
@@ -23,7 +26,10 @@ public class PoseLcmServerModule extends AbstractClockedModule {
 
   @Override // from AbstractModule
   protected void first() {
-    // ---
+    Objects.requireNonNull(lidarLocalizationModule);
+    /* pre-loads power lookup table so that
+     * loading is not required at a later time */
+    PowerLookupTable.getInstance();
   }
 
   @Override // from AbstractModule

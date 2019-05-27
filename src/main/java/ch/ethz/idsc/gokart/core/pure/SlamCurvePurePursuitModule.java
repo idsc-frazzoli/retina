@@ -17,7 +17,7 @@ public final class SlamCurvePurePursuitModule extends PursuitModule {
   private Optional<Tensor> optionalCurve = Optional.empty();
 
   public SlamCurvePurePursuitModule() {
-    super(PursuitConfig.GLOBAL);
+    super(PurePursuitConfig.GLOBAL);
   }
 
   @Override // form AbstractModule

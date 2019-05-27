@@ -26,8 +26,8 @@ public class LinmotGetEvent extends DataEvent {
    * demand position uses the same scale */
   private static final double GET_POSITION_TO_METER = 1e-7;
   // ---
-  public final short status_word;
-  public final short state_variable;
+  private final short status_word;
+  private final short state_variable;
   /** -50000 for non-braking
    * -500000 for maximum braking */
   public final int actual_position;
@@ -117,6 +117,14 @@ public class LinmotGetEvent extends DataEvent {
    * @return operational status of brake */
   public boolean isOperational() {
     return (status_word & OPERATIONAL_MASK) == OPERATIONAL_MASK;
+  }
+
+  public int statusWord() {
+    return status_word & 0xffff;
+  }
+
+  public int stateVariable() {
+    return state_variable & 0xffff;
   }
 
   public String toInfoString() {

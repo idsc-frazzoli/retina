@@ -1915,6 +1915,86 @@ public enum GokartLogFile implements LogFile {
   /** driving with power steering */
   _20190516T185634_bcf7fd52,
   /***************************************************/
+  /* 2019-05-21 */
+  /** manual driving, power steering, pure pursuit */
+  _20190521T093322_2055cb1b,
+  /** manual driving, power steering */
+  _20190521T094217_2055cb1b,
+  /** slow manual driving */
+  _20190521T094746_2055cb1b,
+  /** fast mpc */
+  _20190521T101604_2055cb1b,
+  /** guest manual driving, slow mpc */
+  _20190521T105301_2055cb1b,
+  /** imu installed rot90 */
+  _20190521T150634_d2699045, //
+  /** driving */
+  _20190521T155549_ade0cc11,
+  /** driving */
+  _20190521T162233_08f2154c,
+  /** driving */
+  _20190521T162815_08f2154c,
+  /** driving */
+  _20190521T163441_08f2154c,
+  /** driving */
+  _20190521T163700_08f2154c,
+  /** driving */
+  _20190521T164104_08f2154c,
+  /** driving */
+  _20190521T164721_08f2154c,
+  /** driving, clothoid pure pursuit */
+  _20190521T165154_ade0cc11,
+  /***************************************************/
+  /* 2019-05-23 */
+  /** power steering test */
+  _20190523T104827_f7d213db,
+  /** manual driving with backup
+   * imu on top of black gokart/CAN box below rear tire cover
+   * localization failures */
+  _20190523T114609_f7d213db,
+  /** driving without localization */
+  _20190523T120814_7e29435f,
+  /** driving, power steering, antilock */
+  _20190523T122730_6a3866ff,
+  /** imu on top of box */
+  _20190523T150902_6a3866ff,
+  /** brief driving
+   * imu below bottom of box */
+  _20190523T162045_6a3866ff,
+  /** brief driving */
+  _20190523T162850_6a3866ff,
+  /** antilock brake test */
+  _20190523T163610_6a3866ff,
+  /** speed calibration module test */
+  _20190523T171534_96aa6eb3,
+  /** speed calibration module test
+   * fast manual driving */
+  _20190523T172023_96aa6eb3,
+  /** speed calibration module test */
+  _20190523T175108_d8284cff,
+  /***************************************************/
+  /* 2019-05-26 */
+  /** long straight driving */
+  _20190526T132921_67a43c47,
+  /** long straight driving */
+  _20190526T134720_3023c456,
+  /** long straight driving */
+  _20190526T135416_3023c456,
+  /** sys id */
+  _20190526T143509_9ad47fca,
+  /** slow driving and mpc */
+  _20190526T145040_9ad47fca,
+  /** mpc old model, new rear tires */
+  _20190526T145924_9ad47fca,
+  /** manual driving with backup imu */
+  _20190526T155154_7124a677,
+  /** manual driving with backup imu */
+  _20190526T160738_7124a677,
+  /** slow driving urban slam */
+  _20190526T164731_7f7422b3,
+  /** long straight driving */
+  _20190526T170036_7f7422b3,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
