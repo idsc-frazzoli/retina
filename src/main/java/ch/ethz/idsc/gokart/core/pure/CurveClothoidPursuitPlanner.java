@@ -17,6 +17,7 @@ import ch.ethz.idsc.owl.math.planar.PseudoSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.planar.TrajectoryEntryFinder;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
+import ch.ethz.idsc.sophus.planar.ClothoidDistance;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -30,7 +31,6 @@ import ch.ethz.idsc.tensor.sca.Abs;
 
 // TODO JPH rename
 public class CurveClothoidPursuitPlanner {
-  private static final int REFINEMENT = 2;
   private static final Scalar REPLANNING_TIME = Quantity.of(.015, SI.SECOND); // TODO test or even update online
   // ---
   private Optional<ClothoidPlan> plan = Optional.empty();
@@ -83,7 +83,7 @@ public class CurveClothoidPursuitPlanner {
       GeodesicPursuitInterface geodesicPursuit = new ClothoidPursuit(vector);
       Tensor ratios = geodesicPursuit.ratios();
       if (ratios.stream().map(Tensor::Get).allMatch(isCompliant)) {
-        Scalar length = CurveClothoidPursuitHelper.curveLength(ClothoidPursuit.curve(vector, REFINEMENT)); // [m]
+        Scalar length = ClothoidDistance.INSTANCE.norm(vector); // [m]
         // System.out.println("length=" + length);
         Scalar max = Abs.of(geodesicPursuit.ratios().stream().reduce(Max::of).get()).Get(); // [m^-1]
         // System.out.println("max=" + max);
