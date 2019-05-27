@@ -191,7 +191,7 @@ public class LidarLocalizationCore implements //
 
   /** function called when operator initializes pose
    * 
-   * @param pose */
+   * @param pose {x[m], y[m], angle[]} */
   public void resetPose(Tensor pose) {
     // System.out.println("reset pose=" + pose.map(Round._5));
     vmu931Odometry.resetPose(pose);

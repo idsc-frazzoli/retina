@@ -68,7 +68,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         System.err.println("Turning ratio with invalid unit");
       }
       clippedRatioOut = PIDTuningParams.GLOBAL.clipRatio().apply(ratioOut);
-      // 
+      //
       this.previousPID = currentPID;
       pidIndex++;
       return Optional.of(clippedRatioOut);
@@ -96,7 +96,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   public PIDTrajectory getPID() {
     return currentPID;
   }
-  
+
   public Scalar getClippedTurningRatio() {
     return clippedRatioOut;
   }
