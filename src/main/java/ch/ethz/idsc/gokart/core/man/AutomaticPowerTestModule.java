@@ -216,8 +216,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   }
 
   @Override
-  public void getEvent(RimoGetEvent getEvent) {
-    meanTangentSpeed = RimoTwdOdometry.tangentSpeed(getEvent);
+  public void getEvent(RimoGetEvent rimoGetEvent) {
+    meanTangentSpeed = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
   }
 
   public static void main(String[] args) throws Exception {

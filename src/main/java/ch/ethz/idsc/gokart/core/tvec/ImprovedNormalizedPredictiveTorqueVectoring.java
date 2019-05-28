@@ -19,6 +19,8 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
   // ---
   private final IntervalClock intervalClock = new IntervalClock();
   private final GeodesicIIR1Filter geodesicIIR1Filter;
+  private Scalar wantedRotationRate_last = null;
+  private Scalar rotationAcc_fallback = ROLLING_AVERAGE_VALUE;
 
   public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
@@ -36,9 +38,6 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
         wantedAcceleration, //
         expectedRotationAcceleration);
   }
-
-  private Scalar wantedRotationRate_last = null;
-  private Scalar rotationAcc_fallback = ROLLING_AVERAGE_VALUE;
 
   /** @param wantedRotationRate [s^-1]
    * @param timeSinceLastStep with interpretation in seconds

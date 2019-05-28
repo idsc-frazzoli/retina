@@ -55,7 +55,7 @@ public class LookupTableRimoThrustManualModule extends GuideManualModule<RimoPut
   }
 
   @Override // from RimoGetListener
-  public final void getEvent(RimoGetEvent getEvent) {
-    meanTangentSpeed = RimoTwdOdometry.tangentSpeed(getEvent);
+  public final void getEvent(RimoGetEvent rimoGetEvent) {
+    meanTangentSpeed = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
   }
 }

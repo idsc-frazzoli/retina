@@ -51,9 +51,9 @@ public class AutonomousSafetyModule extends AbstractModule {
   };
   private final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
-    public void getEvent(RimoGetEvent getEvent) {
+    public void getEvent(RimoGetEvent rimoGetEvent) {
       fastEnoughToBrake = Scalars.lessThan(BRAKINGTHRESHOLD, //
-          RimoTwdOdometry.tangentSpeed(getEvent).abs());
+          RimoTwdOdometry.tangentSpeed(rimoGetEvent).abs());
     }
   };
   final AutonomySafetyRimo autonomySafetyRimo = new AutonomySafetyRimo(this::isSafeToDrive);
