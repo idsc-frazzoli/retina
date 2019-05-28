@@ -1,12 +1,13 @@
-// code by mh, jph
-package ch.ethz.idsc.gokart.core.tvec;
+// code by mh
+package ch.ethz.idsc.gokart.calib.power;
 
+import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public abstract class AbstractMotorCurrents implements MotorCurrentsInterface {
+/* package */ abstract class AbstractMotorCurrents implements MotorCurrentsInterface {
   final TorqueVectoringConfig torqueVectoringConfig;
 
   protected AbstractMotorCurrents(TorqueVectoringConfig torqueVectoringConfig) {

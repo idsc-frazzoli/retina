@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.tvec;
+package ch.ethz.idsc.gokart.calib.power;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;

@@ -4,9 +4,9 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.power.MotorCurrentsInterface;
+import ch.ethz.idsc.gokart.calib.power.PredictiveMotorCurrents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.tvec.MotorCurrentsInterface;
-import ch.ethz.idsc.gokart.core.tvec.PredictiveMotorCurrents;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.car.math.AngularSlip;

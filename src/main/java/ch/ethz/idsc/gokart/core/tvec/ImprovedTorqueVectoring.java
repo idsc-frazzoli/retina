@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public final class ImprovedTorqueVectoring extends BaseTorqueVectoring {
+public final class ImprovedTorqueVectoring extends AbstractTorqueVectoring {
   public ImprovedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
   }

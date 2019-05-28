@@ -1,7 +1,7 @@
-// code by mh, jph
-package ch.ethz.idsc.gokart.core.tvec;
+// code by mh
+package ch.ethz.idsc.gokart.calib.power;
 
-import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
+import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringClip;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

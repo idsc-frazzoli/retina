@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.core.tvec;
 
 import ch.ethz.idsc.tensor.Scalar;
 
-public final class SimpleTorqueVectoring extends BaseTorqueVectoring {
-  public SimpleTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
+public final class DirectTorqueVectoring extends AbstractTorqueVectoring {
+  public DirectTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
   }
 
