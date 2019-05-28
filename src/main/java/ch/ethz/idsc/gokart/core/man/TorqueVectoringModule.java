@@ -30,12 +30,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** abstract base class for all torque vectoring modules:
  * 
- * {@link SimpleTorqueVectoringManualModule}
- * {@link ImprovedTorqueVectoringManualModule}
- * {@link ImprovedNormalizedTorqueVectoringManualModule}
- * {@link UltimateTorqueVectoringModule} */
-abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEvent> //
-    implements RimoGetListener {
+ * {@link DirectTorqueVectoringModule}
+ * {@link ImprovedTorqueVectoringModule}
+ * {@link NormalizedTorqueVectoringModule}
+ * {@link PredictiveTorqueVectoringModule} */
+/* package */ abstract class TorqueVectoringModule extends GuideManualModule<RimoPutEvent> implements RimoGetListener {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final TorqueVectoringInterface torqueVectoringInterface;
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = //
@@ -46,8 +45,8 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
   // ---
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
-  TorqueVectoringManualModule(TorqueVectoringInterface torqueVectoring) {
-    this.torqueVectoringInterface = torqueVectoring;
+  TorqueVectoringModule(TorqueVectoringInterface torqueVectoringInterface) {
+    this.torqueVectoringInterface = torqueVectoringInterface;
   }
 
   @Override // from ManualModule

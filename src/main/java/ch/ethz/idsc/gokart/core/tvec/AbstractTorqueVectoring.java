@@ -21,7 +21,7 @@ public abstract class AbstractTorqueVectoring implements TorqueVectoringInterfac
     return TorqueVectoringClip.from(Clips.absoluteOne().apply(wantedPower), wantedZTorque);
   }
 
-  /** @param wantedZTorque TODO MH state unit
+  /** @param wantedZTorque unitless
    * @param realRotation s^-1
    * @return quantity with unit same as wantedZTorque */
   public abstract Scalar wantedZTorque(Scalar wantedZTorque, Scalar realRotation);

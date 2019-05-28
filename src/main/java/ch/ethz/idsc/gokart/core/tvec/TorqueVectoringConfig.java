@@ -17,11 +17,12 @@ public class TorqueVectoringConfig {
   public Scalar staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
   /** The Dynamic correction coefficient */
   public Scalar dynamicCorrection = Quantity.of(1.5, SI.SECOND);
-  /** The Dynamic correction coefficient */
+  /** The Predictive correction coefficient */
   public Scalar staticPrediction = Quantity.of(0.0, SI.ANGULAR_ACCELERATION.negate());
   /** TODO document control constant used in ITV */
   public Scalar ks = Quantity.of(10.0, SI.SECOND);
   /** Scaling factor for Normalized torque vectoring */
+  // TODO MH not used
   public Scalar kn = Quantity.of(1, SI.ACCELERATION.negate());
   /** ratio:
    * 0 means 100% old value
@@ -32,13 +33,13 @@ public class TorqueVectoringConfig {
   /***************************************************/
   /** @param angularSlip [s^-1]
    * @return dynamic component unitless */
-  public final Scalar getDynamicComponent(AngularSlip angularSlip) {
+  private final Scalar getDynamicComponent(AngularSlip angularSlip) {
     return angularSlip.angularSlip().multiply(dynamicCorrection);
   }
 
   /** @param angularSlip
    * @return unitless */
-  public final Scalar getStaticComponent(AngularSlip angularSlip) {
+  private final Scalar getStaticComponent(AngularSlip angularSlip) {
     Scalar tangentSpeed = angularSlip.tangentSpeed();
     return Times.of( //
         angularSlip.rotationPerMeterDriven(), //
@@ -47,6 +48,8 @@ public class TorqueVectoringConfig {
         staticCompensation);
   }
 
+  /** @param angularSlip
+   * @return unitless */
   public final Scalar getDynamicAndStatic(AngularSlip angularSlip) {
     return getDynamicComponent(angularSlip).add(getStaticComponent(angularSlip));
   }

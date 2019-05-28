@@ -8,7 +8,7 @@ public final class DirectTorqueVectoring extends AbstractTorqueVectoring {
     super(torqueVectoringConfig);
   }
 
-  @Override
+  @Override // from AbstractTorqueVectoring
   public Scalar wantedZTorque(Scalar wantedZTorque, Scalar realRotation) {
     return wantedZTorque;
   }
