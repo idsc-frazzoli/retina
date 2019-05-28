@@ -11,7 +11,7 @@ public final class ImprovedTorqueVectoring extends AbstractTorqueVectoring {
     super(torqueVectoringConfig);
   }
 
-  @Override // from SimpleTorqueVectoring
+  @Override // from AbstractTorqueVectoring
   public final Scalar wantedZTorque(Scalar wantedZTorque, Scalar realRotation) {
     if (Sign.isNegative(realRotation.multiply(wantedZTorque))) {
       Scalar scalar = Clips.unit().apply(realRotation.abs().multiply(torqueVectoringConfig.ks));

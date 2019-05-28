@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
@@ -16,7 +15,6 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
@@ -42,6 +40,11 @@ public class AutonomousSafetyModule extends AbstractModule {
   private final Watchdog localizationWatchdog = SoftWatchdog.barking(0.3);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
+  // when watchdog is triggered, the fuse is set to true.
+  private boolean isLocalizationBroken = true;
+  private boolean isTemperatureOperationSafe = false;
+  private boolean fastEnoughToBrake = true;
+  // ---
   final LinmotGetListener linmotGetListener = new LinmotGetListener() {
     @Override
     public void getEvent(LinmotGetEvent getEvent) {
@@ -49,13 +52,8 @@ public class AutonomousSafetyModule extends AbstractModule {
           LinmotConfig.GLOBAL.isTemperatureOperationSafe(getEvent.getWindingTemperatureMax());
     }
   };
-  private final RimoGetListener rimoGetListener = new RimoGetListener() {
-    @Override
-    public void getEvent(RimoGetEvent rimoGetEvent) {
-      fastEnoughToBrake = Scalars.lessThan(BRAKINGTHRESHOLD, //
-          RimoTwdOdometry.tangentSpeed(rimoGetEvent).abs());
-    }
-  };
+  private final RimoGetListener rimoGetListener = //
+      rimoGetEvent -> fastEnoughToBrake = Scalars.lessThan(BRAKINGTHRESHOLD, RimoTwdOdometry.tangentSpeed(rimoGetEvent).abs());
   final AutonomySafetyRimo autonomySafetyRimo = new AutonomySafetyRimo(this::isSafeToDrive);
   final AutonomySafetySteer autonomySafetySteer = new AutonomySafetySteer(this::isSafeToDrive);
   private final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
@@ -71,27 +69,20 @@ public class AutonomousSafetyModule extends AbstractModule {
       return PROVIDER_RANK;
     }
   };
-  final GokartPoseListener gokartPoseListener = new GokartPoseListener() {
-    @Override // from GokartPoseListener
-    public void getEvent(GokartPoseEvent gokartPoseEvent) {
-      if (isLocalizationBroken) {
-        Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
-        if (optional.isPresent() && optional.get().isResetPressed())
-          isLocalizationBroken = false;
-      }
-      // ---
-      /* or-equals implies that manual reset is required */
-      isLocalizationBroken |= Scalars.isZero(gokartPoseEvent.getQuality());
-      if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()))
-        localizationWatchdog.notifyWatchdog();
-      // trigger fuse
-      isLocalizationBroken |= localizationWatchdog.isBarking();
+  final GokartPoseListener gokartPoseListener = gokartPoseEvent -> {
+    if (isLocalizationBroken) {
+      Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
+      if (optional.isPresent() && optional.get().isResetPressed())
+        isLocalizationBroken = false;
     }
+    // ---
+    /* or-equals implies that manual reset is required */
+    isLocalizationBroken |= Scalars.isZero(gokartPoseEvent.getQuality());
+    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()))
+      localizationWatchdog.notifyWatchdog();
+    // trigger fuse
+    isLocalizationBroken |= localizationWatchdog.isBarking();
   };
-  // when watchdog is triggered, the fuse is set to true.
-  private boolean isLocalizationBroken = true;
-  private boolean isTemperatureOperationSafe = false;
-  private boolean fastEnoughToBrake = true;
 
   @Override // from AbstractModule
   protected void first() {
@@ -106,22 +97,17 @@ public class AutonomousSafetyModule extends AbstractModule {
 
   @Override // from AbstractModule
   protected void last() {
+    SteerSocket.INSTANCE.removePutProvider(autonomySafetySteer);
+    LinmotSocket.INSTANCE.removeGetListener(linmotGetListener);
+    LinmotSocket.INSTANCE.removePutProvider(linmotPutProvider);
     RimoSocket.INSTANCE.removePutProvider(autonomySafetyRimo);
     RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
     gokartPoseLcmClient.stopSubscriptions();
-    LinmotSocket.INSTANCE.removeGetListener(linmotGetListener);
-    LinmotSocket.INSTANCE.removePutProvider(linmotPutProvider);
-    SteerSocket.INSTANCE.removePutProvider(autonomySafetySteer);
   }
 
   private boolean isSafeToDrive() {
-    if (SafetyConfig.GLOBAL.checkAutonomy) {
-      // if (!isTemperatureOperationSafe)
-      // System.err.println("linmot temperature");
-      // if (isLocalizationBroken)
-      // System.err.println("localization broken - press reset");
+    if (SafetyConfig.GLOBAL.checkAutonomy)
       return isTemperatureOperationSafe && !isLocalizationBroken;
-    }
     return true;
   }
 }
