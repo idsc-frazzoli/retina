@@ -1,21 +1,15 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
-import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owl.car.math.TurningGeometry;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
-import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.ArcTan;
 
@@ -81,35 +75,5 @@ public class ChassisGeometry {
    * @return steering angle unitless */
   public Scalar steerAngleForTurningRatio(Scalar ratio) {
     return ArcTan.of(xAxleRtoF.multiply(ratio));
-  }
-
-  /** @param rimoGetEvent
-   * @return velocity of the gokart projected to the x-axis in unit "m*s^-1"
-   * computed from the angular rates of the rear wheels. The odometry value
-   * has error due to slip. */
-  public Scalar odometryTangentSpeed(RimoGetEvent rimoGetEvent) {
-    return odometryTangentSpeed(rimoGetEvent.getAngularRate_Y_pair());
-  }
-
-  /** @param angularRate_Y_pair {rate_left[s^-1], rate_right[s^-1]}
-   * @return */
-  private static Scalar odometryTangentSpeed(Tensor angularRate_Y_pair) {
-    return RimoTireConfiguration._REAR.radius().multiply(Mean.of(angularRate_Y_pair).Get());
-  }
-
-  /** @param rimoGetEvent
-   * @return rotational rate of the gokart (around z-axis) in unit "s^-1"
-   * computed from the angular rates of the rear wheels. The odometry value
-   * has error due to slip. */
-  public Scalar odometryTurningRate(RimoGetEvent rimoGetEvent) {
-    return odometryTurningRate(rimoGetEvent.getAngularRate_Y_pair());
-  }
-
-  /** @param angularRate_Y_pair {rate_left[s^-1], rate_right[s^-1]}
-   * @return */
-  private Scalar odometryTurningRate(Tensor angularRate_Y_pair) {
-    // rad/s * m == (m / s) / m
-    return Differences.of(angularRate_Y_pair).Get(0) //
-        .multiply(RationalScalar.HALF).multiply(RimoTireConfiguration._REAR.radius()).divide(yTireRear);
   }
 }

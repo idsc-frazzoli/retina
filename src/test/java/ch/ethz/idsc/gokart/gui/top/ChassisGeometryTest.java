@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.owl.car.math.AckermannSteering;
@@ -84,11 +85,11 @@ public class ChassisGeometryTest extends TestCase {
 
   public void testOdometry() {
     RimoGetEvent rimoGetEvent = RimoGetEvents.create(100, 200);
-    Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
+    Scalar speed = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
     assertEquals(QuantityUnit.of(speed), Unit.of("s^-1*m"));
     Scalar vel = Magnitude.VELOCITY.apply(speed);
     assertTrue(Chop._04.close(vel, RealScalar.of(0.3)));
-    Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
+    Scalar rate = RimoTwdOdometry.turningRate(rimoGetEvent);
     assertEquals(QuantityUnit.of(rate), Unit.of("s^-1"));
     Scalar ome = Magnitude.PER_SECOND.apply(rate);
     assertTrue(Chop._04.close(ome, RealScalar.of(0.18518518518518517)));

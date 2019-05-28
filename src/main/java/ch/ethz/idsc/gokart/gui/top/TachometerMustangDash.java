@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
@@ -55,7 +56,7 @@ public class TachometerMustangDash implements RenderInterface, RimoGetListener {
           vector.multiply(RealScalar.of(11.8))));
       graphics.draw(path2d);
     }
-    Scalar speed = SCALAR_UNARY_OPERATOR.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
+    Scalar speed = SCALAR_UNARY_OPERATOR.apply(RimoTwdOdometry.tangentSpeed(rimoGetEvent));
     Clip clip = Clips.positive(60);
     speed = clip.apply(speed);
     final int steps = speed.number().intValue();

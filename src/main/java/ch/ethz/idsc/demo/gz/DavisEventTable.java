@@ -4,9 +4,9 @@ package ch.ethz.idsc.demo.gz;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
@@ -54,8 +54,8 @@ import ch.ethz.idsc.tensor.sca.Round;
     ++events[davisDvsEvent.i];
     Scalar now = Quantity.of((davisDvsEvent.time - reference) * 1e-6, SI.SECOND);
     if (Scalars.lessEquals(time_next, now)) { // GZ not as precise as could be
-      Scalar speed = Objects.isNull(rge) ? Quantity.of(0, SI.VELOCITY) : ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
-      Scalar rate = Objects.isNull(rge) ? Quantity.of(0, SI.PER_SECOND) : ChassisGeometry.GLOBAL.odometryTurningRate(rge);
+      Scalar speed = Objects.isNull(rge) ? Quantity.of(0, SI.VELOCITY) : RimoTwdOdometry.tangentSpeed(rge);
+      Scalar rate = Objects.isNull(rge) ? Quantity.of(0, SI.PER_SECOND) : RimoTwdOdometry.turningRate(rge);
       tableBuilder.appendRow( //
           Magnitude.SECOND.apply(time_next.subtract(delta)), //
           Tensors.vectorLong(events), speed.map(Magnitude.VELOCITY).map(Round._2), //

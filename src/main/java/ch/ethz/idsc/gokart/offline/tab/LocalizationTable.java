@@ -4,12 +4,12 @@ package ch.ethz.idsc.gokart.offline.tab;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
@@ -80,8 +80,8 @@ public class LocalizationTable implements OfflineTableSupplier {
         // System.out.println("export " + time.number().doubleValue());
         Gprmc gprmc = vpe.gprmc();
         time_next = time.add(delta);
-        Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
-        Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
+        Scalar speed = RimoTwdOdometry.tangentSpeed(rge);
+        Scalar rate = RimoTwdOdometry.turningRate(rge);
         Scalar degX = gprmc.gpsX();
         Scalar degY = gprmc.gpsY();
         Tensor metric = WGS84toCH1903LV03Plus.transform(degX, degY);

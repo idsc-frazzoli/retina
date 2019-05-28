@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -19,7 +20,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
@@ -53,7 +53,7 @@ public class AutonomousSafetyModule extends AbstractModule {
     @Override
     public void getEvent(RimoGetEvent getEvent) {
       fastEnoughToBrake = Scalars.lessThan(BRAKINGTHRESHOLD, //
-          ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent).abs());
+          RimoTwdOdometry.tangentSpeed(getEvent).abs());
     }
   };
   final AutonomySafetyRimo autonomySafetyRimo = new AutonomySafetyRimo(this::isSafeToDrive);

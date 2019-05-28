@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.man;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
@@ -11,7 +12,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutTires;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -56,6 +56,6 @@ public class LookupTableRimoThrustManualModule extends GuideManualModule<RimoPut
 
   @Override // from RimoGetListener
   public final void getEvent(RimoGetEvent getEvent) {
-    meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
+    meanTangentSpeed = RimoTwdOdometry.tangentSpeed(getEvent);
   }
 }

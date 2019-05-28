@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.offline.tab;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvents;
@@ -14,7 +15,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -69,8 +69,8 @@ public class BasicTrackReplayTable implements OfflineTableSupplier {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
-      Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
-      Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
+      Scalar speed = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
+      Scalar rate = RimoTwdOdometry.turningRate(rimoGetEvent);
       Scalar sce = gokartStatusEvent.isSteerColumnCalibrated() //
           ? gokartStatusEvent.getSteerColumnEncoderCentered()
           : Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
