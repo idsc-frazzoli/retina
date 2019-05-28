@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-/*package*/ enum RnUnitCircle {
+/* package */ enum RnUnitCircle {
   ;
   private static final ScalarUnaryOperator MOD = Mod.function(Pi.TWO, Pi.VALUE.negate());
 

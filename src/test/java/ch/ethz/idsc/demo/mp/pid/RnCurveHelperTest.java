@@ -4,7 +4,6 @@ package ch.ethz.idsc.demo.mp.pid;
 import java.util.Arrays;
 
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
-import ch.ethz.idsc.owl.bot.se2.pid.RnCurveHelper;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;

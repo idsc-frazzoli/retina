@@ -1,6 +1,5 @@
 package ch.ethz.idsc.demo.mp.pid;
 
-import ch.ethz.idsc.owl.bot.se2.pid.Se2CurveUnitCheck;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;

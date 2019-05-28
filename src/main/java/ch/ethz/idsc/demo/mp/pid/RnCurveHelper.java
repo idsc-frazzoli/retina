@@ -1,11 +1,11 @@
 // code by mcp
-package ch.ethz.idsc.owl.bot.se2.pid;
+package ch.ethz.idsc.demo.mp.pid;
 
 import ch.ethz.idsc.sophus.planar.ArcTan2D;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public enum RnCurveHelper {
+/* package */ enum RnCurveHelper {
   ;
   /** @param optionalCurve
    * @return if enough elements in curve */

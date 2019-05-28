@@ -13,11 +13,14 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormalizedTorqueVectoring {
+  /** min_dt with interpretation in seconds */
   private static final double MIN_DT = 0.000001;
   private static final Scalar ROLLING_AVERAGE_VALUE = Quantity.of(0.0, SI.ANGULAR_ACCELERATION);
   // ---
   private final IntervalClock intervalClock = new IntervalClock();
   private final GeodesicIIR1Filter geodesicIIR1Filter;
+  private Scalar wantedRotationRate_last = null;
+  private Scalar rotationAcc_fallback = ROLLING_AVERAGE_VALUE;
 
   public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
@@ -28,28 +31,25 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
 
   @Override // from ImprovedNormalizedTorqueVectoring
   public final Tensor getMotorCurrentsFromAcceleration(AngularSlip angularSlip, Scalar wantedAcceleration) {
-    Scalar expectedRotationVelocity = angularSlip.tangentSpeed().multiply(angularSlip.rotationPerMeterDriven());
-    Scalar expectedRoationAcceleration = estimateRotationAcceleration(expectedRotationVelocity, intervalClock.seconds());
+    Scalar wantedRotationRate = angularSlip.wantedRotationRate(); // s^-1
+    Scalar expectedRotationAcceleration = estimateRotationAcceleration(wantedRotationRate, intervalClock.seconds());
     return getMotorCurrentsFromAcceleration(//
         angularSlip, //
         wantedAcceleration, //
-        expectedRoationAcceleration);
+        expectedRotationAcceleration);
   }
 
-  private Scalar lastRotation = null;
-  private Scalar rotationAcc_fallback = ROLLING_AVERAGE_VALUE;
-
-  /** @param rotation [s^-1]
-   * @param timeSinceLastStep
+  /** @param wantedRotationRate [s^-1]
+   * @param timeSinceLastStep with interpretation in seconds
    * @return estimation of rotational acceleration with unit [s^-2] */
-  /* package */ Scalar estimateRotationAcceleration(Scalar rotation, double timeSinceLastStep) {
-    if (Objects.isNull(lastRotation))
-      lastRotation = rotation;
+  /* package */ Scalar estimateRotationAcceleration(Scalar wantedRotationRate, double timeSinceLastStep) {
+    if (Objects.isNull(wantedRotationRate_last))
+      wantedRotationRate_last = wantedRotationRate;
     if (timeSinceLastStep >= MIN_DT) {
-      Scalar instantRotChange = rotation.subtract(lastRotation).divide(Quantity.of(timeSinceLastStep, SI.SECOND));
+      Scalar instantRotChange = wantedRotationRate.subtract(wantedRotationRate_last).divide(Quantity.of(timeSinceLastStep, SI.SECOND));
       rotationAcc_fallback = geodesicIIR1Filter.apply(instantRotChange).Get();
     }
-    lastRotation = rotation;
+    wantedRotationRate_last = wantedRotationRate;
     return rotationAcc_fallback;
   }
 

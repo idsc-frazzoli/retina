@@ -4,13 +4,13 @@ package ch.ethz.idsc.demo.mh;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
@@ -76,7 +76,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       powerAccelerationRight = PowerLookupTable.getInstance().getAcceleration(powerPair.Get(1), wheelSpeed);
     } else if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       RimoGetEvent rge = new RimoGetEvent(byteBuffer);
-      wheelSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
+      wheelSpeed = RimoTwdOdometry.tangentSpeed(rge);
     }
   }
 

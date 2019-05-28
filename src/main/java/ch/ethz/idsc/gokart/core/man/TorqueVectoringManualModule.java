@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.man;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -17,7 +18,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -80,7 +80,6 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
    * @return */
   final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Scalar gyroZ) {
     Scalar ratio = steerMapping.getRatioFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
-    // Scalar rotationPerMeterDriven = bicycleAngularSlip.rotationPerMeterDriven(theta); // m^-1
     // compute (negative) angular slip
     AngularSlip angularSlip = new AngularSlip(meanTangentSpeed, ratio, gyroZ);
     // ---
@@ -100,6 +99,7 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
   public final void getEvent(RimoGetEvent getEvent) {
     if (Objects.nonNull(vlp16PassiveSlowing))
       vlp16PassiveSlowing.bypassSafety();
-    meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
+    // TODO MH/JPH use tangent speed from lidarLocalizationModule
+    meanTangentSpeed = RimoTwdOdometry.tangentSpeed(getEvent);
   }
 }
