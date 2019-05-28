@@ -4,9 +4,13 @@ package ch.ethz.idsc.owl.car.math;
 import ch.ethz.idsc.tensor.Scalar;
 
 public class AngularSlip {
+  /** tangentSpeed with unit m*s^-1 */
   private final Scalar tangentSpeed;
+  /** rotationPerMeterDriven with unit m^-1 */
   private final Scalar rotationPerMeterDriven;
+  /** wantedRotationRate with unit s^-1 */
   private final Scalar wantedRotationRate;
+  /** gyroZ with unit s^-1 */
   private final Scalar gyroZ;
 
   /** @param tangentSpeed m*s^-1
@@ -19,22 +23,27 @@ public class AngularSlip {
     this.gyroZ = gyroZ;
   }
 
+  /** @return tangentSpeed with unit m*s^-1 */
   public Scalar tangentSpeed() {
     return tangentSpeed;
   }
 
+  /** @return rotationPerMeterDriven with unit m^-1 */
   public Scalar rotationPerMeterDriven() {
     return rotationPerMeterDriven;
   }
 
+  /** @return wantedRotationRate with unit s^-1 */
   public Scalar wantedRotationRate() {
     return wantedRotationRate;
   }
 
+  /** @return gyroZ with unit s^-1 */
   public Scalar gyroZ() {
     return gyroZ;
   }
 
+  /** @return difference between wantedRotationRate and gyroZ */
   public Scalar angularSlip() {
     return wantedRotationRate.subtract(gyroZ);
   }

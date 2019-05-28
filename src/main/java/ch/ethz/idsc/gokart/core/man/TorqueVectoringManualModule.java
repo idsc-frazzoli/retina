@@ -80,7 +80,6 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
    * @return */
   final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Scalar gyroZ) {
     Scalar ratio = steerMapping.getRatioFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
-    // Scalar rotationPerMeterDriven = bicycleAngularSlip.rotationPerMeterDriven(theta); // m^-1
     // compute (negative) angular slip
     AngularSlip angularSlip = new AngularSlip(meanTangentSpeed, ratio, gyroZ);
     // ---
@@ -100,6 +99,7 @@ abstract class TorqueVectoringManualModule extends GuideManualModule<RimoPutEven
   public final void getEvent(RimoGetEvent getEvent) {
     if (Objects.nonNull(vlp16PassiveSlowing))
       vlp16PassiveSlowing.bypassSafety();
+    // TODO MH/JPH use tangent speed from lidarLocalizationModule
     meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
   }
 }
