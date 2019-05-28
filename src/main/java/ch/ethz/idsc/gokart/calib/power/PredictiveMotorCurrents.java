@@ -1,8 +1,9 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.tvec;
+package ch.ethz.idsc.gokart.calib.power;
 
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -12,8 +13,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormalizedTorqueVectoring {
-  /** min_dt with interpretation in seconds */
+public class PredictiveMotorCurrents extends AbstractMotorCurrents {
   private static final double MIN_DT = 0.000001;
   private static final Scalar ROLLING_AVERAGE_VALUE = Quantity.of(0.0, SI.ANGULAR_ACCELERATION);
   // ---
@@ -22,21 +22,24 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
   private Scalar wantedRotationRate_last = null;
   private Scalar rotationAcc_fallback = ROLLING_AVERAGE_VALUE;
 
-  public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
+  public PredictiveMotorCurrents(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
     geodesicIIR1Filter = new GeodesicIIR1Filter( //
         RnGeodesic.INSTANCE, //
         torqueVectoringConfig.rollingAverageRatio /* ROLLING_AVERAGE_VALUE */ );
   }
 
-  @Override // from ImprovedNormalizedTorqueVectoring
-  public final Tensor getMotorCurrentsFromAcceleration(AngularSlip angularSlip, Scalar wantedAcceleration) {
+  @Override // from MotorCurrentsInterface
+  public final Tensor fromAcceleration(AngularSlip angularSlip, Scalar wantedAcceleration) {
     Scalar wantedRotationRate = angularSlip.wantedRotationRate(); // s^-1
     Scalar expectedRotationAcceleration = estimateRotationAcceleration(wantedRotationRate, intervalClock.seconds());
-    return getMotorCurrentsFromAcceleration(//
-        angularSlip, //
-        wantedAcceleration, //
-        expectedRotationAcceleration);
+    Scalar predictiveComponent = torqueVectoringConfig.getPredictiveComponent(expectedRotationAcceleration);
+    // ---
+    Scalar wantedZTorque = wantedZTorque( //
+        torqueVectoringConfig.getDynamicAndStatic(angularSlip).add(predictiveComponent), // One
+        angularSlip.gyroZ());
+    // left and right power prefer power over Z-torque
+    return StaticHelper.getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
   }
 
   /** @param wantedRotationRate [s^-1]
@@ -51,22 +54,5 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
     }
     wantedRotationRate_last = wantedRotationRate;
     return rotationAcc_fallback;
-  }
-
-  private Tensor getMotorCurrentsFromAcceleration( //
-      AngularSlip angularSlip, Scalar wantedAcceleration, Scalar expectedRotationAcceleration) {
-    Scalar dynamicComponent = getDynamicComponent(angularSlip.angularSlip());
-    Scalar staticComponent = getStaticComponent(angularSlip.rotationPerMeterDriven(), angularSlip.tangentSpeed());
-    Scalar predictiveComponent = getPredictiveComponent(expectedRotationAcceleration);
-    // ---
-    Scalar wantedZTorque = wantedZTorque( //
-        dynamicComponent.add(staticComponent).add(predictiveComponent), // One
-        angularSlip.gyroZ());
-    // left and right power prefer power over Z-torque
-    return getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
-  }
-
-  private Scalar getPredictiveComponent(Scalar expectedRotationAcceleration) {
-    return expectedRotationAcceleration.multiply(torqueVectoringConfig.staticPrediction);
   }
 }

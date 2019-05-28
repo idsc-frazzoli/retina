@@ -4,9 +4,9 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.power.MotorCurrentsInterface;
+import ch.ethz.idsc.gokart.calib.power.PredictiveMotorCurrents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedPredictiveTorqueVectoring;
-import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
@@ -16,8 +16,8 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
 /* package */ class MPCAggressiveTorqueVectoringPower extends MPCPower {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
-      new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
+  private final MotorCurrentsInterface motorCurrentsInterface = //
+      new PredictiveMotorCurrents(TorqueVectoringConfig.GLOBAL);
   private final MPCSteering mpcSteering;
   // ---
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
@@ -45,7 +45,8 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     // Tensor minmax = powerLookupTable.getMinMaxAcceleration(cnsStep.state.getUx());
     // Scalar midpoint = (Scalar) Mean.of(minmax);
     // more tame version
-    AngularSlip angularSlip = new AngularSlip(tangentialSpeed, ratio, gyroZ);
-    return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(angularSlip, Ramp.FUNCTION.apply(wantedAcceleration)));
+    return Optional.of(motorCurrentsInterface.fromAcceleration( //
+        new AngularSlip(tangentialSpeed, ratio, gyroZ), //
+        Ramp.FUNCTION.apply(wantedAcceleration)));
   }
 }
