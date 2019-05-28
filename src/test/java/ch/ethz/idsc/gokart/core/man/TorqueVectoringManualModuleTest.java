@@ -17,13 +17,13 @@ import junit.framework.TestCase;
 
 public class TorqueVectoringManualModuleTest extends TestCase {
   public void testSimple() throws Exception {
-    TorqueVectoringManualModule torqueVectoringManualModule = new SimpleTorqueVectoringManualModule();
+    TorqueVectoringModule torqueVectoringManualModule = new DirectTorqueVectoringModule();
     torqueVectoringManualModule.first();
     torqueVectoringManualModule.last();
   }
 
   public void testControl() throws Exception {
-    TorqueVectoringManualModule torqueVectoringManualModule = new SimpleTorqueVectoringManualModule();
+    TorqueVectoringModule torqueVectoringManualModule = new DirectTorqueVectoringModule();
     torqueVectoringManualModule.first();
     torqueVectoringManualModule.getEvent(RimoGetEvents.create(100, 200));
     SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
@@ -43,7 +43,7 @@ public class TorqueVectoringManualModuleTest extends TestCase {
   }
 
   public void testControl2() throws Exception {
-    TorqueVectoringManualModule torqueVectoringManualModule = new SimpleTorqueVectoringManualModule();
+    TorqueVectoringModule torqueVectoringManualModule = new DirectTorqueVectoringModule();
     torqueVectoringManualModule.first();
     Scalar slip = RationalScalar.HALF; // 1/2 forward slip right
     torqueVectoringManualModule.getEvent(RimoGetEvents.create(200, 200));
@@ -61,7 +61,7 @@ public class TorqueVectoringManualModuleTest extends TestCase {
   }
 
   public void testControl3() throws Exception {
-    TorqueVectoringManualModule torqueVectoringManualModule = new SimpleTorqueVectoringManualModule();
+    TorqueVectoringModule torqueVectoringManualModule = new DirectTorqueVectoringModule();
     torqueVectoringManualModule.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip right
     torqueVectoringManualModule.getEvent(RimoGetEvents.create(200, 200));
@@ -79,7 +79,7 @@ public class TorqueVectoringManualModuleTest extends TestCase {
   }
 
   public void testControl4() throws Exception {
-    TorqueVectoringManualModule torqueVectoringManualModule = new SimpleTorqueVectoringManualModule();
+    TorqueVectoringModule torqueVectoringManualModule = new DirectTorqueVectoringModule();
     torqueVectoringManualModule.first();
     Scalar slip = RationalScalar.of(3, 4); // 3/4 forward slip left
     // System.out.println(slip + " slip left");
@@ -99,7 +99,7 @@ public class TorqueVectoringManualModuleTest extends TestCase {
   }
 
   public void testControl5() throws Exception {
-    TorqueVectoringManualModule torqueVectoringManualModule = new SimpleTorqueVectoringManualModule();
+    TorqueVectoringModule torqueVectoringManualModule = new DirectTorqueVectoringModule();
     torqueVectoringManualModule.first();
     Scalar slip = RationalScalar.of(-3, 4); // 3/4 forward slip right
     // System.out.println(slip + " slip right");
@@ -118,7 +118,7 @@ public class TorqueVectoringManualModuleTest extends TestCase {
   }
 
   public void testControl6() throws Exception {
-    TorqueVectoringManualModule torqueVectoringManualModule = new SimpleTorqueVectoringManualModule();
+    TorqueVectoringModule torqueVectoringManualModule = new DirectTorqueVectoringModule();
     torqueVectoringManualModule.first();
     Scalar slip = RationalScalar.of(-3, 4); // 3/4 forward slip left
     // System.out.println(slip + " slip left");
