@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.math.planar.PurePursuit;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -34,9 +33,8 @@ public final class SlamCurvePurePursuitModule extends PursuitModule {
   protected Optional<Scalar> deriveHeading() {
     Optional<Scalar> ratio = getRatio();
     if (ratio.isPresent()) { // is look ahead beacon available?
-      Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio.get());
-      if (ratioClip.isInside(angle)) // is look ahead beacon within steering range?
-        return Optional.of(angle);
+      if (ratioClip.isInside(ratio.get())) // is look ahead beacon within steering range?
+        return Optional.of(ratio.get());
       System.err.println("beacon outside steering range");
     }
     return Optional.empty();
