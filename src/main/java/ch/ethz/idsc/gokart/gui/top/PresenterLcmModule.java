@@ -24,6 +24,9 @@ import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
 import ch.ethz.idsc.gokart.core.pure.GokartTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
+import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.ManualControlLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
@@ -42,11 +45,13 @@ import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.api.PathRender;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.ref.TensorListener;
+import ch.ethz.idsc.tensor.sca.Sign;
 
 public class PresenterLcmModule extends AbstractModule {
   // TODO not generic
@@ -121,6 +126,13 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(pathRender);
     }
     {
+      rimoGetLcmClient.addListener(new RimoGetListener() {
+        @Override
+        public void getEvent(RimoGetEvent rimoGetEvent) {
+          Scalar speed = RimoConfig.GLOBAL.speedChop().apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
+          clothoidPlanLcmClient.setDirection(Sign.isPositiveOrZero(speed));
+        }
+      });
       ClothoidPlanRender clothoidPlanRender = new ClothoidPlanRender(Color.MAGENTA);
       clothoidPlanLcmClient.addListener(clothoidPlanRender);
       timerFrame.geometricComponent.addRenderInterface(clothoidPlanRender);
