@@ -1,4 +1,5 @@
-package ch.ethz.idsc.owl.bot.se2.pid;
+// code by mcp
+package ch.ethz.idsc.demo.mp.pid;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -7,7 +8,7 @@ import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 
-public enum Se2CurveUnitCheck {
+/* package */ enum Se2CurveUnitCheck {
   ;
   /** @param curve
    * @return true if each curve element has {x,y,phi} else false */
