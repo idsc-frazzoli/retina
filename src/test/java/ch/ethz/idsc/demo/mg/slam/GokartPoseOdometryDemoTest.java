@@ -1,10 +1,10 @@
 // code by jph
 package ch.ethz.idsc.demo.mg.slam;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -37,7 +37,8 @@ public class GokartPoseOdometryDemoTest extends TestCase {
     Scalar speedR = speed_pair.Get(1);
     Scalar HALF = DoubleScalar.of(0.5);
     Scalar speed = speedL.add(speedR).multiply(HALF);
-    Scalar rate = speedR.subtract(speedL).multiply(HALF).divide(ChassisGeometry.GLOBAL.yTireRear);
+    Scalar yTireRear = RimoAxleConfiguration.rear().wheel(0).local().Get(1);
+    Scalar rate = speedR.subtract(speedL).multiply(HALF).divide(yTireRear);
     return Tensors.of(speed, Quantity.of(0, SI.VELOCITY), rate);
   }
 

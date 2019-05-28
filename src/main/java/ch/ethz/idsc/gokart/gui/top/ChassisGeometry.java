@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
 import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
 import ch.ethz.idsc.owl.car.math.TurningGeometry;
@@ -18,7 +19,6 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
  * 
  * further constants can be found in {@link MPCOptimizationConfig} */
 // TODO JPH location of class not good
-// TODO JPH extract two wheel drive odometry
 public class ChassisGeometry {
   public static final ChassisGeometry GLOBAL = AppResources.load(new ChassisGeometry());
   /***************************************************/
@@ -30,9 +30,6 @@ public class ChassisGeometry {
   public final Scalar yHalfWidth = Quantity.of(0.7, SI.METER);
   /** distance from x-axis to front tire */
   public final Scalar yTireFront = Quantity.of(0.48, SI.METER);
-  /** distance from x-axis to rear tire */
-  // TODO move yTireRear to RimoRearAxleConfiguration
-  public final Scalar yTireRear = Quantity.of(0.54, SI.METER);
   /** front tire half width contact */
   public final Scalar tireHalfWidthContactFront = Quantity.of(0.045, SI.METER);
   /** rear tire half width contact */
@@ -56,15 +53,12 @@ public class ChassisGeometry {
     return Total.of(Tensors.of(xAxleRtoF, xAxleFtoTip).map(Magnitude.METER)).Get();
   }
 
-  public Scalar yTireRearMeter() {
-    return Magnitude.METER.apply(yTireRear);
-  }
-
   public Scalar yTireFrontMeter() {
     return Magnitude.METER.apply(yTireFront);
   }
 
   public DifferentialSpeed getDifferentialSpeed() {
+    Scalar yTireRear = RimoAxleConfiguration.rear().wheel(0).local().Get(1);
     return DifferentialSpeed.fromSI(xAxleRtoF, yTireRear);
   }
 
