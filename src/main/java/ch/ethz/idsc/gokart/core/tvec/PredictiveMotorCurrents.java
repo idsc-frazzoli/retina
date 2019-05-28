@@ -12,8 +12,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public final class ImprovedNormalizedPredictiveTorqueVectoring extends AbstractImprovedTorqueVectoring {
-  /** min_dt with interpretation in seconds */
+public class PredictiveMotorCurrents extends AbstractMotorCurrents {
   private static final double MIN_DT = 0.000001;
   private static final Scalar ROLLING_AVERAGE_VALUE = Quantity.of(0.0, SI.ANGULAR_ACCELERATION);
   // ---
@@ -22,15 +21,15 @@ public final class ImprovedNormalizedPredictiveTorqueVectoring extends AbstractI
   private Scalar wantedRotationRate_last = null;
   private Scalar rotationAcc_fallback = ROLLING_AVERAGE_VALUE;
 
-  public ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
+  public PredictiveMotorCurrents(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
     geodesicIIR1Filter = new GeodesicIIR1Filter( //
         RnGeodesic.INSTANCE, //
         torqueVectoringConfig.rollingAverageRatio /* ROLLING_AVERAGE_VALUE */ );
   }
 
-  @Override // from ImprovedNormalizedTorqueVectoring
-  public final Tensor getMotorCurrentsFromAcceleration(AngularSlip angularSlip, Scalar wantedAcceleration) {
+  @Override // from MotorCurrentsInterface
+  public final Tensor fromAcceleration(AngularSlip angularSlip, Scalar wantedAcceleration) {
     Scalar wantedRotationRate = angularSlip.wantedRotationRate(); // s^-1
     Scalar expectedRotationAcceleration = estimateRotationAcceleration(wantedRotationRate, intervalClock.seconds());
     Scalar predictiveComponent = torqueVectoringConfig.getPredictiveComponent(expectedRotationAcceleration);

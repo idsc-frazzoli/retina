@@ -31,11 +31,13 @@ public class TorqueVectoringConfig {
 
   /***************************************************/
   /** @param angularSlip [s^-1]
-   * @return dynamic component [1] */
+   * @return dynamic component unitless */
   public final Scalar getDynamicComponent(AngularSlip angularSlip) {
     return angularSlip.angularSlip().multiply(dynamicCorrection);
   }
 
+  /** @param angularSlip
+   * @return unitless */
   public final Scalar getStaticComponent(AngularSlip angularSlip) {
     Scalar tangentSpeed = angularSlip.tangentSpeed();
     return Times.of( //
@@ -47,5 +49,11 @@ public class TorqueVectoringConfig {
 
   public final Scalar getDynamicAndStatic(AngularSlip angularSlip) {
     return getDynamicComponent(angularSlip).add(getStaticComponent(angularSlip));
+  }
+
+  /** @param expectedRotationAcceleration
+   * @return unitless */
+  public final Scalar getPredictiveComponent(Scalar expectedRotationAcceleration) {
+    return expectedRotationAcceleration.multiply(staticPrediction);
   }
 }
