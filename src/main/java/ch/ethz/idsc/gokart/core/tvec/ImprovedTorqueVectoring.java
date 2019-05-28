@@ -6,13 +6,13 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public class ImprovedTorqueVectoring extends SimpleTorqueVectoring {
+public final class ImprovedTorqueVectoring extends BaseTorqueVectoring {
   public ImprovedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
   }
 
   @Override // from SimpleTorqueVectoring
-  final Scalar wantedZTorque(Scalar wantedZTorque, Scalar realRotation) {
+  public final Scalar wantedZTorque(Scalar wantedZTorque, Scalar realRotation) {
     if (Sign.isNegative(realRotation.multiply(wantedZTorque))) {
       Scalar scalar = Clips.unit().apply(realRotation.abs().multiply(torqueVectoringConfig.ks));
       Scalar stabilizerFactor = RealScalar.ONE.subtract(scalar);

@@ -4,14 +4,15 @@ package ch.ethz.idsc.gokart.core.tvec;
 import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.sca.Clips;
+import ch.ethz.idsc.tensor.sca.Sign;
 
-public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
+public class ImprovedNormalizedTorqueVectoring extends AbstractTorqueVectoring {
   private static final PowerLookupTable POWER_LOOKUP_TABLE = PowerLookupTable.getInstance();
 
-  // ---
   public ImprovedNormalizedTorqueVectoring(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
   }
@@ -24,6 +25,16 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
     return motorCurrents.divide(ManualConfig.GLOBAL.torqueLimit);
   }
 
+  @Override // from SimpleTorqueVectoring
+  public final Scalar wantedZTorque(Scalar wantedZTorque, Scalar realRotation) {
+    if (Sign.isNegative(realRotation.multiply(wantedZTorque))) {
+      Scalar scalar = Clips.unit().apply(realRotation.abs().multiply(torqueVectoringConfig.ks));
+      Scalar stabilizerFactor = RealScalar.ONE.subtract(scalar);
+      return wantedZTorque.multiply(stabilizerFactor);
+    }
+    return wantedZTorque;
+  }
+
   /** get torque vectoring motor currents corresponding to the wanted rotation speed
    * (this can also be used externally!)
    * 
@@ -31,28 +42,8 @@ public class ImprovedNormalizedTorqueVectoring extends ImprovedTorqueVectoring {
    * @param wantedAcceleration [m/s^2]
    * @return the motor currents [ARMS] */
   public Tensor getMotorCurrentsFromAcceleration(AngularSlip angularSlip, Scalar wantedAcceleration) {
-    Scalar dynamicComponent = getDynamicComponent(angularSlip.angularSlip());
-    Scalar staticComponent = getStaticComponent(angularSlip.rotationPerMeterDriven(), angularSlip.tangentSpeed());
-    // ---
-    Scalar wantedZTorque = wantedZTorque(dynamicComponent.add(staticComponent), angularSlip.gyroZ());
+    Scalar wantedZTorque = wantedZTorque(torqueVectoringConfig.getDynamicAndStatic(angularSlip), angularSlip.gyroZ());
     // left and right power prefer power over Z-torque
-    return getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
-  }
-
-  /** @param wantedAcceleration [m*s^-2]
-   * @param wantedZTorque [ONE]
-   * @param velocity [m/s]
-   * @return vector of length 2 with required motor currents [ARMS] */
-  // TODO JPH/MH write tests specifically for method getAdvancedMotorCurrents
-  /* package */ static Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
-    Tensor minMax = POWER_LOOKUP_TABLE.getMinMaxAcceleration(velocity);
-    // get clipped individual accelerations
-    PowerClip powerClip = new PowerClip(minMax.Get(0), minMax.Get(1));
-    Tensor wantedAccelerations = //
-        TorqueVectoringClip.from(powerClip.relative(wantedAcceleration), wantedZTorque) //
-            .map(powerClip::absolute);
-    return Tensors.of( //
-        POWER_LOOKUP_TABLE.getNeededCurrent(wantedAccelerations.Get(0), velocity), //
-        POWER_LOOKUP_TABLE.getNeededCurrent(wantedAccelerations.Get(1), velocity));
+    return StaticHelper.getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
   }
 }

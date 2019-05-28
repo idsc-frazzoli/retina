@@ -1,11 +1,13 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.tvec;
 
+import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.red.Times;
 
 /** parameters for PI controller of torque control */
 public class TorqueVectoringConfig {
@@ -26,4 +28,24 @@ public class TorqueVectoringConfig {
    * 1 means 100% new value
    * 0.5 means average */
   public Scalar rollingAverageRatio = RealScalar.of(0.1);
+
+  /***************************************************/
+  /** @param angularSlip [s^-1]
+   * @return dynamic component [1] */
+  public final Scalar getDynamicComponent(AngularSlip angularSlip) {
+    return angularSlip.angularSlip().multiply(dynamicCorrection);
+  }
+
+  public final Scalar getStaticComponent(AngularSlip angularSlip) {
+    Scalar tangentSpeed = angularSlip.tangentSpeed();
+    return Times.of( //
+        angularSlip.rotationPerMeterDriven(), //
+        tangentSpeed, //
+        tangentSpeed, //
+        staticCompensation);
+  }
+
+  public final Scalar getDynamicAndStatic(AngularSlip angularSlip) {
+    return getDynamicComponent(angularSlip).add(getStaticComponent(angularSlip));
+  }
 }

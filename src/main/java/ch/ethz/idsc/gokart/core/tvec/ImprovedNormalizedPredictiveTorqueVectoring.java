@@ -55,15 +55,13 @@ public class ImprovedNormalizedPredictiveTorqueVectoring extends ImprovedNormali
 
   private Tensor getMotorCurrentsFromAcceleration( //
       AngularSlip angularSlip, Scalar wantedAcceleration, Scalar expectedRotationAcceleration) {
-    Scalar dynamicComponent = getDynamicComponent(angularSlip.angularSlip());
-    Scalar staticComponent = getStaticComponent(angularSlip.rotationPerMeterDriven(), angularSlip.tangentSpeed());
     Scalar predictiveComponent = getPredictiveComponent(expectedRotationAcceleration);
     // ---
     Scalar wantedZTorque = wantedZTorque( //
-        dynamicComponent.add(staticComponent).add(predictiveComponent), // One
+        torqueVectoringConfig.getDynamicAndStatic(angularSlip).add(predictiveComponent), // One
         angularSlip.gyroZ());
     // left and right power prefer power over Z-torque
-    return getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
+    return StaticHelper.getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
   }
 
   private Scalar getPredictiveComponent(Scalar expectedRotationAcceleration) {
