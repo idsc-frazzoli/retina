@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.owl.car.core;
 
-import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -11,32 +10,36 @@ import ch.ethz.idsc.tensor.sca.Chop;
 
 public class TwdOdometry {
   private final Scalar radius;
-  private final Scalar yTireRear;
+  private final Scalar axleWidth;
 
   public TwdOdometry(AxleConfiguration axleConfiguration) {
     WheelConfiguration wheelL = axleConfiguration.wheel(0);
     WheelConfiguration wheelR = axleConfiguration.wheel(1);
     Chop._10.requireClose(wheelL.tireConfiguration().radius(), wheelR.tireConfiguration().radius());
-    yTireRear = wheelL.local().Get(1);
+    Scalar yTireRear = wheelL.local().Get(1);
+    axleWidth = yTireRear.add(yTireRear);
     radius = wheelL.tireConfiguration().radius();
   }
 
+  /** @param angularRate_Y_pair vector of the form {omegaL[s^-1], omegaR[s^-1]}
+   * @return */
   public Scalar tangentSpeed(Tensor angularRate_Y_pair) {
     return radius.multiply(Mean.of(angularRate_Y_pair).Get());
   }
 
+  /** @param angularRate_Y_pair vector of the form {omegaL[s^-1], omegaR[s^-1]}
+   * @return */
   public Scalar turningRate(Tensor angularRate_Y_pair) {
     // rad/s * m == (m / s) / m
-    return Differences.of(angularRate_Y_pair).Get(0) //
-        .multiply(RationalScalar.HALF).multiply(radius).divide(yTireRear);
+    return Differences.of(angularRate_Y_pair).Get(0).multiply(radius).divide(axleWidth);
   }
 
-  /** @param angularRate_Y_pair
+  /** @param angularRate_Y_pair vector of the form {omegaL[s^-1], omegaR[s^-1]}
    * @return {vx[m*s^-1], vy[m*s^-1], omega[s^-1]} */
   public Tensor velocity(Tensor angularRate_Y_pair) {
     Scalar vx = tangentSpeed(angularRate_Y_pair);
     return Tensors.of( //
-        tangentSpeed(angularRate_Y_pair), //
+        vx, //
         vx.zero(), //
         turningRate(angularRate_Y_pair));
   }
