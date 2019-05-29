@@ -5,10 +5,10 @@ import java.io.File;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.misc.MiscGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.MiscLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
@@ -61,7 +61,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       table.set(MAX, index, INDEX_LOGE);
       if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
         RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);
-        Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
+        Scalar speed = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
         Scalar rate = Magnitude.VELOCITY.apply(speed).abs();
         table.set(Max.function(rate), index, INDEX_RATE);
       } else //

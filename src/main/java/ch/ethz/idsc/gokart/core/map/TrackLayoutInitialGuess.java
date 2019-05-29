@@ -300,7 +300,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       int nCount = 0;
       for (Cell n : currentCell.neighBors) {
         if (!n.processed) {
-          // TODO maybe use neighborcost (not that important)
+          // TODO maybe use neighbor cost (not that important)
           Scalar alternativ = currentCell.cost.add(currentCell.neighBorCost.get(nCount));
           if (Scalars.lessThan(alternativ, n.cost)) {
             // this could potentially be too slow
@@ -397,7 +397,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     return Optional.empty();
   }
 
-  /** @param spacing
+  /** @param spacing with interpretation in meters
    * @param controlPointResolution
    * @return matrix of dimension n x 2 */
   Optional<Tensor> getControlPointGuess(Scalar spacing, Scalar controlPointResolution) {
@@ -411,7 +411,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       Tensor pos = cell.getPos();
       Tensor dist = pos.subtract(lastPosition);
       Tensor enddist = pos.subtract(endPosition);
-      if (Scalars.lessThan(spacing, Norm._2.of(dist)) && Scalars.lessThan(halfspacing, Norm._2.of(enddist))) {
+      if (Scalars.lessThan(spacing, Norm._2.of(dist)) && //
+          Scalars.lessThan(halfspacing, Norm._2.of(enddist))) {
         lastPosition = pos;
         wantedPositionsXY.append(Extract2D.FUNCTION.apply(pos));
         // wantedPositionsY.append(pos.Get(1));
@@ -438,12 +439,10 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       final Tensor splineMatrix = UniformBSpline2.getBasisMatrix(n, 0, closed, queryPositions);
       // solve for control points: x
       Tensor pinv = PseudoInverse.of(splineMatrix);
-      // TODO JPH/MH can this be done smarter:
+      // TODO JPH/MH can this be simplified: local variable is not necessary
       Tensor controlpointsXY = pinv.dot(wantedPositionsXY);
-      // Tensor controlpointsY = pinv.dot(wantedPositionsY);
       controlPoints = controlpointsXY;
-      // Transpose.of(Tensors.of(controlpointsX, controlpointsY));
-      return Optional.of(controlpointsXY.copy()); // Tensors.of(controlpointsX, controlpointsY);
+      return Optional.of(controlpointsXY.copy());
     }
     System.out.println("no usable track!");
     return Optional.empty();

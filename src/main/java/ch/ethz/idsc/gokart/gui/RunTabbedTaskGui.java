@@ -35,12 +35,13 @@ import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.Vmu931ReadingWatchdog;
 import ch.ethz.idsc.gokart.core.man.AutomaticPowerTestModule;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
+import ch.ethz.idsc.gokart.core.man.PredictiveTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
-import ch.ethz.idsc.gokart.core.man.UltimateTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
@@ -98,6 +99,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
       Vmu931CalibrationWatchdog.class, //
+      Vmu931ReadingWatchdog.class, //
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
       /* pose lcm server has to come after lidar localization module */
@@ -120,7 +122,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
-      UltimateTorqueVectoringModule.class, //
+      PredictiveTorqueVectoringModule.class, //
       PowerSteeringModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //

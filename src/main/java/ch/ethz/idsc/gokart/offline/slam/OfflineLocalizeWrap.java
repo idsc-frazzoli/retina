@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.offline.slam;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
@@ -12,7 +13,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuFramePublisher;
@@ -118,8 +118,8 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
     Tensor info = Tensors.of(localizationResult.time, localizationResult.quality);
     System.out.println("locCall " + info.map(Round._3));
     Tensor rates = rimoGetEvent.getAngularRate_Y_pair();
-    Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
-    Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
+    Scalar speed = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
+    Scalar rate = RimoTwdOdometry.turningRate(rimoGetEvent);
     tableBuilder.appendRow( //
         localizationResult.time.map(Magnitude.SECOND), //
         rimoPutEvent.getTorque_Y_pair().map(Magnitude.ARMS), //

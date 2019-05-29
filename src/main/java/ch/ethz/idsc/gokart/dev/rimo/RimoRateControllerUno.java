@@ -15,7 +15,7 @@ public class RimoRateControllerUno extends RimoRateControllerWrap {
   // new LookupRimoRateController(RimoConfig.GLOBAL);
 
   @Override // from RimoRateControllerWrap
-  protected RimoPutEvent protected_getRimoPutEvent(Scalar rate_target, Scalar angle, RimoGetEvent rimoGetEvent) {
+  protected RimoPutEvent protected_getRimoPutEvent(Scalar rate_target, RimoGetEvent rimoGetEvent) {
     Scalar vel_avg = Mean.of(rimoGetEvent.getAngularRate_Y_pair()).Get(); // average of wheel rates
     Scalar vel_error = rate_target.subtract(vel_avg);
     rimoRateController.setWheelRate(vel_avg);

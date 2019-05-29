@@ -7,6 +7,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
@@ -39,7 +40,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     float model2pixelWidth = geometricLayer.model2pixelWidth(0.3);
     graphics.setFont(new Font(Font.SANS_SERIF, Font.BOLD, (int) model2pixelWidth));
     FontMetrics fontMetrics = graphics.getFontMetrics();
-    Scalar speed = KM_PER_HOUR.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
+    Scalar speed = KM_PER_HOUR.apply(RimoTwdOdometry.tangentSpeed(rimoGetEvent));
     String string = speed.map(Round.FUNCTION).toString();
     int stringWidth = fontMetrics.stringWidth(string);
     graphics.setColor(Color.DARK_GRAY);

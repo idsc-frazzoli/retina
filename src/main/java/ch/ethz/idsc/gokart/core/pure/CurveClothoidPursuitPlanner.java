@@ -31,7 +31,7 @@ import ch.ethz.idsc.tensor.sca.Abs;
 
 // TODO JPH rename
 public class CurveClothoidPursuitPlanner {
-  private static final Scalar REPLANNING_TIME = Quantity.of(.015, SI.SECOND); // TODO test or even update online
+  private static final Scalar REPLANNING_TIME = Quantity.of(.015, SI.SECOND); // TODO JG test or even update online
   // ---
   private Optional<ClothoidPlan> plan = Optional.empty();
 

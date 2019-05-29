@@ -3,23 +3,18 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerDuo;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerUno;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 class PurePursuitRimo extends PurePursuitBase<RimoPutEvent> {
-  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   /** available implementations of RimoRateControllerWrap are
-   * {@link RimoRateControllerUno}, and {@link RimoRateControllerDuo}
+   * {@link RimoRateControllerUno}, and RimoRateControllerDuo
    * UNO uses a single PI-controller */
   /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
 
@@ -50,9 +45,7 @@ class PurePursuitRimo extends PurePursuitBase<RimoPutEvent> {
   /***************************************************/
   @Override // from PurePursuitBase
   Optional<RimoPutEvent> control(SteerColumnInterface steerColumnInterface) {
-    Scalar ratio = steerMapping.getRatioFromSCE(steerColumnInterface);
-    Scalar theta = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
-    return rimoRateControllerWrap.iterate(speed, theta);
+    return rimoRateControllerWrap.iterate(speed);
   }
 
   @Override // from PurePursuitBase

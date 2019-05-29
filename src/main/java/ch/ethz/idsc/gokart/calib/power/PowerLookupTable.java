@@ -97,7 +97,7 @@ public class PowerLookupTable {
    * Example: {-1.6261117143630983[m*s^-2], 1.8412589178085328[m*s^-2]}
    * 
    * @param velocity current velocity [m/s]
-   * @return a tensor of the maximal and minimal acceleration [m/s^2] */
+   * @return a tensor of the maximal and minimal acceleration [m*s^-2] */
   public Tensor getMinMaxAcceleration(Scalar velocity) {
     // the min and max values are multiplied by 1.02
     // in order to ensure that the maximum value can be output

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.tvec;
+package ch.ethz.idsc.gokart.calib.power;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -12,8 +12,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private final Scalar mean;
 
   /** @param min
-   * @param max
-   * @throws Exception if min is greater than max */
+   * @param max */
   public PowerClip(Scalar min, Scalar max) {
     halfWidth = max.subtract(min).multiply(HALF);
     mean = max.add(min).multiply(HALF);
