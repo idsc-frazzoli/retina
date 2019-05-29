@@ -74,7 +74,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     bayesianOccupancyGridThic = mappingConfig.createTrackFittingBayesianOccupancyGrid();
     bayesianOccupancyGridThin = mappingConfig.createThinBayesianOccupancyGrid();
     LidarAngularFiringCollector lidarAngularFiringCollector = //
-        new LidarAngularFiringCollector(10000, 3);
+        new LidarAngularFiringCollector(10_000, 3);
     double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
     LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -4);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);

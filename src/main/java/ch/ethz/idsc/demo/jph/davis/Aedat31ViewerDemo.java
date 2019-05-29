@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
         public void timedImage(TimedImageEvent timedImageEvent) {
           try {
             // System.out.println("here " + count);
-            if (60000 < count && count < 61000)
+            if (60_000 < count && count < 61_000)
               agw2.append(timedImageEvent.bufferedImage);
             ++count;
           } catch (Exception exception) {

@@ -8,6 +8,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Arrays;
 
+import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -34,12 +35,17 @@ import ch.ethz.idsc.tensor.sca.N;
 public class TrajectoryDesign extends CurvatureDemo {
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   private static final Scalar COMB_SCALE = Quantity.of(-1.0, "m^2");
+  private final JToggleButton jToggleButton = new JToggleButton("repos.");
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
 
   public TrajectoryDesign() {
     super(Arrays.asList(ClothoidCurveDisplay.INSTANCE));
     jToggleCurvature.setSelected(false);
+    jToggleButton.setToolTipText("position control points with the mouse");
+    jToggleButton.setSelected(isPositioningEnabled());
+    jToggleButton.addActionListener(l -> setPositioningEnabled(jToggleButton.isSelected()));
+    timerFrame.jToolBar.add(jToggleButton);
     timerFrame.jToolBar.addSeparator();
     spinnerLabelDegree.setArray(1, 2, 3, 4, 5);
     spinnerLabelDegree.setValue(1);

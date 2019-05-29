@@ -38,7 +38,7 @@ import ch.ethz.idsc.gokart.core.sound.SoundResonator;
       GokartSoundCreator creator = new GokartSoundCreator(exciters, resonators, chirping, faker);
       creator.setState(new GokartSoundState(5, 1f, 0));
       creator.start();
-      Thread.sleep(10000);
+      Thread.sleep(10_000);
       creator.stop();
     } catch (Exception exception) {
       System.out.println("no sound! " + exception.getMessage());
