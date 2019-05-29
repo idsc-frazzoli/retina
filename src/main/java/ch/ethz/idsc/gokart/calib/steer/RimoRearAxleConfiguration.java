@@ -1,27 +1,22 @@
 // code by jph
 package ch.ethz.idsc.gokart.calib.steer;
 
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.owl.car.core.WheelConfiguration;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ enum RimoRearAxleConfiguration implements AxleConfiguration {
   INSTANCE;
   // ---
-  private final WheelConfiguration[] wheelConfiguration = new WheelConfiguration[] { //
+  private final WheelConfiguration[] wheelConfiguration = { //
       new WheelConfiguration(Tensors.of( //
-          Quantity.of(0, SI.METER), //
-          ChassisGeometry.GLOBAL.yTireRear, //
-          RealScalar.ZERO), //
+          RimoAxleConstants.yTireRear.zero(), //
+          RimoAxleConstants.yTireRear, RealScalar.ZERO), //
           RimoTireConfiguration._REAR), //
       new WheelConfiguration(Tensors.of( //
-          Quantity.of(0, SI.METER), //
-          ChassisGeometry.GLOBAL.yTireRear.negate(), //
-          RealScalar.ZERO), //
+          RimoAxleConstants.yTireRear.zero(), //
+          RimoAxleConstants.yTireRear.negate(), RealScalar.ZERO), //
           RimoTireConfiguration._REAR) };
 
   @Override // from AxleConfiguration

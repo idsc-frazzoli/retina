@@ -56,9 +56,13 @@ public enum RunVideoBackground {
     return BackgroundImage.from(HomeDirectory.Pictures("20190514.png"), _20190401);
   }
 
+  public static BackgroundImage get20190527() throws IOException {
+    return BackgroundImage.from(HomeDirectory.Pictures("20190527T161637_00.png"), _20190401);
+  }
+
   public static void main(String[] args) throws IOException {
     GokartLogInterface gokartLogInterface = //
-        GokartLogAdapter.of(new File("/media/datahaki/data/gokart/tokio/20190310a/20190310T220933_00"), "post.lcm");
+        GokartLogAdapter.of(new File("/media/datahaki/data/gokart/davis240a/20190527/20190527T161637_00"));
     Optional<ByteBuffer> optional = FirstLogMessage.of(gokartLogInterface.file(), GokartPoseChannel.INSTANCE.channel());
     BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = bufferedImage.createGraphics();
@@ -68,9 +72,9 @@ public enum RunVideoBackground {
     ObstacleAggregate obstacleAggregate = new ObstacleAggregate( //
         GokartPoseChannel.INSTANCE.channel(), //
         graphics, //
-        _20190309, //
+        _20190401, //
         GokartPoseEvent.of(optional.get()).getPose());
     OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
-    ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20190310T220933_00.png"));
+    ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20190527T161637_00.png"));
   }
 }

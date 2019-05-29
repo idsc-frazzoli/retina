@@ -19,7 +19,6 @@ public class TriggeredAccumulatedImage implements DavisDvsListener {
   protected final int height;
   private final BufferedImage bufferedImage;
   protected final byte[] bytes;
-  private boolean rotated = false;
 
   public TriggeredAccumulatedImage(DavisDevice davisDevice) {
     width = davisDevice.getWidth();
@@ -28,10 +27,6 @@ public class TriggeredAccumulatedImage implements DavisDvsListener {
     DataBufferByte dataBufferByte = (DataBufferByte) bufferedImage.getRaster().getDataBuffer();
     bytes = dataBufferByte.getData();
     clearImage();
-  }
-
-  public void setRotated(boolean setValue) {
-    rotated = setValue;
   }
 
   @Override // from DavisDvsListener

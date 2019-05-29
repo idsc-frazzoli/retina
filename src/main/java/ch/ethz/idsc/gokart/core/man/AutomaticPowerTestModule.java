@@ -11,6 +11,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
@@ -19,7 +20,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutTires;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -124,8 +124,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
     } else {
       approachText = "Deceleration test.\n";
     }
-    textarea.setText(approachText +" ["+ currentInd+"/"+(steps)+"] "+ motorCurrentValues.Get(currentInd).number().floatValue() + "\n" + bottomUpMaxSpeed.toString() + "\n" + topDownMinSpeed.toString() + "\n"
-        + completionIndex.toString());
+    textarea.setText(approachText + " [" + currentInd + "/" + (steps) + "] " + motorCurrentValues.Get(currentInd).number().floatValue() + "\n"
+        + bottomUpMaxSpeed.toString() + "\n" + topDownMinSpeed.toString() + "\n" + completionIndex.toString());
   }
 
   @Override // from AbstractModule
@@ -154,7 +154,10 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
         if (!slowDownCompleted) {
           // we have to slow down to last value first
           arms_raw = Magnitude.ARMS.toShort(minPower);
-          slowDownCompleted = !speedThreshold;
+          if (speedThreshold) {
+            System.out.println("slowdown completed");
+          }
+          slowDownCompleted = speedThreshold;
         } else if (Scalars.lessThan(bottomUpMaxSpeed.Get(currentInd), maxSpeed.add(speedMargin))) {
           // we are accelerating up
           // are we slower than last max tested value
@@ -213,7 +216,13 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   }
 
   @Override
-  public void getEvent(RimoGetEvent getEvent) {
-    meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
+  public void getEvent(RimoGetEvent rimoGetEvent) {
+    meanTangentSpeed = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
+  }
+
+  public static void main(String[] args) throws Exception {
+    AutomaticPowerTestModule automaticPowerTestModule = new AutomaticPowerTestModule();
+    automaticPowerTestModule.first();
+    automaticPowerTestModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
   }
 }

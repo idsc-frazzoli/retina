@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.owl.car.math;
 
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -145,7 +145,7 @@ public class DifferentialSpeedTest extends TestCase {
   }
 
   public void testSome() {
-    Tensor pair_unit = ChassisGeometry.GLOBAL.getDifferentialSpeed().pair(RealScalar.ONE, RealScalar.of(0.1));
+    Tensor pair_unit = RimoAxleConstants.getDifferentialSpeed().pair(RealScalar.ONE, RealScalar.of(0.1));
     // System.out.println(pair_unit);
     Tensor pair_meas = Tensors.vector(0.9497016064634988, 1.040306724092553);
     // Scalar speed =

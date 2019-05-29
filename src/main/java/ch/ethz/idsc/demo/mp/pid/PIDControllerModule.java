@@ -8,7 +8,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.owl.bot.se2.pid.PIDTrajectory;
-import ch.ethz.idsc.owl.bot.se2.pid.RnCurveHelper;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -20,12 +19,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent = null;
   private Optional<Tensor> optionalCurve = Optional.empty();
+  private StateTime currentStateTime = new StateTime(Tensors.fromString("{0[m],0[m],0[-]}"), Quantity.of(0, SI.SECOND));
   // ---
   private int pidIndex;
   private PIDTrajectory previousPID;
   private PIDTrajectory currentPID;
-  // FIXME MCP systematic error
-  private StateTime previousStateTime = new StateTime(Tensors.fromString("{0[m], 0[m], 0}"), Quantity.of(0, SI.SECOND));
+  // ---
+  private Scalar clippedRatioOut;
 
   public PIDControllerModule(PIDTuningParams pidTuningParams) {
     super(pidTuningParams);
@@ -51,21 +51,26 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   protected Optional<Scalar> deriveRatio() {
     if (Objects.nonNull(gokartPoseEvent) && //
         optionalCurve.isPresent()) {
-      StateTime stateTime = new StateTime( //
+      currentStateTime = new StateTime( //
           gokartPoseEvent.getPose(), //
-          previousStateTime.time().add(PIDTuningParams.GLOBAL.updatePeriod));
+          currentStateTime.time().add(PIDTuningParams.GLOBAL.updatePeriod));
       //
-      currentPID = new PIDTrajectory( //
+      this.currentPID = new PIDTrajectory( //
           pidIndex, //
           previousPID, //
           PIDTuningParams.GLOBAL.pidGains, //
           optionalCurve.get(), //
-          stateTime); //
+          currentStateTime); //
       //
-      Scalar ratioOut = currentPID.ratioOut(); // TODO comment on unit? -> test
+      Scalar ratioOut = currentPID.ratioOut();
+      if (!Se2CurveUnitCheck.scalarHasUnits(ratioOut, SI.PER_METER)) {
+        System.err.println("Turning ratio with invalid unit");
+      }
+      clippedRatioOut = PIDTuningParams.GLOBAL.clipRatio().apply(ratioOut);
+      //
       this.previousPID = currentPID;
       pidIndex++;
-      return Optional.of(ratioOut);
+      return Optional.of(clippedRatioOut);
     }
     this.previousPID = currentPID;
     pidIndex++;
@@ -73,13 +78,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   public void setCurve(Optional<Tensor> curve) {
-    // TODO MCP write test for this function since there was a bug here
-    boolean isValid = RnCurveHelper.isSe2Curve(curve.get());
-    optionalCurve = isValid //
-        ? curve
-        : Optional.empty();
-    if (!isValid)
-      System.err.println("curve does not have se2 format");
+    // TODO either demand that se2 curve is provided or append angles ...
+    if (Se2CurveUnitCheck.that(curve.get(), SI.METER) //
+        && curve.isPresent()) {
+      optionalCurve = curve;
+    } else {
+      System.err.println("Curve missing");
+      optionalCurve = Optional.empty();
+    }
   }
 
   /* package */ final Optional<Tensor> getCurve() {
@@ -88,5 +94,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   public PIDTrajectory getPID() {
     return currentPID;
+  }
+
+  public Scalar getClippedTurningRatio() {
+    return clippedRatioOut;
   }
 }

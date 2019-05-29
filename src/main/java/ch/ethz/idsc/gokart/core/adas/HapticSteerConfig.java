@@ -19,8 +19,8 @@ public class HapticSteerConfig {
   public Boolean feedForward = true;
   // ---
   public Scalar velocityFilter = RealScalar.of(0.2);
-  public Scalar latForceCompensation = Quantity.of(0.7, "SCT*s*m^-1");
-  public Scalar latForceCompensationBoundary = Quantity.of(0.7, "SCT");
+  public Scalar latForceCompensation = Quantity.of(0.2, "SCT*s*m^-1");
+  public Scalar latForceCompensationBoundary = Quantity.of(0.5, "SCT");
   /** tsuFactor in the interval [0,1] */
   public Scalar tsuFactor = RealScalar.of(0.8);
   public Boolean printPower = false;

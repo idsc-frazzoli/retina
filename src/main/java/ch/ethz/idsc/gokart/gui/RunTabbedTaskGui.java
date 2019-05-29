@@ -23,7 +23,7 @@ import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
 import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
-import ch.ethz.idsc.gokart.core.fuse.AutonomySafetyModule;
+import ch.ethz.idsc.gokart.core.fuse.AutonomousSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
@@ -35,12 +35,13 @@ import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.Vmu931ReadingWatchdog;
 import ch.ethz.idsc.gokart.core.man.AutomaticPowerTestModule;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
+import ch.ethz.idsc.gokart.core.man.PredictiveTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
-import ch.ethz.idsc.gokart.core.man.UltimateTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
@@ -68,7 +69,8 @@ import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu932LcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
-import ch.ethz.idsc.gokart.lcm.mod.Vlp16LcmServerModule;
+import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
+import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.TabbedTaskGui;
@@ -85,8 +87,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   // ---
   static final List<Class<? extends AbstractModule>> MODULES_DEV = Arrays.asList( //
       AutoboxSocketModule.class, // sensing and actuation
-      Vlp16LcmServerModule.class, // sensing
-      Vmu931LcmServerModule.class, // vmu931 imu
+      Vlp16RayLcmServerModule.class, // sensing lidar
+      Vlp16PosLcmServerModule.class, // sensing gps
       AutoboxLcmServerModule.class, //
       GokartStatusLcmModule.class, //
       GokartTimestampModule.class, //
@@ -97,14 +99,18 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
       Vmu931CalibrationWatchdog.class, //
+      Vmu931ReadingWatchdog.class, //
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
+      /* pose lcm server has to come after lidar localization module */
       PoseLcmServerModule.class, // publishes pose
       LocalizationEmergencyModule.class, //
       ManualResetModule.class, //
-      AutonomySafetyModule.class //
+      AutonomousSafetyModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
+      Vmu931LcmServerModule.class, // vmu931 imu
+      Vmu932LcmServerModule.class, // vmu932 imu
       IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       TrajectoryDesignModule.class, //
@@ -113,13 +119,11 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       ParametersModule.class, // configure parameters
       // SeesLcmModule.class, //
       GokartSoundLcmModule.class, //
-      VoiceOutputModule.class, //
-      Vmu932LcmServerModule.class //
+      VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
-      UltimateTorqueVectoringModule.class, //
+      PredictiveTorqueVectoringModule.class, //
       PowerSteeringModule.class, //
-      // ImprovedNormalizedTorqueVectoringManualModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //
       SteeringExperimentModule.class, //

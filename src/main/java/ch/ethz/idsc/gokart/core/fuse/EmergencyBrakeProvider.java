@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.AutoboxScheduledProvider;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
@@ -55,7 +56,7 @@ public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<Linmo
 
   @Override // from RimoGetListener
   public void getEvent(RimoGetEvent rimoGetEvent) {
-    velocity = CLIP.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
+    velocity = CLIP.apply(RimoTwdOdometry.tangentSpeed(rimoGetEvent));
   }
 
   public void pacify() {

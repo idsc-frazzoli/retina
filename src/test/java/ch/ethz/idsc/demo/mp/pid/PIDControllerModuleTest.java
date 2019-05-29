@@ -26,25 +26,30 @@ public class PIDControllerModuleTest extends TestCase {
     pidControllerModule.last();
   }
 
+  public void testSetCurve() {
+    PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
+    pidControllerModule.setCurve(Optional.ofNullable(CURVE));
+    assertTrue(pidControllerModule.getCurve().isPresent());
+  }
+
   public void testHeadingError() {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
     pidControllerModule.setCurve(Optional.ofNullable(CURVE));
     pidControllerModule.first();
     Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
-    // FIXME MCP increase limit from 1 to 100
-    for (int index = 0; index < 1; index++) {
+    for (int index = 0; index < 100; index++) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
-      Scalar ratio = pidControllerModule.pidSteer.getRatio(); // TODO mcp fix
-      if (UserName.is("maximilien") || UserName.is("datahaki")) {
-        System.out.println("Heading: " + ratio);
-        System.out.println("Error: " + pidControllerModule.getPID().getError());
-      }
+      Scalar ratio = pidControllerModule.pidSteer.getRatio();
+      double dt = 0.1;
       Scalar vx = Quantity.of(1, SI.VELOCITY);
-      Tensor u = Tensors.of(vx, vx.zero(), vx.multiply(ratio));
-      pose = Se2CoveringIntegrator.INSTANCE.spin(pose, u.multiply(Quantity.of(0.1, SI.SECOND)));
-      // TODO MCP Solve issue with if gokart does multiple rotations (+pi factor)
+      Tensor u = Tensors.of(vx, vx.zero(), ratio.multiply(vx));
+      pose = Se2CoveringIntegrator.INSTANCE. // Euler
+          spin(pose, u.multiply(Quantity.of(dt, SI.SECOND)));
+      if (UserName.is("maximilien") || UserName.is("datahaki")) {
+        System.out.println("Turning ratio: " + ratio + "   ");
+      }
     }
   }
 
@@ -53,19 +58,24 @@ public class PIDControllerModuleTest extends TestCase {
     pidControllerModule.setCurve(Optional.ofNullable(CURVE));
     pidControllerModule.first();
     Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
-    // FIXME MCP increase limit from 1 to 100
-    for (int index = 0; index < 1; index++) {
+    for (int index = 0; index < 100; index++) {
+      if (UserName.is("maximilien") || UserName.is("datahaki")) {
+        // System.out.println("----------------------Interation" + index);
+      }
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
       pidControllerModule.runAlgo();
-      Scalar ratio = pidControllerModule.pidSteer.getRatio(); // TODO mcp fix
+      Scalar ratio = pidControllerModule.pidSteer.getRatio();
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
-        // System.out.println("Error: " + pidControllerModule.getPID().getError().toString());
+        // System.out.println("Ratio out: " + ratio);
         // System.out.println("Pose: " + Pretty.of(pose));
+        System.out.println("PIDerror: " + pidControllerModule.getPID().getError());
       }
+      double dt = 0.1;
       Scalar vx = Quantity.of(1, SI.VELOCITY);
-      Tensor u = Tensors.of(vx, vx.zero(), vx.multiply(ratio));
-      pose = Se2CoveringIntegrator.INSTANCE.spin(pose, u.multiply(Quantity.of(0.1, SI.SECOND)));
+      Tensor u = Tensors.of(vx, vx.zero(), ratio.multiply(vx));
+      pose = Se2CoveringIntegrator.INSTANCE. // Euler
+          spin(pose, u.multiply(Quantity.of(dt, SI.SECOND)));
     }
   }
 
