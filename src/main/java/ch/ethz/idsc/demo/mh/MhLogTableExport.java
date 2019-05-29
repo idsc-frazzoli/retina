@@ -13,7 +13,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     //
     File outputFolder = HomeDirectory.file("retina_out"); // MH modify if necessary
     outputFolder.mkdir();
-    ComprehensiveLogTableExport systemAnalysis = new ComprehensiveLogTableExport(outputFolder);
+    // ComprehensiveLogTableExport systemAnalysis = new ComprehensiveLogTableExport(outputFolder);
+    ComprehensiveLogTableExportLite systemAnalysis = new ComprehensiveLogTableExportLite(outputFolder);
     //
     List<File> files = new LinkedList<>();
     // files.add(UserHome.file("20180430T104113_a5291af9.lcm.00"));
@@ -74,8 +75,9 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     // files.add(HomeDirectory.file("/Downloads/ensemblelaps/centerlaps/center.lcm"));
     // files.add(HomeDirectory.file("/Downloads/ensemblelaps/kinematiclaps/kinematic.lcm"));
     // files.add(HomeDirectory.file("/Downloads/ensemblelaps/dynamiclaps/dynamic.lcm"));
-    files.add(HomeDirectory.file("/sysid/sysidONE.lcm"));
-    files.add(HomeDirectory.file("/sysid/sysidTWO.lcm"));
+    // files.add(HomeDirectory.file("/sysid/sysidONE.lcm"));
+    // files.add(HomeDirectory.file("/sysid/sysidTWO.lcm"));
+    files.add(HomeDirectory.file("exhaustivemotortest.lcm"));
     // files.add(HomeDirectory.file("/Downloads/ensemblelaps/dynamiclaps/dynamic.lcm"));
     // files.add(new File("/media/datahaki/data/gokart/cuts/20190308/20190308T163555_01/post.lcm"));
     for (File inputFile : files)
