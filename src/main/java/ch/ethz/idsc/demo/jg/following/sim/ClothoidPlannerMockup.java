@@ -1,14 +1,15 @@
 // code by gjoel
 package ch.ethz.idsc.demo.jg.following.sim;
 
-import javax.swing.JToggleButton;
-import javax.swing.WindowConstants;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Path2D;
 import java.util.Optional;
+
+import javax.swing.JToggleButton;
+import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;

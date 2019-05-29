@@ -13,6 +13,6 @@ public enum ClothoidPlanLcm {
    * @return clothoid plan */
   public static ClothoidPlan decode(ByteBuffer byteBuffer, boolean isForward) {
     Tensor decoded = PursuitPlanLcm.decode(byteBuffer);
-   return ClothoidPlan.from(decoded.get(1), decoded.get(0), isForward).get();
+    return ClothoidPlan.from(decoded.get(1), decoded.get(0), isForward).get();
   }
 }
