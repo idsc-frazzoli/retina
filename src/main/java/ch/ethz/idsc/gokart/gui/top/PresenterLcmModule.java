@@ -12,6 +12,7 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
@@ -129,7 +130,7 @@ public class PresenterLcmModule extends AbstractModule {
       rimoGetLcmClient.addListener(new RimoGetListener() {
         @Override
         public void getEvent(RimoGetEvent rimoGetEvent) {
-          Scalar speed = RimoConfig.GLOBAL.speedChop().apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
+          Scalar speed = RimoConfig.GLOBAL.speedChop().apply(RimoTwdOdometry.tangentSpeed(rimoGetEvent));
           clothoidPlanLcmClient.setDirection(Sign.isPositiveOrZero(speed));
         }
       });

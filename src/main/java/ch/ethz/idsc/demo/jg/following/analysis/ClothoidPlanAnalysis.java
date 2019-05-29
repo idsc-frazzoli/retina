@@ -10,17 +10,16 @@ import java.util.Optional;
 import java.util.Set;
 
 import ch.ethz.idsc.demo.jg.FileHelper;
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
-import ch.ethz.idsc.gokart.lcm.mod.PursuitPlanLcm;
 import ch.ethz.idsc.owl.math.planar.ClothoidTerminalRatios;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.tensor.Scalar;
@@ -72,7 +71,7 @@ public class ClothoidPlanAnalysis implements OfflineLogListener {
       break;
     case RimoLcmServer.CHANNEL_GET:
       notify(time, RimoLcmServer.CHANNEL_GET);
-      Scalar speed = RimoConfig.GLOBAL.speedChop().apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(new RimoGetEvent(byteBuffer)));
+      Scalar speed = RimoConfig.GLOBAL.speedChop().apply(RimoTwdOdometry.tangentSpeed(new RimoGetEvent(byteBuffer)));
       isForward = Sign.isPositiveOrZero(speed);
       break;
     }

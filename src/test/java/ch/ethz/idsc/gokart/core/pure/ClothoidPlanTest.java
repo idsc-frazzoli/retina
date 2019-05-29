@@ -15,7 +15,6 @@ public class ClothoidPlanTest extends TestCase {
         PoseHelper.attachUnits(Tensors.vector(1, 2, 3)), //
         PoseHelper.attachUnits(Tensors.vector(-1, 3, 3)), true);
     ClothoidPlan clothoidPlan = optional.get();
-    clothoidPlan.curve().stream().forEach(PoseHelper::toUnitless);
     Clips.interval(0.07, 0.09).requireInside(Magnitude.PER_METER.apply(clothoidPlan.ratio()));
   }
 
@@ -24,7 +23,6 @@ public class ClothoidPlanTest extends TestCase {
         PoseHelper.attachUnits(Tensors.vector(1, 2, 3)), //
         PoseHelper.attachUnits(Tensors.vector(10, 500, 2)), false);
     ClothoidPlan clothoidPlan = optional.get();
-    clothoidPlan.curve().stream().forEach(PoseHelper::toUnitless);
     // TODO JG strange values
     Clips.interval(0.07, 0.09).requireInside(Magnitude.PER_METER.apply(clothoidPlan.ratio()));
   }
