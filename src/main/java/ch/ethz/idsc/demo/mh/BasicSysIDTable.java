@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.calib.power.PowerLookupTable;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
@@ -12,6 +13,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -38,6 +40,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private Scalar wheelSpeed = Quantity.of(0, SI.VELOCITY);
   private Scalar powerAccelerationLeft = Quantity.of(0, SI.ACCELERATION);
   private Scalar powerAccelerationRight = Quantity.of(0, SI.ACCELERATION);
+  private Scalar linmotpos = Quantity.of(0, SI.METER);
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
@@ -55,7 +58,8 @@ import ch.ethz.idsc.tensor.sca.Round;
             powerAccelerationLeft.map(Magnitude.ACCELERATION).map(Round._5), //
             powerAccelerationRight.map(Magnitude.ACCELERATION).map(Round._5), //
             wheelSpeed.map(Magnitude.VELOCITY).map(Round._5), gokartPoseEvent.getPose().extract(0, 2).map(Magnitude.METER).map(Round._7),
-            gokartPoseEvent.getPose().Get(2).map(Round._7));
+            gokartPoseEvent.getPose().Get(2).map(Round._7), //
+            linmotpos.map(Magnitude.METER).map(Round._7));
       // System.out.println("vmu time: "+time);
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
@@ -77,6 +81,9 @@ import ch.ethz.idsc.tensor.sca.Round;
     } else if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       RimoGetEvent rge = new RimoGetEvent(byteBuffer);
       wheelSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
+    } else if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
+      LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
+      linmotpos = linmotGetEvent.getActualPosition();
     }
   }
 
