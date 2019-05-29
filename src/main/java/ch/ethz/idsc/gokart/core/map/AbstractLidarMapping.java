@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 
 public abstract class AbstractLidarMapping extends AbstractLidarProcessor implements GokartPoseListener {
   // TODO JG check rationale behind constant 10000!
-  protected static final int LIDAR_SAMPLES = 10000;
+  protected static final int LIDAR_SAMPLES = 10_000;
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   /** implementations are encouraged to test quality of pose before using coordinate */

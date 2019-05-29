@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   static void _dat(String name) throws Exception {
     File file = new File("/media/datahaki/media/ethz/dvs/wp.doc.ic.ac.uk_pb2114_datasets", //
         name + ".dat");
-    final int WINDOW_US = 50000;
+    final int WINDOW_US = 50_000;
     AccumulateToGif.of( //
         new DatFileSupplier(file, ImageDimensions.IMPERIAL_COLLEGE), //
         HomeDirectory.Pictures(name + ".gif"), WINDOW_US);
@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 
   static void _txt(String name) throws Exception {
     File file = new File("/media/datahaki/media/ethz/davis", name);
-    final int WINDOW_US = 50000;
+    final int WINDOW_US = 50_000;
     AccumulateToGif.of( //
         new DvsTxtFileSupplier(new File(file, "events.txt"), ImageDimensions.UZ), //
         HomeDirectory.Pictures(name + ".gif"), WINDOW_US);
