@@ -45,7 +45,7 @@ private:
             MeasurementVec z){
 
         // print param
-        bool print = true;
+        bool print = false;
 
         // Parameters
         int n = NParameter;
@@ -72,50 +72,55 @@ private:
         }
 
         // print
-        std::cout << "CovSqrd: " << std::endl << covTermSquared << std::endl;
-        for (int i = 0; i<= 2*NParameter; i++){
-            std::cout << "Chi" <<i <<": " << std::endl << chi[i] << std::endl;
-        }
+        //std::cout << "CovSqrd: " << std::endl << covTermSquared << std::endl;
+        //std::cout << "Cov: " << std::endl << covTerm << std::endl;
+        //for (int i = 0; i<= 2*NParameter; i++){
+        //    std::cout << "Chi" <<i <<": " << std::endl << chi[i] << std::endl;
+        //}
 
         // Weights
-        double w_m[2*NParameter];
-        double w_c[2*NParameter];
+        double w_m[2*NParameter+1];
+        double w_c[2*NParameter+1];
          w_m[0] = (double) lambda / ((double) n + (double) lambda);
          for (int i = 1; i<=2*NParameter; i++){
                 w_m[i] = 1/ (2*((double) n + (double) lambda));
          }
-         for (int i = 0; i<2*NParameter; i++){
+         for (int i = 0; i<=2*NParameter; i++){
              w_c[i] = w_m[i];
          }
 
          w_c[0] += (1 - alpha*alpha + beta);
 
         // print
+        /*
         for (int i = 0; i<= 2*NParameter; i++){
             std::cout << "wm" <<i <<": " << w_m[i] << std::endl;
             std::cout << "wc" <<i <<": " << w_c[i] << std::endl;
-        }
+        }*/
 
         // Prediction: Approximate gaussian
         ParameterVec mu = ParameterVec::Zero();
         for (int i = 0; i<= 2*NParameter; i++){
             ParameterVec predFunChi = predictionFunction(chi[i]);
-            mu += w_m[i]*predFunChi ;
+            mu += w_m[i]*predFunChi;
+            //std::cout << "funchi:\n" << predFunChi << std::endl;
         }
         VarienceMat sigma = VarienceMat::Zero();
         for (int i = 0; i<= 2*NParameter; i++){
             ParameterVec difMu = predictionFunction(chi[i])-mu;
             sigma += w_c[i]*difMu*(difMu.transpose());
+            //std::cout << "difmu:\n" << difMu << std::endl;
         }
         sigma += processNoise;
 
         // print
+        std::cout << "predict" << std::endl;
         std::cout << "mu: " << std::endl << mu << std::endl;
         std::cout << "sigma: " << std::endl << sigma << std::endl;
 
 
         // Update step, time update
-        MeasurementVec zeta[2*NParameter+1] = MeasurementVec::Zero();
+        MeasurementVec zeta[2*NParameter+1];// = MeasurementVec::Zero();
         for (int i = 0; i< 2*NParameter + 1; i++){
             zeta[i] = measureFunction(chi[i]);
         }
@@ -124,15 +129,19 @@ private:
             zPred += w_m[i]*zeta[i];
         }
 
+        /*
         // print
         for (int i = 0; i<= 2*NParameter+1; i++){
+            std::cout << "chi" <<i <<": " << std::endl << chi[i] << std::endl;
             std::cout << "zeta" <<i <<": " << std::endl << zeta[i] << std::endl;
-            std::cout << "zPred" <<i <<": " << std::endl << zPred[i] << std::endl;
         }
+        std::cout << "zPred" <<": " << std::endl << zPred << std::endl;
+         */
 
         MeasurmentMat sVar = MeasurmentMat::Zero();
         for (int i = 0; i<= 2*NParameter + 1; i++){
             MeasurementVec difS = zeta[i] - zPred;
+            //std::cout << "difS" <<i<<": " << std::endl << difS << std::endl;
             MeasurementVec difStran = difS.transpose();
             sVar += w_c[i]*difS*difStran;
         }
@@ -157,6 +166,7 @@ private:
         VarienceMat sigmaFinal = sigma - K*sVar*(K.transpose());
 
         mean = muFinal;
+        std::cout << "correct" << std::endl;
         std::cout << "muFinal" << std::endl << muFinal << std::endl;
         variance = sigmaFinal;
         std::cout << "sigma final" << std::endl << sigmaFinal << std::endl;
