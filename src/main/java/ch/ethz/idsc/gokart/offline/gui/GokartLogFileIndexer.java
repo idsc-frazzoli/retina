@@ -13,6 +13,8 @@ import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionStepsMessage;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
+import ch.ethz.idsc.gokart.core.pure.ClothoidPlanListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
@@ -28,6 +30,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
+import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
@@ -57,6 +60,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogFileIndexer.addRow(new Vmu931AccRow(1));
     gokartLogFileIndexer.addRow(new MpcCountRow());
     gokartLogFileIndexer.addRow(new CurveMessageRow());
+    gokartLogFileIndexer.addRow(new ClothoidPlanRow());
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -82,6 +86,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private final List<Vmu931ImuFrameListener> vmu931ImuFrameListeners = new LinkedList<>();
   private final List<MPCControlUpdateListener> mpcControlUpdateListeners = new LinkedList<>();
   private final List<TensorListener> tensorListeners = new LinkedList<>();
+  private final List<ClothoidPlanListener> clothoidPlanListeners = new LinkedList<>();
   // ---
   private int event_count;
 
@@ -109,6 +114,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       mpcControlUpdateListeners.add((MPCControlUpdateListener) gokartLogImageRow);
     if (gokartLogImageRow instanceof TensorListener)
       tensorListeners.add((TensorListener) gokartLogImageRow);
+    if (gokartLogImageRow instanceof ClothoidPlanListener)
+      clothoidPlanListeners.add((ClothoidPlanListener) gokartLogImageRow);
   }
 
   private void append(int count) {
@@ -157,6 +164,10 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2)) {
       Tensor tensor = Se2CurveLcm.decode(byteBuffer).unmodifiable();
       tensorListeners.forEach(listener -> listener.tensorReceived(tensor));
+    } else //
+    if (channel.equals(GokartLcmChannel.PURSUIT_PLAN)) {
+      ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer, true);
+      clothoidPlanListeners.forEach(listener -> listener.planReceived(clothoidPlan));
     }
     ++event_count;
   }
