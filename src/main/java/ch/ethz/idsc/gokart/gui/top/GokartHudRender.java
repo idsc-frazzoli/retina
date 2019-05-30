@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** head up display for velocity and angular rate */
-class GokartHudRender implements RenderInterface {
+/* package */ class GokartHudRender implements RenderInterface {
   private static final Font FONT_SMALL = new Font(Font.DIALOG, Font.PLAIN, 12);
   private static final Font FONT_LARGE = new Font(Font.DIALOG, Font.BOLD, 25);
   private static final int SEPX = 200;
@@ -48,7 +48,6 @@ class GokartHudRender implements RenderInterface {
     {
       graphics.setFont(FONT_SMALL);
       graphics.setColor(Color.GRAY);
-      // TODO also show vel
       graphics.drawString(gokartPoseEvent.getPose().map(Round._2).toString(), SEPX, 12);
     }
     {

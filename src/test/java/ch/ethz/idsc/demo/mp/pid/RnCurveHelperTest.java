@@ -33,7 +33,7 @@ public class RnCurveHelperTest extends TestCase {
   }
 
   public void testEmpty() {
-    // TODO
+    // TODO MCP
     RnCurveHelper.addAngleToCurve(Tensors.empty());
   }
 
@@ -43,7 +43,6 @@ public class RnCurveHelperTest extends TestCase {
   }
 
   public void testNull() {
-    // TODO
     try {
       RnCurveHelper.addAngleToCurve(null);
       fail();

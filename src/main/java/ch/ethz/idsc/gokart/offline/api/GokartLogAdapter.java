@@ -35,11 +35,6 @@ public class GokartLogAdapter implements GokartLogInterface {
   }
 
   @Override // from GokartLogInterface
-  public String driver() {
-    return gokartLogConfig.driver;
-  }
-
-  @Override // from GokartLogInterface
   public Tensor pose() {
     return gokartLogConfig.pose.unmodifiable();
   }
