@@ -10,28 +10,28 @@ import ch.ethz.idsc.tensor.sca.Chop;
 
 public class TwdOdometry {
   private final Scalar radius;
-  private final Scalar axleWidth;
+  private final Scalar factor;
 
   public TwdOdometry(AxleConfiguration axleConfiguration) {
     WheelConfiguration wheelL = axleConfiguration.wheel(0);
     WheelConfiguration wheelR = axleConfiguration.wheel(1);
     Chop._10.requireClose(wheelL.tireConfiguration().radius(), wheelR.tireConfiguration().radius());
     Scalar yTireRear = wheelL.local().Get(1);
-    axleWidth = yTireRear.add(yTireRear);
     radius = wheelL.tireConfiguration().radius();
+    factor = radius.divide(yTireRear.add(yTireRear));
   }
 
   /** @param angularRate_Y_pair vector of the form {omegaL[s^-1], omegaR[s^-1]}
    * @return */
   public Scalar tangentSpeed(Tensor angularRate_Y_pair) {
-    return radius.multiply(Mean.of(angularRate_Y_pair).Get());
+    return Mean.of(angularRate_Y_pair).Get().multiply(radius);
   }
 
   /** @param angularRate_Y_pair vector of the form {omegaL[s^-1], omegaR[s^-1]}
    * @return */
   public Scalar turningRate(Tensor angularRate_Y_pair) {
     // rad/s * m == (m / s) / m
-    return Differences.of(angularRate_Y_pair).Get(0).multiply(radius).divide(axleWidth);
+    return Differences.of(angularRate_Y_pair).Get(0).multiply(factor);
   }
 
   /** @param angularRate_Y_pair vector of the form {omegaL[s^-1], omegaR[s^-1]}
