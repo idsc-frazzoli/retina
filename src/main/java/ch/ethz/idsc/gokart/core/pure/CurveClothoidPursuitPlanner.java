@@ -70,7 +70,7 @@ public class CurveClothoidPursuitPlanner {
     if (lookAhead.isPresent()) {
       plan = ClothoidPlan.from(lookAhead.get(), pose, isForward);
       if (plan.isPresent())
-        PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get());
+        PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get(), isForward);
     } else
       plan = Optional.empty();
   }

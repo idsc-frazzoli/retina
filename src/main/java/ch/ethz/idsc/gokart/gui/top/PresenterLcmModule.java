@@ -127,13 +127,6 @@ public class PresenterLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(pathRender);
     }
     {
-      rimoGetLcmClient.addListener(new RimoGetListener() {
-        @Override
-        public void getEvent(RimoGetEvent rimoGetEvent) {
-          Scalar speed = RimoConfig.GLOBAL.speedChop().apply(RimoTwdOdometry.tangentSpeed(rimoGetEvent));
-          clothoidPlanLcmClient.setDirection(Sign.isPositiveOrZero(speed));
-        }
-      });
       ClothoidPlanRender clothoidPlanRender = new ClothoidPlanRender(Color.MAGENTA);
       clothoidPlanLcmClient.addListener(clothoidPlanRender);
       timerFrame.geometricComponent.addRenderInterface(clothoidPlanRender);

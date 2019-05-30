@@ -10,15 +10,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import ch.ethz.idsc.demo.jg.FileHelper;
-import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
-import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.owl.math.planar.ClothoidTerminalRatios;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
@@ -32,13 +28,11 @@ import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Nest;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.N;
-import ch.ethz.idsc.tensor.sca.Sign;
 
 public class ClothoidPlanAnalysis implements OfflineLogListener {
   private static final Set<String> NOTIFICATIONS = new HashSet<>(Arrays.asList( //
-      GokartLcmChannel.PURSUIT_PLAN, GokartLcmChannel.POSE_LIDAR, RimoLcmServer.CHANNEL_GET));
+      GokartLcmChannel.PURSUIT_PLAN, GokartLcmChannel.POSE_LIDAR));
   // ---
-  private boolean isForward = true;
   private Tensor gokartPose = Tensors.empty();
   private TensorUnaryOperator followingError = null;
   // ---
@@ -51,7 +45,7 @@ public class ClothoidPlanAnalysis implements OfflineLogListener {
     switch (channel) {
     case GokartLcmChannel.PURSUIT_PLAN:
       notify(time, GokartLcmChannel.PURSUIT_PLAN);
-      ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer, isForward);
+      ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer);
       // execution frequency
       replanningTimes.append(time);
       // test estimate
@@ -68,11 +62,6 @@ public class ClothoidPlanAnalysis implements OfflineLogListener {
       gokartPose = GokartPoseEvent.of(byteBuffer).getPose();
       if (Objects.nonNull(followingError))
         followingErrors.append(followingError.apply(gokartPose));
-      break;
-    case RimoLcmServer.CHANNEL_GET:
-      notify(time, RimoLcmServer.CHANNEL_GET);
-      Scalar speed = RimoConfig.GLOBAL.speedChop().apply(RimoTwdOdometry.tangentSpeed(new RimoGetEvent(byteBuffer)));
-      isForward = Sign.isPositiveOrZero(speed);
       break;
     }
   }

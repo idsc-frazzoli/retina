@@ -9,10 +9,9 @@ import ch.ethz.idsc.tensor.Tensor;
 public enum ClothoidPlanLcm {
   ;
   /** @param byteBuffer
-   * @param isForward whether vehicle drives forward
    * @return clothoid plan */
-  public static ClothoidPlan decode(ByteBuffer byteBuffer, boolean isForward) {
+  public static ClothoidPlan decode(ByteBuffer byteBuffer) {
     Tensor decoded = PursuitPlanLcm.decode(byteBuffer);
-    return ClothoidPlan.from(decoded.get(1), decoded.get(0), isForward).get();
+    return ClothoidPlan.from(decoded.get(1), decoded.get(0), PursuitPlanLcm.decodeIsForward(decoded).orElse(true)).get();
   }
 }
