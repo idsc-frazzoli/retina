@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.lcm.mod.PursuitPlanLcm;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
+import ch.ethz.idsc.owl.car.math.SphereSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
@@ -65,7 +66,7 @@ public class CurveClothoidPursuitPlanner {
      * TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
      * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, ClothoidPursuitConfig.GLOBAL.getOptimizationSteps()).apply(tensor);
      * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
-    Optional<Tensor> lookAhead = new PseudoSe2CurveIntersection(ClothoidPursuitConfig.GLOBAL.lookAhead).string(tensor);
+    Optional<Tensor> lookAhead = new SphereSe2CurveIntersection(ClothoidPursuitConfig.GLOBAL.lookAhead).string(tensor); // new PseudoSe2CurveIntersection(ClothoidPursuitConfig.GLOBAL.lookAhead).string(tensor);
     if (lookAhead.isPresent()) {
       plan = ClothoidPlan.from(lookAhead.get(), pose, isForward);
       if (plan.isPresent())
