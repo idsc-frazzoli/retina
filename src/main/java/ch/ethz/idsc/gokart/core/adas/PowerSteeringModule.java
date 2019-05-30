@@ -68,7 +68,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
 
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
-    Tensor velocity = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()) //
+    Tensor velocity = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) //
         ? gokartPoseEvent.getVelocity()
         : GokartPoseEvents.motionlessUninitialized().getVelocity();
     return steerColumnTracker.isCalibratedAndHealthy() && Objects.nonNull(steerGetEvent) //

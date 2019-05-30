@@ -15,8 +15,10 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -53,7 +55,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final GlobalViewLcmModule globalViewLcmModule = //
       ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
   // ---
-  private GokartPoseEvent gokartPoseEvent = null;
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   private boolean isActive = true;
   private Optional<MPCBSplineTrack> lastTrack = Optional.empty();
 
@@ -130,21 +132,20 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
 
   @Override // from AbstractClockedModule
   protected void runAlgo() {
-    if (Objects.isNull(gokartPoseEvent)) {
-      System.out.println("no pose");
-      return;
-    }
-    // ---
-    double seconds = intervalClock.seconds(); // reset
-    if (isActive) {
-      if (trackReconManagement.isStartSet()) {
-        mapping.prepareMap();
-        lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
-      } else
-        System.out.println("no start set");
-    }
-    // ---
-    listeners.forEach(listener -> listener.mpcBSplineTrack(lastTrack));
+    GokartPoseEvent _gokartPoseEvent = gokartPoseEvent;
+    if (LocalizationConfig.GLOBAL.isQualityOk(_gokartPoseEvent)) {
+      double seconds = intervalClock.seconds(); // reset
+      if (isActive) {
+        if (trackReconManagement.isStartSet()) {
+          mapping.prepareMap();
+          lastTrack = trackReconManagement.update(_gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
+        } else
+          System.out.println("no start set");
+      }
+      // ---
+      listeners.forEach(listener -> listener.mpcBSplineTrack(lastTrack));
+    } else
+      System.out.println("no quality pose");
   }
 
   @Override // from AbstractClockedModule
@@ -158,21 +159,21 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   }
 
   /** reset track and flag start at current pose */
-  public void setStart() {
-    if (Objects.isNull(gokartPoseEvent)) {
-      System.out.println("no pose");
-      return;
-    }
-    trackReconManagement.setStart(gokartPoseEvent);
+  private void setStart() {
+    GokartPoseEvent _gokartPoseEvent = gokartPoseEvent;
+    if (LocalizationConfig.GLOBAL.isQualityOk(_gokartPoseEvent))
+      trackReconManagement.setStart(_gokartPoseEvent.getPose());
+    else
+      System.out.println("no quality pose");
   }
 
   /** reset track */
-  public void computeTrack() {
+  private void computeTrack() {
     trackReconManagement.computeTrack();
   }
 
   /** export track */
-  public void exportTrack() {
+  private void exportTrack() {
     trackReconManagement.exportTrack();
   }
 

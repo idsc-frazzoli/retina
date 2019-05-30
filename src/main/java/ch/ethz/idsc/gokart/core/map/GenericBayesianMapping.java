@@ -64,7 +64,7 @@ public class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGri
     while (isLaunched) {
       Tensor points = points_ferry;
       if (Objects.nonNull(points) && //
-          LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality())) {
+          LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent)) {
         points_ferry = null;
         occupancyGrid.setPose(gokartPoseEvent.getPose());
         for (Tensor point : points) { // point x, y, z

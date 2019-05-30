@@ -98,7 +98,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       bayesianOccupancyGridThic.setPose(gokartPoseEvent.getPose());
       bayesianOccupancyGridThin.setPose(gokartPoseEvent.getPose());
       if (!trackReconManagement.isStartSet())
-        trackReconManagement.setStart(gokartPoseEvent);
+        trackReconManagement.setStart(gokartPoseEvent.getPose());
     } else //
     if (channel.equals(CHANNEL_LIDAR))
       velodyneDecoder.lasers(byteBuffer);

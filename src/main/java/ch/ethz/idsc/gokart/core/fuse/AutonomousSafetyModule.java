@@ -78,7 +78,7 @@ public class AutonomousSafetyModule extends AbstractModule {
     // ---
     /* or-equals implies that manual reset is required */
     isLocalizationBroken |= Scalars.isZero(gokartPoseEvent.getQuality());
-    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()))
+    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent))
       localizationWatchdog.notifyWatchdog();
     // trigger fuse
     isLocalizationBroken |= localizationWatchdog.isBarking();

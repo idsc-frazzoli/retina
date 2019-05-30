@@ -4,10 +4,11 @@ package ch.ethz.idsc.gokart.core.man;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringInterface;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
@@ -21,12 +22,10 @@ import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** abstract base class for all torque vectoring modules:
  * 
@@ -42,8 +41,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final LidarLocalizationModule lidarLocalizationModule = //
       ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final LinmotPutProvider linmotPutProvider = new LinmotManualOverride();
-  // ---
-  private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
   TorqueVectoringModule(TorqueVectoringInterface torqueVectoringInterface) {
     this.torqueVectoringInterface = torqueVectoringInterface;
@@ -67,19 +64,24 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   @Override // from GuideJoystickModule
   final Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
-    return Optional.of(derive( //
-        steerColumnInterface, //
-        Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
-        lidarLocalizationModule.getGyroZ()));
+    GokartPoseEvent gokartPoseEvent = lidarLocalizationModule.createPoseEvent();
+    return LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) //
+        ? Optional.of(derive( //
+            steerColumnInterface, //
+            Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
+            gokartPoseEvent.getVelocity()))
+        : Optional.empty();
   }
 
   /** @param steerColumnInterface
    * @param power unitless in the interval [-1, 1]
-   * @param gyroZ
+   * @param velocity {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]}
    * @return */
-  final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Scalar gyroZ) {
+  final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Tensor velocity) {
     Scalar ratio = steerMapping.getRatioFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     // compute (negative) angular slip
+    Scalar meanTangentSpeed = velocity.Get(0);
+    Scalar gyroZ = velocity.Get(2);
     AngularSlip angularSlip = new AngularSlip(meanTangentSpeed, ratio, gyroZ);
     // ---
     Tensor powers = torqueVectoringInterface.powers(angularSlip, power);
@@ -95,10 +97,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   @Override // from RimoGetListener
-  public final void getEvent(RimoGetEvent getEvent) {
+  public final void getEvent(RimoGetEvent rimoGetEvent) {
     if (Objects.nonNull(vlp16PassiveSlowing))
       vlp16PassiveSlowing.bypassSafety();
-    // TODO MH/JPH use tangent speed from lidarLocalizationModule
-    meanTangentSpeed = RimoTwdOdometry.tangentSpeed(getEvent);
+    // use tangent speed from lidarLocalizationModule
+    // instead of RimoTwdOdometry.tangentSpeed(getEvent);
   }
 }
