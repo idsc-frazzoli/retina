@@ -32,8 +32,6 @@ import ch.ethz.idsc.tensor.sca.Abs;
 
 // TODO JPH rename
 public class CurveClothoidPursuitPlanner {
-  private static final Scalar REPLANNING_TIME = Quantity.of(.015, SI.SECOND); // TODO JG test or even update online
-  // ---
   private Optional<ClothoidPlan> plan = Optional.empty();
 
   /** @param pose of vehicle {x[m], y[m], angle}
@@ -47,8 +45,9 @@ public class CurveClothoidPursuitPlanner {
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {
-    Tensor estimatedPose = ClothoidPursuitConfig.GLOBAL.estimatePose && plan.isPresent() //
-        ? Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, plan.get().ratio()), pose, REPLANNING_TIME) //
+    ClothoidPursuitConfig config = ClothoidPursuitConfig.GLOBAL;
+    Tensor estimatedPose = config.estimatePose && plan.isPresent() //
+        ? Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, plan.get().ratio()), pose, config.estimationTime) //
         : pose;
     replanning(estimatedPose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
     return plan;
@@ -58,6 +57,7 @@ public class CurveClothoidPursuitPlanner {
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {
+    ClothoidPursuitConfig config = ClothoidPursuitConfig.GLOBAL;
     TensorUnaryOperator tensorUnaryOperator = new Se2GroupElement(pose).inverse()::combine;
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
@@ -66,7 +66,9 @@ public class CurveClothoidPursuitPlanner {
      * TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
      * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, ClothoidPursuitConfig.GLOBAL.getOptimizationSteps()).apply(tensor);
      * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
-    Optional<Tensor> lookAhead = new SphereSe2CurveIntersection(ClothoidPursuitConfig.GLOBAL.lookAhead).string(tensor); // new PseudoSe2CurveIntersection(ClothoidPursuitConfig.GLOBAL.lookAhead).string(tensor);
+    Optional<Tensor> lookAhead = (config.se2distance //
+        ? new PseudoSe2CurveIntersection(config.lookAhead) //
+        : new SphereSe2CurveIntersection(config.lookAhead)).string(tensor);
     if (lookAhead.isPresent()) {
       plan = ClothoidPlan.from(lookAhead.get(), pose, isForward);
       if (plan.isPresent())

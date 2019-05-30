@@ -20,10 +20,13 @@ import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 public class ClothoidPursuitConfig extends PursuitConfig {
   public static final ClothoidPursuitConfig GLOBAL = AppResources.load(new ClothoidPursuitConfig());
   // ---
+  public Boolean se2distance = false;
   @FieldSubdivide(start = "0", end = "100", intervals = 100)
   public Scalar optimizationSteps = RealScalar.of(25);
   public Scalar scale = Quantity.of(20, "m*s");
   public Boolean estimatePose = true;
+  @FieldSubdivide(start = "0[s]", end = "0.1[s]", intervals = 100)
+  public Scalar estimationTime = Quantity.of(0.015, SI.SECOND); // TODO JG test or learn online
 
   public ClothoidPursuitConfig() {
     lookAhead = Quantity.of(3, SI.METER);
