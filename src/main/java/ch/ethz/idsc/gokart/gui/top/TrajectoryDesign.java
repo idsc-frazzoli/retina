@@ -35,9 +35,9 @@ import ch.ethz.idsc.tensor.sca.N;
 public class TrajectoryDesign extends CurvatureDemo {
   private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   private static final Scalar COMB_SCALE = Quantity.of(-1.0, "m^2");
-  private final JToggleButton jToggleButton = new JToggleButton("repos.");
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
+  public final JToggleButton jToggleButton = new JToggleButton("repos.");
 
   public TrajectoryDesign() {
     super(Arrays.asList(ClothoidCurveDisplay.INSTANCE));
