@@ -133,7 +133,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   @Override // from AbstractClockedModule
   protected void runAlgo() {
     GokartPoseEvent _gokartPoseEvent = gokartPoseEvent;
-    if (LocalizationConfig.GLOBAL.isQualityOk(_gokartPoseEvent.getQuality())) {
+    if (LocalizationConfig.GLOBAL.isQualityOk(_gokartPoseEvent)) {
       double seconds = intervalClock.seconds(); // reset
       if (isActive) {
         if (trackReconManagement.isStartSet()) {
@@ -161,7 +161,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   /** reset track and flag start at current pose */
   private void setStart() {
     GokartPoseEvent _gokartPoseEvent = gokartPoseEvent;
-    if (LocalizationConfig.GLOBAL.isQualityOk(_gokartPoseEvent.getQuality()))
+    if (LocalizationConfig.GLOBAL.isQualityOk(_gokartPoseEvent))
       trackReconManagement.setStart(_gokartPoseEvent.getPose());
     else
       System.out.println("no quality pose");

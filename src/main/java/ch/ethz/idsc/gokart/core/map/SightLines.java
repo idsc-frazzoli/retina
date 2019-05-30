@@ -72,7 +72,7 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()) && //
+    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) && //
         !pointsPolar.isEmpty()) {
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
       geometricLayer.pushMatrix(SensorsConfig.GLOBAL.vlp16Gokart());

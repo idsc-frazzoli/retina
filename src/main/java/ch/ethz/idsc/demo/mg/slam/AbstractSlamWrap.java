@@ -62,7 +62,7 @@ public abstract class AbstractSlamWrap implements DavisDvsListener, StartAndStop
   @Override // from DavisDvsListener
   public final void davisDvs(DavisDvsEvent davisDvsEvent) {
     if (!triggered)
-      if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality())) {
+      if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent)) {
         triggered = true;
         dvsLcmClient.addDvsListener(abstractFilterHandler);
         dvsLcmClient.addDvsListener(slamViewer);
