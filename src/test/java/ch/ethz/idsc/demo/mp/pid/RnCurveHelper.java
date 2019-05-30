@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.Tensors;
   ;
   /** @param optionalCurve
    * @return if enough elements in curve */
-  // TODO MCP function would be obsolete if addAngleToCurve would return Optional<Tensor>
+  // function would be obsolete if addAngleToCurve would return Optional<Tensor>
   public static boolean bigEnough(Tensor optionalCurve) {
     return 1 < optionalCurve.length();
   }

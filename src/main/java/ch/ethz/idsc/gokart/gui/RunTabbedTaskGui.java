@@ -67,7 +67,6 @@ import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
-import ch.ethz.idsc.gokart.lcm.imu.Vmu932LcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
@@ -110,7 +109,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       Vmu931LcmServerModule.class, // vmu931 imu
-      Vmu932LcmServerModule.class, // vmu932 imu
+      // Vmu932LcmServerModule.class, // vmu932 imu
       IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       TrajectoryDesignModule.class, //
