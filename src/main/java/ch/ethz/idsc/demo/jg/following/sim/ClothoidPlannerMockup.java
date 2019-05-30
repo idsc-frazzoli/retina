@@ -30,6 +30,7 @@ import ch.ethz.idsc.tensor.red.Nest;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 public class ClothoidPlannerMockup extends TrajectoryDesignModule {
+  private static final int REFINEMENT = 3;
   private static final Scalar SPEED = Quantity.of(5, SI.VELOCITY);
   // ---
   private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
@@ -39,10 +40,10 @@ public class ClothoidPlannerMockup extends TrajectoryDesignModule {
   private Tensor mouseSe2 = Array.zeros(3);
   private final RenderInterface renderInterface = new RenderInterface() {
     public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-      if (jToggleButton.isSelected()) {
+      if (!trajectoryDesign.jToggleButton.isSelected()) {
         mouseSe2 = geometricLayer.getMouseSe2State();
         if (optional.isPresent()) {
-          Tensor refined = Nest.of(ClothoidTerminalRatios.CURVE_SUBDIVISION::string, optional.get().curve(), 3);
+          Tensor refined = Nest.of(ClothoidTerminalRatios.CURVE_SUBDIVISION::string, optional.get().curve(), REFINEMENT);
           Path2D path2d = geometricLayer.toPath2D(refined);
           graphics.setColor(Color.MAGENTA);
           graphics.draw(path2d);
@@ -55,16 +56,20 @@ public class ClothoidPlannerMockup extends TrajectoryDesignModule {
   protected void first() {
     super.first();
     {
-      trajectoryDesign.timerFrame.jToolBar.addSeparator();
-      jToggleButton.setToolTipText("clothoid pursuit planner");
-      jToggleButton.setSelected(false);
-      // TODO enable/disable control point changes
-      trajectoryDesign.timerFrame.jToolBar.add(jToggleButton);
+      trajectoryDesign.jToggleButton.addActionListener(l -> {
+        if (trajectoryDesign.jToggleButton.isSelected()) {
+          trajectoryDesign.jToggleButton.setText("repos.");
+          trajectoryDesign.jToggleButton.setToolTipText("position control points with the mouse");
+        } else {
+          trajectoryDesign.jToggleButton.setText("cloth");
+          trajectoryDesign.jToggleButton.setToolTipText("clothoid pursuit planner");
+        }
+      });
     }
     {
       trajectoryDesign.timerFrame.geometricComponent.jComponent.addMouseListener(new MouseAdapter() {
         public void mousePressed(MouseEvent mouseEvent) {
-          if (jToggleButton.isSelected() && mouseEvent.getButton() == 2) { // middle mouse button
+          if (!trajectoryDesign.jToggleButton.isSelected() && mouseEvent.getButton() == 1) {
             Timing timing = Timing.started();
             optional = planner.getPlan(PoseHelper.attachUnits(mouseSe2), SPEED, //
                 trajectoryDesign.getRefinedCurve(), //
@@ -74,10 +79,10 @@ public class ClothoidPlannerMockup extends TrajectoryDesignModule {
             timing.stop();
             Scalar duration = Quantity.of(timing.seconds(), SI.SECOND);
             String msg = (optional.isPresent() ? "NEW" : "NO") + " clothoid plan found in " + duration;
-            if (Scalars.lessThan(ClothoidPursuitConfig.GLOBAL.updatePeriod, duration))
-              System.err.println(msg);
-            else
+            if (optional.isPresent() && Scalars.lessEquals(duration, ClothoidPursuitConfig.GLOBAL.updatePeriod))
               System.out.println(msg);
+            else
+              System.err.println(msg);
           }
         }
       });

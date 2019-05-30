@@ -88,16 +88,32 @@ public class ClothoidPlanAnalysis implements OfflineLogListener {
     return Tensors.of(positionError, headingError);
   }
 
+  public Tensor replanningTimes() {
+    return replanningTimes.unmodifiable();
+  }
+
+  public Tensor replanningSteps() {
+    return Differences.of(replanningTimes).unmodifiable();
+  }
+
+  public Tensor estimationErrors() {
+    return estimationErrors.unmodifiable();
+  }
+
+  public Tensor followingErrors() {
+    return followingErrors.unmodifiable();
+  }
+
   public Scalar averageReplanningTime() {
-    return Mean.of(Differences.of(replanningTimes)).Get();
+    return Mean.of(replanningSteps()).Get();
   }
 
   public Tensor averageEstimationError() {
-    return Mean.of(estimationErrors);
+    return Mean.of(estimationErrors());
   }
 
   public Tensor averageFollowingError() {
-    return Mean.of(followingErrors);
+    return Mean.of(followingErrors());
   }
 
   public String getReport() {
