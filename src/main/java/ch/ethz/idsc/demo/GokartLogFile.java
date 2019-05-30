@@ -2016,6 +2016,20 @@ public enum GokartLogFile implements LogFile {
   _20190530T101956_2fe550da,
   /** torque vectoring with velocity of state estimate */
   _20190530T130401_0538494f,
+  /** clothoid pursuit */
+  _20190530T141607_1f4048bb,
+  /** clothoid pursuit */
+  _20190530T142426_1f4048bb,
+  /** clothoid pursuit, including 5[m] look ahead */
+  _20190530T143412_1f4048bb,
+  /** clothoid pursuit */
+  _20190530T144342_1f4048bb,
+  /** manual drive power steering */
+  _20190530T152247_1f4048bb,
+  /** anti lock brake test */
+  _20190530T153744_1f4048bb,
+  /** manual drive, clothoid pursuit, mpc */
+  _20190530T160230_49920c9d,
   /***************************************************/
   ;
   // ---
