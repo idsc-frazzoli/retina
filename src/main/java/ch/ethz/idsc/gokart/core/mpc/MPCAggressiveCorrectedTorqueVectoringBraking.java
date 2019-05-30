@@ -72,6 +72,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 
   @Override // from RimoGetListener
   public void getEvent(RimoGetEvent rimoGetEvent) {
+    // wheel speed determines braking
     wheelSpeed = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
   }
 }
