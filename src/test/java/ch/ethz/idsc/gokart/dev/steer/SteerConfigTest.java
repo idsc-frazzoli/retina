@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.dev.steer;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -40,7 +40,7 @@ public class SteerConfigTest extends TestCase {
 
   public void testTurningAtLimit() {
     // according to our model
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(SteerConfig.GLOBAL.turningRatioMax);
+    Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(SteerConfig.GLOBAL.turningRatioMax);
     // angle == 0.45218923155923850 ante 20190509
     // angle == 0.49164265965082177 post 20190509
     // System.out.println(angle);

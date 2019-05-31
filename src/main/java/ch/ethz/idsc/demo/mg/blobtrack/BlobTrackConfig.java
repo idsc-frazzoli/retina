@@ -34,7 +34,7 @@ public class BlobTrackConfig {
   public Scalar dAttr = RealScalar.of(50);
   public Scalar dMerge = RealScalar.of(20);
   public Scalar boundaryDistance = RealScalar.of(1);
-  public Scalar tau = RealScalar.of(20000); // [us]
+  public Scalar tau = RealScalar.of(20_000); // [us]
   // feature selection
   public Scalar upperBoarder = RealScalar.of(davisConfig.height.number()); // with this number, all features are selected
   // image saving

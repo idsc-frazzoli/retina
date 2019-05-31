@@ -21,6 +21,5 @@ public class GokartLogAdapterTest extends TestCase {
   public void testFull() {
     assertTrue(FULL.file().exists());
     assertEquals(Dimensions.of(FULL.pose()), Arrays.asList(3));
-    assertEquals(FULL.driver(), "abc");
   }
 }

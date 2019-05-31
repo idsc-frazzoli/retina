@@ -71,7 +71,7 @@ public class Aedat31FrameEvent {
   }
 
   public Scalar getTime() {
-    return Quantity.of(RationalScalar.of(frameEnd, 1000000), SI.SECOND);
+    return Quantity.of(RationalScalar.of(frameEnd, 1_000_000), SI.SECOND);
   }
 
   public BufferedImage getBufferedImage() {

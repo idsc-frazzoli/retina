@@ -32,6 +32,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   @Override // from Vlp16ClearanceModule
   Optional<RimoPutEvent> penaltyAction() {
     // steering angle not used in RimoRateControllerUno
-    return Optional.of(rimoRateControllerWrap.iterate(SPEED_ZERO, null).orElse(RimoPutEvent.PASSIVE));
+    return Optional.of(rimoRateControllerWrap.iterate(SPEED_ZERO).orElse(RimoPutEvent.PASSIVE));
   }
 }

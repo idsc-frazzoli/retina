@@ -62,7 +62,7 @@ enum DriftExtDemo {
     // ---
     trajectoryPlanner.insertRoot(new StateTime(Tensors.vector(0, 0, 0, 0, 0, 1), RealScalar.ZERO));
     GlcExpand glcExpand = new GlcExpand(trajectoryPlanner);
-    glcExpand.findAny(10000);
+    glcExpand.findAny(10_000);
     int iters = glcExpand.getExpandCount();
     // Expand.maxSteps(trajectoryPlanner, 10000);
     System.out.println(iters);

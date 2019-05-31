@@ -135,7 +135,7 @@ public class BSplineTrackTest extends TestCase {
           .divide(dx);
       Tensor nDDev = nDevp.subtract(nDev).divide(dx);
       // System.out.println("2nd der: "+cDDev+" numerically: "+nDDev);
-      assertTrue(Chop._04.close(cDDev, nDDev));
+      Chop._03.requireClose(cDDev, nDDev); // failed with Chop._04
     }
   }
 

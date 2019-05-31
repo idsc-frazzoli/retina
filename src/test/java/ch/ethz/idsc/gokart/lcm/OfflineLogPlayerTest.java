@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodynePosEvent;
 import ch.ethz.idsc.retina.lidar.VelodynePosListener;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
+import ch.ethz.idsc.retina.util.gps.Gprmc;
 import ch.ethz.idsc.retina.util.gps.WGS84toCH1903LV03Plus;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -30,9 +31,10 @@ public class OfflineLogPlayerTest extends TestCase {
       @Override
       public void velodynePos(VelodynePosEvent velodynePosEvent) {
         assertTrue(velodynePosEvent.nmea().startsWith("$GPRMC"));
-        Scalar degX = velodynePosEvent.gpsX();
+        Gprmc gprmc = velodynePosEvent.gprmc();
+        Scalar degX = gprmc.gpsX();
         assertTrue(clipX.isInside(degX));
-        Scalar degY = velodynePosEvent.gpsY();
+        Scalar degY = gprmc.gpsY();
         assertTrue(clipY.isInside(degY));
         Tensor metric = WGS84toCH1903LV03Plus.transform(degX, degY);
         assertTrue(clipMeterX.isInside(metric.Get(0)));

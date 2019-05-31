@@ -8,7 +8,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.owl.bot.se2.pid.PIDTrajectory;
-import ch.ethz.idsc.owl.bot.se2.pid.Se2CurveUnitCheck;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -68,7 +67,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         System.err.println("Turning ratio with invalid unit");
       }
       clippedRatioOut = PIDTuningParams.GLOBAL.clipRatio().apply(ratioOut);
-      // 
+      //
       this.previousPID = currentPID;
       pidIndex++;
       return Optional.of(clippedRatioOut);
@@ -96,7 +95,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   public PIDTrajectory getPID() {
     return currentPID;
   }
-  
+
   public Scalar getClippedTurningRatio() {
     return clippedRatioOut;
   }

@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.Scalar;
 /* package */ class OfflineBlobTrackWrap implements OfflineLogListener {
   // FIXME MG
   private static final String CHANNEL_DVS = SlamDvsConfig.eventCamera.slamCoreConfig.dvsConfig.channel_DVS;
+  // ---
   private final DvsLcmClient dvsLcmClient;
   // specific to blob tracking algorithm
   private final BlobTrackProvider blobTrackProvider;

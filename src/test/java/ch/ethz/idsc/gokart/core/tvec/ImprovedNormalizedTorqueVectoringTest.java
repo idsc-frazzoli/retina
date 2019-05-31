@@ -25,7 +25,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedTorqueVectoring(torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new NormalizedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     Tensor powers = torqueVectoringInterface.powers( //
         new AngularSlip(Quantity.of(0, "m*s^-1"), Quantity.of(0, "m^-1"), Quantity.of(0, "s^-1")), //
@@ -39,7 +39,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedTorqueVectoring(torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new NormalizedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     Scalar velocity = Quantity.of(1, SI.VELOCITY);
     Tensor powers = torqueVectoringInterface.powers( //
@@ -58,7 +58,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedTorqueVectoring(torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new NormalizedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ONE;
     Tensor powers = torqueVectoringInterface.powers( //
         new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
@@ -73,7 +73,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedTorqueVectoring(torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new NormalizedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ONE.negate();
     Tensor powers = torqueVectoringInterface.powers( //
         new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
@@ -91,7 +91,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0.2, SI.SECOND);
-    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedTorqueVectoring(torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new NormalizedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     // brutal oversteering -> reaction should be that there is no differential torque
     Tensor powers = torqueVectoringInterface.powers( //
@@ -104,7 +104,7 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0.2, SI.SECOND);
-    TorqueVectoringInterface torqueVectoringInterface = new ImprovedNormalizedTorqueVectoring(torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new NormalizedTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     // brutal oversteering -> reaction should be that there is no differential torque
     Tensor powers = torqueVectoringInterface.powers( //

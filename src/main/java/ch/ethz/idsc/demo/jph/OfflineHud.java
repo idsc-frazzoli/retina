@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
@@ -19,7 +20,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AccumulatedEventRender;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
 import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
@@ -128,7 +128,7 @@ public class OfflineHud implements OfflineLogListener {
         accumulatedEventRender.render(geometricLayer, graphics);
         // ---
         graphics.setColor(Color.GREEN);
-        Scalar vel = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
+        Scalar vel = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
         String string = String.format("%+3.1f[m/s]", vel.map(Round._1).Get().number().doubleValue());
         // System.out.println(string);
         graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 10));

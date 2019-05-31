@@ -7,7 +7,8 @@ import java.util.Objects;
  * 
  * 1) micro seconds 2) int encoding */
 public class IntRealtimeSleeper {
-  private static final long MICRO = 1000000;
+  /** 1[s] == 1_000_000[us] */
+  private static final long MICRO = 1_000_000;
   // ---
   private final double speed;
   private Integer ref = null;

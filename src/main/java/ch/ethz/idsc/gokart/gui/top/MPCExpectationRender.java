@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateCapture;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
@@ -63,7 +64,7 @@ public class MPCExpectationRender extends MPCControlUpdateCapture implements Ren
   @Override // from RimoGetListener
   public void getEvent(RimoGetEvent getEvent) {
     // TODO MH is the odometry-based acceleration estimate still useful?
-    Scalar currentTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
+    Scalar currentTangentSpeed = RimoTwdOdometry.tangentSpeed(getEvent);
     Scalar acceleration = currentTangentSpeed //
         .subtract(lastTangentSpeed)//
         .divide(Quantity.of(intervalClock.seconds(), SI.SECOND));

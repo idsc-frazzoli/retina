@@ -47,7 +47,7 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
           break;
         }
         DavisDvsEvent dde = eventGen(line);
-        if (events % 10000 == 0)
+        if (events % 10_000 == 0)
           System.out.println(dde);
         ++events;
       }

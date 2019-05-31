@@ -70,7 +70,7 @@ public class SteerConfig {
     return FittedSteerMapping.instance();
   }
 
-  /** @return */
+  /** @return clip for quantity with unit m^-1 */
   public Clip getRatioLimit() {
     Scalar ratioMax = getSteerMapping().getRatioFromSCE(columnMax);
     return Clips.absolute(ratioMax);

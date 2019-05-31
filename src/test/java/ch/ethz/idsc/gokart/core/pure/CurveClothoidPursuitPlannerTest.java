@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
@@ -25,7 +25,7 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
         ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
         ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     Scalar ratio = optional.get();
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
+    Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(ratio);
     Clips.interval(-0.75, -0.72).requireInside(angle);
   }
 
@@ -35,7 +35,7 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
     Optional<Scalar> optional = new CurveClothoidPursuitPlanner().getPlan(pose, speed, DubendorfCurve.TRACK_OVAL_SE2, true, //
         ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     Scalar ratio = optional.get();
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
+    Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(ratio);
     Clips.interval(-0.68, -0.62).requireInside(angle);
   }
 

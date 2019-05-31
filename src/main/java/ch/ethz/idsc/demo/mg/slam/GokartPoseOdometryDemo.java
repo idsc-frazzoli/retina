@@ -1,11 +1,11 @@
 // code by mg
 package ch.ethz.idsc.demo.mg.slam;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.math.StateSpaceModels;
@@ -63,7 +63,7 @@ public class GokartPoseOdometryDemo implements PoseInterface, RimoGetListener {
 
   /** @param angularRate_Y_pair */
   /* package */ synchronized void step(Tensor angularRate_Y_pair) {
-    velocity = ChassisGeometry.GLOBAL.odometryVelocity(angularRate_Y_pair);
+    velocity = RimoTwdOdometry.INSTANCE.velocity(angularRate_Y_pair);
     Flow flow = singleton(velocity);
     state = Se2CarIntegrator.INSTANCE.step(flow, state, dt);
   }

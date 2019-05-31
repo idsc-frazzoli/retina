@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.lcm.mod.PursuitPlanLcm;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
+import ch.ethz.idsc.owl.car.math.SphereSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
@@ -32,8 +33,6 @@ import ch.ethz.idsc.tensor.sca.Abs;
 
 // TODO JPH rename
 public class CurveClothoidPursuitPlanner {
-  private static final Scalar REPLANNING_TIME = Quantity.of(.015, SI.SECOND); // TODO test or even update online
-  // ---
   private Optional<ClothoidPlan> plan = Optional.empty(); // TODO curve is very rough -> approximated deviation is way above actual value
 
   /** @param pose of vehicle {x[m], y[m], angle}
@@ -47,12 +46,13 @@ public class CurveClothoidPursuitPlanner {
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {
-    Tensor estimatedPose = ClothoidPursuitConfig.GLOBAL.estimatePose && plan.isPresent() //
-        ? Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, plan.get().ratio()), pose, REPLANNING_TIME) //
+    ClothoidPursuitConfig config = ClothoidPursuitConfig.GLOBAL;
+    Tensor estimatedPose = config.estimatePose && plan.isPresent() //
+        ? Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, plan.get().bestRatio(pose)), pose, config.estimationTime) //
         : pose;
     if (plan.isPresent()) {
       ClothoidPlan clothoidPlan = plan.get();
-      if (Scalars.lessEquals(CurveClothoidPursuitHelper.distanceToDrive(clothoidPlan, pose), ClothoidPursuitConfig.GLOBAL.minDistance))
+      if (Scalars.lessEquals(CurveClothoidPursuitHelper.distanceToDrive(clothoidPlan, estimatedPose), ClothoidPursuitConfig.GLOBAL.minDistance))
         replanning(estimatedPose, speed, curve, isForward, trajectoryEntryFinder, ratioLimits);
       else {
         Scalar deviation = clothoidPlan.curve().stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector).reduce(Min::of).get();
@@ -68,6 +68,7 @@ public class CurveClothoidPursuitPlanner {
       Tensor pose, Scalar speed, Tensor curve, boolean isForward, //
       TrajectoryEntryFinder trajectoryEntryFinder, //
       List<DynamicRatioLimit> ratioLimits) {
+    ClothoidPursuitConfig config = ClothoidPursuitConfig.GLOBAL;
     TensorUnaryOperator tensorUnaryOperator = new Se2GroupElement(pose).inverse()::combine;
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
@@ -76,11 +77,13 @@ public class CurveClothoidPursuitPlanner {
      * TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
      * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, ClothoidPursuitConfig.GLOBAL.getOptimizationSteps()).apply(tensor);
      * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
-    Optional<Tensor> lookAhead = new PseudoSe2CurveIntersection(ClothoidPursuitConfig.GLOBAL.lookAhead).string(tensor);
+    Optional<Tensor> lookAhead = (config.se2distance //
+        ? new PseudoSe2CurveIntersection(config.lookAhead) //
+        : new SphereSe2CurveIntersection(config.lookAhead)).string(tensor);
     if (lookAhead.isPresent()) {
       plan = ClothoidPlan.from(lookAhead.get(), pose, isForward);
       if (plan.isPresent())
-        PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get());
+        PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get(), isForward);
     } else
       plan = Optional.empty();
   }

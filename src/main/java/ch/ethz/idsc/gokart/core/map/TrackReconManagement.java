@@ -80,15 +80,10 @@ public class TrackReconManagement {
     return startX >= 0 && startX < width && startY >= 0 && startY < height;
   }
 
-  /** @param gokartPoseEvent non-null */
-  public void setStart(GokartPoseEvent gokartPoseEvent) {
-    setStart(gokartPoseEvent.getPose());
-  }
-
   /** set start position
    * 
-   * @param pose [x[m], y[m], angle] */
-  private void setStart(Tensor pose) {
+   * @param pose {x[m], y[m], angle} */
+  public void setStart(Tensor pose) {
     Tensor transform = occupancyGrid.getTransform();
     Tensor hpos = Tensors.of(pose.Get(0), pose.Get(1), Quantity.of(1, SI.METER));
     Tensor pixelPos = LinearSolve.of(transform, hpos);

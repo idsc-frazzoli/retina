@@ -11,8 +11,4 @@ public interface GokartLogInterface {
 
   /** @return pose {x[m], y[m], heading} at start of log */
   Tensor pose();
-
-  /** @return name or initials of driver, or empty string if unknown */
-  String driver();
-  // TODO specify predefined map in config
 }

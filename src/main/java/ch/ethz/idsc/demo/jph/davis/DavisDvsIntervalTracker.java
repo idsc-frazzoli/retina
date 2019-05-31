@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
  * seems that davis camera is event-blind during aps images read out. */
 /* package */ class DavisDvsIntervalTracker implements DavisDvsListener {
   private Integer last = null;
-  final int[] bins = new int[40000];
+  final int[] bins = new int[40_000];
 
   @Override
   public void davisDvs(DavisDvsEvent davisDvsEvent) {

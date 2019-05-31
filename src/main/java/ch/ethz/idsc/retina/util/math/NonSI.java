@@ -23,4 +23,6 @@ public enum NonSI {
   public static final Unit ARMS = Unit.of("ARMS");
   // ---
   public static final Unit KM_PER_HOUR = Unit.of("km*h^-1");
+  /** knots are used in gps measurements */
+  public static final Unit KNOTS = Unit.of("knots");
 }

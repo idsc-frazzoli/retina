@@ -27,7 +27,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     TableBuilder tableBuilder = new TableBuilder();
     try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
       String prefix = "";
-      int maxline = 1700000;
+      int maxline = 1700_000;
       int linecount = 0;
       while (true) {
         String line = bufferedReader.readLine();

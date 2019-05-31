@@ -19,14 +19,19 @@ public enum FileHelper {
       if (file.isFile()) {
         System.out.println("INFO open " + file.getAbsolutePath());
         return Optional.of(file);
-      }
+      } else if (file.isDirectory())
+        return choose(fileName);
       System.err.println("WARN unable to find/open " + file.getAbsolutePath());
     }
     return choose();
   }
 
   public static Optional<File> choose() {
-    JFileChooser fileChooser = new JFileChooser();
+    return choose("");
+  }
+
+  public static Optional<File> choose(String currentPath) {
+    JFileChooser fileChooser = new JFileChooser(currentPath);
     int returnVal = fileChooser.showOpenDialog(fileChooser);
     if (returnVal == JFileChooser.APPROVE_OPTION)
       try {

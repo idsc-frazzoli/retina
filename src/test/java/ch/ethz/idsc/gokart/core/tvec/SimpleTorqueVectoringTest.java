@@ -17,7 +17,7 @@ public class SimpleTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    TorqueVectoringInterface torqueVectoringInterface = new SimpleTorqueVectoring(torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new DirectTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     Tensor powers = torqueVectoringInterface.powers( //
         new AngularSlip(Quantity.of(0, "m*s^-1"), Quantity.of(0, "m^-1"), Quantity.of(0, "s^-1")), //
@@ -30,7 +30,7 @@ public class SimpleTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    TorqueVectoringInterface torqueVectoringInterface = new SimpleTorqueVectoring(torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new DirectTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ZERO;
     Tensor powers = torqueVectoringInterface.powers( //
         new AngularSlip(Quantity.of(1, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
@@ -43,7 +43,7 @@ public class SimpleTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    TorqueVectoringInterface torqueVectoringInterface = new SimpleTorqueVectoring(torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new DirectTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ONE;
     Tensor powers = torqueVectoringInterface.powers( //
         new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
@@ -55,7 +55,7 @@ public class SimpleTorqueVectoringTest extends TestCase {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
     torqueVectoringConfig.dynamicCorrection = Quantity.of(0, SI.SECOND);
-    TorqueVectoringInterface torqueVectoringInterface = new SimpleTorqueVectoring(torqueVectoringConfig);
+    TorqueVectoringInterface torqueVectoringInterface = new DirectTorqueVectoring(torqueVectoringConfig);
     Scalar power = RealScalar.ONE.negate();
     Tensor powers = torqueVectoringInterface.powers( //
         new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //

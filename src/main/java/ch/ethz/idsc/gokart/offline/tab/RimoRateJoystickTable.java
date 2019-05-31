@@ -5,13 +5,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -75,8 +75,8 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
         time_next = time.add(delta);
         // ---
         Tensor rates = rge.getAngularRate_Y_pair();
-        Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
-        Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
+        Scalar speed = RimoTwdOdometry.tangentSpeed(rge);
+        Scalar rate = RimoTwdOdometry.turningRate(rge);
         Scalar factor = Boole.of(manualControlInterface.isAutonomousPressed());
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //

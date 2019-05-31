@@ -98,7 +98,7 @@ public class GokartTrajectorySRModule extends AbstractClockedModule {
   // private static final Se2Wrap SE2WRAP = Se2Wrap.INSTANCE;
   private static final StateTimeRaster STATE_TIME_RASTER = //
       new EtaRaster(PARTITIONSCALE, StateTimeTensorFunction.state(Tse2Wrap.INSTANCE::represent));
-  private static final int MAX_STEPS = 10000;
+  private static final int MAX_STEPS = 10_000;
   // ---
   static final FlowsInterface TSE2_CARFLOWS = Tse2CarFlows.of( //
       Magnitude.PER_METER.apply(TrajectoryConfig.GLOBAL.maxRotation), ACCELERATIONS);

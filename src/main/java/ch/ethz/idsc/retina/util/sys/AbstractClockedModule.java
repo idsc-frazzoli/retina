@@ -1,4 +1,4 @@
-// code by swisstrolley+ and jph
+// code by swisstrolley+ and jph, gjoel
 package ch.ethz.idsc.retina.util.sys;
 
 import java.util.Timer;

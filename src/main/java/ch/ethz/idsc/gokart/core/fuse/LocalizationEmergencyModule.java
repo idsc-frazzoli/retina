@@ -40,7 +40,7 @@ public class LocalizationEmergencyModule extends AbstractModule implements Gokar
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     this.gokartPoseEvent = gokartPoseEvent;
-    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()))
+    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent))
       watchdog.notifyWatchdog();
   }
 

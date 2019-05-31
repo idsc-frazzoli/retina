@@ -21,6 +21,6 @@ import ch.ethz.idsc.retina.davis.io.Aedat31Imu6Event;
       }
     });
     seyeAeImuLcmHandler.startSubscriptions();
-    Thread.sleep(10000);
+    Thread.sleep(10_000);
   }
 }

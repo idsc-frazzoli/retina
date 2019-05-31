@@ -56,7 +56,7 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
     this.consumer = consumer;
     bayesianOccupancyGrid = mappingConfig.createBayesianOccupancyGrid();
     LidarAngularFiringCollector lidarAngularFiringCollector = //
-        new LidarAngularFiringCollector(10000, 3);
+        new LidarAngularFiringCollector(10_000, 3);
     double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
     LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -1);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);

@@ -1995,6 +1995,42 @@ public enum GokartLogFile implements LogFile {
   /** long straight driving */
   _20190526T170036_7f7422b3,
   /***************************************************/
+  /* 2019-05-27
+   * vlp16 incline=0.022 (instead of 0.04) */
+  /** manual drive with backup imu */
+  _20190527T145700_8a0e8702,
+  /** manual drive with backup imu, davis 240c */
+  _20190527T161637_8a0e8702,
+  /** pursuit */
+  _20190527T163523_9e8335de,
+  /** pursuit */
+  _20190527T170231_ba6e3937,
+  /** pursuit */
+  _20190527T171137_ba6e3937,
+  /** pursuit */
+  _20190527T171643_9e8335de,
+  /***************************************************/
+  /* 2019-05-30
+   * vlp16 incline=0.022 (instead of 0.04) */
+  /** torque vectoring, mpc */
+  _20190530T101956_2fe550da,
+  /** torque vectoring with velocity of state estimate */
+  _20190530T130401_0538494f,
+  /** clothoid pursuit */
+  _20190530T141607_1f4048bb,
+  /** clothoid pursuit */
+  _20190530T142426_1f4048bb,
+  /** clothoid pursuit, including 5[m] look ahead */
+  _20190530T143412_1f4048bb,
+  /** clothoid pursuit */
+  _20190530T144342_1f4048bb,
+  /** manual drive power steering */
+  _20190530T152247_1f4048bb,
+  /** anti lock brake test */
+  _20190530T153744_1f4048bb,
+  /** manual drive, clothoid pursuit, mpc */
+  _20190530T160230_49920c9d,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

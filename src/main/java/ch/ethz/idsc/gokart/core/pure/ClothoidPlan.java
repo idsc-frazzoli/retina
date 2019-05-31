@@ -1,6 +1,7 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
@@ -12,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Norm;
 
-public class ClothoidPlan {
+public class ClothoidPlan implements Serializable {
   private static final int REFINEMENT = 6;
 
   /** @param lookAhead {x[m], y[m], angle}

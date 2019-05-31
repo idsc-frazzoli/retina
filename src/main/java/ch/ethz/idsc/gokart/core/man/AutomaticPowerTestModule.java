@@ -11,6 +11,7 @@ import javax.swing.JTextArea;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
@@ -19,7 +20,6 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutTires;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
@@ -216,8 +216,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
   }
 
   @Override
-  public void getEvent(RimoGetEvent getEvent) {
-    meanTangentSpeed = ChassisGeometry.GLOBAL.odometryTangentSpeed(getEvent);
+  public void getEvent(RimoGetEvent rimoGetEvent) {
+    meanTangentSpeed = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
   }
 
   public static void main(String[] args) throws Exception {

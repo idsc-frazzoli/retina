@@ -43,7 +43,7 @@ public class MultiTrackVideo {
         for (AbstractFrameRender abstractFrameRender : abstractFrameRenders)
           abstractFrameRender.render(index, geometricLayer, graphics);
         mp4AnimationWriter.append(bufferedImage);
-        if (index == 10000)
+        if (index == 10_000)
           break;
       }
     }

@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -17,7 +17,7 @@ public class CurvePurePursuitHelperTest extends TestCase {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 1}");
     Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PurePursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
+    Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(lookAhead);
     // assertTrue(Clip.function( // for look ahead 3.9[m]
     // Quantity.of(-0.018, ""), //
     // Quantity.of(-0.016, "")).isInside(angle));
@@ -28,7 +28,7 @@ public class CurvePurePursuitHelperTest extends TestCase {
     Tensor pose = Tensors.fromString("{35.1[m], 44.9[m], 0.9}");
     Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, DubendorfCurve2.OVAL, true, PurePursuitConfig.GLOBAL.lookAhead);
     Scalar lookAhead = optional.get();
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(lookAhead);
+    Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(lookAhead);
     assertTrue(Clips.interval(0.04, 0.07).isInside(angle));
   }
 

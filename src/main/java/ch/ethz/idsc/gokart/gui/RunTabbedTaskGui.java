@@ -35,12 +35,13 @@ import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerPassiveModule;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.fuse.Vmu931CalibrationWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.Vmu931ReadingWatchdog;
 import ch.ethz.idsc.gokart.core.man.AutomaticPowerTestModule;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
+import ch.ethz.idsc.gokart.core.man.PredictiveTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
-import ch.ethz.idsc.gokart.core.man.UltimateTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
@@ -66,7 +67,6 @@ import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
-import ch.ethz.idsc.gokart.lcm.imu.Vmu932LcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
@@ -98,6 +98,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       SteerPassiveModule.class, //
       LinmotSafetyModule.class, //
       Vmu931CalibrationWatchdog.class, //
+      Vmu931ReadingWatchdog.class, //
       Vlp16PassiveSlowing.class, //
       LidarLocalizationModule.class, //
       /* pose lcm server has to come after lidar localization module */
@@ -108,7 +109,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       Vmu931LcmServerModule.class, // vmu931 imu
-      Vmu932LcmServerModule.class, // vmu932 imu
+      // Vmu932LcmServerModule.class, // vmu932 imu
       IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       TrajectoryDesignModule.class, //
@@ -120,7 +121,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       VoiceOutputModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
-      UltimateTorqueVectoringModule.class, //
+      PredictiveTorqueVectoringModule.class, //
       PowerSteeringModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //

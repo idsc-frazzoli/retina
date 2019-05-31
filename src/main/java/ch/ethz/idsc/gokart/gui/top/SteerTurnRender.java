@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
@@ -43,7 +44,7 @@ public class SteerTurnRender implements RenderInterface {
     if (gokartStatusEvent.isSteerColumnCalibrated() && gokartPoseEvent.hasVelocity()) {
       Scalar ratio = steerMapping.getRatioFromSCE(gokartStatusEvent);
       graphics.setColor(Color.MAGENTA);
-      Scalar theta = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
+      Scalar theta = RimoAxleConstants.steerAngleForTurningRatio(ratio);
       graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, AngleVector.of(theta))));
       Scalar rotationRate = gokartPoseEvent.getVelocity().Get(0).multiply(ratio);
       graphics.setColor(Color.BLUE);

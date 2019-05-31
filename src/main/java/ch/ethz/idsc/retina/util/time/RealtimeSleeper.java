@@ -7,7 +7,8 @@ import java.util.Objects;
  * 
  * 1) nano seconds 2) long encoding */
 public class RealtimeSleeper {
-  private static final long MICRO = 1000000;
+  /** 1[s] == 1_000_000[us] */
+  private static final long MICRO = 1_000_000;
   // ---
   /** factor of real-time */
   private final double factor;

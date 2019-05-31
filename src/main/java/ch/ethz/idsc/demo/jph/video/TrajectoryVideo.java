@@ -131,7 +131,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.drawString("time: " + time.map(Round._1), 0, 22);
         graphics.drawString("avg speed: " + mean.map(Round._1) + "[m/s]", 0, 22 + 22);
         ++count;
-        if (count < 10000) {
+        if (count < 10_000) {
           System.out.println(count);
           image(bufferedImage);
         }

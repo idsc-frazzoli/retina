@@ -6,7 +6,6 @@ import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 
 /** particle's state propagation which should be followed by a resampling step */
 /* package */ class SlamPropagationStep extends PeriodicSlamStep {
-  // TODO pass parameter to constructor
   private final int particleRange;
 
   SlamPropagationStep(SlamCoreContainer slamCoreContainer, int particleRange) {

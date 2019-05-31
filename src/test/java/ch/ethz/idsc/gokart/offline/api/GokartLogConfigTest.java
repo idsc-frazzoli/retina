@@ -12,7 +12,5 @@ public class GokartLogConfigTest extends TestCase {
     Properties properties = ResourceData.properties("/offline/20180419T124700_fast/GokartLogConfig.properties");
     GokartLogConfig gokartLogConfig = new GokartLogConfig();
     TensorProperties.wrap(gokartLogConfig).set(properties);
-    String driver = gokartLogConfig.driver;
-    assertEquals(driver, "abc");
   }
 }

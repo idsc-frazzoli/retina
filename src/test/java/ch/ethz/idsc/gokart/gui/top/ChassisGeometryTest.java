@@ -1,7 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.owl.car.math.AckermannSteering;
@@ -27,13 +29,13 @@ public class ChassisGeometryTest extends TestCase {
 
   public void testSimple() {
     DifferentialSpeed differentialSpeed = //
-        ChassisGeometry.GLOBAL.getDifferentialSpeed();
+        RimoAxleConstants.getDifferentialSpeed();
     differentialSpeed.pair(RealScalar.ONE, RealScalar.of(.3));
   }
 
   public void testSingleton() {
-    Scalar xAxleDistance = ChassisGeometry.GLOBAL.xAxleDistanceMeter();
-    Clips.interval(1.1, 1.25).requireInside(xAxleDistance);
+    Scalar xAxleDistance = RimoAxleConstants.xAxleRtoF;
+    Clips.interval(Quantity.of(1.1, SI.METER), Quantity.of(1.25, SI.METER)).requireInside(xAxleDistance);
     ChassisGeometry.GLOBAL.yTireFrontMeter();
   }
 
@@ -48,17 +50,17 @@ public class ChassisGeometryTest extends TestCase {
   }
 
   public void testSteerAngleTowardsLeft() {
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(Quantity.of(0.3, SI.PER_METER));
+    Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(Quantity.of(0.3, SI.PER_METER));
     assertTrue(Chop._13.close(RealScalar.of(0.34289723785565446), angle));
   }
 
   public void testSteerAngleTowardsRight() {
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(Quantity.of(-.2, SI.PER_METER));
+    Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(Quantity.of(-.2, SI.PER_METER));
     assertTrue(Chop._13.close(RealScalar.of(-0.2336530501796457), angle));
   }
 
   public void testSteerAngleStraight() {
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(Quantity.of(0, SI.PER_METER));
+    Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(Quantity.of(0, SI.PER_METER));
     assertTrue(Chop._13.close(RealScalar.of(0), angle));
   }
 
@@ -84,19 +86,18 @@ public class ChassisGeometryTest extends TestCase {
 
   public void testOdometry() {
     RimoGetEvent rimoGetEvent = RimoGetEvents.create(100, 200);
-    Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
+    Scalar speed = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
     assertEquals(QuantityUnit.of(speed), Unit.of("s^-1*m"));
     Scalar vel = Magnitude.VELOCITY.apply(speed);
     assertTrue(Chop._04.close(vel, RealScalar.of(0.3)));
-    Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rimoGetEvent);
+    Scalar rate = RimoTwdOdometry.turningRate(rimoGetEvent);
     assertEquals(QuantityUnit.of(rate), Unit.of("s^-1"));
     Scalar ome = Magnitude.PER_SECOND.apply(rate);
     assertTrue(Chop._04.close(ome, RealScalar.of(0.18518518518518517)));
   }
 
   public void testAckermann() {
-    AckermannSteering ackermannSteering = //
-        new AckermannSteering(ChassisGeometry.GLOBAL.xAxleRtoF, ChassisGeometry.GLOBAL.yTireFront);
+    AckermannSteering ackermannSteering = RimoAxleConstants.ackermannSteering();
     Tensor pair = ackermannSteering.pair(RealScalar.of(0.3));
     assertTrue(Chop._10.close(pair, Tensors.vector(0.3397325320025735, 0.2683854870479421)));
   }

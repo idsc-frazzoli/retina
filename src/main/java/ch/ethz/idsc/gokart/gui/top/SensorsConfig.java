@@ -41,8 +41,9 @@ public class SensorsConfig {
    * then, vlp16_inclinea can correct a height of a lidar point
    * by adding an offset that is proportional to
    * the lidar x-coordinate to correct the lidar point z-coordinate:
-   * z_gokart = z_lidar - vlp16_incline * x_lidar */
-  public final Scalar vlp16_incline = RealScalar.of(0.04);
+   * z_gokart = z_lidar - vlp16_incline * x_lidar
+   * post 20190530: incline different */
+  public Scalar vlp16_incline = RealScalar.of(0.022);
   /** height of vlp scan rays from ground
    * 1.112[m] from ground to platform top (until 2018-02-25, the value was 1.18[m])
    * 0.006[m] width of heat sink

@@ -21,6 +21,6 @@ enum Mark8DecoderExec {
     mark8LcmClient.mark8Decoder.addRayListener(lidarRotationProvider);
     mark8LcmClient.mark8Decoder.addRayListener(new Mark8SpacialProvider());
     mark8LcmClient.startSubscriptions();
-    Thread.sleep(10000);
+    Thread.sleep(10_000);
   }
 }

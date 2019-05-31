@@ -28,13 +28,13 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class PowerSteeringModule extends AbstractModule implements SteerGetListener, SteerPutProvider {
-  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
-  private GokartPoseListener gokartPoseListener = gokartPoseEvent -> this.gokartPoseEvent = gokartPoseEvent;
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  private final GokartPoseListener gokartPoseListener = gokartPoseEvent -> this.gokartPoseEvent = gokartPoseEvent;
   private final HapticSteerConfig hapticSteerConfig;
   private final GeodesicIIR1Filter geodesicIIR1Filter; // 1 means unfiltered
   // ---
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   private SteerGetEvent steerGetEvent;
 
   public PowerSteeringModule() {
@@ -68,7 +68,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
 
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
-    Tensor velocity = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()) //
+    Tensor velocity = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) //
         ? gokartPoseEvent.getVelocity()
         : GokartPoseEvents.motionlessUninitialized().getVelocity();
     return steerColumnTracker.isCalibratedAndHealthy() && Objects.nonNull(steerGetEvent) //

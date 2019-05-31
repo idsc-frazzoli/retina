@@ -1,0 +1,31 @@
+// code by jph
+package ch.ethz.idsc.demo.jg;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+
+import ch.ethz.idsc.demo.jph.video.RunVideoBackground;
+import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.offline.video.TrackVideoConfig;
+import ch.ethz.idsc.gokart.offline.video.TrackVideoWriter;
+
+/* package */ enum RunTrackVideoWriter {
+  ;
+  private static void run(File file, File dest) throws IOException, Exception {
+    try (TrackVideoWriter trackVideoWriter = new TrackVideoWriter( //
+        RunVideoBackground.get20190530(), new TrackVideoConfig(), dest)) {
+      OfflineLogPlayer.process(file, trackVideoWriter);
+    }
+  }
+
+  public static void main(String[] args) throws Exception {
+    Optional<File> optional = FileHelper.open(args);
+    if (optional.isPresent()) {
+      File file = optional.get();
+      System.out.println(file.getAbsolutePath());
+      run(file, new File(file.getParentFile(), file.getName().split("_")[0] + ".mp4"));
+      System.out.println("[done.]");
+    }
+  }
+}

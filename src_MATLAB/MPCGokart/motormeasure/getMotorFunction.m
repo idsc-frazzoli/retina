@@ -21,6 +21,9 @@ end
 if(0)
     folders{end+1} = '/retina_out/motorSysID/';
 end
+if(1)
+    folders{end+1} = '/retina_out/exhaustivemotortest.lcm/';
+end
 N = numel(folders);
 tic;
 for i = 1:N
@@ -29,7 +32,7 @@ for i = 1:N
 end
 toc;
 
-% [t,tms,vx,vy,vr,ax,ay,s,pl,pr,pal,par,vwx]
+% [t,tms,vx,vy,vr,ax,ay,s,pl,pr,pal,par,vwx,px,py,po,lm]
 
 l = 1.19;
 l1 = 0.73;
@@ -39,12 +42,15 @@ SysID=SysID(30000:end,:);
 %SysID=SysID(54000:55000,:);
 t = SysID(:,1);
 s = SysID(:,8);
+vwx = SysID(:,13);
+lm = SysID(:,17);
 pl = SysID(:,9);
 dpl = getDerivation(pl, 300, 0.001);
 absdpl = abs(dpl);
 hold on
 plot(t,pl);
-plot(t,absdpl);
+yyaxis right
+plot(t,vwx);
 hold off
 steerSel = abs(s)<0.1;
 powSel = absdpl<10;

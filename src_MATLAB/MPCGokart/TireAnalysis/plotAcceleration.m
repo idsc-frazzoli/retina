@@ -13,7 +13,7 @@ function plotAcceleration(VELROTZ,BETA,AB,TV,param)
     rotacc = accx;
     for ix = 1:m
        for iy = 1:n 
-           [ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(velx(ix,iy),vely(ix,iy),VELROTZ,BETA,AB,TV, param);
+           [ACCX,ACCY,ACCROTZ] = modelDx(velx(ix,iy),vely(ix,iy),VELROTZ,BETA,AB,TV, param);
            accx(ix,iy)=ACCX;
            accy(ix,iy)=ACCY;
            rotacc(ix,iy)=ACCROTZ;

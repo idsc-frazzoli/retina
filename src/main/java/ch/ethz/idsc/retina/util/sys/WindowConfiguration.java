@@ -49,8 +49,8 @@ public class WindowConfiguration implements Serializable {
       }
     });
     jFrame.addComponentListener(new ComponentAdapter() {
-      final Timing timing = Timing.stopped();
-      Point shown = null;
+      private final Timing timing = Timing.stopped();
+      private Point shown = null;
 
       @Override
       public void componentShown(ComponentEvent componentEvent) {

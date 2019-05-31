@@ -42,6 +42,6 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     });
     seyeAeDvsLcmClient.addDvsListener(aedat31PolarityImage);
     seyeAeDvsLcmClient.startSubscriptions();
-    Thread.sleep(10000);
+    Thread.sleep(10_000);
   }
 }

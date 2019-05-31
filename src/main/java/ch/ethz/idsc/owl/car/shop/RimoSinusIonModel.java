@@ -4,6 +4,7 @@ package ch.ethz.idsc.owl.car.shop;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
@@ -76,7 +77,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
     // final Scalar TR = DoubleScalar.of(1.200 / 2); // half rear track
     // measured:
     final Scalar TF = chassisGeometry.yTireFrontMeter(); // half front track
-    final Scalar TR = chassisGeometry.yTireRearMeter(); // half rear track
+    final Scalar TR = Magnitude.METER.apply(RimoAxleConfiguration.rear().wheel(0).local().Get(1)); // half rear track
     final Scalar TWF = RealScalar.of(0.09); // tire width front on ground
     // tire width front total: 13 cm (same as tire rear width on ground)
     final Scalar TWR = RealScalar.of(0.13); // tire width read

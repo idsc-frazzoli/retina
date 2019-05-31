@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16TiltedPlanarEmulator;
@@ -72,6 +73,12 @@ public class LocalizationConfig {
    * @return whether quality is greater equal quality threshold */
   public boolean isQualityOk(Scalar quality) {
     return Scalars.lessEquals(qualityMin, quality);
+  }
+
+  /** @param gokartPoseEvent
+   * @return */
+  public boolean isQualityOk(GokartPoseEvent gokartPoseEvent) {
+    return isQualityOk(gokartPoseEvent.getQuality());
   }
 
   /***************************************************/
