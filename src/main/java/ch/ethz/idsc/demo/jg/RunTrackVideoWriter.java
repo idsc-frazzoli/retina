@@ -24,7 +24,8 @@ import ch.ethz.idsc.gokart.offline.video.TrackVideoWriter;
     if (optional.isPresent()) {
       File file = optional.get();
       System.out.println(file.getAbsolutePath());
-      run(file, new File(file.getParentFile(), file.getName().split("_")[0] + ".mp4"));
+      String name = file.getName().endsWith(".00") ? file.getName().split("_")[0] : file.getParentFile().getName();
+      run(file, new File(file.getParentFile(), name + ".mp4"));
       System.out.println("[done.]");
     }
   }

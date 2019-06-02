@@ -32,6 +32,7 @@ public enum FileHelper {
 
   public static Optional<File> choose(String currentPath) {
     JFileChooser fileChooser = new JFileChooser(currentPath);
+    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
     int returnVal = fileChooser.showOpenDialog(fileChooser);
     if (returnVal == JFileChooser.APPROVE_OPTION)
       try {
