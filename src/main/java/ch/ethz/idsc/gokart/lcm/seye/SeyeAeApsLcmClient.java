@@ -1,7 +1,6 @@
 // code by az and jph
 package ch.ethz.idsc.gokart.lcm.seye;
 
-import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -18,9 +17,9 @@ public class SeyeAeApsLcmClient extends SeyeAbstractLcmClient {
 
   @Override
   protected void messageReceived(ByteBuffer byteBuffer) {
-    BufferedImage d = new BufferedImage(320, 264, BufferedImage.TYPE_BYTE_GRAY);
+    // BufferedImage d = new BufferedImage(320, 264, BufferedImage.TYPE_BYTE_GRAY);
     // ImageForma/t
-    System.out.println("frame re");
+    // System.out.println("frame re");
     // int events = byteBuffer.remaining() / 40;
     // for (int count = 0; count < events; ++count) {
     // Aedat31FrameEvent aedat31FrameEvent = new Aedat31FrameEvent(byteBuffer);

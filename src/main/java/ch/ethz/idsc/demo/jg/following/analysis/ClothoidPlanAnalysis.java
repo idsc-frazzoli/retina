@@ -34,7 +34,7 @@ import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public class ClothoidPlanAnalysis implements OfflineLogListener {
+/* package */ class ClothoidPlanAnalysis implements OfflineLogListener {
   private static final Set<String> NOTIFICATIONS = new HashSet<>(Arrays.asList( //
       GokartLcmChannel.PURSUIT_PLAN, GokartLcmChannel.POSE_LIDAR, RimoLcmServer.CHANNEL_GET));
   // ---
@@ -77,12 +77,12 @@ public class ClothoidPlanAnalysis implements OfflineLogListener {
     }
   }
 
-  private void notify(Scalar time, String channel) {
+  private static void notify(Scalar time, String channel) {
     if (NOTIFICATIONS.contains(channel))
       System.out.println(N.DOUBLE.apply(time) + ":\t" + channel);
   }
 
-  private Tensor se2Error(Tensor t1, Tensor t2) {
+  private static Tensor se2Error(Tensor t1, Tensor t2) {
     Scalar positionError = Norm._2.of(Extract2D.FUNCTION.apply(t1.subtract(t2)));
     Scalar headingError = t2.Get(2).subtract(t1.Get(2));
     return Tensors.of(positionError, headingError);

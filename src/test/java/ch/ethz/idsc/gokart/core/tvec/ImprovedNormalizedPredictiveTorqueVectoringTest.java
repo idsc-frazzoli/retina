@@ -66,6 +66,8 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     Tensor powers0 = torqueVectoringInterface.powers( //
         new AngularSlip(velocity, Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
+    assertTrue(Chop._06.allZero(powers0));
+    // System.out.println("powers0="+powers0);
     Thread.sleep(100);
     Tensor powers1 = torqueVectoringInterface.powers( //
         new AngularSlip(velocity, Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //

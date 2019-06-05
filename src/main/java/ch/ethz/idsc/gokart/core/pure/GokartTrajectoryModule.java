@@ -95,7 +95,7 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   protected final CurvePursuitModule curvePursuitModule;
   /** sight lines mapping was successfully used for trajectory planning in a demo on 20190507 */
-  private final AbstractMapping mapping;
+  private final AbstractMapping<? extends ImageGrid> mapping;
   // = SightLinesMapping.defaultObstacle();
   // GenericBayesianMapping.createObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;
