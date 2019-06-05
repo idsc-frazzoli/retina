@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.demo.jg;
 
-import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -10,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
+
+import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
