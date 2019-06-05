@@ -166,7 +166,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       tensorListeners.forEach(listener -> listener.tensorReceived(tensor));
     } else //
     if (channel.equals(GokartLcmChannel.PURSUIT_PLAN)) {
-      ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer, true);
+      ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer);
       clothoidPlanListeners.forEach(listener -> listener.planReceived(clothoidPlan));
     }
     ++event_count;

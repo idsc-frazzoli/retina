@@ -143,7 +143,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       pathRender.setCurve(tensor, true);
     } else //
     if (channel.equals(GokartLcmChannel.PURSUIT_PLAN)) {
-      ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer, true);
+      ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer);
       clothoidPlansRender.planReceived(clothoidPlan);
       clothoidPlanRender.planReceived(clothoidPlan);
     }

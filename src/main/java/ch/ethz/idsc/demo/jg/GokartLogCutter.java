@@ -15,7 +15,7 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
     if (optional.isPresent()) {
       File file = optional.get(); // original log file
       File dest = new File(file.getParentFile(), "cuts"); // destination folder
-      String name = file.getName().split("T")[0]; // subdirectory title
+      String name = file.getName().split("_")[0]; // subdirectory title
       dest.mkdir();
       GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
       new GokartLcmLogCutter(gokartLogFileIndexer, dest, name);
