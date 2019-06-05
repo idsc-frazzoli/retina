@@ -42,6 +42,7 @@ public class LocalViewLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void first() {
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
+    // timerFrame.geometricComponent.addRenderInterface(AxesRender.INSTANCE);
     {
       GokartRender gokartRender = new LocalGokartRender(POSE);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
@@ -67,6 +68,12 @@ public class LocalViewLcmModule extends AbstractModule {
       GroundSpeedRender groundSpeedRender = new GroundSpeedRender(50, matrix);
       gokartPoseLcmClient.addListener(groundSpeedRender);
       timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
+    }
+    {
+      AngularSlipRender angularSlipRender = new AngularSlipRender(matrix);
+      gokartPoseLcmClient.addListener(angularSlipRender.gokartPoseListener);
+      gokartStatusLcmClient.addListener(angularSlipRender.gokartStatusListener);
+      timerFrame.geometricComponent.addRenderInterface(angularSlipRender);
     }
     {
       TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(matrix);

@@ -51,7 +51,8 @@ public abstract class GokartRender implements RenderInterface {
   // ---
   private static final AxisAlignedBox AXIS_ALIGNED_BOX = //
       new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.8)));
-  private final AxisAlignedBox aabLinmotPos = new AxisAlignedBox(RealScalar.of(0.2));
+  /** linmot push indicator */
+  private static final AxisAlignedBox AXIS_ALIGNED_LMT = new AxisAlignedBox(RealScalar.of(0.2));
   // ---
   /** gokart pose event is also used in rendering */
   protected GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
@@ -105,7 +106,7 @@ public abstract class GokartRender implements RenderInterface {
       graphics.setColor(color);
       geometricLayer.pushMatrix(MATRIX_BRAKE);
       Scalar value = linmotGetEvent.getActualPosition().multiply(DoubleScalar.of(-12.0));
-      graphics.fill(geometricLayer.toPath2D(aabLinmotPos.alongX(value)));
+      graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_LMT.alongX(value)));
       geometricLayer.popMatrix();
     }
     if (gokartStatusEvent.isSteerColumnCalibrated()) {

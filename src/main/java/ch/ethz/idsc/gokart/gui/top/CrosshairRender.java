@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.red.Max;
 
-public class CrosshairRender implements RenderInterface {
+public abstract class CrosshairRender implements RenderInterface {
   private static final Tensor POLYGON = CirclePoints.of(8).multiply(RealScalar.of(0.3));
   private static final Tensor CIRCLE = CirclePoints.of(28);
   // ---
@@ -40,14 +40,13 @@ public class CrosshairRender implements RenderInterface {
     axisY = Tensors.matrix(new Scalar[][] { { RealScalar.ZERO, max.negate() }, { RealScalar.ZERO, max } });
   }
 
-  protected final void push_end(Tensor vector) {
+  protected final void push_back(Tensor vector) {
     synchronized (boundedLinkedList) {
       boundedLinkedList.add(vector);
     }
   }
 
-  @Override // from RenderInterface
-  public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+  public final void renderCrosshairTrace(GeometricLayer geometricLayer, Graphics2D graphics) {
     graphics.setColor(new Color(128, 128, 128, 128));
     graphics.draw(geometricLayer.toPath2D(axisX));
     graphics.draw(geometricLayer.toPath2D(axisY));
