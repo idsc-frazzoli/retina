@@ -87,8 +87,8 @@ public class TrackRefinement {
   }
 
   public class PositionalStartConstraint extends TrackConstraint {
-    Tensor wantedPosition = null;
-    Tensor wantedDirection = null;
+    private Tensor wantedPosition = null;
+    private Tensor wantedDirection = null;
 
     @Override // from TrackConstraint
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
@@ -112,8 +112,8 @@ public class TrackRefinement {
   }
 
   public class PositionalEndConstraint extends TrackConstraint {
-    Tensor wantedPosition = null;
-    Tensor wantedDirection = null;
+    private Tensor wantedPosition = null;
+    private Tensor wantedDirection = null;
 
     @Override // from TrackConstraint
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
@@ -201,8 +201,7 @@ public class TrackRefinement {
   }
 
   // for debugging
-  // TODO JPH/MH not used
-  // private static final Scalar defaultRadius = Quantity.of(1.0, SI.METER);
+  // TODO JPH/MH design is bad
   private List<Tensor> freeLines = new ArrayList<>();
 
   /** .
