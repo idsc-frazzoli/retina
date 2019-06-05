@@ -12,6 +12,7 @@ import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.car.math.SphereSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
+import ch.ethz.idsc.owl.math.planar.ClothoidTerminalRatios;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
 import ch.ethz.idsc.owl.math.planar.PseudoSe2CurveIntersection;
@@ -23,6 +24,7 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
@@ -62,19 +64,28 @@ public class CurveClothoidPursuitPlanner {
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
       CurveClothoidPursuitHelper.mirrorAndReverse(tensor);
-    /* Predicate<Scalar> isCompliant = CurveClothoidPursuitHelper.isCompliant(ratioLimits, pose, speed);
-     * TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
+    Predicate<Scalar> isCompliant = CurveClothoidPursuitHelper.isCompliant(ratioLimits, pose, speed);
+    /* TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
      * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, ClothoidPursuitConfig.GLOBAL.getOptimizationSteps()).apply(tensor);
      * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
-    Optional<Tensor> lookAhead = (config.se2distance //
-        ? new PseudoSe2CurveIntersection(config.lookAhead) //
-        : new SphereSe2CurveIntersection(config.lookAhead)).string(tensor);
-    if (lookAhead.isPresent()) {
-      plan = ClothoidPlan.from(lookAhead.get(), pose, isForward);
-      if (plan.isPresent())
-        PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get(), isForward);
-    } else
-      plan = Optional.empty();
+    plan = Optional.empty();
+    Scalar dist = config.lookAhead;
+    do {
+      Optional<Tensor> lookAhead = (config.se2distance //
+          ? new PseudoSe2CurveIntersection(dist) //
+          : new SphereSe2CurveIntersection(dist)).string(tensor);
+      if (lookAhead.isPresent()) {
+        ClothoidTerminalRatios ratios = ClothoidTerminalRatios.of(Array.zeros(3), lookAhead.get());
+        if (isCompliant.test(ratios.head()) && isCompliant.test(ratios.tail())) {
+          plan = ClothoidPlan.from(lookAhead.get(), pose, isForward);
+          if (plan.isPresent()) {
+            PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get(), isForward);
+            break;
+          }
+        }
+      }
+      dist = dist.add(config.lookAheadResolution);
+    } while (Scalars.lessEquals(dist, config.fallbackLookAhead));
   }
 
   /** @param vector

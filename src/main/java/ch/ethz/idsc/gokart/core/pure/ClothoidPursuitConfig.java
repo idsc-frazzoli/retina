@@ -27,9 +27,13 @@ public class ClothoidPursuitConfig extends PursuitConfig {
   public Boolean estimatePose = false;
   @FieldSubdivide(start = "0[s]", end = "0.1[s]", intervals = 100)
   public Scalar estimationTime = Quantity.of(0.015, SI.SECOND); // TODO JG (remove, ) test or learn online
+  @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 20)
+  public Scalar fallbackLookAhead = Quantity.of(5, SI.METER);
+  @FieldSubdivide(start = "0[m]", end = "1[m]", intervals = 20)
+  public Scalar lookAheadResolution = Quantity.of(.5, SI.METER);
 
   public ClothoidPursuitConfig() {
-    lookAhead = Quantity.of(5, SI.METER);
+    lookAhead = Quantity.of(3, SI.METER);
   }
 
   public int getOptimizationSteps() {
