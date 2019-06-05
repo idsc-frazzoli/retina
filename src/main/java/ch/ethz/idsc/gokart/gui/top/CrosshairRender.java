@@ -22,6 +22,8 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.red.Max;
 
 public abstract class CrosshairRender implements RenderInterface {
+  static final Color COLOR_CIRCLE = new Color(128, 128, 128, 128);
+  static final Color COLOR_FONT = new Color(64, 64, 64, 192);
   private static final Tensor POLYGON = CirclePoints.of(8).multiply(RealScalar.of(0.3));
   private static final Tensor CIRCLE = CirclePoints.of(28);
   // ---
@@ -47,7 +49,7 @@ public abstract class CrosshairRender implements RenderInterface {
   }
 
   public final void renderCrosshairTrace(GeometricLayer geometricLayer, Graphics2D graphics) {
-    graphics.setColor(new Color(128, 128, 128, 128));
+    graphics.setColor(COLOR_CIRCLE);
     graphics.draw(geometricLayer.toPath2D(axisX));
     graphics.draw(geometricLayer.toPath2D(axisY));
     // ---
@@ -55,10 +57,11 @@ public abstract class CrosshairRender implements RenderInterface {
     graphics.setFont(new Font(Font.DIALOG, Font.PLAIN, (int) width));
     for (Tensor _x : circles) {
       Scalar x = _x.Get();
-      graphics.setColor(new Color(128, 128, 128, 128));
+      graphics.setColor(COLOR_CIRCLE);
       geometricLayer.pushMatrix(DiagonalMatrix.of(x, x, RealScalar.ONE));
       graphics.draw(geometricLayer.toPath2D(CIRCLE, true));
-      graphics.setColor(new Color(64, 64, 64, 192));
+      // ---
+      graphics.setColor(COLOR_FONT);
       Point2D point2d = geometricLayer.toPoint2D(0, -1);
       graphics.drawString("" + x, (int) point2d.getX(), (int) point2d.getY());
       geometricLayer.popMatrix();

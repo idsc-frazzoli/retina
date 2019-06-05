@@ -2,7 +2,9 @@
 package ch.ethz.idsc.gokart.gui.top;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
 
 import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
@@ -21,12 +23,14 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Subdivide;
+import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 public class AngularSlipRender implements RenderInterface {
-  private static final AxisAlignedBox AXIS_ALIGNED_BOX = new AxisAlignedBox(RealScalar.of(0.8));
+  private static final AxisAlignedBox AXIS_ALIGNED_BOX = new AxisAlignedBox(RealScalar.of(0.7));
   /** max range in model space == 12
    * max rate of gokart == pi [rad/s] */
-  private static final Scalar SCALE = RealScalar.of(12 / Math.PI);
+  private static final Tensor DIAGONAL = DiagonalMatrix.of(1, 12 / Math.PI, 1);
   // ---
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
@@ -40,10 +44,25 @@ public class AngularSlipRender implements RenderInterface {
     this.matrix = matrix;
   }
 
-  @Override
+  @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    geometricLayer.pushMatrix(matrix);
+    geometricLayer.pushMatrix(DIAGONAL);
+    {
+      Tensor tensor = Subdivide.of(-2, 2, 4);
+      FontMetrics fontMetrics = graphics.getFontMetrics();
+      for (Tensor _y : tensor) {
+        Scalar y = _y.Get();
+        graphics.setColor(CrosshairRender.COLOR_CIRCLE);
+        graphics.draw(geometricLayer.toLine2D(Tensors.of(RealScalar.of(-10.5), y), Tensors.of(RealScalar.of(-12.5), y)));
+        graphics.setColor(CrosshairRender.COLOR_FONT);
+        Point2D point2d = geometricLayer.toPoint2D(Tensors.of(RealScalar.of(-13.5), y));
+        String string = "" + y;
+        int halfWidth = fontMetrics.stringWidth(string) / 2;
+        graphics.drawString(string, (int) point2d.getX() - halfWidth, (int) point2d.getY());
+      }
+    }
     if (gokartStatusEvent.isSteerColumnCalibrated()) {
-      geometricLayer.pushMatrix(matrix);
       AngularSlip angularSlip = new AngularSlip( //
           gokartPoseEvent.getVelocity(), //
           steerMapping.getRatioFromSCE(gokartStatusEvent));
@@ -52,20 +71,15 @@ public class AngularSlipRender implements RenderInterface {
       // ---
       geometricLayer.pushMatrix(Se2Utils.toSE2Translation(Tensors.vectorDouble(-11, 0)));
       graphics.setColor(GroundSpeedRender.COLOR_VELOCITY);
-      graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(Magnitude.PER_SECOND.apply(gyroZ).multiply(SCALE))));
+      graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(Magnitude.PER_SECOND.apply(gyroZ))));
       geometricLayer.popMatrix();
       // ---
       geometricLayer.pushMatrix(Se2Utils.toSE2Translation(Tensors.vectorDouble(-12, 0)));
       graphics.setColor(Color.BLUE);
-      graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(Magnitude.PER_SECOND.apply(wantedRotationRate).multiply(SCALE))));
-      geometricLayer.popMatrix();
-      // // ---
-      // geometricLayer.pushMatrix(Se2Utils.toSE2Translation(Tensors.vectorDouble(-13, 0)));
-      // graphics.setColor(Color.GREEN);
-      // graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(RealScalar.of(10))));
-      // geometricLayer.popMatrix();
-      // ---
+      graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(Magnitude.PER_SECOND.apply(wantedRotationRate))));
       geometricLayer.popMatrix();
     }
+    geometricLayer.popMatrix();
+    geometricLayer.popMatrix();
   }
 }

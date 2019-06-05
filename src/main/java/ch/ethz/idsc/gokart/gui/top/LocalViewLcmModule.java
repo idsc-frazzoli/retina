@@ -89,12 +89,12 @@ public class LocalViewLcmModule extends AbstractModule {
       BrakeCalibrationRender brakeCalibrationRender = new BrakeCalibrationRender(MINORRIGHT);
       timerFrame.geometricComponent.addRenderInterface(brakeCalibrationRender);
     }
-    {
-      SteerTurnRender steerTurnRender = new SteerTurnRender(Se2Utils.toSE2Matrix(MINOR_TRN));
-      gokartPoseLcmClient.addListener(steerTurnRender.gokartPoseListener);
-      gokartStatusLcmClient.addListener(steerTurnRender.gokartStatusListener);
-      timerFrame.geometricComponent.addRenderInterface(steerTurnRender);
-    }
+    // {
+    // SteerTurnRender steerTurnRender = new SteerTurnRender(Se2Utils.toSE2Matrix(MINOR_TRN));
+    // gokartPoseLcmClient.addListener(steerTurnRender.gokartPoseListener);
+    // gokartStatusLcmClient.addListener(steerTurnRender.gokartStatusListener);
+    // timerFrame.geometricComponent.addRenderInterface(steerTurnRender);
+    // }
     // ---
     gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.startSubscriptions();
