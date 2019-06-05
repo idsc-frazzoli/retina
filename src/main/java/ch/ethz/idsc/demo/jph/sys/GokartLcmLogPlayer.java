@@ -20,7 +20,7 @@ import lcm.logging.LogPlayerConfig;
     // file = new File("/media/datahaki/data/gokart/cuts/20190401", "20190401T115537_411917b6.lcm.00");
     // file = new File("/media/datahaki/media/ethz/gokart/topic/trackid", "changingtrack.lcm");
     // file = new File("/media/datahaki/data/gokart/cuts/20190318/20190318T142605_08/post.lcm");
-    // file = new File("/media/datahaki/data/gokart/tokio/20190310/20190310T220933_00", "log.lcm");
+    file = new File("/media/datahaki/data/gokart/vmu932/20190527/20190527T145700_00", "log.lcm");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
     logPlayerConfig.speed_denominator = 1;

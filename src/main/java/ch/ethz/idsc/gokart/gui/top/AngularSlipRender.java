@@ -34,10 +34,10 @@ public class AngularSlipRender implements RenderInterface {
   // ---
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
-  GokartPoseListener gokartPoseListener = gokartPoseEvent -> this.gokartPoseEvent = gokartPoseEvent;
+  public GokartPoseListener gokartPoseListener = gokartPoseEvent -> this.gokartPoseEvent = gokartPoseEvent;
   // ---
   private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
-  GokartStatusListener gokartStatusListener = gokartStatusEvent -> this.gokartStatusEvent = gokartStatusEvent;
+  public GokartStatusListener gokartStatusListener = gokartStatusEvent -> this.gokartStatusEvent = gokartStatusEvent;
   private final Tensor matrix;
 
   public AngularSlipRender(Tensor matrix) {

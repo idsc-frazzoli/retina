@@ -21,6 +21,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AccelerationRender;
+import ch.ethz.idsc.gokart.gui.top.AngularSlipRender;
 import ch.ethz.idsc.gokart.gui.top.ClothoidPlanRender;
 import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
 import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
@@ -59,6 +60,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final GokartRender gokartRender = new GlobalGokartRender();
   private final AccelerationRender accelerationRender;
   private final GroundSpeedRender groundSpeedRender;
+  private final AngularSlipRender angularSlipRender;
   private final TachometerMustangDash tachometerMustangDash;
   private final TrajectoryRender trajectoryRender = new TrajectoryRender();
   private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
@@ -82,6 +84,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         .dot(Se2Utils.toSE2Matrix(Tensors.vector(0, 0, -Math.PI / 2))) //
         .dot(DiagonalMatrix.of(10, -10, 1));
     groundSpeedRender = new GroundSpeedRender(50, matrix);
+    angularSlipRender = new AngularSlipRender(matrix);
     tachometerMustangDash = new TachometerMustangDash(matrix); //
   }
 
@@ -90,6 +93,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (channel.equals(GokartLcmChannel.STATUS)) {
       GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
       gokartRender.gokartStatusListener.getEvent(gokartStatusEvent);
+      angularSlipRender.gokartStatusListener.getEvent(gokartStatusEvent);
       slipLinesRender.gokartStatusListener.getEvent(gokartStatusEvent);
       extrudedFootprintRender.gokartStatusListener.getEvent(gokartStatusEvent);
     } else //
@@ -123,6 +127,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       driftLinesRender.getEvent(gokartPoseEvent);
       slipLinesRender.getEvent(gokartPoseEvent);
       groundSpeedRender.getEvent(gokartPoseEvent);
+      angularSlipRender.gokartPoseListener.getEvent(gokartPoseEvent);
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
       se2ExpFixpointRender.getEvent(gokartPoseEvent);
@@ -154,6 +159,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     extrudedFootprintRender.render(geometricLayer, graphics);
     accelerationRender.render(geometricLayer, graphics);
     groundSpeedRender.render(geometricLayer, graphics);
+    angularSlipRender.render(geometricLayer, graphics);
     tachometerMustangDash.render(geometricLayer, graphics);
     se2ExpFixpointRender.render(geometricLayer, graphics);
     clothoidPlansRender.render(geometricLayer, graphics);
