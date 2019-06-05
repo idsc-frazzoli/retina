@@ -12,8 +12,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 public class SteerFeedForwardConfig {
   public static final SteerFeedForwardConfig GLOBAL = AppResources.load(new SteerFeedForwardConfig());
   /***************************************************/
-  public Scalar linear = Quantity.of(+1.0055708977, "SCT*SCE^-1");
-  public Scalar cubic = Quantity.of(-0.8349505, "SCT*SCE^-3");
+  public Scalar linear = Quantity.of(+0.9581478188758055, "SCT*SCE^-1");
+  public Scalar cubic = Quantity.of(-0.9281077083540995, "SCT*SCE^-3");
 
   /***************************************************/
   public ScalarUnaryOperator series() {
