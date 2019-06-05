@@ -10,6 +10,7 @@ import ch.ethz.idsc.retina.davis.app.TriggeredAccumulatedImage;
 import ch.ethz.idsc.retina.davis.data.DavisDvsDatagramDecoder;
 
 public class AccumulatedImageRender implements RenderInterface {
+  public static final int HEIGHT = 270;
   final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   private final TriggeredAccumulatedImage triggeredAccumulatedImage = new TriggeredAccumulatedImage(Davis240c.INSTANCE);
 
@@ -19,7 +20,7 @@ public class AccumulatedImageRender implements RenderInterface {
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    graphics.drawImage(triggeredAccumulatedImage.bufferedImage(), 1920 - 360, 0, 360, 270, null);
+    graphics.drawImage(triggeredAccumulatedImage.bufferedImage(), 1920 - 360, 0, 360, HEIGHT, null);
     triggeredAccumulatedImage.clearImage();
   }
 }

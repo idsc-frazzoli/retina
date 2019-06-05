@@ -39,7 +39,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     final String string = TrackDrivingTables.SINGLETON.getParentFile().getName();
     final String filename = HomeDirectory.file(string + ".mp4").toString();
     // ---
-    File src = HomeDirectory.file("track_putty");
+    // File src = HomeDirectory.file("track_putty");
     List<TrackDriving> list = new LinkedList<>();
     int id = 0;
     File csvFile = new File("/home/datahaki/track_putty/" + string + ".csv");

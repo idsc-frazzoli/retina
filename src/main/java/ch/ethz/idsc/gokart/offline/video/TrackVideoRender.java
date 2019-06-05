@@ -21,6 +21,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AccelerationRender;
+import ch.ethz.idsc.gokart.gui.top.AngularSlipRender;
 import ch.ethz.idsc.gokart.gui.top.ClothoidPlanRender;
 import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
 import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
@@ -59,11 +60,14 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final GokartRender gokartRender = new GlobalGokartRender();
   private final AccelerationRender accelerationRender;
   private final GroundSpeedRender groundSpeedRender;
+  private final AngularSlipRender angularSlipRender;
   private final TachometerMustangDash tachometerMustangDash;
   private final TrajectoryRender trajectoryRender = new TrajectoryRender();
   private final ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
   private final Se2ExpFixpointRender se2ExpFixpointRender = new Se2ExpFixpointRender();
   private final AccumulatedImageRender accumulatedImageRender = new AccumulatedImageRender();
+  /** set to true when the first event package is registered */
+  private boolean hasDavis240c = false;
   private final ClothoidPlansRender clothoidPlansRender = new ClothoidPlansRender(5);
   private final ClothoidPlanRender clothoidPlanRender = new ClothoidPlanRender(Color.MAGENTA);
   private final String poseChannel;
@@ -82,6 +86,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         .dot(Se2Utils.toSE2Matrix(Tensors.vector(0, 0, -Math.PI / 2))) //
         .dot(DiagonalMatrix.of(10, -10, 1));
     groundSpeedRender = new GroundSpeedRender(50, matrix);
+    angularSlipRender = new AngularSlipRender(matrix);
     tachometerMustangDash = new TachometerMustangDash(matrix); //
   }
 
@@ -90,6 +95,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (channel.equals(GokartLcmChannel.STATUS)) {
       GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
       gokartRender.gokartStatusListener.getEvent(gokartStatusEvent);
+      angularSlipRender.gokartStatusListener.getEvent(gokartStatusEvent);
       slipLinesRender.gokartStatusListener.getEvent(gokartStatusEvent);
       extrudedFootprintRender.gokartStatusListener.getEvent(gokartStatusEvent);
     } else //
@@ -123,13 +129,15 @@ import ch.ethz.idsc.tensor.sca.Round;
       driftLinesRender.getEvent(gokartPoseEvent);
       slipLinesRender.getEvent(gokartPoseEvent);
       groundSpeedRender.getEvent(gokartPoseEvent);
+      angularSlipRender.gokartPoseListener.getEvent(gokartPoseEvent);
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
       se2ExpFixpointRender.getEvent(gokartPoseEvent);
     } else //
-    if (channel.equals("davis240c.overview.dvs"))
+    if (channel.equals("davis240c.overview.dvs")) {
+      hasDavis240c = true;
       accumulatedImageRender.davisDvsDatagramDecoder.decode(byteBuffer);
-    else //
+    } else //
     if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2)) {
       Tensor tensor = Se2CurveLcm.decode(byteBuffer).unmodifiable();
       pathRender.setCurve(tensor, true);
@@ -144,7 +152,8 @@ import ch.ethz.idsc.tensor.sca.Round;
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     pathRender.render(geometricLayer, graphics);
-    accumulatedImageRender.render(geometricLayer, graphics);
+    if (hasDavis240c)
+      accumulatedImageRender.render(geometricLayer, graphics);
     mpcPredictionSequenceRender.render(geometricLayer, graphics);
     mpcPredictionRender.render(geometricLayer, graphics);
     driftLinesRender.render(geometricLayer, graphics);
@@ -154,6 +163,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     extrudedFootprintRender.render(geometricLayer, graphics);
     accelerationRender.render(geometricLayer, graphics);
     groundSpeedRender.render(geometricLayer, graphics);
+    angularSlipRender.render(geometricLayer, graphics);
     tachometerMustangDash.render(geometricLayer, graphics);
     se2ExpFixpointRender.render(geometricLayer, graphics);
     clothoidPlansRender.render(geometricLayer, graphics);

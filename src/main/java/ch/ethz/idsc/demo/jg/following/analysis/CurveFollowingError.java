@@ -9,7 +9,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Get;
 
-public class CurveFollowingError extends OfflineFollowingError {
+/* package */ class CurveFollowingError extends OfflineFollowingError {
   /** @param curve reference */
   public CurveFollowingError(Tensor curve) {
     super();

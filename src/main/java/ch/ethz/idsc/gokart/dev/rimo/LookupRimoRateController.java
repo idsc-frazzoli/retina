@@ -40,7 +40,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     final Scalar currentValue = lookupTable.getNeededCurrent(acc_value, velocity);
     Tensor minmax = lookupTable.getMinMaxAcceleration(velocity); // get min and max available
     // TODO JPH/MH check if can do more precise clipping
-    if (Scalars.lessThan(minmax.Get(0), acc_value) && Scalars.lessThan(acc_value, minmax.Get(1))) // anti windup
+    if (Scalars.lessThan(minmax.Get(0), acc_value) && //
+        Scalars.lessThan(acc_value, minmax.Get(1))) // anti windup
       integral = integral.add(tangentVelError.multiply(DT)); // update integral
     return currentValue;
   }

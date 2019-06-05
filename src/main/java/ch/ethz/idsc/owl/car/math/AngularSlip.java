@@ -2,6 +2,7 @@
 package ch.ethz.idsc.owl.car.math;
 
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Tensor;
 
 public class AngularSlip {
   /** tangentSpeed with unit m*s^-1 */
@@ -21,6 +22,14 @@ public class AngularSlip {
     this.rotationPerMeterDriven = rotationPerMeterDriven;
     wantedRotationRate = rotationPerMeterDriven.multiply(tangentSpeed); // unit s^-1
     this.gyroZ = gyroZ;
+  }
+
+  /** Hint: the lateral component of velocity vy[m*s^-1] is ignored
+   * 
+   * @param velocity {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]}
+   * @param rotationPerMeterDriven [m^-1] */
+  public AngularSlip(Tensor velocity, Scalar rotationPerMeterDriven) {
+    this(velocity.Get(0), rotationPerMeterDriven, velocity.Get(2));
   }
 
   /** @return tangentSpeed with unit m*s^-1 */

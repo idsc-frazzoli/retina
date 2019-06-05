@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Nest;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public class ClothoidPlannerMockup extends TrajectoryDesignModule {
+/* package */ class ClothoidPlannerMockup extends TrajectoryDesignModule {
   private static final int REFINEMENT = 3;
   private static final Scalar SPEED = Quantity.of(5, SI.VELOCITY);
   // ---
@@ -39,6 +39,7 @@ public class ClothoidPlannerMockup extends TrajectoryDesignModule {
   protected Optional<ClothoidPlan> optional = Optional.empty();
   private Tensor mouseSe2 = Array.zeros(3);
   private final RenderInterface renderInterface = new RenderInterface() {
+    @Override
     public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
       if (!trajectoryDesign.jToggleButton.isSelected()) {
         mouseSe2 = geometricLayer.getMouseSe2State();
@@ -68,6 +69,7 @@ public class ClothoidPlannerMockup extends TrajectoryDesignModule {
     }
     {
       trajectoryDesign.timerFrame.geometricComponent.jComponent.addMouseListener(new MouseAdapter() {
+        @Override
         public void mousePressed(MouseEvent mouseEvent) {
           if (!trajectoryDesign.jToggleButton.isSelected() && mouseEvent.getButton() == 1) {
             Timing timing = Timing.started();

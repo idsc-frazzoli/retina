@@ -80,9 +80,7 @@ import ch.ethz.idsc.tensor.alg.Differences;
   final RimoPutEvent derive(SteerColumnInterface steerColumnInterface, Scalar power, Tensor velocity) {
     Scalar ratio = steerMapping.getRatioFromSCE(steerColumnInterface); // steering angle of imaginary front wheel
     // compute (negative) angular slip
-    Scalar meanTangentSpeed = velocity.Get(0);
-    Scalar gyroZ = velocity.Get(2);
-    AngularSlip angularSlip = new AngularSlip(meanTangentSpeed, ratio, gyroZ);
+    AngularSlip angularSlip = new AngularSlip(velocity, ratio);
     // ---
     Tensor powers = torqueVectoringInterface.powers(angularSlip, power);
     Tensor torquesARMS = powers.multiply(ManualConfig.GLOBAL.torqueLimit); // vector of length 2
