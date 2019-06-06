@@ -13,6 +13,7 @@ import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.car.math.SphereSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
 import ch.ethz.idsc.owl.math.planar.ClothoidTerminalRatios;
+import ch.ethz.idsc.owl.math.planar.CurvePoint;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
 import ch.ethz.idsc.owl.math.planar.PseudoSe2CurveIntersection;
@@ -35,6 +36,7 @@ import ch.ethz.idsc.tensor.sca.Abs;
 // TODO JPH rename
 public class CurveClothoidPursuitPlanner {
   private Optional<ClothoidPlan> plan = Optional.empty();
+  private int prevIndex = 0;
 
   /** @param pose of vehicle {x[m], y[m], angle}
    * @param speed of vehicle [m*s^-1]
@@ -71,15 +73,16 @@ public class CurveClothoidPursuitPlanner {
     plan = Optional.empty();
     Scalar dist = config.lookAhead;
     do {
-      Optional<Tensor> lookAhead = (config.se2distance //
+      Optional<CurvePoint> lookAhead = (config.se2distance //
           ? new PseudoSe2CurveIntersection(dist) //
-          : new SphereSe2CurveIntersection(dist)).string(tensor);
+          : new SphereSe2CurveIntersection(dist)).string(tensor, prevIndex);
       if (lookAhead.isPresent()) {
-        ClothoidTerminalRatios ratios = ClothoidTerminalRatios.of(Array.zeros(3), lookAhead.get());
+        ClothoidTerminalRatios ratios = ClothoidTerminalRatios.of(Array.zeros(3), lookAhead.get().getTensor());
         if (isCompliant.test(ratios.head()) && isCompliant.test(ratios.tail())) {
-          plan = ClothoidPlan.from(lookAhead.get(), pose, isForward);
+          plan = ClothoidPlan.from(lookAhead.get().getTensor(), pose, isForward);
           if (plan.isPresent()) {
-            PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get(), isForward);
+            PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get().getTensor(), isForward);
+            prevIndex = lookAhead.get().getIndex();
             break;
           }
         }
