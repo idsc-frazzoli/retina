@@ -20,7 +20,7 @@ public class CurvePurePursuitModule extends CurvePursuitModule {
           optionalCurve.get(), //
           closed, //
           isForward, //
-          pursuitConfig.lookAhead);
+          ((PurePursuitConfig) pursuitConfig).lookAhead);
     System.err.println("no curve in pure pursuit");
     return Optional.empty();
   }

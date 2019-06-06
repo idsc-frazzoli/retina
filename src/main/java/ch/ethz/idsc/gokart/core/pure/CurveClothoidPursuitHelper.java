@@ -5,9 +5,13 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
+import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.VectorQ;
+import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
+import ch.ethz.idsc.tensor.red.Min;
+import ch.ethz.idsc.tensor.red.Norm;
 
 // TODO JPH rename
 /* package */ enum CurveClothoidPursuitHelper {
@@ -32,5 +36,14 @@ import ch.ethz.idsc.tensor.alg.VectorQ;
     return ratio -> ratioLimits.stream() //
         .map(dynamicRatioLimit -> dynamicRatioLimit.at(pose, speed)) //
         .allMatch(dynamicRatioLimit -> dynamicRatioLimit.isInside(ratio));
+  }
+
+  /** @param segment in se2
+   * @param reference in se2
+   * @return sum of distances from segment points to closest reference point */
+  public static Scalar error(Tensor segment, Tensor reference) {
+    TensorScalarFunction error = se2 -> //
+        reference.stream().parallel().map(se2::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector).reduce(Min::of).get();
+    return segment.stream().parallel().map(error).reduce(Scalar::add).get();
   }
 }

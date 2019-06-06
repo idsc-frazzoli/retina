@@ -1,8 +1,11 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
@@ -28,12 +31,14 @@ public class ClothoidPursuitConfig extends PursuitConfig {
   @FieldSubdivide(start = "0[s]", end = "0.1[s]", intervals = 100)
   public Scalar estimationTime = Quantity.of(0.015, SI.SECOND); // TODO JG (remove, ) test or learn online
   @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 20)
-  public Scalar fallbackLookAhead = Quantity.of(5, SI.METER);
-  @FieldSubdivide(start = "0[m]", end = "1[m]", intervals = 20)
-  public Scalar lookAheadResolution = Quantity.of(.5, SI.METER);
+  public Scalar lookAhead1 = Quantity.of(3, SI.METER);
+  @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 20)
+  public Scalar lookAhead2 = Quantity.of(5, SI.METER);
+  @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 20)
+  public Scalar lookAhead3 = Quantity.of(7, SI.METER);
 
-  public ClothoidPursuitConfig() {
-    lookAhead = Quantity.of(3, SI.METER);
+  public Set<Scalar> lookAheads() {
+    return new HashSet<>(Arrays.asList(lookAhead1, lookAhead2, lookAhead3));
   }
 
   public int getOptimizationSteps() {

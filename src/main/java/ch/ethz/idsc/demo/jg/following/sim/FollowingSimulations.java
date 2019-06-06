@@ -32,48 +32,11 @@ import ch.ethz.idsc.tensor.sca.Sign;
       return CurvePurePursuitHelper.getRatio(pose, curve, Sign.isPositiveOrZero(speed), PurePursuitConfig.GLOBAL.lookAhead);
     }
   },
-  CLOTHOID_05 {
+  CLOTHOID {
     private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
 
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(.5, SI.METER);
-      return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
-    }
-  },
-  CLOTHOID_3 {
-    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
-
-    @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(3, SI.METER);
-      return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
-    }
-  },
-  CLOTHOID_5 {
-    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
-
-    @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(5, SI.METER);
-      return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
-    }
-  },
-  CLOTHOID_7 {
-    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
-
-    @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(7, SI.METER);
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
           ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
