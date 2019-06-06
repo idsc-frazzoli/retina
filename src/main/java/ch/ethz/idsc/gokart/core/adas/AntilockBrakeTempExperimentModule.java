@@ -28,17 +28,20 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Flatten;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
 public class AntilockBrakeTempExperimentModule extends AbstractModule implements LinmotPutProvider {
+  private static final Scalar BRAKE_DURATION = Quantity.of(3, SI.SECOND);
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final HapticSteerConfig hapticSteerConfig;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
+  private final Timing timing = Timing.started();
 
   public AntilockBrakeTempExperimentModule() {
     this(HapticSteerConfig.GLOBAL);
@@ -73,9 +76,7 @@ public class AntilockBrakeTempExperimentModule extends AbstractModule implements
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     if (optional.isPresent()) {
       if (Scalars.lessThan(Quantity.of(6, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0))) {
-        if (Scalars.lessThan(Quantity.of(0.1, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0))) {
-          return notsmartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
-        }
+        return notsmartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
       }
     }
     return Optional.empty();
@@ -85,12 +86,16 @@ public class AntilockBrakeTempExperimentModule extends AbstractModule implements
    * @param velocityOrigin
    * @return constant braking position */
   Optional<LinmotPutEvent> notsmartBraking(Tensor angularRate_Y_pair, Tensor velocityOrigin) {
+    Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
     Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
     Tensor angularRate_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
     Tensor slip = angularRate_Origin_pair.subtract(angularRate_Y_pair); // vector of length 2 with entries of unit [s^-1]
     binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of( //
         slip, brakePosition, velocityOrigin.Get(0), angularRate_Origin))));
     System.out.println(slip.multiply(angularRate_Origin).map(Round._3) + " " + brakePosition + " " + velocityOrigin.Get(0).map(Round._3));
-    return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(hapticSteerConfig.fullBraking));
+    if (Scalars.lessThan(time, BRAKE_DURATION)) {
+      return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(hapticSteerConfig.fullBraking));
+    }
+    else return Optional.empty();
   }
 }
