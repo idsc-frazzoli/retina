@@ -26,6 +26,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Flatten;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -87,9 +88,9 @@ public class AntilockBrakeV2Module extends AbstractModule implements LinmotPutPr
     Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
     Tensor angularRate_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
     Tensor slip = angularRate_Origin_pair.subtract(angularRate_Y_pair); // vector of length 2 with entries of unit [s^-1]
-    binaryBlobPublisher.accept(VectorFloatBlob.encode(Tensors.of( //
-        slip.map(Round._3), brakePosition, velocityOrigin.Get(0).map(Round._3))));
-    System.out.println(slip.multiply(angularRate_Origin).map(Round._3) + " " + brakePosition + " " + velocityOrigin.Get(0).map(Round._3));
+    binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of( //
+        slip, brakePosition, velocityOrigin.Get(0), angularRate_Origin))));
+    System.out.println(slip.map(Round._3) + " " + brakePosition + " " + velocityOrigin.Get(0).map(Round._3));
     // the brake cannot be constantly applied otherwise the brake motor heats up too much
     // there is a desired range for slip (in theory 0.1-0.25)
     // if the slip is outside this range, the position of the brake is increased/decreased
