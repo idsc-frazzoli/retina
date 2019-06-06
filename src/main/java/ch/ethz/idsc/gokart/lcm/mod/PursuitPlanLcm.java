@@ -36,12 +36,12 @@ public enum PursuitPlanLcm {
   }
 
   /** @param byteBuffer
-   * @return tensor with rows of the form {x[m], y[m], angle} or Boole*/
+   * @return tensor with rows of the form {x[m], y[m], angle} or Boole */
   public static Tensor decode(ByteBuffer byteBuffer) {
     Tensor decoded = ArrayFloatBlob.decode(byteBuffer);
     if (VectorQ.of(decoded)) {
       Tensor tensor = Tensors.empty();
-      for (int i = 0; i < decoded.length(); i += 3)
+      for (int i = 0; i < decoded.length() - 3; i += 3)
         tensor.append(PoseHelper.attachUnits(decoded.extract(i, i + 3)));
       return tensor.append(Last.of(decoded));
     }

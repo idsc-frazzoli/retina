@@ -38,7 +38,7 @@ import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class FollowingSimulator extends TrajectoryDesignModule {
+/* package */ class FollowingSimulator extends TrajectoryDesignModule {
   private static final Scalar SIGMA_POS = Quantity.of(1, SI.METER);
   private static final Scalar DELTA_ANGLE = Pi.VALUE.divide(RealScalar.of(4));
   // ---

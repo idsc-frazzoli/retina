@@ -150,12 +150,10 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
         float z = floatBuffer.get();
         //
         boolean isObstacle = predicate.isObstacle(x, z);
-        bayesianOccupancyGridThic.processObservation( //
-            Tensors.vectorDouble(x, y), //
-            isObstacle ? 1 : 0);
-        bayesianOccupancyGridThin.processObservation( //
-            Tensors.vectorDouble(x, y), //
-            isObstacle ? 1 : 0);
+        Tensor vector = Tensors.vectorDouble(x, y);
+        int type = isObstacle ? 1 : 0;
+        bayesianOccupancyGridThic.processObservation(vector, type);
+        bayesianOccupancyGridThin.processObservation(vector, type);
       }
   }
 

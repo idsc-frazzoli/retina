@@ -36,14 +36,14 @@ public class AccelerationRender extends CrosshairRender implements Vmu931ImuFram
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
     Tensor accXY = planarVmu931Imu.accXY(vmu931ImuFrame).map(Magnitude.ACCELERATION);
     Tensor tensor = geodesicIIR1Filter.apply(accXY);
-    push_end(tensor);
+    push_back(tensor);
   }
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(matrix);
     graphics.setColor(Color.GRAY);
-    super.render(geometricLayer, graphics);
+    renderCrosshairTrace(geometricLayer, graphics);
     geometricLayer.popMatrix();
   }
 }

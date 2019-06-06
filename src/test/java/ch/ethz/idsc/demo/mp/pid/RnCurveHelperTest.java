@@ -9,7 +9,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
-import ch.ethz.idsc.tensor.lie.CirclePoints;
 import junit.framework.TestCase;
 
 public class RnCurveHelperTest extends TestCase {
@@ -28,7 +27,7 @@ public class RnCurveHelperTest extends TestCase {
   }
 
   public void testCirclePoints() {
-    Tensor curveAngle = RnCurveHelper.addAngleToCurve(CirclePoints.of(10).unmodifiable());
+    // Tensor curveAngle = RnCurveHelper.addAngleToCurve(CirclePoints.of(10).unmodifiable());
     // System.out.println(curveAngle.get(Tensor.ALL,2));
   }
 

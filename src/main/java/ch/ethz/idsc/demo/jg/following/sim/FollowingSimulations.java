@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public enum FollowingSimulations implements ErrorInterface {
+/* package */ enum FollowingSimulations implements ErrorInterface {
   PURE {
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {

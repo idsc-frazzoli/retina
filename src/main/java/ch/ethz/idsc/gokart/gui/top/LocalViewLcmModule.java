@@ -23,7 +23,6 @@ public class LocalViewLcmModule extends AbstractModule {
   private static final Tensor POSE = Tensors.fromString("{0[m],-3[m],0}").unmodifiable();
   private static final Tensor MINOR_ACC = Tensors.vector(0.8, -0.0, 0);
   private static final Tensor MINOR_VEL = Tensors.vector(0.8, -6.0, 0);
-  private static final Tensor MINOR_TRN = Tensors.vector(0.8, -9.5, 0);
   private static final Tensor MINORRIGHT = Tensors.vector(0, -3.5, 0);
   private static final Tensor DIAGONAL = DiagonalMatrix.of(0.12, 0.12, 1);
   static final Tensor MODEL2PIXEL = Tensors.fromString("{{0,-100,200},{-100,0,300},{0,0,1}}").unmodifiable();
@@ -42,6 +41,7 @@ public class LocalViewLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void first() {
     timerFrame.geometricComponent.setModel2Pixel(MODEL2PIXEL);
+    // timerFrame.geometricComponent.addRenderInterface(AxesRender.INSTANCE);
     {
       GokartRender gokartRender = new LocalGokartRender(POSE);
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
@@ -69,6 +69,12 @@ public class LocalViewLcmModule extends AbstractModule {
       timerFrame.geometricComponent.addRenderInterface(groundSpeedRender);
     }
     {
+      AngularSlipRender angularSlipRender = new AngularSlipRender(matrix);
+      gokartPoseLcmClient.addListener(angularSlipRender.gokartPoseListener);
+      gokartStatusLcmClient.addListener(angularSlipRender.gokartStatusListener);
+      timerFrame.geometricComponent.addRenderInterface(angularSlipRender);
+    }
+    {
       TachometerMustangDash tachometerMustangDash = new TachometerMustangDash(matrix);
       rimoGetLcmClient.addListener(tachometerMustangDash);
       timerFrame.geometricComponent.addRenderInterface(tachometerMustangDash);
@@ -82,12 +88,12 @@ public class LocalViewLcmModule extends AbstractModule {
       BrakeCalibrationRender brakeCalibrationRender = new BrakeCalibrationRender(MINORRIGHT);
       timerFrame.geometricComponent.addRenderInterface(brakeCalibrationRender);
     }
-    {
-      SteerTurnRender steerTurnRender = new SteerTurnRender(Se2Utils.toSE2Matrix(MINOR_TRN));
-      gokartPoseLcmClient.addListener(steerTurnRender.gokartPoseListener);
-      gokartStatusLcmClient.addListener(steerTurnRender.gokartStatusListener);
-      timerFrame.geometricComponent.addRenderInterface(steerTurnRender);
-    }
+    // {
+    // SteerTurnRender steerTurnRender = new SteerTurnRender(Se2Utils.toSE2Matrix(MINOR_TRN));
+    // gokartPoseLcmClient.addListener(steerTurnRender.gokartPoseListener);
+    // gokartStatusLcmClient.addListener(steerTurnRender.gokartStatusListener);
+    // timerFrame.geometricComponent.addRenderInterface(steerTurnRender);
+    // }
     // ---
     gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.startSubscriptions();

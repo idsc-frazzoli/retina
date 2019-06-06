@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
+import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -73,7 +74,7 @@ public class TrajectoryConfig {
     return PredefinedMap.DUBILAB_OBSTACLES_20190314;
   }
 
-  public AbstractMapping getAbstractMapping() {
+  public AbstractMapping<? extends ImageGrid> getAbstractMapping() {
     return mapSightLines //
         ? SightLinesMapping.defaultObstacle()
         : GenericBayesianMapping.createObstacleMapping();

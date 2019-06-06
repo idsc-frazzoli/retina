@@ -45,7 +45,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   protected final TimerFrame timerFrame = new TimerFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final AbstractMapping mapping = // SightLineMapping.defaultTrack();
+  private final AbstractMapping<? extends ImageGrid> mapping = // SightLineMapping.defaultTrack();
       GenericBayesianMapping.createTrackMapping();
   private final TrackReconManagement trackReconManagement;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();

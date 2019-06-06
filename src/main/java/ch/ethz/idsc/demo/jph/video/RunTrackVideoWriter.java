@@ -19,8 +19,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   }
 
   public static void main(String[] args) throws Exception {
-    run(new File("/media/datahaki/data/gokart/plans/20190530/20190530T143412_00/log.lcm"), //
-        HomeDirectory.file("clothoid_plans.mp4"));
+    run(new File("/media/datahaki/data/gokart/vmu932/20190527/20190527T145700_00/log.lcm"), //
+        HomeDirectory.file("20190527T145700_00_some.mp4"));
     System.out.println("[done.]");
   }
 }

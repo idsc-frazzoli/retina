@@ -16,7 +16,9 @@ public class BackgroundImage {
    * @return
    * @throws IOException */
   public static BackgroundImage from(File file, Tensor model2pixel) throws IOException {
-    return new BackgroundImage(ImageIO.read(file), model2pixel);
+    BufferedImage bufferedImage = ImageIO.read(file);
+    FadeTop.of(bufferedImage);
+    return new BackgroundImage(bufferedImage, model2pixel);
   }
 
   // ---
