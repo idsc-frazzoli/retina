@@ -72,8 +72,6 @@ public class CurveClothoidPursuitPlanner {
     /* TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
      * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, ClothoidPursuitConfig.GLOBAL.getOptimizationSteps()).apply(tensor);
      * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
-    plan = Optional.empty();
-
     Optional<Tensor> lookAhead = Optional.empty();
     Scalar error = Quantity.of(DoubleScalar.POSITIVE_INFINITY , SI.METER);
     for (Scalar distance : config.lookAheads()) {
