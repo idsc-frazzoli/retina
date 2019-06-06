@@ -12,6 +12,7 @@ import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.car.math.SphereSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
+import ch.ethz.idsc.owl.math.planar.CurvePoint;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.planar.GeodesicPursuitInterface;
 import ch.ethz.idsc.owl.math.planar.PseudoSe2CurveIntersection;
@@ -33,6 +34,7 @@ import ch.ethz.idsc.tensor.sca.Abs;
 // TODO JPH rename
 public class CurveClothoidPursuitPlanner {
   private Optional<ClothoidPlan> plan = Optional.empty();
+  private int prevIndex = 0;
 
   /** @param pose of vehicle {x[m], y[m], angle}
    * @param speed of vehicle [m*s^-1]
@@ -66,13 +68,14 @@ public class CurveClothoidPursuitPlanner {
      * TensorScalarFunction mapping = vector -> dragonNightKingKnife(vector, isCompliant, speed);
      * Scalar var = ArgMinVariable.using(trajectoryEntryFinder, mapping, ClothoidPursuitConfig.GLOBAL.getOptimizationSteps()).apply(tensor);
      * Optional<Tensor> lookAhead = trajectoryEntryFinder.on(tensor).apply(var).point; */
-    Optional<Tensor> lookAhead = (config.se2distance //
+    Optional<CurvePoint> lookAhead = (config.se2distance //
         ? new PseudoSe2CurveIntersection(config.lookAhead) //
-        : new SphereSe2CurveIntersection(config.lookAhead)).string(tensor);
+        : new SphereSe2CurveIntersection(config.lookAhead)).string(tensor, prevIndex);
     if (lookAhead.isPresent()) {
-      plan = ClothoidPlan.from(lookAhead.get(), pose, isForward);
+      prevIndex = lookAhead.get().getIndex();
+      plan = ClothoidPlan.from(lookAhead.get().getTensor(), pose, isForward);
       if (plan.isPresent())
-        PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get(), isForward);
+        PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get().getTensor(), isForward);
     } else
       plan = Optional.empty();
   }
