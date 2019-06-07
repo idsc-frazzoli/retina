@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-import ch.ethz.idsc.demo.jph.video.RunVideoBackground;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.video.TrackVideoConfig;
 import ch.ethz.idsc.gokart.offline.video.TrackVideoWriter;
@@ -14,7 +13,7 @@ import ch.ethz.idsc.gokart.offline.video.TrackVideoWriter;
   ;
   private static void run(File file, File dest) throws IOException, Exception {
     try (TrackVideoWriter trackVideoWriter = new TrackVideoWriter( //
-        RunVideoBackground.get20190530(), new TrackVideoConfig(), dest)) {
+        RunVideoBackground.get20190606(), new TrackVideoConfig(), dest)) {
       OfflineLogPlayer.process(file, trackVideoWriter);
     }
   }
