@@ -20,7 +20,6 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 /* package */ class AntilockAnalysis implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
 
-
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.LINMOT_ANTILOCK)) {
@@ -35,10 +34,11 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   }
 
   public static void main(String[] args) throws IOException {
-    //String string = "20180427T125356_p2";
+    // String string = "20180427T125356_p2";
     File file = HomeDirectory.file("Documents/01_6_Semester/Bachelorarbeit/lcm_files/20190530/20190530T152247_1f4048bb.lcm.00");
     OfflineTableSupplier offlineTableSupplier = new AntilockAnalysis();
     OfflineLogPlayer.process(file, offlineTableSupplier);
-    Export.of(HomeDirectory.file("Documents/01_6_Semester/Bachelorarbeit/cuts1/20190530_lcm/analysis1.csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file("Documents/01_6_Semester/Bachelorarbeit/cuts1/20190530_lcm/analysis1.csv"),
+        offlineTableSupplier.getTable().map(CsvFormat.strict()));
   }
 }

@@ -33,6 +33,7 @@
 * [20181006_filtering_signals_in_se2.pdf](https://github.com/idsc-frazzoli/retina/files/2453316/20181006_filtering_signals_in_se2.pdf)
 * [20190205_growth_of_repositories.pdf](https://github.com/idsc-frazzoli/retina/files/3012744/20190205_growth_of_repositories.pdf)
 * [20190509_steering_turning_ratio.pdf](https://github.com/idsc-frazzoli/retina/files/3160474/20190509_steering_turning_ratio.pdf)
+* [20190521_restoring_force_of_steering.pdf](https://github.com/idsc-frazzoli/retina/files/3265874/20190521_restoring_force_of_steering.pdf)
 
 ## Bug Reports
 
