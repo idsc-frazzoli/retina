@@ -76,7 +76,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
             optional = planner.getPlan(PoseHelper.attachUnits(mouseSe2), SPEED, //
                 trajectoryDesign.getRefinedCurve(), //
                 Sign.isPositiveOrZero(SPEED), //
-                ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
                 ClothoidPursuitConfig.ratioLimits());
             timing.stop();
             Scalar duration = Quantity.of(timing.seconds(), SI.SECOND);
