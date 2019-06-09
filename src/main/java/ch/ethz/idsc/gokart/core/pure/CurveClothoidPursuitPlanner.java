@@ -67,8 +67,7 @@ public class CurveClothoidPursuitPlanner {
         prevIndices.put(distance, goal.get().getIndex());
         Optional<ClothoidPlan> potential = ClothoidPlan.from(goal.get().getTensor(), pose, isForward);
         if (potential.isPresent()) {
-          Tensor cloth = Tensor.of(potential.get().curve().stream().map(tensorUnaryOperator));
-          Scalar err = CurveClothoidPursuitHelper.error(cloth, curve);
+          Scalar err = CurveClothoidPursuitHelper.error(potential.get().curve(), curve);
           ClothoidTerminalRatios ratios = ClothoidTerminalRatios.of(Array.zeros(3), goal.get().getTensor());
           if (Scalars.lessThan(err, error) && isCompliant.test(ratios.head()) && isCompliant.test(ratios.tail())) {
             error = err;
