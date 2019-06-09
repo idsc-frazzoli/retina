@@ -34,7 +34,7 @@ public class ClothoidPlan implements Serializable {
 
   // ---
   private final Scalar ratio;
-  private final Tensor curve;
+  private final Tensor curve; // in directional order (not equivalent to driving order when in reverse)
 
   /** @param ratio [m^-1] used to derive future heading in good precision
    * @param curve sparse planned to be followed */
