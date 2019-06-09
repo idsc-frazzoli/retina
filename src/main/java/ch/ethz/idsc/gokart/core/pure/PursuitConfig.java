@@ -13,6 +13,8 @@ import ch.ethz.idsc.tensor.ref.FieldSubdivide;
  * "SCT" steer-column torque */
 public class PursuitConfig {
   /***************************************************/
+  @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 20)
+  public Scalar lookAhead = Quantity.of(3.5, SI.METER);
   public final Scalar updatePeriod = Quantity.of(0.1, SI.SECOND); // 0.1[s] == 10[Hz]
   /** gokart velocity speed for curve follower module
    * 20180531 the rate was increased to 75[s^-1]
