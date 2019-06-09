@@ -91,7 +91,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         spinnerLabelDuration.addToComponentReduced(trajectoryDesign.timerFrame.jToolBar, new Dimension(50, 28), "duration");
       }
       {
-        spinnerLabelSpeed.setStream(IntStream.range(1, 11).mapToObj(i -> Quantity.of(i, SI.VELOCITY)));
+        spinnerLabelSpeed.setStream(IntStream.range(-5, 11).mapToObj(i -> Quantity.of(i, SI.VELOCITY)));
         spinnerLabelSpeed.setValue(Quantity.of(5, SI.VELOCITY));
         spinnerLabelSpeed.addToComponentReduced(trajectoryDesign.timerFrame.jToolBar, new Dimension(50, 28), "speed");
       }

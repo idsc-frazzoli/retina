@@ -2,12 +2,13 @@
 package ch.ethz.idsc.demo.jg.following.sim;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Path2D;
 import java.util.Optional;
-
+import java.util.stream.IntStream;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
@@ -20,6 +21,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.planar.ClothoidTerminalRatios;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
+import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -31,10 +33,10 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
 /* package */ class ClothoidPlannerMockup extends TrajectoryDesignModule {
   private static final int REFINEMENT = 3;
-  private static final Scalar SPEED = Quantity.of(5, SI.VELOCITY);
   // ---
   private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
   protected final JToggleButton jToggleButton = new JToggleButton("cloth");
+  private final SpinnerLabel<Scalar> spinnerLabelSpeed = new SpinnerLabel<>();
   // ---
   protected Optional<ClothoidPlan> optional = Optional.empty();
   private Tensor mouseSe2 = Array.zeros(3);
@@ -68,14 +70,21 @@ import ch.ethz.idsc.tensor.sca.Sign;
       });
     }
     {
+      trajectoryDesign.timerFrame.jToolBar.addSeparator();
+      spinnerLabelSpeed.setStream(IntStream.range(-5, 11).mapToObj(i -> Quantity.of(i, SI.VELOCITY)));
+      spinnerLabelSpeed.setValue(Quantity.of(5, SI.VELOCITY));
+      spinnerLabelSpeed.addToComponentReduced(trajectoryDesign.timerFrame.jToolBar, new Dimension(50, 28), "speed");
+    }
+    {
       trajectoryDesign.timerFrame.geometricComponent.jComponent.addMouseListener(new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent mouseEvent) {
           if (!trajectoryDesign.jToggleButton.isSelected() && mouseEvent.getButton() == 1) {
             Timing timing = Timing.started();
-            optional = planner.getPlan(PoseHelper.attachUnits(mouseSe2), SPEED, //
+            optional = planner.getPlan(PoseHelper.attachUnits(mouseSe2), //
+                spinnerLabelSpeed.getValue(), //
                 trajectoryDesign.getRefinedCurve(), //
-                Sign.isPositiveOrZero(SPEED), //
+                Sign.isPositiveOrZero(spinnerLabelSpeed.getValue()), //
                 ClothoidPursuitConfig.ratioLimits());
             timing.stop();
             Scalar duration = Quantity.of(timing.seconds(), SI.SECOND);
