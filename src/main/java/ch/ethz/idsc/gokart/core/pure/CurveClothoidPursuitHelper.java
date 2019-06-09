@@ -2,12 +2,16 @@
 package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.List;
+import java.util.function.IntConsumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.opt.TensorScalarFunction;
 import ch.ethz.idsc.tensor.red.Min;
@@ -25,6 +29,9 @@ import ch.ethz.idsc.tensor.red.Norm;
     } else {
       se2points.set(Scalar::negate, Tensor.ALL, 0);
       se2points.set(Scalar::negate, Tensor.ALL, 2);
+      Tensor reverse = Reverse.of(se2points);
+      IntConsumer swap = i -> se2points.set(reverse.get(i), i);
+      IntStream.range(0, se2points.length()).forEach(swap);
     }
   }
 

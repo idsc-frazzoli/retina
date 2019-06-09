@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.Norm;
 
+// TODO remove as it comes to owl
 public class SphereSe2CurveIntersection extends AssistedCurveIntersection {
   public SphereSe2CurveIntersection(Scalar radius) {
     super(radius);

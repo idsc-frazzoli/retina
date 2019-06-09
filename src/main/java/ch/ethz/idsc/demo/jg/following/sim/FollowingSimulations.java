@@ -39,7 +39,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   };
