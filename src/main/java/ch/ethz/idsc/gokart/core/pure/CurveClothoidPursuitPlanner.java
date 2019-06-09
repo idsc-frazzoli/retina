@@ -22,7 +22,6 @@ import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 // TODO JPH rename
-// TODO GJOEL fix reverse
 public class CurveClothoidPursuitPlanner {
   private Optional<ClothoidPlan> plan = Optional.empty();
   private int prevIndex = 0;
