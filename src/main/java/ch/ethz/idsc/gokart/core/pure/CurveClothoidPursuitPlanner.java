@@ -28,8 +28,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO JPH rename
 public class CurveClothoidPursuitPlanner {
+  private final Map<Scalar, Integer> prevIndices = new HashMap<>();
   private Optional<ClothoidPlan> plan = Optional.empty();
-  private Map<Scalar, Integer> prevIndices = new HashMap<>();
+  private Optional<Tensor> lookAhead;
+  private Scalar error;
 
   /** @param pose of vehicle {x[m], y[m], angle}
    * @param speed of vehicle [m*s^-1]
@@ -57,27 +59,37 @@ public class CurveClothoidPursuitPlanner {
     if (!isForward)
       CurveClothoidPursuitHelper.mirrorAndReverse(tensor);
     Predicate<Scalar> isCompliant = CurveClothoidPursuitHelper.isCompliant(ratioLimits, pose, speed);
-    Optional<Tensor> lookAhead = Optional.empty();
-    Scalar error = Quantity.of(DoubleScalar.POSITIVE_INFINITY , SI.METER);
-    for (Scalar distance : config.lookAheads()) {
+    lookAhead = Optional.empty();
+    error = Quantity.of(DoubleScalar.POSITIVE_INFINITY , SI.METER);
+    config.lookAheads().parallel().forEach(distance -> {
       Optional<CurvePoint> goal = (config.se2distance //
           ? new PseudoSe2CurveIntersection(distance) //
           : new SphereSe2CurveIntersection(distance)).string(tensor, prevIndices.getOrDefault(distance, 0));
       if (goal.isPresent()) {
-        prevIndices.put(distance, goal.get().getIndex());
         Optional<ClothoidPlan> potential = ClothoidPlan.from(goal.get().getTensor(), pose, isForward);
         if (potential.isPresent()) {
           Scalar err = CurveClothoidPursuitHelper.error(potential.get().curve(), curve);
           ClothoidTerminalRatios ratios = ClothoidTerminalRatios.of(Array.zeros(3), goal.get().getTensor());
-          if (Scalars.lessThan(err, error) && isCompliant.test(ratios.head()) && isCompliant.test(ratios.tail())) {
-            error = err;
-            lookAhead = goal.map(CurvePoint::getTensor);
-          }
+          update(distance, goal.get(), err, //
+              isCompliant.test(ratios.head()) && isCompliant.test(ratios.tail()));
         }
       }
-    }
+    });
     plan = lookAhead.map(goal -> ClothoidPlan.from(goal, pose, isForward).orElse(null));
     if (plan.isPresent())
       PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, lookAhead.get(), isForward);
+  }
+
+  /** update lookAhead if better
+   * @param distance in [m]
+   * @param point on curve
+   * @param error in [m]
+   * @param isCompliant */
+  private synchronized void update(Scalar distance, CurvePoint point, Scalar error, boolean isCompliant) {
+    prevIndices.put(distance, point.getIndex());
+    if (isCompliant && Scalars.lessThan(error, this.error)) {
+      this.error = error;
+      lookAhead = Optional.of(point.getTensor());
+    }
   }
 }

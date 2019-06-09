@@ -3,9 +3,8 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
@@ -33,9 +32,10 @@ public class ClothoidPursuitConfig extends PursuitConfig {
     lookAhead = Quantity.of(3, SI.METER);
   }
 
-  public Set<Scalar> lookAheads() {
+  /** @return stream of look ahead distances bigger/equals lookAhead and smaller than fallbackLookAhead, in lookAheadResolution steps */
+  public Stream<Scalar> lookAheads() {
     return IntStream.range(0, fallbackLookAhead.subtract(lookAhead).divide(lookAheadResolution).number().intValue() + 1) //
-        .mapToObj(RealScalar::of).map(lookAheadResolution::multiply).map(lookAhead::add).collect(Collectors.toSet());
+        .mapToObj(RealScalar::of).map(lookAheadResolution::multiply).map(lookAhead::add);
   }
 
   public static List<DynamicRatioLimit> ratioLimits() {
