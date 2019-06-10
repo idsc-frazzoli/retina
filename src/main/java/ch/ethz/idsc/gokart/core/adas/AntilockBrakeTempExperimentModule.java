@@ -72,7 +72,7 @@ public class AntilockBrakeTempExperimentModule extends AbstractModule implements
   public Optional<LinmotPutEvent> putEvent() {
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     if (optional.isPresent()) {
-      if (Scalars.lessThan(Quantity.of(6, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0))) {
+      if (Scalars.lessThan(hapticSteerConfig.setVel, lidarLocalizationModule.getVelocity().Get(0))) {
         while (Scalars.lessThan(Quantity.of(0.1, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0))) {
           return notsmartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
         }

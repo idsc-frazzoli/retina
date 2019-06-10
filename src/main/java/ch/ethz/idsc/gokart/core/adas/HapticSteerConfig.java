@@ -44,6 +44,8 @@ public class HapticSteerConfig {
   public Scalar absFrequency = RealScalar.of(5);
   public Scalar absAmplitude = RealScalar.of(0.2);
   public double absDuration = 1;
+  /** set velocity for a full stop */
+  public Scalar setVel = Quantity.of(5.5, SI.VELOCITY);
 
   /***************************************************/
   public Scalar criticalAngle() {
