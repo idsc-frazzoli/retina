@@ -68,6 +68,10 @@ public enum RunVideoBackground {
     return BackgroundImage.from(HomeDirectory.Pictures("20190606T160956_00.png"), _20190401);
   }
 
+  public static BackgroundImage get20190610() throws IOException {
+    return BackgroundImage.from(HomeDirectory.Pictures("20190610T154922_00.png"), _20190401);
+  }
+
   public static void main(String[] args) throws IOException {
     Optional<File> optionalFile = FileHelper.open(args);
     if (optionalFile.isPresent()) {
@@ -85,7 +89,7 @@ public enum RunVideoBackground {
           _20190401, //
           GokartPoseEvent.of(optional.get()).getPose());
       OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
-      ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20190606T160956_00.png"));
+      ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20190610T154922_00.png"));
     }
   }
 }
