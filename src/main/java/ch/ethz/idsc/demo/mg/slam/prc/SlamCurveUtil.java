@@ -3,8 +3,8 @@ package ch.ethz.idsc.demo.mg.slam.prc;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.planar.ArcTan2D;
-import ch.ethz.idsc.sophus.planar.SignedCurvature2D;
+import ch.ethz.idsc.sophus.math.ArcTan2D;
+import ch.ethz.idsc.sophus.math.SignedCurvature2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

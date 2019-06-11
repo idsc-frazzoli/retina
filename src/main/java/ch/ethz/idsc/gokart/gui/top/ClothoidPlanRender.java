@@ -5,7 +5,7 @@ import java.awt.Color;
 
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlanListener;
-import ch.ethz.idsc.owl.math.planar.ClothoidTerminalRatios;
+import ch.ethz.idsc.owl.math.pursuit.ClothoidTerminalRatios;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.tensor.red.Nest;
 

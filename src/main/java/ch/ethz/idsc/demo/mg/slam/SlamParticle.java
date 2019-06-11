@@ -2,7 +2,7 @@
 package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
+import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringIntegrator;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

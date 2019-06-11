@@ -7,7 +7,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.group.Se2CoveringIntegrator;
+import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringIntegrator;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

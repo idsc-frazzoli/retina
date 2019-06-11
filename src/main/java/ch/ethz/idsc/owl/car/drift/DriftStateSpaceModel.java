@@ -66,9 +66,4 @@ class DriftStateSpaceModel implements StateSpaceModel, Serializable {
     Scalar eps = Sqrt.of(muFz.multiply(muFz).subtract(Fx.multiply(Fx)));
     return eps.multiply(driftParameters.pacejka3.apply(slip)).negate();
   }
-
-  @Override
-  public Scalar getLipschitz() {
-    return null;
-  }
 }

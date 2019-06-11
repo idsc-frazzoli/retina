@@ -23,7 +23,7 @@ import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vlp16RayChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
-import ch.ethz.idsc.sophus.math.WindowCenterSampler;
+import ch.ethz.idsc.sophus.math.win.WindowCenterSampler;
 import ch.ethz.idsc.subare.util.HtmlUtf8;
 import ch.ethz.idsc.subare.util.plot.ListPlot;
 import ch.ethz.idsc.subare.util.plot.VisualRow;
@@ -254,7 +254,7 @@ public class HtmlLogReport {
     {
       Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
-      Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
+      Tensor mask = WindowCenterSampler.of(GaussianWindow.FUNCTION).apply(100);
       Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
       Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
       Tensor smoothZ = ListConvolve.of(mask, tensor.get(Tensor.ALL, 4));

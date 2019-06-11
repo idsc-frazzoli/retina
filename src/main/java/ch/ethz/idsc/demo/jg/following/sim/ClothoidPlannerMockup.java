@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Path2D;
 import java.util.Optional;
 import java.util.stream.IntStream;
+
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
@@ -18,7 +19,7 @@ import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
 import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.planar.ClothoidTerminalRatios;
+import ch.ethz.idsc.owl.math.pursuit.ClothoidTerminalRatios;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;

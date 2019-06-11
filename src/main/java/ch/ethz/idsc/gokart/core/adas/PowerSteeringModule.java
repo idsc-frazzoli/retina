@@ -21,7 +21,7 @@ import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
-import ch.ethz.idsc.sophus.group.RnGeodesic;
+import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.List;
 import java.util.function.IntConsumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;

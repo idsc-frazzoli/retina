@@ -30,9 +30,4 @@ class DriftExtStateSpaceModel implements StateSpaceModel, Serializable {
     // Scalar UyWorld = U.multiply(Sin.of(beta.add(theta)));
     return Join.of(AngleVector.of(beta.add(theta)).multiply(U), Tensors.of(r), dxLower);
   }
-
-  @Override
-  public Scalar getLipschitz() {
-    return null;
-  }
 }
