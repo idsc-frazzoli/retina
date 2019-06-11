@@ -21,19 +21,17 @@ import ch.ethz.idsc.sophus.app.misc.CurveCurvatureRender;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
 import ch.ethz.idsc.sophus.crv.subdiv.LaneRiesenfeldCurveSubdivision;
+import ch.ethz.idsc.sophus.lie.so2.So2;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
-import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Nest;
-import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.N;
 
 public class TrajectoryDesign extends CurvatureDemo {
-  private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   private static final Scalar COMB_SCALE = Quantity.of(-1.0, "m^2");
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
@@ -77,7 +75,7 @@ public class TrajectoryDesign extends CurvatureDemo {
    * @return {x[m], y[m], angle in the interval [-pi, pi)} */
   static Tensor se2CtoSe2WithUnits(Tensor xya) {
     xya = PoseHelper.attachUnits(xya.map(N.DOUBLE));
-    xya.set(MOD_DISTANCE, 2);
+    xya.set(So2.MOD, 2);
     return xya;
   }
 

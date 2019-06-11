@@ -5,8 +5,8 @@ import java.awt.Color;
 
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlanListener;
-import ch.ethz.idsc.owl.math.pursuit.ClothoidTerminalRatios;
 import ch.ethz.idsc.sophus.app.api.PathRender;
+import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatios;
 import ch.ethz.idsc.tensor.red.Nest;
 
 public class ClothoidPlanRender extends PathRender implements ClothoidPlanListener {

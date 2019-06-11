@@ -8,14 +8,13 @@ import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.sophus.lie.se2.Se2Geodesic;
 import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringIntegrator;
+import ch.ethz.idsc.sophus.lie.so2.So2;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
-import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Mod;
 
 /** integrated, a priori unfiltered, PoseVelocityInterface
  * 
@@ -25,7 +24,6 @@ import ch.ethz.idsc.tensor.sca.Mod;
  * 
  * the implementation is independent of the sources of the values */
 /* package */ class InertialOdometry implements PoseVelocityInterface {
-  private static final Mod MOD_DISTANCE = Mod.function(Pi.TWO, Pi.VALUE.negate());
   private static final Tensor VELOCITY_ZERO = Tensors.of(Quantity.of(0.0, SI.VELOCITY), Quantity.of(0.0, SI.VELOCITY));
   // ---
   private Tensor pose = GokartPoseEvents.motionlessUninitialized().getPose();
@@ -60,7 +58,7 @@ import ch.ethz.idsc.tensor.sca.Mod;
     this.gyroZ = gyroZ;
     // integrate pose
     pose = Se2CoveringIntegrator.INSTANCE.spin(pose, getVelocity().multiply(deltaT));
-    pose.set(MOD_DISTANCE, 2);
+    pose.set(So2.MOD, 2);
   }
 
   @Override // from PoseVelocityInterface
@@ -94,6 +92,6 @@ import ch.ethz.idsc.tensor.sca.Mod;
    * @param scalar in the interval [0, 1] */
   final synchronized void blendPose(Tensor pose, Scalar scalar) {
     this.pose = Se2Geodesic.INSTANCE.split(this.pose, pose, scalar);
-    this.pose.set(MOD_DISTANCE, 2);
+    this.pose.set(So2.MOD, 2);
   }
 }
