@@ -12,7 +12,7 @@ import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.GuiConfig;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.mat.LinearSolve;

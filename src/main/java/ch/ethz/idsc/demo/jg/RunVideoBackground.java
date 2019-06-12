@@ -20,7 +20,7 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.slam.ObstacleAggregate;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
@@ -64,6 +64,14 @@ public enum RunVideoBackground {
     return BackgroundImage.from(HomeDirectory.Pictures("20190530T143412_00.png"), _20190401);
   }
 
+  public static BackgroundImage get20190606() throws IOException {
+    return BackgroundImage.from(HomeDirectory.Pictures("20190606T160956_00.png"), _20190401);
+  }
+
+  public static BackgroundImage get20190610() throws IOException {
+    return BackgroundImage.from(HomeDirectory.Pictures("20190610T154922_00.png"), _20190401);
+  }
+
   public static void main(String[] args) throws IOException {
     Optional<File> optionalFile = FileHelper.open(args);
     if (optionalFile.isPresent()) {
@@ -81,7 +89,7 @@ public enum RunVideoBackground {
           _20190401, //
           GokartPoseEvent.of(optional.get()).getPose());
       OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
-      ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20190530T143412_00.png"));
+      ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20190610T154922_00.png"));
     }
   }
 }

@@ -15,10 +15,10 @@ import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.gokart.gui.top.AxisAlignedBox;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
 import ch.ethz.idsc.owl.car.core.WheelConfiguration;
-import ch.ethz.idsc.owl.data.BoundedLinkedList;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
+import ch.ethz.idsc.sophus.util.BoundedLinkedList;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 

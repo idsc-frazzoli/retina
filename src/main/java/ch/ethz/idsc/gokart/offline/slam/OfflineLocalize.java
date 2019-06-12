@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

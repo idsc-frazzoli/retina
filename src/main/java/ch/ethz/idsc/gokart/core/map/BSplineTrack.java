@@ -1,9 +1,9 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.map;
 
-import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
-import ch.ethz.idsc.sophus.planar.Det2D;
+import ch.ethz.idsc.sophus.math.Det2D;
+import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;

@@ -5,10 +5,10 @@ import java.awt.Graphics2D;
 
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateListener;
-import ch.ethz.idsc.owl.data.BoundedLinkedList;
 import ch.ethz.idsc.owl.gui.ColorLookup;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.sophus.util.BoundedLinkedList;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;

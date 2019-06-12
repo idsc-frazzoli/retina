@@ -29,7 +29,6 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule {
           speed, //
           optionalCurve.get(), //
           isForward, //
-          ((ClothoidPursuitConfig) pursuitConfig).trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits());
       if (Objects.nonNull(globalViewLcmModule))
         globalViewLcmModule.setPlan(plan.map(ClothoidPlan::curve).orElse(null));

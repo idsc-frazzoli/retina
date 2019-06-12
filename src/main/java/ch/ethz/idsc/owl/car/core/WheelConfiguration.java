@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.owl.car.core;
 
-import ch.ethz.idsc.sophus.group.Se2GroupElement;
+import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class WheelConfiguration {

@@ -40,7 +40,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(.5, SI.METER);
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
@@ -52,7 +51,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(3, SI.METER);
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
@@ -64,7 +62,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(5, SI.METER);
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
@@ -76,7 +73,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(7, SI.METER);
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   };

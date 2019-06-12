@@ -18,7 +18,7 @@ import ch.ethz.idsc.owl.gui.win.AffineTransforms;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.RadiusXY;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

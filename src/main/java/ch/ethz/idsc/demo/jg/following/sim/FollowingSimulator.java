@@ -22,8 +22,8 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
-import ch.ethz.idsc.sophus.group.Se2Utils;
-import ch.ethz.idsc.sophus.planar.Arrowhead;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.math.Arrowhead;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -91,7 +91,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         spinnerLabelDuration.addToComponentReduced(trajectoryDesign.timerFrame.jToolBar, new Dimension(50, 28), "duration");
       }
       {
-        spinnerLabelSpeed.setStream(IntStream.range(1, 11).mapToObj(i -> Quantity.of(i, SI.VELOCITY)));
+        spinnerLabelSpeed.setStream(IntStream.range(-5, 11).mapToObj(i -> Quantity.of(i, SI.VELOCITY)));
         spinnerLabelSpeed.setValue(Quantity.of(5, SI.VELOCITY));
         spinnerLabelSpeed.addToComponentReduced(trajectoryDesign.timerFrame.jToolBar, new Dimension(50, 28), "speed");
       }

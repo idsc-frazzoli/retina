@@ -1,12 +1,12 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
-import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.curve.FourPointCurveSubdivision;
-import ch.ethz.idsc.sophus.group.RnGeodesic;
-import ch.ethz.idsc.sophus.group.Se2Geodesic;
+import ch.ethz.idsc.sophus.crv.subdiv.FourPointCurveSubdivision;
+import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
+import ch.ethz.idsc.sophus.lie.se2.Se2Geodesic;
+import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Reverse;

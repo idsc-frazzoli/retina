@@ -12,7 +12,7 @@ import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.group.Se2GroupElement;
+import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clips;
@@ -19,6 +19,7 @@ public class ClothoidPlanTest extends TestCase {
     ClothoidPlan clothoidPlan = optional.get();
     Clips.interval(0.07, 0.09).requireInside(Magnitude.PER_METER.apply(clothoidPlan.ratio()));
     Tensor goal = new Se2GroupElement(pose).combine(lookAhead);
+    assertEquals(pose, clothoidPlan.curve().get(0));
     assertEquals(goal, clothoidPlan.curve().get(clothoidPlan.curve().length() - 1));
   }
 
@@ -30,6 +31,7 @@ public class ClothoidPlanTest extends TestCase {
     Clips.interval(0.07, 0.09).requireInside(Magnitude.PER_METER.apply(clothoidPlan.ratio()));
     CurveClothoidPursuitHelper.mirrorAndReverse(lookAhead);
     Tensor goal = new Se2GroupElement(pose).combine(lookAhead);
-    assertEquals(goal, clothoidPlan.curve().get(clothoidPlan.curve().length() - 1));
+    assertEquals(pose, clothoidPlan.curve().get(clothoidPlan.curve().length() - 1));
+    assertEquals(goal, clothoidPlan.curve().get(0));
   }
 }

@@ -6,10 +6,10 @@ import java.awt.Graphics2D;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.owl.data.BoundedLinkedList;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
+import ch.ethz.idsc.sophus.util.BoundedLinkedList;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 

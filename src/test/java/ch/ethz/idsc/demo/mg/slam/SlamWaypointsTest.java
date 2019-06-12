@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.demo.mg.slam;
 
-import ch.ethz.idsc.sophus.group.Se2CoveringGroupElement;
+import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringGroupElement;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
