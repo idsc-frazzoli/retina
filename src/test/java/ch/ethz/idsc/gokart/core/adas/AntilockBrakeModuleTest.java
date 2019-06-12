@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class AntilockBrakeModuleTest extends TestCase {
   public void testSimple() {
-    AntilockBrakeTempExperimentModule antilockBrakeModule = new AntilockBrakeTempExperimentModule();
+    SetVelNotsmartBrakingModule antilockBrakeModule = new SetVelNotsmartBrakingModule();
     antilockBrakeModule.first();
     assertFalse(antilockBrakeModule.putEvent().isPresent());
     antilockBrakeModule.last();
@@ -16,21 +16,21 @@ public class AntilockBrakeModuleTest extends TestCase {
 
   public void testCustom() {
     HapticSteerConfig hapticSteerConfig = new HapticSteerConfig();
-    AntilockBrakeTempExperimentModule antilockBrakeModule = new AntilockBrakeTempExperimentModule(hapticSteerConfig);
+    SetVelNotsmartBrakingModule antilockBrakeModule = new SetVelNotsmartBrakingModule(hapticSteerConfig);
     antilockBrakeModule.first();
     assertFalse(antilockBrakeModule.putEvent().isPresent());
     antilockBrakeModule.last();
   }
 
   public void testSimple1() {
-    AntilockBrakeTempExperimentModule antilockBrakeModule = new AntilockBrakeTempExperimentModule();
+    SetVelNotsmartBrakingModule antilockBrakeModule = new SetVelNotsmartBrakingModule();
     antilockBrakeModule.first();
     antilockBrakeModule.putEvent();
     antilockBrakeModule.last();
   }
 
   public void testSimple2() {
-    AntilockBrakeTempExperimentModule antilockBrakeModule = new AntilockBrakeTempExperimentModule();
+    SetVelNotsmartBrakingModule antilockBrakeModule = new SetVelNotsmartBrakingModule();
     antilockBrakeModule.first();
     antilockBrakeModule.notsmartBraking(Tensors.of( //
         Quantity.of(1, SI.PER_SECOND), //
