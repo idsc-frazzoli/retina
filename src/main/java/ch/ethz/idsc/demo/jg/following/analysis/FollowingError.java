@@ -3,8 +3,8 @@ package ch.ethz.idsc.demo.jg.following.analysis;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

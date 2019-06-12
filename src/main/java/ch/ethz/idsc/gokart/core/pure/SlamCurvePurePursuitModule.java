@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
-import ch.ethz.idsc.owl.math.planar.PurePursuit;
+import ch.ethz.idsc.owl.math.pursuit.PurePursuit;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

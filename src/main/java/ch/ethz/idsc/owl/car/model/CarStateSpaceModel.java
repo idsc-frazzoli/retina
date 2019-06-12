@@ -96,9 +96,4 @@ public class CarStateSpaceModel implements StateSpaceModel {
     // System.out.println(fxu);
     return fxu;
   }
-
-  @Override
-  public Scalar getLipschitz() {
-    return RealScalar.ONE; // null
-  }
 }

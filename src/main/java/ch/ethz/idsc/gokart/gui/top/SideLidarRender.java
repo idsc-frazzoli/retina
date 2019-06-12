@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 

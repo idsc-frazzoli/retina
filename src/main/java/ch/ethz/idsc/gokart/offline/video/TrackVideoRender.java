@@ -41,7 +41,7 @@ import ch.ethz.idsc.owl.gui.ren.TrajectoryRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.sophus.app.api.PathRender;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

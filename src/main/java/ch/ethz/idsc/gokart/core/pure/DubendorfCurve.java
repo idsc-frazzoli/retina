@@ -3,10 +3,10 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.io.File;
 
-import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.curve.FourPointCurveSubdivision;
-import ch.ethz.idsc.sophus.group.Se2Geodesic;
+import ch.ethz.idsc.sophus.crv.subdiv.FourPointCurveSubdivision;
+import ch.ethz.idsc.sophus.lie.se2.Se2Geodesic;
+import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Import;

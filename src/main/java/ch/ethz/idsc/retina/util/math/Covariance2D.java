@@ -1,7 +1,7 @@
 // code by mg, jph
 package ch.ethz.idsc.retina.util.math;
 
-import ch.ethz.idsc.sophus.planar.ArcTan2D;
+import ch.ethz.idsc.sophus.math.ArcTan2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;

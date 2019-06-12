@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.group.Se2GroupElement;
+import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

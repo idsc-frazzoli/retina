@@ -20,7 +20,7 @@ import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.gokart.offline.slam.ObstacleAggregate;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
