@@ -63,7 +63,7 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
       } else
         MaxAngularRate = maxVel.Get(1).divide(RimoTireConfiguration._REAR.radius());
       // Angular velocity is limited by MaxAngularRate
-      if (Scalars.lessThan(MaxAngularRate, currAngularRate.Get(0))||Scalars.lessThan(MaxAngularRate, currAngularRate.Get(1))) {
+      if (Scalars.lessThan(MaxAngularRate, currAngularRate.Get(0)) || Scalars.lessThan(MaxAngularRate, currAngularRate.Get(1))) {
         return rimoRateControllerWrap.iterate(MaxAngularRate);
       }
     }

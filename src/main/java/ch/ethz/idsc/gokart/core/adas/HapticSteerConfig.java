@@ -44,7 +44,7 @@ public class HapticSteerConfig {
   public Scalar absFrequency = RealScalar.of(5);
   public Scalar absAmplitude = RealScalar.of(0.2);
   public double absDuration = 1;
-  /** set velocity for a full stop with or without anti-lock braking*/
+  /** set velocity for a full stop with or without anti-lock braking */
   @FieldSubdivide(start = "5.75[SI.VELOCITY]", end = "8.5[SI,VELOCITY]", intervals = 11)
   public Scalar setVel = Quantity.of(6.5, SI.VELOCITY);
 

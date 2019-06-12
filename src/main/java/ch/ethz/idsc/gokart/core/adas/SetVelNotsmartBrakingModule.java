@@ -73,7 +73,8 @@ public class SetVelNotsmartBrakingModule extends AbstractModule implements Linmo
       }
       if (fullStopping) {
         fullStopping = Scalars.lessThan(Quantity.of(0.1, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0)) //
-            ? false : true;
+            ? false
+            : true;
         return notsmartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
       }
     }

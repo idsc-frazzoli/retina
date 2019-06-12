@@ -17,12 +17,11 @@ public class PerSectionModuleTest extends TestCase {
     perSectionModule.putEvent();
     perSectionModule.last();
   }
-  
+
   public void testSimple3() {
     SpeedLimitPerSectionModule perSectionModule = new SpeedLimitPerSectionModule();
     perSectionModule.first();
     perSectionModule.getEvent(null);
     perSectionModule.last();
   }
-
 }
