@@ -36,16 +36,17 @@ public class HapticSteerConfig {
   public Scalar minSlip = Quantity.of(0.7, SI.PER_SECOND);
   public Scalar maxSlip = Quantity.of(1.4, SI.PER_SECOND);
   /** minSlip and maxSlip depending on the current velocity */
-  public Scalar minSlipTheory = RealScalar.of(0.1);
+  public Scalar minSlipTheory = RealScalar.of(0.15);
   public Scalar maxSlipTheory = RealScalar.of(0.25);
-  public Scalar fullBraking = RealScalar.of(0.83);
-  public Scalar incrBraking = RealScalar.of(0.003);
+  public Scalar fullBraking = RealScalar.of(0.9);
+  public Scalar incrBraking = RealScalar.of(0.005);
   public Scalar criticalAngle = Quantity.of(12, NonSI.DEGREE_ANGLE);
   public Scalar absFrequency = RealScalar.of(5);
   public Scalar absAmplitude = RealScalar.of(0.2);
   public double absDuration = 1;
-  /** set velocity for a full stop */
-  public Scalar setVel = Quantity.of(5.5, SI.VELOCITY);
+  /** set velocity for a full stop with or without anti-lock braking*/
+  @FieldSubdivide(start = "5.75[SI.VELOCITY]", end = "8.5[SI,VELOCITY]", intervals = 11)
+  public Scalar setVel = Quantity.of(6.5, SI.VELOCITY);
 
   /***************************************************/
   public Scalar criticalAngle() {
