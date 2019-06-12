@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.adas;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
-import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
@@ -18,8 +17,6 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.retina.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -32,19 +29,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
-public class AntilockBrakeTempExperimentModule extends AbstractModule implements LinmotPutProvider {
+public class SetVelNotsmartBrakingModule extends AbstractModule implements LinmotPutProvider {
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final HapticSteerConfig hapticSteerConfig;
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
 
-  public AntilockBrakeTempExperimentModule() {
+  public SetVelNotsmartBrakingModule() {
     this(HapticSteerConfig.GLOBAL);
   }
 
-  public AntilockBrakeTempExperimentModule(HapticSteerConfig hapticSteerConfig) {
+  public SetVelNotsmartBrakingModule(HapticSteerConfig hapticSteerConfig) {
     this.hapticSteerConfig = hapticSteerConfig;
   }
 
@@ -65,17 +61,21 @@ public class AntilockBrakeTempExperimentModule extends AbstractModule implements
     return ProviderRank.EMERGENCY;
   }
 
-  // button is pressed -> full brake without ABS
+  // velocity is higher than setVel -> full stop
   private Scalar brakePosition = HapticSteerConfig.GLOBAL.fullBraking;
+  private Boolean fullStopping = false;
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
-    Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
-    if (optional.isPresent()) {
-      if (Scalars.lessThan(Quantity.of(6, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0))) {
-        while (Scalars.lessThan(Quantity.of(0.1, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0))) {
-          return notsmartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
-        }
+    if (lidarLocalizationModule != null) {
+      if (Scalars.lessThan(hapticSteerConfig.setVel, lidarLocalizationModule.getVelocity().Get(0))) {
+        fullStopping = true;
+      }
+      if (fullStopping) {
+        fullStopping = Scalars.lessThan(Quantity.of(0.1, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0)) //
+            ? false
+            : true;
+        return notsmartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
       }
     }
     return Optional.empty();
