@@ -7,7 +7,7 @@ import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.filter.ga.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;

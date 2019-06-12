@@ -19,7 +19,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
-import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.filter.ga.GeodesicIIR1Filter;
 import ch.ethz.idsc.sophus.lie.LieDifferences;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.sophus.lie.se2.Se2Group;
