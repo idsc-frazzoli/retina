@@ -1,12 +1,16 @@
 // code by jph, gjoel
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.group.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
@@ -46,5 +50,16 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
     Tensor curve = Tensors.fromString("{{2[m],3[m],1},{3[m],4[m],2}}");
     Tensor local = Tensor.of(curve.stream().map(tensorUnaryOperator));
     assertTrue(Chop.NONE.allZero(local.get(0)));
+  }
+
+  public void testComparator() {
+    List<Tensor> list = new ArrayList<>();
+    list.add(Tensors.vector(0, 1, 1));
+    list.add(Tensors.vector(1, 1, 4));
+    list.add(Tensors.vector(0, 1.1, 0));
+    list.add(Tensors.vector(1e-9, 0.5, 2));
+    list.add(Tensors.vector(1e-9, 0, 3));
+    list.sort(CurveClothoidPursuitPlanner.COMPARATOR);
+    assertEquals(Tensors.vector(0, 1, 2, 3, 4), Tensor.of(list.stream().map(t -> t.Get(2))));
   }
 }
