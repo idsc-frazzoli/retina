@@ -47,7 +47,7 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
 
   @Override // from LinmotPutProvider
   public ProviderRank getProviderRank() {
-    return ProviderRank.SAFETY; // TODO Jan fragen, was das richtige ist.
+    return ProviderRank.EMERGENCY; // TODO Jan fragen, was das richtige ist.
   }
 
   @Override
@@ -56,7 +56,7 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
       Tensor currAngularRate = rimoGetEvent.getAngularRate_Y_pair();
       Tensor pose = gokartPoseEvent.getPose();
       // straight line function, which divides driving area in two parts: f(x) = -1.182x + 84.647
-      Tensor maxVel = Tensors.of(Quantity.of(3, SI.PER_SECOND), Quantity.of(5, SI.PER_SECOND));
+      Tensor maxVel = Tensors.of(Quantity.of(3, SI.PER_SECOND), Quantity.of(2, SI.PER_SECOND));
       Scalar MaxAngularRate;
       if (Scalars.lessThan(pose.Get(1).add(pose.Get(0).multiply(RealScalar.of(1.182))), RealScalar.of(84.647))) {
         MaxAngularRate = maxVel.Get(0).divide(RimoTireConfiguration._REAR.radius());
