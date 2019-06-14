@@ -34,6 +34,8 @@
 * [20190205_growth_of_repositories.pdf](https://github.com/idsc-frazzoli/retina/files/3012744/20190205_growth_of_repositories.pdf)
 * [20190509_steering_turning_ratio.pdf](https://github.com/idsc-frazzoli/retina/files/3160474/20190509_steering_turning_ratio.pdf)
 * [20190521_restoring_force_of_steering.pdf](https://github.com/idsc-frazzoli/retina/files/3265874/20190521_restoring_force_of_steering.pdf)
+* [20190614_tracked_hardware_changes.pdf](https://github.com/idsc-frazzoli/retina/files/3290861/20190614_tracked_hardware_changes.pdf)
+
 
 ## Bug Reports
 

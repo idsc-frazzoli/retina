@@ -83,7 +83,7 @@ public class AntilockBrakeV2Module extends AbstractModule implements LinmotPutPr
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     if (optional.isPresent()) {
       ManualControlInterface manualControlInterface = optional.get();
-      if (manualControlInterface.isAutonomousPressed() && lidarLocalizationModule != null && currentAcceleration !=null) {
+      if (manualControlInterface.isAutonomousPressed() && lidarLocalizationModule != null && currentAcceleration != null) {
         return smartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
       }
       // reset to full Braking value for next braking maneuvre
