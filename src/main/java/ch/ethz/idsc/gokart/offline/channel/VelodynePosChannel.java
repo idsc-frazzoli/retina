@@ -1,4 +1,4 @@
-// code by mh
+// code by jph
 package ch.ethz.idsc.gokart.offline.channel;
 
 import java.nio.ByteBuffer;
@@ -19,9 +19,12 @@ import ch.ethz.idsc.tensor.sca.Round;
 public enum VelodynePosChannel implements SingleChannelInterface {
   INSTANCE;
   // ---
+  private static final String CHANNEL = //
+      VelodyneLcmChannels.pos(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
+
   @Override // from SingleChannelInterface
   public String channel() {
-    return VelodyneLcmChannels.pos(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
+    return CHANNEL;
   }
 
   @Override // from SingleChannelInterface

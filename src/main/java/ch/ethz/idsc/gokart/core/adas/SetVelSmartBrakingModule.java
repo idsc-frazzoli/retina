@@ -83,7 +83,8 @@ public class SetVelSmartBrakingModule extends AbstractModule implements LinmotPu
       }
       if (fullStopping) {
         fullStopping = Scalars.lessThan(Quantity.of(0.1, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0)) //
-            ? true : false;
+            ? true
+            : false;
         return smartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
       }
     }
