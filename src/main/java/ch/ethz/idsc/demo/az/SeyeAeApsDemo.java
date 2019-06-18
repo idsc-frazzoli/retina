@@ -17,6 +17,6 @@ enum SeyeAeApsDemo {
       }
     });
     siliconEyeLcmHandler.startSubscriptions();
-    Thread.sleep(10000);
+    Thread.sleep(10_000);
   }
 }

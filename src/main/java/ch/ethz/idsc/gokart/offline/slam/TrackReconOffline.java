@@ -74,7 +74,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     bayesianOccupancyGridThic = mappingConfig.createTrackFittingBayesianOccupancyGrid();
     bayesianOccupancyGridThin = mappingConfig.createThinBayesianOccupancyGrid();
     LidarAngularFiringCollector lidarAngularFiringCollector = //
-        new LidarAngularFiringCollector(10000, 3);
+        new LidarAngularFiringCollector(10_000, 3);
     double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
     LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -4);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -98,7 +98,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       bayesianOccupancyGridThic.setPose(gokartPoseEvent.getPose());
       bayesianOccupancyGridThin.setPose(gokartPoseEvent.getPose());
       if (!trackReconManagement.isStartSet())
-        trackReconManagement.setStart(gokartPoseEvent);
+        trackReconManagement.setStart(gokartPoseEvent.getPose());
     } else //
     if (channel.equals(CHANNEL_LIDAR))
       velodyneDecoder.lasers(byteBuffer);
@@ -150,12 +150,10 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
         float z = floatBuffer.get();
         //
         boolean isObstacle = predicate.isObstacle(x, z);
-        bayesianOccupancyGridThic.processObservation( //
-            Tensors.vectorDouble(x, y), //
-            isObstacle ? 1 : 0);
-        bayesianOccupancyGridThin.processObservation( //
-            Tensors.vectorDouble(x, y), //
-            isObstacle ? 1 : 0);
+        Tensor vector = Tensors.vectorDouble(x, y);
+        int type = isObstacle ? 1 : 0;
+        bayesianOccupancyGridThic.processObservation(vector, type);
+        bayesianOccupancyGridThin.processObservation(vector, type);
       }
   }
 

@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
 public class Vlp16TimingTable implements OfflineTableSupplier, LidarRayDataListener {
-  private static final int LIMIT = 200000;
+  private static final int LIMIT = 200_000;
   private static final String LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---

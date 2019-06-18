@@ -1882,9 +1882,10 @@ public enum GokartLogFile implements LogFile {
   /** steer static force test
    * using pid with autonomous button pressed */
   _20190514T152853_b942849a,
-  /** manual drive with power steering */
+  /** manual drive with power steering
+   * [steering unit always active] */
   _20190514T162756_577662b6,
-  /** manual drive with power steering */
+  /** manual drive with and without power steering */
   _20190514T164612_577662b6,
   /***************************************************/
   /* 2019-05-16 */
@@ -1896,7 +1897,8 @@ public enum GokartLogFile implements LogFile {
   _20190516T111058_fc897d70,
   /** stationary experiment to calibrate steering */
   _20190516T111841_fc897d70,
-  /** driving with power steering */
+  /** driving with power steering
+   * [steering unit always active] */
   _20190516T150252_3bedf2ab,
   /** testing with anti lock braking */
   _20190516T154712_fc897d70,
@@ -1912,19 +1914,23 @@ public enum GokartLogFile implements LogFile {
   _20190516T173400_a2d004c0,
   /** mpc */
   _20190516T182806_bcf7fd52,
-  /** driving with power steering */
+  /** manual driving with and without power steering */
   _20190516T185634_bcf7fd52,
   /***************************************************/
   /* 2019-05-21 */
-  /** manual driving, power steering, pure pursuit */
+  /** manual driving, power steering, pure pursuit
+   * [steering unit always active] */
   _20190521T093322_2055cb1b,
-  /** manual driving, power steering */
+  /** manual driving, power steering
+   * [steering unit always active] */
   _20190521T094217_2055cb1b,
   /** slow manual driving */
   _20190521T094746_2055cb1b,
   /** fast mpc */
   _20190521T101604_2055cb1b,
-  /** guest manual driving, slow mpc */
+  /** guest manual driving
+   * [first with power steering, second without power steering]
+   * slow mpc */
   _20190521T105301_2055cb1b,
   /** imu installed rot90 */
   _20190521T150634_d2699045, //
@@ -1946,7 +1952,8 @@ public enum GokartLogFile implements LogFile {
   _20190521T165154_ade0cc11,
   /***************************************************/
   /* 2019-05-23 */
-  /** power steering test */
+  /** power steering test
+   * [steering unit never active] */
   _20190523T104827_f7d213db,
   /** manual driving with backup
    * imu on top of black gokart/CAN box below rear tire cover
@@ -1954,7 +1961,8 @@ public enum GokartLogFile implements LogFile {
   _20190523T114609_f7d213db,
   /** driving without localization */
   _20190523T120814_7e29435f,
-  /** driving, power steering, antilock */
+  /** driving, power steering, antilock
+   * [steering unit always active] */
   _20190523T122730_6a3866ff,
   /** imu on top of box */
   _20190523T150902_6a3866ff,
@@ -1995,7 +2003,8 @@ public enum GokartLogFile implements LogFile {
   /** long straight driving */
   _20190526T170036_7f7422b3,
   /***************************************************/
-  /* 2019-05-27 */
+  /* 2019-05-27
+   * vlp16 incline=0.022 (instead of 0.04) */
   /** manual drive with backup imu */
   _20190527T145700_8a0e8702,
   /** manual drive with backup imu, davis 240c */
@@ -2008,6 +2017,27 @@ public enum GokartLogFile implements LogFile {
   _20190527T171137_ba6e3937,
   /** pursuit */
   _20190527T171643_9e8335de,
+  /***************************************************/
+  /* 2019-05-30
+   * vlp16 incline=0.022 (instead of 0.04) */
+  /** torque vectoring, mpc */
+  _20190530T101956_2fe550da,
+  /** torque vectoring with velocity of state estimate */
+  _20190530T130401_0538494f,
+  /** clothoid pursuit */
+  _20190530T141607_1f4048bb,
+  /** clothoid pursuit */
+  _20190530T142426_1f4048bb,
+  /** clothoid pursuit, including 5[m] look ahead */
+  _20190530T143412_1f4048bb,
+  /** clothoid pursuit */
+  _20190530T144342_1f4048bb,
+  /** manual drive power steering */
+  _20190530T152247_1f4048bb,
+  /** anti lock brake test */
+  _20190530T153744_1f4048bb,
+  /** manual drive, clothoid pursuit, mpc */
+  _20190530T160230_49920c9d,
   /***************************************************/
   ;
   // ---

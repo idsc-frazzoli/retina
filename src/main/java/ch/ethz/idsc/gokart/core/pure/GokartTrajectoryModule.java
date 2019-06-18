@@ -59,8 +59,8 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
-import ch.ethz.idsc.sophus.curve.BSpline1CurveSubdivision;
-import ch.ethz.idsc.sophus.group.Se2Geodesic;
+import ch.ethz.idsc.sophus.crv.subdiv.BSpline1CurveSubdivision;
+import ch.ethz.idsc.sophus.lie.se2.Se2Geodesic;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -95,7 +95,7 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   protected final CurvePursuitModule curvePursuitModule;
   /** sight lines mapping was successfully used for trajectory planning in a demo on 20190507 */
-  private final AbstractMapping mapping;
+  private final AbstractMapping<? extends ImageGrid> mapping;
   // = SightLinesMapping.defaultObstacle();
   // GenericBayesianMapping.createObstacleMapping();
   private GokartPoseEvent gokartPoseEvent = null;

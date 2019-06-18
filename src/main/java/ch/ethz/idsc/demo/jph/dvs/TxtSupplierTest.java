@@ -21,7 +21,7 @@ import ch.ethz.idsc.retina.dvs.supply.DvsTxtFileSupplier;
         "events.txt");
     System.out.println(file.exists());
     try (DvsTxtFileSupplier sup = new DvsTxtFileSupplier(file, ImageDimensions.UZ)) {
-      DvsEventBuffer buf = new DvsEventBuffer(10000);
+      DvsEventBuffer buf = new DvsEventBuffer(10_000);
       while (true) {
         DvsEvent dvsEvent = sup.next();
         maxx = Math.max(dvsEvent.x, maxx);

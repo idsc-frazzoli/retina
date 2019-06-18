@@ -19,8 +19,11 @@ import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV2Module;
+import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV3Module;
 import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
+import ch.ethz.idsc.gokart.core.adas.SetVelNotsmartBrakingModule;
+import ch.ethz.idsc.gokart.core.adas.SpeedLimitPerSectionModule;
 import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
 import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
 import ch.ethz.idsc.gokart.core.fuse.AutonomousSafetyModule;
@@ -67,7 +70,6 @@ import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
-import ch.ethz.idsc.gokart.lcm.imu.Vmu932LcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
@@ -110,7 +112,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       Vmu931LcmServerModule.class, // vmu931 imu
-      Vmu932LcmServerModule.class, // vmu932 imu
+      // Vmu932LcmServerModule.class, // vmu932 imu
       IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
       TrajectoryDesignModule.class, //
@@ -130,6 +132,9 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       AntilockBrakeCheckConditions.class, //
       AntilockBrakeModule.class, //
       AntilockBrakeV2Module.class, //
+      AntilockBrakeV3Module.class, //
+      SetVelNotsmartBrakingModule.class, //
+      SpeedLimitPerSectionModule.class, //
       AutomaticPowerTestModule.class, //
       RimoThrustManualModule.class, //
       LookupTableRimoThrustManualModule.class, //

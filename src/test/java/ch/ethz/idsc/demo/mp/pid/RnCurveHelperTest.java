@@ -4,12 +4,11 @@ package ch.ethz.idsc.demo.mp.pid;
 import java.util.Arrays;
 
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
-import ch.ethz.idsc.owl.math.planar.Extract2D;
+import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
-import ch.ethz.idsc.tensor.lie.CirclePoints;
 import junit.framework.TestCase;
 
 public class RnCurveHelperTest extends TestCase {
@@ -28,12 +27,12 @@ public class RnCurveHelperTest extends TestCase {
   }
 
   public void testCirclePoints() {
-    Tensor curveAngle = RnCurveHelper.addAngleToCurve(CirclePoints.of(10).unmodifiable());
+    // Tensor curveAngle = RnCurveHelper.addAngleToCurve(CirclePoints.of(10).unmodifiable());
     // System.out.println(curveAngle.get(Tensor.ALL,2));
   }
 
   public void testEmpty() {
-    // TODO
+    // TODO MCP
     RnCurveHelper.addAngleToCurve(Tensors.empty());
   }
 
@@ -43,7 +42,6 @@ public class RnCurveHelperTest extends TestCase {
   }
 
   public void testNull() {
-    // TODO
     try {
       RnCurveHelper.addAngleToCurve(null);
       fail();

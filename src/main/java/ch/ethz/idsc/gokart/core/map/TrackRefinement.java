@@ -7,11 +7,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
-import ch.ethz.idsc.sophus.filter.Regularization2Step;
-import ch.ethz.idsc.sophus.group.RnGeodesic;
+import ch.ethz.idsc.sophus.filter.ga.Regularization2Step;
+import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
+import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -29,11 +29,17 @@ import ch.ethz.idsc.tensor.sca.Abs;
 
 public class TrackRefinement {
   public abstract class TrackConstraint {
-    Tensor controlPointsX = null;
-    Tensor controlPointsY = null;
-    Tensor radiusControlPoints = null;
+    private Tensor controlPointsX = null;
+    private Tensor controlPointsY = null;
+    private Tensor radiusControlPoints = null;
 
     public abstract void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints);
+
+    void setAll(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
+      this.controlPointsX = controlPointsX;
+      this.controlPointsY = controlPointsY;
+      this.radiusControlPoints = radiusControlPoints;
+    }
 
     public Tensor getControlPointsX() {
       return controlPointsX;
@@ -72,9 +78,7 @@ public class TrackRefinement {
       Scalar projection = (Scalar) Max.of(realVector.dot(trackDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
       Tensor correctedFirst = startPos.subtract(trackDirection.multiply(projection));
       Tensor correctedSecond = startPos.add(trackDirection.multiply(projection));
-      this.controlPointsX = controlpointsX;
-      this.controlPointsY = controlpointsY;
-      this.radiusControlPoints = radiusControlPoints;
+      setAll(controlpointsX, controlpointsY, radiusControlPoints);
       controlpointsX.set(correctedFirst.Get(0), 0);
       controlpointsX.set(correctedSecond.Get(0), 1);
       controlpointsY.set(correctedFirst.Get(1), 0);
@@ -83,8 +87,8 @@ public class TrackRefinement {
   }
 
   public class PositionalStartConstraint extends TrackConstraint {
-    Tensor wantedPosition = null;
-    Tensor wantedDirection = null;
+    private Tensor wantedPosition = null;
+    private Tensor wantedDirection = null;
 
     @Override // from TrackConstraint
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
@@ -99,9 +103,7 @@ public class TrackRefinement {
       Scalar projection = (Scalar) Max.of(realVector.dot(wantedDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
       Tensor correctedFirst = startPos.subtract(wantedDirection.multiply(projection));
       Tensor correctedSecond = startPos.add(wantedDirection.multiply(projection));
-      this.controlPointsX = controlpointsX;
-      this.controlPointsY = controlpointsY;
-      this.radiusControlPoints = radiusControlPoints;
+      setAll(controlpointsX, controlpointsY, radiusControlPoints);
       controlpointsX.set(correctedFirst.Get(0), 0);
       controlpointsX.set(correctedSecond.Get(0), 1);
       controlpointsY.set(correctedFirst.Get(1), 0);
@@ -110,8 +112,8 @@ public class TrackRefinement {
   }
 
   public class PositionalEndConstraint extends TrackConstraint {
-    Tensor wantedPosition = null;
-    Tensor wantedDirection = null;
+    private Tensor wantedPosition = null;
+    private Tensor wantedDirection = null;
 
     @Override // from TrackConstraint
     public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
@@ -128,9 +130,7 @@ public class TrackRefinement {
       Scalar projection = (Scalar) Min.of(realVector.dot(wantedDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
       Tensor correctedFirst = startPos.subtract(wantedDirection.multiply(projection));
       Tensor correctedSecond = startPos.add(wantedDirection.multiply(projection));
-      this.controlPointsX = controlpointsX;
-      this.controlPointsY = controlpointsY;
-      this.radiusControlPoints = radiusControlPoints;
+      setAll(controlpointsX, controlpointsY, radiusControlPoints);
       controlpointsX.set(correctedFirst.Get(0), secondLastIndex);
       controlpointsX.set(correctedSecond.Get(0), lastIndex);
       controlpointsY.set(correctedFirst.Get(1), secondLastIndex);
@@ -201,8 +201,7 @@ public class TrackRefinement {
   }
 
   // for debugging
-  // TODO JPH/MH not used
-  private static final Scalar defaultRadius = Quantity.of(1.0, SI.METER);
+  // TODO JPH/MH design is bad
   private List<Tensor> freeLines = new ArrayList<>();
 
   /** .

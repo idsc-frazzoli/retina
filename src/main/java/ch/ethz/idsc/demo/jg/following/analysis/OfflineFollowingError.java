@@ -9,7 +9,8 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 
-public abstract class OfflineFollowingError extends FollowingError implements OfflineLogListener {
+// TODO JPH LONGTERM class structure
+/* package */ abstract class OfflineFollowingError extends FollowingError implements OfflineLogListener {
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR) && Tensors.nonEmpty(getReference())) {

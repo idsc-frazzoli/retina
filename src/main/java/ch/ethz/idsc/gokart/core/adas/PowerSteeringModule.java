@@ -20,8 +20,8 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
-import ch.ethz.idsc.sophus.group.RnGeodesic;
+import ch.ethz.idsc.sophus.filter.ga.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -68,7 +68,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
 
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
-    Tensor velocity = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()) //
+    Tensor velocity = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) //
         ? gokartPoseEvent.getVelocity()
         : GokartPoseEvents.motionlessUninitialized().getVelocity();
     return steerColumnTracker.isCalibratedAndHealthy() && Objects.nonNull(steerGetEvent) //

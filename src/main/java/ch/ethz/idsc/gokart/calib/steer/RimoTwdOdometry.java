@@ -13,6 +13,7 @@ public class RimoTwdOdometry extends TwdOdometry {
     super(RimoAxleConfiguration.rear());
   }
 
+  /***************************************************/
   /** @param rimoGetEvent
    * @return velocity of the gokart projected to the x-axis in unit "m*s^-1"
    * computed from the angular rates of the rear wheels. The odometry value

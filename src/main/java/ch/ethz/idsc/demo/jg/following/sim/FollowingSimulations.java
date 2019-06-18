@@ -19,12 +19,13 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public enum FollowingSimulations implements ErrorInterface {
+/* package */ enum FollowingSimulations implements ErrorInterface {
   PURE {
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
@@ -39,7 +40,6 @@ public enum FollowingSimulations implements ErrorInterface {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(.5, SI.METER);
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
@@ -51,7 +51,6 @@ public enum FollowingSimulations implements ErrorInterface {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(3, SI.METER);
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
@@ -63,7 +62,6 @@ public enum FollowingSimulations implements ErrorInterface {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(5, SI.METER);
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   },
@@ -75,13 +73,13 @@ public enum FollowingSimulations implements ErrorInterface {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(7, SI.METER);
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.GLOBAL.trajectoryEntryFinder, //
           ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
     }
   };
   private Tensor trail;
   private Tensor ratios;
   private FollowingError followingError;
+  private Timing timing;
 
   /** @param curve reference
    * @param initialPose of vehicle {x[m], y[m], angle}
@@ -92,6 +90,7 @@ public enum FollowingSimulations implements ErrorInterface {
     trail = Tensors.empty();
     ratios = Tensors.empty();
     followingError = new FollowingError();
+    timing = Timing.started();
     // ---
     followingError.setReference(curve);
     Tensor pose = initialPose;
@@ -105,6 +104,7 @@ public enum FollowingSimulations implements ErrorInterface {
       ratios.append(ratio);
       pose = Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, ratio), pose, timeStep);
     }
+    timing.stop();
   }
 
   /** @return vehicle trail {{x[m], y[m], angle}, ...} */
@@ -122,6 +122,11 @@ public enum FollowingSimulations implements ErrorInterface {
     return ratios().map(MinMax::of);
   }
 
+  /** @return simulation duation [s] */
+  public Optional<Scalar> simulationTime() {
+    return Optional.ofNullable(timing).map(t -> Quantity.of(t.seconds(), SI.SECOND));
+  }
+
   @Override // from ErrorInterface
   public final Optional<Tensor> averageError() {
     return followingError.averageError();
@@ -136,7 +141,8 @@ public enum FollowingSimulations implements ErrorInterface {
   public Optional<String> getReport() {
     return followingError.getReport().map(report -> //
     name() + ratioRange().map(range -> " " + report + //
-        "\n\tratios:\tmin = " + Round._4.apply(range.min().Get()) + ", max = " + Round._4.apply(range.max().Get())) //
+        "\n\tratios:\tmin = " + Round._4.apply(range.min().Get()) + ", max = " + Round._4.apply(range.max().Get()) + //
+        "\n\tsimulation duration:\t" + simulationTime().get()) //
         .orElse(" not yet run"));
   }
 
