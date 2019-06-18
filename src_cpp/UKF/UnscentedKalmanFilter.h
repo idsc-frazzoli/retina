@@ -76,7 +76,8 @@ private:
         //std::cout << "Cov: " << std::endl << covTerm << std::endl;
         //for (int i = 0; i<= 2*NParameter; i++){
         //    std::cout << "Chi" <<i <<": " << std::endl << chi[i] << std::endl;
-        //}
+        //
+        // ++}
 
         // Weights
         double w_m[2*NParameter+1];
@@ -113,7 +114,10 @@ private:
         }
         sigma += processNoise;
 
-        // print
+        // pr
+        //
+        //
+        // +++int
         std::cout << "predict" << std::endl;
         std::cout << "mu: " << std::endl << mu << std::endl;
         std::cout << "sigma: " << std::endl << sigma << std::endl;
