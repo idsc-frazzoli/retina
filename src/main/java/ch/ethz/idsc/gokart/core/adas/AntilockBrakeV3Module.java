@@ -15,27 +15,35 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
+import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Flatten;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
-public class AntilockBrakeV3Module extends AbstractModule implements LinmotPutProvider {
+public class AntilockBrakeV3Module extends AbstractModule implements LinmotPutProvider, Vmu931ImuFrameListener {
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final HapticSteerConfig hapticSteerConfig;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
+  private final Vmu931ImuLcmClient vmu931imuLcmClient = new Vmu931ImuLcmClient();
+  private Scalar currentAcceleration = Quantity.of(0, SI.ACCELERATION);
 
   public AntilockBrakeV3Module() {
     this(HapticSteerConfig.GLOBAL);
@@ -47,12 +55,15 @@ public class AntilockBrakeV3Module extends AbstractModule implements LinmotPutPr
 
   @Override // from AbstractModule
   protected void first() {
+    vmu931imuLcmClient.addListener(this);
+    vmu931imuLcmClient.startSubscriptions();
     LinmotSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(rimoGetListener);
   }
 
   @Override // from AbstractModule
   protected void last() {
+    vmu931imuLcmClient.stopSubscriptions();
     RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
     LinmotSocket.INSTANCE.removePutProvider(this);
   }
@@ -85,8 +96,13 @@ public class AntilockBrakeV3Module extends AbstractModule implements LinmotPutPr
     Tensor angularRate_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
     Tensor slip = angularRate_Origin_pair.subtract(angularRate_Y_pair); // vector of length 2 with entries of unit [s^-1]
     binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of( //
-        slip, brakePosition, velocityOrigin.Get(0), angularRate_Origin))));
+        slip, brakePosition, velocityOrigin.Get(0), angularRate_Origin, angularRate_Y_pair, currentAcceleration))));
     System.out.println(slip.multiply(angularRate_Origin).map(Round._3) + " " + brakePosition + " " + velocityOrigin.Get(0).map(Round._3));
     return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(hapticSteerConfig.fullBraking));
+  }
+
+  @Override // from Vmu931ImuFrameListener
+  public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
+    currentAcceleration = SensorsConfig.GLOBAL.getPlanarVmu931Imu().accXY(vmu931ImuFrame).Get(0);
   }
 }
