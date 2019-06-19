@@ -32,8 +32,8 @@ public class PerSectionModuleTest extends TestCase {
     SpeedLimitPerSectionModule perSectionModule = new SpeedLimitPerSectionModule();
     perSectionModule.first();
     Tensor pose = Tensors.of(//
-        Quantity.of(0, SI.METER),//
-        Quantity.of(0, SI.METER),//
+        Quantity.of(0, SI.METER), //
+        Quantity.of(0, SI.METER), //
         RealScalar.of(0));
     RimoGetEvent rimoGetEvent = RimoGetEvents.create(5000, 5000);
     GokartPoseEvent testEvent = GokartPoseEvents.create(pose, RealScalar.ONE);

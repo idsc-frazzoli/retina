@@ -13,7 +13,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerUno;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
@@ -34,17 +33,15 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
-  private final Tensor poseFunction = Tensors.of(RealScalar.of(-1.182),Quantity.of(84.647, SI.METER));
+  private final Tensor poseFunction = Tensors.of(RealScalar.of(-1.182), Quantity.of(84.647, SI.METER));
   public final GetListener<RimoGetEvent> rimoGetListener = new GetListener<RimoGetEvent>() {
-    
     @Override
     public void getEvent(RimoGetEvent getEvent) {
       rimoGetEvent = getEvent;
       rimoRateControllerWrap.getEvent(getEvent);
     }
-  }; 
-  
-  
+  };
+
   @Override // from AbstractModule
   protected void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
@@ -53,8 +50,6 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
     gokartPoseLcmClient.startSubscriptions();
   }
 
-  
-  
   @Override // from AbstractModule
   protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
@@ -66,7 +61,7 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY; // TODO Jan fragen, was das richtige ist.
   }
-  
+
   @Override
   public Optional<RimoPutEvent> putEvent() {
     if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent)) { // check availability of pose
