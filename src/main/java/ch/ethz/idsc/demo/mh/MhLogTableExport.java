@@ -86,5 +86,6 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
       } catch (Exception exception) {
         exception.printStackTrace();
       }
+    System.out.println("finished!");
   }
 }

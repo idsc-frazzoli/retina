@@ -182,27 +182,30 @@ fullD = [t,meanRate, meanpower, meanRateAcceleration];
 
 %speed threshold after which the speed is fully applied (hand tuned)
 st = 0.5;
+smt = 11;
 %get all positive values
-posD = fullD(fullD(:,2)>st,:);
-negD = fullD(fullD(:,2)<-st,:);
+%get main ramp
+rampTop = 1300;
+rampBot = -700;
+rampD = fullD(fullD(:,2)>st & fullD(:,2)<smt & fullD(:,3)>rampBot & fullD(:,3)<rampTop,:);
 %point mirror and combine
-combD = [posD;negD.*[1,-1,-1,-1]];
+%combD = [posD;negD.*[1,-1,-1,-1]];
 
 %split into positive and negative power
-powerthreshold =100;
-powerthresholdoffset = -700;
-combPosPowerD = combD(combD(:,3)>powerthreshold+powerthresholdoffset,:);
-combNegPowerD = combD(combD(:,3)<-powerthreshold+powerthresholdoffset,:);
+%powerthreshold =100;
+%powerthresholdoffset = -700;
+%combPosPowerD = combD(combD(:,3)>powerthreshold+powerthresholdoffset,:);
+%combNegPowerD = combD(combD(:,3)<-powerthreshold+powerthresholdoffset,:);
 
 if(true)
     %fit plane
-    xxx = combPosPowerD(:,2)
-    yyy = combPosPowerD(:,3)
-    zzz = combPosPowerD(:,4)
-    sfpos = fit(combPosPowerD(:,2:3),combPosPowerD(:,4),'poly33');
+    xxx = rampD(:,2);
+    yyy = rampD(:,3);
+    zzz = rampD(:,4);
+    sfpos = fit([xxx,yyy],zzz,'poly11');
     figure
     hold on
-    scatter3(combPosPowerD(:,2),combPosPowerD(:,3),combPosPowerD(:,4));
+    scatter3(xxx,yyy,zzz);
     plot(sfpos)
     xlabel('forward speed [m/s]')
     ylabel('power [A]')
@@ -210,7 +213,7 @@ if(true)
     title('raw data with speed > 0.5 m/s and positive power forward+backward combined')
 end
 
-if(true)
+if(false)
     %fit plane
     sfneg = fit(combNegPowerD(:,2:3),combNegPowerD(:,4),'poly55');
     figure
@@ -224,17 +227,24 @@ if(true)
 end
 
 if(true)
-    [XX,YY] = meshgrid(-5:0.2:5,minpower:powerstep:maxpower);
+    p0 = -0.3223;
+    ppower = 0.001855;
+    pvel = -0.0107;
+    [XX,YY] = meshgrid(-12:0.2:12,minpower:powerstep:maxpower);
     [m,n]=size(XX);
     ZZhc = zeros(m,n);
     for ix =1:m
         for iy=1:n
-            ZZhc(ix,iy)=hcpowerfunction(XX(ix,iy),YY(ix,iy),sfpos,sfneg, st, powerthreshold);
+            ZZhc(ix,iy)=accuratepowerfunction(XX(ix,iy),YY(ix,iy),p0,ppower,pvel, st, rampBot, rampTop);
+            %ZZhc(ix,iy)=hcpowerfunction(XX(ix,iy),YY(ix,iy),sfpos,sfneg, st, powerthreshold);
         end
     end
     figure
+    hold on
     surf(XX,YY,ZZhc);
+    scatter3(meanRate,meanpower,meanRateAcceleration);
         xlabel('forward speed [m/s]')
+        hold off
     ylabel('power [Arms]')
     zlabel('forwardacceleration [m/s^2]')
     title('hand crafted model consisting of 4 fitted quadrants')
@@ -242,8 +252,8 @@ end
 
 %compute max 
 
-[cp0,cp1,cp2,cp3] = getSlice(sfpos,maxpower);
-[cn0,cn1,cn2,cn3] = getSlice(sfneg,-maxpower);
+%[cp0,cp1,cp2,cp3] = getSlice(sfpos,maxpower);
+%[cn0,cn1,cn2,cn3] = getSlice(sfneg,-maxpower);
 
 x = -9:0.01:9;
 y = zeros(numel(x),1);
