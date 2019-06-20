@@ -33,7 +33,7 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
-  private final Tensor poseFunction = Tensors.of(RealScalar.of(-1.182), Quantity.of(84.647, SI.METER));
+  private final Tensor poseFunction = Tensors.of(RealScalar.of(1.182), Quantity.of(84.647, SI.METER));
   public final GetListener<RimoGetEvent> rimoGetListener = new GetListener<RimoGetEvent>() {
     @Override
     public void getEvent(RimoGetEvent getEvent) {
@@ -59,8 +59,7 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
 
   @Override // from LinmotPutProvider
   public ProviderRank getProviderRank() {
-    return ProviderRank.EMERGENCY; // TODO Jan fragen, was das richtige ist.
-  }
+    return ProviderRank.EMERGENCY;} 
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
