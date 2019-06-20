@@ -67,6 +67,7 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
     if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent)) { // check availability of pose
       Tensor currAngularRate = rimoGetEvent.getAngularRate_Y_pair();
       Tensor pose = gokartPoseEvent.getPose();
+
       // straight line function, which divides driving area in two parts: y = -1.182x + 84.647
       Tensor maxVel = Tensors.of(Quantity.of(3, SI.VELOCITY), Quantity.of(2, SI.VELOCITY));
       Scalar MaxAngularRate;
@@ -74,6 +75,7 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
         MaxAngularRate = maxVel.Get(0).divide(RimoTireConfiguration._REAR.radius());
       } else
         MaxAngularRate = maxVel.Get(1).divide(RimoTireConfiguration._REAR.radius());
+      System.out.println(pose.Get(0) + " " + pose.Get(1) + " " + maxVel);
       // Angular velocity is limited by MaxAngularRate
       if (Scalars.lessThan(MaxAngularRate, currAngularRate.Get(0)) || Scalars.lessThan(MaxAngularRate, currAngularRate.Get(1))) {
         return rimoRateControllerWrap.iterate(MaxAngularRate);
