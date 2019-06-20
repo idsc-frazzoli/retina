@@ -70,15 +70,15 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
 
       // straight line function, which divides driving area in two parts: y = -1.182x + 84.647
       Tensor maxVel = Tensors.of(Quantity.of(3, SI.VELOCITY), Quantity.of(2, SI.VELOCITY));
-      Scalar MaxAngularRate;
+      Scalar maxAngularRate;
       if (Scalars.lessThan(pose.Get(1).add(pose.Get(0).multiply(poseFunction.Get(0))), poseFunction.Get(1))) {
-        MaxAngularRate = maxVel.Get(0).divide(RimoTireConfiguration._REAR.radius());
+        maxAngularRate = maxVel.Get(0).divide(RimoTireConfiguration._REAR.radius());
       } else
-        MaxAngularRate = maxVel.Get(1).divide(RimoTireConfiguration._REAR.radius());
-      System.out.println(pose.Get(0) + " " + pose.Get(1) + " " + maxVel);
+        maxAngularRate = maxVel.Get(1).divide(RimoTireConfiguration._REAR.radius());
+      System.out.println(pose.Get(0) + " " + pose.Get(1) + " " + maxAngularRate);
       // Angular velocity is limited by MaxAngularRate
-      if (Scalars.lessThan(MaxAngularRate, currAngularRate.Get(0)) || Scalars.lessThan(MaxAngularRate, currAngularRate.Get(1))) {
-        return rimoRateControllerWrap.iterate(MaxAngularRate);
+      if (Scalars.lessThan(maxAngularRate, currAngularRate.Get(0)) || Scalars.lessThan(maxAngularRate, currAngularRate.Get(1))) {
+        return rimoRateControllerWrap.iterate(maxAngularRate);
       }
     }
     return Optional.empty();
