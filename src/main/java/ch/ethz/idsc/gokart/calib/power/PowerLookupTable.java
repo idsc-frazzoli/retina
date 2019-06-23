@@ -25,7 +25,7 @@ public class PowerLookupTable {
   private static final File FILE_INVERSE = new File(DIRECTORY, "powerlookuptable_inverse.object");
   // ---
   private static final Scalar MAX_VEL = Quantity.of(+10, SI.VELOCITY);
-  private static final Scalar MAX_ACC = Quantity.of(+2, SI.ACCELERATION);
+  private static final Scalar MAX_ACC = Quantity.of(+2.1, SI.ACCELERATION);
   /** min and max values for lookup tables */
   public static final Clip CLIP_VEL = Clips.absolute(MAX_VEL);
   public static final Clip CLIP_ACC = Clips.absolute(MAX_ACC);
@@ -53,7 +53,8 @@ public class PowerLookupTable {
     System.out.println("compute power lookup table forward...");
     // maps from (current, speed) -> (acceleration)
     LookupTable2D lookupTable2D = LookupTable2D.build( //
-        MotorFunction::getAccelerationEstimation, //
+        // MotorFunction::getAccelerationEstimation, //
+        MotorFunctionV2::getAccelerationEstimation, //
         RES, RES, //
         ManualConfig.GLOBAL.torqueLimitClip(), //
         CLIP_VEL);
@@ -75,7 +76,8 @@ public class PowerLookupTable {
     System.out.println("compute power lookup table inverse...");
     // maps from (acceleration, speed)->(acceleration)
     LookupTable2D lookupTable2D = forward.getInverseLookupTableBinarySearch( //
-        MotorFunction::getAccelerationEstimation, //
+        // MotorFunction::getAccelerationEstimation, //
+        MotorFunctionV2::getAccelerationEstimation, //
         0, //
         RES, RES, //
         CLIP_ACC, Chop._03);
@@ -101,7 +103,7 @@ public class PowerLookupTable {
   public Tensor getMinMaxAcceleration(Scalar velocity) {
     // the min and max values are multiplied by 1.02
     // in order to ensure that the maximum value can be output
-    return lookupTable_forward.getExtremalValues0(velocity).multiply(RealScalar.of(1.02));
+    return lookupTable_forward.getExtremalValues0(velocity).multiply(RealScalar.of(1.01));
   }
 
   /** get acceleration for a given current and velocity
