@@ -73,7 +73,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
-        System.out.println(count+"pose time: " + time.number().doubleValue());
+      System.out.println(count + "pose time: " + time.number().doubleValue());
     } else //
     if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
       SteerGetEvent sge = new SteerGetEvent(byteBuffer);

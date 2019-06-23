@@ -12,6 +12,9 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerUno;
+import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
@@ -35,6 +38,7 @@ public class SetVelNotsmartBrakingModule extends AbstractModule implements Linmo
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final HapticSteerConfig hapticSteerConfig;
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
+  final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
 
   public SetVelNotsmartBrakingModule() {
     this(HapticSteerConfig.GLOBAL);
@@ -92,5 +96,9 @@ public class SetVelNotsmartBrakingModule extends AbstractModule implements Linmo
         slip, brakePosition, velocityOrigin.Get(0), angularRate_Origin))));
     System.out.println(slip.multiply(angularRate_Origin).map(Round._3) + " " + brakePosition + " " + velocityOrigin.Get(0).map(Round._3));
     return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(hapticSteerConfig.fullBraking));
+  }
+
+  Optional<RimoPutEvent> setVelEvent(Scalar MaxVel) {
+    return rimoRateControllerWrap.iterate(MaxVel);
   }
 }
