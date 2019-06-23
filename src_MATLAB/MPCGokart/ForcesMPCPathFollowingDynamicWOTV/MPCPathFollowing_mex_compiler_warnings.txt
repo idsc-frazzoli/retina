@@ -1,0 +1,60 @@
+Building MEX interface:
+[Warning: You are using gcc version '7.4.0'. The version of gcc is not supported. The version currently supported with
+MEX is '6.3.x'. For a list of currently supported compilers see:
+<a href="https://www.mathworks.com/support/compilers/current_release">https://www.mathworks.com/support/compilers/current_release</a>.] 
+[> In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('generateCode')" style="font-weight:bold">generateCode</a>
+  In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('FORCES_NLP')" style="font-weight:bold">FORCES_NLP</a>
+  In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('DynamicPathFollowingForces', '/home/marc/git/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamicWOTV/DynamicPathFollowingForces.m', 137)" style="font-weight:bold">DynamicPathFollowingForces</a> (<a href="matlab: opentoline('/home/marc/git/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamicWOTV/DynamicPathFollowingForces.m',137,0)">line 137</a>)] 
+
+Building Simulink interface:
+[Warning: You are using gcc version '7.4.0'. The version of gcc is not supported. The version currently supported with
+MEX is '6.3.x'. For a list of currently supported compilers see:
+<a href="https://www.mathworks.com/support/compilers/current_release">https://www.mathworks.com/support/compilers/current_release</a>.] 
+[> In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('generateCode')" style="font-weight:bold">generateCode</a>
+  In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('FORCES_NLP')" style="font-weight:bold">FORCES_NLP</a>
+  In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('DynamicPathFollowingForces', '/home/marc/git/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamicWOTV/DynamicPathFollowingForces.m', 137)" style="font-weight:bold">DynamicPathFollowingForces</a> (<a href="matlab: opentoline('/home/marc/git/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamicWOTV/DynamicPathFollowingForces.m',137,0)">line 137</a>)] 
+In file included from /home/marc/git/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamicWOTV/MPCPathFollowing/interface/MPCPathFollowing_simulinkBlock.c:282:0:
+/usr/local/MATLAB/R2018a/simulink/include/simulink.c: In function ‘ssWriteRTWWorkVect’:
+/usr/local/MATLAB/R2018a/simulink/include/simulink.c:101:5: warning: ‘</arg></arguments></diag></diag_root>’ directive writing 37 bytes into a region of size 14 [-Wformat-overflow=]
+     "<diag_root><diag id=" #x "><arguments>" y "</arguments></diag></diag_root>"
+     ^
+/usr/local/MATLAB/R2018a/simulink/include/simulink.c:1923:23: note: in expansion of macro ‘_SimstructErrmsgWithArg’
+                       _SimstructErrmsgWithArg(
+                       ^~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/stdio.h:862:0,
+                 from /usr/local/MATLAB/R2018a/simulink/include/simstruc_compcond.h:112,
+                 from /usr/local/MATLAB/R2018a/simulink/include/simstruc.h:64,
+                 from /home/marc/git/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamicWOTV/MPCPathFollowing/interface/MPCPathFollowing_simulinkBlock.c:29:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:33:10: note: ‘__builtin___sprintf_chk’ output 224 or more bytes into a destination of size 200
+   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       __bos (__s), __fmt, __va_arg_pack ());
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Building Simulink compact interface:
+[Warning: You are using gcc version '7.4.0'. The version of gcc is not supported. The version currently supported with
+MEX is '6.3.x'. For a list of currently supported compilers see:
+<a href="https://www.mathworks.com/support/compilers/current_release">https://www.mathworks.com/support/compilers/current_release</a>.] 
+[> In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('generateCode')" style="font-weight:bold">generateCode</a>
+  In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('FORCES_NLP')" style="font-weight:bold">FORCES_NLP</a>
+  In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('DynamicPathFollowingForces', '/home/marc/git/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamicWOTV/DynamicPathFollowingForces.m', 137)" style="font-weight:bold">DynamicPathFollowingForces</a> (<a href="matlab: opentoline('/home/marc/git/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamicWOTV/DynamicPathFollowingForces.m',137,0)">line 137</a>)] 
+In file included from /home/marc/git/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamicWOTV/MPCPathFollowing/interface/MPCPathFollowing_simulinkBlockcompact.c:282:0:
+/usr/local/MATLAB/R2018a/simulink/include/simulink.c: In function ‘ssWriteRTWWorkVect’:
+/usr/local/MATLAB/R2018a/simulink/include/simulink.c:101:5: warning: ‘</arg></arguments></diag></diag_root>’ directive writing 37 bytes into a region of size 14 [-Wformat-overflow=]
+     "<diag_root><diag id=" #x "><arguments>" y "</arguments></diag></diag_root>"
+     ^
+/usr/local/MATLAB/R2018a/simulink/include/simulink.c:1923:23: note: in expansion of macro ‘_SimstructErrmsgWithArg’
+                       _SimstructErrmsgWithArg(
+                       ^~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/stdio.h:862:0,
+                 from /usr/local/MATLAB/R2018a/simulink/include/simstruc_compcond.h:112,
+                 from /usr/local/MATLAB/R2018a/simulink/include/simstruc.h:64,
+                 from /home/marc/git/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamicWOTV/MPCPathFollowing/interface/MPCPathFollowing_simulinkBlockcompact.c:29:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:33:10: note: ‘__builtin___sprintf_chk’ output 224 or more bytes into a destination of size 200
+   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       __bos (__s), __fmt, __va_arg_pack ());
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+

@@ -186,8 +186,10 @@ smt = 11;
 %get all positive values
 %get main ramp
 rampTop = 1300;
-rampBot = -700;
+rampBot = -660;
 rampD = fullD(fullD(:,2)>st & fullD(:,2)<smt & fullD(:,3)>rampBot & fullD(:,3)<rampTop,:);
+bottomD = fullD(fullD(:,2)>st & fullD(:,2)<smt & fullD(:,3)<rampBot,:);
+topD = fullD(fullD(:,2)>st & fullD(:,2)<smt & fullD(:,3)>rampTop & fullD(:,3)<2200,:);
 %point mirror and combine
 %combD = [posD;negD.*[1,-1,-1,-1]];
 
@@ -235,7 +237,8 @@ if(true)
     ZZhc = zeros(m,n);
     for ix =1:m
         for iy=1:n
-            ZZhc(ix,iy)=accuratepowerfunction(XX(ix,iy),YY(ix,iy),p0,ppower,pvel, st, rampBot, rampTop);
+            %ZZhc(ix,iy)=accuratepowerfunction(XX(ix,iy),YY(ix,iy),p0,ppower,pvel, st, rampBot,-10, rampTop);
+            ZZhc(ix,iy)=finalpower(XX(ix,iy),YY(ix,iy));
             %ZZhc(ix,iy)=hcpowerfunction(XX(ix,iy),YY(ix,iy),sfpos,sfneg, st, powerthreshold);
         end
     end
@@ -247,7 +250,7 @@ if(true)
         hold off
     ylabel('power [Arms]')
     zlabel('forwardacceleration [m/s^2]')
-    title('hand crafted model consisting of 4 fitted quadrants')
+    %title('hand crafted model consisting of 4 fitted quadrants')
 end
 
 %compute max 
@@ -259,8 +262,8 @@ x = -9:0.01:9;
 y = zeros(numel(x),1);
 ys = zeros(numel(x),1);
 for i = 1:numel(x)
-   y(i)=getMaxAcc(x(i)); 
-   ys(i)=getSmoothMaxAcc(x(i)); 
+   y(i)=getMaxAccV2(x(i)); 
+   ys(i)=getSmoothMaxAccV2(x(i)); 
 end
 figure
 title('hardcoded min max')
