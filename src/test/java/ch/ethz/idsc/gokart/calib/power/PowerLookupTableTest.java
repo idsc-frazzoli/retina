@@ -26,7 +26,7 @@ public class PowerLookupTableTest extends TestCase {
     Scalar maxpower = RealScalar.ONE;
     Scalar maxacc = powerLookupTable.getNormalizedAcceleration(Quantity.of(0, SI.ACCELERATION), maxpower, velocity);
     Scalar maxcurr = powerLookupTable.getNeededCurrent(maxacc, velocity);
-    //Chop._03.requireClose(maxacc, Quantity.of(+1.8412589178085328, SI.ACCELERATION));
+    // Chop._03.requireClose(maxacc, Quantity.of(+1.8412589178085328, SI.ACCELERATION));
     System.out.println(maxacc);
     System.out.println(maxcurr);
     Chop._03.requireClose(maxacc, Quantity.of(2.0777, SI.ACCELERATION));

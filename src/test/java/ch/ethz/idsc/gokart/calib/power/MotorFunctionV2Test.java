@@ -13,7 +13,6 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class MotorFunctionV2Test extends TestCase {
-
   public void testSimple() {
     Scalar epos = MotorFunctionV2.getAccelerationEstimation( //
         Quantity.of(+1000, NonSI.ARMS), //
@@ -25,7 +24,7 @@ public class MotorFunctionV2Test extends TestCase {
         Quantity.of(-5, SI.VELOCITY));
     Chop._12.requireClose(epos, eneg.negate());
   }
-  
+
   public void testHigh() {
     Scalar acc = MotorFunctionV2.getAccelerationEstimation( //
         Quantity.of(+2100, NonSI.ARMS), //
@@ -33,7 +32,7 @@ public class MotorFunctionV2Test extends TestCase {
     assertEquals(QuantityUnit.of(acc), SI.ACCELERATION);
     Chop._04.requireClose(acc, Scalars.fromString("2.0357[m*s^-2]"));
   }
-  
+
   public void testLow() {
     Scalar acc = MotorFunctionV2.getAccelerationEstimation( //
         Quantity.of(-2100, NonSI.ARMS), //
@@ -41,7 +40,7 @@ public class MotorFunctionV2Test extends TestCase {
     assertEquals(QuantityUnit.of(acc), SI.ACCELERATION);
     Chop._04.requireClose(acc, Scalars.fromString("-1.6929[m*s^-2]"));
   }
-  
+
   public void testZero() {
     Scalar acc = MotorFunctionV2.getAccelerationEstimation( //
         Quantity.of(0, NonSI.ARMS), //
