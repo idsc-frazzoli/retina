@@ -35,8 +35,8 @@ MPCPathFollowing_float min(MPCPathFollowing_float a,MPCPathFollowing_float b){
 }
 
 MPCPathFollowing_float getInitAB(MPCPathFollowing_float ab, MPCPathFollowing_float dotab, MPCPathFollowing_float v, double time){
-	//return min(getMaxAcc(v)-0.01,ab+dotab*time);
-	return ab+dotab*time;
+	return min(getMaxAcc(v)-0.01,ab+dotab*time);
+	//return ab+dotab*time;
 }
 
 MPCPathFollowing_float getInitSteer(MPCPathFollowing_float beta, MPCPathFollowing_float dotbeta, double time){
