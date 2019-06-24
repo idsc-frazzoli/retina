@@ -136,7 +136,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 1000;
+tend = 300;
 eulersteps = 10;
 planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]
@@ -182,7 +182,7 @@ for i =1:tend
         end
     end
     %xs(6)=xs(6)+normrnd(0,0.04);
-    xs(index.ab-index.nu)=min(casadiGetMaxAcc(xs(index.v-index.nu))-0.0001,xs(index.ab-index.nu));
+    %xs(index.ab-index.nu)=min(casadiGetSmoothMaxAccV2(xs(index.v-index.nu))-0.0001,xs(index.ab-index.nu));
     problem.xinit = xs';
     %do it every time because we don't care about the performance of this
     %script
