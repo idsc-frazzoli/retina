@@ -3,6 +3,8 @@ package ch.ethz.idsc.demo.mg.slam;
 
 import ch.ethz.idsc.tensor.Tensor;
 
-public interface GokartPoseUnitlessInterface {
-  public Tensor getPoseUnitless();
+@FunctionalInterface
+interface GokartPoseUnitlessInterface {
+  /** @return {x, y, heading} */
+  Tensor getPoseUnitless();
 }
