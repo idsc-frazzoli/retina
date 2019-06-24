@@ -1,19 +1,15 @@
 #include "MPCPathFollowing/include/MPCPathFollowing.h"
 
 MPCPathFollowing_float cp(MPCPathFollowing_float v){
-	double cp0 = 1.9173276271;
-	double cp1 = -0.0113682655;
-	double cp2 = -0.0150793283;
-	double cp3 = 0.0023869979;
-	return cp0+cp1*v+cp2*v*v+cp3*v*v*v;
+	double cp0 = 2.0892;
+	double cp1 = -0.0107;
+	return cp0+cp1*v;
 }
 
 MPCPathFollowing_float cn(MPCPathFollowing_float v){
-	double cn0 = -1.4265329731;
-	double cn1 = -0.1612157772;
-	double cn2 = 0.0503284643;
-	double cn3 = -0.0048860339;
-	return cn0+cn1*v+cn2*v*v+cn3*v*v*v;
+	double cn0 = -1.5466;
+	double cn1 = -0.0293;
+	return cn0+cn1*v;
 }
 
 MPCPathFollowing_float getMaxAcc(MPCPathFollowing_float v){
