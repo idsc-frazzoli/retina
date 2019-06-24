@@ -4,54 +4,80 @@
 
 #include "TestUKF.h"
 #include <iostream>
+#include <fstream>
 #include <functional>
 #include <stdlib.h>
 #include <time.h>
 
+using namespace std;
+using namespace Eigen;
+
+const static IOFormat CSVFormat(StreamPrecision, DontAlignCols, ", ", "\n");
 
 void TestUKF::test() {
-    UKF::ParameterVec groundTruth;
-    groundTruth<< 9, 1, 10 ;
-    UKF::ParameterVec mean = groundTruth*1;
-    UKF::VarienceMat varience = UKF::VarienceMat::Identity()*20;
-    UKF ukf = UKF(mean, varience);
+    int q = 0.1; //std of process
+    int r = 0.1; //std of measurement
+    UKF::VarienceMat processCov = UKF::VarienceMat::Identity()*q; // cov of process
+    UKF::MeasurementMat measureCov = UKF::MeasurementMat::Ones()*r; // cov of measurement
 
+    UKF::ParameterVec s; //initial state
+    s << 0, 0, 1;
+    UKF::ParameterVec x =
+            s + q * UKF::ParameterVec::Random(); //initial state with noise
+    UKF::VarienceMat P = UKF::VarienceMat::Identity(); //inital state cov
 
+    //UKF
+    UKF ukf = UKF(s, P);
 
-
+    //functions
+    std::function<UKF::MeasurementVec(UKF::ParameterVec)> measureFunction
+            = [s](UKF::ParameterVec parameter){
+        UKF::MeasurementVec measurementVec;
+        measurementVec << s(1);
+        return measurementVec;
+    };
     std::function<UKF::ParameterVec(UKF::ParameterVec)> predictionFunction
-    = [](UKF::ParameterVec parameter){
-            return parameter;
+            = [](UKF::ParameterVec parameterVec){
+        return parameterVec;
     };
 
-    for (int i = 0; i<= 1000; i++){
-        std::cout << "------------------------------iteration: " << i << std::endl;
-        //parameter;
-        double k = 10*static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
-        //double k = 1;
-        std::cout << "k: " << k << std::endl;
+    //Space allocation for plotting
+    UKF::ParameterSafe xV;
+    UKF::ParameterSafe sV;
+    UKF::MeasurementSafe zV;
+    xV = UKF::ParameterSafe::Zero();               //estimate
+    sV = UKF::ParameterSafe::Zero();               //actual
+    zV = UKF::MeasurementSafe::Zero();
 
-        std::function<UKF::MeasurementVec(UKF::ParameterVec)> measureFunction
-                = [k](UKF::ParameterVec parameter){
-                    double b = parameter(0);
-                    double c = parameter(1);
-                    double d = parameter(2);
+    for(int i = 0; i<= xV.size(); i++){
+        //measurements save actual state and measurement
+        UKF::MeasurementVec z =
+                measureFunction(s) + UKF::MeasurementVec::Random() * r;
+        sV.col(i) = s;
+        zV.col(i) = z;
 
-                    double r = d*sin(c*atan(b*k));
-                    //std::cout << "b: " << b << std::endl;
-                    //std::cout << "c: " << c << std::endl;
-                    //std::cout << "d: " << d << std::endl;
-                    //std::cout << "r: " << r << std::endl;
-                    UKF::MeasurementVec measurementVec;
-                    measurementVec << r ;
-                    return measurementVec;
-                };
+        //UKF
+        ukf.update(measureFunction,predictionFunction,measureCov,processCov,z);
 
-        UKF::MeasurmentMat measurementNoise = UKF::MeasurmentMat::Identity();
-        UKF::VarienceMat processNoise = UKF::VarienceMat::Identity()*0.01;
-        UKF::MeasurementVec z = measureFunction(groundTruth);
+        // save actual estimate
+        xV.col(i) = ukf.mean;
+        // update process
+        s = predictionFunction(s) + q * UKF::ParameterVec::Random();
+    }
 
-        ukf.update(measureFunction,predictionFunction,measurementNoise,processNoise,z);
+    // export for plot
+    UKF::ParameterVec vec = UKF::ParameterVec::Ones();
+    writeToCSV("vec", vec);
+
+
+
+
+}
+
+void TestUKF::writeToCSV(string name, Eigen::MatrixXd matrix){
+    ofstream file(name.c_str());
+    if (file.is_open()){
+        file << matrix.format(CSVFormat);
     }
 
 }

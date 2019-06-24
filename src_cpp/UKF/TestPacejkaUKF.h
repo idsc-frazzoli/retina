@@ -10,12 +10,12 @@
 #include "UnscentedKalmanFilter.h"
 
 
-class TestUKF {
+class TestPacejkaUKF {
 public:
     void test();
-    typedef UnscentedKalmanFilter<NP, NM, NI> UKF;
+    typedef UnscentedKalmanFilter<NP,NM, NI> UKF;
     static UKF::MeasurementVec measureFunction(UKF::ParameterVec parameter, double k);
-    void writeToCSV(std::string, Eigen::MatrixXd);
+
 };
 
 
