@@ -14,7 +14,7 @@ public class PursuitPlanLcmTest extends TestCase {
   private static final Tensor LOOK_AHEAD = Tensors.fromString("{2[m],20[m],2}");
   private static final boolean IS_FORWARD = false;
 
-  private ByteBuffer setup() {
+  private static ByteBuffer setup() {
     BinaryBlob blob = PursuitPlanLcm.encode(IS_FORWARD, POSE, LOOK_AHEAD);
     ByteBuffer byteBuffer = ByteBuffer.wrap(blob.data);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);

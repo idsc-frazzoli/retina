@@ -59,14 +59,14 @@ public class SpeedLimitPerSectionModule extends AbstractModule implements PutPro
 
   @Override // from LinmotPutProvider
   public ProviderRank getProviderRank() {
-    return ProviderRank.EMERGENCY;} 
+    return ProviderRank.EMERGENCY;
+  }
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
     if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent)) { // check availability of pose
       Tensor currAngularRate = rimoGetEvent.getAngularRate_Y_pair();
       Tensor pose = gokartPoseEvent.getPose();
-
       // straight line function, which divides driving area in two parts: y = -1.182x + 84.647
       Tensor maxVel = Tensors.of(Quantity.of(3, SI.VELOCITY), Quantity.of(2, SI.VELOCITY));
       Scalar maxAngularRate;

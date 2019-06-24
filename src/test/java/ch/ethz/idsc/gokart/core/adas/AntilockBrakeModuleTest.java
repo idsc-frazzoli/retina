@@ -30,7 +30,7 @@ public class AntilockBrakeModuleTest extends TestCase {
     antilockBrakeModule.putEvent();
     antilockBrakeModule.last();
   }
-  
+
   public void testSimple2() {
     SetVelSmartBrakingModule antilockBrakeModule = new SetVelSmartBrakingModule();
     antilockBrakeModule.first();
@@ -50,6 +50,7 @@ public class AntilockBrakeModuleTest extends TestCase {
             Quantity.of(1, SI.PER_SECOND)));
     antilockBrakeModule.last();
   }
+
   public void testSimple4() {
     SetVelSmartBrakingModule antilockBrakeModule = new SetVelSmartBrakingModule();
     antilockBrakeModule.first();

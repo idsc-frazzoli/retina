@@ -99,7 +99,7 @@ public class SetVelSmartBrakingModule extends AbstractModule implements PutProvi
   public void getEvent(RimoGetEvent getEvent) {
     rimoGetEvent = getEvent;
     rimoRateControllerWrap.getEvent(getEvent);
-  };
+  }
 
   @Override // from PutProvider
   public ProviderRank getProviderRank() {
@@ -120,8 +120,7 @@ public class SetVelSmartBrakingModule extends AbstractModule implements PutProvi
         fullStopping = true;
       }
       if (fullStopping) {
-        fullStopping = Scalars.lessThan(Quantity.of(0.1, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0)) //
-            ? true : false;
+        fullStopping = Scalars.lessThan(Quantity.of(0.1, SI.VELOCITY), lidarLocalizationModule.getVelocity().Get(0));
         return smartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
       }
     }
