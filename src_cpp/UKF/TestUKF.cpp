@@ -16,7 +16,8 @@ using namespace Eigen;
 
 void TestUKF::test() {
 
-    bool print = true;
+    bool print = false;
+    bool writeCSV = true;
 
     double q = 0.1; //std of process
     double r = 0.1; //std of measurement
@@ -60,18 +61,22 @@ void TestUKF::test() {
     sV = UKF::ParameterSafe::Zero();               //actual
     zV = UKF::MeasurementSafe::Zero();
 
-    for(int i = 0; i<= NI; i++){
+    for(int i = 0; i<= NI; i++) {
         //measurements save actual state and measurement
         UKF::MeasurementVec z =
                 measureFunction(s) + UKF::MeasurementVec::Random() * r;
         sV.col(i) = s;
         zV.col(i) = z;
-        cout << "xV" << endl << xV << endl;
-        cout << "sV" << endl << sV << endl;
-        cout << "zV" << endl << zV << endl;
+        if (print) {
+            cout << "xV" << endl << xV << endl;
+            cout << "sV" << endl << sV << endl;
+            cout << "zV" << endl << zV << endl;
+        }
 
         //UKF
-        cout << "update " << i << "..................." << endl;
+        if (print) {
+            cout << "update " << i << "..................." << endl;
+        }
         ukf.update(measureFunction,predictionFunction,measureCov,processCov,z);
 
         // save actual estimate
@@ -82,8 +87,10 @@ void TestUKF::test() {
     }
 
     // export for plot
-    WriterUKF writerUkf;
-    writerUkf.writeToCSV("xV.csv", xV);
-    writerUkf.writeToCSV("sV.csv", sV);
-    writerUkf.writeToCSV("zV.csv", zV);
+    if(writeCSV) {
+        WriterUKF writerUkf;
+        writerUkf.writeToCSV("xV.csv", xV.transpose());
+        writerUkf.writeToCSV("sV.csv", sV.transpose());
+        writerUkf.writeToCSV("zV.csv", zV.transpose());
+    }
 }
