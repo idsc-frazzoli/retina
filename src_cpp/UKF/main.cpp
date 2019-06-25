@@ -11,12 +11,12 @@ using std::endl;
 
 int main()
 {
-    //cout << "test pacejka UKF...... " << endl;
+    //cout << "test pacejka UKF............................... " << endl;
     //TestPacejkaUKF testPacejkaUkf;
     //testPacejkaUkf.test();
 
 
-    cout << "test UKF......" << endl;
+    cout << "test UKF................................" << endl;
     TestUKF testUkf;
     testUkf.test();
 

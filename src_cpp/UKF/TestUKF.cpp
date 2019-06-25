@@ -1,5 +1,6 @@
 //
 // Created by maximilien on 22.05.19.
+// based on https://www.mathworks.com/matlabcentral/fileexchange/18217-learning-the-unscented-kalman-filter
 //
 
 #include "TestUKF.h"
@@ -12,33 +13,42 @@
 using namespace std;
 using namespace Eigen;
 
-const static IOFormat CSVFormat(StreamPrecision, DontAlignCols, ", ", "\n");
-
 void TestUKF::test() {
-    int q = 0.1; //std of process
-    int r = 0.1; //std of measurement
-    UKF::VarienceMat processCov = UKF::VarienceMat::Identity()*q; // cov of process
-    UKF::MeasurementMat measureCov = UKF::MeasurementMat::Ones()*r; // cov of measurement
+
+    bool print = true;
+
+    double q = 0.1; //std of process
+    double r = 0.1; //std of measurement
+    UKF::ParameterMat processCov = UKF::ParameterMat::Identity() * q; // cov of process
+    UKF::MeasurementMat measureCov = UKF::MeasurementMat::Identity() * r; // cov of measurement
 
     UKF::ParameterVec s; //initial state
     s << 0, 0, 1;
     UKF::ParameterVec x =
             s + q * UKF::ParameterVec::Random(); //initial state with noise
-    UKF::VarienceMat P = UKF::VarienceMat::Identity(); //inital state cov
+    UKF::ParameterMat P = UKF::ParameterMat::Identity(); //inital state cov
+    if(print){
+        cout << "initial state" << endl << x << endl;
+        cout << "initial cov" << endl << P << endl;
+    }
 
     //UKF
-    UKF ukf = UKF(s, P);
+    UKF ukf = UKF(x, P);
 
     //functions
     std::function<UKF::MeasurementVec(UKF::ParameterVec)> measureFunction
-            = [s](UKF::ParameterVec parameter){
+            = [x](UKF::ParameterVec parameter){
         UKF::MeasurementVec measurementVec;
-        measurementVec << s(1);
+        measurementVec(0) = x(0);
         return measurementVec;
     };
     std::function<UKF::ParameterVec(UKF::ParameterVec)> predictionFunction
             = [](UKF::ParameterVec parameterVec){
-        return parameterVec;
+        UKF::ParameterVec results;
+        results(0) = parameterVec(1);
+        results(1) = parameterVec(2);
+        results(2) = 0.05*parameterVec(0)*(parameterVec(1)+parameterVec(2));
+        return results;
     };
 
     //Space allocation for plotting
@@ -57,10 +67,12 @@ void TestUKF::test() {
         zV.col(i) = z;
 
         //UKF
+        cout << "update " << i << "..................." << endl;
         ukf.update(measureFunction,predictionFunction,measureCov,processCov,z);
 
         // save actual estimate
         xV.col(i) = ukf.mean;
+        ukf.variance;
         // update process
         s = predictionFunction(s) + q * UKF::ParameterVec::Random();
     }
@@ -68,16 +80,13 @@ void TestUKF::test() {
     // export for plot
     UKF::ParameterVec vec = UKF::ParameterVec::Ones();
     writeToCSV("vec", vec);
-
-
-
-
 }
+
+const static IOFormat CSVFormat(StreamPrecision, DontAlignCols, ", ", "\n");
 
 void TestUKF::writeToCSV(string name, Eigen::MatrixXd matrix){
     ofstream file(name.c_str());
     if (file.is_open()){
         file << matrix.format(CSVFormat);
     }
-
 }

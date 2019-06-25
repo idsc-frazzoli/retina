@@ -13,7 +13,7 @@ void TestPacejkaUKF::test() {
     UKF::ParameterVec groundTruth;
     groundTruth<< 9, 1, 10 ;
     UKF::ParameterVec mean = groundTruth*1;
-    UKF::VarienceMat varience = UKF::VarienceMat::Identity()*20;
+    UKF::ParameterMat varience = UKF::ParameterMat::Identity() * 20;
     UKF ukf = UKF(mean, varience);
 
     bool print = true;
@@ -57,7 +57,7 @@ void TestPacejkaUKF::test() {
                 };
 
         UKF::MeasurementMat measurementNoise = UKF::MeasurementMat::Identity();
-        UKF::VarienceMat processNoise = UKF::VarienceMat::Identity()*0.01;
+        UKF::ParameterMat processNoise = UKF::ParameterMat::Identity() * 0.01;
         UKF::MeasurementVec z = measureFunction(groundTruth);
 
         if(print){
