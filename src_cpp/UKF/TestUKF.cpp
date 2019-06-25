@@ -4,6 +4,7 @@
 //
 
 #include "TestUKF.h"
+#include "WriterUKF.h"
 #include <iostream>
 #include <fstream>
 #include <functional>
@@ -59,12 +60,15 @@ void TestUKF::test() {
     sV = UKF::ParameterSafe::Zero();               //actual
     zV = UKF::MeasurementSafe::Zero();
 
-    for(int i = 0; i<= xV.size(); i++){
+    for(int i = 0; i<= NI; i++){
         //measurements save actual state and measurement
         UKF::MeasurementVec z =
                 measureFunction(s) + UKF::MeasurementVec::Random() * r;
         sV.col(i) = s;
         zV.col(i) = z;
+        cout << "xV" << endl << xV << endl;
+        cout << "sV" << endl << sV << endl;
+        cout << "zV" << endl << zV << endl;
 
         //UKF
         cout << "update " << i << "..................." << endl;
@@ -78,15 +82,8 @@ void TestUKF::test() {
     }
 
     // export for plot
-    UKF::ParameterVec vec = UKF::ParameterVec::Ones();
-    writeToCSV("vec", vec);
-}
-
-const static IOFormat CSVFormat(StreamPrecision, DontAlignCols, ", ", "\n");
-
-void TestUKF::writeToCSV(string name, Eigen::MatrixXd matrix){
-    ofstream file(name.c_str());
-    if (file.is_open()){
-        file << matrix.format(CSVFormat);
-    }
+    WriterUKF writerUkf;
+    writerUkf.writeToCSV("xV.csv", xV);
+    writerUkf.writeToCSV("sV.csv", sV);
+    writerUkf.writeToCSV("zV.csv", zV);
 }

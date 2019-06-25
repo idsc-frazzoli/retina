@@ -19,8 +19,8 @@ public:
     typedef Eigen::Matrix<double, NParameter, NMeasurements> CrossCorellationMat;
     typedef Eigen::Matrix<double, NMeasurements, NMeasurements> MeasurementMat;
 
-    typedef Eigen::Matrix<double, NParameter, NIterations> ParameterSafe;
-    typedef Eigen::Matrix<double, NMeasurements, NIterations> MeasurementSafe;
+    typedef Eigen::Matrix<double, NParameter, NIterations+1> ParameterSafe;
+    typedef Eigen::Matrix<double, NMeasurements, NIterations+1> MeasurementSafe;
 
     UnscentedKalmanFilter(ParameterVec mean, ParameterMat variance): mean(mean), variance(variance){
 
@@ -51,7 +51,7 @@ private:
                 MeasurementVec z){
 
         // print param
-        bool print = true;
+        bool print = false;
 
         // Parameters
         double L = NParameter;

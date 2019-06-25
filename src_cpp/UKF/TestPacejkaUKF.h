@@ -5,7 +5,7 @@
 #pragma once
 #define NP 3
 #define NM 1
-#define NI 30
+#define NI 5
 
 #include "UnscentedKalmanFilter.h"
 
