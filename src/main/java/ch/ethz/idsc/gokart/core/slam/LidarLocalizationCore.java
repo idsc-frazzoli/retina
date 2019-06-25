@@ -19,7 +19,7 @@ import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
-import ch.ethz.idsc.sophus.filter.ga.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
 import ch.ethz.idsc.sophus.lie.LieDifferences;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.sophus.lie.se2.Se2Group;
@@ -67,8 +67,7 @@ public class LidarLocalizationCore implements //
    * with the horizontal plane at height of the lidar */
   private Tensor points2d_ferry = null;
   /* package for testing */ Scalar quality = RealScalar.ZERO;
-  private GeodesicIIR1Filter geodesicIIR1Filter = //
-      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, IIR1_FILTER_GYROZ);
+  private GeodesicIIR1 geodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, IIR1_FILTER_GYROZ);
   private Scalar gyroZ_vmu931 = Quantity.of(0.0, SI.PER_SECOND);
   private Scalar gyroZ_filtered = Quantity.of(0.0, SI.PER_SECOND);
   final Thread thread = new Thread(this);
@@ -116,7 +115,7 @@ public class LidarLocalizationCore implements //
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
     vmu931Odometry.vmu931ImuFrame(vmu931ImuFrame);
     gyroZ_vmu931 = vmu931Odometry.getGyroZ();
-    gyroZ_filtered = geodesicIIR1Filter.apply(gyroZ_vmu931).Get();
+    gyroZ_filtered = geodesicIIR1.apply(gyroZ_vmu931).Get();
   }
 
   /***************************************************/
