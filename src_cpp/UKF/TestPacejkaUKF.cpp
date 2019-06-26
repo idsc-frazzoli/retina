@@ -23,7 +23,7 @@ void TestPacejkaUKF::test() {
 
     // UKF start
     UKF::ParameterVec mean = groundTruth; //using groundTruth
-    UKF::ParameterMat variance = UKF::ParameterMat::Identity() ;
+    UKF::ParameterMat variance = UKF::ParameterMat::Identity() * 0.01;
     UKF ukf = UKF(mean, variance);
 
     std::function<UKF::ParameterVec(UKF::ParameterVec)> predictionFunction
@@ -31,14 +31,14 @@ void TestPacejkaUKF::test() {
             return parameterVec;
     };
 
-    for (int i = 0; i<= 1000; i++){
+    for (int i = 0; i<= NI; i++){
         // print
         if(print){
-            std::cout << "iteration------------------------------ " << i << std::endl;
+            std::cout << "iteration-------------------------------------- " << i << std::endl;
         }
 
-        // random parameter s in range [-1;1];
-        double s = 2*static_cast <double> (rand()) / static_cast <double> (RAND_MAX);
+        // random parameter s in range [-1;2];
+        double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
         if(true){
             std::cout << "s: " << s << std::endl;
         }
@@ -65,13 +65,10 @@ void TestPacejkaUKF::test() {
         UKF::MeasurementVec z = measureFunction(groundTruth);
 
         if(print){
-            std::cout << "Zmes: " << z << std::endl;
+            std::cout << "zMes: " << z << std::endl;
         }
 
         ukf.update(measureFunction,predictionFunction,measurementNoise,processNoise,z);
-
-        std::cout << "mu: " << std::endl << ukf.mean <<std::endl;
-
 
     }
 

@@ -57,7 +57,7 @@ private:
         // Parameters
         double L = NParameter;
         double alpha = 1; //spread
-        double beta = 2; //incorporation of prior knowledge (here = 2, assuming gaussian)
+        double beta = 1; //incorporation of prior knowledge (here = 2, assuming gaussian)
         double kappa = 0; //secondary usually set to 0
         double lambda = alpha*alpha*(NParameter+kappa) + NParameter;
         if (print){
@@ -146,10 +146,11 @@ private:
         // print
         if (print){
             for (int i = 0; i<= 2*NParameter+1; i++){
-                std::cout << "chi" <<i <<": " << std::endl << chi[i] << std::endl;
-                std::cout << "zeta" <<i <<": " << std::endl << zeta[i] << std::endl;
+                std::cout << "chi: " << i << std::endl << chi[i] << std::endl;
+                std::cout << "zeta: " << i << std::endl << zeta[i] << std::endl;
             }
-            std::cout << "zPred" <<": " << std::endl << zPred << std::endl;
+            std::cout << "zPred: " << std::endl << zPred << std::endl;
+            std::cout << "zMes: " << std::endl << zMes << std::endl;
         }
 
         MeasurementMat sVar = MeasurementMat::Zero();
@@ -167,13 +168,26 @@ private:
             MeasurementVec zetaZpredTran =zetaZpred.transpose();
             T += w_c[i]*chiMu*zetaZpred;
         }
+        if (print) {
+            std::cout << "sVar:" << std::endl << sVar << std::endl;
+            std::cout << "T:" << std::endl << T << std::endl;
+        }
 
         MeasurementMat sVarInv = sVar.inverse();
         CrossCorellationMat K = T*sVarInv;
+        if (print) {
+            std::cout << "K:" << std::endl << K << std::endl;
+        }
 
 
         // final State
         MeasurementVec zDiff = zMes - zPred;
+
+        // print
+        if (print) {
+            std::cout << "zDiff:" << std::endl << zDiff << std::endl;
+        }
+
         ParameterVec muFinal = mu + K*zDiff;
         ParameterMat sigmaFinal = sigma - K * sVar * (K.transpose());
 
@@ -182,9 +196,8 @@ private:
 
         //print
         if(print){
-            std::cout << "correct" << std::endl;
             std::cout << "muFinal" << std::endl << muFinal << std::endl;
-            std::cout << "sigma final" << std::endl << sigmaFinal << std::endl;
+            std::cout << "sigmaFinal" << std::endl << sigmaFinal << std::endl;
         }
     }
 };
