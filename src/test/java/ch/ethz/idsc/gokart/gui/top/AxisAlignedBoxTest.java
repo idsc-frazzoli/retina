@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.gui.top;
 
 import java.io.IOException;
 
-import ch.ethz.idsc.owl.math.region.Polygons;
+import ch.ethz.idsc.sophus.ply.Polygons;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

@@ -9,7 +9,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.filter.ga.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -22,7 +22,7 @@ public class AccelerationRender extends CrosshairRender implements Vmu931ImuFram
   private static final Scalar FILTER = RealScalar.of(0.02);
   // ---
   private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.GLOBAL.getPlanarVmu931Imu();
-  private final GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, FILTER);
+  private final GeodesicIIR1 geodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, FILTER);
   private final Tensor matrix;
 
   /** @param limit
@@ -35,7 +35,7 @@ public class AccelerationRender extends CrosshairRender implements Vmu931ImuFram
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
     Tensor accXY = planarVmu931Imu.accXY(vmu931ImuFrame).map(Magnitude.ACCELERATION);
-    Tensor tensor = geodesicIIR1Filter.apply(accXY);
+    Tensor tensor = geodesicIIR1.apply(accXY);
     push_back(tensor);
   }
 
