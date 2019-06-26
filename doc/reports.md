@@ -35,7 +35,7 @@
 * [20190509_steering_turning_ratio.pdf](https://github.com/idsc-frazzoli/retina/files/3160474/20190509_steering_turning_ratio.pdf)
 * [20190521_restoring_force_of_steering.pdf](https://github.com/idsc-frazzoli/retina/files/3265874/20190521_restoring_force_of_steering.pdf)
 * [20190614_tracked_hardware_changes.pdf](https://github.com/idsc-frazzoli/retina/files/3290861/20190614_tracked_hardware_changes.pdf)
-
+* [20190621_applications_bi-invariant_mean.pdf](https://github.com/idsc-frazzoli/retina/files/3321256/20190621_applications_bi-invariant_mean.pdf)
 
 ## Bug Reports
 
