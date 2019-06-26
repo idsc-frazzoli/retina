@@ -5,7 +5,7 @@
 #pragma once
 #define NP 3
 #define NM 1
-#define NI 100
+#define NI 1000
 
 
 #include "UnscentedKalmanFilter.h"
@@ -16,7 +16,10 @@ public:
     void test();
     typedef UnscentedKalmanFilter<NP,NM, NI> UKF;
     static UKF::MeasurementVec measureFunction(UKF::ParameterVec parameter, double k);
+
+private:
     bool print = true;
+    bool writeCSV = true;
 
 };
 

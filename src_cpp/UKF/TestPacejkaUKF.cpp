@@ -7,6 +7,7 @@
 #include <functional>
 #include <stdlib.h>
 #include <time.h>
+#include "WriterUKF.h"
 
 
 void TestPacejkaUKF::test() {
@@ -30,6 +31,9 @@ void TestPacejkaUKF::test() {
     = [](UKF::ParameterVec parameterVec){
             return parameterVec;
     };
+
+    //for plotting
+    Eigen::Matrix<double, NP + 1, NI+1> params;
 
     for (int i = 0; i<= NI; i++){
         // print
@@ -70,6 +74,21 @@ void TestPacejkaUKF::test() {
 
         ukf.update(measureFunction,predictionFunction,measurementNoise,processNoise,z);
 
+        //for plotting
+        Eigen::MatrixXd value(4, 1);
+        value << i, ukf.mean(0), ukf.mean(1), ukf.mean(2);
+        params.col(i) = value;
+
     }
+
+    std::cout << "params" << std::endl << params;
+
+    // export for plot
+    if(writeCSV) {
+        WriterUKF writerUkf;
+        writerUkf.writeToCSV("params.csv", params.transpose());
+    }
+
+
 
 }
