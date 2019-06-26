@@ -9,19 +9,15 @@
 
 
 using Eigen::MatrixXd;
-using std::cout;
-using std::endl;
-
+using namespace std;
 int main()
 {
-    //cout << "test pacejka UKF............................... " << endl;
-    //TestPacejkaUKF testPacejkaUkf;
-    //testPacejkaUkf.test();
+    cout << "test pacejka UKF............................... " << endl;
+    TestPacejkaUKF testPacejkaUkf;
+    testPacejkaUkf.test();
 
-
-    cout << "test UKF................................" << endl;
-    TestUKF testUkf;
-    testUkf.test();
-
+    //cout << "test UKF................................" << endl;
+    //TestUKF testUkf;
+    //testUkf.test();
 
 }

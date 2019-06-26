@@ -16,9 +16,6 @@ using namespace Eigen;
 
 void TestUKF::test() {
 
-    bool print = false;
-    bool writeCSV = true;
-
     double q = 0.1; //std of process
     double r = 0.1; //std of measurement
     UKF::ParameterMat processCov = UKF::ParameterMat::Identity() * q; // cov of process

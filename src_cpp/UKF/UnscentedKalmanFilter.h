@@ -30,33 +30,34 @@ public:
                 std::function<ParameterVec(ParameterVec)> predictionFunction,
                 MeasurementMat measurementNoise,
                 ParameterMat processNoise ,
-                MeasurementVec z){
+                MeasurementVec zMes){
             update(mean,
-                    variance,
-                    measureFunction,
-                    predictionFunction,
-                    measurementNoise,
-                    processNoise,
-                    z);
+                   variance,
+                   measureFunction,
+                   predictionFunction,
+                   measurementNoise,
+                   processNoise,
+                   zMes);
     }
     ParameterVec mean;
     ParameterMat variance;
 private:
+    // print param
+    bool print = true;
+
+    // update
     void update(ParameterVec& mean,
                 ParameterMat& variance,
                 std::function<MeasurementVec(ParameterVec)> measureFunction,
                 std::function<ParameterVec(ParameterVec)> predictionFunction,
                 MeasurementMat measurementNoise,
                 ParameterMat processNoise ,
-                MeasurementVec z){
-
-        // print param
-        bool print = false;
+                MeasurementVec zMes){
 
         // Parameters
         double L = NParameter;
-        double alpha = 0.001; //spread
-        double beta = 0; //incorporation of prior knowledge (here = 2, assuming gaussian)
+        double alpha = 1; //spread
+        double beta = 2; //incorporation of prior knowledge (here = 2, assuming gaussian)
         double kappa = 0; //secondary usually set to 0
         double lambda = alpha*alpha*(NParameter+kappa) + NParameter;
         if (print){
@@ -172,7 +173,7 @@ private:
 
 
         // final State
-        MeasurementVec zDiff = z - zPred;
+        MeasurementVec zDiff = zMes - zPred;
         ParameterVec muFinal = mu + K*zDiff;
         ParameterMat sigmaFinal = sigma - K * sVar * (K.transpose());
 
