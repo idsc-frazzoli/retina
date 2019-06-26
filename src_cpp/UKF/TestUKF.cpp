@@ -16,8 +16,8 @@ using namespace Eigen;
 
 void TestUKF::test() {
 
-    double q = 0.1; //std of process
-    double r = 0.1; //std of measurement
+    double q = 0; //std of process
+    double r = 0; //std of measurement
     UKF::ParameterMat processCov = UKF::ParameterMat::Identity() * q; // cov of process
     UKF::MeasurementMat measureCov = UKF::MeasurementMat::Identity() * r; // cov of measurement
 

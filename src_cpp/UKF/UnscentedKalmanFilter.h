@@ -57,7 +57,7 @@ private:
         // Parameters
         double L = NParameter;
         double alpha = 1; //spread
-        double beta = 1; //incorporation of prior knowledge (here = 2, assuming gaussian)
+        double beta = 2; //incorporation of prior knowledge (here = 2, assuming gaussian)
         double kappa = 0; //secondary usually set to 0
         double lambda = alpha*alpha*(NParameter+kappa) + NParameter;
         if (print){
