@@ -14,7 +14,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
-import ch.ethz.idsc.sophus.app.api.ClothoidCurveDisplay;
+import ch.ethz.idsc.sophus.app.api.Clothoid1Display;
 import ch.ethz.idsc.sophus.app.api.GeodesicDisplay;
 import ch.ethz.idsc.sophus.app.curve.CurvatureDemo;
 import ch.ethz.idsc.sophus.app.misc.CurveCurvatureRender;
@@ -38,7 +38,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   public final JToggleButton jToggleButton = new JToggleButton("repos.");
 
   public TrajectoryDesign() {
-    super(Arrays.asList(ClothoidCurveDisplay.INSTANCE));
+    super(Arrays.asList(Clothoid1Display.INSTANCE));
     jToggleCurvature.setSelected(false);
     jToggleButton.setToolTipText("position control points with the mouse");
     jToggleButton.setSelected(isPositioningEnabled());

@@ -7,7 +7,7 @@ import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.owl.car.math.AngularSlip;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.filter.ga.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -18,13 +18,13 @@ public class PredictiveMotorCurrents extends AbstractMotorCurrents {
   private static final Scalar ROLLING_AVERAGE_VALUE = Quantity.of(0.0, SI.ANGULAR_ACCELERATION);
   // ---
   private final IntervalClock intervalClock = new IntervalClock();
-  private final GeodesicIIR1Filter geodesicIIR1Filter;
+  private final GeodesicIIR1 geodesicIIR1;
   private Scalar wantedRotationRate_last = null;
   private Scalar rotationAcc_fallback = ROLLING_AVERAGE_VALUE;
 
   public PredictiveMotorCurrents(TorqueVectoringConfig torqueVectoringConfig) {
     super(torqueVectoringConfig);
-    geodesicIIR1Filter = new GeodesicIIR1Filter( //
+    geodesicIIR1 = new GeodesicIIR1( //
         RnGeodesic.INSTANCE, //
         torqueVectoringConfig.rollingAverageRatio /* ROLLING_AVERAGE_VALUE */ );
   }
@@ -50,7 +50,7 @@ public class PredictiveMotorCurrents extends AbstractMotorCurrents {
       wantedRotationRate_last = wantedRotationRate;
     if (timeSinceLastStep >= MIN_DT) {
       Scalar instantRotChange = wantedRotationRate.subtract(wantedRotationRate_last).divide(Quantity.of(timeSinceLastStep, SI.SECOND));
-      rotationAcc_fallback = geodesicIIR1Filter.apply(instantRotChange).Get();
+      rotationAcc_fallback = geodesicIIR1.apply(instantRotChange).Get();
     }
     wantedRotationRate_last = wantedRotationRate;
     return rotationAcc_fallback;

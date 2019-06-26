@@ -20,7 +20,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.sophus.filter.ga.GeodesicIIR1Filter;
+import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -32,7 +32,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final GokartPoseListener gokartPoseListener = gokartPoseEvent -> this.gokartPoseEvent = gokartPoseEvent;
   private final HapticSteerConfig hapticSteerConfig;
-  private final GeodesicIIR1Filter geodesicIIR1Filter; // 1 means unfiltered
+  private final GeodesicIIR1 geodesicIIR1; // 1 means unfiltered
   // ---
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   private SteerGetEvent steerGetEvent;
@@ -43,7 +43,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
 
   /* package */ PowerSteeringModule(HapticSteerConfig hapticSteerConfig) {
     this.hapticSteerConfig = hapticSteerConfig;
-    geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
+    geodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
   }
 
   @Override // from AbstractModule
@@ -91,7 +91,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
         : feedForwardValue.zero();
     // ---
     AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
-    Tensor filteredVel = geodesicIIR1Filter.apply(velocity);
+    Tensor filteredVel = geodesicIIR1.apply(velocity);
     Scalar latFront_LeftVel = axleConfiguration.wheel(0).adjoint(filteredVel).Get(1);
     Scalar latFrontRightVel = axleConfiguration.wheel(1).adjoint(filteredVel).Get(1);
     Scalar term1 = hapticSteerConfig.latForceCompensationBoundaryClip().apply( //
