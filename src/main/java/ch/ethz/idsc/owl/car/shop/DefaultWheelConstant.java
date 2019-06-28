@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.owl.car.model;
+package ch.ethz.idsc.owl.car.shop;
 
 import ch.ethz.idsc.owl.car.core.WheelInterface;
 import ch.ethz.idsc.owl.car.math.Pacejka3;
@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** class holds invariant parameters of wheel */
-public class DefaultWheelConstant implements WheelInterface {
+/* package */ class DefaultWheelConstant implements WheelInterface {
   private final Scalar radius;
   private final Scalar width;
   private final Scalar iw_invert;

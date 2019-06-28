@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Chop;
 
 /** implementation has been verified through several tests */
-public class TireForces {
+/* package */ class TireForces {
   private static final Tensor AFFINE_ONE = Tensors.vector(1);
   private static final Tensor SUM_ALL = Tensors.vector(1, 1, 1, 1).unmodifiable();
   private static final Tensor WEIGHT_STD = Tensors.vector(+1, -1, -1, +1).unmodifiable();

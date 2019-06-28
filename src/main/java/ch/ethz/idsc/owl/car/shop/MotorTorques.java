@@ -1,13 +1,13 @@
 // code by edo
 // code adapted by jph
-package ch.ethz.idsc.owl.car.model;
+package ch.ethz.idsc.owl.car.shop;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-public enum MotorTorques {
+/* package */ enum MotorTorques {
   ;
   private static final Scalar HALF = RealScalar.of(.5);
 
