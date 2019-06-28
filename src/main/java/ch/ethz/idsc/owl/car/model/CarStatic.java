@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** DO NOT CHANGE THE VALUES IN THE EXISTING FUNCTIONS */
-public enum CarStatic {
+/* package */ enum CarStatic {
   ;
   /** constant motivated by previous design. not relevant for application layer */
   private static final double Dz1 = 0.05;

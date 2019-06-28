@@ -1,8 +1,9 @@
 // code by jph
-package ch.ethz.idsc.owl.car.model;
+package ch.ethz.idsc.owl.car.shop;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.math.AckermannSteering;
+import ch.ethz.idsc.owl.car.model.CarSteering;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -13,7 +14,7 @@ import ch.ethz.idsc.tensor.opt.ConvexHull;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public abstract class DefaultCarModel implements VehicleModel {
+/* package */ abstract class DefaultCarModel implements VehicleModel {
   @Override
   public final int wheels() {
     return 4;

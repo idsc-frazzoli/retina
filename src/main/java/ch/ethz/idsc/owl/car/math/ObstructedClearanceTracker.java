@@ -7,6 +7,7 @@ import java.util.Optional;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
+// TODO JPH REL move to retina
 public class ObstructedClearanceTracker implements ClearanceTracker {
   private final Scalar contact;
 

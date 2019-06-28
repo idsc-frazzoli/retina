@@ -17,6 +17,7 @@ import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
+// TODO JPH REL move to retina
 public class CircleClearanceTracker implements ClearanceTracker, Serializable {
   private final Clip clip_Y;
   private final Clip clip_X;

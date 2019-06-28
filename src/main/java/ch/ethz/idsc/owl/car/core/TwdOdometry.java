@@ -35,7 +35,7 @@ public class TwdOdometry {
   }
 
   /** @param angularRate_Y_pair vector of the form {omegaL[s^-1], omegaR[s^-1]}
-   * @return {vx[m*s^-1], vy[m*s^-1], omega[s^-1]} */
+   * @return {vx[m*s^-1], vy[m*s^-1] == 0, omega[s^-1]} */
   public Tensor velocity(Tensor angularRate_Y_pair) {
     Scalar vx = tangentSpeed(angularRate_Y_pair);
     return Tensors.of( //
