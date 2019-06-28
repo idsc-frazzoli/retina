@@ -27,6 +27,7 @@ import ch.ethz.idsc.tensor.sca.Sin;
  * Important: {@link Pacejka3} is not continuous for several input
  * Tensors.vector(0, 1);
  * Tensors.vector(0, 0); */
+// TODO JPH REL move to owl
 public class Pacejka3 implements ScalarUnaryOperator {
   private static final Scalar PI_HALF = RealScalar.of(Math.PI / 2);
   // ---

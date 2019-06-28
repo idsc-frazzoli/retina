@@ -32,6 +32,7 @@ class MapSingular implements TensorScalarFunction {
   }
 }
 
+// TODO JPH REL move to sophus
 public class Se2AxisYProject implements TensorScalarFunction {
   /** @param u == {vx, 0, rate} with units {[m*s^-1], ?, [s^-1]}
    * @param p == {px, py} with units {[m], [m]}
