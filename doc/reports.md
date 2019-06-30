@@ -36,6 +36,8 @@
 * [20190521_restoring_force_of_steering.pdf](https://github.com/idsc-frazzoli/retina/files/3265874/20190521_restoring_force_of_steering.pdf)
 * [20190614_tracked_hardware_changes.pdf](https://github.com/idsc-frazzoli/retina/files/3290861/20190614_tracked_hardware_changes.pdf)
 * [20190621_applications_bi-invariant_mean.pdf](https://github.com/idsc-frazzoli/retina/files/3321256/20190621_applications_bi-invariant_mean.pdf)
+* [20190629_tsutrq_autonomous_driving.pdf](https://github.com/idsc-frazzoli/retina/files/3342895/20190629_tsutrq_autonomous_driving.pdf)
+* [20190630_code_of_dubilab.pdf](https://github.com/idsc-frazzoli/retina/files/3342886/20190630_code_of_dubilab.pdf)
 
 ## Bug Reports
 
