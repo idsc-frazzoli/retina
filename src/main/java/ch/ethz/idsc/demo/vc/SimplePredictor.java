@@ -1,13 +1,15 @@
 // code by vc
-package ch.ethz.idsc.gokart.core.perc;
+package ch.ethz.idsc.demo.vc;
 
+import ch.ethz.idsc.retina.app.cluster.ClusterCollection;
+import ch.ethz.idsc.retina.app.cluster.ClusterDeque;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Last;
 
-public class SimplePredictor {
-  private Tensor nextMeans = Tensors.empty();
-  private Tensor nextHulls = Tensors.empty();
+/* package */ class SimplePredictor {
+  private final Tensor nextMeans = Tensors.empty();
+  private final Tensor nextHulls = Tensors.empty();
 
   /** @param clusterCollection
    * @return

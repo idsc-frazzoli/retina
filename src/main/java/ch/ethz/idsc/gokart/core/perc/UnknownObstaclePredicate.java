@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Tensor;
 /** the purpose of the class is filter lidar points that are
  * 1) NOT already in the static obstacle map
  * 2) NOT floor */
-public class UnknownObstaclePredicate implements SpacialObstaclePredicate {
+/* package */ class UnknownObstaclePredicate implements SpacialObstaclePredicate {
   private static final int NON_BLACK_MASK = 0xff00;
   private static final Tensor LIDAR = SensorsConfig.GLOBAL.vlp16Gokart();
   // ---
