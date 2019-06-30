@@ -1,14 +1,14 @@
 // code by jph
-package ch.ethz.idsc.owl.car.math;
+package ch.ethz.idsc.retina.app.clear;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-// TODO JPH REL move to retina
-public class ObstructedClearanceTracker implements ClearanceTracker {
+public class ObstructedClearanceTracker implements ClearanceTracker, Serializable {
   private final Scalar contact;
 
   public ObstructedClearanceTracker(Scalar contact) {

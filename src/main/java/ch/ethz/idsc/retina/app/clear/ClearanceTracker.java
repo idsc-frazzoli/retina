@@ -1,12 +1,11 @@
 // code by jph
-package ch.ethz.idsc.owl.car.math;
+package ch.ethz.idsc.retina.app.clear;
 
 import java.util.Optional;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-// TODO JPH REL move to retina
 public interface ClearanceTracker {
   /** @param local coordinates {x, y} of obstacle in sensor reference frame
    * @return whether given point is an obstruction */

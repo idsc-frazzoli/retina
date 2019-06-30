@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.owl.car.math;
+package ch.ethz.idsc.retina.app.clear;
 
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
