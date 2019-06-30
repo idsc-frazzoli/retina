@@ -9,10 +9,10 @@ import java.util.List;
 
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
-import ch.ethz.idsc.demo.mg.blobtrack.PhysicalBlob;
-import ch.ethz.idsc.demo.mg.blobtrack.algo.BlobTrackProvider;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.app.blob.BlobTrackConfig;
+import ch.ethz.idsc.retina.app.blob.PhysicalBlob;
+import ch.ethz.idsc.retina.app.blob.algo.BlobTrackProvider;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;

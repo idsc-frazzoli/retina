@@ -10,11 +10,11 @@ import java.awt.geom.Point2D;
 
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.gokart.core.perc.ClusterDeque;
-import ch.ethz.idsc.gokart.core.perc.DequeCloud;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.app.cluster.ClusterDeque;
+import ch.ethz.idsc.retina.app.cluster.DequeCloud;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
