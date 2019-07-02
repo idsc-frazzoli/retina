@@ -39,10 +39,10 @@ void TestPacejkaUKF::test() {
     for (int i = 0; i<= NI; i++){
         // print
         if(print){
-            std::cout << "iteration-------------------------------------- " << i << std::endl;
+            std::cout << "iteration--------------------------------------- " << i << std::endl;
         }
 
-        // random parameter s in range [-1;2];
+        // random parameter (side slip) s in range [-1;2];
         double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
         if(true){
             std::cout << "s: " << s << std::endl;

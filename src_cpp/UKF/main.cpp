@@ -4,8 +4,8 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <unsupported/Eigen/MatrixFunctions> /*sqrt*/
-#include "TestUKF.h"
-#include "TestPacejkaUKF.h"
+#include "src/TestUKF.h"
+#include "src/TestPacejkaUKF.h"
 
 
 using Eigen::MatrixXd;
