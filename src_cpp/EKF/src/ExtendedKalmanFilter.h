@@ -64,7 +64,7 @@ private:
         MeasurementVec z = measureFunction(mean);
         JacobiFMat A = JacobiFMat::Zero();
         double h = NParameter;
-
+        std::cout << "print" ;
 
     }
 

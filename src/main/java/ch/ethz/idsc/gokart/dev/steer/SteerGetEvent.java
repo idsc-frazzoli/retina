@@ -22,7 +22,7 @@ public class SteerGetEvent extends DataEvent {
   /* package */ static final int LENGTH = 44;
   // ---
   /** motAsp indicates the rotational velocity of the steering wheel.
-   * The value ranges in the interval [-100, 100]. */
+   * The value ranges typical in the interval [-150, 150]. */
   public final float motAsp_CANInput;
   /** during nominal operation motAsp_Qual is constant 2f
    * a value of 0f was observed briefly during failure instant */

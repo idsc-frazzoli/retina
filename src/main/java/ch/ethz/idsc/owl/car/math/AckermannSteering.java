@@ -20,6 +20,7 @@ import ch.ethz.idsc.tensor.sca.Tan;
  * 
  * see also
  * <a href="https://en.wikipedia.org/wiki/Ackermann_steering_geometry">Ackermann steering geometry</a> */
+// TODO JPH REL move to owl
 public class AckermannSteering implements Serializable {
   private final Scalar factor;
 

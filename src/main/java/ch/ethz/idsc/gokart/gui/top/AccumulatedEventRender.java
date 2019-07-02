@@ -11,9 +11,9 @@ import java.awt.image.DataBufferByte;
 
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.demo.mg.blobtrack.BlobTrackConfig;
-import ch.ethz.idsc.demo.mg.util.calibration.ImageToGokartInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.app.blob.BlobTrackConfig;
+import ch.ethz.idsc.retina.app.calib.ImageToGokartInterface;
 import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis._240c.Davis240c;
 import ch.ethz.idsc.retina.davis.app.AbstractAccumulatedImage;

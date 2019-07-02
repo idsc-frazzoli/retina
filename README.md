@@ -68,8 +68,8 @@ The gokart is operated at Innovation Park Duebendorf since December 2017.
 ### 2019
 
 * Michael von Bueren (MT): simulation of gokart dynamics
-* Joel Gaechter (MT): precise mapping
-* Antonia Mosberger (BT): power steering
+* Joel Gaechter (MT): precise mapping, clothoid pursuit
+* Antonia Mosberger (BT): power steering, anti-block braking
 * Maximilien Picquet (SP): PID controller for trajectory following
 
 ## Gallery Manual Driving
@@ -268,6 +268,7 @@ We observed that in *global shutter mode*, during signal image capture the strea
 ## References
 
 * [*Simultaneous localization and mapping for event-based vision systems*](https://mediatum.ub.tum.de/doc/1191908/1191908.pdf) by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
+* [*Asynchronous event-based multikernel algorithm for high-speed visual features tracking*](https://ieeexplore.ieee.org/document/6899691) by Xavier Lagorce et al.
 
 ---
 

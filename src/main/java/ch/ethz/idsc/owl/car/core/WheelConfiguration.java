@@ -4,6 +4,7 @@ package ch.ethz.idsc.owl.car.core;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Tensor;
 
+// TODO JPH move to package gokart.X
 public class WheelConfiguration {
   private final Tensor xya;
   private final TireConfiguration tireConfiguration;
