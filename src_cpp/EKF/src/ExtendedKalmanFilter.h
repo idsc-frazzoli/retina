@@ -62,14 +62,13 @@ private:
 
         // Jacobi 1
         MeasurementVec z = measureFunction(mean);
-        JacobiFMat A = JacobiFMat::Zeros();
+        JacobiFMat A = JacobiFMat::Zero();
         double h = NParameter;
-
-        Jacobis jacobis;
-
 
 
     }
+
+
 
 
 

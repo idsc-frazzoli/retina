@@ -7,6 +7,6 @@
 int main() {
     std::cout << "Hello, World!" << std::endl;
 
-    TestPacejkaUKF testPacejkaUkf;
-    testPacejkaUkf.test();
+    TestPacejkaEKF testPacejkaEkf;
+    testPacejkaEkf.test();
 }

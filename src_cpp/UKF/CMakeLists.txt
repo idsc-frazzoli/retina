@@ -11,6 +11,8 @@ add_executable(
         src/TestPacejkaUKF.cpp
         src/TestPacejkaUKF.h
         src/TestUKF.cpp
-        src/WriterUKF.cpp src/WriterUKF.h)
+        src/WriterUKF.cpp
+        src/WriterUKF.h
+)
 
 target_link_libraries (UKF Eigen3::Eigen)

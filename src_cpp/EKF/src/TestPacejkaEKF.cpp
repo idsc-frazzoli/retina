@@ -18,7 +18,7 @@ void TestPacejkaEKF::test() {
     guess << 9.24, 0.942, 9.93;
 
     double r = 0.01; // measurement noise
-    //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // mea    surement noise
+    //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // measurement noise
     EKF::MeasurementMat measurementNoise = r * EKF::MeasurementMat::Identity();
     double q = 0.01; //process noise
     EKF::ParameterMat processNoise = q * EKF::ParameterMat::Identity();
@@ -26,7 +26,7 @@ void TestPacejkaEKF::test() {
     // UKF start
     EKF::ParameterVec mean = guess; //using groundTruth
     EKF::ParameterMat variance = EKF::ParameterMat::Identity();
-    EKF ukf = EKF(mean, variance);
+    EKF ekf = EKF(mean, variance);
 
     std::function<EKF::ParameterVec(EKF::ParameterVec)> predictionFunction
     = [](EKF::ParameterVec parameterVec){
@@ -43,11 +43,12 @@ void TestPacejkaEKF::test() {
         }
 
         // random parameter (side slip) s in range [-1;2];
-        s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
+        double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
         if(true){
             std::cout << "s: " << s << std::endl;
         }
 
+        // measurement function
         std::function<EKF::MeasurementVec(EKF::ParameterVec)> measureFunction
                 = [s](EKF::ParameterVec parameter){
 
@@ -61,19 +62,19 @@ void TestPacejkaEKF::test() {
                     measurementVec << r   ;
                     return measurementVec;
                 };
-
         EKF::MeasurementVec z = measureFunction(groundTruth);
 
         if(print){
             std::cout << "zMes: " << z << std::endl;
         }
 
-        ukf.update(measureFunction,predictionFunction,measurementNoise,processNoise,z);
+        // EKF Update
+        ekf.update(measureFunction,predictionFunction,measurementNoise,processNoise,z);
 
         //for plotting
         if (writeCSV) {
             Eigen::MatrixXd value(4, 1);
-            value << i, ukf.mean(0), ukf.mean(1), ukf.mean(2);
+            value << i, ekf.mean(0), ekf.mean(1), ekf.mean(2);
             params.col(i) = value;
         }
 
@@ -83,8 +84,8 @@ void TestPacejkaEKF::test() {
 
     // export for plot
     if(writeCSV) {
-        WriterUKF writerUkf;
-        writerUkf.writeToCSV("params.csv", params.transpose());
+        WriterEKF writerEkf;
+        writerEkf.writeToCSV("params.csv", params.transpose());
     }
 
 
