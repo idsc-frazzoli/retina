@@ -5,8 +5,6 @@
 #include "src/TestPacejkaEKF.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-
     TestPacejkaEKF testPacejkaEkf;
     testPacejkaEkf.test();
 }

@@ -5,7 +5,7 @@
 #pragma once
 #define NP 3
 #define NM 1
-#define NI 1000
+#define NI 10
 
 
 #include "ExtendedKalmanFilter.h"
@@ -21,7 +21,7 @@ public:
 
 private:
     bool print = true;
-    bool writeCSV = true;
+    bool writeCSV = false;
 
 };
 

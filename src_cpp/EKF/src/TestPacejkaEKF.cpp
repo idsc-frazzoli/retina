@@ -15,7 +15,7 @@ void TestPacejkaEKF::test() {
     EKF::ParameterVec groundTruth;
     groundTruth<< 9, 1, 10 ;
     EKF::ParameterVec guess;
-    guess << 9.24, 0.942, 9.93;
+    guess << 9, 1, 10;
 
     double r = 0.01; // measurement noise
     //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // measurement noise
@@ -51,25 +51,58 @@ void TestPacejkaEKF::test() {
         // measurement function
         std::function<EKF::MeasurementVec(EKF::ParameterVec)> measureFunction
                 = [s](EKF::ParameterVec parameter){
+            double b = parameter(0);
+            double c = parameter(1);
+            double d = parameter(2);
 
-                    double b = parameter(0);
-                    double c = parameter(1);
-                    double d = parameter(2);
+            double r = d*sin(c*atan(b*s));
 
-                    double r = d*sin(c*atan(b*s));
-
-                    EKF::MeasurementVec measurementVec;
-                    measurementVec << r   ;
-                    return measurementVec;
-                };
+            EKF::MeasurementVec measurementVec;
+            measurementVec << r   ;
+           return measurementVec;
+        };
         EKF::MeasurementVec z = measureFunction(groundTruth);
 
         if(print){
             std::cout << "zMes: " << z << std::endl;
         }
 
+        // Jacobis
+        // F
+        // derivatives if x(k+1) = x(k) (->Identity)
+        std::function<EKF::JacobiFMat(EKF::ParameterVec)> jacobiF
+                = [s](EKF::ParameterVec p){
+
+            EKF::JacobiFMat jacobiFMat = EKF::JacobiFMat::Identity();
+
+            return jacobiFMat;
+        };
+        // H
+        // derivatives of Pacejka done according to:
+        // (0) https://www.wolframalpha.com/input/?i=derive+wrt+B+B*sin(C*arctan(D*x))
+        // (1) https://www.wolframalpha.com/input/?i=derive+wrt+C+B*sin(C*arctan(D*x))
+        // (2) https://www.wolframalpha.com/input/?i=derive+wrt+D+B*sin(C*arctan(D*x))
+        //
+        std::function<EKF::JacobiHMat(EKF::ParameterVec)> jacobiH
+                = [s](EKF::ParameterVec p){
+            EKF::JacobiHMat jacobiHMat;
+
+            jacobiHMat(0,0) = (p(1)*p(2)*s*cos(p(1)*atan(p(1)*s)))/(p(0)*p(0)*s*s + 1);
+            jacobiHMat(0,1) = p(2)*atan(p(0)*s)*cos(p(1)*atan(p(0)*s));
+            jacobiHMat(0,2) = sin(p(1)*atan(p(0)*s));
+
+            return jacobiHMat;
+        };
+
         // EKF Update
-        ekf.update(measureFunction,predictionFunction,measurementNoise,processNoise,z);
+        ekf.update(
+                measureFunction,
+                predictionFunction,
+                measurementNoise,
+                processNoise,
+                z,
+                jacobiF,
+                jacobiH);
 
         //for plotting
         if (writeCSV) {
@@ -87,7 +120,4 @@ void TestPacejkaEKF::test() {
         WriterEKF writerEkf;
         writerEkf.writeToCSV("params.csv", params.transpose());
     }
-
-
-
 }

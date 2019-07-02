@@ -68,7 +68,13 @@ void TestPacejkaUKF::test() {
             std::cout << "zMes: " << z << std::endl;
         }
 
-        ukf.update(measureFunction,predictionFunction,measurementNoise,processNoise,z);
+        // UKF Update
+        ukf.update(
+                measureFunction,
+                predictionFunction,
+                measurementNoise,
+                processNoise,
+                z);
 
         //for plotting
         if (writeCSV) {

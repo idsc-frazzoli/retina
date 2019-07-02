@@ -1,7 +1,7 @@
 //
 // Created by maximilien on 01.07.19.
 // build based on UKF model.
-// based on https://www.mathworks.com/matlabcentral/fileexchange/18189-learning-the-extended-kalman-filter
+// based on https://en.wikipedia.org/wiki/Extended_Kalman_filter using DT measurements
 //
 
 #pragma once
@@ -10,6 +10,7 @@
 #include <Eigen/Dense>
 #include <cmath>
 
+using namespace std;
 
 template <int NParameter, int NMeasurements, int NIterations>
 class ExtendedKalmanFilter{
@@ -27,8 +28,6 @@ public:
     typedef Eigen::Matrix<double, NParameter, NIterations+1> ParameterSafe;
     typedef Eigen::Matrix<double, NMeasurements, NIterations+1> MeasurementSafe;
 
-    ParameterVec mean;
-    ParameterMat variance;
 
     ExtendedKalmanFilter(ParameterVec mean, ParameterMat variance): mean(mean), variance(variance) {
     };
@@ -37,15 +36,23 @@ public:
                 std::function<ParameterVec(ParameterVec)> predictionFunction,
                 MeasurementMat measurementNoise,
                 ParameterMat processNoise ,
-                MeasurementVec zMes){
+                MeasurementVec zMes,
+                std::function<JacobiFMat(ParameterVec)> jacobiF,
+                std::function<JacobiHMat(ParameterVec)> jacobiH){
         update(mean,
                variance,
                measureFunction,
                predictionFunction,
                measurementNoise,
                processNoise,
-               zMes);
+               zMes,
+               jacobiF,
+               jacobiH);
     }
+
+
+    ParameterVec mean;
+    ParameterMat variance;
 
 private:
     // print param
@@ -58,20 +65,47 @@ private:
                 std::function<ParameterVec(ParameterVec)> predictionFunction,
                 MeasurementMat measurementNoise,
                 ParameterMat processNoise ,
-                MeasurementVec zMes) {
-
-        // Jacobi 1
+                MeasurementVec zMes,
+                std::function<JacobiFMat(ParameterVec)> jacobiF,
+                std::function<JacobiHMat(ParameterVec)> jacobiH) {
+        // Initialize
+        ParameterVec x = mean;
+        ParameterMat P = variance;
         MeasurementVec z = measureFunction(mean);
-        JacobiFMat A = JacobiFMat::Zero();
-        double h = NParameter;
-        std::cout << "print" ;
 
+        if (print) {
+            cout << "mean" << endl << x << endl;
+            cout << "variance" << endl << P << endl;
+            cout << "measurement" << endl << z << endl;
+        }
+
+        // Predict
+        ParameterVec xk = predictionFunction(x);
+        JacobiFMat jacobiFMat = jacobiF(x);
+        ParameterMat Pk = jacobiFMat * P + P * jacobiFMat + processNoise;
+
+        if (print) {
+            cout << "jacobiF" << endl << jacobiFMat << endl;
+            cout << "xk" << endl << xk << endl;
+            cout << "Pk" << endl << Pk << endl;
+        }
+
+        // Update
+        JacobiHMat jacobiHMat = jacobiH(x);
+        CrossCorellationMat K =
+                Pk * jacobiHMat.transpose() * (jacobiHMat * Pk * jacobiHMat.transpose() + measurementNoise).inverse();
+
+        ParameterVec x_pred = xk + K * (z - measureFunction(xk));
+        ParameterMat P_pred = (ParameterMat::Identity() - K * jacobiHMat) * P;
+
+        if (print) {
+            cout << "jacobiH" << endl << jacobiHMat << endl;
+            cout << "K" << endl << K << endl;
+            cout << "x_pred" << endl << x_pred << endl;
+            cout << "P_pred" << endl << P_pred << endl;
+        }
+
+        mean = x_pred;
+        variance = P_pred;
     }
-
-
-
-
-
-
-
 };
