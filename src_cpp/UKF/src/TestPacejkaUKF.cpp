@@ -90,7 +90,7 @@ void TestPacejkaUKF::test() {
     // export for plot
     if(writeCSV) {
         WriterUKF writerUkf;
-        writerUkf.writeToCSV("params.csv", params.transpose());
+        writerUkf.writeToCSV("paramsUKF.csv", params.transpose());
     }
 
 

@@ -74,9 +74,9 @@ private:
         MeasurementVec z = measureFunction(mean);
 
         if (print) {
-            cout << "mean" << endl << x << endl;
-            cout << "variance" << endl << P << endl;
-            cout << "measurement" << endl << z << endl;
+            cout << "x" << endl << x << endl;
+            cout << "P" << endl << P << endl;
+            cout << "z" << endl << z << endl;
         }
 
         // Predict
@@ -95,7 +95,7 @@ private:
         CrossCorellationMat K =
                 Pk * jacobiHMat.transpose() * (jacobiHMat * Pk * jacobiHMat.transpose() + measurementNoise).inverse();
 
-        ParameterVec x_pred = xk + K * (z - measureFunction(xk));
+        ParameterVec x_pred = xk + K * (zMes - measureFunction(xk));
         ParameterMat P_pred = (ParameterMat::Identity() - K * jacobiHMat) * P;
 
         if (print) {

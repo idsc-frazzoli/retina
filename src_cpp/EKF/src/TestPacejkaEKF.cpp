@@ -15,7 +15,7 @@ void TestPacejkaEKF::test() {
     EKF::ParameterVec groundTruth;
     groundTruth<< 9, 1, 10 ;
     EKF::ParameterVec guess;
-    guess << 9, 1, 10;
+    guess << 9.525, 1.135, 9.234;
 
     double r = 0.01; // measurement noise
     //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // measurement noise
@@ -118,6 +118,6 @@ void TestPacejkaEKF::test() {
     // export for plot
     if(writeCSV) {
         WriterEKF writerEkf;
-        writerEkf.writeToCSV("params.csv", params.transpose());
+        writerEkf.writeToCSV("paramsEKF.csv", params.transpose());
     }
 }
