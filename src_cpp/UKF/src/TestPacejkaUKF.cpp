@@ -17,11 +17,11 @@ void TestPacejkaUKF::test() {
     UKF::ParameterVec guess;
     guess << 9.24, 0.942, 9.93;
 
-    double r = 0.01; // measurement noise
+    double r = 0.1; // measurement noise
     //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // mea    surement noise
-    UKF::MeasurementMat measurementNoise = r * UKF::MeasurementMat::Identity();
-    double q = 0.01; //process noise
-    UKF::ParameterMat processNoise = q * UKF::ParameterMat::Identity();
+    UKF::MeasurementMat measurementNoise = r *r * UKF::MeasurementMat::Identity();
+    double q = 0.1; //process noise
+    UKF::ParameterMat processNoise = q * q * UKF::ParameterMat::Identity();
 
     // UKF start
     UKF::ParameterVec mean = guess; //using groundTruth

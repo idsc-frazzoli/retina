@@ -15,13 +15,13 @@ void TestPacejkaEKF::test() {
     EKF::ParameterVec groundTruth;
     groundTruth<< 9, 1, 10 ;
     EKF::ParameterVec guess;
-    guess << 9.525, 1.135, 9.234;
+    guess << 10, 1.5, 9;
 
-    double r = 0.01; // measurement noise
+    double r = 0.1; // measurement noise
     //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // measurement noise
-    EKF::MeasurementMat measurementNoise = r * EKF::MeasurementMat::Identity();
-    double q = 0.01; //process noise
-    EKF::ParameterMat processNoise = q * EKF::ParameterMat::Identity();
+    EKF::MeasurementMat measurementNoise = r * r * EKF::MeasurementMat::Identity();
+    double q = 0.1; //process noise
+    EKF::ParameterMat processNoise = q * q * EKF::ParameterMat::Identity();
 
     // UKF start
     EKF::ParameterVec mean = guess; //using groundTruth
