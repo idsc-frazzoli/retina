@@ -30,7 +30,7 @@ public interface VehicleModel {
   /** @return inverse of yawing moment of inertia [kgm2] */
   Scalar Iz_invert();
 
-  /** @param tensor with relative control parameters in range [-1,1], or [0,1]
+  /** @param tensor with relative control parameters in range [-1, 1], or [0, 1]
    * @return control with absolute physical values */
   CarControl createControl(Tensor tensor);
 

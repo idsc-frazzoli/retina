@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Tensors;
    * @param slamParticles
    * @param occurrenceMap
    * @param eventGokartFrame interpreted as [m] event position in go kart frame
-   * @param alpha [-] update equation parameter */
+   * @param alpha [] update equation parameter */
   public static void updateLikelihoods(SlamParticle[] slamParticles, MapProvider occurrenceMap, double[] eventGokartFrame, double alpha) {
     double sumOfLikelihoods = 0;
     double maxValue = occurrenceMap.getMaxValue();

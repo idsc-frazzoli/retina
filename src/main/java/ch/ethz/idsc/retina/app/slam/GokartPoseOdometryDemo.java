@@ -38,7 +38,7 @@ public class GokartPoseOdometryDemo implements PoseInterface, RimoGetListener {
   }
 
   // ---
-  private static final Tensor VELOCITY_INIT = Tensors.fromString("{0[m*s^-1],0[m*s^-1],0[s^-1]}").unmodifiable();
+  private static final Tensor VELOCITY_INIT = Tensors.fromString("{0[m*s^-1], 0[m*s^-1], 0[s^-1]}").unmodifiable();
   // ---
   private final Scalar dt = RimoSocket.getGetPeriod(); // 1/250[s] update period
   // ---

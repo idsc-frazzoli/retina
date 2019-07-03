@@ -21,7 +21,7 @@ public class HapticSteerConfig {
   public Scalar velocityFilter = RealScalar.of(0.2);
   public Scalar latForceCompensation = Quantity.of(0.2, "SCT*s*m^-1");
   public Scalar latForceCompensationBoundary = Quantity.of(0.5, "SCT");
-  /** tsuFactor in the interval [0,1] */
+  /** tsuFactor in the interval [0, 1] */
   public Scalar tsuFactor = RealScalar.of(0.8);
   public Boolean printPower = false;
   /** Constant Torque for Experiment */
@@ -45,7 +45,7 @@ public class HapticSteerConfig {
   public Scalar absAmplitude = RealScalar.of(0.2);
   public double absDuration = 1;
   /** set velocity for a full stop with or without anti-lock braking */
-  @FieldSubdivide(start = "5.75[SI.VELOCITY]", end = "8.5[SI,VELOCITY]", intervals = 11)
+  @FieldSubdivide(start = "5.75[m*s^-1]", end = "8.5[m*s^-1]", intervals = 11)
   public Scalar setVel = Quantity.of(6.5, SI.VELOCITY);
 
   /***************************************************/

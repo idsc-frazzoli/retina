@@ -93,7 +93,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
                       clusterConfig.minPoints.Get().number().intValue())), //
                   Tensors.of(
                       Tensors.fromString(
-                          "{Average perf SP, Average perf LP,Average recall SP,Average recall LP,Average precision SP,Average precision LP,Noise ratio}"), //
+                          "{Average perf SP, Average perf LP, Average recall SP, Average recall LP, Average precision SP, Average precision LP, Noise ratio}"), //
                       Tensors.vectorDouble(perfAveragedSP, perfAveragedLP, recallAveragedSP, recallAveragedLP, //
                           precisionAveragedSP, precisionAveragedLP, noiseRatio)));
             } catch (Exception exception) {

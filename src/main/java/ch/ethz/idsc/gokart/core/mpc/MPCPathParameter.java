@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ class MPCPathParameter implements BufferInsertable {
   // starting Progress designates the current position on the path. (0->middle point between first 2 control points)
-  // starting Progress is in [0,N-2] where N is the number of control points.
+  // starting Progress is in [0, N-2] where N is the number of control points.
   private final Scalar startingProgress;
   private final Tensor combinedControlPoints;
 

@@ -9,8 +9,8 @@ public class LidarRayBlockEvent {
   public final int usec;
   public final FloatBuffer floatBuffer;
   public final ByteBuffer byteBuffer;
-  /** dimensions == 3 if float buffer consists of x,y,z
-   * dimensions == 2 if float buffer consists of x,y */
+  /** dimensions == 3 if float buffer consists of x, y, z
+   * dimensions == 2 if float buffer consists of x, y */
   public final int dimensions;
 
   public LidarRayBlockEvent(int usec, FloatBuffer floatBuffer, ByteBuffer byteBuffer, int dimensions) {

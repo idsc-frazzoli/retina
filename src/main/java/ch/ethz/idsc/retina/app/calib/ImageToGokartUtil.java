@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * The CSV file must have the structure as below. Exponential format must use capitalized E ("%E" in MATLAB).
  * 1st-3rd lines represent the transformation matrix
  * 4th line represents image coordinates of principal point [pixel]
- * 5th line represents radial distortion coefficients [-]
+ * 5th line represents radial distortion coefficients []
  * 6th line represents focal lengths [mm] */
 public class ImageToGokartUtil implements ImageToGokartInterface, Serializable {
   /** Offset between origin of calibration frame and origin of go kart frame. Unit is [mm] */
@@ -37,7 +37,7 @@ public class ImageToGokartUtil implements ImageToGokartInterface, Serializable {
   /** transforms homogeneous image coordinates into homogeneous physical coordinates */
   private final Tensor transformationMatrix;
   private final Tensor principalPoint; // [pixel]
-  /** [-]radial distortion with two coefficients is assumed
+  /** radial distortion with two coefficients is assumed
    * but we build the coefficients to evaluate as quadratic polynomial of the form
    * {1, rd0, rd1}
    * for ordering of coefficient see {@link Multinomial#horner(Tensor, Scalar)} */

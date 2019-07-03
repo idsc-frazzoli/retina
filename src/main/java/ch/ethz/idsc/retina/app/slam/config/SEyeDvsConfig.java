@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
      * 2) for a bin of width 500[us] chances are p=0.30283 that the bin is empty
      * 3) for a bin size of 2397[us] there is a 99% chance that it’s non-empty */
     filterConstant = Quantity.of(500, NonSI.MICRO_SECOND);
-    /** [-] for FAST corner filter */
+    /** for FAST corner filter [] */
     margin = RealScalar.of(4);
   }
 }

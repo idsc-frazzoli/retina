@@ -19,14 +19,14 @@ import junit.framework.TestCase;
 public class GokartPoseOdometryDemoTest extends TestCase {
   public void testSimple() {
     GokartPoseOdometryDemo demo = GokartPoseOdometryDemo.create();
-    Tensor angularRate_Y_pair = Tensors.fromString("{5[s^-1],14[s^-1]}");
+    Tensor angularRate_Y_pair = Tensors.fromString("{5[s^-1], 14[s^-1]}");
     demo.step(angularRate_Y_pair);
     Tensor velocity = demo.getVelocity();
     assertEquals(velocity, Tensors.fromString("{1.14[m*s^-1], 0[m*s^-1], 1.0[s^-1]}"));
   }
 
   public void testPreviousImpl() {
-    Tensor angularRate_Y_pair = Tensors.fromString("{5[s^-1],14[s^-1]}");
+    Tensor angularRate_Y_pair = Tensors.fromString("{5[s^-1], 14[s^-1]}");
     Tensor velocity = computeVelocity(angularRate_Y_pair);
     assertEquals(velocity, Tensors.fromString("{1.14[m*s^-1], 0[m*s^-1], 1.0[s^-1]}"));
   }

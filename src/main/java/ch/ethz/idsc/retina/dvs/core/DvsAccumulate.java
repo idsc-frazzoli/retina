@@ -51,7 +51,7 @@ public enum DvsAccumulate {
             255.0 * dg, //
             0, //
             255.0
-        // * Math.min(dr + dg,1)
+        // * Math.min(dr + dg, 1)
         ));
       }
     rgba = Partition.of(rgba, dimension.width);

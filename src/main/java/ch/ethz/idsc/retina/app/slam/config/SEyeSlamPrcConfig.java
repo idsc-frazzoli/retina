@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   public SEyeSlamPrcConfig() {
     // SlamWaypointDetection
-    /** valid range [0,1] */
+    /** valid range [0, 1] */
     mapThreshold = RealScalar.of(0.4);
     // RegionOfInterestFilter
     visibleBoxXMin = Quantity.of(-3, SI.METER); // [m] in go kart frame
@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     deltaPosThreshold = RealScalar.of(0.6); // [m] in go kart frame
     // SausageFilter
     distanceThreshold = RealScalar.of(0.3); // [m]
-    validPointsThreshold = RealScalar.of(4); // [-]
+    validPointsThreshold = RealScalar.of(4); // []
     // CurvatureFilter
     curvatureThreshold = RealScalar.of(0.3); // [rad/m]
     // SlamCurveInterpolate
@@ -34,12 +34,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     // SlamCurvatureSmoother
     /** alphaCurvature is the weight for the last curvature in the filter
      * alphaCurvature is required to be in the interval [0, 1] */
-    alphaCurvature = RealScalar.of(0.92); // [-]
+    alphaCurvature = RealScalar.of(0.92); // []
     /** mimimum number of curve points to average curvature from
      * see SlamCurvatureSmoother */
-    extractionPoints = RealScalar.of(6); // [-]
+    extractionPoints = RealScalar.of(6); // []
     // SlamHeadingFilter
-    alphaHeading = RealScalar.of(0.85); // [-]
+    alphaHeading = RealScalar.of(0.85); // []
     // SlamCurvePurePursuitModule
     lookAhead = Quantity.of(3.5, SI.METER);
   }

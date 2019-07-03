@@ -133,7 +133,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   private LinkedList<Cell> forwardRoute;
   private boolean closed = false;
   // TODO MH document content of positional support:
-  // contains vectors of the form {x,y,1} without units
+  // contains vectors of the form {x, y, 1} without units
   private List<Tensor> positionalSupports = new LinkedList<>();
   private Tensor controlPoints = Tensors.empty();
 

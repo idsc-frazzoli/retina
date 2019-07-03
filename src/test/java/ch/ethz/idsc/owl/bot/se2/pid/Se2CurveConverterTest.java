@@ -19,7 +19,7 @@ public class Se2CurveConverterTest extends TestCase {
   }
 
   public void testSingleton() {
-    Tensor poseMeter = Tensors.fromString("{6.2[m],4.2[m],1}");
+    Tensor poseMeter = Tensors.fromString("{6.2[m], 4.2[m], 1}");
     Tensor pose = Tensors.of(Tensors.fromString("{6.2, 4.2, 1}"));
     Tensor poseConv = Se2CurveConverter.INSTANCE.toSI(pose).get(0);
     assertEquals(poseMeter, poseConv);

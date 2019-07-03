@@ -28,7 +28,7 @@ public class PIDConvergenceTest extends TestCase {
       RealScalar.ZERO, //
       Quantity.of(5, "s*m^-2"));
   private TableBuilder tableBuilder = new TableBuilder();
-  Tensor pose = Tensors.fromString("{0[m],2[m],1.57}");
+  Tensor pose = Tensors.fromString("{0[m], 2[m], 1.57}");
 
   /** Mathematica plots
    * A = Import["posepid.csv"];

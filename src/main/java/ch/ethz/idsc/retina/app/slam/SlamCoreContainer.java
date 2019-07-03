@@ -36,7 +36,7 @@ public class SlamCoreContainer implements GokartPoseUnitlessInterface {
         SlamDvsConfig.eventCamera.slamCoreConfig.mapHeight(), opencv_core.CV_8U);
   }
 
-  /** @param initPose {x[m], y[m], angle[-]} */
+  /** @param initPose {x[m], y[m], angle} */
   public void initialize(Tensor initPose) {
     SlamCoreContainerUtil.setInitialDistribution(slamParticles, initPose);
     setPose(initPose);

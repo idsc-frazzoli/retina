@@ -167,7 +167,7 @@ public class TrackRefinement {
     /* for(int it=0;it<iterations;it++) {
      * Tensor positions = MPCBSpline.getPositions(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix);
      * Tensor sideVectors = MPCBSpline.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix1Der);
-     * Tensor sideLimits = Tensors.vector((i)->getSideLimits(positions.get(i), sideVectors.get(i)),positions.length());
+     * Tensor sideLimits = Tensors.vector((i)->getSideLimits(positions.get(i), sideVectors.get(i)), positions.length());
      * } */
     System.out.println("Iterate " + iterations + " times!");
     for (int i = 0; i < iterations; ++i) {

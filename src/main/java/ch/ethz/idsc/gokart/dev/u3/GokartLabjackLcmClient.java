@@ -38,7 +38,7 @@ public final class GokartLabjackLcmClient extends BinaryLcmClient implements Man
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     Tensor nextFrame = new LabjackAdcFrame(byteBuffer).allADC();
-    // average the button values on channels 0,1,3
+    // average the button values on channels 0, 1, 3
     Tensor mean = nextFrame.add(prevFrame).multiply(HALF); // moving average of width 2
     // preserve the throttle value on channel 2
     mean.set(nextFrame.Get(GokartLabjackAdc.THROTTLE.ordinal()), GokartLabjackAdc.THROTTLE.ordinal());

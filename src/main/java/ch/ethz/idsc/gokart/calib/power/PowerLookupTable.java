@@ -124,7 +124,7 @@ public class PowerLookupTable {
   }
 
   /** get the acceleration characterized by the relative power value
-   * @param power value scaled from [-1,1] characterizing the requested power value [ONE]
+   * @param power value scaled from [-1, 1] characterizing the requested power value [ONE]
    * -1: minimal acceleration (full deceleration)
    * 0: no motor current
    * 1: maximal acceleration
@@ -138,7 +138,7 @@ public class PowerLookupTable {
   /** get the acceleration characterized by the relative power value
    *
    * @param torqueFreeAcc with unit [m*s^-2]
-   * @param power value scaled from [-1,1] characterizing the requested power value [ONE]
+   * @param power value scaled from [-1, 1] characterizing the requested power value [ONE]
    * -1: minimal acceleration (full deceleration)
    * 0: no acceleration
    * 1: maximal acceleration

@@ -12,8 +12,8 @@ import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.img.DimensionInterface;
 
-/** for davis240c the raw image data arrives in the order (0,0), (0,1), ...,
- * (0,179), (1,0), (1,1), ..., (239,179) */
+/** for davis240c the raw image data arrives in the order (0, 0), (0, 1), ...,
+ * (0, 179), (1, 0), (1, 1), ..., (239, 179) */
 public class DavisImageProvider implements DavisApsListener {
   private final int width;
   private final int height;

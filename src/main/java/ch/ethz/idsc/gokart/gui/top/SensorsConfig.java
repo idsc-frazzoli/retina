@@ -30,7 +30,7 @@ public class SensorsConfig {
   /***************************************************/
   /** angular offset that rotates the sensor azimuth 0 onto the gokart positive x axis */
   public final Scalar vlp16_twist = RealScalar.of(-1.61);
-  /** transformation from center of rear-axle to vlp16 in (x,y)-plane
+  /** transformation from center of rear-axle to vlp16 in (x, y)-plane
    * the third, i.e. angle coordinate has to be zero. */
   public final Tensor vlp16_pose = Tensors.fromString("{0.09[m], 0.0[m], 0.0}");
   /** vlp16_incline is the rotation of tilt around the y-axis of the gokart
@@ -58,7 +58,7 @@ public class SensorsConfig {
   public final Scalar vlp16_relativeZero = DoubleScalar.of(0.75);
   // ---
   public final Scalar davis_imu_rate = Quantity.of(1000, SI.PER_SECOND);
-  public final Tensor davis_frustum = Tensors.fromString("{0[m],7[m]}");
+  public final Tensor davis_frustum = Tensors.fromString("{0[m], 7[m]}");
   /** 20181212: the value for the imu bias was established from
    * the first 60[s] of the logs from December 6. and 11. */
   public final Scalar davis_imuY_bias = Quantity.of(0.0142, SI.PER_SECOND);

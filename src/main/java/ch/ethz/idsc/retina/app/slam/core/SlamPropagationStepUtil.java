@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.alg.Array;
   /** get average pose of the particles with highest likelihood
    * 
    * @param slamParticles
-   * @param particleRange [-] >0 number of particles with highest likelihood that is employed
+   * @param particleRange strictly positive, unitless, number of particles with highest likelihood that is employed
    * @return averagePose unitless representation */
   public static Tensor getAveragePose(SlamParticle[] slamParticles, int particleRange) {
     Stream.of(slamParticles) //

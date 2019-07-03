@@ -17,14 +17,14 @@ import junit.framework.TestCase;
 
 public class GokartPoseEventTest extends TestCase {
   public void testSimple() {
-    Tensor pose = Tensors.fromString("{1[m],2[m],3}");
+    Tensor pose = Tensors.fromString("{1[m], 2[m], 3}");
     GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
     assertEquals(gokartPoseEvent.getPose(), pose);
     assertEquals(gokartPoseEvent.length(), 28);
   }
 
   public void testFailUnits() {
-    Tensor pose = Tensors.fromString("{1[m],2[m],3[m]}");
+    Tensor pose = Tensors.fromString("{1[m], 2[m], 3[m]}");
     try {
       GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       fail();
@@ -43,13 +43,13 @@ public class GokartPoseEventTest extends TestCase {
     byteBuffer.putFloat(0.6f);
     byteBuffer.flip();
     GokartPoseEvent gpe = GokartPoseEvent.of(byteBuffer);
-    assertEquals(gpe.getPose(), Tensors.fromString("{2[m],4[m],5}"));
+    assertEquals(gpe.getPose(), Tensors.fromString("{2[m], 4[m], 5}"));
     assertEquals(gpe.getQuality(), RealScalar.of(0.6f));
     Arrays.equals(array, gpe.asArray());
   }
 
   public void testReconstruction() {
-    Tensor pose = Tensors.fromString("{1[m],2[m],3}");
+    Tensor pose = Tensors.fromString("{1[m], 2[m], 3}");
     GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.of(.7));
     byte[] array = gokartPoseEvent.asArray();
     ByteBuffer byteBuffer = ByteBuffer.wrap(array);

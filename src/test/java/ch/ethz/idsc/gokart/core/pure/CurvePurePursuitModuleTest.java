@@ -48,7 +48,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
     CurvePursuitModule purePursuitModule = new CurvePurePursuitModule(PurePursuitConfig.GLOBAL);
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
-        GokartPoseEvents.offlineV1(Tensors.fromString("{0[m],0[m],0}"), RealScalar.ONE);
+        GokartPoseEvents.offlineV1(Tensors.fromString("{0[m], 0[m], 0}"), RealScalar.ONE);
     purePursuitModule.getEvent(gokartPoseEvent);
     assertFalse(purePursuitModule.purePursuitSteer.private_isOperational());
     assertFalse(purePursuitModule.purePursuitRimo.private_isOperational());

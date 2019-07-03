@@ -40,7 +40,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   /** TODO JPH magic const */
   private static final Scalar PERIOD = Quantity.of(0.1, SI.SECOND);
   private static final RenderInterface GRID_RENDER = new GridRender(Subdivide.of(0, 100, 10));
-  static final Tensor HANGAR_MODEL2PIXEL = Tensors.fromString("{{7.5*2,0,-400},{0,-7.5*2,1050},{0,0,1}}");
+  static final Tensor HANGAR_MODEL2PIXEL = Tensors.fromString("{{7.5*2, 0, -400}, {0, -7.5*2, 1050}, {0, 0, 1}}");
   // ---
   protected final TimerFrame timerFrame = new TimerFrame();
   private final WindowConfiguration windowConfiguration = //

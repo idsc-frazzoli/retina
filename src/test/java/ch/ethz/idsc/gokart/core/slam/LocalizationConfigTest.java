@@ -38,7 +38,7 @@ public class LocalizationConfigTest extends TestCase {
   }
 
   public void testQualityOk2() {
-    assertFalse(LocalizationConfig.GLOBAL.isQualityOk(GokartPoseEvents.create(Tensors.fromString("{1[m],2[m],3}"), RealScalar.of(0.5))));
-    assertTrue(LocalizationConfig.GLOBAL.isQualityOk(GokartPoseEvents.create(Tensors.fromString("{1[m],2[m],3}"), RealScalar.of(0.8))));
+    assertFalse(LocalizationConfig.GLOBAL.isQualityOk(GokartPoseEvents.create(Tensors.fromString("{1[m], 2[m], 3}"), RealScalar.of(0.5))));
+    assertTrue(LocalizationConfig.GLOBAL.isQualityOk(GokartPoseEvents.create(Tensors.fromString("{1[m], 2[m], 3}"), RealScalar.of(0.8))));
   }
 }

@@ -244,7 +244,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
    * l_t = l_{t-1} + log[ p(m|z_t) / (1 - p(m|z_t)) ] + log[ (1-p(m)) / p(m) ]
    * @param pix of cell to be updated
    * @param piy of cell to be updated
-   * @param p_m_z probability in [0,1] that Cell is occupied given the current observation z */
+   * @param p_m_z probability in [0, 1] that Cell is occupied given the current observation z */
   private void updateCellLogOdd(int pix, int piy, double p_m_z) {
     int idx = cellToIdx(pix, piy);
     double logOddDelta = StaticHelper.pToLogOdd(p_m_z) + L_M_INV;

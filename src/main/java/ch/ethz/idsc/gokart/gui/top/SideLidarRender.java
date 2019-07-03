@@ -37,7 +37,7 @@ class SideLidarRender extends LidarRender {
       graphics.setColor(color);
       for (Tensor point : points) {
         // point is a vector of length 3
-        // point = px,py,pz which corresponds to front,left,up
+        // point = px, py, pz which corresponds to front, left, up
         // for top view we draw the px and py and for side view we draw px and pz
         Tensor v = Tensors.of(point.Get(0), point.Get(2));
         Point2D point2D = geometricLayer.toPoint2D(v);

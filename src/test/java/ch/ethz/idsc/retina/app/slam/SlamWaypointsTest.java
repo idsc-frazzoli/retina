@@ -8,11 +8,11 @@ import junit.framework.TestCase;
 
 public class SlamWaypointsTest extends TestCase {
   public void testSe2() {
-    Tensor element = Tensors.fromString("{5.3[m],-10.9[m],1.34}");
+    Tensor element = Tensors.fromString("{5.3[m], -10.9[m], 1.34}");
     Se2CoveringGroupElement se2CoveringGroupAction = //
         new Se2CoveringGroupElement(element);
     Se2CoveringGroupElement inverseAction = se2CoveringGroupAction.inverse();
-    Tensor neutral = Tensors.fromString("{0[m],0[m],0}");
+    Tensor neutral = Tensors.fromString("{0[m], 0[m], 0}");
     {
       Tensor tensor = inverseAction.combine(element);
       assertEquals(tensor, neutral);

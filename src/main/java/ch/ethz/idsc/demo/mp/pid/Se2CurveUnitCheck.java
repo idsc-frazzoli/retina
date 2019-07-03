@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
 /* package */ enum Se2CurveUnitCheck {
   ;
   /** @param curve
-   * @return true if each curve element has {x,y,phi} else false */
+   * @return true if each curve element has {x, y, phi} else false */
   public static boolean that(Tensor curve, Unit units) {
     boolean condition = true;
     for (int index = 0; index < curve.length(); ++index) {

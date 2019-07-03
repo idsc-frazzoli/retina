@@ -13,9 +13,9 @@ import junit.framework.TestCase;
 public class PoseTrailRenderTest extends TestCase {
   public void testSimple() {
     PoseTrailRender poseTrailRender = new PoseTrailRender();
-    poseTrailRender.getEvent(GokartPoseEvents.offlineV1(Tensors.fromString("{1[m],2[m],3}"), RealScalar.ONE));
-    poseTrailRender.getEvent(GokartPoseEvents.offlineV1(Tensors.fromString("{1.1[m],2.0[m],3.1}"), RealScalar.ONE));
-    poseTrailRender.getEvent(GokartPoseEvents.offlineV1(Tensors.fromString("{1.1[m],2.1[m],3.1}"), RealScalar.ONE));
+    poseTrailRender.getEvent(GokartPoseEvents.offlineV1(Tensors.fromString("{1[m], 2[m], 3}"), RealScalar.ONE));
+    poseTrailRender.getEvent(GokartPoseEvents.offlineV1(Tensors.fromString("{1.1[m], 2.0[m], 3.1}"), RealScalar.ONE));
+    poseTrailRender.getEvent(GokartPoseEvents.offlineV1(Tensors.fromString("{1.1[m], 2.1[m], 3.1}"), RealScalar.ONE));
     poseTrailRender.render( //
         GeometricLayer.of(IdentityMatrix.of(3)), //
         new BufferedImage(100, 100, BufferedImage.TYPE_3BYTE_BGR).createGraphics());
