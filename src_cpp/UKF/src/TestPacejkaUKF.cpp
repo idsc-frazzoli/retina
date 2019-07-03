@@ -13,9 +13,9 @@
 void TestPacejkaUKF::test() {
 
     UKF::ParameterVec groundTruth;
-    groundTruth<< 9, 1, 10 ;
+    groundTruth<< 10, 1.9, 1 ;
     UKF::ParameterVec guess;
-    guess << 9.24, 0.942, 9.93;
+    guess << 10.345, 1.353, 1.363;
 
     double r = 0.1; // measurement noise
     //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // mea    surement noise
@@ -24,7 +24,7 @@ void TestPacejkaUKF::test() {
     UKF::ParameterMat processNoise = q * q * UKF::ParameterMat::Identity();
 
     // UKF start
-    UKF::ParameterVec mean = guess; //using groundTruth
+    UKF::ParameterVec mean = guess;
     UKF::ParameterMat variance = UKF::ParameterMat::Identity();
     UKF ukf = UKF(mean, variance);
 
@@ -42,8 +42,17 @@ void TestPacejkaUKF::test() {
             std::cout << "iteration--------------------------------------- " << i << std::endl;
         }
 
-        // random parameter (side slip) s in range [-1;2];
-        double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
+        // side slip s
+
+        // random parameter  in range [-1;2];
+        //double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
+
+        // sinusoid around -1 and 2
+        double s = 1.5*sin(0.01*i)+0.5;
+
+        // sinusoid around 0 and 2
+        //double s = 0.5*sin(0.05*i) + 0.3*sin(3*i) + 0.2*sin(10*i) + 1 ;
+
         if(true){
             std::cout << "s: " << s << std::endl;
         }

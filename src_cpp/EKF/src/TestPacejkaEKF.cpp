@@ -13,9 +13,9 @@
 void TestPacejkaEKF::test() {
 
     EKF::ParameterVec groundTruth;
-    groundTruth<< 9, 1, 10 ;
+    groundTruth<< 10, 1.9, 1 ;
     EKF::ParameterVec guess;
-    guess << 10, 1.5, 9;
+    guess << 10.345, 1.353, 1.363;
 
     double r = 0.1; // measurement noise
     //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // measurement noise
@@ -24,7 +24,7 @@ void TestPacejkaEKF::test() {
     EKF::ParameterMat processNoise = q * q * EKF::ParameterMat::Identity();
 
     // UKF start
-    EKF::ParameterVec mean = guess; //using groundTruth
+    EKF::ParameterVec mean = guess;
     EKF::ParameterMat variance = EKF::ParameterMat::Identity();
     EKF ekf = EKF(mean, variance);
 
@@ -42,11 +42,22 @@ void TestPacejkaEKF::test() {
             std::cout << "iteration--------------------------------------- " << i << std::endl;
         }
 
-        // random parameter (side slip) s in range [-1;2];
-        double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
+        // side slip s
+
+        // random parameter s in range [-1;2];
+        //double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
+
+        // sinusoid around -1 and 2
+        double s = 1.5*sin(0.01*i)+0.5;
+
+        // sinusoid around 0 and 2
+        //double s = 0.5*sin(0.05*i) + 0.3*sin(3*i) + 0.2*sin(10*i) + 1 ;
+
         if(true){
             std::cout << "s: " << s << std::endl;
         }
+
+
 
         // measurement function
         std::function<EKF::MeasurementVec(EKF::ParameterVec)> measureFunction
@@ -61,10 +72,10 @@ void TestPacejkaEKF::test() {
             measurementVec << r   ;
            return measurementVec;
         };
-        EKF::MeasurementVec z = measureFunction(groundTruth);
+        EKF::MeasurementVec zMes = measureFunction(groundTruth);
 
         if(print){
-            std::cout << "zMes: " << z << std::endl;
+            std::cout << "zMes: " << zMes << std::endl;
         }
 
         // Jacobis
@@ -100,7 +111,7 @@ void TestPacejkaEKF::test() {
                 predictionFunction,
                 measurementNoise,
                 processNoise,
-                z,
+                zMes,
                 jacobiF,
                 jacobiH);
 
