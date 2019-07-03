@@ -15,7 +15,7 @@ void TestPacejkaEKF::test() {
     EKF::ParameterVec groundTruth;
     groundTruth<< 10, 1.9, 1 ;
     EKF::ParameterVec guess;
-    guess << 10.345, 1.353, 1.363;
+    guess << 10.345, 1.935, 1.363;
 
     double r = 0.1; // measurement noise
     //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // measurement noise
@@ -43,12 +43,14 @@ void TestPacejkaEKF::test() {
         }
 
         // side slip s
+        //constant slip
+        double s = .391;
 
         // random parameter s in range [-1;2];
         //double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
 
         // sinusoid around -1 and 2
-        double s = 1.5*sin(0.01*i)+0.5;
+        //double s = 1.5*sin(0.01*i)+0.5;
 
         // sinusoid around 0 and 2
         //double s = 0.5*sin(0.05*i) + 0.3*sin(3*i) + 0.2*sin(10*i) + 1 ;
