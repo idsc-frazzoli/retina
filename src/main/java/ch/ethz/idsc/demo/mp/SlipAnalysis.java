@@ -40,12 +40,12 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
       if (Objects.nonNull(gokartPoseEvent)) {
         Scalar velX = gokartPoseEvent.getVelocity().Get(0);
-        slipBackL = (Scalar) wheelRadiusBack.multiply(wheelAngularSpeedL).subtract(velX).divide(velX).map(Magnitude.ONE).map(Round._5);
-        slipBackR = (Scalar) wheelRadiusBack.multiply(wheelAngularSpeedR).subtract(velX).divide(velX).map(Magnitude.ONE).map(Round._5);
+        slipBackL = wheelRadiusBack.multiply(wheelAngularSpeedL).subtract(velX).divide(velX);
+        slipBackR = wheelRadiusBack.multiply(wheelAngularSpeedR).subtract(velX).divide(velX);
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), // [1]
-            slipBackL, // [2]
-            slipBackR // [3]
+            slipBackL.map(Round._5), // [2]
+            slipBackR.map(Round._5) // [3]
         );
       }
     } else //
@@ -69,7 +69,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     SlipAnalysis spAnalysis = new SlipAnalysis();
     OfflineLogPlayer.process(file, //
         spAnalysis);
-    Export.of(HomeDirectory.Documents("sp/logs/pacejka.csv"), //
+    Export.of(HomeDirectory.Documents("sp/logs/slip.csv"), //
         spAnalysis.getTable().map(CsvFormat.strict()));
     System.out.println("process ended");
   }
