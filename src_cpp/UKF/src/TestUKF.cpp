@@ -16,6 +16,8 @@ using namespace Eigen;
 
 void TestUKF::test() {
 
+    // init
+    // *******************************************************************
     double q = 0; //std of process
     double r = 0; //std of measurement
     UKF::ParameterMat processCov = UKF::ParameterMat::Identity() * q; // cov of process
@@ -35,13 +37,14 @@ void TestUKF::test() {
     UKF ukf = UKF(x, P);
 
     //functions
-    std::function<UKF::MeasurementVec(UKF::ParameterVec)> measureFunction
+    // *******************************************************************
+    function<UKF::MeasurementVec(UKF::ParameterVec)> measureFunction
             = [x](UKF::ParameterVec parameter){
         UKF::MeasurementVec measurementVec;
         measurementVec(0) = x(0);
         return measurementVec;
     };
-    std::function<UKF::ParameterVec(UKF::ParameterVec)> predictionFunction
+    function<UKF::ParameterVec(UKF::ParameterVec)> predictionFunction
             = [](UKF::ParameterVec parameterVec){
         UKF::ParameterVec results;
         results(0) = parameterVec(1);
@@ -51,6 +54,7 @@ void TestUKF::test() {
     };
 
     //Space allocation for plotting
+    // *******************************************************************
     UKF::ParameterSafe xV;
     UKF::ParameterSafe sV;
     UKF::MeasurementSafe zV;
@@ -84,6 +88,7 @@ void TestUKF::test() {
     }
 
     // export for plot
+    // *******************************************************************
     if(writeCSV) {
         WriterUKF writerUkf;
         writerUkf.writeToCSV("xV.csv", xV.transpose());

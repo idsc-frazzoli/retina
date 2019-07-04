@@ -13,18 +13,18 @@
 void TestPacejkaUKF::test() {
 
     UKF::ParameterVec groundTruth;
-    groundTruth<< 9, 1, 10 ;
+    groundTruth<< 10, 1.9, 1 ;
     UKF::ParameterVec guess;
-    guess << 9.24, 0.942, 9.93;
+    guess << 10.345, 1.934, 1.363;
 
-    double r = 0.01; // measurement noise
+    double r = 0.1; // measurement noise
     //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // mea    surement noise
-    UKF::MeasurementMat measurementNoise = r * UKF::MeasurementMat::Identity();
-    double q = 0.01; //process noise
-    UKF::ParameterMat processNoise = q * UKF::ParameterMat::Identity();
+    UKF::MeasurementMat measurementNoise = r *r * UKF::MeasurementMat::Identity();
+    double q = 0.1; //process noise
+    UKF::ParameterMat processNoise = q * q * UKF::ParameterMat::Identity();
 
     // UKF start
-    UKF::ParameterVec mean = guess; //using groundTruth
+    UKF::ParameterVec mean = guess;
     UKF::ParameterMat variance = UKF::ParameterMat::Identity();
     UKF ukf = UKF(mean, variance);
 
@@ -39,11 +39,22 @@ void TestPacejkaUKF::test() {
     for (int i = 0; i<= NI; i++){
         // print
         if(print){
-            std::cout << "iteration-------------------------------------- " << i << std::endl;
+            std::cout << "iteration--------------------------------------- " << i << std::endl;
         }
 
-        // random parameter s in range [-1;2];
-        double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
+        // side slip s
+        //constant slip
+        double s = .391 ;
+
+        // random parameter  in range [-1;2];
+        //double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
+
+        // sinusoid around -1 and 2
+        //double s = 1.5*sin(0.01*i)+0.5;
+
+        // sinusoid around 0 and 2
+        //double s = 0.5*sin(0.05*i) + 0.3*sin(3*i) + 0.2*sin(10*i) + 1 ;
+
         if(true){
             std::cout << "s: " << s << std::endl;
         }
@@ -68,7 +79,13 @@ void TestPacejkaUKF::test() {
             std::cout << "zMes: " << z << std::endl;
         }
 
-        ukf.update(measureFunction,predictionFunction,measurementNoise,processNoise,z);
+        // UKF Update
+        ukf.update(
+                measureFunction,
+                predictionFunction,
+                measurementNoise,
+                processNoise,
+                z);
 
         //for plotting
         if (writeCSV) {
@@ -84,7 +101,7 @@ void TestPacejkaUKF::test() {
     // export for plot
     if(writeCSV) {
         WriterUKF writerUkf;
-        writerUkf.writeToCSV("params.csv", params.transpose());
+        writerUkf.writeToCSV("paramsUKF.csv", params.transpose());
     }
 
 

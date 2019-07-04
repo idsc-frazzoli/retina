@@ -15,10 +15,9 @@ class TestPacejkaUKF {
 public:
     void test();
     typedef UnscentedKalmanFilter<NP,NM, NI> UKF;
-    static UKF::MeasurementVec measureFunction(UKF::ParameterVec parameter, double k);
 
 private:
-    bool print = true;
+    bool print = false;
     bool writeCSV = true;
 
 };

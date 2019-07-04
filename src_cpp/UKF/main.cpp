@@ -2,13 +2,9 @@
 // Created by maximilien on 22.05.19.
 //
 #include <iostream>
-#include <Eigen/Dense>
-#include <unsupported/Eigen/MatrixFunctions> /*sqrt*/
-#include "TestUKF.h"
-#include "TestPacejkaUKF.h"
+#include "src/TestUKF.h"
+#include "src/TestPacejkaUKF.h"
 
-
-using Eigen::MatrixXd;
 using namespace std;
 int main()
 {
