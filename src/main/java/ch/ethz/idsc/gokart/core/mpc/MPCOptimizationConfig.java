@@ -38,7 +38,7 @@ public class MPCOptimizationConfig {
   public Scalar torqueVecEffect = Quantity.of(3, SI.ACCELERATION);
   /** the amount of additional front acceleration capacity strong braking can have
    * suggestion: low priority (braking can be done in a straight line */
-  @FieldSubdivide(start = "0f[1]", end = "2[1]", intervals = 20)
+  @FieldSubdivide(start = "0f", end = "2", intervals = 20)
   public Scalar brakeEffect = RealScalar.of(0);
   /** The mpc update cycle time when not successful */
   public Scalar updateCycle = Quantity.of(0.2, SI.SECOND);

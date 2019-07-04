@@ -50,6 +50,8 @@ public class SteerVibrationModule extends AbstractModule implements SteerPutProv
     return Optional.empty();
   }
 
+  // TODO AM use function from here in AntilockBrakeCheckConditions
+  // TODO AM use function from here in AntilockBrakeV2CheckConditions
   /* package */ Scalar time2torque(Scalar time) {
     Scalar frequency = HapticSteerConfig.GLOBAL.vibrationFrequency;
     Scalar amplitude = HapticSteerConfig.GLOBAL.vibrationAmplitude;

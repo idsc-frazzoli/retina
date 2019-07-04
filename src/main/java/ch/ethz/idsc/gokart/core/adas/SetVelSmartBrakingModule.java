@@ -108,8 +108,8 @@ public class SetVelSmartBrakingModule extends AbstractModule implements PutProvi
 
   // velocity is higher than setVel -> full stop
   private Scalar brakePosition = HapticSteerConfig.GLOBAL.fullBraking;
-  private Boolean fullStopping = false;
-  private Boolean accelerate = false;
+  private boolean fullStopping = false;
+  private boolean accelerate = false;
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
