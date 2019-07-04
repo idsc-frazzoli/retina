@@ -1,10 +1,10 @@
-Installation instructions for UKF
+Installation instructions for EKF
 *********************************
 
 Explanation before starting
 ***************************
 
-This installation is done for: 
+This installation is done for:
 - Ubuntu 16.04 system.
 - gcc version 5.4.0
 

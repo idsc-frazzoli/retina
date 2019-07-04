@@ -7,7 +7,8 @@
 #include <functional>
 #include <stdlib.h>
 #include <time.h>
-#include "WriterUKF.h"
+#include "../InputOutput/WriterUKF.h"
+#include "../InputOutput/ReaderCSV.cpp"
 
 
 void TestPacejkaUKF::test() {
@@ -33,7 +34,11 @@ void TestPacejkaUKF::test() {
             return parameterVec;
     };
 
+    // extract slip
+    Eigen::MatrixXd slip = load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/slip.csv");
+
     //for plotting
+    // TODO find new method for writing with more data
     Eigen::Matrix<double, NP + 1, NI+1> params;
 
     for (int i = 0; i<= NI; i++){
@@ -44,9 +49,9 @@ void TestPacejkaUKF::test() {
 
         // side slip s
         //constant slip
-        double s = .391 ;
+        //double s = .391;
 
-        // random parameter  in range [-1;2];
+        // random parameter s in range [-1;2];
         //double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
 
         // sinusoid around -1 and 2
@@ -55,23 +60,26 @@ void TestPacejkaUKF::test() {
         // sinusoid around 0 and 2
         //double s = 0.5*sin(0.05*i) + 0.3*sin(3*i) + 0.2*sin(10*i) + 1 ;
 
-        if(true){
+        // using slip from gokart log
+        double s = slip(i,2);
+
+
+        if(print){
             std::cout << "s: " << s << std::endl;
         }
 
         std::function<UKF::MeasurementVec(UKF::ParameterVec)> measureFunction
-                = [s](UKF::ParameterVec parameter){
+                    = [s](UKF::ParameterVec parameter){
+            double b = parameter(0);
+            double c = parameter(1);
+            double d = parameter(2);
 
-                    double b = parameter(0);
-                    double c = parameter(1);
-                    double d = parameter(2);
+            double r = d*sin(c*atan(b*s));
 
-                    double r = d*sin(c*atan(b*s));
-
-                    UKF::MeasurementVec measurementVec;
-                    measurementVec << r   ;
-                    return measurementVec;
-                };
+            UKF::MeasurementVec measurementVec;
+            measurementVec << r  ;
+            return measurementVec;
+        };
 
         UKF::MeasurementVec z = measureFunction(groundTruth);
 
@@ -80,6 +88,7 @@ void TestPacejkaUKF::test() {
         }
 
         // UKF Update
+        //****************************
         ukf.update(
                 measureFunction,
                 predictionFunction,

@@ -3,7 +3,6 @@
 // https://stackoverflow.com/questions/34247057/how-to-read-csv-file-and-assign-to-eigen-matrix
 //
 
-#include "ReaderCSV.h"
 #include <string>
 #include <vector>
 #include <fstream>
@@ -11,7 +10,7 @@
 
 using namespace Eigen;
 
-template <typename  M>
+template <typename M>
 M load_csv (const std::string & path) {
 
     // TODO condition for non empty file

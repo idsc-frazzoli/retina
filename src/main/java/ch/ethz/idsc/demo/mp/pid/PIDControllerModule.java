@@ -78,7 +78,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   }
 
   public void setCurve(Optional<Tensor> curve) {
-    // TODO either demand that se2 curve is provided or append angles ...
+    // TODO mcp either demand that se2 curve is provided or append angles ...
     if (Se2CurveUnitCheck.that(curve.get(), SI.METER) //
         && curve.isPresent()) {
       optionalCurve = curve;

@@ -7,7 +7,8 @@
 #include <functional>
 #include <stdlib.h>
 #include <time.h>
-#include "InputOutput/WriterEKF.h"
+#include "../InputOutput/WriterEKF.h"
+#include "../InputOutput/ReaderCSV.cpp"
 
 
 void TestPacejkaEKF::test() {
@@ -29,11 +30,15 @@ void TestPacejkaEKF::test() {
     EKF ekf = EKF(mean, variance);
 
     std::function<EKF::ParameterVec(EKF::ParameterVec)> predictionFunction
-    = [](EKF::ParameterVec parameterVec){
-            return parameterVec;
+    = [](EKF::ParameterVec parameterVec) {
+                return parameterVec;
     };
 
+    // extract slip
+    Eigen::MatrixXd slip = load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/slip.csv");
+
     //for plotting
+    // TODO find new method for writing with more data
     Eigen::Matrix<double, NP + 1, NI+1> params;
 
     for (int i = 0; i<= NI; i++){
@@ -44,7 +49,7 @@ void TestPacejkaEKF::test() {
 
         // side slip s
         //constant slip
-        double s = .391;
+        //double s = .391;
 
         // random parameter s in range [-1;2];
         //double s = 3*static_cast <double> (rand()) / static_cast <double> (RAND_MAX) - 1;
@@ -55,11 +60,12 @@ void TestPacejkaEKF::test() {
         // sinusoid around 0 and 2
         //double s = 0.5*sin(0.05*i) + 0.3*sin(3*i) + 0.2*sin(10*i) + 1 ;
 
+        // using slip from gokart log
+        double s = slip(i,2);
+
         if(print){
             std::cout << "s: " << s << std::endl;
         }
-
-
 
         // measurement function
         std::function<EKF::MeasurementVec(EKF::ParameterVec)> measureFunction
@@ -74,6 +80,7 @@ void TestPacejkaEKF::test() {
             measurementVec << r   ;
            return measurementVec;
         };
+
         EKF::MeasurementVec zMes = measureFunction(groundTruth);
 
         if(print){
@@ -81,6 +88,7 @@ void TestPacejkaEKF::test() {
         }
 
         // Jacobis
+        //****************************
         // F
         // derivatives if x(k+1) = x(k) (->Identity)
         std::function<EKF::JacobiFMat(EKF::ParameterVec)> jacobiF
@@ -108,6 +116,7 @@ void TestPacejkaEKF::test() {
         };
 
         // EKF Update
+        //****************************
         ekf.update(
                 measureFunction,
                 predictionFunction,

@@ -2,8 +2,8 @@
 // Created by maximilien on 22.05.19.
 //
 #include <iostream>
-#include "src/TestUKF.h"
-#include "src/TestPacejkaUKF.h"
+#include "Test/TestUKF.h"
+#include "Test/TestPacejkaUKF.h"
 
 using namespace std;
 int main()

@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+
+import org.bytedeco.javacpp.RealSense.intrinsics;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
@@ -15,6 +18,8 @@ import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.VelocityHelper;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
@@ -33,20 +38,37 @@ import ch.ethz.idsc.tensor.sca.Round;
   private Scalar slipBackL = Quantity.of(0, SI.ONE);
   private Scalar slipBackR = Quantity.of(0, SI.ONE);
   /** https://www.dunlop.eu/dunlop_dede/Images/Dunlop-Kartreifen-Groessentabelle-2014-2016_tcm430-96714.pdf */
-  private Scalar wheelRadiusBack = Quantity.of(0.140, SI.METER);
+  private Scalar wheelRadiusBack = Quantity.of(0.120, SI.METER);
+  private int count = 0;
+  private int countMax = 10000;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
+    if (channel.equals(Vmu931ImuChannel.INSTANCE.channel()) && count < countMax) {
       if (Objects.nonNull(gokartPoseEvent)) {
         Scalar velX = gokartPoseEvent.getVelocity().Get(0);
-        slipBackL = wheelRadiusBack.multiply(wheelAngularSpeedL).subtract(velX).divide(velX);
-        slipBackR = wheelRadiusBack.multiply(wheelAngularSpeedR).subtract(velX).divide(velX);
-        tableBuilder.appendRow( //
-            time.map(Magnitude.SECOND), // [1]
-            slipBackL.map(Round._5), // [2]
-            slipBackR.map(Round._5) // [3]
-        );
+        if (velX.number().doubleValue() > 0.10) {
+          System.out.println("vel: " + velX);
+          
+          Scalar wheelVelL = wheelRadiusBack.multiply(wheelAngularSpeedL);
+          System.out.println("wheelVel: " + wheelVelL);
+          
+          Scalar wheelVelR = wheelRadiusBack.multiply(wheelAngularSpeedR);
+          System.out.println("wheelVel: " + wheelVelR);
+          
+          slipBackL = wheelVelL.divide(velX).subtract(RealScalar.ONE);
+          slipBackR = wheelVelR.divide(velX).subtract(RealScalar.ONE);
+          System.out.println("slipL: " + slipBackL);          
+          System.out.println("slipR: " + slipBackR);
+          
+          tableBuilder.appendRow( //
+              time.map(Magnitude.SECOND), // [1]
+              velX.map(Magnitude.VELOCITY).map(Round._5), // [2]
+              slipBackL.map(Round._5), // [3]
+              slipBackR.map(Round._5) // [4]
+          );
+          count++;
+        }
       }
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {

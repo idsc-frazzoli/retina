@@ -8,7 +8,7 @@
 #define NI 1000
 
 
-#include "ExtendedKalmanFilter.h"
+#include "../ExtendedKalmanFilter.h"
 
 
 class TestPacejkaEKF {
