@@ -106,7 +106,7 @@ public class AntilockBrakeV2Module extends AbstractModule implements LinmotPutPr
     // there is a desired range for slip (in theory 0.1-0.25)
     // if the slip is outside this range, the position of the brake is increased/decreased
     // if (hapticSteerConfig.slipClip().isOutside(slip.Get(0)))
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 2; ++i) {
       if (Scalars.lessThan(slip.Get(i), hapticSteerConfig.minSlipTheory.multiply(angularRate_Origin))) {
         brakePosition = Clips.unit().apply(brakePosition.add(HapticSteerConfig.GLOBAL.incrBraking));
       }
