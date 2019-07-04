@@ -7,7 +7,7 @@
 #include <functional>
 #include <stdlib.h>
 #include <time.h>
-#include "WriterEKF.h"
+#include "InputOutput/WriterEKF.h"
 
 
 void TestPacejkaEKF::test() {
@@ -55,7 +55,7 @@ void TestPacejkaEKF::test() {
         // sinusoid around 0 and 2
         //double s = 0.5*sin(0.05*i) + 0.3*sin(3*i) + 0.2*sin(10*i) + 1 ;
 
-        if(true){
+        if(print){
             std::cout << "s: " << s << std::endl;
         }
 
@@ -126,7 +126,9 @@ void TestPacejkaEKF::test() {
 
     }
 
-    std::cout << "params" << std::endl << params;
+    if(print){
+        std::cout << "params" << std::endl << params;
+    }
 
     // export for plot
     if(writeCSV) {

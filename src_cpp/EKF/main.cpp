@@ -3,6 +3,8 @@
 //
 #include <iostream>
 #include "src/TestPacejkaEKF.h"
+#include <fstream>
+#include <string>
 
 int main() {
     TestPacejkaEKF testPacejkaEkf;

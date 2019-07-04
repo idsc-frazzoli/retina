@@ -8,7 +8,7 @@
 
 #endif //EKF_WRITERUKF_H
 
-#include "ExtendedKalmanFilter.h"
+#include "../ExtendedKalmanFilter.h"
 
 
 class WriterEKF{

@@ -10,8 +10,8 @@ add_executable(
         src/ExtendedKalmanFilter.h
         src/TestPacejkaEKF.cpp
         src/TestPacejkaEKF.h
-        src/WriterEKF.cpp
-        src/WriterEKF.h
-)
+        src/InputOutput/WriterEKF.cpp
+        src/InputOutput/WriterEKF.h
+        src/InputOutput/ReaderCSV.cpp src/InputOutput/ReaderCSV.h)
 
 target_link_libraries (EKF Eigen3::Eigen)
