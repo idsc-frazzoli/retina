@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.Tensor;
   /** initial distribution of slamParticles with a given pose and Gaussian distributed linear and angular velocities
    * 
    * @param slamParticles
-   * @param pose {[m],[m],[-]} initial pose which is identical for all particles
+   * @param pose {[m], [m], []} initial pose which is identical for all particles
    * @param LINVEL_AVG interpreted as [m/s] average initial linear velocity
    * @param LINVEL_STD interpreted as [m/s] standard deviation of linear velocity
    * @param ANGVEL_STD interpreted as [rad/s] standard deviation of angular velocity. initial angular velocity is set to 0 */

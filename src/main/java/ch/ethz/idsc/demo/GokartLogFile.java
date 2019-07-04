@@ -2039,6 +2039,164 @@ public enum GokartLogFile implements LogFile {
   /** manual drive, clothoid pursuit, mpc */
   _20190530T160230_49920c9d,
   /***************************************************/
+  /* 2019-06-03 */
+  /** various clothoid pursuits */
+  _20190603T114129_d0660300,
+  /***************************************************/
+  /* 2019-06-06 */
+  /** mpc */
+  _20190606T111155_d0660300,
+  /** anti-lock braking tests */
+  _20190606T115351_f97d92a7,
+  /** anti-lock braking tests */
+  _20190606T150744_d395e2e7,
+  /** clothoid pursuit */
+  _20190606T153747_e2a760fc,
+  /** clothoid pursuit (brief experiment) */
+  _20190606T155334_e2a760fc,
+  /** clothoid pursuit */
+  _20190606T155813_e2a760fc,
+  /** clothoid pursuit */
+  _20190606T160956_5e03370d,
+  /** clothoid pursuit */
+  _20190606T161450_e2a760fc,
+  /** anti-lock braking tests */
+  _20190606T163049_258c77e8,
+  /** clothoid pursuit */
+  _20190606T164035_468077d8,
+  /***************************************************/
+  /* 2019-06-10 */
+  /** mpc with localization failure */
+  _20190610T094922_9f45b2ab,
+  /** manual driving */
+  _20190610T131030_9f45b2ab,
+  /** anti-lock braking tests */
+  _20190610T132237_0d4c45c9,
+  /** mpc */
+  _20190610T132446_0d4c45c9,
+  /** mpc with localization failure */
+  _20190610T133900_0d4c45c9,
+  /** slow manual driving */
+  _20190610T151049_8232d2e3,
+  /** clothoid pursuit also backwards */
+  _20190610T152729_8232d2e3,
+  /** clothoid pursuit variable look ahead */
+  _20190610T154922_8bc989ef,
+  /** mpc */
+  _20190610T164802_9f45b2ab,
+  /** mpc */
+  _20190610T170759_9f45b2ab,
+  /** anti-lock braking tests */
+  _20190610T171828_0d4c45c9,
+  /** anti-lock braking tests */
+  _20190610T172241_0d4c45c9,
+  /** anti-lock braking tests */
+  _20190610T173019_0d4c45c9,
+  /***************************************************/
+  /* 2019-06-13 */
+  /** clothoid pursuit */
+  _20190613T104610_8232d2e3,
+  /** clothoid pursuit */
+  _20190613T105100_8232d2e3,
+  /** clothoid pursuit variable look ahead */
+  _20190613T105610_8bc989ef,
+  /** anti-lock braking tests */
+  _20190613T132205_be4aceab,
+  /** anti-lock braking tests */
+  _20190613T132354_be4aceab,
+  /** manual driving with torque vectoring */
+  _20190613T132819_be4aceab,
+  /** anti-lock braking tests */
+  _20190613T135315_ee4f33e5,
+  /** anti-lock braking tests */
+  _20190613T152616_5c4ca3c9,
+  /** manual driving */
+  _20190613T153439_5c4ca3c9,
+  /** anti-lock braking tests */
+  _20190613T153638_5c4ca3c9,
+  /** anti-lock braking tests */
+  _20190613T154255_5c4ca3c9,
+  /** anti-lock braking tests */
+  _20190613T154911_5c4ca3c9,
+  /***************************************************/
+  /* 2019-06-13 */
+  /** anti-lock braking tests */
+  _20190618T110007_1d4eab2f,
+  /** anti-lock braking tests */
+  _20190618T110942_1d4eab2f,
+  /** clothoid pursuit */
+  _20190618T114147_6459cd17,
+  /** clothoid pursuit */
+  _20190618T115035_6459cd17,
+  /** clothoid pursuit */
+  _20190618T120411_a1fc3f4e,
+  /** mpc */
+  _20190618T141025_49bdeaac,
+  /** mpc */
+  _20190618T142739_49bdeaac,
+  /** mpc with localization failure */
+  _20190618T150436_49bdeaac,
+  /** mpc */
+  _20190618T154738_49bdeaac,
+  /** slow mpc with localization failure */
+  _20190618T161341_49bdeaac,
+  /** track A: mpc with strange plan */
+  _20190618T162552_49bdeaac,
+  /** track A: manual driving */
+  _20190618T164804_49bdeaac,
+  /***************************************************/
+  /* 2019-06-20 */
+  /** manual driving */
+  _20190620T101655_cb84af4a,
+  /** manual driving */
+  _20190620T143043_f25ea363,
+  /** manual driving */
+  _20190620T153518_438da4db,
+  /** manual driving */
+  _20190620T154835_3b734fcf,
+  /** brief mpc */
+  _20190620T163715_3b734fcf,
+  /** mpc with let go of throttle */
+  _20190620T164839_3b734fcf,
+  /** manual driving */
+  _20190620T170421_fc9eccdf,
+  /** manual driving */
+  _20190620T170904_1490a102,
+  /***************************************************/
+  /* 2019-06-21 */
+  /** mpc with immediate localization failure */
+  _20190621T073802_1490a102,
+  /** mpc with localization failure */
+  _20190621T074256_1490a102,
+  /** brief mpc */
+  _20190621T074604_1490a102,
+  /** mpc */
+  _20190621T095606_1490a102,
+  /** manual drive with localization failure */
+  _20190621T113211_1490a102,
+  /** fast manual driving */
+  _20190621T115919_1490a102,
+  /***************************************************/
+  /* 2019-06-24 */
+  /** mpc */
+  _20190624T115533_4ce81aa6,
+  /** mpc with solver interruptions? */
+  _20190624T144753_4ce81aa6,
+  /** mpc with localization failure */
+  _20190624T151026_12dcbfa8,
+  /** mpc */
+  _20190624T151342_12dcbfa8,
+  /***************************************************/
+  /* 2019-06-27 */
+  /** mpc */
+  _20190627T103924_12dcbfa8,
+  /** mpc */
+  _20190627T132744_12dcbfa8,
+  /** mpc */
+  _20190627T133639_12dcbfa8,
+  /** mpc */
+  _20190627T143848_12dcbfa8,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

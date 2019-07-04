@@ -74,7 +74,7 @@ import ch.ethz.idsc.tensor.Tensors;
   /** convert mapProvider to binary Mat object by invoking threshold operation.
    * 
    * @param mapProvider
-   * @param mapThreshold value in [0,1] that indicates the threshold relative to maxValue of mapProvider
+   * @param mapThreshold value in [0, 1] that indicates the threshold relative to maxValue of mapProvider
    * @return binary Mat object */
   private static Mat mapProviderToBinaryMat(MapProvider mapProvider, double mapThreshold) {
     double[] mapArray = mapProvider.getMapArray();
@@ -107,7 +107,7 @@ import ch.ethz.idsc.tensor.Tensors;
   }
 
   /** @param inputMap
-   * @param resizeFactor [-]
+   * @param resizeFactor unitless []
    * @return outputMap same type as inputMap */
   // could be used in the future to reduce computational load
   @SuppressWarnings("unused")

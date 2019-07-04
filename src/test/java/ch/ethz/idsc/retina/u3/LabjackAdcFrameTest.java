@@ -56,6 +56,6 @@ public class LabjackAdcFrameTest extends TestCase {
     assertEquals(labjackAdcFrame.getADC(3), Quantity.of(4.0f, SI.VOLT));
     assertEquals(labjackAdcFrame.getADC(4), Quantity.of(-5.23f, SI.VOLT));
     Tensor tensor = labjackAdcFrame.allADC();
-    Chop._05.requireClose(tensor, Tensors.fromString("{1.2[V],2.9[V],3[V],4[V],-5.23[V]}"));
+    Chop._05.requireClose(tensor, Tensors.fromString("{1.2[V], 2.9[V], 3[V], 4[V], -5.23[V]}"));
   }
 }

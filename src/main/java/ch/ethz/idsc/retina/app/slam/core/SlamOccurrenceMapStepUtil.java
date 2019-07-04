@@ -45,7 +45,7 @@ import ch.ethz.idsc.tensor.red.Norm2Squared;
   /** adapts the event weight based on e.g. distance to sensor
    * 
    * @param gokartFramePos [m] position of event in go kart frame
-   * @return adaptiveWeightFactor [-] */
+   * @return adaptiveWeightFactor [] */
   // TODO implement and test
   private static double adaptiveEventWeightening(double[] gokartFramePos) {
     return 1;

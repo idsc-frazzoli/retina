@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.alg.VectorQ;
 /* package */ enum CurveClothoidPursuitHelper {
   ;
   /** mirror the points along the y axis and invert their orientation
-   * @param se2points curve given by points {x,y,a} */
+   * @param se2points curve given by points {x, y, a} */
   public static void mirrorAndReverse(Tensor se2points) {
     if (VectorQ.of(se2points)) {
       se2points.set(Scalar::negate, 0);

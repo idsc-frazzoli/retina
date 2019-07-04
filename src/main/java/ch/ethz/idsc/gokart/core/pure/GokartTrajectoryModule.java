@@ -212,7 +212,7 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
         // System.out.format("goal index = " + wpIdx + ", distance = %.2f \n", SE2WRAP.distance(xya, goal).number().floatValue());
         int resolution = trajectoryConfig.controlResolution.number().intValue();
         Collection<Flow> controls = flowsInterface.getFlows(resolution);
-        // goalRadius.pmul(Tensors.vector(2,2,1));
+        // goalRadius.pmul(Tensors.vector(2, 2, 1));
         // System.out.println(goalRadius);
         Se2ComboRegion se2ComboRegion = //
             // Se2ComboRegion.spherical(goal, goalRadius.pmul(TrajectoryConfig.GLOBAL.goalRadiusFactor));

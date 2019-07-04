@@ -24,7 +24,7 @@ public abstract class GokartSegmentProjection extends VelodyneSpacialProvider {
   private final float[] IZ;
   private final float max_width;
 
-  /** @param angle_offset of azimuth so that x,y-system is aligned with robot coordinate system
+  /** @param angle_offset of azimuth so that x, y-system is aligned with robot coordinate system
    * @param max_degree until which rays are considered. For instance if max_degree == 0,
    * only rays with negative/downwards inclination are considered */
   public GokartSegmentProjection(double angle_offset, double height, int max_degree) {

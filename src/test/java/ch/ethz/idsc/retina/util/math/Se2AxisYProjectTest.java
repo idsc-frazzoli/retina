@@ -149,8 +149,8 @@ public class Se2AxisYProjectTest extends TestCase {
 
   public void testUnitsNormal() {
     // [m*s^-1], 0.0, (rate*speed)[rad*s^-1]
-    Tensor u = Tensors.fromString("{1.1[m*s^-1],0,1.3[s^-1]}"); // SI
-    Tensor p = Tensors.fromString("{2.1[m],0.7[m]}");
+    Tensor u = Tensors.fromString("{1.1[m*s^-1], 0, 1.3[s^-1]}"); // SI
+    Tensor p = Tensors.fromString("{2.1[m], 0.7[m]}");
     Scalar t = Se2AxisYProject.of(u).apply(p);
     Scalar magnitude = Magnitude.SECOND.apply(t);
     assertTrue(Chop._10.close(magnitude, DoubleScalar.of(1.154854847741819)));
@@ -160,8 +160,8 @@ public class Se2AxisYProjectTest extends TestCase {
 
   public void testUnitsBeZero() {
     // [m*s^-1], 0.0, (rate*speed)[rad*s^-1]
-    Tensor u = Tensors.fromString("{1.1[m*s^-1],0,0[s^-1]}"); // SI
-    Tensor p = Tensors.fromString("{2.1[m],0.7[m]}");
+    Tensor u = Tensors.fromString("{1.1[m*s^-1], 0, 0[s^-1]}"); // SI
+    Tensor p = Tensors.fromString("{2.1[m], 0.7[m]}");
     Scalar t = Se2AxisYProject.of(u).apply(p);
     assertEquals(QuantityUnit.of(t), Unit.of("s"));
     assertTrue(Scalars.nonZero(t));
@@ -169,8 +169,8 @@ public class Se2AxisYProjectTest extends TestCase {
 
   public void testUnitsBeZeroVxZero1() {
     // [m*s^-1], 0.0, (rate*speed)[rad*s^-1]
-    Tensor u = Tensors.fromString("{0.0[m*s^-1],0,0[s^-1]}"); // SI
-    Tensor p = Tensors.fromString("{2.1[m],0.7[m]}");
+    Tensor u = Tensors.fromString("{0.0[m*s^-1], 0, 0[s^-1]}"); // SI
+    Tensor p = Tensors.fromString("{2.1[m], 0.7[m]}");
     Scalar t = Se2AxisYProject.of(u).apply(p);
     assertEquals(QuantityUnit.of(t), SI.SECOND);
     assertTrue(Scalars.nonZero(t));
@@ -178,8 +178,8 @@ public class Se2AxisYProjectTest extends TestCase {
 
   public void testUnitsBeZeroVxZero2() {
     // [m*s^-1], 0.0, (rate*speed)[rad*s^-1]
-    Tensor u = Tensors.fromString("{0.0[m*s^-1],0,0[s^-1]}"); // SI
-    Tensor p = Tensors.fromString("{0.0[m],0.7[m]}");
+    Tensor u = Tensors.fromString("{0.0[m*s^-1], 0, 0[s^-1]}"); // SI
+    Tensor p = Tensors.fromString("{0.0[m], 0.7[m]}");
     Scalar t = Se2AxisYProject.of(u).apply(p);
     assertEquals(QuantityUnit.of(t), Unit.of("s"));
     assertTrue(Scalars.isZero(t));

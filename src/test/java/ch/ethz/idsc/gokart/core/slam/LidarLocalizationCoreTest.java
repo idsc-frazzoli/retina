@@ -9,18 +9,18 @@ import junit.framework.TestCase;
 public class LidarLocalizationCoreTest extends TestCase {
   public void testInitial() {
     LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
-    assertEquals(lidarLocalizationCore.getPose(), Tensors.fromString("{0[m],0[m],0}"));
-    assertEquals(lidarLocalizationCore.getVelocity(), Tensors.fromString("{0[m*s^-1],0[m*s^-1],0[s^-1]}"));
+    assertEquals(lidarLocalizationCore.getPose(), Tensors.fromString("{0[m], 0[m], 0}"));
+    assertEquals(lidarLocalizationCore.getVelocity(), Tensors.fromString("{0[m*s^-1], 0[m*s^-1], 0[s^-1]}"));
     assertEquals(lidarLocalizationCore.getGyroZ(), Tensors.fromString("0[s^-1]"));
     assertEquals(lidarLocalizationCore.getGyroZ_vmu931(), Tensors.fromString("0[s^-1]"));
   }
 
   public void testResetPose() {
     LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
-    assertEquals(lidarLocalizationCore.getPose(), Tensors.fromString("{0[m],0[m],0}"));
+    assertEquals(lidarLocalizationCore.getPose(), Tensors.fromString("{0[m], 0[m], 0}"));
     lidarLocalizationCore.resetPose(PoseHelper.attachUnits(Tensors.vector(1, 2, 3)));
-    assertEquals(lidarLocalizationCore.getPose(), Tensors.fromString("{1[m],2[m],3}"));
-    assertEquals(lidarLocalizationCore.getVelocity(), Tensors.fromString("{0[m*s^-1],0[m*s^-1],0[s^-1]}"));
+    assertEquals(lidarLocalizationCore.getPose(), Tensors.fromString("{1[m], 2[m], 3}"));
+    assertEquals(lidarLocalizationCore.getVelocity(), Tensors.fromString("{0[m*s^-1], 0[m*s^-1], 0[s^-1]}"));
   }
 
   public void testQuality() {

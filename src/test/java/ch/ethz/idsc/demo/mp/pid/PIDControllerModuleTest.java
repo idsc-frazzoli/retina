@@ -36,7 +36,7 @@ public class PIDControllerModuleTest extends TestCase {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
     pidControllerModule.setCurve(Optional.ofNullable(CURVE));
     pidControllerModule.first();
-    Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
+    Tensor pose = Tensors.fromString("{30[m], 40[m], 1.57}");
     for (int index = 0; index < 100; index++) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.offlineV1(pose, RealScalar.ONE);
       pidControllerModule.getEvent(gokartPoseEvent);
@@ -57,7 +57,7 @@ public class PIDControllerModuleTest extends TestCase {
     PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
     pidControllerModule.setCurve(Optional.ofNullable(CURVE));
     pidControllerModule.first();
-    Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
+    Tensor pose = Tensors.fromString("{30[m], 40[m], 1.57}");
     for (int index = 0; index < 100; index++) {
       if (UserName.is("maximilien") || UserName.is("datahaki")) {
         // System.out.println("----------------------Interation" + index);

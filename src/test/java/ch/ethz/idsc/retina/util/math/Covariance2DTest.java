@@ -64,7 +64,7 @@ public class Covariance2DTest extends TestCase {
 
   public void testFailSymmetry() {
     try {
-      new Covariance2D(Tensors.fromString("{{1,2},{3,4}}"));
+      new Covariance2D(Tensors.fromString("{{1, 2}, {3, 4}}"));
       fail();
     } catch (Exception exception) {
       // ---

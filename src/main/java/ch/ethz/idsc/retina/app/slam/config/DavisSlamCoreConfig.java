@@ -25,7 +25,7 @@ public class DavisSlamCoreConfig extends SlamCoreConfig {
     /** which event polarities are processed */
     eventPolarityFilter = EventPolarityFilter.BOTH;
     // particle filter parameters
-    alpha = RealScalar.of(0.5); // [-] for update of state estimate
+    alpha = RealScalar.of(0.5); // for update of state estimate []
     numberOfParticles = RealScalar.of(20);
     /** only these particles are used for occurrence map update */
     relevantParticles = RealScalar.of(4);

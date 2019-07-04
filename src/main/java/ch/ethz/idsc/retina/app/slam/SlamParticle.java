@@ -17,10 +17,10 @@ public class SlamParticle {
 
   /** initializes particle pose and velocity
    * 
-   * @param initPose {[m],[m],[-]} initial pose with units
+   * @param initPose {[m], [m], []} initial pose with units
    * @param initLinVel interpreted as [m/s]
    * @param initAngVel interpreted as [rad/s]
-   * @param initParticleLikelihood [-] */
+   * @param initParticleLikelihood [] */
   public void initialize(Tensor initPose, Scalar initLinVel, Scalar initAngVel, double initParticleLikelihood) {
     setPose(initPose);
     linVel = initLinVel;
@@ -40,7 +40,7 @@ public class SlamParticle {
     particleLikelihood = updatedLikelihood;
   }
 
-  /** @param poseUnitless {x,y,heading} without units */
+  /** @param poseUnitless {x, y, heading} without units */
   public void setPoseUnitless(Tensor poseUnitless) {
     this.poseUnitless = poseUnitless;
   }

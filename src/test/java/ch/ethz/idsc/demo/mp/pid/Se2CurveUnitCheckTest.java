@@ -32,19 +32,19 @@ public class Se2CurveUnitCheckTest extends TestCase {
   }
 
   public void testPoseTrue() {
-    Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
+    Tensor pose = Tensors.fromString("{30[m], 40[m], 1.57}");
     boolean cond = Se2CurveUnitCheck.poseHasUnits(pose, SI.METER);
     assertEquals(cond, true);
   }
 
   public void testPoseFalse() {
-    Tensor pose = Tensors.fromString("{30,40, 1.57}");
+    Tensor pose = Tensors.fromString("{30, 40, 1.57}");
     boolean cond = Se2CurveUnitCheck.poseHasUnits(pose, SI.METER);
     assertEquals(cond, false);
   }
 
   public void testPoseWrongUnit() {
-    Tensor pose = Tensors.fromString("{30[m],40[m], 1.57}");
+    Tensor pose = Tensors.fromString("{30[m], 40[m], 1.57}");
     boolean cond = Se2CurveUnitCheck.poseHasUnits(pose, SI.SECOND);
     assertEquals(cond, false);
   }

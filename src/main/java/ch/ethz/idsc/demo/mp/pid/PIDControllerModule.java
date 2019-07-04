@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent = null;
   private Optional<Tensor> optionalCurve = Optional.empty();
-  private StateTime currentStateTime = new StateTime(Tensors.fromString("{0[m],0[m],0[-]}"), Quantity.of(0, SI.SECOND));
+  private StateTime currentStateTime = new StateTime(Tensors.fromString("{0[m], 0[m], 0}"), Quantity.of(0, SI.SECOND));
   // ---
   private int pidIndex;
   private PIDTrajectory previousPID;

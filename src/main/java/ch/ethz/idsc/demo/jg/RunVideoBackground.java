@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 public enum RunVideoBackground {
   ;
   public static final Dimension DIMENSION = new Dimension(1920, 1080);
-  // public static final Tensor MODEL2PIXEL = Tensors.fromString("{{50,0,-1000},{0,-50,3000},{0,0,1}}");
+  // public static final Tensor MODEL2PIXEL = Tensors.fromString("{{50, 0,-1000}, {0, -50, 3000}, {0, 0, 1}}");
   // public static final Tensor MODEL2PIXEL = Tensors.fromString(
   // "{{21.57529078604976, 20.84482735590282, -1091.4861896725226}, {20.84482735590282, -21.57529078604976, 364.92043391882794}, {0.0, 0.0, 1.0}}");
   public static final Tensor _20190309 = Tensors.fromString( //

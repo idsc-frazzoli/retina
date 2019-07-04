@@ -108,7 +108,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
         Tensor tr = Se2Utils.toSE2Translation(reduceMin.negate());
         // System.out.println(extensions);
-        Tensor sc = Tensors.fromString("{{30,0,1},{0,-30," + (bufferedImage.getHeight() - 1) + "},{0,0,1}}");
+        Tensor sc = Tensors.fromString("{{30, 0, 1}, {0, -30," + (bufferedImage.getHeight() - 1) + "}, {0, 0, 1}}");
         GeometricLayer geometricLayer = GeometricLayer.of(sc.dot(tr));
         reduceMin.append(RealScalar.ZERO);
         GraphicsUtil.setQualityHigh(graphics);

@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 
 public class DriftExtFlowsTest extends TestCase {
   public void testSimple() {
-    // the resolution refers to the last 3 of the state coordinates (x,y,theta,beta,r,Ux)
+    // the resolution refers to the last 3 of the state coordinates (x, y, theta, beta, r, Ux)
     Tensor eta = Tensors.vector(30, 30, 5);
     StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
         MidpointIntegrator.INSTANCE, RationalScalar.of(1, 10), 7);
@@ -49,7 +49,7 @@ public class DriftExtFlowsTest extends TestCase {
     ));
     // ---
     PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(region);
-    StateTimeRaster stateTimeRaster = new EtaRaster(eta, x -> x.state().extract(3, 6)); // consider only (beta,r,Ux)
+    StateTimeRaster stateTimeRaster = new EtaRaster(eta, x -> x.state().extract(3, 6)); // consider only (beta, r, Ux)
     TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
         stateTimeRaster, stateIntegrator, controls, plannerConstraint, goalInterface);
     // trajectoryPlanner.represent = x -> x.state().extract(3, 6);
