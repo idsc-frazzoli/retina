@@ -11,8 +11,8 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
   ;
   public static void main(String[] args) throws IOException {
     /** original log file */
-	File file = new File("/home/maximilien/Downloads/20190627T133639_12dcbfa8.lcm.00");
-	//File file = new File("/home/maximilien/Downloads/20190401T101109_411917b6.lcm.00");
+    File file = new File("/home/maximilien/Downloads/20190627T133639_12dcbfa8.lcm.00");
+    // File file = new File("/home/maximilien/Downloads/20190401T101109_411917b6.lcm.00");
     /** destination folder */
     File dest = new File("/home/maximilien/Documents/sp/logs/");
     /** title of subdirectory, usually identical to log file name above */

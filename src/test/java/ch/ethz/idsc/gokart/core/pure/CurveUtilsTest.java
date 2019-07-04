@@ -17,9 +17,9 @@ public class CurveUtilsTest extends TestCase {
   private static final int NO_MATCH = -1;
 
   public void testNoMatch() {
-    int index = StaticHelper.closestCloserThan(Tensors.fromString("{{2},{3}}"), RealScalar.ONE);
+    int index = StaticHelper.closestCloserThan(Tensors.fromString("{{2}, {3}}"), RealScalar.ONE);
     assertEquals(index, NO_MATCH);
-    Optional<Tensor> optional = CurveUtils.getAheadTrail(Tensors.fromString("{{2},{3}}"), RealScalar.ONE);
+    Optional<Tensor> optional = CurveUtils.getAheadTrail(Tensors.fromString("{{2}, {3}}"), RealScalar.ONE);
     assertFalse(optional.isPresent());
   }
 
@@ -31,18 +31,18 @@ public class CurveUtilsTest extends TestCase {
   }
 
   public void testMatch1() {
-    int index = StaticHelper.closestCloserThan(Tensors.fromString("{{0.6},{-0.4},{3}}"), RealScalar.ONE);
+    int index = StaticHelper.closestCloserThan(Tensors.fromString("{{0.6}, {-0.4}, {3}}"), RealScalar.ONE);
     assertEquals(index, 1);
   }
 
   public void testMatch2() {
-    Tensor curve = Tensors.fromString("{{-1.2},{-0.4},{0.6},{1.4},{2.2}}");
+    Tensor curve = Tensors.fromString("{{-1.2}, {-0.4}, {0.6}, {1.4}, {2.2}}");
     int index = StaticHelper.closestCloserThan(curve, RealScalar.ONE);
     assertEquals(index, 1);
   }
 
   public void testDistanceFail() {
-    Tensor curve = Tensors.fromString("{{-1.2},{-0.4},{0.6},{1.4},{2.2}}");
+    Tensor curve = Tensors.fromString("{{-1.2}, {-0.4}, {0.6}, {1.4}, {2.2}}");
     int index = StaticHelper.closestCloserThan(curve, RealScalar.ONE);
     assertEquals(index, 1);
   }
