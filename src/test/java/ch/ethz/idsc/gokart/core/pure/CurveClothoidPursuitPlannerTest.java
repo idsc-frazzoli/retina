@@ -43,7 +43,7 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
   public void testTransform() {
     Se2GroupElement se2GroupElement = new Se2GroupElement(Tensors.fromString("{2[m], 3[m], 1}"));
     TensorUnaryOperator tensorUnaryOperator = se2GroupElement.inverse()::combine;
-    Tensor curve = Tensors.fromString("{{2[m], 3[m], 1},{3[m], 4[m], 2}}");
+    Tensor curve = Tensors.fromString("{{2[m], 3[m], 1}, {3[m], 4[m], 2}}");
     Tensor local = Tensor.of(curve.stream().map(tensorUnaryOperator));
     assertTrue(Chop.NONE.allZero(local.get(0)));
   }

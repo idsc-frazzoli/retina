@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.mp;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -19,6 +20,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -26,13 +28,12 @@ import ch.ethz.idsc.tensor.sca.Round;
 /* package */ class PacejkaAnalysis implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private GokartPoseEvent gokartPoseEvent;
-  private static File file = new File("/home/maximilien/Downloads/20190627T133639_12dcbfa8.lcm.00");
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
       Vmu931ImuFrame vmu931ImuFrame = new Vmu931ImuFrame(byteBuffer);
-      if (gokartPoseEvent != null) {
+      if (Objects.nonNull(gokartPoseEvent)) {
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), // [1]
             RealScalar.of(vmu931ImuFrame.timestamp_ms()), // [2]
@@ -49,13 +50,14 @@ import ch.ethz.idsc.tensor.sca.Round;
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tableBuilder.toTable();
-  };
+  }
 
   public static void main(String[] args) throws IOException {
+    File file = HomeDirectory.Downloads("20190627T133639_12dcbfa8.lcm.00");
     PacejkaAnalysis pacejkaAnalysis = new PacejkaAnalysis();
     OfflineLogPlayer.process(file, //
         pacejkaAnalysis);
-    Export.of(new File("/home/maximilien/Documents/sp/logs/pacejka.csv"), //
+    Export.of(HomeDirectory.Documents("sp/logs/pacejka.csv"), //
         pacejkaAnalysis.getTable().map(CsvFormat.strict()));
     System.out.println("process ended");
   }
