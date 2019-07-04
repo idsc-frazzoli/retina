@@ -19,14 +19,21 @@ public enum TensorReflection {
   public static Optional<Tensor> of(FieldSubdivide fieldSubdivide) {
     if (Objects.nonNull(fieldSubdivide))
       try {
-        return Optional.of(Subdivide.of( //
-            Tensors.fromString(fieldSubdivide.start()), //
-            Tensors.fromString(fieldSubdivide.end()), //
-            fieldSubdivide.intervals()));
+        return Optional.of(strict(fieldSubdivide));
       } catch (Exception exception) {
         // ---
       }
     return Optional.empty();
+  }
+
+  /** @param fieldSubdivide non-null
+   * @return
+   * @throws Exception if parsing of strings to tensors fails */
+  public static Tensor strict(FieldSubdivide fieldSubdivide) {
+    return Subdivide.of( //
+        Tensors.fromString(fieldSubdivide.start()), //
+        Tensors.fromString(fieldSubdivide.end()), //
+        fieldSubdivide.intervals());
   }
 
   /** @param fieldClip

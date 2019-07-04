@@ -84,6 +84,7 @@ public class AntilockBrakeV2CheckConditions extends AbstractModule implements St
       Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
       Scalar ratio = steerMapping.getRatioFromSCE(angleSCE);
       AngularSlip angularSlip = new AngularSlip(velocityOrigin.Get(0), ratio, velocityOrigin.Get(2));
+      // TODO AM AngularSlip::toString
       System.out.println(angularSlip);
       return vibrate();
     }
