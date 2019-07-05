@@ -148,13 +148,13 @@ public class LookupTable2DTest extends TestCase {
         Quantity.of(+10, SI.VELOCITY));
     final int testN = 100;
     LookupTable2D forward = LookupTable2D.build( //
-        MotorFunction::getAccelerationEstimation, //
+        MotorFunctionV1.INSTANCE::getAccelerationEstimation, //
         DimN, //
         DimN, //
         pClip, //
         vClip);
     LookupTable2D inverse = forward.getInverseLookupTableBinarySearch(//
-        MotorFunction::getAccelerationEstimation, //
+        MotorFunctionV1.INSTANCE::getAccelerationEstimation, //
         0, //
         DimN, //
         DimN, //
@@ -173,7 +173,7 @@ public class LookupTable2DTest extends TestCase {
       if (Scalars.lessThan(inversionLimit, diff)) {
         System.out.println("For X=" + x + " and Y=" + y + ": " + diff);
         System.out.println("out: " + out);
-        System.out.println("fun out: " + MotorFunction.getAccelerationEstimation(x, y));
+        System.out.println("fun out: " + MotorFunctionV1.INSTANCE.getAccelerationEstimation(x, y));
         System.out.println("x=" + x + " /xb=" + xb);
       }
     }

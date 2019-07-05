@@ -1,5 +1,5 @@
-// code by mcp (used CenterLinePursuitModule by jph as model)
-package ch.ethz.idsc.demo.mp.pid;
+// code by am (used PIDModule by mp as model)
+package ch.ethz.idsc.gokart.core.adas;
 
 import java.util.Optional;
 
@@ -8,27 +8,23 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.ref.TensorListener;
 
-/** module requires the TrackReconModule to provide the center line of an
- * identified track */
-public class PIDModule extends AbstractModule implements TensorListener {
-  private final PIDControllerModule pidControllerModule = new PIDControllerModule(PIDTuningParams.GLOBAL);
+public class LaneKeepingGetCurveModule extends AbstractModule implements TensorListener {
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
+  private final LaneKeepingCenterlineModule laneKeepingTrajectoryModule = new LaneKeepingCenterlineModule();
 
   @Override // from AbstractModule
   protected void first() {
     curveSe2PursuitLcmClient.addListener(this);
     curveSe2PursuitLcmClient.startSubscriptions();
-    pidControllerModule.launch();
   }
 
   @Override // from AbstractModule
   protected void last() {
     curveSe2PursuitLcmClient.stopSubscriptions();
-    pidControllerModule.terminate();
   }
 
   @Override // from TensorListener
   public void tensorReceived(Tensor tensor) {
-    pidControllerModule.setCurve(Optional.of(tensor));
+    laneKeepingTrajectoryModule.setCurve(Optional.of(tensor));
   }
 }

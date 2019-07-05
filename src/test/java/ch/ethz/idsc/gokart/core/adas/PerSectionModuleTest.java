@@ -1,4 +1,4 @@
-// code by jph
+// code by am
 package ch.ethz.idsc.gokart.core.adas;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
