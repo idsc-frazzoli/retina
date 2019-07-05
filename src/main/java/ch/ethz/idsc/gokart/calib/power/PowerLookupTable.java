@@ -53,7 +53,7 @@ public class PowerLookupTable {
     System.out.println("compute power lookup table forward...");
     // maps from (current, speed) -> (acceleration)
     LookupTable2D lookupTable2D = LookupTable2D.build( //
-        MotorFunction::getAccelerationEstimation, //
+        MotorFunctionV1.INSTANCE::getAccelerationEstimation, //
         RES, RES, //
         ManualConfig.GLOBAL.torqueLimitClip(), //
         CLIP_VEL);
@@ -75,7 +75,7 @@ public class PowerLookupTable {
     System.out.println("compute power lookup table inverse...");
     // maps from (acceleration, speed)->(acceleration)
     LookupTable2D lookupTable2D = forward.getInverseLookupTableBinarySearch( //
-        MotorFunction::getAccelerationEstimation, //
+        MotorFunctionV1.INSTANCE::getAccelerationEstimation, //
         0, //
         RES, RES, //
         CLIP_ACC, Chop._03);
