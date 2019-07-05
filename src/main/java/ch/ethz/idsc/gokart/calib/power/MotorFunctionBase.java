@@ -6,7 +6,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-abstract class MotorFunctionBase {
+/* package */ abstract class MotorFunctionBase {
   /** @param power with unit "ARMS"
    * @param speed with unit velocity e.g. "m/s"
    * @return "m*s^-2" */
