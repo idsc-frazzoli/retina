@@ -11,7 +11,8 @@ public enum Se2CurveHelper {
   ;
   /** @param curve
    * @param pose {x, y, heading}
-   * @return */
+   * @return index of the element in given curve that is closest to given pose
+   * with respect to {@link Se2ParametricDistance} */
   public static int closest(Tensor curve, Tensor pose) {
     return ArgMin.of(Tensor.of(curve.stream() //
         .map(curvePoint -> Se2ParametricDistance.INSTANCE.distance(curvePoint, pose))));

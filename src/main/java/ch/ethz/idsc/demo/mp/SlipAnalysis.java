@@ -5,9 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
-
-import org.bytedeco.javacpp.RealSense.intrinsics;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
@@ -18,7 +15,6 @@ import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -49,18 +45,14 @@ import ch.ethz.idsc.tensor.sca.Round;
         Scalar velX = gokartPoseEvent.getVelocity().Get(0);
         if (velX.number().doubleValue() > 0.10) {
           System.out.println("vel: " + velX);
-          
           Scalar wheelVelL = wheelRadiusBack.multiply(wheelAngularSpeedL);
           System.out.println("wheelVel: " + wheelVelL);
-          
           Scalar wheelVelR = wheelRadiusBack.multiply(wheelAngularSpeedR);
           System.out.println("wheelVel: " + wheelVelR);
-          
           slipBackL = wheelVelL.divide(velX).subtract(RealScalar.ONE);
           slipBackR = wheelVelR.divide(velX).subtract(RealScalar.ONE);
-          System.out.println("slipL: " + slipBackL);          
+          System.out.println("slipL: " + slipBackL);
           System.out.println("slipR: " + slipBackR);
-          
           tableBuilder.appendRow( //
               time.map(Magnitude.SECOND), // [1]
               velX.map(Magnitude.VELOCITY).map(Round._5), // [2]
