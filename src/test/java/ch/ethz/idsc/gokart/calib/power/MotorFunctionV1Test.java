@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class MotorFunctionTest extends TestCase {
+public class MotorFunctionV1Test extends TestCase {
   public void testSfpos() {
     float sfpos = MotorFunctionV1.sfpos(.3f, .5f);
     assertEquals(sfpos, -0.28409305f);
