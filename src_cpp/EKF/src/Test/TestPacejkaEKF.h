@@ -8,7 +8,7 @@
 #define NI 1000
 
 
-#include "ExtendedKalmanFilter.h"
+#include "../ExtendedKalmanFilter.h"
 
 
 class TestPacejkaEKF {
@@ -20,8 +20,8 @@ public:
 
 
 private:
-    bool print = true;
-    bool writeCSV = true;
+    bool print = false;
+    bool writeCSV = false;
 
 };
 

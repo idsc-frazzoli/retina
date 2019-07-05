@@ -3,8 +3,8 @@
 // based on https://www.mathworks.com/matlabcentral/fileexchange/18217-learning-the-unscented-kalman-filter
 //
 
-#include "TestUKF.h"
-#include "WriterUKF.h"
+#include "../Test/TestUKF.h"
+#include "../InputOutput/WriterUKF.h"
 #include <iostream>
 #include <fstream>
 #include <functional>

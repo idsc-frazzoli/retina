@@ -56,7 +56,7 @@ public:
 
 private:
     // print param
-    bool print = true;
+    bool print = false;
 
     // update
     void update(ParameterVec& mean,
