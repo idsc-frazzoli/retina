@@ -8,8 +8,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ abstract class MotorFunctionBase {
   /** @param power with unit "ARMS"
-   * @param speed with unit velocity e.g. "m/s"
-   * @return "m*s^-2" */
+   * @param speed with unit velocity e.g. "m*s^-1"
+   * @return estimated acceleration in "m*s^-2" for given power input and state */
   public final Scalar getAccelerationEstimation(Scalar power, Scalar speed) {
     float fspd = Magnitude.VELOCITY.toFloat(speed);
     float fpow = Magnitude.ARMS.toFloat(power);
