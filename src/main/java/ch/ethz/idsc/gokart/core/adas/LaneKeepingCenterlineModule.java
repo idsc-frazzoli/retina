@@ -14,10 +14,10 @@ import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.owl.bot.se2.pid.Se2CurveHelper;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.sophus.lie.se2.Se2ParametricDistance;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** class is used to develop and test anti lock brake logic */
@@ -64,11 +64,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
+    // TODO this logic does not need to happen for every rimo put event
+    // ... instead 10[Hz] would be sufficient, or for every pose update
     if (optionalCurve.isPresent() && Objects.nonNull(gokartPoseEvent)) {
-      Tensor Pose = gokartPoseEvent.getPose();
-      Tensor xyPose = Tensors.of(Pose.Get(0), Pose.Get(1));
+      Tensor pose = gokartPoseEvent.getPose(); // of the form {x[m], y[m], heading}
       Tensor curve = optionalCurve.get();
-      Scalar currDistance = Quantity.of(Se2CurveHelper.closest(curve, xyPose), SI.METER);
+      int index = Se2CurveHelper.closest(curve, pose); // closest gives the index of the closest element
+      Tensor closest = curve.get(index);
+      Scalar currDistance = Se2ParametricDistance.INSTANCE.distance(closest, pose);
       if (Scalars.lessThan(maxDistance, currDistance)) {
         return slowDown.putEvent();
       }
