@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -110,7 +109,7 @@ public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
 
   public static void main(String[] args) throws InterruptedException, IOException, Exception {
     try (FreeSpaceVideo freeSpaceVideo = new FreeSpaceVideo()) {
-      OfflineLogPlayer.process(new File("/home/datahaki/ensemblelaps/dynamic", "m13.lcm"), freeSpaceVideo);
+      OfflineLogPlayer.process(HomeDirectory.file("ensemblelaps", "dynamic", "m13.lcm"), freeSpaceVideo);
     }
   }
 }

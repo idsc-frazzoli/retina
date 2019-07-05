@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-/* package */ enum EphemeralGokartPose {
+/* package */ enum EphemeralGokartPoseV1 {
   ;
   public static void main(String[] args) throws IOException {
     File root = new File("/media/datahaki/data/gokart/cuts", "20190321");
