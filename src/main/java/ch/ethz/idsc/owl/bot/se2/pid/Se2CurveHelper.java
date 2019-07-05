@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Norm;
 
-/* package */ enum Se2CurveHelper {
+public enum Se2CurveHelper {
   ;
   /** @param curve
    * @param pose {x, y, heading}
