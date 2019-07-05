@@ -4,10 +4,10 @@ package ch.ethz.idsc.gokart.core.adas;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
-import ch.ethz.idsc.gokart.core.GetListener;
 import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerUno;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 public class MeasurementSlowDownModule extends AbstractModule implements PutProvider<RimoPutEvent> {
   final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
-  public final GetListener<RimoGetEvent> rimoGetListener = new GetListener<RimoGetEvent>() {
+  final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent getEvent) {
       rimoGetEvent = getEvent;

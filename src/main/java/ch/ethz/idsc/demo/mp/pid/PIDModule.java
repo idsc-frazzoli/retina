@@ -1,4 +1,4 @@
-// code by mcp (used CenterLinePursuiteModule by jph as model)
+// code by mcp (used CenterLinePursuitModule by jph as model)
 package ch.ethz.idsc.demo.mp.pid;
 
 import java.util.Optional;

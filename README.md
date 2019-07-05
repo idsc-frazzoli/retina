@@ -67,8 +67,8 @@ The gokart is operated at Innovation Park Duebendorf since December 2017.
 
 ### 2019
 
-* Michael von Bueren (MT): simulation of gokart dynamics
-* Joel Gaechter (MT): precise mapping, clothoid pursuit
+* Michael von Büren (MT): simulation of gokart dynamics
+* Joel Gächter (MT): precise mapping, clothoid pursuit
 * Antonia Moosberger (BT): power steering, anti-lock braking
 * Maximilien Picquet (SP): PID controller for trajectory following, parameter estimation
 
