@@ -14,19 +14,19 @@ import junit.framework.TestCase;
 
 public class MotorFunctionV2Test extends TestCase {
   public void testSimple() {
-    Scalar epos = MotorFunctionV2.getAccelerationEstimation( //
+    Scalar epos = MotorFunctionV2.INSTANCE.getAccelerationEstimation( //
         Quantity.of(+1000, NonSI.ARMS), //
         Quantity.of(5, SI.VELOCITY));
     assertEquals(QuantityUnit.of(epos), SI.ACCELERATION);
     Chop._04.requireClose(epos, Scalars.fromString("1.4792[m*s^-2]"));
-    Scalar eneg = MotorFunctionV2.getAccelerationEstimation( //
+    Scalar eneg = MotorFunctionV2.INSTANCE.getAccelerationEstimation( //
         Quantity.of(-1000, NonSI.ARMS), //
         Quantity.of(-5, SI.VELOCITY));
     Chop._12.requireClose(epos, eneg.negate());
   }
 
   public void testHigh() {
-    Scalar acc = MotorFunctionV2.getAccelerationEstimation( //
+    Scalar acc = MotorFunctionV2.INSTANCE.getAccelerationEstimation( //
         Quantity.of(+2100, NonSI.ARMS), //
         Quantity.of(5, SI.VELOCITY));
     assertEquals(QuantityUnit.of(acc), SI.ACCELERATION);
@@ -34,7 +34,7 @@ public class MotorFunctionV2Test extends TestCase {
   }
 
   public void testLow() {
-    Scalar acc = MotorFunctionV2.getAccelerationEstimation( //
+    Scalar acc = MotorFunctionV2.INSTANCE.getAccelerationEstimation( //
         Quantity.of(-2100, NonSI.ARMS), //
         Quantity.of(5, SI.VELOCITY));
     assertEquals(QuantityUnit.of(acc), SI.ACCELERATION);
@@ -42,7 +42,7 @@ public class MotorFunctionV2Test extends TestCase {
   }
 
   public void testZero() {
-    Scalar acc = MotorFunctionV2.getAccelerationEstimation( //
+    Scalar acc = MotorFunctionV2.INSTANCE.getAccelerationEstimation( //
         Quantity.of(0, NonSI.ARMS), //
         Quantity.of(0, SI.VELOCITY));
     assertEquals(QuantityUnit.of(acc), SI.ACCELERATION);
@@ -53,11 +53,11 @@ public class MotorFunctionV2Test extends TestCase {
     for (int i = 0; i < 1000; i++) {
       Scalar power = Quantity.of(RandomVariate.of(UniformDistribution.of(-2300, 2300)), NonSI.ARMS);
       Scalar velocity = Quantity.of(RandomVariate.of(UniformDistribution.of(-10, 10)), SI.VELOCITY);
-      Scalar epos = MotorFunctionV2.getAccelerationEstimation( //
+      Scalar epos = MotorFunctionV2.INSTANCE.getAccelerationEstimation( //
           power, //
           velocity);
       assertEquals(QuantityUnit.of(epos), SI.ACCELERATION);
-      Scalar eneg = MotorFunctionV2.getAccelerationEstimation( //
+      Scalar eneg = MotorFunctionV2.INSTANCE.getAccelerationEstimation( //
           power.negate(), //
           velocity.negate());
       if (!Chop._05.close(epos, eneg.negate())) {

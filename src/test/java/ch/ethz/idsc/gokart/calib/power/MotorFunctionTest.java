@@ -14,22 +14,22 @@ import junit.framework.TestCase;
 
 public class MotorFunctionTest extends TestCase {
   public void testSfpos() {
-    float sfpos = MotorFunction.sfpos(.3f, .5f);
+    float sfpos = MotorFunctionV1.sfpos(.3f, .5f);
     assertEquals(sfpos, -0.28409305f);
   }
 
   public void testSfneg() {
-    float sfneg = MotorFunction.sfneg(.3f, .5f);
+    float sfneg = MotorFunctionV1.sfneg(.3f, .5f);
     assertEquals(sfneg, -0.3884523f);
   }
 
   public void testSimple() {
-    Scalar epos = MotorFunction.getAccelerationEstimation( //
+    Scalar epos = MotorFunctionV1.INSTANCE.getAccelerationEstimation( //
         Quantity.of(+1000, NonSI.ARMS), //
         Quantity.of(5, SI.VELOCITY));
     assertEquals(QuantityUnit.of(epos), SI.ACCELERATION);
     Chop._10.requireClose(epos, Scalars.fromString("1.0026400089263916[m*s^-2]"));
-    Scalar eneg = MotorFunction.getAccelerationEstimation( //
+    Scalar eneg = MotorFunctionV1.INSTANCE.getAccelerationEstimation( //
         Quantity.of(-1000, NonSI.ARMS), //
         Quantity.of(-5, SI.VELOCITY));
     Chop._12.requireClose(epos, eneg.negate());
@@ -39,11 +39,11 @@ public class MotorFunctionTest extends TestCase {
     for (int i = 0; i < 1000; i++) {
       Scalar power = Quantity.of(RandomVariate.of(UniformDistribution.of(-2300, 2300)), NonSI.ARMS);
       Scalar velocity = Quantity.of(RandomVariate.of(UniformDistribution.of(-10, 10)), SI.VELOCITY);
-      Scalar epos = MotorFunction.getAccelerationEstimation( //
+      Scalar epos = MotorFunctionV1.INSTANCE.getAccelerationEstimation( //
           power, //
           velocity);
       assertEquals(QuantityUnit.of(epos), SI.ACCELERATION);
-      Scalar eneg = MotorFunction.getAccelerationEstimation( //
+      Scalar eneg = MotorFunctionV1.INSTANCE.getAccelerationEstimation( //
           power.negate(), //
           velocity.negate());
       if (!Chop._05.close(epos, eneg.negate())) {

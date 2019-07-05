@@ -71,7 +71,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   }
 
   public static void main(String[] args) throws IOException {
-    visualize("v1", MotorFunction::getAccelerationEstimation);
-    visualize("v2", MotorFunctionV2::getAccelerationEstimation);
+    visualize("v1", MotorFunctionV1.INSTANCE::getAccelerationEstimation);
+    visualize("v2", MotorFunctionV2.INSTANCE::getAccelerationEstimation);
   }
 }
