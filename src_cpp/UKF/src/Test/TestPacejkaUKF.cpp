@@ -26,7 +26,7 @@ void TestPacejkaUKF::test() {
 
     // UKF start
     UKF::ParameterVec mean = guess;
-    UKF::ParameterMat variance = UKF::ParameterMat::Identity();
+    UKF::ParameterMat variance = 0.1*UKF::ParameterMat::Identity();
     UKF ukf = UKF(mean, variance);
 
     std::function<UKF::ParameterVec(UKF::ParameterVec)> predictionFunction

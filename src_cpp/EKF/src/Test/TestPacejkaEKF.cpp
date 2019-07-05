@@ -26,7 +26,7 @@ void TestPacejkaEKF::test() {
 
     // UKF start
     EKF::ParameterVec mean = guess;
-    EKF::ParameterMat variance = EKF::ParameterMat::Identity();
+    EKF::ParameterMat variance = 0.1*EKF::ParameterMat::Identity();
     EKF ekf = EKF(mean, variance);
 
     std::function<EKF::ParameterVec(EKF::ParameterVec)> predictionFunction
