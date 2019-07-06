@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.gui.plg.ClothoidPursuitRenderPlugin;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -22,6 +24,8 @@ import ch.ethz.idsc.sophus.app.api.GeodesicDisplay;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.app.curve.CurvatureDemo;
 import ch.ethz.idsc.sophus.app.misc.CurveCurvatureRender;
+import ch.ethz.idsc.sophus.app.util.LazyMouse;
+import ch.ethz.idsc.sophus.app.util.LazyMouseListener;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
 import ch.ethz.idsc.sophus.crv.subdiv.LaneRiesenfeldCurveSubdivision;
@@ -49,6 +53,17 @@ public class TrajectoryDesign extends CurvatureDemo {
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
   public final JToggleButton jToggleButton = new JToggleButton("repos.");
   RenderInterface renderInterface = EmptyRender.INSTANCE;
+  private final LazyMouseListener lazyMouseListener = new LazyMouseListener() {
+    @Override
+    public void lazyClicked(MouseEvent mouseEvent) {
+      if (jToggleButton.isSelected())
+        return;
+      // ---
+      Tensor pose = PoseHelper.attachUnits(mouseSe2State);
+      Tensor curve = getRefinedCurve().unmodifiable();
+      renderInterface = ClothoidPursuitRenderPlugin.INSTANCE.renderInterface(curve, pose);
+    }
+  };
 
   public TrajectoryDesign() {
     super(Arrays.asList(Clothoid1Display.INSTANCE));
@@ -64,6 +79,9 @@ public class TrajectoryDesign extends CurvatureDemo {
     spinnerLabelLevels.setArray(3, 4, 5);
     spinnerLabelLevels.setValue(4);
     spinnerLabelLevels.addToComponentReduced(timerFrame.jToolBar, new Dimension(50, 28), "levels");
+    LazyMouse lazyMouse = new LazyMouse(lazyMouseListener);
+    timerFrame.geometricComponent.jComponent.addMouseListener(lazyMouse);
+    timerFrame.geometricComponent.jComponent.addMouseMotionListener(lazyMouse);
     // ---
     final File file = AppCustomization.file(getClass(), "model2pixel.tensor");
     try {

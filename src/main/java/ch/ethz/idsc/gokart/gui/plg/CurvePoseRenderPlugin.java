@@ -5,5 +5,5 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
 public interface CurvePoseRenderPlugin {
-  RenderInterface renderInterface(Tensor waypoints, Tensor pose);
+  RenderInterface renderInterface(Tensor curve, Tensor pose);
 }

@@ -18,17 +18,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public enum ClothoidPursuitRenderPlugin implements CurvePoseRenderPlugin {
   INSTANCE;
-  @Override
-  public RenderInterface renderInterface(Tensor waypoints, Tensor pose) {
+  // ---
+  @Override // from CurvePoseRenderPlugin
+  public RenderInterface renderInterface(Tensor curve, Tensor pose) {
     CurveClothoidPursuitPlanner curveClothoidPursuitPlanner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
-    Optional<ClothoidPlan> optional = curveClothoidPursuitPlanner.getPlan(pose, Quantity.of(0, SI.VELOCITY), waypoints, true);
+    Optional<ClothoidPlan> optional = curveClothoidPursuitPlanner.getPlan(pose, Quantity.of(0, SI.VELOCITY), curve, true);
     if (optional.isPresent())
       return new ClothoidPursuitRender(optional.get());
     return EmptyRender.INSTANCE;
   }
 
   // ---
-  class ClothoidPursuitRender implements RenderInterface {
+  private static class ClothoidPursuitRender implements RenderInterface {
     private final PathRender pathRender = new PathRender(new Color(255, 0, 128));
     private final ClothoidPlan clothoidPlan;
 
