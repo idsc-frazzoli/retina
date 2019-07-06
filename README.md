@@ -58,6 +58,10 @@ Dyn. MPC [outside](https://www.youtube.com/watch?v=59E95E_RkH8), [inside](https:
 The student projects are supervised by Andrea Censi, Jacopo Tani, Alessandro Zanardi, and Jan Hakenberg.
 The gokart is operated at Innovation Park Dübendorf since December 2017.
 
+### 2017
+
+* Noah Isaak, Richard von Moos (BT): micro autobox programming, low-level actuator logic
+
 ### 2018
 
 * Mario Gini (MT): simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt; reliable waypoint extraction and following
@@ -110,7 +114,7 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 * [2018-06 bitluni's lab](https://www.youtube.com/watch?v=GQVsl4fV3O0)
 * [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
 * [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
-* Superquark
+* 2019-04 Superquark
 
 ---
 

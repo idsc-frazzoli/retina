@@ -118,13 +118,13 @@ public class TrajectoryDesign extends CurvatureDemo {
     {
       Tensor sideline = Tensor.of(refined.stream() //
           .map(Se2GroupElement::new) //
-          .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
+          .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
       PATH_SIDE_L.setCurve(sideline, true).render(geometricLayer, graphics);
     }
     {
       Tensor sideline = Tensor.of(refined.stream() //
           .map(Se2GroupElement::new) //
-          .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
+          .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
       PATH_SIDE_R.setCurve(sideline, true).render(geometricLayer, graphics);
     }
     return refined;
