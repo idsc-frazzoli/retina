@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -14,12 +15,15 @@ import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.plg.ClothoidPursuitRenderPlugin;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
+import ch.ethz.idsc.sophus.app.util.LazyMouse;
+import ch.ethz.idsc.sophus.app.util.LazyMouseListener;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
@@ -45,9 +49,23 @@ public class TrajectoryDesignModule extends AbstractModule {
   }
 
   protected final TrajectoryDesign trajectoryDesign = new TrajectoryDesign();
+  private final LazyMouseListener lazyMouseListener = new LazyMouseListener() {
+    @Override
+    public void lazyClicked(MouseEvent mouseEvent) {
+      if (trajectoryDesign.jToggleButton.isSelected())
+        return;
+      // ---
+      Tensor pose = PoseHelper.attachUnits(trajectoryDesign.mouseSe2State);
+      Tensor curve = trajectoryDesign.getRefinedCurve().unmodifiable();
+      trajectoryDesign.renderInterface = ClothoidPursuitRenderPlugin.INSTANCE.renderInterface(curve, pose);
+    }
+  };
 
   @Override // from AbstractModule
   protected void first() {
+    LazyMouse lazyMouse = new LazyMouse(lazyMouseListener);
+    trajectoryDesign.timerFrame.geometricComponent.jComponent.addMouseListener(lazyMouse);
+    trajectoryDesign.timerFrame.geometricComponent.jComponent.addMouseMotionListener(lazyMouse);
     {
       final File file = AppCustomization.file(getClass(), "controlpoints.tensor");
       try {

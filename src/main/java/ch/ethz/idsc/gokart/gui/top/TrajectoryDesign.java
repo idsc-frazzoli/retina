@@ -12,6 +12,8 @@ import java.util.Arrays;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
@@ -29,6 +31,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -45,6 +48,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
   public final JToggleButton jToggleButton = new JToggleButton("repos.");
+  RenderInterface renderInterface = EmptyRender.INSTANCE;
 
   public TrajectoryDesign() {
     super(Arrays.asList(Clothoid1Display.INSTANCE));
@@ -108,8 +112,12 @@ public class TrajectoryDesign extends CurvatureDemo {
     return Nest.of(curveSubdivision::cyclic, control, levels);
   }
 
+  // TODO JPH OWL 046 refactor
+  Tensor mouseSe2State = Array.zeros(3);
+
   @Override // from CurvatureDemo
   public Tensor protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    mouseSe2State = geometricLayer.getMouseSe2State();
     renderControlPoints(geometricLayer, graphics);
     GeodesicDisplay geodesicDisplay = geodesicDisplay();
     Tensor refined = getRefinedCurve();
@@ -127,6 +135,7 @@ public class TrajectoryDesign extends CurvatureDemo {
           .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
       PATH_SIDE_R.setCurve(sideline, true).render(geometricLayer, graphics);
     }
+    renderInterface.render(geometricLayer, graphics);
     return refined;
   }
 }
