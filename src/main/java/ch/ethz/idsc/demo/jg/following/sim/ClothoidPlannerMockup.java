@@ -35,7 +35,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
 /* package */ class ClothoidPlannerMockup extends TrajectoryDesignModule {
   private static final int REFINEMENT = 3;
   // ---
-  private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
+  private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
   protected final JToggleButton jToggleButton = new JToggleButton("cloth");
   private final SpinnerLabel<Scalar> spinnerLabelSpeed = new SpinnerLabel<>();
   // ---
@@ -81,16 +81,16 @@ import ch.ethz.idsc.tensor.sca.Sign;
         @Override
         public void mousePressed(MouseEvent mouseEvent) {
           if (!trajectoryDesign.jToggleButton.isSelected() && mouseEvent.getButton() == 1) {
+            ClothoidPursuitConfig clothoidPursuitConfig = ClothoidPursuitConfig.GLOBAL;
             Timing timing = Timing.started();
             optional = planner.getPlan(PoseHelper.attachUnits(mouseSe2), //
                 spinnerLabelSpeed.getValue(), //
                 trajectoryDesign.getRefinedCurve(), //
-                Sign.isPositiveOrZero(spinnerLabelSpeed.getValue()), //
-                ClothoidPursuitConfig.ratioLimits());
+                Sign.isPositiveOrZero(spinnerLabelSpeed.getValue()));
             timing.stop();
             Scalar duration = Quantity.of(timing.seconds(), SI.SECOND);
             String msg = (optional.isPresent() ? "NEW" : "NO") + " clothoid plan found in " + duration;
-            if (optional.isPresent() && Scalars.lessEquals(duration, ClothoidPursuitConfig.GLOBAL.updatePeriod))
+            if (optional.isPresent() && Scalars.lessEquals(duration, clothoidPursuitConfig.updatePeriod))
               System.out.println(msg);
             else
               System.err.println(msg);

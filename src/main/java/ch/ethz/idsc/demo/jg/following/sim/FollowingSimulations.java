@@ -33,47 +33,43 @@ import ch.ethz.idsc.tensor.sca.Sign;
     }
   },
   CLOTHOID_05 {
-    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
 
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(.5, SI.METER);
       return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+          Sign.isPositiveOrZero(speed)).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_3 {
-    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
 
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(3, SI.METER);
       return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+          Sign.isPositiveOrZero(speed)).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_5 {
-    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
 
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(5, SI.METER);
       return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+          Sign.isPositiveOrZero(speed)).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_7 {
-    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner();
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
 
     @Override
     public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(7, SI.METER);
       return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          ClothoidPursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+          Sign.isPositiveOrZero(speed)).map(ClothoidPlan::ratio);
     }
   };
   private Tensor trail;

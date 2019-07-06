@@ -58,17 +58,21 @@ Dyn. MPC [outside](https://www.youtube.com/watch?v=59E95E_RkH8), [inside](https:
 The student projects are supervised by Andrea Censi, Jacopo Tani, Alessandro Zanardi, and Jan Hakenberg.
 The gokart is operated at Innovation Park Dübendorf since December 2017.
 
+### 2017
+
+* Noah Isaak, Richard von Moos (BT): micro autobox programming, low-level actuator logic
+
 ### 2018
 
 * Mario Gini (MT): simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt; reliable waypoint extraction and following
 * Yannik Nager (MT): bayesian occupancy grid; trajectory planning
 * Valentina Cavinato (SP): tracking of moving obstacles
-* Marc Heim (MT): calibration of steering, motors, braking; torque vectoring; track reconnaissance; model predictive contouring control; synthesis of engine sound; [demo video](https://www.youtube.com/watch?v=7dnlF5QVJoo); [drone video](https://www.youtube.com/watch?v=bmIQxtiAzhQ)
+* Marc Heim (MT): calibration of steering, motors, braking; torque vectoring; track reconnaissance; [model predictive contouring control](https://www.youtube.com/watch?v=7dnlF5QVJoo); synthesis of engine sound; [drone video](https://www.youtube.com/watch?v=bmIQxtiAzhQ)
 
 ### 2019
 
 * Michael von Büren (MT): simulation of gokart dynamics
-* Joel Gächter (MT): precise mapping, clothoid pursuit
+* Joel Gächter (MT): precise mapping, [clothoid pursuit](https://www.youtube.com/watch?v=nF43WfSGdls)
 * Antonia Mosberger (BT): power steering, anti-lock braking
 * Maximilien Picquet (SP): PID controller for trajectory following, parameter estimation
 
@@ -84,9 +88,9 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 
 <td>
 
-![drifting](https://user-images.githubusercontent.com/4012178/60744124-c9130380-9f74-11e9-9251-4d67a089224d.png)
+![doughnuts](https://user-images.githubusercontent.com/4012178/60753913-c5fe2e80-9fd9-11e9-9aa9-af307331b246.jpg)
 
-[Drift controller](https://www.youtube.com/watch?v=DRjB3XNt4Vo)
+[Doughnuts](https://www.youtube.com/watch?v=zcBImlS0sE4), [pc view](https://www.youtube.com/watch?v=DRjB3XNt4Vo)
 
 </tr>
 </table>
@@ -110,7 +114,7 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 * [2018-06 bitluni's lab](https://www.youtube.com/watch?v=GQVsl4fV3O0)
 * [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
 * [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
-* Superquark
+* 2019-04 Superquark
 
 ---
 
