@@ -42,8 +42,8 @@ public:
     ParameterVec mean;
     ParameterMat variance;
 private:
-    // print param
-    bool print = true;
+    // debugUKF param
+    bool debugUKF = false;
 
     // update
     void update(ParameterVec& mean,
@@ -60,7 +60,7 @@ private:
         double beta = 2; //incorporation of prior knowledge (here = 2, assuming gaussian)
         double kappa = 0; //secondary usually set to 0
         double lambda = alpha*alpha*(NParameter+kappa) + NParameter;
-        if (print){
+        if (debugUKF){
             std::cout << "NPARAM " << L << std::endl;
             std::cout << "alpha " << alpha << std::endl;
             std::cout << "beta " << beta << std::endl;
@@ -78,7 +78,7 @@ private:
            chi[i+NParameter] = mean - covTerm.col(i-1);
         }
 
-        if (print) {
+        if (debugUKF) {
             std::cout << "CovTermSqrd: " << std::endl << covTermSquared << std::endl;
             std::cout << "CovTerm: " << std::endl << covTerm << std::endl;
             for (int i = 0; i<= 2*NParameter; i++) {
@@ -99,8 +99,8 @@ private:
 
          w_c[0] += (1 - alpha*alpha + beta);
 
-        // print
-        if (print) {
+        // debugUKF
+        if (debugUKF) {
             for (int i = 0; i <= 2 * NParameter; i++) {
                 std::cout << "wm" << i << ": " << w_m[i] << std::endl;
             }
@@ -114,7 +114,7 @@ private:
         for (int i = 0; i<= 2*NParameter; i++){
             ParameterVec predFunChi = predictionFunction(chi[i]);
             mu += w_m[i]*predFunChi;
-            if(print){
+            if(debugUKF){
                 std::cout << "predFunChi:" << i << "\n" << predFunChi << std::endl;
             }
         }
@@ -126,8 +126,8 @@ private:
         }
         sigma += processNoise;
 
-        // print
-        if (print) {
+        // debugUKF
+        if (debugUKF) {
             std::cout << "prediction:" << std::endl;
             std::cout << "mu: " << std::endl << mu << std::endl;
             std::cout << "sigma: " << std::endl << sigma << std::endl;
@@ -143,8 +143,8 @@ private:
             zPred += w_m[i]*zeta[i];
         }
 
-        // print
-        if (print){
+        // debugUKF
+        if (debugUKF){
             for (int i = 0; i<= 2*NParameter+1; i++){
                 std::cout << "chi: " << i << std::endl << chi[i] << std::endl;
                 std::cout << "zeta: " << i << std::endl << zeta[i] << std::endl;
@@ -168,14 +168,14 @@ private:
             MeasurementVec zetaZpredTran =zetaZpred.transpose();
             T += w_c[i]*chiMu*zetaZpred;
         }
-        if (print) {
+        if (debugUKF) {
             std::cout << "sVar:" << std::endl << sVar << std::endl;
             std::cout << "T:" << std::endl << T << std::endl;
         }
 
         MeasurementMat sVarInv = sVar.inverse();
         CrossCorellationMat K = T*sVarInv;
-        if (print) {
+        if (debugUKF) {
             std::cout << "K:" << std::endl << K << std::endl;
         }
 
@@ -183,8 +183,8 @@ private:
         // final State
         MeasurementVec zDiff = zMes - zPred;
 
-        // print
-        if (print) {
+        // debugUKF
+        if (debugUKF) {
             std::cout << "zDiff:" << std::endl << zDiff << std::endl;
         }
 
@@ -194,8 +194,8 @@ private:
         mean = muFinal;
         variance = sigmaFinal;
 
-        //print
-        if(print){
+        //debugUKF
+        if(debugUKF){
             std::cout << "muFinal" << std::endl << muFinal << std::endl;
             std::cout << "sigmaFinal" << std::endl << sigmaFinal << std::endl;
         }

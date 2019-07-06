@@ -26,7 +26,7 @@ void TestPacejkaEKF::test() {
 
     // UKF start
     EKF::ParameterVec mean = guess;
-    EKF::ParameterMat variance = 0.1*EKF::ParameterMat::Identity();
+    EKF::ParameterMat variance = 0.01*EKF::ParameterMat::Identity();
     EKF ekf = EKF(mean, variance);
 
     std::function<EKF::ParameterVec(EKF::ParameterVec)> predictionFunction
@@ -127,17 +127,25 @@ void TestPacejkaEKF::test() {
                 jacobiH);
 
         //for plotting
-        if (writeCSV) {
-            Eigen::MatrixXd value(4, 1);
-            value << i, ekf.mean(0), ekf.mean(1), ekf.mean(2);
-            params.col(i) = value;
-        }
-
+        Eigen::MatrixXd value(4, 1);
+        value << i, ekf.mean(0), ekf.mean(1), ekf.mean(2);
+        params.col(i) = value;
     }
 
     if(print){
-        std::cout << "params" << std::endl << params;
+        std::cout << "params" << std::endl << params << std::endl;
     }
+
+    // compute rmse
+    for (int i = 0; i < NI; i++){
+        rmse += std::sqrt(pow(params(1,i) - groundTruth(0),2)
+                          +pow(params(2,i) - groundTruth(1),2)
+                          +pow(params(3,i) - groundTruth(2),2));
+    }
+    rmse = rmse/sqrt(NI);
+    std::cout << "RMSE " << rmse << std::endl;
+
+
 
     // export for plot
     if(writeCSV) {

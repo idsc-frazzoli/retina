@@ -9,7 +9,7 @@
 #include <time.h>
 #include "../InputOutput/WriterUKF.h"
 #include "../InputOutput/ReaderCSV.cpp"
-
+#include <math.h>
 
 void TestPacejkaUKF::test() {
 
@@ -97,15 +97,28 @@ void TestPacejkaUKF::test() {
                 z);
 
         //for plotting
-        if (writeCSV) {
-            Eigen::MatrixXd value(4, 1);
-            value << i, ukf.mean(0), ukf.mean(1), ukf.mean(2);
-            params.col(i) = value;
-        }
+        Eigen::MatrixXd value(4, 1);
+        value << i, ukf.mean(0), ukf.mean(1), ukf.mean(2);
+        params.col(i) = value;
+
 
     }
 
-    std::cout << "params" << std::endl << params;
+    if (print){
+        std::cout << "params" << std::endl << params << std::endl;
+    }
+
+    // compute rmse
+    for (int i = 0; i < NI; i++){
+        rmse += std::sqrt(pow(params(1,i) - groundTruth(0),2)
+                +pow(params(2,i) - groundTruth(1),2)
+                +pow(params(3,i) - groundTruth(2),2));
+    }
+    rmse = rmse/sqrt(NI);
+    std::cout << "RMSE " << rmse << std::endl;
+
+
+
 
     // export for plot
     if(writeCSV) {

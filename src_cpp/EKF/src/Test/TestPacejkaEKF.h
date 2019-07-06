@@ -17,6 +17,7 @@ public:
 
     void test();
     static EKF::MeasurementVec measureFunction(EKF::ParameterVec parameter, double k);
+    double rmse = 0;
 
 
 private:

@@ -15,10 +15,11 @@ class TestPacejkaUKF {
 public:
     void test();
     typedef UnscentedKalmanFilter<NP,NM, NI> UKF;
+    double rmse = 0;
 
 private:
     bool print = false;
-    bool writeCSV = true;
+    bool writeCSV = false;
 
 };
 
