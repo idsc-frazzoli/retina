@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
@@ -16,15 +17,18 @@ import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.sophus.app.api.Clothoid1Display;
 import ch.ethz.idsc.sophus.app.api.GeodesicDisplay;
+import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.app.curve.CurvatureDemo;
 import ch.ethz.idsc.sophus.app.misc.CurveCurvatureRender;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
 import ch.ethz.idsc.sophus.crv.subdiv.LaneRiesenfeldCurveSubdivision;
+import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.sophus.lie.so2.So2;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -33,6 +37,11 @@ import ch.ethz.idsc.tensor.sca.N;
 
 public class TrajectoryDesign extends CurvatureDemo {
   private static final Scalar COMB_SCALE = Quantity.of(-1.0, "m^2");
+  private static final Tensor OFS_L = Tensors.fromString("{0, +1[m], 0}").unmodifiable();
+  private static final Tensor OFS_R = Tensors.fromString("{0, -1[m], 0}").unmodifiable();
+  private static final PathRender PATH_SIDE_L = new PathRender(new Color(255, 128, 128, 192), 1);
+  private static final PathRender PATH_SIDE_R = new PathRender(new Color(128, 192, 128, 192), 1);
+  // ---
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
   public final JToggleButton jToggleButton = new JToggleButton("repos.");
@@ -106,12 +115,18 @@ public class TrajectoryDesign extends CurvatureDemo {
     Tensor refined = getRefinedCurve();
     Tensor render = Tensor.of(refined.stream().map(geodesicDisplay::toPoint));
     CurveCurvatureRender.of(render, true, COMB_SCALE, geometricLayer, graphics);
+    {
+      Tensor sideline = Tensor.of(refined.stream() //
+          .map(Se2GroupElement::new) //
+          .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
+      PATH_SIDE_L.setCurve(sideline, true).render(geometricLayer, graphics);
+    }
+    {
+      Tensor sideline = Tensor.of(refined.stream() //
+          .map(Se2GroupElement::new) //
+          .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
+      PATH_SIDE_R.setCurve(sideline, true).render(geometricLayer, graphics);
+    }
     return refined;
-  }
-
-  public static void main(String[] args) {
-    TrajectoryDesign trajectoryDesign = new TrajectoryDesign();
-    trajectoryDesign.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    trajectoryDesign.timerFrame.jFrame.setVisible(true);
   }
 }
