@@ -1,17 +1,23 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.top;
+package ch.ethz.idsc.gokart.gui.trj;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Objects;
 
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
@@ -20,6 +26,8 @@ import ch.ethz.idsc.sophus.app.api.GeodesicDisplay;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.app.curve.CurvatureDemo;
 import ch.ethz.idsc.sophus.app.misc.CurveCurvatureRender;
+import ch.ethz.idsc.sophus.app.util.LazyMouse;
+import ch.ethz.idsc.sophus.app.util.LazyMouseListener;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
 import ch.ethz.idsc.sophus.crv.subdiv.LaneRiesenfeldCurveSubdivision;
@@ -44,22 +52,54 @@ public class TrajectoryDesign extends CurvatureDemo {
   // ---
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
-  public final JToggleButton jToggleButton = new JToggleButton("repos.");
+  public final JToggleButton jToggleButtonRepos = new JToggleButton("repos.");
+  private final SpinnerLabel<CurvePoseRenderPlugins> spinnerLabelPlugins = new SpinnerLabel<>();
+  private RenderInterface renderInterface = EmptyRender.INSTANCE;
+  private RenderPluginParameters renderPluginParameters = null;
+  private final LazyMouseListener lazyMouseListener = new LazyMouseListener() {
+    @Override
+    public void lazyClicked(MouseEvent mouseEvent) {
+      if (!jToggleButtonRepos.isSelected() && Objects.nonNull(renderPluginParameters))
+        renderInterface = spinnerLabelPlugins.getValue().renderInterface(renderPluginParameters);
+    }
+  };
 
   public TrajectoryDesign() {
     super(Arrays.asList(Clothoid1Display.INSTANCE));
     jToggleCurvature.setSelected(false);
-    jToggleButton.setToolTipText("position control points with the mouse");
-    jToggleButton.setSelected(isPositioningEnabled());
-    jToggleButton.addActionListener(l -> setPositioningEnabled(jToggleButton.isSelected()));
-    timerFrame.jToolBar.add(jToggleButton);
+    {
+      jToggleButtonRepos.setToolTipText("position control points with the mouse");
+      jToggleButtonRepos.setSelected(isPositioningEnabled());
+      jToggleButtonRepos.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+          boolean enabled = jToggleButtonRepos.isSelected();
+          setPositioningEnabled(enabled);
+          spinnerLabelPlugins.setEnabled(!enabled);
+        }
+      });
+    }
+    timerFrame.jToolBar.add(jToggleButtonRepos);
     timerFrame.jToolBar.addSeparator();
-    spinnerLabelDegree.setArray(1, 2, 3, 4, 5);
-    spinnerLabelDegree.setValue(1);
-    spinnerLabelDegree.addToComponentReduced(timerFrame.jToolBar, new Dimension(50, 28), "degree");
-    spinnerLabelLevels.setArray(3, 4, 5);
-    spinnerLabelLevels.setValue(4);
-    spinnerLabelLevels.addToComponentReduced(timerFrame.jToolBar, new Dimension(50, 28), "levels");
+    {
+      spinnerLabelDegree.setArray(1, 2, 3, 4, 5);
+      spinnerLabelDegree.setValue(1);
+      spinnerLabelDegree.addToComponentReduced(timerFrame.jToolBar, new Dimension(30, 28), "degree");
+    }
+    {
+      spinnerLabelLevels.setArray(3, 4, 5);
+      spinnerLabelLevels.setValue(4);
+      spinnerLabelLevels.addToComponentReduced(timerFrame.jToolBar, new Dimension(30, 28), "levels");
+    }
+    {
+      spinnerLabelPlugins.setArray(CurvePoseRenderPlugins.values());
+      spinnerLabelPlugins.setValue(CurvePoseRenderPlugins.CLOTHOID_PURSUIT);
+      spinnerLabelPlugins.addToComponentReduced(timerFrame.jToolBar, new Dimension(170, 28), "plugin");
+      spinnerLabelPlugins.setEnabled(!jToggleButtonRepos.isSelected());
+    }
+    LazyMouse lazyMouse = new LazyMouse(lazyMouseListener);
+    timerFrame.geometricComponent.jComponent.addMouseListener(lazyMouse);
+    timerFrame.geometricComponent.jComponent.addMouseMotionListener(lazyMouse);
     // ---
     final File file = AppCustomization.file(getClass(), "model2pixel.tensor");
     try {
@@ -115,18 +155,21 @@ public class TrajectoryDesign extends CurvatureDemo {
     Tensor refined = getRefinedCurve();
     Tensor render = Tensor.of(refined.stream().map(geodesicDisplay::toPoint));
     CurveCurvatureRender.of(render, true, COMB_SCALE, geometricLayer, graphics);
-    {
-      Tensor sideline = Tensor.of(refined.stream() //
-          .map(Se2GroupElement::new) //
-          .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
-      PATH_SIDE_L.setCurve(sideline, true).render(geometricLayer, graphics);
-    }
-    {
-      Tensor sideline = Tensor.of(refined.stream() //
-          .map(Se2GroupElement::new) //
-          .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
-      PATH_SIDE_R.setCurve(sideline, true).render(geometricLayer, graphics);
-    }
+    // ---
+    renderPluginParameters = new RenderPluginParameters( //
+        refined, //
+        PoseHelper.attachUnits(geometricLayer.getMouseSe2State()));
+    renderPluginParameters.laneBoundaryL = Tensor.of(refined.stream() //
+        .map(Se2GroupElement::new) //
+        .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
+    renderPluginParameters.laneBoundaryR = Tensor.of(refined.stream() //
+        .map(Se2GroupElement::new) //
+        .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
+    // ---
+    PATH_SIDE_L.setCurve(renderPluginParameters.laneBoundaryL, true).render(geometricLayer, graphics);
+    PATH_SIDE_R.setCurve(renderPluginParameters.laneBoundaryR, true).render(geometricLayer, graphics);
+    // ---
+    renderInterface.render(geometricLayer, graphics);
     return refined;
   }
 }
