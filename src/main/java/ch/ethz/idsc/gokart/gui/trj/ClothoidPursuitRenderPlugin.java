@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.plg;
+package ch.ethz.idsc.gokart.gui.trj;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -16,11 +16,13 @@ import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public enum ClothoidPursuitRenderPlugin implements CurvePoseRenderPlugin {
+/* package */ enum ClothoidPursuitRenderPlugin implements RenderPlugin {
   INSTANCE;
   // ---
   @Override // from CurvePoseRenderPlugin
-  public RenderInterface renderInterface(Tensor curve, Tensor pose) {
+  public RenderInterface renderInterface(RenderPluginParameters renderPluginParameters) {
+    Tensor curve = renderPluginParameters.curve;
+    Tensor pose = renderPluginParameters.pose;
     CurveClothoidPursuitPlanner curveClothoidPursuitPlanner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
     Optional<ClothoidPlan> optional = curveClothoidPursuitPlanner.getPlan(pose, Quantity.of(0, SI.VELOCITY), curve, true);
     if (optional.isPresent())

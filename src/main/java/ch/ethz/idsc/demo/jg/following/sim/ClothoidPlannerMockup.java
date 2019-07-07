@@ -16,7 +16,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
-import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
+import ch.ethz.idsc.gokart.gui.trj.TrajectoryDesignModule;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;

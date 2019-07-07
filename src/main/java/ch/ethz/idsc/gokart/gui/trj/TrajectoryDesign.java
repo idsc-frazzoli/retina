@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.top;
+package ch.ethz.idsc.gokart.gui.trj;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,7 +13,6 @@ import java.util.Arrays;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.gui.plg.ClothoidPursuitRenderPlugin;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -51,7 +50,10 @@ public class TrajectoryDesign extends CurvatureDemo {
   // ---
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
+  private final SpinnerLabel<CurvePoseRenderPlugins> spinnerLabelPlugins = new SpinnerLabel<>();
   public final JToggleButton jToggleButton = new JToggleButton("repos.");
+  // TODO JPH OWL 046 refactor
+  Tensor mouseSe2State = Array.zeros(3);
   RenderInterface renderInterface = EmptyRender.INSTANCE;
   private final LazyMouseListener lazyMouseListener = new LazyMouseListener() {
     @Override
@@ -59,26 +61,38 @@ public class TrajectoryDesign extends CurvatureDemo {
       if (jToggleButton.isSelected())
         return;
       // ---
-      Tensor pose = PoseHelper.attachUnits(mouseSe2State);
-      Tensor curve = getRefinedCurve().unmodifiable();
-      renderInterface = ClothoidPursuitRenderPlugin.INSTANCE.renderInterface(curve, pose);
+      RenderPluginParameters renderPluginParameters = new RenderPluginParameters( //
+          getRefinedCurve().unmodifiable(), //
+          PoseHelper.attachUnits(mouseSe2State));
+      renderInterface = ClothoidPursuitRenderPlugin.INSTANCE.renderInterface(renderPluginParameters);
     }
   };
 
   public TrajectoryDesign() {
     super(Arrays.asList(Clothoid1Display.INSTANCE));
     jToggleCurvature.setSelected(false);
-    jToggleButton.setToolTipText("position control points with the mouse");
-    jToggleButton.setSelected(isPositioningEnabled());
-    jToggleButton.addActionListener(l -> setPositioningEnabled(jToggleButton.isSelected()));
+    {
+      jToggleButton.setToolTipText("position control points with the mouse");
+      jToggleButton.setSelected(isPositioningEnabled());
+      jToggleButton.addActionListener(l -> setPositioningEnabled(jToggleButton.isSelected()));
+    }
     timerFrame.jToolBar.add(jToggleButton);
     timerFrame.jToolBar.addSeparator();
-    spinnerLabelDegree.setArray(1, 2, 3, 4, 5);
-    spinnerLabelDegree.setValue(1);
-    spinnerLabelDegree.addToComponentReduced(timerFrame.jToolBar, new Dimension(50, 28), "degree");
-    spinnerLabelLevels.setArray(3, 4, 5);
-    spinnerLabelLevels.setValue(4);
-    spinnerLabelLevels.addToComponentReduced(timerFrame.jToolBar, new Dimension(50, 28), "levels");
+    {
+      spinnerLabelDegree.setArray(1, 2, 3, 4, 5);
+      spinnerLabelDegree.setValue(1);
+      spinnerLabelDegree.addToComponentReduced(timerFrame.jToolBar, new Dimension(30, 28), "degree");
+    }
+    {
+      spinnerLabelLevels.setArray(3, 4, 5);
+      spinnerLabelLevels.setValue(4);
+      spinnerLabelLevels.addToComponentReduced(timerFrame.jToolBar, new Dimension(30, 28), "levels");
+    }
+    {
+      spinnerLabelPlugins.setArray(CurvePoseRenderPlugins.values());
+      spinnerLabelPlugins.setValue(CurvePoseRenderPlugins.CLOTHOID_PURSUIT);
+      spinnerLabelPlugins.addToComponentReduced(timerFrame.jToolBar, new Dimension(170, 28), "plugin");
+    }
     LazyMouse lazyMouse = new LazyMouse(lazyMouseListener);
     timerFrame.geometricComponent.jComponent.addMouseListener(lazyMouse);
     timerFrame.geometricComponent.jComponent.addMouseMotionListener(lazyMouse);
@@ -129,9 +143,6 @@ public class TrajectoryDesign extends CurvatureDemo {
     int levels = spinnerLabelLevels.getValue();
     return Nest.of(curveSubdivision::cyclic, control, levels);
   }
-
-  // TODO JPH OWL 046 refactor
-  Tensor mouseSe2State = Array.zeros(3);
 
   @Override // from CurvatureDemo
   public Tensor protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
