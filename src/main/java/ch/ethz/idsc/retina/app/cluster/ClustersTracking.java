@@ -87,10 +87,10 @@ public enum ClustersTracking {
             break;
           }
         else {
-          System.out.println("only old clusters"); // TODO comment on this case, unhandled?
+          System.out.println("only old clusters"); // TODO VC comment on this case, unhandled?
         }
       } else {
-        // TODO can length of matrix be used as denominator?
+        // TODO VC can length of matrix be used as denominator?
         noiseRatio = (double) cluster.size() / (oldClusters.toMatrices().length() + newScan.length());
       }
     oldClusters.removeDeques(removeIndex);

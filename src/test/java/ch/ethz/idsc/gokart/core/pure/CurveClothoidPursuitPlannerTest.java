@@ -16,10 +16,10 @@ import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class CurveClothoidPursuitPlannerTest extends TestCase {
-  // TODO add more tests
   public void testSpecific1() throws Exception {
     // Tensors.fromString("{35.1[m], 44.9[m], 1}");
     ClothoidPursuitConfig clothoidPursuitConfig = ClothoidPursuitConfig.GLOBAL;
@@ -34,6 +34,7 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
           pose, speed, curve, true).map(ClothoidPlan::ratio);
       Scalar ratio = optional.get();
       Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(ratio);
+      Clips.absoluteOne().requireInside(angle);
     }
   }
 
@@ -44,15 +45,21 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
     Tensor curve = DubendorfCurve.TRACK_OVAL_SE2;
     // System.out.println("curve.length==" + curve.length());
     Distribution distribution = NormalDistribution.of(0, 0.1);
+    int success = 0;
     for (int index = 0; index < curve.length(); ++index) {
       // System.out.println(index);
       Tensor pose = new Se2GroupElement(curve.get(index)).combine(PoseHelper.attachUnits(RandomVariate.of(distribution, 3)));
       Scalar speed = Quantity.of(1, SI.VELOCITY);
       Optional<Scalar> optional = curveClothoidPursuitPlanner.getPlan( //
           pose, speed, curve, true).map(ClothoidPlan::ratio);
-      Scalar ratio = optional.get();
-      Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(ratio);
+      if (optional.isPresent()) {
+        Scalar ratio = optional.get();
+        Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(ratio);
+        Clips.absoluteOne().requireInside(angle);
+        ++success;
+      }
     }
+    assertTrue(curve.length() / 2 < success);
   }
 
   public void testTransform() {

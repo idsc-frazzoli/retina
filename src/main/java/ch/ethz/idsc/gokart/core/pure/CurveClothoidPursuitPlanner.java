@@ -40,7 +40,8 @@ public class CurveClothoidPursuitPlanner {
   public Optional<ClothoidPlan> getPlan(Tensor pose, Scalar speed, Tensor curve, boolean isForward) {
     Tensor estimatedPose = pose;
     if (clothoidPursuitConfig.estimatePose && plan_prev.isPresent()) {
-      // TODO can use more general velocity {vx, vy, omega} from state estimation
+      // TODO GJOEL/JPH can use more general velocity {vx, vy, omega} from state estimation
+      // instead of "Scalar speed" use "Tensor velocity" as function parameter
       Flow flow = CarHelper.singleton(speed, plan_prev.get().ratio());
       estimatedPose = Se2CarIntegrator.INSTANCE.step(flow, pose, clothoidPursuitConfig.estimationTime);
     }

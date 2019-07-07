@@ -53,7 +53,7 @@ public enum PredefinedMap implements LocalizationImage {
   DUBILAB_LOCALIZATION_20190309(7.5), //
   /** dust proof wall */
   DUBILAB_LOCALIZATION_20190314(7.5), //
-  // TODO EPHEMERAL 023
+  /** empty space */
   DUBILAB_OBSTACLES_20190314(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
