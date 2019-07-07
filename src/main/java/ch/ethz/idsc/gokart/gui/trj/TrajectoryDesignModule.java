@@ -69,7 +69,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     }
     {
       trajectoryDesign.timerFrame.jToolBar.addSeparator();
-      JButton jButton = new JButton("export");
+      JButton jButton = new JButton("save");
       jButton.setToolTipText("export control points");
       jButton.addActionListener(actionEvent -> {
         File file = HomeDirectory.file("Desktop", "controlpoints_" + SystemTimestamp.asString(new Date()) + ".tensor");
@@ -80,7 +80,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     }
     {
       trajectoryDesign.timerFrame.jToolBar.addSeparator();
-      JButton jButton = new JButton("import");
+      JButton jButton = new JButton("load");
       jButton.setToolTipText("import control points");
       jButton.addActionListener(actionEvent -> importTensor().map(tensor -> Tensor.of(tensor.stream().map(PoseHelper::toUnitless))) //
           .ifPresent(trajectoryDesign::setControlPointsSe2));

@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /* package */ enum ClothoidPursuitRenderPlugin implements RenderPlugin {
   INSTANCE;
   // ---
-  @Override // from CurvePoseRenderPlugin
+  @Override // from RenderPlugin
   public RenderInterface renderInterface(RenderPluginParameters renderPluginParameters) {
     Tensor curve = renderPluginParameters.curve;
     Tensor pose = renderPluginParameters.pose;

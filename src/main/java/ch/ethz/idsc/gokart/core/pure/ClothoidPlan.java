@@ -42,6 +42,7 @@ public class ClothoidPlan implements Serializable {
     this.curve = curve;
   }
 
+  /** @return ratio (i.e. curvature) for driving along the begin of the clothoid */
   public Scalar ratio() {
     return ratio;
   }

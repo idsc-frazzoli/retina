@@ -4,11 +4,14 @@ package ch.ethz.idsc.gokart.gui.trj;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Objects;
 
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
@@ -34,7 +37,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -50,21 +52,15 @@ public class TrajectoryDesign extends CurvatureDemo {
   // ---
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
+  public final JToggleButton jToggleButtonRepos = new JToggleButton("repos.");
   private final SpinnerLabel<CurvePoseRenderPlugins> spinnerLabelPlugins = new SpinnerLabel<>();
-  public final JToggleButton jToggleButton = new JToggleButton("repos.");
-  // TODO JPH OWL 046 refactor
-  Tensor mouseSe2State = Array.zeros(3);
-  RenderInterface renderInterface = EmptyRender.INSTANCE;
+  private RenderInterface renderInterface = EmptyRender.INSTANCE;
+  private RenderPluginParameters renderPluginParameters = null;
   private final LazyMouseListener lazyMouseListener = new LazyMouseListener() {
     @Override
     public void lazyClicked(MouseEvent mouseEvent) {
-      if (jToggleButton.isSelected())
-        return;
-      // ---
-      RenderPluginParameters renderPluginParameters = new RenderPluginParameters( //
-          getRefinedCurve().unmodifiable(), //
-          PoseHelper.attachUnits(mouseSe2State));
-      renderInterface = ClothoidPursuitRenderPlugin.INSTANCE.renderInterface(renderPluginParameters);
+      if (!jToggleButtonRepos.isSelected() && Objects.nonNull(renderPluginParameters))
+        renderInterface = spinnerLabelPlugins.getValue().renderInterface(renderPluginParameters);
     }
   };
 
@@ -72,11 +68,18 @@ public class TrajectoryDesign extends CurvatureDemo {
     super(Arrays.asList(Clothoid1Display.INSTANCE));
     jToggleCurvature.setSelected(false);
     {
-      jToggleButton.setToolTipText("position control points with the mouse");
-      jToggleButton.setSelected(isPositioningEnabled());
-      jToggleButton.addActionListener(l -> setPositioningEnabled(jToggleButton.isSelected()));
+      jToggleButtonRepos.setToolTipText("position control points with the mouse");
+      jToggleButtonRepos.setSelected(isPositioningEnabled());
+      jToggleButtonRepos.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+          boolean enabled = jToggleButtonRepos.isSelected();
+          setPositioningEnabled(enabled);
+          spinnerLabelPlugins.setEnabled(!enabled);
+        }
+      });
     }
-    timerFrame.jToolBar.add(jToggleButton);
+    timerFrame.jToolBar.add(jToggleButtonRepos);
     timerFrame.jToolBar.addSeparator();
     {
       spinnerLabelDegree.setArray(1, 2, 3, 4, 5);
@@ -92,6 +95,7 @@ public class TrajectoryDesign extends CurvatureDemo {
       spinnerLabelPlugins.setArray(CurvePoseRenderPlugins.values());
       spinnerLabelPlugins.setValue(CurvePoseRenderPlugins.CLOTHOID_PURSUIT);
       spinnerLabelPlugins.addToComponentReduced(timerFrame.jToolBar, new Dimension(170, 28), "plugin");
+      spinnerLabelPlugins.setEnabled(!jToggleButtonRepos.isSelected());
     }
     LazyMouse lazyMouse = new LazyMouse(lazyMouseListener);
     timerFrame.geometricComponent.jComponent.addMouseListener(lazyMouse);
@@ -146,24 +150,25 @@ public class TrajectoryDesign extends CurvatureDemo {
 
   @Override // from CurvatureDemo
   public Tensor protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    mouseSe2State = geometricLayer.getMouseSe2State();
     renderControlPoints(geometricLayer, graphics);
     GeodesicDisplay geodesicDisplay = geodesicDisplay();
     Tensor refined = getRefinedCurve();
     Tensor render = Tensor.of(refined.stream().map(geodesicDisplay::toPoint));
     CurveCurvatureRender.of(render, true, COMB_SCALE, geometricLayer, graphics);
-    {
-      Tensor sideline = Tensor.of(refined.stream() //
-          .map(Se2GroupElement::new) //
-          .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
-      PATH_SIDE_L.setCurve(sideline, true).render(geometricLayer, graphics);
-    }
-    {
-      Tensor sideline = Tensor.of(refined.stream() //
-          .map(Se2GroupElement::new) //
-          .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
-      PATH_SIDE_R.setCurve(sideline, true).render(geometricLayer, graphics);
-    }
+    // ---
+    renderPluginParameters = new RenderPluginParameters( //
+        refined, //
+        PoseHelper.attachUnits(geometricLayer.getMouseSe2State()));
+    renderPluginParameters.laneBoundaryL = Tensor.of(refined.stream() //
+        .map(Se2GroupElement::new) //
+        .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
+    renderPluginParameters.laneBoundaryR = Tensor.of(refined.stream() //
+        .map(Se2GroupElement::new) //
+        .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
+    // ---
+    PATH_SIDE_L.setCurve(renderPluginParameters.laneBoundaryL, true).render(geometricLayer, graphics);
+    PATH_SIDE_R.setCurve(renderPluginParameters.laneBoundaryR, true).render(geometricLayer, graphics);
+    // ---
     renderInterface.render(geometricLayer, graphics);
     return refined;
   }
