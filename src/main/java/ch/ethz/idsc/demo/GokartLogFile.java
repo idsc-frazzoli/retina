@@ -2232,6 +2232,10 @@ public enum GokartLogFile implements LogFile {
   /** manual driving, clothoid pursuit */
   _20190704T133612_9ee4a9f2,
   /***************************************************/
+  /* 2019-07-07 */
+  /** slow manual driving for mapping */
+  _20190707T151835_ce6e2a12,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

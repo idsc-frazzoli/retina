@@ -161,7 +161,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
-      LinmotCoolingModule.class, // TODO possibly auto start
+      LinmotCoolingModule.class, //
       LinmotTakeoverModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_LAB = Arrays.asList( //
