@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.Tensor;
   private static final double LINVEL_STD = Magnitude.VELOCITY.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.linVelStd);
   private static final double ANGVEL_STD = Magnitude.PER_SECOND.toDouble(SlamDvsConfig.eventCamera.slamCoreConfig.angVelStd);
   private static final TruncatedGaussian TRUNCATED_GAUSSIAN = //
-      new TruncatedGaussian(LINVEL_AVG, LINVEL_STD, VehicleConfig.LINVEL_MIN, VehicleConfig.LINVEL_MAX);
+      new TruncatedGaussian(LINVEL_AVG, LINVEL_STD, VehicleConfig.GLOBAL.LINVEL_MIN, VehicleConfig.GLOBAL.LINVEL_MAX);
 
   /** initial distribution of slamParticles with a given pose and Gaussian distributed linear and angular velocities
    * 

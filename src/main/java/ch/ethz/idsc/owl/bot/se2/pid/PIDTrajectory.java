@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
-//TODO mcp implementation does not use I-part
+// TODO MPC implementation does not use I-part
 public class PIDTrajectory {
   private final Scalar time;
   private final Scalar errorPose;

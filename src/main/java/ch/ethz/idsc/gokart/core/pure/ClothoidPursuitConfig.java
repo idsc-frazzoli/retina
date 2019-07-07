@@ -22,7 +22,7 @@ public class ClothoidPursuitConfig extends PursuitConfig {
   public Boolean se2distance = false;
   public Boolean estimatePose = false;
   @FieldSubdivide(start = "0[s]", end = "0.1[s]", intervals = 100)
-  public Scalar estimationTime = Quantity.of(0.015, SI.SECOND); // TODO JG (remove, ) test or learn online
+  public Scalar estimationTime = Quantity.of(0.015, SI.SECOND); // TODO GJOEL (remove, ) test or learn online
   @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 20)
   public Scalar fallbackLookAhead = Quantity.of(5, SI.METER);
   @FieldSubdivide(start = "0[m]", end = "1[m]", intervals = 20)

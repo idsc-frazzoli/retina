@@ -30,7 +30,7 @@ public class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGri
   }
 
   // ---
-  // TODO JG document parameters
+  // TODO GJOEL document parameters
   private GenericBayesianMapping( //
       SpacialXZObstaclePredicate spacialXZObstaclePredicate, //
       int waitMillis, BayesianOccupancyGrid bayesianOccupancyGrid, int max_alt) {
