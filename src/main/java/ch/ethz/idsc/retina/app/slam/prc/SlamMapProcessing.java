@@ -38,7 +38,7 @@ public class SlamMapProcessing extends PeriodicSlamStep implements Runnable, Sta
   public void run() {
     while (isLaunched)
       if (Objects.nonNull(occurrenceMap)) {
-        // TODO JAN check thread safety
+        // TODO JPH check thread safety
         mapProcessing();
         occurrenceMap = null;
       } else

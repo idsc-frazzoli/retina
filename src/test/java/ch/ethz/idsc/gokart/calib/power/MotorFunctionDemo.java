@@ -39,7 +39,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
     final Tensor powers = Subdivide.increasing(clip_powers, RES);
     Clip clip_speeds = Clips.absolute(Quantity.of(+10, SI.VELOCITY));
     final Tensor speeds = Subdivide.increasing(clip_speeds, RES);
-    // TODO potentially increase to 2.1
+    // TODO JPH potentially increase to 2.1
     Clip clip_accels = Clips.absolute(Quantity.of(+2, SI.ACCELERATION));
     final Tensor accelerations = Subdivide.increasing(clip_accels, RES);
     {

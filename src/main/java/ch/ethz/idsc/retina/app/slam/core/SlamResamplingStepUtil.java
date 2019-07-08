@@ -18,8 +18,8 @@ import ch.ethz.idsc.tensor.RealScalar;
   private final TruncatedGaussian tgAngAccel;
 
   public SlamResamplingStepUtil(double rougheningLinAccelStd, double rougheningAngAccelStd) {
-    tgLinAccel = new TruncatedGaussian(0, rougheningLinAccelStd, VehicleConfig.LINACCEL_MIN, VehicleConfig.LINACCEL_MAX);
-    tgAngAccel = new TruncatedGaussian(0, rougheningAngAccelStd, VehicleConfig.ANGACCEL_MIN, VehicleConfig.ANGACCEL_MAX);
+    tgLinAccel = new TruncatedGaussian(0, rougheningLinAccelStd, VehicleConfig.GLOBAL.LINACCEL_MIN, VehicleConfig.GLOBAL.LINACCEL_MAX);
+    tgAngAccel = new TruncatedGaussian(0, rougheningAngAccelStd, VehicleConfig.GLOBAL.ANGACCEL_MIN, VehicleConfig.GLOBAL.ANGACCEL_MAX);
   }
 
   /** particle resampling using neglect_low_likelihood method. After resampling, a particle roughening step is executed.
@@ -69,10 +69,10 @@ import ch.ethz.idsc.tensor.RealScalar;
   private double limitLinAccel(double oldLinVel, double dT) {
     double linAccel = tgLinAccel.nextValue();
     double newLinVel = oldLinVel + linAccel * dT;
-    if (VehicleConfig.LINVEL_MAX < newLinVel)
-      return VehicleConfig.LINVEL_MAX;
-    if (newLinVel < VehicleConfig.LINVEL_MIN)
-      return VehicleConfig.LINVEL_MIN;
+    if (VehicleConfig.GLOBAL.LINVEL_MAX < newLinVel)
+      return VehicleConfig.GLOBAL.LINVEL_MAX;
+    if (newLinVel < VehicleConfig.GLOBAL.LINVEL_MIN)
+      return VehicleConfig.GLOBAL.LINVEL_MIN;
     return newLinVel;
   }
 

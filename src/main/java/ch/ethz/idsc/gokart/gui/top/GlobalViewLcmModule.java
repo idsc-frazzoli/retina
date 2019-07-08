@@ -217,7 +217,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   }
 
   public static void main(String[] args) throws Exception {
-    LocalizationConfig.GLOBAL.predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190314.name();
+    LocalizationConfig.GLOBAL.predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190708.name();
     standalone();
   }
 }
