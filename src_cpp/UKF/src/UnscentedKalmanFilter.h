@@ -75,7 +75,7 @@ private:
         if (debugUKF){
             std::cout << "covTermSquared " << std::endl << covTermSquared << std::endl;
         }
-        ParameterMat covTerm = covTermSquared.array().sqrt();
+        ParameterMat covTerm = covTermSquared.sqrt();
         if (debugUKF){
             std::cout << "covTerm " << std::endl << covTerm << std::endl;
         }

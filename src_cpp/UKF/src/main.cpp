@@ -15,10 +15,9 @@ int main()
     groundTruth<< 10, 1.9, 1 ;
     UKF::ParameterVec guess;
     guess << 10.345, 1.934, 1.363;
-    UKF::ParameterMat variance;
+    UKF::ParameterMat variance = 0.01*UKF::ParameterMat::Identity();
 
     for( int i = 1; i<= 1; i++){
-        UKF::ParameterMat § = 0.1 * UKF::ParameterMat::Identity();
         std::cout << "Start Variance : " << std::endl << variance << std::endl;
         TestPacejkaUKF testPacejkaUkf;
         testPacejkaUkf.test(
