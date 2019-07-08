@@ -22,11 +22,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   @Override // from RenderPlugin
   public RenderInterface renderInterface(RenderPluginParameters renderPluginParameters) {
     Tensor curve = renderPluginParameters.curve;
-    Tensor pose = renderPluginParameters.pose;
-    CurveClothoidPursuitPlanner curveClothoidPursuitPlanner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
-    Optional<ClothoidPlan> optional = curveClothoidPursuitPlanner.getPlan(pose, Quantity.of(0, SI.VELOCITY), curve, true);
-    if (optional.isPresent())
-      return new ClothoidPursuitRender(optional.get());
+    if (1 < curve.length()) {
+      Tensor pose = renderPluginParameters.pose;
+      CurveClothoidPursuitPlanner curveClothoidPursuitPlanner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
+      Optional<ClothoidPlan> optional = curveClothoidPursuitPlanner.getPlan(pose, Quantity.of(0, SI.VELOCITY), curve, true);
+      if (optional.isPresent())
+        return new ClothoidPursuitRender(optional.get());
+    }
     return EmptyRender.INSTANCE;
   }
 

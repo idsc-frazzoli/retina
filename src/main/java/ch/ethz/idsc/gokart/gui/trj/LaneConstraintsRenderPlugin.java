@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
@@ -24,15 +25,19 @@ import ch.ethz.idsc.tensor.sca.Round;
   // ---
   @Override // from RenderPlugin
   public RenderInterface renderInterface(RenderPluginParameters renderPluginParameters) {
-    Tensor pose = renderPluginParameters.pose;
-    ClothoidPursuitConfig clothoidPursuitConfig = new ClothoidPursuitConfig();
-    // large value is a hack to get a solution
-    clothoidPursuitConfig.turningRatioMax = Quantity.of(1000, SI.PER_METER);
-    Optional<ClothoidPlan> optionalL = //
-        new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), renderPluginParameters.laneBoundaryL, true);
-    Optional<ClothoidPlan> optionalR = //
-        new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), renderPluginParameters.laneBoundaryR, true);
-    return new ClothoidPursuitRender(pose, optionalL, optionalR);
+    if (1 < renderPluginParameters.laneBoundaryL.length() && //
+        1 < renderPluginParameters.laneBoundaryR.length()) {
+      Tensor pose = renderPluginParameters.pose;
+      ClothoidPursuitConfig clothoidPursuitConfig = new ClothoidPursuitConfig();
+      // large value is a hack to get a solution
+      clothoidPursuitConfig.turningRatioMax = Quantity.of(1000, SI.PER_METER);
+      Optional<ClothoidPlan> optionalL = //
+          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), renderPluginParameters.laneBoundaryL, true);
+      Optional<ClothoidPlan> optionalR = //
+          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), renderPluginParameters.laneBoundaryR, true);
+      return new ClothoidPursuitRender(pose, optionalL, optionalR);
+    }
+    return EmptyRender.INSTANCE;
   }
 
   // ---

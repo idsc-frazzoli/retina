@@ -20,6 +20,7 @@ import ch.ethz.idsc.tensor.alg.Last;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 // TODO JPH rename
+// FIXME GJOEL this has issue when end meets start of cyclic curve 
 public class CurveClothoidPursuitPlanner {
   private final ClothoidPursuitConfig clothoidPursuitConfig;
   // ---
