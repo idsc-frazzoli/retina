@@ -23,7 +23,8 @@ import ch.ethz.idsc.tensor.sca.Round;
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public class LidarLocalizationModule extends AbstractModule implements PoseVelocityInterface {
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
-  private final LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
+  private final LidarLocalizationCore lidarLocalizationCore = //
+      new LidarLocalizationCore(LocalizationConfig.GLOBAL.getPredefinedMap());
   private final Vlp16LcmClient vlp16LcmClient = //
       SensorsConfig.GLOBAL.vlp16LcmClient(lidarLocalizationCore.velodyneDecoder);
 
