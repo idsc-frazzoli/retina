@@ -4,10 +4,15 @@ package ch.ethz.idsc.owl.car.math;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
+/** Reference: Marc Heim Thesis, p. 14 */
 public class AngularSlip {
   /** tangentSpeed with unit m*s^-1 */
   private final Scalar tangentSpeed;
-  /** rotationPerMeterDriven with unit m^-1 */
+  /** rotationPerMeterDriven with unit m^-1
+   * usually taken from steering model, for instance:
+   * <pre>
+   * steerMapping.getRatioFromSCE(steerColumnInterface);
+   * </pre> */
   private final Scalar rotationPerMeterDriven;
   /** wantedRotationRate with unit s^-1 */
   private final Scalar wantedRotationRate;
