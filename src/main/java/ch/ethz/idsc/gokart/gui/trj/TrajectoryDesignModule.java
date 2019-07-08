@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.top;
+package ch.ethz.idsc.gokart.gui.trj;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -14,6 +14,8 @@ import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.top.Dubilab;
+import ch.ethz.idsc.gokart.gui.top.GeneralImageRender;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
@@ -21,29 +23,19 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.MatrixForm;
 import ch.ethz.idsc.tensor.io.Put;
-import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class TrajectoryDesignModule extends AbstractModule {
   protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-  private static final Tensor _20190401 = Tensors.of( //
-      Tensors.vector(3.6677994336284594, 3.5436206505034793, -190.05265224432887), //
-      Tensors.vector(3.5436206505034793, -3.6677994336284594, 74.03647376620074), //
-      Tensors.vector(0.0, 0.0, 1.0));
-
-  protected static BackgroundImage get20190408() {
-    return new BackgroundImage(ResourceData.bufferedImage("/dubilab/obstacles/20190408.png"), _20190401);
-  }
-
+  // ---
   protected final TrajectoryDesign trajectoryDesign = new TrajectoryDesign();
 
   @Override // from AbstractModule
@@ -65,7 +57,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     {
       trajectoryDesign.timerFrame.jToolBar.addSeparator();
       JButton jButton = new JButton("set curve");
-      jButton.setToolTipText("override pursuit curve");
+      jButton.setToolTipText("publish pursuit curve via lcm");
       jButton.addActionListener(actionEvent -> {
         Tensor curve = trajectoryDesign.getRefinedCurve().unmodifiable();
         Se2CurveLcm.publish(GokartLcmChannel.PURSUIT_CURVE_SE2, curve);
@@ -77,7 +69,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     }
     {
       trajectoryDesign.timerFrame.jToolBar.addSeparator();
-      JButton jButton = new JButton("export");
+      JButton jButton = new JButton("save");
       jButton.setToolTipText("export control points");
       jButton.addActionListener(actionEvent -> {
         File file = HomeDirectory.file("Desktop", "controlpoints_" + SystemTimestamp.asString(new Date()) + ".tensor");
@@ -88,7 +80,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     }
     {
       trajectoryDesign.timerFrame.jToolBar.addSeparator();
-      JButton jButton = new JButton("import");
+      JButton jButton = new JButton("load");
       jButton.setToolTipText("import control points");
       jButton.addActionListener(actionEvent -> importTensor().map(tensor -> Tensor.of(tensor.stream().map(PoseHelper::toUnitless))) //
           .ifPresent(trajectoryDesign::setControlPointsSe2));
@@ -112,7 +104,7 @@ public class TrajectoryDesignModule extends AbstractModule {
       //
     }
     try {
-      BackgroundImage backgroundImage = get20190408();
+      BackgroundImage backgroundImage = Dubilab.backgroundImage20190408();
       GeneralImageRender generalImageRender = new GeneralImageRender(backgroundImage.bufferedImage, Inverse.of(backgroundImage.model2pixel));
       trajectoryDesign.timerFrame.geometricComponent.addRenderInterfaceBackground(generalImageRender);
     } catch (Exception exception) {

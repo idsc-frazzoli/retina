@@ -8,7 +8,8 @@ import junit.framework.TestCase;
 
 public class ClothoidPursuitConfigTest extends TestCase {
   public void testSimple() {
-    List<DynamicRatioLimit> ratioLimits = ClothoidPursuitConfig.ratioLimits();
+    ClothoidPursuitConfig clothoidPursuitConfig = ClothoidPursuitConfig.GLOBAL;
+    List<DynamicRatioLimit> ratioLimits = clothoidPursuitConfig.ratioLimits();
     assertEquals(ratioLimits.size(), 1);
   }
 }

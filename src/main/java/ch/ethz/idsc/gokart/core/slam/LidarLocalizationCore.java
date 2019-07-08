@@ -49,14 +49,13 @@ public class LidarLocalizationCore implements //
   private static final Scalar _1 = DoubleScalar.of(1);
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
-  private static final LidarGyroLocalization LIDAR_GYRO_LOCALIZATION = //
-      LidarGyroLocalization.of(LocalizationConfig.GLOBAL.getPredefinedMap());
   // ---
   public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   public final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
   private final LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.GLOBAL.getPlanarVmu931Imu());
+  private final LidarGyroLocalization lidarGyroLocalization;
   // ---
   private boolean tracking = false;
   private boolean flagSnap = false;
@@ -72,7 +71,8 @@ public class LidarLocalizationCore implements //
   private Scalar gyroZ_filtered = Quantity.of(0.0, SI.PER_SECOND);
   final Thread thread = new Thread(this);
 
-  public LidarLocalizationCore() {
+  public LidarLocalizationCore(PredefinedMap predefinedMap) {
+    lidarGyroLocalization = LidarGyroLocalization.of(predefinedMap);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     lidarAngularFiringCollector.addListener(this);
@@ -140,7 +140,7 @@ public class LidarLocalizationCore implements //
   private GokartPoseEvent prevResult = null;
 
   private void fit(Tensor points) {
-    Optional<GokartPoseEvent> optional = LIDAR_GYRO_LOCALIZATION.handle(getPose(), getVelocity(), points);
+    Optional<GokartPoseEvent> optional = lidarGyroLocalization.handle(getPose(), getVelocity(), points);
     if (optional.isPresent()) {
       GokartPoseEvent slamResult = optional.get();
       quality = slamResult.getQuality();

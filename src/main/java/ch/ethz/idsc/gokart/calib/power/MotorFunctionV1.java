@@ -1,7 +1,7 @@
 // code by mheim based on matlab code
 package ch.ethz.idsc.gokart.calib.power;
 
-/** non linear */
+/** non-linear */
 /* package */ class MotorFunctionV1 extends MotorFunctionBase {
   static final MotorFunctionBase INSTANCE = new MotorFunctionV1();
 

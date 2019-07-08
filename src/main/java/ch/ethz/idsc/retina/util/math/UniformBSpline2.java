@@ -9,9 +9,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Mod;
 
-/** @author Marc Heim
- * 
- * quadratic splines */
+/** quadratic splines */
 public enum UniformBSpline2 {
   ;
   // based on matlab code:
@@ -63,8 +61,11 @@ public enum UniformBSpline2 {
 
   /** quadratic bspline defined over the interval [0, 3]
    * 
-   * the maximum is attained at parameter value 3/2 == 1.5
+   * <p>The maximum is attained at parameter value 3/2 == 1.5
    * where the function evaluates to 3/4
+   * 
+   * <p>Reference:
+   * Master Thesis Marc Heim, p. 28, eq. 3.6
    * 
    * @param value
    * @return */
@@ -72,16 +73,24 @@ public enum UniformBSpline2 {
     if (Scalars.lessThan(value, _0))
       return _0;
     if (Scalars.lessThan(value, _1))
+      // 0.5 u ^ 2
       return _1_2.multiply(value).multiply(value);
     if (Scalars.lessThan(value, _2))
+      // thesis contains typo, the correct expression is
+      // 0.5 (-3 + 6u - 2u^2)
       return _3.multiply(value).subtract(_3_2).subtract(value.multiply(value));
     if (Scalars.lessThan(value, _3)) {
+      // 0.5 (3 - u)^2
       Scalar factor = _3.subtract(value);
       return _1_2.multiply(factor).multiply(factor);
     }
     return _0;
   }
 
+  /** confirmed with Mathematica
+   * 
+   * @param value
+   * @return 1st derivative at given value of quadratic BSpline with support in interval [0, 3] */
   public static Scalar getBasisFunction1Der(Scalar value) {
     if (Scalars.lessThan(value, _0))
       return _0;
@@ -94,6 +103,10 @@ public enum UniformBSpline2 {
     return _0;
   }
 
+  /** confirmed with Mathematica
+   * 
+   * @param value
+   * @return 2nd derivative at given value of quadratic BSpline with support in interval [0, 3] */
   public static Scalar getBasisFunction2Der(Scalar value) {
     if (Scalars.lessThan(value, _0))
       return _0;

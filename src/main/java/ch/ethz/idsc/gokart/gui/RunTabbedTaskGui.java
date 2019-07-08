@@ -60,7 +60,7 @@ import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.gui.top.SideViewLcmModule;
-import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
+import ch.ethz.idsc.gokart.gui.trj.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
@@ -161,7 +161,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
-      LinmotCoolingModule.class, // TODO possibly auto start
+      LinmotCoolingModule.class, //
       LinmotTakeoverModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_LAB = Arrays.asList( //

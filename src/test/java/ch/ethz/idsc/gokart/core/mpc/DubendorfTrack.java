@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Tensor controlPoints = ResourceData.of("/dubilab/controlpoints/eight/20180603.csv").multiply(Quantity.of(1, SI.METER));
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
-    // TODO do this smarter
+    // TODO JPH do this smarter
     for (int i = 0; i < controlPoints.length(); i++) {
       Tensor iTensor = controlPoints.get(i);
       Scalar x = iTensor.Get(0);
@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/eight/20180603.csv")).multiply(Quantity.of(1, SI.METER));
     Tensor controlPointsX = Tensors.empty();
     Tensor controlPointsY = Tensors.empty();
-    // TODO do this smarter
+    // TODO JPH do this smarter
     for (int i = 0; i < controlPoints.length(); i++) {
       Tensor iTensor = controlPoints.get(i);
       Scalar x = iTensor.Get(0);

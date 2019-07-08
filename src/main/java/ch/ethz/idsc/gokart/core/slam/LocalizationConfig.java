@@ -38,7 +38,7 @@ public class LocalizationConfig {
   public final Scalar resampleDs = Quantity.of(0.4, SI.METER);
   /** threshold below which the pose estimate should not be trusted */
   public final Scalar qualityMin = RealScalar.of(0.55);
-  public String predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190314.name();
+  public String predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190708.name();
 
   /***************************************************/
   /** @return grid for localization in real-time */

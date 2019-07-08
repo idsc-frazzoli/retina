@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
+import ch.ethz.idsc.gokart.gui.trj.TrajectoryDesignModule;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
