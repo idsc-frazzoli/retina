@@ -2,25 +2,24 @@
 package ch.ethz.idsc.gokart.gui.trj;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
-import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
-import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
+import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
+import ch.ethz.idsc.gokart.core.pure.PurePursuitConfig;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.app.api.PathRender;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
-import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
-/* package */ enum ClothoidPursuitRenderPlugin implements RenderPlugin {
+/* package */ enum PurePursuitRenderPlugin implements RenderPlugin {
   INSTANCE;
   // ---
   @Override // from RenderPlugin
@@ -28,39 +27,42 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Tensor curve = renderPluginParameters.curve;
     if (1 < curve.length()) {
       Tensor pose = renderPluginParameters.pose;
-      CurveClothoidPursuitPlanner curveClothoidPursuitPlanner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
-      Optional<ClothoidPlan> optional = curveClothoidPursuitPlanner.getPlan(pose, Quantity.of(0, SI.VELOCITY), curve, true);
+      Optional<Scalar> optional = CurvePurePursuitHelper.getRatio(pose, curve, true, PurePursuitConfig.GLOBAL.lookAhead);
       if (optional.isPresent())
-        return new ClothoidPursuitRender(optional.get());
+        return new PurePursuitRender(pose, optional.get());
     }
     return EmptyRender.INSTANCE;
   }
 
   // ---
-  private static class ClothoidPursuitRender implements RenderInterface {
+  private static class PurePursuitRender implements RenderInterface {
+    private static final Font FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
     private static final Tensor CIRCLE_POINTS = CirclePoints.of(20).unmodifiable();
     // ---
-    private final PathRender pathRender = new PathRender(new Color(255, 0, 128));
-    private final ClothoidPlan clothoidPlan;
+    private final Tensor pose;
+    private final Scalar ratio;
 
-    private ClothoidPursuitRender(ClothoidPlan clothoidPlan) {
-      this.clothoidPlan = clothoidPlan;
+    private PurePursuitRender(Tensor pose, Scalar ratio) {
+      this.pose = pose;
+      this.ratio = ratio;
     }
 
     @Override
     public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-      geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(clothoidPlan.startPose()));
+      geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(pose));
       graphics.setColor(new Color(128, 128, 128, 64));
       graphics.fill(geometricLayer.toPath2D(RimoSinusIonModel.standard().footprint()));
       {
-        Path2D path2d = geometricLayer.toPath2D(CIRCLE_POINTS.multiply(ClothoidPursuitConfig.GLOBAL.lookAhead));
+        Path2D path2d = geometricLayer.toPath2D(CIRCLE_POINTS.multiply(PurePursuitConfig.GLOBAL.lookAhead));
         path2d.closePath();
         graphics.setColor(new Color(128, 128, 128, 128));
         graphics.draw(path2d);
       }
       geometricLayer.popMatrix();
       // ---
-      pathRender.setCurve(clothoidPlan.curve(), false).render(geometricLayer, graphics);
+      graphics.setFont(FONT);
+      graphics.setColor(Color.DARK_GRAY);
+      graphics.drawString("" + ratio.map(Round._4), 0, 50);
     }
   }
 }

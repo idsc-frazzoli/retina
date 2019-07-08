@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.trj;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 
 /* package */ enum CurvePoseRenderPlugins {
+  PURE_PURSUIT(PurePursuitRenderPlugin.INSTANCE), //
   CLOTHOID_PURSUIT(ClothoidPursuitRenderPlugin.INSTANCE), //
   LANE_CONSTRAINTS(LaneConstraintsRenderPlugin.INSTANCE), //
   ;
