@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
@@ -96,7 +97,8 @@ import ch.ethz.idsc.tensor.alg.Differences;
 
   @Override // from RimoGetListener
   public final void getEvent(RimoGetEvent rimoGetEvent) {
-    if (Objects.nonNull(vlp16PassiveSlowing))
+    // TODO move SafetyConfig.GLOBAL.safeClearance into Vlp16PassiveSlowing
+    if (Objects.nonNull(vlp16PassiveSlowing) && !SafetyConfig.GLOBAL.safeClearance)
       vlp16PassiveSlowing.bypassSafety();
     // use tangent speed from lidarLocalizationModule
     // instead of RimoTwdOdometry.tangentSpeed(getEvent);

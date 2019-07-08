@@ -41,6 +41,10 @@ public class SafetyConfig {
   /**
    * 
    */
+  public Boolean safeClearance = true;
+  /**
+   * 
+   */
   public Boolean emergencyStop = true;
 
   /***************************************************/
