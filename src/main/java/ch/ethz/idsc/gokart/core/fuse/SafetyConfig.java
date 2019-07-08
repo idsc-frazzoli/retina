@@ -38,6 +38,10 @@ public class SafetyConfig {
   public Boolean checkPoseQuality = true;
   /** {@link AutonomousSafetyModule} */
   public Boolean checkAutonomy = true;
+  /**
+   * 
+   */
+  public Boolean emergencyStop = true;
 
   /***************************************************/
   /** @return */

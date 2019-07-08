@@ -59,6 +59,7 @@ public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<Linmo
     velocity = CLIP.apply(RimoTwdOdometry.tangentSpeed(rimoGetEvent));
   }
 
+  // TODO JPH function is never called
   public void pacify() {
     watchdog.notifyWatchdog();
   }

@@ -117,7 +117,8 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   public final Optional<RimoPutEvent> putEvent() {
     Optional<Scalar> _contact = contact;
     if (_contact.isPresent()) {
-      EmergencyBrakeProvider.INSTANCE.consider(_contact.get());
+      if (SafetyConfig.GLOBAL.emergencyStop)
+        EmergencyBrakeProvider.INSTANCE.consider(_contact.get());
       contact = Optional.empty();
     }
     return watchdog.isBarking() //
