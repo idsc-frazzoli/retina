@@ -50,4 +50,9 @@ public class ClothoidPlan implements Serializable {
   public Tensor curve() {
     return curve;
   }
+
+  /** @return initial pose */
+  public Tensor startPose() {
+    return curve.get(0);
+  }
 }
