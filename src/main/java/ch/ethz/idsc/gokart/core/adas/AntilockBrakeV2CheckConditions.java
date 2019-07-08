@@ -23,18 +23,16 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.io.Timing;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** class is used to develop and test anti lock brake logic */
 public class AntilockBrakeV2CheckConditions extends AbstractModule implements SteerPutProvider {
   // private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
-  private final Timing timing = Timing.started();
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final HapticSteerConfig hapticSteerConfig;
+  private SteerVibrationModule steerVibration = new SteerVibrationModule();
 
   public AntilockBrakeV2CheckConditions() {
     this(HapticSteerConfig.GLOBAL);
@@ -59,15 +57,8 @@ public class AntilockBrakeV2CheckConditions extends AbstractModule implements St
     return ProviderRank.MANUAL;
   }
 
-  public SteerPutEvent vibrate() {
-    double frequency = HapticSteerConfig.GLOBAL.vibrationFrequency.number().doubleValue();
-    double amplitude = HapticSteerConfig.GLOBAL.vibrationAmplitude.number().doubleValue();
-    double time = timing.seconds();
-    double radian = (2 * Math.PI) * frequency * time;
-    return SteerPutEvent.createOn(Quantity.of((float) Math.sin(radian) * amplitude, "SCT"));
-  }
 
-  public SteerPutEvent putEvent1(Tensor angularRate_Y_pair, Tensor velocityOrigin) {
+  public Optional<SteerPutEvent> putEvent1(Tensor angularRate_Y_pair, Tensor velocityOrigin) {
     if (lidarLocalizationModule != null) {
       Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
       Tensor angularRage_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
@@ -78,17 +69,17 @@ public class AntilockBrakeV2CheckConditions extends AbstractModule implements St
       double slip2 = Magnitude.ONE.toDouble(slip.Get(1));
       double minSlip = Magnitude.ONE.toDouble(hapticSteerConfig.minSlip);
       if (slip1 > minSlip)
-        return vibrate();
+        return steerVibration.putEvent();
       if (slip2 > minSlip)
-        return vibrate();
+        return steerVibration.putEvent();
       Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
       Scalar ratio = steerMapping.getRatioFromSCE(angleSCE);
       AngularSlip angularSlip = new AngularSlip(velocityOrigin.Get(0), ratio, velocityOrigin.Get(2));
       // TODO AM AngularSlip::toString
       System.out.println(angularSlip);
-      return vibrate();
+      return steerVibration.putEvent();
     }
-    return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
+    return Optional.empty();
   }
 
   @Override // from LinmotPutProvider
