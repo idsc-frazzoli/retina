@@ -15,14 +15,19 @@ class TestPacejkaEKF {
 public:
     typedef ExtendedKalmanFilter<NP,NM, NI> EKF;
 
-    void test();
+    void test(
+            EKF::ParameterVec groundTruth,
+            EKF::ParameterVec guess,
+            EKF::ParameterMat variance
+            );
     static EKF::MeasurementVec measureFunction(EKF::ParameterVec parameter, double k);
     double rmse = 0;
+    double convergence = 0;
 
 
 private:
     bool print = false;
-    bool writeCSV = false;
+    bool writeCSV = true;
 
 };
 

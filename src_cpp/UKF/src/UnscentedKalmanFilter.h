@@ -43,7 +43,7 @@ public:
     ParameterMat variance;
 private:
     // debugUKF param
-    bool debugUKF = false;
+    bool debugUKF = true;
 
     // update
     void update(ParameterVec& mean,
@@ -72,15 +72,20 @@ private:
         ParameterVec chi[2*NParameter+1];
         chi[0] = mean;
         ParameterMat covTermSquared = (L + lambda) * variance;
-        ParameterMat covTerm = covTermSquared.sqrt();
+        if (debugUKF){
+            std::cout << "covTermSquared " << std::endl << covTermSquared << std::endl;
+        }
+        ParameterMat covTerm = covTermSquared.array().sqrt();
+        if (debugUKF){
+            std::cout << "covTerm " << std::endl << covTerm << std::endl;
+        }
+
         for (int i = 1; i<=NParameter; i++){
            chi[i] = mean + covTerm.col(i-1);
            chi[i+NParameter] = mean - covTerm.col(i-1);
         }
 
         if (debugUKF) {
-            std::cout << "CovTermSqrd: " << std::endl << covTermSquared << std::endl;
-            std::cout << "CovTerm: " << std::endl << covTerm << std::endl;
             for (int i = 0; i<= 2*NParameter; i++) {
                 std::cout << "Chi" << i << ": " << std::endl << chi[i] << std::endl;
             }
