@@ -21,10 +21,10 @@ public final class LinmotSocket extends AutoboxSocket<LinmotGetEvent, LinmotPutE
   private LinmotSocket() {
     super(LinmotGetEvent.LENGTH, LOCAL_PORT);
     // ---
-    addPutProvider(LinmotFireFighter.INSTANCE);
+    addPutProvider(LinmotFireFighter.INSTANCE); // ProviderRank: HARDWARE
     addGetListener(LinmotFireFighter.INSTANCE);
     // ---
-    addPutProvider(EmergencyBrakeProvider.INSTANCE);
+    addPutProvider(EmergencyBrakeProvider.INSTANCE); // ProviderRank: EMERGENCY
     // ---
     addPutProvider(LinmotCalibrationProvider.INSTANCE);
     addGetListener(LinmotCalibrationProvider.INSTANCE);

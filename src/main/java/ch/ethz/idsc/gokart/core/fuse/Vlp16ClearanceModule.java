@@ -38,6 +38,7 @@ import ch.ethz.idsc.tensor.red.Min;
 abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
     LidarSpacialListener, GokartStatusListener {
   private static final Scalar UNIT_SPEED = DoubleScalar.of(1);
+  /** duration of penalty subsequent to the detection of an obstacle */
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
   private final VelodyneLcmClient velodyneLcmClient;
@@ -45,7 +46,8 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
-  private final Watchdog watchdog = SoftWatchdog.barking(PENALTY_DURATION_S);
+  /** when invertedWatchdog barks then no obstacle has been detected during the required period */
+  private final Watchdog invertedWatchdog = SoftWatchdog.barking(PENALTY_DURATION_S);
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
 
   public Vlp16ClearanceModule() {
@@ -94,7 +96,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
     float z = lidarXYZEvent.coords[2];
     if (spacialXZObstaclePredicate.isObstacle(x, z) && //
         _clearanceTracker.isObstructed(lidarXYZEvent.getXY()))
-      watchdog.notifyWatchdog();
+      invertedWatchdog.notifyWatchdog();
   }
 
   @Override // from GokartStatusListener
@@ -121,7 +123,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
         EmergencyBrakeProvider.INSTANCE.consider(_contact.get());
       contact = Optional.empty();
     }
-    return watchdog.isBarking() //
+    return invertedWatchdog.isBarking() //
         ? Optional.empty()
         : penaltyAction();
   }
