@@ -6,9 +6,6 @@ import java.util.function.Predicate;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.PursuitPlanLcm;
-import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
-import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
-import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.pursuit.AssistedCurveIntersection;
 import ch.ethz.idsc.owl.math.pursuit.CurvePoint;
 import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatios;
@@ -42,14 +39,8 @@ public class CurveClothoidPursuitPlanner {
    * @param closed whether curve is closed or not
    * @return geodesic plan */
   public Optional<ClothoidPlan> getPlan(Tensor pose, Scalar speed, Tensor curve, boolean closed, boolean isForward) {
-    Tensor estimatedPose = pose;
-    if (clothoidPursuitConfig.estimatePose && plan_prev.isPresent()) {
-      // TODO GJOEL/JPH can use more general velocity {vx, vy, omega} from state estimation
-      // instead of "Scalar speed" use "Tensor velocity" as function parameter
-      Flow flow = CarHelper.singleton(speed, plan_prev.get().ratio());
-      estimatedPose = Se2CarIntegrator.INSTANCE.step(flow, pose, clothoidPursuitConfig.estimationTime);
-    }
-    Optional<ClothoidPlan> optional = replanning(estimatedPose, speed, curve, closed, isForward);
+    // TODO GJOEL/JPH can use more general velocity {vx, vy, omega} from state estimation
+    Optional<ClothoidPlan> optional = replanning(pose, speed, curve, closed, isForward);
     if (optional.isPresent()) {
       plan_prev = optional;
       PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, Last.of(optional.get().curve()), isForward);
