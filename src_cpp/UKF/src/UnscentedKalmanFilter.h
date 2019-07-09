@@ -43,7 +43,7 @@ public:
     ParameterMat variance;
 private:
     // debugUKF param
-    bool debugUKF = true;
+    bool debugUKF = false;
 
     // update
     void update(ParameterVec& mean,

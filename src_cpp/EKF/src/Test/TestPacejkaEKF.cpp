@@ -35,20 +35,18 @@ void TestPacejkaEKF::test(
     };
 
     // extract slip
-    Eigen::MatrixXd slip = load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/slip.csv");
+    Eigen::MatrixXd slip =
+            load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/slip_20190708T114135_f3f46a8b.lcm.00.csv");
 
     // slip filter
-    bool filter = false;
-    if (filter){
-        double size = 40;
+    /*    double size = 40;
         for (int i = size; i < slip.rows(); i++){
             slip(i,2) = 1/size * slip(i,2);
             for (int j = 0;  j < size; j++){
                     slip(i,2) += 1/size * slip(i-j,2);
             }
         }
-
-    }
+    */
 
 
 

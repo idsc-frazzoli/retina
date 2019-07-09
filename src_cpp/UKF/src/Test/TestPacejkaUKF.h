@@ -5,7 +5,7 @@
 #pragma once
 #define NP 3
 #define NM 1
-#define NI 100
+#define NI 1000
 
 
 #include "../UnscentedKalmanFilter.h"
@@ -25,7 +25,7 @@ public:
     double convergence = 0;
 
 private:
-    bool print = true;
+    bool print = false;
     bool writeCSV = true;
 
 };

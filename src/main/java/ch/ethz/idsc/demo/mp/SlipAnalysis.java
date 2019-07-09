@@ -36,7 +36,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   /** https://www.dunlop.eu/dunlop_dede/Images/Dunlop-Kartreifen-Groessentabelle-2014-2016_tcm430-96714.pdf */
   private Scalar wheelRadiusBack = Quantity.of(0.120, SI.METER);
   private int count = 0;
-  private int countMax = 10000;
+  private int countMax = 50000;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
@@ -79,11 +79,13 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   public static void main(String[] args) throws IOException {
-    File file = HomeDirectory.Downloads("20190627T133639_12dcbfa8.lcm.00");
+    //String fileName = String.valueOf("20190627T133639_12dcbfa8.lcm.00");
+    String fileName = String.valueOf("20190708T114135_f3f46a8b.lcm.00");
+    File file = HomeDirectory.Downloads(fileName);
     SlipAnalysis spAnalysis = new SlipAnalysis();
     OfflineLogPlayer.process(file, //
         spAnalysis);
-    Export.of(HomeDirectory.Documents("sp/logs/slip.csv"), //
+    Export.of(HomeDirectory.Documents("sp/logs/slip_" + fileName + ".csv"), //
         spAnalysis.getTable().map(CsvFormat.strict()));
     System.out.println("process ended");
   }
