@@ -20,7 +20,6 @@ import ch.ethz.idsc.tensor.alg.Last;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
 // TODO JPH rename
-// FIXME GJOEL this has issue when end meets start of cyclic curve 
 public class CurveClothoidPursuitPlanner {
   private final ClothoidPursuitConfig clothoidPursuitConfig;
   // ---
@@ -32,13 +31,17 @@ public class CurveClothoidPursuitPlanner {
     this.clothoidPursuitConfig = clothoidPursuitConfig;
   }
 
+  public Optional<ClothoidPlan> getPlan(Tensor pose, Scalar speed, Tensor curve, boolean isForward) {
+    return getPlan(pose, speed, curve, true, isForward);
+  }
+
   /** @param pose of vehicle {x[m], y[m], angle}
    * @param speed of vehicle [m*s^-1]
    * @param curve in world coordinates
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
-   * @param ratioLimits depending on pose and speed
+   * @param closed whether curve is closed or not
    * @return geodesic plan */
-  public Optional<ClothoidPlan> getPlan(Tensor pose, Scalar speed, Tensor curve, boolean isForward) {
+  public Optional<ClothoidPlan> getPlan(Tensor pose, Scalar speed, Tensor curve, boolean closed, boolean isForward) {
     Tensor estimatedPose = pose;
     if (clothoidPursuitConfig.estimatePose && plan_prev.isPresent()) {
       // TODO GJOEL/JPH can use more general velocity {vx, vy, omega} from state estimation
@@ -46,17 +49,15 @@ public class CurveClothoidPursuitPlanner {
       Flow flow = CarHelper.singleton(speed, plan_prev.get().ratio());
       estimatedPose = Se2CarIntegrator.INSTANCE.step(flow, pose, clothoidPursuitConfig.estimationTime);
     }
-    Optional<ClothoidPlan> optional = replanning(estimatedPose, speed, curve, isForward);
+    Optional<ClothoidPlan> optional = replanning(estimatedPose, speed, curve, closed, isForward);
     if (optional.isPresent()) {
       plan_prev = optional;
-      // TODO GJOEL check if jans "Last.of(optional.get().curve()" is the desired coordinate to publish
       PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, Last.of(optional.get().curve()), isForward);
     }
-    // FIXME GJOEL in case of failure, the gokart should not use the old plan indefinitely, or even ever!
-    return plan_prev;
+    return optional;
   }
 
-  private Optional<ClothoidPlan> replanning(Tensor pose, Scalar speed, Tensor curve, boolean isForward) {
+  private Optional<ClothoidPlan> replanning(Tensor pose, Scalar speed, Tensor curve, boolean closed, boolean isForward) {
     TensorUnaryOperator tensorUnaryOperator = new Se2GroupElement(pose).inverse()::combine;
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
@@ -66,7 +67,9 @@ public class CurveClothoidPursuitPlanner {
     Scalar lookAhead = clothoidPursuitConfig.lookAhead;
     do {
       AssistedCurveIntersection assistedCurveIntersection = clothoidPursuitConfig.getAssistedCurveIntersection();
-      Optional<CurvePoint> curvePoint = assistedCurveIntersection.string(tensor, prevIndex);
+      Optional<CurvePoint> curvePoint = closed //
+          ? assistedCurveIntersection.cyclic(tensor, prevIndex) //
+          : assistedCurveIntersection.string(tensor, prevIndex);
       if (curvePoint.isPresent()) {
         Tensor xya = curvePoint.get().getTensor();
         ClothoidTerminalRatios clothoidTerminalRatios = ClothoidTerminalRatios.of(xya.map(Scalar::zero), xya);
