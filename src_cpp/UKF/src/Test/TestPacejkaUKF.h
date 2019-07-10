@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#define NP 3
+#define NP 10
 #define NM 1
 #define NI 500
 
@@ -13,6 +13,7 @@
 
 class TestPacejkaUKF {
 public:
+
     typedef UnscentedKalmanFilter<NP, NM, NI> UKF;
 
     void test(

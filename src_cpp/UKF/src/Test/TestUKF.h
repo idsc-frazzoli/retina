@@ -20,10 +20,10 @@ public:
     double rmse = 0;
     double convergence = 0;
 
-    double groundTruthWeight = 300;
+    double weightGroundTruth = 300;
 
 private:
-    bool print = false;
+    bool print = true;
     bool writeCSV = false;
 
 };

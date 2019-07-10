@@ -43,7 +43,7 @@ public:
     ParameterMat variance;
 private:
     // debugUKF param
-    bool debugUKF = false;
+    bool debugUKF = true;
 
     // update
     void update(ParameterVec& mean,
@@ -133,7 +133,7 @@ private:
 
         // debugUKF
         if (debugUKF) {
-            std::cout << "prediction:" << std::endl;
+            std::cout << "prediction......" << std::endl;
             std::cout << "mu: " << std::endl << mu << std::endl;
             std::cout << "sigma: " << std::endl << sigma << std::endl;
         }
@@ -151,8 +151,8 @@ private:
         // debugUKF
         if (debugUKF){
             for (int i = 0; i<= 2*NParameter+1; i++){
-                std::cout << "chi: " << i << std::endl << chi[i] << std::endl;
-                std::cout << "zeta: " << i << std::endl << zeta[i] << std::endl;
+                std::cout << "chi" << i << ":" << std::endl << chi[i] << std::endl;
+                std::cout << "zeta" << i << ":" << std::endl << zeta[i] << std::endl;
             }
             std::cout << "zPred: " << std::endl << zPred << std::endl;
             std::cout << "zMes: " << std::endl << zMes << std::endl;
