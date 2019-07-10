@@ -5,7 +5,7 @@
 #pragma once
 #define NP 3
 #define NM 1
-#define NI 1000
+#define NI 500
 
 
 #include "../ExtendedKalmanFilter.h"
