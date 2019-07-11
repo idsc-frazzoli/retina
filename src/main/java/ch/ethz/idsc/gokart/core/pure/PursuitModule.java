@@ -17,8 +17,8 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
 public abstract class PursuitModule extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
-  final PurePursuitRimo purePursuitRimo = new PurePursuitRimo();
-  final PurePursuitSteer purePursuitSteer = new PurePursuitSteer();
+  final PursuitRimo purePursuitRimo = new PursuitRimo();
+  final PursuitSteer purePursuitSteer = new PursuitSteer();
   protected final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
   protected final PursuitConfig pursuitConfig;
 

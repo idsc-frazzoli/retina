@@ -10,14 +10,14 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
-public class PurePursuitSteerTest extends TestCase {
+public class PursuitSteerTest extends TestCase {
   public void testRanks() {
-    assertEquals(new PurePursuitSteer().getProviderRank(), ProviderRank.AUTONOMOUS);
-    assertEquals(new PurePursuitRimo().getProviderRank(), ProviderRank.AUTONOMOUS);
+    assertEquals(new PursuitSteer().getProviderRank(), ProviderRank.AUTONOMOUS);
+    assertEquals(new PursuitRimo().getProviderRank(), ProviderRank.AUTONOMOUS);
   }
 
   public void testControl() {
-    PurePursuitSteer pps = new PurePursuitSteer();
+    PursuitSteer pps = new PursuitSteer();
     Optional<SteerPutEvent> optional;
     optional = pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
     CurvePurePursuitModuleTest._checkFallback(optional);
@@ -30,7 +30,7 @@ public class PurePursuitSteerTest extends TestCase {
   }
 
   public void testNotCalibrated2() {
-    PurePursuitSteer pps = new PurePursuitSteer();
+    PursuitSteer pps = new PursuitSteer();
     pps.setOperational(true);
     CurvePurePursuitModuleTest._checkFallback(pps.putEvent());
     Optional<SteerPutEvent> optional;

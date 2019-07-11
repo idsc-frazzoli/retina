@@ -231,7 +231,7 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
         // Do Planning
         StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
         trajectoryPlanner.insertRoot(root);
-        Expand.maxTime(trajectoryPlanner, trajectoryConfig.expandTimeLimit());
+        new Expand<>(trajectoryPlanner).maxTime(trajectoryConfig.expandTimeLimit());
         expandResult(head, trajectoryPlanner); // build detailed trajectory and pass to purePursuit
         return;
       } else {
