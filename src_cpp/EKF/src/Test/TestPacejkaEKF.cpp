@@ -11,12 +11,13 @@
 #include "../InputOutput/ReaderCSV.cpp"
 
 
-void TestPacejkaEKF::test() {
+void TestPacejkaEKF::test(
+        EKF::ParameterVec groundTruth,
+        EKF::ParameterVec guess,
+        EKF::ParameterMat variance
+        ) {
 
-    EKF::ParameterVec groundTruth;
-    groundTruth<< 10, 1.9, 1 ;
-    EKF::ParameterVec guess;
-    guess << 10.345, 1.935, 1.363;
+
 
     double r = 0.1; // measurement noise
     //double r = static_cast <double> (rand()) / static_cast <double> (RAND_MAX); // measurement noise
@@ -26,7 +27,6 @@ void TestPacejkaEKF::test() {
 
     // UKF start
     EKF::ParameterVec mean = guess;
-    EKF::ParameterMat variance = EKF::ParameterMat::Identity();
     EKF ekf = EKF(mean, variance);
 
     std::function<EKF::ParameterVec(EKF::ParameterVec)> predictionFunction
@@ -35,7 +35,20 @@ void TestPacejkaEKF::test() {
     };
 
     // extract slip
-    Eigen::MatrixXd slip = load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/slip.csv");
+    Eigen::MatrixXd slip =
+            load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/slip_20190708T114135_f3f46a8b.lcm.00.csv");
+
+    // slip filter
+    /*    double size = 40;
+        for (int i = size; i < slip.rows(); i++){
+            slip(i,2) = 1/size * slip(i,2);
+            for (int j = 0;  j < size; j++){
+                    slip(i,2) += 1/size * slip(i-j,2);
+            }
+        }
+    */
+
+
 
     //for plotting
     // TODO find new method for writing with more data
@@ -127,21 +140,40 @@ void TestPacejkaEKF::test() {
                 jacobiH);
 
         //for plotting
-        if (writeCSV) {
-            Eigen::MatrixXd value(4, 1);
-            value << i, ekf.mean(0), ekf.mean(1), ekf.mean(2);
-            params.col(i) = value;
-        }
-
+        Eigen::MatrixXd value(4, 1);
+        value << i, ekf.mean(0), ekf.mean(1), ekf.mean(2);
+        params.col(i) = value;
     }
 
     if(print){
-        std::cout << "params" << std::endl << params;
+        std::cout << "params" << std::endl << params << std::endl;
     }
+
+    // compute rmse
+    for (int i = 0; i < NI; i++){
+        rmse += std::sqrt(pow(params(1,i) - groundTruth(0),2)
+                          +pow(params(2,i) - groundTruth(1),2)
+                          +pow(params(3,i) - groundTruth(2),2));
+    }
+    rmse = rmse/sqrt(NI);
+
+    // compute convergence
+    convergence = std::sqrt(pow(params(1,NI-1) - groundTruth(0),2)
+                      +pow(params(2,NI-1) - groundTruth(1),2)
+                      +pow(params(3,NI-1) - groundTruth(2),2));
+
+
+    std::cout << "Mean: \t" << std::endl << ekf.mean << std::endl;
+    std::cout << "Variance: \t" << std::endl << ekf.variance << std::endl;
+    std::cout << "RMSE: \t " << rmse << std::endl;
+    std::cout << "Convergence: \t " << convergence << std::endl;
+
+
 
     // export for plot
     if(writeCSV) {
         WriterEKF writerEkf;
         writerEkf.writeToCSV("paramsEKF.csv", params.transpose());
     }
+
 }

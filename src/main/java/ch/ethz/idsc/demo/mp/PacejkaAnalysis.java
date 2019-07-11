@@ -22,7 +22,6 @@ import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
@@ -34,21 +33,44 @@ import ch.ethz.idsc.tensor.sca.Round;
 /* package */ class PacejkaAnalysis implements OfflineTableSupplier {
   private final TableBuilder tableBuilder = new TableBuilder();
   private GokartPoseEvent gokartPoseEvent;
-  private Tensor wheelAngularSpeed = Tensors.of(Quantity.of(0, SI.PER_SECOND), Quantity.of(0, SI.PER_SECOND));
   private Scalar steerPosition = Quantity.of(0, "SCE");
+  private Scalar wheelAngularSpeedL = Quantity.of(0, SI.PER_SECOND);
+  private Scalar wheelAngularSpeedR = Quantity.of(0, SI.PER_SECOND);
+  private Scalar slipBackL = Quantity.of(0, SI.ONE);
+  private Scalar slipBackR = Quantity.of(0, SI.ONE);
+  /** https://www.dunlop.eu/dunlop_dede/Images/Dunlop-Kartreifen-Groessentabelle-2014-2016_tcm430-96714.pdf */
+  private Scalar wheelRadiusBack = Quantity.of(0.120, SI.METER);
+  private int count = 0;
+  private int countMax = 50000;
+  private int startTime = 150;
+  private int endTime = 200;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(Vmu931ImuChannel.INSTANCE.channel())) {
+    if (channel.equals(Vmu931ImuChannel.INSTANCE.channel()) && count < countMax) {
       Vmu931ImuFrame vmu931ImuFrame = new Vmu931ImuFrame(byteBuffer);
       if (Objects.nonNull(gokartPoseEvent)) {
-        tableBuilder.appendRow( //
-            time.map(Magnitude.SECOND), // [1]
-            RealScalar.of(vmu931ImuFrame.timestamp_ms()), // [2]
-            VelocityHelper.toUnitless(gokartPoseEvent.getVelocity()).map(Round._5), // [3][4][5]
-            SensorsConfig.GLOBAL.getPlanarVmu931Imu().acceleration(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), // [6][7][8]
-            wheelAngularSpeed.map(Magnitude.PER_SECOND), // [9][10]
-            RealScalar.of(steerPosition.number().floatValue()));// [11] //in radiants
+        Scalar velX = gokartPoseEvent.getVelocity().Get(0);
+        if (velX.number().doubleValue() > 0.10) {
+          if (time.number().doubleValue() > startTime && time.number().doubleValue() < endTime) {
+            Scalar wheelVelL = wheelRadiusBack.multiply(wheelAngularSpeedL);
+            Scalar wheelVelR = wheelRadiusBack.multiply(wheelAngularSpeedR);
+            slipBackL = wheelVelL.divide(velX).subtract(RealScalar.ONE);
+            slipBackR = wheelVelR.divide(velX).subtract(RealScalar.ONE);
+            tableBuilder.appendRow( //
+                time.map(Magnitude.SECOND), // [1]
+                RealScalar.of(vmu931ImuFrame.timestamp_ms()), // [2]
+                VelocityHelper.toUnitless(gokartPoseEvent.getVelocity()).map(Round._5), // [3][4][5]
+                SensorsConfig.GLOBAL.getPlanarVmu931Imu().acceleration(vmu931ImuFrame).map(Magnitude.ACCELERATION).map(Round._5), // [6][7][8]
+                wheelAngularSpeedL.map(Magnitude.PER_SECOND), // [9]
+                wheelAngularSpeedR.map(Magnitude.PER_SECOND), // [10]
+                RealScalar.of(steerPosition.number().floatValue()), // [11] //in radiants
+                slipBackL.map(Round._5), // [12]
+                slipBackR.map(Round._5) // [13]
+            );
+            count++;
+          }
+        }
       }
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
@@ -56,7 +78,8 @@ import ch.ethz.idsc.tensor.sca.Round;
     } else //
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       RimoGetEvent rge = new RimoGetEvent(byteBuffer);
-      wheelAngularSpeed = rge.getAngularRate_Y_pair();
+      wheelAngularSpeedL = rge.getTireL.getAngularRate_Y();
+      wheelAngularSpeedR = rge.getTireR.getAngularRate_Y();
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
       GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
@@ -71,11 +94,13 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   public static void main(String[] args) throws IOException {
-    File file = HomeDirectory.Downloads("20190627T133639_12dcbfa8.lcm.00");
+    // String fileName = String.valueOf("20190627T133639_12dcbfa8.lcm.00");
+    String fileName = String.valueOf("20190708T114135_f3f46a8b.lcm.00");
+    File file = HomeDirectory.Downloads(fileName);
     PacejkaAnalysis pacejkaAnalysis = new PacejkaAnalysis();
     OfflineLogPlayer.process(file, //
         pacejkaAnalysis);
-    Export.of(HomeDirectory.Documents("sp/logs/pacejka.csv"), //
+    Export.of(HomeDirectory.Documents("sp/logs/pacejkaFull_" + fileName + ".csv"), //
         pacejkaAnalysis.getTable().map(CsvFormat.strict()));
     System.out.println("process ended");
   }

@@ -18,4 +18,4 @@ Installation Guide
 
 3. Install Eigen (above version 3.3)
 
-4. In "retina/src_cpp" run the package "UKF" in the IDE of your choice
+4. In "retina/src_cpp" run the package "EKF" in the IDE of your choice
