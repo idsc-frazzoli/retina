@@ -26,5 +26,4 @@ public class AntilockBrakeCheckConditionsTest extends TestCase {
             Quantity.of(1, SI.PER_SECOND)));
     antilockBrakeModule.last();
   }
-
 }

@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-class PurePursuitRimo extends PurePursuitBase<RimoPutEvent> {
+class PursuitRimo extends PursuitBase<RimoPutEvent> {
   /** available implementations of RimoRateControllerWrap are
    * {@link RimoRateControllerUno}, and RimoRateControllerDuo
    * UNO uses a single PI-controller */

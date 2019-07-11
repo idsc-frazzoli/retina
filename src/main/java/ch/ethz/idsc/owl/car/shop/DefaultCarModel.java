@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.owl.car.shop;
 
+import ch.ethz.idsc.owl.bot.se2.AckermannSteering;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.math.AckermannSteering;
 import ch.ethz.idsc.owl.car.model.CarSteering;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

@@ -11,9 +11,9 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
-public class PurePursuitRimoTest extends TestCase {
+public class PursuitRimoTest extends TestCase {
   public void testNotCalibrated() {
-    PurePursuitRimo pps = new PurePursuitRimo();
+    PursuitRimo pps = new PursuitRimo();
     assertFalse(pps.putEvent().isPresent());
     Optional<RimoPutEvent> optional = //
         pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
@@ -21,7 +21,7 @@ public class PurePursuitRimoTest extends TestCase {
   }
 
   public void testNotCalibrated2() {
-    PurePursuitRimo pps = new PurePursuitRimo();
+    PursuitRimo pps = new PursuitRimo();
     pps.setOperational(true);
     assertFalse(pps.putEvent().isPresent());
     Optional<RimoPutEvent> optional = //
@@ -30,13 +30,13 @@ public class PurePursuitRimoTest extends TestCase {
   }
 
   public void testMinor() {
-    PurePursuitRimo ppr = new PurePursuitRimo();
+    PursuitRimo ppr = new PursuitRimo();
     ppr.setOperational(true);
     assertFalse(ppr.putEvent().isPresent());
   }
 
   public void testSimple() {
-    PurePursuitRimo ppr = new PurePursuitRimo();
+    PursuitRimo ppr = new PursuitRimo();
     assertEquals(ppr.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
     assertFalse(ppr.putEvent().isPresent());
     {
@@ -59,7 +59,7 @@ public class PurePursuitRimoTest extends TestCase {
   }
 
   public void testSlowdown() {
-    PurePursuitRimo ppr = new PurePursuitRimo();
+    PursuitRimo ppr = new PursuitRimo();
     assertEquals(ppr.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
     assertFalse(ppr.putEvent().isPresent());
     {
@@ -80,7 +80,7 @@ public class PurePursuitRimoTest extends TestCase {
   }
 
   public void testSimpleBranch() {
-    PurePursuitRimo ppr = new PurePursuitRimo();
+    PursuitRimo ppr = new PursuitRimo();
     assertEquals(ppr.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
     assertFalse(ppr.putEvent().isPresent());
     {
