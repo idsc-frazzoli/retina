@@ -61,4 +61,10 @@ public class AngularSlip {
   public Scalar angularSlip() {
     return wantedRotationRate.subtract(gyroZ);
   }
+  
+  /** @return toString Function return gyroZ*/
+  public String toString() {
+    return String.valueOf(tangentSpeed) + String.valueOf(rotationPerMeterDriven) //
+    + String.valueOf(wantedRotationRate) + String.valueOf(gyroZ);
+  }
 }

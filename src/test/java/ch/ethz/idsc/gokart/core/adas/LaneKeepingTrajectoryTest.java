@@ -27,17 +27,16 @@ public class LaneKeepingTrajectoryTest extends TestCase {
     laneKeepingCenterlineModule.last();
   }
 
-  public void testSimple3() {
-    LaneKeepingCenterlineModule laneKeepingCenterlineModule = new LaneKeepingCenterlineModule();
-    laneKeepingCenterlineModule.first();
+  public void testSimple4() {
+    LeftLaneModule leftLaneModule = new LeftLaneModule();
+    leftLaneModule.first();
     Tensor pose = Tensors.of(//
-        Quantity.of(0, SI.METER), //
-        Quantity.of(0, SI.METER), //
+        Quantity.of(10000, SI.METER), //
+        Quantity.of(10000, SI.METER), //
         RealScalar.of(0));
     GokartPoseEvent testEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
-    laneKeepingCenterlineModule.getEvent(testEvent);
-    laneKeepingCenterlineModule.putEvent();
-    laneKeepingCenterlineModule.last();
+    leftLaneModule.getEvent(testEvent);
+    leftLaneModule.last();
   }
 
   public void testSimple2() {
@@ -48,5 +47,12 @@ public class LaneKeepingTrajectoryTest extends TestCase {
     RimoPutEvent rimoPutEvent = slowDown.putEvent().get();
     System.out.println(rimoPutEvent.getTorque_Y_pair());
     slowDown.last();
+  }
+
+  public void testSimple3() {
+    LaneKeepingSlowDownModule laneKeepingSlowDownModule = new LaneKeepingSlowDownModule();
+    laneKeepingSlowDownModule.first();
+    laneKeepingSlowDownModule.putEvent();
+    laneKeepingSlowDownModule.last();
   }
 }

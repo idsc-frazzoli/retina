@@ -27,10 +27,4 @@ public class AntilockBrakeCheckConditionsTest extends TestCase {
     antilockBrakeModule.last();
   }
 
-  public void testSimple1() {
-    AntilockBrakeV2CheckConditions antilockBrakeModule = new AntilockBrakeV2CheckConditions();
-    antilockBrakeModule.first();
-    antilockBrakeModule.vibrate();
-    antilockBrakeModule.last();
-  }
 }
