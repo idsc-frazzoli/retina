@@ -77,9 +77,7 @@ public class AntilockBrakeCheckConditions extends AbstractModule implements Stee
         if (slip2 > minSlip) {
           steerVibration.putEvent();
         }
-        Scalar velocityAngle = ArcTan2D.of(velocityOrigin);
-        // TODO AM can use ArcTan2D.of(velocityOrigin);
-        // velocityAngle is in radian
+        Scalar velocityAngle = ArcTan2D.of(velocityOrigin); // velocityAngle is in radian
         Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
         Scalar angleGrad = steerMapping.getRatioFromSCE(angleSCE);
         double angleGradDouble = Magnitude.DEGREE_ANGLE.toDouble(angleGrad);

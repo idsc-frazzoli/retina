@@ -57,7 +57,6 @@ public class AntilockBrakeV2CheckConditions extends AbstractModule implements St
     return ProviderRank.MANUAL;
   }
 
-
   public Optional<SteerPutEvent> putEvent1(Tensor angularRate_Y_pair, Tensor velocityOrigin) {
     if (lidarLocalizationModule != null) {
       Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
@@ -75,7 +74,6 @@ public class AntilockBrakeV2CheckConditions extends AbstractModule implements St
       Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
       Scalar ratio = steerMapping.getRatioFromSCE(angleSCE);
       AngularSlip angularSlip = new AngularSlip(velocityOrigin.Get(0), ratio, velocityOrigin.Get(2));
-      // TODO AM AngularSlip::toString
       System.out.println(angularSlip);
       return steerVibration.putEvent();
     }

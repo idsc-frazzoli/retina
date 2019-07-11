@@ -3,6 +3,7 @@ package ch.ethz.idsc.owl.car.math;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 
 /** Reference: Marc Heim Thesis, p. 14 */
 public class AngularSlip {
@@ -61,10 +62,14 @@ public class AngularSlip {
   public Scalar angularSlip() {
     return wantedRotationRate.subtract(gyroZ);
   }
-  
-  /** @return toString Function return gyroZ*/
+
+  /** @return toString Function return gyroZ */
+  @Override
   public String toString() {
-    return String.valueOf(tangentSpeed) + String.valueOf(rotationPerMeterDriven) //
-    + String.valueOf(wantedRotationRate) + String.valueOf(gyroZ);
+    return Tensors.of( //
+        tangentSpeed, //
+        rotationPerMeterDriven, //
+        wantedRotationRate, //
+        gyroZ).toString();
   }
 }
