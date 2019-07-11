@@ -4,6 +4,19 @@ package ch.ethz.idsc.gokart.calib.power;
 /** linear */
 /* package */ class MotorFunctionV2 extends MotorFunctionBase {
   static final MotorFunctionBase INSTANCE = new MotorFunctionV2();
+  // ---
+  static final float p0 = -0.3223f;
+  static final float ppower = 0.001855f;
+  static final float pvel = -0.0107f;
+
+  static float rampfun(float fpow, float fvel) {
+    return p0 + ppower * fpow + pvel * fvel;
+  }
+
+  // ---
+  static final float powerthreshold_hi = 1300f;
+  static final float powerthreshold_lo = -660f;
+  static final float ptlramp = -10f;
 
   private MotorFunctionV2() {
     // ---
@@ -11,14 +24,11 @@ package ch.ethz.idsc.gokart.calib.power;
 
   @Override // from MotorFunctionBase
   float forwardacc(float fspd, float fpow) {
-    float powerthresholdhigh = 1300f;
-    float powerthresholdlow = -660f;
-    float ptlramp = -10f;
-    float lowpowerlimit = powerthresholdlow + ptlramp * fspd;
+    float lowpowerlimit = powerthreshold_lo + ptlramp * fspd;
     if (fpow < lowpowerlimit)
-      return RampFun.of(lowpowerlimit, fspd);
-    if (fpow < powerthresholdhigh)
-      return RampFun.of(fpow, fspd);
-    return RampFun.of(powerthresholdhigh, fspd);
+      return rampfun(lowpowerlimit, fspd);
+    if (fpow < powerthreshold_hi)
+      return rampfun(fpow, fspd);
+    return rampfun(powerthreshold_hi, fspd);
   }
 }

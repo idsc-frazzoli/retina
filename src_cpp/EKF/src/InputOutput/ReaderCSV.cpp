@@ -3,7 +3,6 @@
 // https://stackoverflow.com/questions/34247057/how-to-read-csv-file-and-assign-to-eigen-matrix
 //
 
-#include "ReaderCSV.h"
 #include <string>
 #include <vector>
 #include <fstream>

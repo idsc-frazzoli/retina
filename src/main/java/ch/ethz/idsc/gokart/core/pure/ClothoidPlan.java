@@ -10,7 +10,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class ClothoidPlan implements Serializable {
-  private static final int REFINEMENT = 2;
+  // TODO JPH make configurable
+  private static final int REFINEMENT = 3;
 
   /** @param lookAhead {x[m], y[m], angle}
    * @param pose of vehicle {x[m], y[m], angle}
@@ -19,8 +20,6 @@ public class ClothoidPlan implements Serializable {
   public static Optional<ClothoidPlan> from(Tensor lookAhead, Tensor pose, boolean isForward) {
     ClothoidPursuit clothoidPursuit = new ClothoidPursuit(lookAhead);
     Optional<Scalar> optional = clothoidPursuit.firstRatio(); // with unit [m^-1]
-    // System.out.println("optional=" + optional);
-    // return optional
     if (optional.isPresent()) {
       Scalar ratio = optional.get();
       Tensor curveSE2 = ClothoidPursuit.curve(lookAhead, REFINEMENT);
@@ -43,11 +42,17 @@ public class ClothoidPlan implements Serializable {
     this.curve = curve;
   }
 
+  /** @return ratio (i.e. curvature) for driving along the begin of the clothoid */
   public Scalar ratio() {
     return ratio;
   }
 
   public Tensor curve() {
     return curve;
+  }
+
+  /** @return initial pose */
+  public Tensor startPose() {
+    return curve.get(0);
   }
 }

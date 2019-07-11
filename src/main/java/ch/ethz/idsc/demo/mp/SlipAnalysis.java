@@ -36,7 +36,9 @@ import ch.ethz.idsc.tensor.sca.Round;
   /** https://www.dunlop.eu/dunlop_dede/Images/Dunlop-Kartreifen-Groessentabelle-2014-2016_tcm430-96714.pdf */
   private Scalar wheelRadiusBack = Quantity.of(0.120, SI.METER);
   private int count = 0;
-  private int countMax = 10000;
+  private int countMax = 50000;
+  private int startTime = 150;
+  private int endTime = 200;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
@@ -44,22 +46,22 @@ import ch.ethz.idsc.tensor.sca.Round;
       if (Objects.nonNull(gokartPoseEvent)) {
         Scalar velX = gokartPoseEvent.getVelocity().Get(0);
         if (velX.number().doubleValue() > 0.10) {
-          System.out.println("vel: " + velX);
-          Scalar wheelVelL = wheelRadiusBack.multiply(wheelAngularSpeedL);
-          System.out.println("wheelVel: " + wheelVelL);
-          Scalar wheelVelR = wheelRadiusBack.multiply(wheelAngularSpeedR);
-          System.out.println("wheelVel: " + wheelVelR);
-          slipBackL = wheelVelL.divide(velX).subtract(RealScalar.ONE);
-          slipBackR = wheelVelR.divide(velX).subtract(RealScalar.ONE);
-          System.out.println("slipL: " + slipBackL);
-          System.out.println("slipR: " + slipBackR);
-          tableBuilder.appendRow( //
-              time.map(Magnitude.SECOND), // [1]
-              velX.map(Magnitude.VELOCITY).map(Round._5), // [2]
-              slipBackL.map(Round._5), // [3]
-              slipBackR.map(Round._5) // [4]
-          );
-          count++;
+          if (time.number().doubleValue() > startTime && time.number().doubleValue() < endTime) {
+            Scalar wheelVelL = wheelRadiusBack.multiply(wheelAngularSpeedL);
+            Scalar wheelVelR = wheelRadiusBack.multiply(wheelAngularSpeedR);
+            slipBackL = wheelVelL.divide(velX).subtract(RealScalar.ONE);
+            slipBackR = wheelVelR.divide(velX).subtract(RealScalar.ONE);
+            System.out.println("time " + time.number().doubleValue());
+            System.out.println("slipL: " + slipBackL);
+            System.out.println("slipR: " + slipBackR);
+            tableBuilder.appendRow( //
+                time.map(Magnitude.SECOND), // [1]
+                velX.map(Magnitude.VELOCITY).map(Round._5), // [2]
+                slipBackL.map(Round._5), // [3]
+                slipBackR.map(Round._5) // [4]
+            );
+            count++;
+          }
         }
       }
     } else //
@@ -79,11 +81,13 @@ import ch.ethz.idsc.tensor.sca.Round;
   }
 
   public static void main(String[] args) throws IOException {
-    File file = HomeDirectory.Downloads("20190627T133639_12dcbfa8.lcm.00");
+    // String fileName = String.valueOf("20190627T133639_12dcbfa8.lcm.00");
+    String fileName = String.valueOf("20190708T114135_f3f46a8b.lcm.00");
+    File file = HomeDirectory.Downloads(fileName);
     SlipAnalysis spAnalysis = new SlipAnalysis();
     OfflineLogPlayer.process(file, //
         spAnalysis);
-    Export.of(HomeDirectory.Documents("sp/logs/slip.csv"), //
+    Export.of(HomeDirectory.Documents("sp/logs/slip_" + fileName + ".csv"), //
         spAnalysis.getTable().map(CsvFormat.strict()));
     System.out.println("process ended");
   }

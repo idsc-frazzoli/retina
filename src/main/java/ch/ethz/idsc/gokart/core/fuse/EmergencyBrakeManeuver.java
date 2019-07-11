@@ -36,7 +36,7 @@ public class EmergencyBrakeManeuver {
   /** @param contact with unit "m"
    * @return true if the distance to contact is less than the distance estimated for braking */
   public boolean isRequired(Scalar contact) {
-    return Scalars.lessThan(contact, distance); // TODO only works with distance>0
+    return Scalars.lessThan(contact, distance); // TODO JPH only works with distance>0
   }
 
   public String toInfoString() {

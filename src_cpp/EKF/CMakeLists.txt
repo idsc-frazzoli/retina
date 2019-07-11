@@ -12,6 +12,7 @@ add_executable(
         src/Test/TestPacejkaEKF.h
         src/InputOutput/WriterEKF.cpp
         src/InputOutput/WriterEKF.h
-        src/InputOutput/ReaderCSV.cpp src/InputOutput/ReaderCSV.h)
+        src/InputOutput/ReaderCSV.cpp
+)
 
 target_link_libraries (EKF Eigen3::Eigen)

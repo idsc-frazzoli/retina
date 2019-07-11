@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.StringScalar;
 
-/* package */ enum EphemeralPoseIndex {
+/* package */ enum EphemeralPoseIndexV1 {
   ;
   public static void main(String[] args) throws IOException {
     File root = HomeDirectory.file("Projects/ephemeral/src/main/resources/dubilab/app/pose");

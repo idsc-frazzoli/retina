@@ -55,8 +55,8 @@ public:
     ParameterMat variance;
 
 private:
-    // print param
-    bool print = false;
+    // debugEKF param
+    bool debugEKF = false;
 
     // update
     void update(ParameterVec& mean,
@@ -73,7 +73,7 @@ private:
         ParameterMat P = variance;
         MeasurementVec z = measureFunction(mean);
 
-        if (print) {
+        if (debugEKF) {
             cout << "x" << endl << x << endl;
             cout << "P" << endl << P << endl;
             cout << "z" << endl << z << endl;
@@ -84,7 +84,7 @@ private:
         JacobiFMat jacobiFMat = jacobiF(x);
         ParameterMat Pk = jacobiFMat * P + P * jacobiFMat + processNoise;
 
-        if (print) {
+        if (debugEKF) {
             cout << "jacobiF" << endl << jacobiFMat << endl;
             cout << "xk" << endl << xk << endl;
             cout << "Pk" << endl << Pk << endl;
@@ -98,7 +98,7 @@ private:
         ParameterVec x_pred = xk + K * (zMes - measureFunction(xk));
         ParameterMat P_pred = (ParameterMat::Identity() - K * jacobiHMat) * P;
 
-        if (print) {
+        if (debugEKF) {
             cout << "jacobiH" << endl << jacobiHMat << endl;
             cout << "K" << endl << K << endl;
             cout << "x_pred" << endl << x_pred << endl;

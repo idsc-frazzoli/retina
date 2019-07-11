@@ -51,7 +51,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         System.out.println("dF_z=" + dF_z);
     }
     // (1.1)
-    // TODO at the moment muRoll == 0!
+    // at the moment muRoll == 0!
     final Scalar rollFric = gForce.multiply(vehicleModel.muRoll());
     Deadzone deadzone = Deadzone.of(rollFric.negate(), rollFric);
     Tensor dir = total.extract(0, 2).map(deadzone);
