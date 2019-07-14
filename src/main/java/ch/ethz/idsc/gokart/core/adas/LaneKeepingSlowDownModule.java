@@ -20,7 +20,7 @@ public class LaneKeepingSlowDownModule extends LaneKeepingCenterlineModule imple
   public Optional<RimoPutEvent> putEvent() {
     // TODO this logic does not need to happen for every rimo put event
     // ... instead 10[Hz] would be sufficient, or for every pose update
-    if (leftLaneModule.leftLane(slowDownDistance)) {
+    if (leftLaneModule.leftLane(optionalCurve, gokartPoseEvent, slowDownDistance)) {
       System.out.println("left lane");
       return slowDown.putEvent();
     }

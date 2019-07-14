@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.ref.TensorListener;
 
 public class LaneKeepingGetCurveModule extends AbstractModule implements TensorListener {
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
-  private final LaneKeepingCenterlineModule laneKeepingTrajectoryModule = new LaneKeepingCenterlineModule();
+  private final LaneKeepingCenterlineModule laneKeepingCenterlineModule = new LaneKeepingCenterlineModule();
 
   @Override // from AbstractModule
   protected void first() {
@@ -25,6 +25,6 @@ public class LaneKeepingGetCurveModule extends AbstractModule implements TensorL
 
   @Override // from TensorListener
   public void tensorReceived(Tensor tensor) {
-    laneKeepingTrajectoryModule.setCurve(Optional.of(tensor));
+    laneKeepingCenterlineModule.setCurve(Optional.of(tensor));
   }
 }

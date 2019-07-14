@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -28,15 +29,17 @@ public class LaneKeepingTrajectoryTest extends TestCase {
   }
 
   public void testSimple4() {
+    // was sind die Einheiten von Curve
     LeftLaneModule leftLaneModule = new LeftLaneModule();
-    leftLaneModule.first();
+    Optional<Tensor> curve = Optional.of(Tensors.fromString("{{1[m], 1[m], 2}, {3[m], 2[m], 4}}"));
     Tensor pose = Tensors.of(//
         Quantity.of(10000, SI.METER), //
         Quantity.of(10000, SI.METER), //
         RealScalar.of(0));
     GokartPoseEvent testEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
-    leftLaneModule.getEvent(testEvent);
-    leftLaneModule.last();
+    Scalar criticalDistance = Quantity.of(1, SI.METER);
+    leftLaneModule.leftLane(curve, testEvent, criticalDistance);
+    System.out.println(" ");
   }
 
   public void testSimple2() {
@@ -47,6 +50,7 @@ public class LaneKeepingTrajectoryTest extends TestCase {
     RimoPutEvent rimoPutEvent = slowDown.putEvent().get();
     System.out.println(rimoPutEvent.getTorque_Y_pair());
     slowDown.last();
+    System.out.println(" ");
   }
 
   public void testSimple3() {
@@ -54,5 +58,28 @@ public class LaneKeepingTrajectoryTest extends TestCase {
     laneKeepingSlowDownModule.first();
     laneKeepingSlowDownModule.putEvent();
     laneKeepingSlowDownModule.last();
+    System.out.println(" ");
+  }
+
+  public void testSimple5() {
+    LaneKeepingLimitedSteeringModule laneKeepingLimitedSteeringModule = new LaneKeepingLimitedSteeringModule();
+    laneKeepingLimitedSteeringModule.first();
+    Optional<Tensor> curve = Optional.of(Tensors.fromString("{{1[m], 1[m], 2}, {3[m], 2[m], 4}}"));
+    Tensor pose = Tensors.of(//
+        Quantity.of(10000, SI.METER), //
+        Quantity.of(10000, SI.METER), //
+        RealScalar.of(0));
+    GokartPoseEvent testEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
+    laneKeepingLimitedSteeringModule.getPlan(curve, testEvent);
+    laneKeepingLimitedSteeringModule.last();
+    System.out.println(" ");
+  }
+
+  public void testSimple6() {
+    LaneKeepingLimitedSteeringModule laneKeepingLimitedSteeringModule = new LaneKeepingLimitedSteeringModule();
+    laneKeepingLimitedSteeringModule.first();
+    laneKeepingLimitedSteeringModule.putEvent();
+    laneKeepingLimitedSteeringModule.last();
+    System.out.println(" ");
   }
 }
