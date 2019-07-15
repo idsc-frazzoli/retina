@@ -6,10 +6,8 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ abstract class MotorFunctionBase {
-  /** @param power with unit "ARMS"
-   * @param speed with unit velocity e.g. "m*s^-1"
-   * @return estimated acceleration in "m*s^-2" for given power input and state */
+/* package */ abstract class MotorFunctionBase implements MotorFunction {
+  @Override // from MotorFunction
   public final Scalar getAccelerationEstimation(Scalar power, Scalar speed) {
     float fspd = Magnitude.VELOCITY.toFloat(speed);
     float fpow = Magnitude.ARMS.toFloat(power);

@@ -2269,6 +2269,15 @@ public enum GokartLogFile implements LogFile {
   /** manual driving, mpc, network issue */
   _20190711T160210_908ca07d,
   /***************************************************/
+  /* 2019-07-15 using LAN-USB adapter */
+  /** slow and fast manual driving
+   * to test LAN-USB adapter */
+  _20190715T113340_908ca07d,
+  /** manual driving, fast mpc,
+   * mapping active then localization failure
+   * otherwise flawless */
+  _20190715T153458_908ca07d,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
