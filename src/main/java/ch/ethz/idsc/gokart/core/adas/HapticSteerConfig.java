@@ -47,7 +47,8 @@ public class HapticSteerConfig {
   /** set velocity for a full stop with or without anti-lock braking */
   @FieldSubdivide(start = "5.75[m*s^-1]", end = "8.5[m*s^-1]", intervals = 11)
   public Scalar setVel = Quantity.of(6.5, SI.VELOCITY);
-
+  /** LanekeepingFactor */
+  public Scalar lanekeepingFactor = Quantity.of(-0.65, "SCT*SCE^-1");
   /***************************************************/
   public Scalar criticalAngle() {
     return UnitSystem.SI().apply(criticalAngle);
