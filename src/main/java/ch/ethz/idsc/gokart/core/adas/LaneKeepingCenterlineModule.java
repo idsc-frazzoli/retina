@@ -10,7 +10,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** class is used to develop and test anti lock brake logic */
+/**  */
 public class LaneKeepingCenterlineModule extends AbstractModule implements GokartPoseListener {
   public GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   public GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
@@ -26,7 +26,7 @@ public class LaneKeepingCenterlineModule extends AbstractModule implements Gokar
   public void last() {
     gokartPoseLcmClient.stopSubscriptions();
   }
-  
+
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     this.gokartPoseEvent = gokartPoseEvent;
@@ -45,5 +45,4 @@ public class LaneKeepingCenterlineModule extends AbstractModule implements Gokar
     System.out.println("got curve");
     return optionalCurve;
   }
-
 }

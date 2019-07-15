@@ -29,10 +29,9 @@ public class LaneKeepingTrajectoryTest extends TestCase {
   }
 
   public void testSimple4() {
-    // was sind die Einheiten von Curve
     LeftLaneModule leftLaneModule = new LeftLaneModule();
     Optional<Tensor> curve = Optional.of(Tensors.fromString("{{1[m], 1[m], 2}, {3[m], 2[m], 4}}"));
-    Tensor pose = Tensors.of(//
+    Tensor pose = Tensors.of( //
         Quantity.of(10000, SI.METER), //
         Quantity.of(10000, SI.METER), //
         RealScalar.of(0));

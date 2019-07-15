@@ -12,7 +12,6 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class LeftLaneModule {
- 
   public boolean leftLane(Optional<Tensor> optionalCurve, GokartPoseEvent gokartPoseEvent, Scalar criticalDistance) {
     if (optionalCurve.isPresent() && Objects.nonNull(gokartPoseEvent)) {
       Tensor pose = gokartPoseEvent.getPose(); // of the form {x[m], y[m], heading}
