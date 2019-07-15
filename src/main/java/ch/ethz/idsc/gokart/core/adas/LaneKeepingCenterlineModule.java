@@ -16,8 +16,10 @@ import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
+import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.TensorListener;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -33,6 +35,11 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   public Optional<Clip> optionalPermittedRange;
   public Tensor velocity;
+  private Tensor laneBoundaryL; 
+  private Tensor laneBoundaryR; 
+  private static final Tensor OFS_L = Tensors.fromString("{0, +1[m], 0}").unmodifiable();
+  private static final Tensor OFS_R = Tensors.fromString("{0, -1[m], 0}").unmodifiable();
+
 
   @Override
   protected void runAlgo() {
@@ -80,6 +87,12 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   public void setCurve(Optional<Tensor> curve) {
     if (curve.isPresent()) {
       optionalCurve = curve;
+      laneBoundaryL = Tensor.of(curve.get().stream() //
+          .map(Se2GroupElement::new) //
+          .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
+      laneBoundaryR = Tensor.of(curve.get().stream() //
+          .map(Se2GroupElement::new) //
+          .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
     } else {
       System.err.println("Curve missing");
       optionalCurve = Optional.empty();
@@ -100,9 +113,9 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
       // large value is a hack to get a solution
       clothoidPursuitConfig.turningRatioMax = Quantity.of(1000, SI.PER_METER);
       Optional<ClothoidPlan> optionalL = //
-          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), curve.get(), true);
+          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), laneBoundaryL, true);
       Optional<ClothoidPlan> optionalR = //
-          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), curve.get(), true);
+          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), laneBoundaryR, true);
       System.out.println(optionalL);
       if (optionalL.isPresent()) {
         Scalar steerlimitLratio = optionalL.get().ratio();
