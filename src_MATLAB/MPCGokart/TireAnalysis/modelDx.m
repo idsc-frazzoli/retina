@@ -2,7 +2,7 @@ function [ACCX,ACCY,ACCROTZ] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV, param)
 
 % BETA : Lenk winkel (control)
 % AB : acceleration of hinterachse (control)
-% TV : torque vectoring (control)
+% TV : torque vectoring
 % AB-TV rechte achse
 % AB-TV linke achse
 
@@ -13,9 +13,9 @@ function [ACCX,ACCY,ACCROTZ] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV, param)
     B2 = param(4);
     C2 = param(5);
     D2 = param(6);
+    Ic = param(7);
     %maxA = param(8);
-    magic = @(s,    Ic = param(7);
-B,C,D)D.*sin(C.*atan(B.*s));
+    magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
     reg = 0.5;
     capfactor = @(taccx)(1-satfun((taccx/D2)^2))^(1/2);
     simpleslip = @(VELY,VELX,taccx)-(1/capfactor(taccx))*VELY/(VELX+reg);
