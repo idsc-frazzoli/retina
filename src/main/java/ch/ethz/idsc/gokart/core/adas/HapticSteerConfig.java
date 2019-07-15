@@ -50,7 +50,9 @@ public class HapticSteerConfig implements Serializable {
   @FieldSubdivide(start = "5.75[m*s^-1]", end = "8.5[m*s^-1]", intervals = 11)
   public Scalar setVel = Quantity.of(6.5, SI.VELOCITY);
   /** LanekeepingFactor */
-  public Scalar lanekeepingFactor = Quantity.of(-0.65, "SCT*SCE^-1");
+  public Scalar laneKeepingFactor = Quantity.of(-0.65, "SCT*SCE^-1");
+  /** torque limit */
+  public Scalar laneKeepingTorqueLimit = Quantity.of(0.5, "SCT");
   public Boolean printLaneInfo = false;
 
   /***************************************************/
@@ -73,5 +75,16 @@ public class HapticSteerConfig implements Serializable {
   /** @return */
   public Clip latForceCompensationBoundaryClip() {
     return Clips.absolute(latForceCompensationBoundary);
+  }
+
+  /***************************************************/
+  // functions for lane keeping
+  /** @return */
+  public Clip laneKeepingTorqueClip() {
+    return Clips.absolute(laneKeepingTorqueLimit);
+  }
+
+  public Scalar laneKeeping(Scalar defect) {
+    return laneKeepingTorqueClip().apply(defect.multiply(laneKeepingFactor));
   }
 }
