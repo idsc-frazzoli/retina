@@ -3,7 +3,7 @@ function dx = interstagedx(x,u,p)
     global index
     
     %just for the moment
-    Cf = p(index.pmoi);
+    Cf = p(index.pmoi); % moment of inertia
     
     
 
@@ -37,14 +37,14 @@ function dx = interstagedx(x,u,p)
     vx = x(index.v-index.nu);
     vy = x(index.yv-index.nu);
     dottheta = x(index.dottheta-index.nu);
-    beta = x(index.beta-index.nu);
+    beta = x(index.beta-index.nu); % from steering.
     %beta = 0;
     %temp = x(index.braketemp-index.nu);
     %braking=max(0,-ab+casadiGetMaxNegAcc(speed));
     %brakingheatup = heatupfunction(-ab-1.5);
     %brakingcooldown = cooldownfunction(temp);
     l = 1.19;
-    ackermannAngle = -0.63.*beta.*beta.*beta+0.94*beta;
+    ackermannAngle = -0.63.*beta.*beta.*beta+0.94*beta; %ackermann Mapping 
    
     %(VELX,VELY,VELROTZ,BETA,AB,TV, param)
     %[ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(vx,vy,dottheta,ackermannAngle,ab,tv, param);
