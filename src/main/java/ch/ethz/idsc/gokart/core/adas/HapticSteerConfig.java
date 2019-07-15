@@ -1,6 +1,8 @@
 // code by am
 package ch.ethz.idsc.gokart.core.adas;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
@@ -12,7 +14,7 @@ import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-public class HapticSteerConfig {
+public class HapticSteerConfig implements Serializable {
   public static final HapticSteerConfig GLOBAL = AppResources.load(new HapticSteerConfig());
   /***************************************************/
   /** value to amplify the input in the PowerSteeringModule */

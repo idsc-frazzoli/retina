@@ -20,6 +20,7 @@ import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Serialization;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.TensorListener;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -35,6 +36,8 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  private final CurveClothoidPursuitPlanner curvePlannerL;
+  private final CurveClothoidPursuitPlanner curvePlannerR;
   // ---
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   private Optional<Tensor> optionalCurve = Optional.empty();
@@ -42,6 +45,23 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   public Tensor velocity = GokartPoseEvents.motionlessUninitialized().getVelocity();
   private Tensor laneBoundaryL;
   private Tensor laneBoundaryR;
+
+  public LaneKeepingCenterlineModule() {
+    this(ClothoidPursuitConfig.GLOBAL);
+  }
+
+  public LaneKeepingCenterlineModule(ClothoidPursuitConfig _clothoidPursuitConfig) {
+    ClothoidPursuitConfig clothoidPursuitConfig = _clothoidPursuitConfig;
+    try {
+      clothoidPursuitConfig = Serialization.copy(_clothoidPursuitConfig);
+      // large value is a hack to get a solution
+      clothoidPursuitConfig.turningRatioMax = Quantity.of(1000.0, SI.PER_METER);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    curvePlannerL = new CurveClothoidPursuitPlanner(clothoidPursuitConfig);
+    curvePlannerR = new CurveClothoidPursuitPlanner(clothoidPursuitConfig);
+  }
 
   @Override // from AbstractModule
   public void first() {
@@ -86,19 +106,17 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     this.gokartPoseEvent = gokartPoseEvent;
   }
 
-  public void setCurve(Optional<Tensor> optional) {
+  void setCurve(Optional<Tensor> optional) {
+    optionalCurve = optional;
     if (optional.isPresent()) {
-      optionalCurve = optional;
       laneBoundaryL = Tensor.of(optional.get().stream() //
           .map(Se2GroupElement::new) //
           .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
       laneBoundaryR = Tensor.of(optional.get().stream() //
           .map(Se2GroupElement::new) //
           .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
-    } else {
-      System.err.println("Curve missing");
-      optionalCurve = Optional.empty();
-    }
+    } else
+      System.err.println("Curve empty.");
   }
 
   final Optional<Tensor> getCurve() {
@@ -106,18 +124,15 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     return optionalCurve;
   }
 
-  public Optional<Clip> getPermittedRange(Tensor curve, Tensor pose) {
+  Optional<Clip> getPermittedRange(Tensor curve, Tensor pose) {
     Scalar steerlimitLSCE = Quantity.of(0, "SCE");
     Scalar steerlimitRSCE = Quantity.of(0, "SCE");
     if (1 < curve.length()) {
       System.out.println("ifloop entered :)");
-      ClothoidPursuitConfig clothoidPursuitConfig = new ClothoidPursuitConfig();
-      // large value is a hack to get a solution
-      clothoidPursuitConfig.turningRatioMax = Quantity.of(1000, SI.PER_METER);
       Optional<ClothoidPlan> optionalL = //
-          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), laneBoundaryL, true);
+          curvePlannerL.getPlan(pose, velocity.Get(0), laneBoundaryL, true);
       Optional<ClothoidPlan> optionalR = //
-          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), laneBoundaryR, true);
+          curvePlannerR.getPlan(pose, velocity.Get(0), laneBoundaryR, true);
       System.out.println(optionalL);
       if (optionalL.isPresent()) {
         Scalar steerlimitLratio = optionalL.get().ratio();
@@ -138,7 +153,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
 
   @Override // from TensorListener
   public void tensorReceived(Tensor tensor) {
-    setCurve(tensor.length() == 0 //
+    setCurve(tensor.length() <= 1 //
         ? Optional.empty()
         : Optional.of(tensor));
   }
