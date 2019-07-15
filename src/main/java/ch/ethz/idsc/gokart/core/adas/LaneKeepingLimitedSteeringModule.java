@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.adas;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
+import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 
 /** class is used to develop and test anti lock brake logic */
 public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModule implements SteerPutProvider {
-  private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
+  private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final PowerSteering powerSteering = new PowerSteering(HapticSteerConfig.GLOBAL);
   // ---
   private SteerGetEvent steerGetEvent;
@@ -47,20 +47,23 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
 
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
-    if (steerColumnTracker.isCalibratedAndHealthy() && Objects.nonNull(steerGetEvent)) {
-      Scalar currAngle = steerColumnTracker.getSteerColumnEncoderCentered();
-      Scalar tsu = steerGetEvent.tsuTrq();
+    if (steerColumnInterface.isSteerColumnCalibrated() && Objects.nonNull(steerGetEvent))
+      return putEvent(steerColumnInterface, steerGetEvent, optionalPermittedRange);
+    return Optional.empty();
+  }
+
+  Optional<SteerPutEvent> putEvent(SteerColumnInterface steerColumnInterface, SteerGetEvent steerGetEvent, Optional<Clip> optional) {
+    Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+    Scalar tsu = steerGetEvent.tsuTrq();
+    if (HapticSteerConfig.GLOBAL.printLaneInfo)
+      System.out.println("currAngle: " + currAngle);
+    if (optional.isPresent()) {
+      Clip permittedRange = optional.get();
       if (HapticSteerConfig.GLOBAL.printLaneInfo)
-        System.out.println("currAngle: " + currAngle);
-      Optional<Clip> optional = optionalPermittedRange;
-      if (optional.isPresent()) {
-        Clip permittedRange = optional.get();
-        if (HapticSteerConfig.GLOBAL.printLaneInfo)
-          System.out.println("permittedRange: " + ToString.of(permittedRange));
-        final Scalar putTorque = HapticSteerConfig.GLOBAL.laneKeeping(currAngle.subtract(permittedRange.apply(currAngle)));
-        final Scalar powerSteer = powerSteering.torque(currAngle, velocity, tsu);
-        return Optional.of(SteerPutEvent.createOn(putTorque.add(powerSteer)));
-      }
+        System.out.println("permittedRange: " + ToString.of(permittedRange));
+      final Scalar putTorque = HapticSteerConfig.GLOBAL.laneKeeping(currAngle.subtract(permittedRange.apply(currAngle)));
+      final Scalar powerSteer = powerSteering.torque(currAngle, velocity, tsu);
+      return Optional.of(SteerPutEvent.createOn(putTorque.add(powerSteer)));
     }
     return Optional.empty();
   }

@@ -41,10 +41,10 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   // ---
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   private Optional<Tensor> optionalCurve = Optional.empty();
-  public Optional<Clip> optionalPermittedRange;
-  public Tensor velocity = GokartPoseEvents.motionlessUninitialized().getVelocity();
   private Tensor laneBoundaryL;
   private Tensor laneBoundaryR;
+  Optional<Clip> optionalPermittedRange;
+  Tensor velocity = GokartPoseEvents.motionlessUninitialized().getVelocity();
 
   public LaneKeepingCenterlineModule() {
     this(ClothoidPursuitConfig.GLOBAL);
