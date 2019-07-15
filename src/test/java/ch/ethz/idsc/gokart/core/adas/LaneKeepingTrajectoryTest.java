@@ -11,12 +11,9 @@ import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.gokart.dev.steer.SteerGetEvents;
-import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -42,7 +39,6 @@ public class LaneKeepingTrajectoryTest extends TestCase {
     laneKeepingCenterlineModule.runAlgo();
     laneKeepingCenterlineModule.last();
   }
-  
 
   public void testSimple4() {
     LeftLaneModule leftLaneModule = new LeftLaneModule();
@@ -76,7 +72,6 @@ public class LaneKeepingTrajectoryTest extends TestCase {
     System.out.println(" ");
   }
 
-  
   public void testSimple6() {
     LaneKeepingLimitedSteeringModule laneKeepingLimitedSteeringModule = new LaneKeepingLimitedSteeringModule();
     laneKeepingLimitedSteeringModule.first();

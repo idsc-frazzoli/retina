@@ -26,22 +26,38 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 /**  */
-public class LaneKeepingCenterlineModule extends AbstractClockedModule implements GokartPoseListener, TensorListener {
-  private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
-  public GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-  private static final Scalar PERIOD = Quantity.of(0.1, SI.SECOND);
-  public GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
-  public Optional<Tensor> optionalCurve = Optional.empty();
-  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  public Optional<Clip> optionalPermittedRange;
-  public Tensor velocity;
-  private Tensor laneBoundaryL; 
-  private Tensor laneBoundaryR; 
+public class LaneKeepingCenterlineModule extends AbstractClockedModule implements //
+    GokartPoseListener, TensorListener {
   private static final Tensor OFS_L = Tensors.fromString("{0, +1[m], 0}").unmodifiable();
   private static final Tensor OFS_R = Tensors.fromString("{0, -1[m], 0}").unmodifiable();
+  private static final Scalar PERIOD = Quantity.of(0.1, SI.SECOND);
+  // ---
+  private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
+  private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  // ---
+  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+  private Optional<Tensor> optionalCurve = Optional.empty();
+  public Optional<Clip> optionalPermittedRange;
+  public Tensor velocity = GokartPoseEvents.motionlessUninitialized().getVelocity();
+  private Tensor laneBoundaryL;
+  private Tensor laneBoundaryR;
 
+  @Override // from AbstractModule
+  public void first() {
+    gokartPoseLcmClient.addListener(this);
+    gokartPoseLcmClient.startSubscriptions();
+    curveSe2PursuitLcmClient.addListener(this);
+    curveSe2PursuitLcmClient.startSubscriptions();
+  }
 
-  @Override
+  @Override // from AbstractModule
+  public void last() {
+    gokartPoseLcmClient.stopSubscriptions();
+    curveSe2PursuitLcmClient.stopSubscriptions();
+  }
+
+  @Override // from AbstractClockedModule
   protected void runAlgo() {
     boolean isQualityOk = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent);
     Tensor pose = isQualityOk //
@@ -60,23 +76,9 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     }
   }
 
-  @Override
+  @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
     return PERIOD;
-  }
-
-  @Override // from AbstractModule
-  public void first() {
-    gokartPoseLcmClient.addListener(this);
-    gokartPoseLcmClient.startSubscriptions();
-    curveSe2PursuitLcmClient.addListener(this);
-    curveSe2PursuitLcmClient.startSubscriptions();
-  }
-
-  @Override // from AbstractModule
-  public void last() {
-    gokartPoseLcmClient.stopSubscriptions();
-    curveSe2PursuitLcmClient.stopSubscriptions();
   }
 
   @Override // from GokartPoseListener
@@ -84,13 +86,13 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     this.gokartPoseEvent = gokartPoseEvent;
   }
 
-  public void setCurve(Optional<Tensor> curve) {
-    if (curve.isPresent()) {
-      optionalCurve = curve;
-      laneBoundaryL = Tensor.of(curve.get().stream() //
+  public void setCurve(Optional<Tensor> optional) {
+    if (optional.isPresent()) {
+      optionalCurve = optional;
+      laneBoundaryL = Tensor.of(optional.get().stream() //
           .map(Se2GroupElement::new) //
           .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
-      laneBoundaryR = Tensor.of(curve.get().stream() //
+      laneBoundaryR = Tensor.of(optional.get().stream() //
           .map(Se2GroupElement::new) //
           .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
     } else {
@@ -134,8 +136,10 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     return Optional.empty();
   }
 
-  @Override
+  @Override // from TensorListener
   public void tensorReceived(Tensor tensor) {
-    this.setCurve(Optional.of(tensor));
+    setCurve(tensor.length() == 0 //
+        ? Optional.empty()
+        : Optional.of(tensor));
   }
 }

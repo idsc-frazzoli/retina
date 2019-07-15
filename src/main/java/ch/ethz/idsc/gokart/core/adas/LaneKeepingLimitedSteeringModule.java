@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** class is used to develop and test anti lock brake logic */
-public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModule implements SteerPutProvider {
+/* package */ class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModule implements SteerPutProvider {
   private SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private PowerSteeringModule powerSteeringModule = new PowerSteeringModule();
   public SteerGetEvent steerGetEvent;
@@ -28,15 +28,14 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
 
   @Override // from AbstractModule
   public void first() {
-    gokartPoseLcmClient.addListener(this);
-    gokartPoseLcmClient.startSubscriptions();
+    super.first();
     SteerSocket.INSTANCE.addGetListener(steerGetListener);
   }
 
   @Override // from AbstractModule
   public void last() {
     SteerSocket.INSTANCE.removeGetListener(steerGetListener);
-    gokartPoseLcmClient.stopSubscriptions();
+    super.last();
   }
 
   @Override
@@ -57,7 +56,7 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
         Scalar powerSteer = powerSteeringModule.putEvent(currAngle, velocity, tsu);
         System.out.println("permittedRange: " + permittedRange);
         return Optional.of(SteerPutEvent.createOn(putTorque.add(powerSteer)));
-      }    
+      }
     }
     return Optional.empty();
   }

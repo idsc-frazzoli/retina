@@ -14,7 +14,7 @@ import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV2Module;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV3Module;
-import ch.ethz.idsc.gokart.core.adas.LaneKeepingLimitedSteeringModule;
+import ch.ethz.idsc.gokart.core.adas.LaneKeepingCenterlineModule;
 import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.SetVelSmartBrakingModule;
@@ -127,6 +127,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       PredictiveTorqueVectoringModule.class, //
       PowerSteeringModule.class, //
+      LaneKeepingCenterlineModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //
       SteeringExperimentModule.class, //
@@ -139,8 +140,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       AutomaticPowerTestModule.class, //
       RimoThrustManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
-      DriftThrustManualModule.class, //
-      LaneKeepingLimitedSteeringModule.class //
+      DriftThrustManualModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       FigureClothoidModule.class, //

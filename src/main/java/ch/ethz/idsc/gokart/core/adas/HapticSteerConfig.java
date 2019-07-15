@@ -49,20 +49,26 @@ public class HapticSteerConfig {
   public Scalar setVel = Quantity.of(6.5, SI.VELOCITY);
   /** LanekeepingFactor */
   public Scalar lanekeepingFactor = Quantity.of(-0.65, "SCT*SCE^-1");
+
   /***************************************************/
+  // functions for anti-lock brake
   public Scalar criticalAngle() {
     return UnitSystem.SI().apply(criticalAngle);
   }
 
+  public Clip slipClip() {
+    return Clips.interval(minSlip, maxSlip);
+  }
+
+  // TODO AM function is not used (only in test)
   public Clip criticalSlipClip() {
     return Clips.absolute(criticalSlip);
   }
 
+  /***************************************************/
+  // functions for power steering
+  /** @return */
   public Clip latForceCompensationBoundaryClip() {
     return Clips.absolute(latForceCompensationBoundary);
-  }
-
-  public Clip slipClip() {
-    return Clips.interval(minSlip, maxSlip);
   }
 }
