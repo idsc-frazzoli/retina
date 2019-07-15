@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.ref.TensorListener;
 
-// TODO implementation is not complete
+// TODO AM implementation is not complete
 public class LaneKeepingGetCurveModule extends AbstractModule implements TensorListener {
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final LaneKeepingCenterlineModule laneKeepingCenterlineModule = new LaneKeepingCenterlineModule();
@@ -17,6 +17,7 @@ public class LaneKeepingGetCurveModule extends AbstractModule implements TensorL
   protected void first() {
     curveSe2PursuitLcmClient.addListener(this);
     curveSe2PursuitLcmClient.startSubscriptions();
+    laneKeepingCenterlineModule.launch();
   }
 
   @Override // from AbstractModule

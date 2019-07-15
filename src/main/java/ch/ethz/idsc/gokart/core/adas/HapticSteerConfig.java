@@ -1,6 +1,8 @@
 // code by am
 package ch.ethz.idsc.gokart.core.adas;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
@@ -12,7 +14,7 @@ import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-public class HapticSteerConfig {
+public class HapticSteerConfig implements Serializable {
   public static final HapticSteerConfig GLOBAL = AppResources.load(new HapticSteerConfig());
   /***************************************************/
   /** value to amplify the input in the PowerSteeringModule */
@@ -47,21 +49,42 @@ public class HapticSteerConfig {
   /** set velocity for a full stop with or without anti-lock braking */
   @FieldSubdivide(start = "5.75[m*s^-1]", end = "8.5[m*s^-1]", intervals = 11)
   public Scalar setVel = Quantity.of(6.5, SI.VELOCITY);
+  /** LanekeepingFactor */
+  public Scalar laneKeepingFactor = Quantity.of(-5.0, "SCT*SCE^-1");
+  /** torque limit */
+  public Scalar laneKeepingTorqueLimit = Quantity.of(0.5, "SCT");
+  public Boolean printLaneInfo = false;
 
   /***************************************************/
+  // functions for anti-lock brake
   public Scalar criticalAngle() {
     return UnitSystem.SI().apply(criticalAngle);
   }
 
+  public Clip slipClip() {
+    return Clips.interval(minSlip, maxSlip);
+  }
+
+  // TODO AM function is not used (only in test)
   public Clip criticalSlipClip() {
     return Clips.absolute(criticalSlip);
   }
 
+  /***************************************************/
+  // functions for power steering
+  /** @return */
   public Clip latForceCompensationBoundaryClip() {
     return Clips.absolute(latForceCompensationBoundary);
   }
 
-  public Clip slipClip() {
-    return Clips.interval(minSlip, maxSlip);
+  /***************************************************/
+  // functions for lane keeping
+  /** @return */
+  public Clip laneKeepingTorqueClip() {
+    return Clips.absolute(laneKeepingTorqueLimit);
+  }
+
+  public Scalar laneKeeping(Scalar defect) {
+    return laneKeepingTorqueClip().apply(defect.multiply(laneKeepingFactor));
   }
 }
