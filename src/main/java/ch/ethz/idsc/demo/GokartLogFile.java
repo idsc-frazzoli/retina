@@ -2236,6 +2236,39 @@ public enum GokartLogFile implements LogFile {
   /** slow manual driving for mapping */
   _20190707T151835_ce6e2a12,
   /***************************************************/
+  /* 2019-07-08 */
+  /** manual driving */
+  _20190708T114135_f3f46a8b,
+  /** brief mpc */
+  _20190708T122303_12dcbfa8,
+  /** slow and brief manual driving */
+  _20190708T142002_cea6e9da,
+  /** slow and brief manual driving */
+  _20190708T143137_68fef659,
+  /** manual driving */
+  _20190708T150455_74c62db5,
+  /***************************************************/
+  /* 2019-07-09 */
+  /** manual driving, network issue */
+  _20190709T170420_12dcbfa8,
+  /** manual driving, network issue */
+  _20190709T171438_12dcbfa8,
+  /** manual driving, mpc, network issue several times */
+  _20190709T171851_12dcbfa8,
+  /** clothoid pursuit */
+  _20190709T173859_12dcbfa8,
+  /***************************************************/
+  /* 2019-07-11 */
+  /** mpc, network issue */
+  _20190711T145245_908ca07d,
+  /** rough manual driving
+   * mpc, network issue */
+  _20190711T145949_908ca07d,
+  /** mpc, network issue */
+  _20190711T151412_908ca07d,
+  /** manual driving, mpc, network issue */
+  _20190711T160210_908ca07d,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
