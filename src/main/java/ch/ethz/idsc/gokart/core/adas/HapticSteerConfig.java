@@ -51,6 +51,7 @@ public class HapticSteerConfig implements Serializable {
   public Scalar setVel = Quantity.of(6.5, SI.VELOCITY);
   /** LanekeepingFactor */
   public Scalar lanekeepingFactor = Quantity.of(-0.65, "SCT*SCE^-1");
+  public Boolean printLaneInfo = false;
 
   /***************************************************/
   // functions for anti-lock brake

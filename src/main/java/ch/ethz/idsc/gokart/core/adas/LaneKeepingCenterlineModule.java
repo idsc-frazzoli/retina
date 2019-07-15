@@ -78,7 +78,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   }
 
   @Override // from AbstractClockedModule
-  protected void runAlgo() {
+  protected synchronized void runAlgo() {
     boolean isQualityOk = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent);
     Tensor pose = isQualityOk //
         ? gokartPoseEvent.getPose() //
@@ -106,7 +106,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     this.gokartPoseEvent = gokartPoseEvent;
   }
 
-  void setCurve(Optional<Tensor> optional) {
+  synchronized void setCurve(Optional<Tensor> optional) {
     optionalCurve = optional;
     if (optional.isPresent()) {
       laneBoundaryL = Tensor.of(optional.get().stream() //
@@ -128,26 +128,32 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     Scalar steerlimitLSCE = Quantity.of(0, "SCE");
     Scalar steerlimitRSCE = Quantity.of(0, "SCE");
     if (1 < curve.length()) {
-      System.out.println("ifloop entered :)");
+      if (HapticSteerConfig.GLOBAL.printLaneInfo)
+        System.out.println("ifloop entered :)");
       Optional<ClothoidPlan> optionalL = //
           curvePlannerL.getPlan(pose, velocity.Get(0), laneBoundaryL, true);
       Optional<ClothoidPlan> optionalR = //
           curvePlannerR.getPlan(pose, velocity.Get(0), laneBoundaryR, true);
-      System.out.println(optionalL);
+      if (HapticSteerConfig.GLOBAL.printLaneInfo)
+        System.out.println(optionalL);
       if (optionalL.isPresent()) {
         Scalar steerlimitLratio = optionalL.get().ratio();
         steerlimitLSCE = steerMapping.getSCEfromRatio(steerlimitLratio);
-        System.out.println("Limit L: " + steerlimitLSCE);
+        if (HapticSteerConfig.GLOBAL.printLaneInfo)
+          System.out.println("Limit L: " + steerlimitLSCE);
       }
       if (optionalR.isPresent()) {
         Scalar steerlimitRratio = optionalR.get().ratio();
         steerlimitRSCE = steerMapping.getSCEfromRatio(steerlimitRratio);
-        System.out.println("Limit R: " + steerlimitRSCE);
+        if (HapticSteerConfig.GLOBAL.printLaneInfo)
+          System.out.println("Limit R: " + steerlimitRSCE);
       }
       return Optional.of(Clips.interval(steerlimitRSCE, steerlimitLSCE));
     }
-    System.out.println("no steer limit found");
-    System.out.println("ifloop not entered :(");
+    if (HapticSteerConfig.GLOBAL.printLaneInfo) {
+      System.out.println("no steer limit found");
+      System.out.println("ifloop not entered :(");
+    }
     return Optional.empty();
   }
 

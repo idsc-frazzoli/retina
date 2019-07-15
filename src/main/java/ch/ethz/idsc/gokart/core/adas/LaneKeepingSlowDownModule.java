@@ -8,6 +8,8 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 
 /** class is used to develop and test anti lock brake logic */
+// TODO AM remove class if not needed anymore
+@Deprecated
 /* package */ class LaneKeepingSlowDownModule extends LaneKeepingCenterlineModule implements RimoPutProvider {
   // private final MeasurementSlowDownModule slowDown = new MeasurementSlowDownModule();
   // private final LeftLaneModule leftLaneModule = new LeftLaneModule();

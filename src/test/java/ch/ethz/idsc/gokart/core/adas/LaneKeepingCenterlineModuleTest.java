@@ -8,18 +8,16 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitModule;
 import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
-import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
-public class LaneKeepingTrajectoryTest extends TestCase {
+public class LaneKeepingCenterlineModuleTest extends TestCase {
   private static final Tensor CURVE = DubendorfCurve.TRACK_OVAL_SE2;
 
   public void testSimple() {
@@ -34,7 +32,8 @@ public class LaneKeepingTrajectoryTest extends TestCase {
     Optional<Tensor> optionalCurve = Optional.of(Tensors.fromString("{{1[m], 1[m], 2}, {3[m], 2[m], 4}}"));
     Tensor curve = optionalCurve.get();
     laneKeepingCenterlineModule.setCurve(Optional.ofNullable(CURVE));
-    laneKeepingCenterlineModule.getPermittedRange(curve, pose);
+    Optional<Clip> permittedRange = laneKeepingCenterlineModule.getPermittedRange(curve, pose);
+    // System.out.println(permittedRange);
     assertTrue(laneKeepingCenterlineModule.getCurve().isPresent());
     laneKeepingCenterlineModule.runAlgo();
     laneKeepingCenterlineModule.last();
@@ -50,33 +49,6 @@ public class LaneKeepingTrajectoryTest extends TestCase {
     GokartPoseEvent testEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
     Scalar criticalDistance = Quantity.of(1, SI.METER);
     leftLaneModule.leftLane(curve, testEvent, criticalDistance);
-    System.out.println(" ");
-  }
-
-  public void testSimple2() {
-    MeasurementSlowDownModule slowDown = new MeasurementSlowDownModule();
-    slowDown.first();
-    RimoGetEvent rimoGetEvent = RimoGetEvents.create(5000, 5000);
-    slowDown.rimoGetListener.getEvent(rimoGetEvent);
-    RimoPutEvent rimoPutEvent = slowDown.putEvent().get();
-    System.out.println(rimoPutEvent.getTorque_Y_pair());
-    slowDown.last();
-    System.out.println(" ");
-  }
-
-  public void testSimple3() {
-    LaneKeepingSlowDownModule laneKeepingSlowDownModule = new LaneKeepingSlowDownModule();
-    laneKeepingSlowDownModule.first();
-    laneKeepingSlowDownModule.putEvent();
-    laneKeepingSlowDownModule.last();
-    System.out.println(" ");
-  }
-
-  public void testSimple6() {
-    LaneKeepingLimitedSteeringModule laneKeepingLimitedSteeringModule = new LaneKeepingLimitedSteeringModule();
-    laneKeepingLimitedSteeringModule.first();
-    assertFalse(laneKeepingLimitedSteeringModule.putEvent().isPresent());
-    laneKeepingLimitedSteeringModule.last();
     System.out.println(" ");
   }
 }

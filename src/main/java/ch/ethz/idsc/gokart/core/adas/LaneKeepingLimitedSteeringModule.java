@@ -15,6 +15,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** class is used to develop and test anti lock brake logic */
+// TODO AM remove class if not needed anymore
+@Deprecated
 /* package */ class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModule implements SteerPutProvider {
   private SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private PowerSteeringModule powerSteeringModule = new PowerSteeringModule();
