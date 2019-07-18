@@ -65,7 +65,6 @@ public class HapticSteerConfig implements Serializable {
     return Clips.interval(minSlip, maxSlip);
   }
 
-
   /***************************************************/
   // functions for power steering
   /** @return */
