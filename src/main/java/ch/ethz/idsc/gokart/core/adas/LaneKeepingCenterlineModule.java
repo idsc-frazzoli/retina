@@ -43,7 +43,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   public Optional<Tensor> optionalCurve = Optional.empty();
   public Tensor laneBoundaryL;
   public Tensor laneBoundaryR;
-  Optional<Clip> optionalPermittedRange;
+  Optional<Clip> optionalPermittedRange = Optional.empty();
   Tensor velocity = GokartPoseEvents.motionlessUninitialized().getVelocity();
 
   public LaneKeepingCenterlineModule() {
