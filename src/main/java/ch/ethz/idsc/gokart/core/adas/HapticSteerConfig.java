@@ -65,10 +65,6 @@ public class HapticSteerConfig implements Serializable {
     return Clips.interval(minSlip, maxSlip);
   }
 
-  // TODO AM function is not used (only in test)
-  public Clip criticalSlipClip() {
-    return Clips.absolute(criticalSlip);
-  }
 
   /***************************************************/
   // functions for power steering

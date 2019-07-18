@@ -11,4 +11,11 @@ public class LaneKeepingSlowDownModuleTest extends TestCase {
     laneKeepingSlowDownModule.last();
     System.out.println(" ");
   }
+  public void testSimple1() {
+    LaneKeepingSlowDownModule laneKeepingSlowDownModule = new LaneKeepingSlowDownModule();
+    laneKeepingSlowDownModule.first();
+    laneKeepingSlowDownModule.runAlgo();
+    laneKeepingSlowDownModule.last();
+    System.out.println(" ");
+  }
 }
