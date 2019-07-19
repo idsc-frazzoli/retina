@@ -13,17 +13,18 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class PredictiveMotorCurrents extends AbstractMotorCurrents {
+public class PredictiveMotorCurrents implements MotorCurrentsInterface {
   private static final double MIN_DT = 0.000001;
   private static final Scalar ROLLING_AVERAGE_VALUE = Quantity.of(0.0, SI.ANGULAR_ACCELERATION);
   // ---
+  private final TorqueVectoringConfig torqueVectoringConfig;
   private final IntervalClock intervalClock = new IntervalClock();
   private final GeodesicIIR1 geodesicIIR1;
   private Scalar wantedRotationRate_last = null;
   private Scalar rotationAcc_fallback = ROLLING_AVERAGE_VALUE;
 
   public PredictiveMotorCurrents(TorqueVectoringConfig torqueVectoringConfig) {
-    super(torqueVectoringConfig);
+    this.torqueVectoringConfig = torqueVectoringConfig;
     geodesicIIR1 = new GeodesicIIR1( //
         RnGeodesic.INSTANCE, //
         torqueVectoringConfig.rollingAverageRatio /* ROLLING_AVERAGE_VALUE */ );
@@ -35,7 +36,7 @@ public class PredictiveMotorCurrents extends AbstractMotorCurrents {
     Scalar expectedRotationAcceleration = estimateRotationAcceleration(wantedRotationRate, intervalClock.seconds());
     Scalar predictiveComponent = torqueVectoringConfig.getPredictiveComponent(expectedRotationAcceleration);
     // ---
-    Scalar wantedZTorque = wantedZTorque( //
+    Scalar wantedZTorque = torqueVectoringConfig.wantedZTorque( //
         torqueVectoringConfig.getDynamicAndStatic(angularSlip).add(predictiveComponent), // One
         angularSlip.gyroZ());
     // left and right power prefer power over Z-torque
