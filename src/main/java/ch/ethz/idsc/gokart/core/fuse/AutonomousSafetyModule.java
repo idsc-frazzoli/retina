@@ -34,8 +34,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class AutonomousSafetyModule extends AbstractModule {
   private static final ProviderRank PROVIDER_RANK = ProviderRank.SAFETY;
   // TODO move to config file
-  private static final Scalar BRAKINGTHRESHOLD = Quantity.of(0.5, SI.VELOCITY);
-  private static final Scalar BRAKINGVALUE = RealScalar.of(0.95);
+  private static final Scalar BRAKING_THRESHOLD = Quantity.of(0.5, SI.VELOCITY);
+  private static final Scalar BRAKING_VALUE = RealScalar.of(0.95);
   /** timeout 0.3[s] */
   private final Watchdog localizationWatchdog = SoftWatchdog.barking(0.3);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -53,7 +53,7 @@ public class AutonomousSafetyModule extends AbstractModule {
     }
   };
   private final RimoGetListener rimoGetListener = //
-      rimoGetEvent -> fastEnoughToBrake = Scalars.lessThan(BRAKINGTHRESHOLD, RimoTwdOdometry.tangentSpeed(rimoGetEvent).abs());
+      rimoGetEvent -> fastEnoughToBrake = Scalars.lessThan(BRAKING_THRESHOLD, RimoTwdOdometry.tangentSpeed(rimoGetEvent).abs());
   final AutonomySafetyRimo autonomySafetyRimo = new AutonomySafetyRimo(this::isSafeToDrive);
   final AutonomySafetySteer autonomySafetySteer = new AutonomySafetySteer(this::isSafeToDrive);
   private final LinmotPutProvider linmotPutProvider = new LinmotPutProvider() {
@@ -61,7 +61,7 @@ public class AutonomousSafetyModule extends AbstractModule {
     public Optional<LinmotPutEvent> putEvent() {
       return isSafeToDrive() || !fastEnoughToBrake //
           ? Optional.empty()
-          : Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(BRAKINGVALUE));
+          : Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(BRAKING_VALUE));
     }
 
     @Override

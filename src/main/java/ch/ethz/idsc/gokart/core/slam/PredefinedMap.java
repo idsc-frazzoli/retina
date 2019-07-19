@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
  * name refers to png-file in repository, do not rename!
  * 
  * the predefined geometry is crucial for lidar-based localization */
-// TODO not necessary to mix localization and obstacles, for instance extrusion only required in one case
+// TODO JPH not necessary to mix localization and obstacles, for instance extrusion only required in one case
 public enum PredefinedMap implements LocalizationImage {
   /** image of known static obstacles */
   // DUBILAB_OBSTACLES_20180423(7.5), //

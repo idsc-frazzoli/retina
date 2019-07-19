@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class MPCExpectationRender extends MPCControlUpdateCapture implements RenderInterface, RimoGetListener {
-  private static final Tensor DIAGONAL = DiagonalMatrix.of(.2, .1, 1);
+  private static final Tensor DIAGONAL = DiagonalMatrix.of(0.2, 0.1, 1);
   private static final Tensor MPCLINE = Tensors.fromString("{{0, 0}, {0, 3}}");
   private static final Tensor RIMOLINE = Tensors.fromString("{{0, -3}, {0, 0}}");
   private final Tensor xya;

@@ -118,6 +118,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
         new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
     Scalar between = Norm._2.between(powers, Tensors.vector(-1, -1));
+    System.out.println("HERE" + between);
     // assertTrue(Scalars.lessThan(between, RealScalar.of(0.02))); // TODO JPH motor func v2
   }
 
