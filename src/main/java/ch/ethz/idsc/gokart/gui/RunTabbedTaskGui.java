@@ -44,7 +44,6 @@ import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
 import ch.ethz.idsc.gokart.core.pure.FigurePureModule;
-import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
 import ch.ethz.idsc.gokart.core.pure.PureTrajectoryModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
@@ -148,7 +147,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       PureTrajectoryModule.class, //
       ClothoidTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
-      GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //
       DavisSlamOdometryModule.class, //

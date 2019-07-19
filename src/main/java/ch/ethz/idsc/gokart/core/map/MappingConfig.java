@@ -31,7 +31,7 @@ public class MappingConfig {
   public Scalar lambda = DoubleScalar.of(0.8);
   /** any obstacle closer than minDistance not mapped,
    * otherwise the driver is put in the map. */
-  // TODO param should be obsolete if the mapping is started when the driver is already seated
+  // TODO JPH param should be obsolete if the mapping is started when the driver is already seated
   public Scalar minDistance = Quantity.of(2, SI.METER);
   /** Occupied cells are dilated with this radius before generating the obstacle map.
    * the safety margin accounts not only for the half-width of the gokart

@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 // TODO JPH/MH manage unused variables
 public class TrackReconManagement {
   private static final Scalar RADIUS_OFFSET = Quantity.of(0.5, SI.METER);
-  private static final Scalar SPACING = RealScalar.of(1.5); // TODO should be meters
+  private static final Scalar SPACING = RealScalar.of(1.5); // TODO MH/JPH should be meters
   private static final Scalar CP_RESOLUTION = RealScalar.of(0.5);
   // ---
   private final OccupancyGrid occupancyGrid;
