@@ -35,7 +35,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   private static final Tensor CIRCLE_POINTS = CirclePoints.of(13).multiply(RealScalar.of(0.3));
   // ---
 
-  private class Cell {
+  private static class Cell {
     private final int x;
     private final int y;
     private Scalar cost;
@@ -52,7 +52,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       this.cost = DoubleScalar.POSITIVE_INFINITY;
     }
 
-    public Tensor getPos() {
+    public Tensor getPos(OccupancyGrid occupancyGrid) {
       // TODO can use AffineFrame2D
       return occupancyGrid.getTransform().dot(Tensors.vector(x, y, 1));
     }
@@ -72,7 +72,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       return result;
     }
 
-    public void findNeighbors() {
+    public void findNeighbors(List<Neighbor> possibleNeighbors) {
       if (Objects.isNull(neighBors)) {
         neighBors = new ArrayList<>();
         neighBorCost = new ArrayList<>();
@@ -294,7 +294,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   private void processDijkstra() {
     while (!priorityQueue.isEmpty()) {
       Cell currentCell = priorityQueue.poll();
-      currentCell.findNeighbors();
+      currentCell.findNeighbors(possibleNeighbors);
       currentCell.processed = true;
       currentCell.inQ = false;
       int nCount = 0;
@@ -404,11 +404,11 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     Scalar halfspacing = RealScalar.of(0.5).multiply(spacing);
     Tensor wantedPositionsXY = Tensors.empty();
     // Tensor wantedPositionsY = Tensors.empty();
-    Tensor lastPosition = route.getFirst().getPos();
-    Tensor endPosition = route.getLast().getPos();
+    Tensor lastPosition = route.getFirst().getPos(occupancyGrid);
+    Tensor endPosition = route.getLast().getPos(occupancyGrid);
     positionalSupports = new LinkedList<>();
     for (Cell cell : route) {
-      Tensor pos = cell.getPos();
+      Tensor pos = cell.getPos(occupancyGrid);
       Tensor dist = pos.subtract(lastPosition);
       Tensor enddist = pos.subtract(endPosition);
       if (Scalars.lessThan(spacing, Norm._2.of(dist)) && //
@@ -420,7 +420,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       }
     }
     if (wantedPositionsXY.length() > 3) {
-      wantedPositionsXY.append(Extract2D.FUNCTION.apply(route.getLast().getPos()));
+      wantedPositionsXY.append(Extract2D.FUNCTION.apply(route.getLast().getPos(occupancyGrid)));
       // wantedPositionsY.append(route.getLast().getPos().Get(1));
       wantedPositionsXY = wantedPositionsXY.multiply(Quantity.of(1, SI.METER));
       // wantedPositionsY = wantedPositionsY.multiply(Quantity.of(1, SI.METER));
