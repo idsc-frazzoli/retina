@@ -17,24 +17,24 @@ public class PursuitSteerTest extends TestCase {
   }
 
   public void testControl() {
-    PursuitSteer pps = new PursuitSteer();
+    PursuitSteer pursuitSteer = new PursuitSteer();
     Optional<SteerPutEvent> optional;
-    optional = pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
+    optional = pursuitSteer.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
     CurvePurePursuitModuleTest._checkFallback(optional);
-    optional = pps.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+    optional = pursuitSteer.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
     assertTrue(optional.isPresent());
-    pps.setRatio(Quantity.of(-0.2, SI.PER_METER));
-    pps.control(new SteerColumnAdapter(true, Quantity.of(0.2, "SCE")));
-    pps.setRatio(Quantity.of(-0.1, SI.PER_METER));
-    pps.control(new SteerColumnAdapter(true, Quantity.of(0.1, "SCE")));
+    pursuitSteer.setRatio(Quantity.of(-0.2, SI.PER_METER));
+    pursuitSteer.control(new SteerColumnAdapter(true, Quantity.of(0.2, "SCE")));
+    pursuitSteer.setRatio(Quantity.of(-0.1, SI.PER_METER));
+    pursuitSteer.control(new SteerColumnAdapter(true, Quantity.of(0.1, "SCE")));
   }
 
   public void testNotCalibrated2() {
-    PursuitSteer pps = new PursuitSteer();
-    pps.setOperational(true);
-    CurvePurePursuitModuleTest._checkFallback(pps.putEvent());
+    PursuitSteer pursuitSteer = new PursuitSteer();
+    pursuitSteer.setOperational(true);
+    CurvePurePursuitModuleTest._checkFallback(pursuitSteer.putEvent());
     Optional<SteerPutEvent> optional;
-    optional = pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
+    optional = pursuitSteer.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
     CurvePurePursuitModuleTest._checkFallback(optional);
   }
 }

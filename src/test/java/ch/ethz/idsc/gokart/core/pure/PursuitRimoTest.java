@@ -13,42 +13,42 @@ import junit.framework.TestCase;
 
 public class PursuitRimoTest extends TestCase {
   public void testNotCalibrated() {
-    PursuitRimo pps = new PursuitRimo();
-    assertFalse(pps.putEvent().isPresent());
+    PursuitRimo pursuitRimo = new PursuitRimo();
+    assertFalse(pursuitRimo.putEvent().isPresent());
     Optional<RimoPutEvent> optional = //
-        pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
+        pursuitRimo.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
     assertFalse(optional.isPresent());
   }
 
   public void testNotCalibrated2() {
-    PursuitRimo pps = new PursuitRimo();
-    pps.setOperational(true);
-    assertFalse(pps.putEvent().isPresent());
+    PursuitRimo pursuitRimo = new PursuitRimo();
+    pursuitRimo.setOperational(true);
+    assertFalse(pursuitRimo.putEvent().isPresent());
     Optional<RimoPutEvent> optional = //
-        pps.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
+        pursuitRimo.private_putEvent(new SteerColumnAdapter(false, Quantity.of(0.3, "SCE")));
     assertFalse(optional.isPresent());
   }
 
   public void testMinor() {
-    PursuitRimo ppr = new PursuitRimo();
-    ppr.setOperational(true);
-    assertFalse(ppr.putEvent().isPresent());
+    PursuitRimo pursuitRimo = new PursuitRimo();
+    pursuitRimo.setOperational(true);
+    assertFalse(pursuitRimo.putEvent().isPresent());
   }
 
   public void testSimple() {
-    PursuitRimo ppr = new PursuitRimo();
-    assertEquals(ppr.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
-    assertFalse(ppr.putEvent().isPresent());
+    PursuitRimo pursuitRimo = new PursuitRimo();
+    assertEquals(pursuitRimo.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
+    assertFalse(pursuitRimo.putEvent().isPresent());
     {
-      Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      Optional<RimoPutEvent> optional = pursuitRimo.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertFalse(optional.isPresent()); // because speed reading is missing
     }
     RimoGetEvent rge = RimoGetEvents.create(340, 320);
-    ppr.setSpeed(PurePursuitConfig.GLOBAL.rateFollower);
-    assertEquals(ppr.getSpeed(), PurePursuitConfig.GLOBAL.rateFollower);
-    ppr.rimoRateControllerWrap.getEvent(rge);
+    pursuitRimo.setSpeed(PurePursuitConfig.GLOBAL.rateFollower);
+    assertEquals(pursuitRimo.getSpeed(), PurePursuitConfig.GLOBAL.rateFollower);
+    pursuitRimo.rimoRateControllerWrap.getEvent(rge);
     {
-      Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      Optional<RimoPutEvent> optional = pursuitRimo.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertTrue(optional.isPresent());
       RimoPutEvent rpe = optional.get();
       short trqL = rpe.putTireL.getTorqueRaw();
@@ -59,50 +59,50 @@ public class PursuitRimoTest extends TestCase {
   }
 
   public void testSlowdown() {
-    PursuitRimo ppr = new PursuitRimo();
-    assertEquals(ppr.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
-    assertFalse(ppr.putEvent().isPresent());
+    PursuitRimo pursuitRimo = new PursuitRimo();
+    assertEquals(pursuitRimo.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
+    assertFalse(pursuitRimo.putEvent().isPresent());
     {
-      Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      Optional<RimoPutEvent> optional = pursuitRimo.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertFalse(optional.isPresent()); // because speed reading is missing
     }
-    RimoGetEvent rge = RimoGetEvents.create(340, 320);
-    ppr.rimoRateControllerWrap.getEvent(rge);
+    RimoGetEvent rimoGetEvent = RimoGetEvents.create(340, 320);
+    pursuitRimo.rimoRateControllerWrap.getEvent(rimoGetEvent);
     {
-      Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      Optional<RimoPutEvent> optional = pursuitRimo.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertTrue(optional.isPresent());
-      RimoPutEvent rpe = optional.get();
-      short trqL = rpe.putTireL.getTorqueRaw();
-      short trqR = rpe.putTireR.getTorqueRaw();
+      RimoPutEvent rimoPutEvent = optional.get();
+      short trqL = rimoPutEvent.putTireL.getTorqueRaw();
+      short trqR = rimoPutEvent.putTireR.getTorqueRaw();
       assertTrue(trqL > 0);
       assertTrue(0 > trqR);
     }
   }
 
   public void testSimpleBranch() {
-    PursuitRimo ppr = new PursuitRimo();
-    assertEquals(ppr.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
-    assertFalse(ppr.putEvent().isPresent());
+    PursuitRimo pursuitRimo = new PursuitRimo();
+    assertEquals(pursuitRimo.getSpeed(), Quantity.of(0.0, SI.PER_SECOND));
+    assertFalse(pursuitRimo.putEvent().isPresent());
     {
-      Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      Optional<RimoPutEvent> optional = pursuitRimo.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertFalse(optional.isPresent()); // because speed reading is missing
     }
     {
-      Optional<RimoPutEvent> optional = ppr.private_putEvent(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      Optional<RimoPutEvent> optional = pursuitRimo.private_putEvent(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertFalse(optional.isPresent());
     }
-    ppr.rimoRateControllerWrap.getEvent(RimoGetEvents.create(123, 234));
+    pursuitRimo.rimoRateControllerWrap.getEvent(RimoGetEvents.create(123, 234));
     {
-      Optional<RimoPutEvent> optional = ppr.private_putEvent(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      Optional<RimoPutEvent> optional = pursuitRimo.private_putEvent(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertFalse(optional.isPresent());
     }
-    ppr.setOperational(true);
+    pursuitRimo.setOperational(true);
     {
-      Optional<RimoPutEvent> optional = ppr.private_putEvent(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      Optional<RimoPutEvent> optional = pursuitRimo.private_putEvent(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertTrue(optional.isPresent());
     }
     {
-      Optional<RimoPutEvent> optional = ppr.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
+      Optional<RimoPutEvent> optional = pursuitRimo.control(new SteerColumnAdapter(true, Quantity.of(0.3, "SCE")));
       assertTrue(optional.isPresent());
     }
   }

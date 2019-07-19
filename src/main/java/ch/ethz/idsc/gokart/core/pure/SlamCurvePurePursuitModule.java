@@ -11,7 +11,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** pure pursuit controller for SLAM algorithm */
-// TODO MG when only forward driving is supported, the speed should be Ramp'ed
 public final class SlamCurvePurePursuitModule extends PursuitModule {
   private Optional<Tensor> optionalCurve = Optional.empty();
 
