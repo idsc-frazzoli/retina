@@ -39,8 +39,7 @@ import ch.ethz.idsc.retina.util.img.BufferedImageResize;
  * scrolling while holding ctrl/shift changes x/y-axis length. Feature position can be adjusted with wasd keys.
  * Features can be rotated with scrolling while holding alt key.
  * Labels can be loaded/saved to a file
- * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension
- * TODO MG would be more convenient if slider can be moved with left hand, e.g. y and x keys */
+ * Filename must have the format imagePrefix_%04dimgNumber_%dtimestamp.fileextension */
 /* package */ class HandLabeler {
   /** draw ellipses for image based on list of blobs for the image.
    *
