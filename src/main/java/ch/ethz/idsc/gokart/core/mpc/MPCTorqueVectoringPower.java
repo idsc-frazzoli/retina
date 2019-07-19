@@ -34,10 +34,11 @@ import ch.ethz.idsc.tensor.Tensor;
     Optional<Tensor> optional = mpcSteering.getSteering(time);
     if (!optional.isPresent())
       return Optional.empty();
+    GokartState gokartState = mpcStateEstimationProvider.getState();
     Scalar ratio = steerMapping.getRatioFromSCE(optional.get().Get(0)); // steering angle of imaginary front wheel
-    Scalar tangentialSpeed = mpcStateEstimationProvider.getState().getUx();
+    Scalar tangentialSpeed = gokartState.getUx();
     // compute (negative) angular slip
-    Scalar gyroZ = mpcStateEstimationProvider.getState().getGyroZ(); // unit s^-1
+    Scalar gyroZ = gokartState.getGyroZ(); // unit s^-1
     Scalar wantedAcceleration = cnsStep.gokartControl().getaB();
     return Optional.of(motorCurrentsInterface.fromAcceleration( //
         new AngularSlip(tangentialSpeed, ratio, gyroZ), wantedAcceleration));

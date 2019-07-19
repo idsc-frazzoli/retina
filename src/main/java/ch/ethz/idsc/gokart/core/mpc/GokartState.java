@@ -18,6 +18,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** Reference: Marc Heim Thesis, p. 37 eq. 3.52 */
 /* package */ class GokartState implements PoseVelocityInterface, OfflineVectorInterface, BufferInsertable {
   public static final int LENGTH = 11 * Float.BYTES; // 11 * 4
   private static final Scalar ZERO_DEGC = Quantity.of(0.0, NonSI.DEGREE_CELSIUS);
