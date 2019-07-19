@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
+public class PredictiveTorqueVectoringTest extends TestCase {
   private static final PowerLookupTable POWER_LOOKUP_TABLE = PowerLookupTable.getInstance();
 
   public void testSimple() {
@@ -117,9 +117,7 @@ public class ImprovedNormalizedPredictiveTorqueVectoringTest extends TestCase {
     Tensor powers = torqueVectoringInterface.powers( //
         new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
-    Scalar between = Norm._2.between(powers, Tensors.vector(-1, -1));
-    System.out.println("HERE" + between);
-    // assertTrue(Scalars.lessThan(between, RealScalar.of(0.02))); // TODO JPH motor func v2
+    Chop._10.requireClose(powers, Tensors.vector(-0.5457668781280518, -0.5457668781280518));
   }
 
   /* Scalar expectedRotationPerMeterDriven
