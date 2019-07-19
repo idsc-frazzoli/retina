@@ -38,7 +38,9 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final CurveClothoidPursuitPlanner curvePlannerL;
   private final CurveClothoidPursuitPlanner curvePlannerR;
+  private SteerConfig steerConfig = new SteerConfig();
   // ---
+ 
   public GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   public Optional<Tensor> optionalCurve = Optional.empty();
   public Tensor laneBoundaryL;
@@ -142,13 +144,13 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
       if (HapticSteerConfig.GLOBAL.printLaneInfo)
         System.out.println(optionalL);
       if (optionalL.isPresent()) {
-        Scalar steerlimitLratio = optionalL.get().ratio();
+        Scalar steerlimitLratio = steerConfig.getRatioLimit().apply(optionalL.get().ratio());
         steerlimitL_SCE = steerMapping.getSCEfromRatio(steerlimitLratio);
         if (HapticSteerConfig.GLOBAL.printLaneInfo)
           System.out.println("Limit L: " + steerlimitL_SCE);
       }
       if (optionalR.isPresent()) {
-        Scalar steerlimitRratio = optionalR.get().ratio();
+        Scalar steerlimitRratio = steerConfig.getRatioLimit().apply(optionalR.get().ratio());
         steerlimitR_SCE = steerMapping.getSCEfromRatio(steerlimitRratio);
         if (HapticSteerConfig.GLOBAL.printLaneInfo)
           System.out.println("Limit R: " + steerlimitR_SCE);
