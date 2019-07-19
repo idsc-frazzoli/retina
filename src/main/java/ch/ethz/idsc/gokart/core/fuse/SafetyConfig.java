@@ -55,7 +55,7 @@ public class SafetyConfig {
   }
 
   /** @param speed
-   * @param gokartStatusEvent non-null
+   * @param ratio non-null
    * @return */
   public ClearanceTracker getClearanceTracker(Scalar speed, Scalar ratio) {
     Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();

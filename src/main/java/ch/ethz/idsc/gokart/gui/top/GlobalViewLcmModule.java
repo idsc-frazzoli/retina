@@ -20,10 +20,10 @@ import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
+import ch.ethz.idsc.gokart.lcm.autobox.SteerColumnLcmClient;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -54,7 +54,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
-  private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final SteerColumnLcmClient steerColumnLcmClient = new SteerColumnLcmClient();
   private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
       TrajectoryLcmClient.xyat(), //
@@ -98,7 +98,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
       extrudedFootprintRender.color = new Color(0, 255, 255, 128);
       gokartPoseLcmClient.addListener(extrudedFootprintRender.gokartPoseListener);
-      gokartStatusLcmClient.addListener(extrudedFootprintRender.gokartStatusListener);
+      steerColumnLcmClient.addListener(extrudedFootprintRender.steerColumnListener);
       viewLcmFrame.geometricComponent.addRenderInterface(extrudedFootprintRender);
     }
     // ---
@@ -148,7 +148,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
-      gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
+      steerColumnLcmClient.addListener(gokartRender.steerColumnListener);
       gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       viewLcmFrame.geometricComponent.addRenderInterface(gokartRender);
     }
@@ -161,7 +161,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
-    gokartStatusLcmClient.startSubscriptions();
+    steerColumnLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
     davisImuLcmClient.startSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
@@ -188,7 +188,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.stopSubscriptions();
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
-    gokartStatusLcmClient.stopSubscriptions();
+    steerColumnLcmClient.stopSubscriptions();
     curveSe2PursuitLcmClient.stopSubscriptions();
     // ---
     vlp16LcmHandler.stopSubscriptions();

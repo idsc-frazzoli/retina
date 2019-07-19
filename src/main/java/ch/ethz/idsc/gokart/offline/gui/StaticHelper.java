@@ -6,13 +6,13 @@ import java.util.List;
 
 import ch.ethz.idsc.gokart.offline.channel.DavisDvsChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.channel.GokartStatusChannel;
 import ch.ethz.idsc.gokart.offline.channel.LabjackAdcChannel;
 import ch.ethz.idsc.gokart.offline.channel.LinmotGetVehicleChannel;
 import ch.ethz.idsc.gokart.offline.channel.LinmotPutVehicleChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
+import ch.ethz.idsc.gokart.offline.channel.SteerColumnChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vlp16RayChannel;
@@ -25,7 +25,7 @@ import ch.ethz.idsc.gokart.offline.channel.Vmu932ImuChannel;
   static final String EXTENSION = ".csv.gz";
   static final List<SingleChannelInterface> SINGLE_CHANNEL_INTERFACES = Arrays.asList( //
       GokartPoseChannel.INSTANCE, //
-      GokartStatusChannel.INSTANCE, //
+      SteerColumnChannel.INSTANCE, //
       RimoPutChannel.INSTANCE, //
       RimoGetChannel.INSTANCE, //
       SteerPutChannel.INSTANCE, //

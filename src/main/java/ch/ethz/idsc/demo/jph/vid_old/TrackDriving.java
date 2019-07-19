@@ -11,9 +11,9 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AxisAlignedBox;
 import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
@@ -91,7 +91,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     if (extrusion) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(PoseHelper.attachUnits(xya), RealScalar.ONE);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
-      extrudedFootprintRender.gokartStatusListener.getEvent(new GokartStatusEvent(row.Get(8).number().floatValue()));
+      extrudedFootprintRender.steerColumnListener.getEvent(new SteerColumnEvent(row.Get(8).number().floatValue()));
       extrudedFootprintRender.render(geometricLayer, graphics);
     }
     if (posetrail) {

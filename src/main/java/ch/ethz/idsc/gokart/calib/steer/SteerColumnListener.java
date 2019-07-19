@@ -1,9 +1,9 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui;
+package ch.ethz.idsc.gokart.calib.steer;
 
 import ch.ethz.idsc.gokart.core.GetListener;
 
 /** receives rimo get events from left and right wheel */
-public interface GokartStatusListener extends GetListener<GokartStatusEvent> {
+public interface SteerColumnListener extends GetListener<SteerColumnEvent> {
   // ---
 }

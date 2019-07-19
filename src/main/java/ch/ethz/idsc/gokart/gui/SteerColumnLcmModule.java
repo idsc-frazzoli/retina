@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
@@ -10,7 +11,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** server to publish absolute steering column angle */
-public class GokartStatusLcmModule extends AbstractClockedModule {
+public class SteerColumnLcmModule extends AbstractClockedModule {
   /** high rate in order to reconstruct steer angle in post processing */
   private static final Scalar PERIOD = Quantity.of(100, SI.PER_SECOND).reciprocal();
   // ---
@@ -28,8 +29,8 @@ public class GokartStatusLcmModule extends AbstractClockedModule {
     float steeringAngle = isCalibrated //
         ? steerColumnInterface.getSteerColumnEncoderCentered().number().floatValue()
         : Float.NaN;
-    GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(steeringAngle);
-    binaryBlobPublisher.accept(gokartStatusEvent.asArray());
+    SteerColumnEvent steerColumnEvent = new SteerColumnEvent(steeringAngle);
+    binaryBlobPublisher.accept(steerColumnEvent.asArray());
   }
 
   @Override // from AbstractClockedModule

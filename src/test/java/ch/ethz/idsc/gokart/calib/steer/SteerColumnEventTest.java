@@ -1,23 +1,22 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui;
+package ch.ethz.idsc.gokart.calib.steer;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
-public class GokartStatusEventTest extends TestCase {
+public class SteerColumnEventTest extends TestCase {
   public void testSimple() {
-    GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(Float.NaN);
-    assertFalse(gokartStatusEvent.isSteerColumnCalibrated());
+    SteerColumnEvent steerColumnEvent = new SteerColumnEvent(Float.NaN);
+    assertFalse(steerColumnEvent.isSteerColumnCalibrated());
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
     try {
-      steerMapping.getRatioFromSCE(gokartStatusEvent);
+      steerMapping.getRatioFromSCE(steerColumnEvent);
       fail();
     } catch (Exception exception) {
       // ---
@@ -25,14 +24,14 @@ public class GokartStatusEventTest extends TestCase {
   }
 
   public void testUnitless() {
-    GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(0.1f);
-    assertTrue(gokartStatusEvent.isSteerColumnCalibrated());
+    SteerColumnEvent steerColumnEvent = new SteerColumnEvent(0.1f);
+    assertTrue(steerColumnEvent.isSteerColumnCalibrated());
     SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-    Scalar scalar = steerMapping.getRatioFromSCE(gokartStatusEvent);
+    Scalar scalar = steerMapping.getRatioFromSCE(steerColumnEvent);
     Clips.interval(0.05, 0.1).requireInside(Magnitude.PER_METER.apply(scalar));
     ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4]);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-    gokartStatusEvent.insert(byteBuffer);
+    steerColumnEvent.insert(byteBuffer);
     byteBuffer.flip();
     assertEquals(byteBuffer.getFloat(), 0.1f);
   }
@@ -42,7 +41,7 @@ public class GokartStatusEventTest extends TestCase {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     byteBuffer.putFloat(0.1f);
     byteBuffer.flip();
-    GokartStatusEvent gse = new GokartStatusEvent(byteBuffer);
+    SteerColumnEvent gse = new SteerColumnEvent(byteBuffer);
     assertTrue(gse.isSteerColumnCalibrated());
   }
 
@@ -51,7 +50,7 @@ public class GokartStatusEventTest extends TestCase {
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     byteBuffer.putFloat(Float.NaN);
     byteBuffer.flip();
-    GokartStatusEvent gse = new GokartStatusEvent(byteBuffer);
+    SteerColumnEvent gse = new SteerColumnEvent(byteBuffer);
     assertFalse(gse.isSteerColumnCalibrated());
     assertEquals(gse.length(), 4);
   }

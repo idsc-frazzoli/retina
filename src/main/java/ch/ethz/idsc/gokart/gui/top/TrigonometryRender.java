@@ -6,14 +6,14 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvents;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnListener;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.bot.se2.TurningGeometry;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -29,16 +29,16 @@ public class TrigonometryRender implements RenderInterface {
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   public final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
   // ---
-  private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
-  public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  private SteerColumnEvent steerColumnEvent = SteerColumnEvents.UNKNOWN;
+  public final SteerColumnListener steerColumnListener = getEvent -> steerColumnEvent = getEvent;
   // ---
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (gokartStatusEvent.isSteerColumnCalibrated()) {
+    if (steerColumnEvent.isSteerColumnCalibrated()) {
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
-      Scalar ratio = steerMapping.getRatioFromSCE(gokartStatusEvent); // <- calibration checked
+      Scalar ratio = steerMapping.getRatioFromSCE(steerColumnEvent); // <- calibration checked
       Optional<Scalar> optional = TurningGeometry.offset_y(ratio);
       if (optional.isPresent()) { // draw point of rotation when assuming no slip
         Scalar offset_y = Magnitude.METER.apply(optional.get());

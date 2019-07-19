@@ -25,10 +25,10 @@ import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.ManualControlLcmClient;
-import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
+import ch.ethz.idsc.gokart.lcm.autobox.SteerColumnLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
@@ -60,7 +60,7 @@ public class PresenterLcmModule extends AbstractModule {
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final SteerGetLcmClient steerGetLcmClient = new SteerGetLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
-  private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final SteerColumnLcmClient steerColumnLcmClient = new SteerColumnLcmClient();
   private final ManualControlLcmClient manualControlLcmClient = new ManualControlLcmClient();
   private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
       TrajectoryLcmClient.xyat(), TrajectoryLcmClient.xyavt());
@@ -105,7 +105,7 @@ public class PresenterLcmModule extends AbstractModule {
     }
     {
       ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
-      gokartStatusLcmClient.addListener(extrudedFootprintRender.gokartStatusListener);
+      steerColumnLcmClient.addListener(extrudedFootprintRender.steerColumnListener);
       gokartPoseLcmClient.addListener(extrudedFootprintRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(extrudedFootprintRender);
     }
@@ -162,12 +162,12 @@ public class PresenterLcmModule extends AbstractModule {
     {
       TrigonometryRender trigonometryRender = new TrigonometryRender();
       gokartPoseLcmClient.addListener(trigonometryRender.gokartPoseListener);
-      gokartStatusLcmClient.addListener(trigonometryRender.gokartStatusListener);
+      steerColumnLcmClient.addListener(trigonometryRender.steerColumnListener);
       timerFrame.geometricComponent.addRenderInterface(trigonometryRender);
     }
     {
       Vlp16ClearanceRender vlp16ClearanceRender = new Vlp16ClearanceRender();
-      gokartStatusLcmClient.addListener(vlp16ClearanceRender.gokartStatusListener);
+      steerColumnLcmClient.addListener(vlp16ClearanceRender.steerColumnListener);
       vlp16LcmHandler.lidarAngularFiringCollector.addListener(vlp16ClearanceRender);
       gokartPoseLcmClient.addListener(vlp16ClearanceRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(vlp16ClearanceRender);
@@ -184,7 +184,7 @@ public class PresenterLcmModule extends AbstractModule {
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
-      gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
+      steerColumnLcmClient.addListener(gokartRender.steerColumnListener);
       gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
@@ -234,7 +234,7 @@ public class PresenterLcmModule extends AbstractModule {
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
     steerGetLcmClient.startSubscriptions();
-    gokartStatusLcmClient.startSubscriptions();
+    steerColumnLcmClient.startSubscriptions();
     manualControlLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
@@ -279,7 +279,7 @@ public class PresenterLcmModule extends AbstractModule {
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
     steerGetLcmClient.stopSubscriptions();
-    gokartStatusLcmClient.stopSubscriptions();
+    steerColumnLcmClient.stopSubscriptions();
     manualControlLcmClient.stopSubscriptions();
     vlp16LcmHandler.stopSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::stopSubscriptions);

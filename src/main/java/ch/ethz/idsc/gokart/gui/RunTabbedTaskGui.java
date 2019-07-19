@@ -93,7 +93,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       Vlp16RayLcmServerModule.class, // sensing lidar
       Vlp16PosLcmServerModule.class, // sensing gps
       AutoboxLcmServerModule.class, //
-      GokartStatusLcmModule.class, //
+      SteerColumnLcmModule.class, //
       GokartTimestampModule.class, //
       LoggerModule.class, //
       LabjackU3Module.class, //

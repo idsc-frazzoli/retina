@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.calib.steer;
 
 import junit.framework.TestCase;
 
-public class GokartStatusEventsTest extends TestCase {
+public class SteerColumnEventsTest extends TestCase {
   public void testSimple() {
-    assertFalse(GokartStatusEvents.UNKNOWN.isSteerColumnCalibrated());
+    assertFalse(SteerColumnEvents.UNKNOWN.isSteerColumnCalibrated());
   }
 }

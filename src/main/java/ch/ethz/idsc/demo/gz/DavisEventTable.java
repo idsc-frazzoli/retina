@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
@@ -34,8 +33,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private RimoGetEvent rge;
   // private RimoPutEvent rpe;
   /** counters with long precision (using int results in overflow) */
-  long[] events = new long[2]; //
-  // private GokartStatusEvent gse;
+  long[] events = new long[2];
 
   public DavisEventTable(Scalar delta) {
     this.delta = delta;
@@ -79,9 +77,6 @@ import ch.ethz.idsc.tensor.sca.Round;
       // this is where the decoder obtains a single message and
       // invokes the function davisDvs as often as necessary
       davisDvsDatagramDecoder.decode(byteBuffer);
-    }
-    if (channel.equals(GokartLcmChannel.STATUS)) {
-      // gse = new GokartStatusEvent(byteBuffer);
     }
   }
 
