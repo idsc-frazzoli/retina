@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
@@ -29,9 +30,9 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
    * @return array of BufferedImages of length 2 */
   public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamCoreContainer slamCoreContainer, //
       SlamPrcContainer slamPrcContainer, Tensor gokartLidarPose) {
-    SlamMapFrame.setCorners(//
+    Stream.of(slamMapFrames).forEach(slamMapFrame -> slamMapFrame.setCorners( //
         slamCoreContainer.getOccurrenceMap().getCornerX(), //
-        slamCoreContainer.getOccurrenceMap().getCornerY());
+        slamCoreContainer.getOccurrenceMap().getCornerY()));
     paintRawMap(slamCoreContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
     Tensor pose = slamCoreContainer.getPoseUnitless().copy();
     Arrays.fill(slamMapFrames[1].getBytes(), CLEAR_BYTE);

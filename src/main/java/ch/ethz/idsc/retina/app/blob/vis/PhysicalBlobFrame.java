@@ -44,7 +44,6 @@ import ch.ethz.idsc.retina.app.calib.ImageToGokartUtil;
     originPos = new int[] { pipelineConfig.originPosX.number().intValue(), pipelineConfig.originPosY.number().intValue() };
     objectSize = pipelineConfig.objectSize.number().doubleValue();
     gokartSize = pipelineConfig.gokartSize.number().intValue();
-    // TODO MG physical boarder points could be loaded from .csv
     fieldOfView = new double[4][2];
     // upper corners
     fieldOfView[0] = worldToImgPlane(transformUtil.imageToGokart(10, 10));

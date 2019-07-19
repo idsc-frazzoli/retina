@@ -10,7 +10,6 @@ import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.red.Mean;
 
 /* package */ class SlamCurvatureSmoother {
-  // TODO MG
   private final Scalar alphaCurvature = SlamDvsConfig.eventCamera.slamPrcConfig.alphaCurvature;
   private final int extractionLength = SlamDvsConfig.eventCamera.slamPrcConfig.extractionPoints.number().intValue();
   // ---

@@ -17,8 +17,8 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
 public abstract class PursuitModule extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
-  final PursuitRimo purePursuitRimo = new PursuitRimo();
-  final PursuitSteer purePursuitSteer = new PursuitSteer();
+  final PursuitRimo pursuitRimo = new PursuitRimo();
+  final PursuitSteer pursuitSteer = new PursuitSteer();
   protected final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
   protected final PursuitConfig pursuitConfig;
 
@@ -29,14 +29,14 @@ public abstract class PursuitModule extends AbstractClockedModule {
   @Override // from AbstractModule
   protected final void first() {
     protected_first();
-    purePursuitRimo.start();
-    purePursuitSteer.start();
+    pursuitRimo.start();
+    pursuitSteer.start();
   }
 
   @Override // from AbstractModule
   protected final void last() {
-    purePursuitRimo.stop();
-    purePursuitSteer.stop();
+    pursuitRimo.stop();
+    pursuitSteer.stop();
     protected_last();
   }
 
@@ -50,10 +50,10 @@ public abstract class PursuitModule extends AbstractClockedModule {
     final Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     Optional<Scalar> heading = deriveHeading();
     if (heading.isPresent())
-      purePursuitSteer.setRatio(heading.get());
+      pursuitSteer.setRatio(heading.get());
     // ---
     final boolean status = optional.isPresent() && heading.isPresent();
-    purePursuitSteer.setOperational(status);
+    pursuitSteer.setOperational(status);
     if (status) {
       ManualControlInterface manualControlInterface = optional.get();
       // ante 20180604: the ahead average was used in combination with Ramp
@@ -62,9 +62,9 @@ public abstract class PursuitModule extends AbstractClockedModule {
       Scalar pair = Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0); // in [0, 1]
       // post 20180619: allow reverse driving
       Scalar speed = Clips.absoluteOne().apply(ratio.add(pair));
-      purePursuitRimo.setSpeed(Times.of(pursuitConfig.rateFollower, speed, getSpeedMultiplier()));
+      pursuitRimo.setSpeed(Times.of(pursuitConfig.rateFollower, speed, getSpeedMultiplier()));
     }
-    purePursuitRimo.setOperational(status);
+    pursuitRimo.setOperational(status);
   }
 
   @Override // from AbstractClockedModule

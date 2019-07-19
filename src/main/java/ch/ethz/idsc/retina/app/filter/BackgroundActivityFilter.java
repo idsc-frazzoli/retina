@@ -23,7 +23,6 @@ public class BackgroundActivityFilter extends AbstractFilterHandler {
 
   @Override // from DavisDvsEventFilter
   public boolean filter(DavisDvsEvent davisDvsEvent) {
-    // TODO MG investigate why siliconEye data sometimes wrong
     if (davisDvsEvent.x <= x_last && davisDvsEvent.y <= y_last) {
       updateNeighboursTimeStamps(davisDvsEvent.x, davisDvsEvent.y, davisDvsEvent.time);
       return davisDvsEvent.time - timeStamps[davisDvsEvent.x][davisDvsEvent.y] <= threshold_us;

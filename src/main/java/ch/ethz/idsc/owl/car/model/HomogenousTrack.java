@@ -4,7 +4,8 @@ package ch.ethz.idsc.owl.car.model;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/* package */ class HomogenousTrack implements TrackInterface {
+// class is used outside project
+public class HomogenousTrack implements TrackInterface {
   public static final TrackInterface DRY_ROAD = new HomogenousTrack(FrictionCoefficients.TIRE_DRY_ROAD);
   // ---
   private final Scalar mu;

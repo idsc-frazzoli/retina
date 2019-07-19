@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
+public class NormalizedTorqueVectoringTest extends TestCase {
   private static final PowerLookupTable POWER_LOOKUP_TABLE = PowerLookupTable.getInstance();
 
   public void testZeros() {
@@ -78,15 +78,9 @@ public class ImprovedNormalizedTorqueVectoringTest extends TestCase {
     Tensor powers = torqueVectoringInterface.powers( //
         new AngularSlip(Quantity.of(-2, "m*s^-1"), Quantity.of(1, "m^-1"), Quantity.of(0, "s^-1")), //
         power);
-    Scalar between = Norm._2.between(powers, Tensors.vector(-1, -1));
-    // assertTrue(Scalars.lessThan(between, RealScalar.of(0.02))); // TODO JPH motor func v2
+    Chop._10.requireClose(powers, Tensors.vector(-0.5457668781280518, -0.5457668781280518));
   }
 
-  /* Scalar expectedRotationPerMeterDriven
-   * Scalar meanTangentSpeed
-   * Scalar angularSlip
-   * Scalar power
-   * Scalar realRotation */
   public void testTorqueWhenUndersteering() {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());
