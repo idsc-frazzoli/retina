@@ -7,7 +7,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** sets SlamPrcConfig parameters according to davis */
 public class DavisSlamPrcConfig extends SlamPrcConfig {
-  // TODO check parameter initialization
   public static final DavisSlamPrcConfig GLOBAL = new DavisSlamPrcConfig();
 
   public DavisSlamPrcConfig() {

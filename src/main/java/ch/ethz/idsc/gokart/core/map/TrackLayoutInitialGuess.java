@@ -53,7 +53,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
 
     public Tensor getPos(OccupancyGrid occupancyGrid) {
-      // TODO can use AffineFrame2D
+      // TODO JPH can use AffineFrame2D
       return occupancyGrid.getTransform().dot(Tensors.vector(x, y, 1));
     }
 
@@ -300,7 +300,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       int nCount = 0;
       for (Cell n : currentCell.neighBors) {
         if (!n.processed) {
-          // TODO maybe use neighbor cost (not that important)
+          // TODO MH/JPH maybe use neighbor cost (not that important)
           Scalar alternativ = currentCell.cost.add(currentCell.neighBorCost.get(nCount));
           if (Scalars.lessThan(alternativ, n.cost)) {
             // this could potentially be too slow

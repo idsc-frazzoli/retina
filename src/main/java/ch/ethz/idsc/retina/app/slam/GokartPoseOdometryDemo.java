@@ -38,8 +38,7 @@ public class GokartPoseOdometryDemo implements PoseVelocityInterface, RimoGetLis
 
   // ---
   private static final Tensor VELOCITY_INIT = Tensors.fromString("{0[m*s^-1], 0[m*s^-1], 0[s^-1]}").unmodifiable();
-  // ---
-  private final Scalar dt = RimoSocket.getGetPeriod(); // 1/250[s] update period
+  private static final Scalar DT = RimoSocket.getGetPeriod(); // 1/250[s] update period
   // ---
   private Tensor state;
   /** velocity is the tangent of the state {vx[m*s^-1], 0[m*s^-1], angular_rate[s^-1]} */
@@ -64,7 +63,7 @@ public class GokartPoseOdometryDemo implements PoseVelocityInterface, RimoGetLis
   /* package */ synchronized void step(Tensor angularRate_Y_pair) {
     velocity = RimoTwdOdometry.INSTANCE.velocity(angularRate_Y_pair);
     Flow flow = singleton(velocity);
-    state = Se2CarIntegrator.INSTANCE.step(flow, state, dt);
+    state = Se2CarIntegrator.INSTANCE.step(flow, state, DT);
   }
 
   /** @return velocity unitless representation */
