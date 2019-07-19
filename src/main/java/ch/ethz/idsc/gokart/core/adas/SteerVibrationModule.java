@@ -61,8 +61,9 @@ public class SteerVibrationModule extends AbstractModule implements SteerPutProv
         return Optional.of(SteerPutEvent.createOn(time2torque(Quantity.of(timing.seconds(), SI.SECOND))));
     }
     return Optional.empty();
-  }/* package */ Scalar time2torque(
-      Scalar time) {
+  }
+
+  /* package */ Scalar time2torque(Scalar time) {
     Scalar frequency = HapticSteerConfig.GLOBAL.vibrationFrequency;
     Scalar amplitude = HapticSteerConfig.GLOBAL.vibrationAmplitude;
     Scalar radian = frequency.multiply(time).multiply(Pi.TWO);

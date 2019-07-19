@@ -41,7 +41,6 @@ public enum GokartLcmChannel {
   /** for finding parameters of antilockbrake module */
   public static final String LINMOT_ANTILOCK = "linmot.antilock";
   public static final String STEER_VIBRATE = "steer.vibrate";
-
   /***************************************************/
   /** lcm self test contains the string "lcm self test" as bytes */
   public static final String LCM_SELF_TEST = "LCM_SELF_TEST";
