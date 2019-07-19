@@ -121,9 +121,9 @@ public class PowerLookupTable {
   /** get the need current for a wanted acceleration
    * If the acceleration is not achievable
    * the motor current corresponding to the nearest possible acceleration value is returned
-   * @param wantedAcceleration the wanted acceleration [m/s^2]
-   * @param velocity the velocity [m/s]
-   * @return the needed motor current [ARMS] */
+   * @param wantedAcceleration [m*s^-2]
+   * @param velocity longitudinal [m*s^-1]
+   * @return needed motor current [ARMS] */
   public Scalar getNeededCurrent(Scalar wantedAcceleration, Scalar velocity) {
     return lookupTable_inverse.lookup(wantedAcceleration, velocity);
   }

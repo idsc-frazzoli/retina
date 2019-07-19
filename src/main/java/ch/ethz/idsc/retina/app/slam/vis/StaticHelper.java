@@ -86,7 +86,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   // to be used to visualize the raw processed Mat object from SlamMapProcessing
   @SuppressWarnings("unused")
   private static void setProcessedMat(Mat processedMat, byte[] bytes) {
-    byte[] processedByteArray = SlamOpenCVUtil.matToByteArray(processedMat);
+    byte[] processedByteArray = OpenCVUtil.matToByteArray(processedMat);
     for (int index = 0; index < bytes.length; ++index)
       bytes[index] = processedByteArray[index] == 0 ? CLEAR_BYTE : (byte) 0;
   }

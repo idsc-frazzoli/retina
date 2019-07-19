@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 
-// TODO JPH/MH THESIS document all getter functions!
+/** Reference: Marc Heim Thesis, p. 37 eq. 3.53 */
 /* package */ class GokartControl implements BufferInsertable, OfflineVectorInterface {
   static final int LENGTH = 20;
   private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
@@ -67,7 +67,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     return RealScalar.of(uB);
   }
 
-  /** @return quantity with unit "m*s^-2" */
+  /** @return braking acceleration, quantity with unit "m*s^-2" */
   public Scalar getaB() {
     return Quantity.of(aB, SI.ACCELERATION);
   }

@@ -4,8 +4,7 @@ package ch.ethz.idsc.retina.app.slam.vis;
 import org.bytedeco.javacpp.opencv_core.Mat;
 
 /** provides methods to convert from mat objects */
-// TODO put restrictions on input type
-public enum SlamOpenCVUtil {
+/* package */ enum OpenCVUtil {
   ;
   /** convert mat object to byteArray
    * 

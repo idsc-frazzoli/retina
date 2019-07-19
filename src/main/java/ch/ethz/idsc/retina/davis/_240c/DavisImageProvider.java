@@ -46,7 +46,7 @@ public class DavisImageProvider implements DavisApsListener {
   public void davisAps(DavisApsEvent davisApsEvent) {
     apsTracker.aps(davisApsEvent, height);
     byte intensity = davisApsEvent.grayscale();
-    int index = davisApsEvent.x + (davisApsEvent.y * width); // TODO should precompute?
+    int index = davisApsEvent.x + (davisApsEvent.y * width);
     bytes[index] = intensity;
     if (davisApsEvent.y == lastY) {
       time[davisApsEvent.x] = davisApsEvent.time;
