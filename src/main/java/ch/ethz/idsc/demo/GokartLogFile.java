@@ -2278,6 +2278,16 @@ public enum GokartLogFile implements LogFile {
    * otherwise flawless */
   _20190715T153458_908ca07d,
   /***************************************************/
+  /* 2019-07-18 */
+  /** brief, slow manual driving */
+  _20190718T111041_9183887b,
+  /** brief, slow manual driving */
+  _20190718T120628_b4086d44,
+  /** brief, slow manual driving */
+  _20190718T125450_0de69aaf,
+  /** brief, slow manual driving with lane keeping steer limitation */
+  _20190718T131528_0de69aaf,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

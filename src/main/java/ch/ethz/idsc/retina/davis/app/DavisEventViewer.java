@@ -12,7 +12,6 @@ import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 public enum DavisEventViewer {
   ;
-  // TODO code somewhat redundant to DavisDatagramClientDemo
   public static void of(StartAndStoppable davisEventProvider, DavisDecoder davisDecoder, DavisDevice davisDevice, double speed) {
     DavisEventStatistics davisEventStatistics = new DavisEventStatistics();
     davisDecoder.addDvsListener(davisEventStatistics);

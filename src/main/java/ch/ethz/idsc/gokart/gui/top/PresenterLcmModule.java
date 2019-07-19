@@ -48,8 +48,8 @@ import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.ref.TensorListener;
 
+// TODO JPH make davis and mapping optional via gui elements 
 public class PresenterLcmModule extends AbstractModule {
-  // TODO not generic
   private static final boolean SHOW_DAVIS = UserName.is("mario");
   // ---
   protected final TimerFrame timerFrame = new TimerFrame();

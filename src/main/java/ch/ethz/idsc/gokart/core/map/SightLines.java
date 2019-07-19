@@ -78,7 +78,7 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
       geometricLayer.pushMatrix(SensorsConfig.GLOBAL.vlp16Gokart());
       // ---
       Tensor polygon = polygon();
-      // TODO apply filter? median, min, ...
+      // TODO JPH apply filter? median, min, ...
       graphics.setColor(Color.RED);
       polygon.forEach(point -> {
         Point2D point2D = geometricLayer.toPoint2D(point);

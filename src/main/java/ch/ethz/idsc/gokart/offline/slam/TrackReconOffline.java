@@ -159,7 +159,6 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
 
   @Override
   public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
-    // TODO
-    // Optional<MPCBSplineTrack> optional;
+    // ---
   }
 }

@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** renders point of rotation as small dot in plane */
-// TODO class could be improved a lot: filter points in listener
+// TODO JPH class could be improved a lot: filter points in listener
 class Vlp16ClearanceRender extends LidarRender {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private SteerColumnEvent steerColumnEvent;
