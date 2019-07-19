@@ -53,7 +53,7 @@ public class RunTabbedTaskGuiTest extends TestCase {
         AutoboxSocketModule.class, //
         Vlp16RayLcmServerModule.class, //
         AutoboxLcmServerModule.class, //
-        GokartStatusLcmModule.class, //
+        SteerColumnLcmModule.class, //
         PoseLcmServerModule.class, //
         LoggerModule.class, //
         // GenericXboxPadLcmServerModule.class, //

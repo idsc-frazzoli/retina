@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
+
 public enum GokartLcmChannel {
   ;
   public static final String URG04LX_FRONT = "front";
@@ -13,7 +15,7 @@ public enum GokartLcmChannel {
   public static final String VMU931_AG = "vmu931.ag";
   /** backup imu */
   public static final String VMU932_AG = "vmu932.ag";
-  /** absolute steering column position {@link GokartStatusEvent} */
+  /** absolute steering column position {@link SteerColumnEvent} */
   public static final String STATUS = "gokart.status.get";
   /** {x, y, heading, quality} */
   public static final String POSE_LIDAR = "gokart.pose.lidar";

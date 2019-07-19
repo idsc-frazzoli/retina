@@ -7,8 +7,6 @@ import java.util.Properties;
 
 import ch.ethz.idsc.demo.jg.following.ClothoidTrajectoryModule;
 import ch.ethz.idsc.demo.jg.following.FigureClothoidModule;
-import ch.ethz.idsc.demo.mp.pid.PIDModule;
-import ch.ethz.idsc.demo.mp.pid.PIDTestTrackModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
@@ -93,7 +91,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       Vlp16RayLcmServerModule.class, // sensing lidar
       Vlp16PosLcmServerModule.class, // sensing gps
       AutoboxLcmServerModule.class, //
-      GokartStatusLcmModule.class, //
+      SteerColumnLcmModule.class, //
       GokartTimestampModule.class, //
       LoggerModule.class, //
       LabjackU3Module.class, //
@@ -150,8 +148,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       PureTrajectoryModule.class, //
       ClothoidTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
-      PIDModule.class, //
-      PIDTestTrackModule.class, //
       GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //

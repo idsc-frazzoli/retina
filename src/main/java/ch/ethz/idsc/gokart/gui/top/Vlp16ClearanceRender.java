@@ -9,12 +9,12 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnListener;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.app.clear.CircleClearanceTracker;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -29,13 +29,13 @@ import ch.ethz.idsc.tensor.Tensors;
 // TODO class could be improved a lot: filter points in listener
 class Vlp16ClearanceRender extends LidarRender {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  private GokartStatusEvent gokartStatusEvent;
-  public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  private SteerColumnEvent steerColumnEvent;
+  public final SteerColumnListener steerColumnListener = getEvent -> steerColumnEvent = getEvent;
   private final SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
 
   @Override
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    final GokartStatusEvent gokartStatusEvent = this.gokartStatusEvent;
+    final SteerColumnEvent gokartStatusEvent = this.steerColumnEvent;
     if (Objects.nonNull(gokartStatusEvent) && gokartStatusEvent.isSteerColumnCalibrated()) {
       // final Scalar angle = SteerConfig.GLOBAL.getAngleFromSCE(gokartStatusEvent); // <- calibration checked
       if (Objects.nonNull(_points)) {

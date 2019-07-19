@@ -1,32 +1,27 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui;
+package ch.ethz.idsc.gokart.calib.steer;
 
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/** the capabilities of gokart status event include
- * {@link SteerColumnInterface} */
-// TODO JPH class should not be in gui package, move to calib.steer
-@Refactor
-public class GokartStatusEvent extends DataEvent implements SteerColumnInterface {
+public class SteerColumnEvent extends DataEvent implements SteerColumnInterface {
   private static final int LENGTH = 4;
   // ---
   /** raw value from encoder centered so that min == -max */
   private final float steerColumnEncoder;
 
-  public GokartStatusEvent(float steerColumnEncoder) {
+  public SteerColumnEvent(float steerColumnEncoder) {
     this.steerColumnEncoder = steerColumnEncoder;
   }
 
-  public GokartStatusEvent(ByteBuffer byteBuffer) {
+  public SteerColumnEvent(ByteBuffer byteBuffer) {
     steerColumnEncoder = byteBuffer.getFloat();
   }
 
