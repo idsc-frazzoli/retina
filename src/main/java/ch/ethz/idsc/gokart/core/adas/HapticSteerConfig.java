@@ -53,7 +53,7 @@ public class HapticSteerConfig implements Serializable {
   public Scalar laneKeepingFactor = Quantity.of(-5.0, "SCT*SCE^-1");
   /** torque limit */
   public Scalar laneKeepingTorqueLimit = Quantity.of(0.5, "SCT");
-  public Boolean printLaneInfo = false;
+  public Boolean printLaneInfo = true;
 
   /***************************************************/
   // functions for anti-lock brake
@@ -63,11 +63,6 @@ public class HapticSteerConfig implements Serializable {
 
   public Clip slipClip() {
     return Clips.interval(minSlip, maxSlip);
-  }
-
-  // TODO AM function is not used (only in test)
-  public Clip criticalSlipClip() {
-    return Clips.absolute(criticalSlip);
   }
 
   /***************************************************/

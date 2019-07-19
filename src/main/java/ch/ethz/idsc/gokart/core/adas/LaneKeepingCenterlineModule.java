@@ -39,11 +39,11 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   private final CurveClothoidPursuitPlanner curvePlannerL;
   private final CurveClothoidPursuitPlanner curvePlannerR;
   // ---
-  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
-  private Optional<Tensor> optionalCurve = Optional.empty();
-  private Tensor laneBoundaryL;
-  private Tensor laneBoundaryR;
-  Optional<Clip> optionalPermittedRange;
+  public GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+  public Optional<Tensor> optionalCurve = Optional.empty();
+  public Tensor laneBoundaryL;
+  public Tensor laneBoundaryR;
+  Optional<Clip> optionalPermittedRange = Optional.empty();
   Tensor velocity = GokartPoseEvents.motionlessUninitialized().getVelocity();
 
   public LaneKeepingCenterlineModule() {
@@ -90,6 +90,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     Tensor curve = isPresent //
         ? optionalCurve.get()//
         : null;
+    System.out.println("isPresent: " + isPresent + "isQualityOK: " + isQualityOk);
     if (isPresent && isQualityOk) {
       optionalPermittedRange = getPermittedRange(curve, pose);
       System.out.println(optionalPermittedRange);
@@ -152,7 +153,14 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
         if (HapticSteerConfig.GLOBAL.printLaneInfo)
           System.out.println("Limit R: " + steerlimitR_SCE);
       }
-      return Optional.of(Clips.interval(steerlimitR_SCE, steerlimitL_SCE));
+      if (optionalL.isPresent() && optionalR.isPresent()) {
+        try {
+        return Optional.of(Clips.interval(steerlimitR_SCE, steerlimitL_SCE));
+        }
+        catch (Exception e) {
+          System.out.println("bad clip");
+        }
+      }
     }
     if (HapticSteerConfig.GLOBAL.printLaneInfo) {
       System.out.println("no steer limit found");

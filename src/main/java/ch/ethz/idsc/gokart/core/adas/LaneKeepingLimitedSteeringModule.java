@@ -32,11 +32,13 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
   public void first() {
     super.first();
     SteerSocket.INSTANCE.addGetListener(steerGetListener);
+    SteerSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
   public void last() {
     SteerSocket.INSTANCE.removeGetListener(steerGetListener);
+    SteerSocket.INSTANCE.removePutProvider(this);
     super.last();
   }
 

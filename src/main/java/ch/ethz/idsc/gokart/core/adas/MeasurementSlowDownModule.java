@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/** class is used to develop and test anti lock brake logic */
+/** class is used to reduce the velocity as a safety measurement */
 public class MeasurementSlowDownModule extends AbstractModule implements PutProvider<RimoPutEvent> {
   final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
