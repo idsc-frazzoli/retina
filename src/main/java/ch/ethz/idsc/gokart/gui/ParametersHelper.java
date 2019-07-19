@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.gui;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.ethz.idsc.demo.mp.pid.PIDTuningParams;
 import ch.ethz.idsc.gokart.calib.brake.BrakeFunctionConfig;
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.gokart.calib.steer.SteerFeedForwardConfig;
@@ -50,7 +49,7 @@ import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
       MappingConfig.GLOBAL, //
       // DavisSlamPrcConfig.GLOBAL, //
       // DavisSlamCoreConfig.GLOBAL, //
-      PIDTuningParams.GLOBAL, //
+      // PIDTuningParams.GLOBAL, //
       // MPCActiveCompensationLearningConfig.GLOBAL, //
       BrakeFunctionConfig.GLOBAL);
 }
