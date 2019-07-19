@@ -155,9 +155,8 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
       }
       if (optionalL.isPresent() && optionalR.isPresent()) {
         try {
-        return Optional.of(Clips.interval(steerlimitR_SCE, steerlimitL_SCE));
-        }
-        catch (Exception e) {
+          return Optional.of(Clips.interval(steerlimitR_SCE, steerlimitL_SCE));
+        } catch (Exception e) {
           System.out.println("bad clip");
         }
       }

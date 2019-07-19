@@ -39,7 +39,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       this.putEvent();
     }
   }
-  
+
   @Override
   public Optional<RimoPutEvent> putEvent() {
     if (LaneHelper.leftLane(optionalCurve, gokartPoseEvent, slowDownDistance)) {
