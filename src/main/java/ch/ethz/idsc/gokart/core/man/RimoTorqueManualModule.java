@@ -17,12 +17,12 @@ public class RimoTorqueManualModule extends GuideManualModule<RimoPutEvent> {
   private static final Scalar HALF = DoubleScalar.of(0.5);
 
   @Override // from AbstractModule
-  void protected_first() {
+  protected void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
-  void protected_last() {
+  protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
   }
 

@@ -47,14 +47,14 @@ import ch.ethz.idsc.tensor.alg.Differences;
   }
 
   @Override // from ManualModule
-  final void protected_first() {
+  protected final void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
     LinmotSocket.INSTANCE.addPutProvider(linmotPutProvider);
   }
 
   @Override // from ManualModule
-  final void protected_last() {
+  protected final void last() {
     LinmotSocket.INSTANCE.removePutProvider(linmotPutProvider);
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(this);

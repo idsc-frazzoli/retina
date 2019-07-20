@@ -37,14 +37,14 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> imp
   }
 
   @Override // from AbstractModule
-  void protected_first() {
+  protected void first() {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
-  void protected_last() {
+  protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     gokartPoseLcmClient.stopSubscriptions();
   }

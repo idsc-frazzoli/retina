@@ -87,6 +87,7 @@ public class TrackReconManagement {
     Tensor transform = occupancyGrid.getTransform();
     Tensor hpos = Tensors.of(pose.Get(0), pose.Get(1), Quantity.of(1, SI.METER));
     Tensor pixelPos = LinearSolve.of(transform, hpos);
+    System.out.println("pixelPos=" + pixelPos);
     startX = pixelPos.Get(0).number().intValue();
     startY = pixelPos.Get(1).number().intValue();
     startOrientation = pose.Get(2).number().doubleValue();
