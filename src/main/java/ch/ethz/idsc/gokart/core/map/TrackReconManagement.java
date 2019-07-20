@@ -93,7 +93,7 @@ public class TrackReconManagement {
     occupancyGrid.clearStart(startX, startY, startOrientation);
   }
 
-  /** @param gokartPoseEvent non null
+  /** @param gokartPoseEvent non-null
    * @param dTime
    * @return */
   public Optional<MPCBSplineTrack> update(GokartPoseEvent gokartPoseEvent, Scalar dTime) {

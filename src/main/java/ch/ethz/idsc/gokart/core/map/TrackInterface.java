@@ -20,6 +20,5 @@ public interface TrackInterface {
    * 
    * @param position in [m]
    * @return true if within track limits */
-  // TODO JPH/MH function never called
   boolean isInTrack(Tensor position);
 }

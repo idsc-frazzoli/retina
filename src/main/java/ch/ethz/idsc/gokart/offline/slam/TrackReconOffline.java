@@ -12,11 +12,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
+import ch.ethz.idsc.gokart.core.map.MPCBSplineTrackRender;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.map.TrackLayoutInitialGuess;
 import ch.ethz.idsc.gokart.core.map.TrackReconConfig;
 import ch.ethz.idsc.gokart.core.map.TrackReconManagement;
-import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
@@ -56,13 +56,14 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   private static final Scalar DELTA = Quantity.of(0.05, SI.SECOND);
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  private final GokartRender gokartRender = new GlobalGokartRender();
-  private final SpacialXZObstaclePredicate predicate = TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  // ---
+  private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
+      TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final Consumer<BufferedImage> consumer;
   private final BayesianOccupancyGrid bayesianOccupancyGridThic;
   private final BayesianOccupancyGrid bayesianOccupancyGridThin;
   private final TrackReconManagement trackReconManagement;
-  private final TrackReconRender trackReconRender = new TrackReconRender();
+  private final MPCBSplineTrackRender mpcBSplineTrackRender = new MPCBSplineTrackRender();
   private final TrackLayoutInitialGuess trackLayoutInitialGuess;
   // ---
   private GokartPoseEvent gokartPoseEvent;
@@ -72,9 +73,11 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     this.consumer = consumer;
     bayesianOccupancyGridThic = mappingConfig.createTrackFittingBayesianOccupancyGrid();
     bayesianOccupancyGridThin = mappingConfig.createThinBayesianOccupancyGrid();
+    // COMMON BEG
     LidarAngularFiringCollector lidarAngularFiringCollector = //
         new LidarAngularFiringCollector(10_000, 3);
     double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
+    // param: max_degree
     LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -4);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
@@ -82,6 +85,7 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
     lidarAngularFiringCollector.addListener(this);
+    // COMMON END
     trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThic);
     // trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThin);
     trackLayoutInitialGuess = trackReconManagement.getTrackLayoutInitialGuess();
@@ -91,22 +95,23 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+    if (channel.equals(CHANNEL_LIDAR))
+      velodyneDecoder.lasers(byteBuffer);
+    else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
-      gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       bayesianOccupancyGridThic.setPose(gokartPoseEvent.getPose());
       bayesianOccupancyGridThin.setPose(gokartPoseEvent.getPose());
       if (!trackReconManagement.isStartSet())
         trackReconManagement.setStart(gokartPoseEvent.getPose());
-    } else //
-    if (channel.equals(CHANNEL_LIDAR))
-      velodyneDecoder.lasers(byteBuffer);
+    }
     // ---
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(DELTA);
       if (count++ > 1) {
-        Optional<MPCBSplineTrack> lastTrack = trackReconManagement.update(gokartPoseEvent, Quantity.of(0.05, SI.SECOND));
-        trackReconRender.mpcBSplineTrack(lastTrack);
+        // TODO JPH more elegant
+        Optional<MPCBSplineTrack> optional = trackReconManagement.update(gokartPoseEvent, DELTA);
+        mpcBSplineTrackRender.mpcBSplineTrack(optional);
       }
       PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
       BufferedImage bufferedImage = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
@@ -130,8 +135,10 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       imageRender.render(geometricLayer, graphics);
       // bayesianOccupancyGridThic.render(geometricLayer, graphics);
       bayesianOccupancyGridThin.render(geometricLayer, graphics);
+      GokartRender gokartRender = new GlobalGokartRender();
+      gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       gokartRender.render(geometricLayer, graphics);
-      trackReconRender.render(geometricLayer, graphics);
+      mpcBSplineTrackRender.render(geometricLayer, graphics);
       // trackLayoutInitialGuess.render(geometricLayer, graphics);
       // ---
       bayesianOccupancyGridThin.genObstacleMap();
@@ -143,18 +150,19 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
-    if (lidarRayBlockEvent.dimensions == 3)
-      while (floatBuffer.hasRemaining()) {
-        float x = floatBuffer.get();
-        float y = floatBuffer.get();
-        float z = floatBuffer.get();
-        //
-        boolean isObstacle = predicate.isObstacle(x, z);
-        Tensor vector = Tensors.vectorDouble(x, y);
-        int type = isObstacle ? 1 : 0;
-        bayesianOccupancyGridThic.processObservation(vector, type);
-        bayesianOccupancyGridThin.processObservation(vector, type);
-      }
+    // if (lidarRayBlockEvent.dimensions == 3)
+    while (floatBuffer.hasRemaining()) {
+      float x = floatBuffer.get();
+      float y = floatBuffer.get();
+      float z = floatBuffer.get();
+      //
+      boolean isObstacle = spacialXZObstaclePredicate.isObstacle(x, z);
+      // ---
+      Tensor vector = Tensors.vectorDouble(x, y);
+      int type = isObstacle ? 1 : 0;
+      bayesianOccupancyGridThic.processObservation(vector, type);
+      bayesianOccupancyGridThin.processObservation(vector, type);
+    }
   }
 
   @Override

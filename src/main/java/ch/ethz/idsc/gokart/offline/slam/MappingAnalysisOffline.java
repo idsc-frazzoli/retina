@@ -41,16 +41,17 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlockListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
+  private static final Scalar DELTA = Quantity.of(0.1, SI.SECOND);
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  private final BayesianOccupancyGrid bayesianOccupancyGrid;
-  private final Consumer<BufferedImage> consumer;
   // ---
-  private GokartPoseEvent gokartPoseEvent;
-  private ScatterImage scatterImage;
+  private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
+      SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private final Consumer<BufferedImage> consumer;
+  private final BayesianOccupancyGrid bayesianOccupancyGrid;
+  // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
-  private Scalar delta = Quantity.of(0.1, SI.SECOND);
-  private SpacialXZObstaclePredicate predicate = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
+  private GokartPoseEvent gokartPoseEvent;
 
   public MappingAnalysisOffline(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
     this.consumer = consumer;
@@ -69,23 +70,25 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+    if (channel.equals(CHANNEL_LIDAR))
+      velodyneDecoder.lasers(byteBuffer);
+    else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
-    } else if (channel.equals(CHANNEL_LIDAR)) {
-      velodyneDecoder.lasers(byteBuffer);
     }
+    // ---
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
-      time_next = time.add(delta);
+      time_next = time.add(DELTA);
       PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
-      scatterImage = new WallScatterImage(predefinedMap);
-      BufferedImage image = scatterImage.getImage();
-      GeometricLayer gl = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
-      Graphics2D graphics = image.createGraphics();
+      ScatterImage scatterImage = new WallScatterImage(predefinedMap);
+      BufferedImage bufferedImage = scatterImage.getImage();
+      GeometricLayer geometricLayer = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
+      Graphics2D graphics = bufferedImage.createGraphics();
+      bayesianOccupancyGrid.render(geometricLayer, graphics);
       GokartRender gokartRender = new GlobalGokartRender();
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
-      bayesianOccupancyGrid.render(gl, graphics);
-      gokartRender.render(gl, graphics);
+      gokartRender.render(geometricLayer, graphics);
       // if (Scalars.lessEquals(RealScalar.of(3), Magnitude.SECOND.apply(time)) && flag == false) {
       // grid.setNewlBound(Tensors.vector(20, 20));
       // flag = true;
@@ -94,23 +97,24 @@ public class MappingAnalysisOffline implements OfflineLogListener, LidarRayBlock
       // grid.genObstacleMap();
       // System.out.println(time);
       bayesianOccupancyGrid.genObstacleMap();
-      consumer.accept(image);
+      consumer.accept(bufferedImage);
     }
   }
 
   @Override // from LidarRayBlockListener
   public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
     FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
-    if (lidarRayBlockEvent.dimensions == 3)
-      while (floatBuffer.hasRemaining()) {
-        float x = floatBuffer.get();
-        float y = floatBuffer.get();
-        float z = floatBuffer.get();
-        //
-        boolean isObstacle = predicate.isObstacle(x, z);
-        bayesianOccupancyGrid.processObservation( //
-            Tensors.vectorDouble(x, y), //
-            isObstacle ? 1 : 0);
-      }
+    // if (lidarRayBlockEvent.dimensions == 3)
+    while (floatBuffer.hasRemaining()) {
+      float x = floatBuffer.get();
+      float y = floatBuffer.get();
+      float z = floatBuffer.get();
+      //
+      boolean isObstacle = spacialXZObstaclePredicate.isObstacle(x, z);
+      // ---
+      bayesianOccupancyGrid.processObservation( //
+          Tensors.vectorDouble(x, y), //
+          isObstacle ? 1 : 0);
+    }
   }
 }

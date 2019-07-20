@@ -11,7 +11,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 
 /** receives MPCBSplineTrack and renders lane center line and boundaries using {@link TrackRender} */
-public class TrackReconRender implements RenderInterface, MPCBSplineTrackListener {
+public class MPCBSplineTrackRender implements RenderInterface, MPCBSplineTrackListener {
   private final TrackRender trackRender = new TrackRender();
 
   @Override // from RenderInterface
@@ -21,7 +21,7 @@ public class TrackReconRender implements RenderInterface, MPCBSplineTrackListene
 
   @Override // from MPCBSplineTrackListener
   public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
-    System.out.println(optional.isPresent());
-    trackRender.setTrack(optional.map(MPCBSplineTrack::bSplineTrack).orElse(null));
+    TrackInterface trackInterface = optional.map(MPCBSplineTrack::bSplineTrack).orElse(null);
+    trackRender.setTrack(trackInterface);
   }
 }

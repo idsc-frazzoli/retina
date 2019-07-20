@@ -12,8 +12,8 @@ import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.map.MPCBSplineTrackRender;
 import ch.ethz.idsc.gokart.core.map.TrackReconModule;
-import ch.ethz.idsc.gokart.core.map.TrackReconRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
 import ch.ethz.idsc.gokart.core.perc.ClusterConfig;
 import ch.ethz.idsc.gokart.core.perc.LidarClustering;
@@ -71,7 +71,7 @@ public class PresenterLcmModule extends AbstractModule {
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
-  private final TrackReconRender trackReconRender = new TrackReconRender();
+  private final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
   private final GokartTrajectoryModule trajectoryModule = //
       ModuleAuto.INSTANCE.getExtensions(GokartTrajectoryModule.class).findFirst().orElse(null);
   private final TrackReconModule gokartTrackReconModule = //

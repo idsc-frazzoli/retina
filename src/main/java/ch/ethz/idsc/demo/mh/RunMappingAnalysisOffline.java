@@ -19,8 +19,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /* package */ enum RunMappingAnalysisOffline {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    File file = HomeDirectory.file("TireTrackDriving.lcm");
-    file = new File("/media/datahaki/data/gokart/0719map/20190719/20190719T141611_00", "log.lcm");
+    File file;
+    file = new File("/media/datahaki/data/gokart/0701map/20190701/20190701T174152_00", "log.lcm");
     File export = HomeDirectory.Pictures("mapperHR");
     export.mkdirs();
     if (!export.isDirectory())
