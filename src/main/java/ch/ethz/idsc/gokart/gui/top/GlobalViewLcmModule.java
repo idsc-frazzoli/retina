@@ -10,7 +10,7 @@ import java.util.List;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.TrackReconRender;
+import ch.ethz.idsc.gokart.core.map.MPCBSplineTrackRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
@@ -68,7 +68,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
-  public final TrackReconRender trackReconRender = new TrackReconRender();
+  public final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
 
   /** @param curve may be null */
   public void setPlan(Tensor curve) {

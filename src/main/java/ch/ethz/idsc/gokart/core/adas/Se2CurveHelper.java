@@ -1,5 +1,5 @@
 // code by mcp
-package ch.ethz.idsc.owl.bot.se2.pid;
+package ch.ethz.idsc.gokart.core.adas;
 
 import ch.ethz.idsc.sophus.lie.se2.Se2ParametricDistance;
 import ch.ethz.idsc.sophus.math.Extract2D;
@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Norm;
 
-public enum Se2CurveHelper {
+/* package */ enum Se2CurveHelper {
   ;
   /** @param curve
    * @param pose {x, y, heading}

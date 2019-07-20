@@ -51,7 +51,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
   private final List<MPCBSplineTrackListener> listeners = new CopyOnWriteArrayList<>();
-  private final TrackReconRender trackReconRender = new TrackReconRender();
+  private final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
   private final GlobalViewLcmModule globalViewLcmModule = //
       ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
   // ---

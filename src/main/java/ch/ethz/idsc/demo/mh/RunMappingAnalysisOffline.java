@@ -15,18 +15,17 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-enum RunMappingAnalysisOffline {
+/** generates and exports sequence of B/W images of occupancy grid */
+/* package */ enum RunMappingAnalysisOffline {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    // File file = YnLogFileLocator.file(GokartLogFile._20180503T160522_16144bb6);
-    // File file = UserHome.file("changingtrack.lcm");
-    File file = HomeDirectory.file("TireTrackDriving.lcm");
-    // File file = UserHome.file("20181203T135247_70097ce1.lcm.00");
-    File folder = HomeDirectory.Pictures("log/mapperHR");
-    folder.mkdirs();
-    if (!folder.isDirectory())
+    File file;
+    file = new File("/media/datahaki/data/gokart/0701map/20190701/20190701T174152_00", "log.lcm");
+    File export = HomeDirectory.Pictures("mapperHR");
+    export.mkdirs();
+    if (!export.isDirectory())
       throw new RuntimeException();
-    Consumer<BufferedImage> consumer = new PngImageWriter(folder);
+    Consumer<BufferedImage> consumer = new PngImageWriter(export);
     MappingConfig config = new MappingConfig();
     config.obsRadius = Quantity.of(0.8, SI.METER);
     // MappingConfig.GLOBAL.P_M = RealScalar.of(0.95);

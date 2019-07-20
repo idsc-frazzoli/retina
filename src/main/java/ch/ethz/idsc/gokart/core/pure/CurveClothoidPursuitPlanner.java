@@ -16,7 +16,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Last;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
-// TODO JPH rename
 public class CurveClothoidPursuitPlanner {
   private final ClothoidPursuitConfig clothoidPursuitConfig;
   // ---
@@ -53,8 +52,7 @@ public class CurveClothoidPursuitPlanner {
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
       CurveClothoidPursuitHelper.mirrorAndReverse(tensor);
-    Predicate<Scalar> isCompliant = //
-        CurveClothoidPursuitHelper.isCompliant(clothoidPursuitConfig.ratioLimits(), pose, speed);
+    Predicate<Scalar> isCompliant = clothoidPursuitConfig.ratioLimits()::isInside;
     Scalar lookAhead = clothoidPursuitConfig.lookAhead;
     do {
       AssistedCurveIntersection assistedCurveIntersection = clothoidPursuitConfig.getAssistedCurveIntersection();

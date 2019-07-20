@@ -27,7 +27,7 @@ public class FollowingErrorTest extends TestCase {
     // ---
     assertTrue(followingError.averageError().isPresent());
     assertEquals(followingError.averageError().get().Get(0), Norm._2.ofVector(ERROR.extract(0, 2)));
-    assertEquals(followingError.averageError().get().Get(1), Abs.of(ERROR.Get(2)));
+    assertEquals(followingError.averageError().get().Get(1), ERROR.Get(2).abs());
     // ---
     assertTrue(followingError.accumulatedError().isPresent());
     assertEquals(followingError.accumulatedError().get().Get(0), //

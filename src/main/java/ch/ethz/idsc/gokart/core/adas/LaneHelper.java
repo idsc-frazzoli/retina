@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.owl.bot.se2.pid.Se2CurveHelper;
 import ch.ethz.idsc.sophus.lie.se2.Se2ParametricDistance;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -21,7 +20,7 @@ public enum LaneHelper {
       int index = Se2CurveHelper.closest(curve, pose); // closest gives the index of the closest element
       Tensor closest = curve.get(index);
       Scalar currDistance = Se2ParametricDistance.INSTANCE.distance(closest, pose);
-      return (Scalars.lessThan(criticalDistance, currDistance));
+      return Scalars.lessThan(criticalDistance, currDistance);
     }
     return false;
   }

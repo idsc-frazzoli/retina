@@ -2288,6 +2288,25 @@ public enum GokartLogFile implements LogFile {
   /** brief, slow manual driving with lane keeping steer limitation */
   _20190718T131528_0de69aaf,
   /***************************************************/
+  /* 2019-07-19 */
+  /** TEST OK: MANUAL, PURSUIT, MPC */
+  _20190719T141611_bcc60260,
+  /** lane keeping steer limitation */
+  _20190719T144137_fde6f02e,
+  /** lane keeping steer limitation */
+  _20190719T145302_fde6f02e,
+  /** brief, slow manual driving */
+  _20190719T145611_fde6f02e,
+  /** manual driving */
+  _20190719T150040_fde6f02e,
+  /** manual driving */
+  _20190719T150957_8c846374,
+  /** lane keeping steer limitation, mpc,
+   * exceptions in mapping results in mpc with delay */
+  _20190719T151747_ababf43b,
+  /** mpc ok */
+  _20190719T152752_ababf43b,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

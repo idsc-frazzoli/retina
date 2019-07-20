@@ -44,6 +44,7 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   protected final BufferedImage obstacleImage;
   protected final byte[] imagePixels;
   protected final Graphics2D imageGraphics;
+  /** 3 x 3 diagonal matrix */
   protected final Tensor scaling;
   // ---
   protected GeometricLayer lidar2cellLayer;
@@ -119,7 +120,6 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
    * @param pos vector of the form {px, py, ...}; only the first two entries are considered
    * @return Tensor {pix, piy} */
   protected final Tensor lidarToCell(Tensor pos) {
-    // TODO investigate if class with 2 int's is an attractive replacement as key type
     return Floor.of(lidar2cellLayer.toVector(pos));
   }
 
@@ -136,7 +136,9 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   /** @param cell Tensor {pix, piy}
    * @return byte array index */
   protected final int cellToIdx(Tensor cell) {
-    return cellToIdx(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
+    return cellToIdx( //
+        cell.Get(0).number().intValue(), //
+        cell.Get(1).number().intValue());
   }
 
   /** @param pix of cell
@@ -154,14 +156,17 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   /** @param cell Tensor {pix, piy}
    * @return whether cell is in grid */
   protected final boolean isCellInGrid(Tensor cell) {
-    return isCellInGrid(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
+    return isCellInGrid( //
+        cell.Get(0).number().intValue(), //
+        cell.Get(1).number().intValue());
   }
 
   /** @param pix of cell
    * @param piy of cell
    * @return whether cell is in grid */
   protected final boolean isCellInGrid(int pix, int piy) {
-    return 0 <= pix && pix < dimX() && 0 <= piy && piy < dimY();
+    return 0 <= pix && pix < dimX() //
+        && 0 <= piy && piy < dimY();
   }
 
   @Override // from OccupancyGrid
@@ -169,18 +174,19 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
     Tensor translate = IdentityMatrix.of(3);
     translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
     translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
-    return IdentityMatrix.of(3).dot(scaling).dot(translate);
+    return scaling.dot(translate);
   }
 
   public final boolean isCellOccupied(Tensor cell) {
-    return isCellOccupied(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
+    return isCellOccupied( //
+        cell.Get(0).number().intValue(), //
+        cell.Get(1).number().intValue());
   }
 
   @Override // from OccupancyGrid
   public final boolean isCellOccupied(int pix, int piy) {
-    if (isCellInGrid(pix, piy))
-      return imagePixels[cellToIdx(pix, piy)] == MASK_OCCUPIED;
-    return true;
+    return isCellInGrid(pix, piy) //
+        && imagePixels[cellToIdx(pix, piy)] == MASK_OCCUPIED;
   }
 
   @Override // from Region<Tensor>
@@ -190,12 +196,8 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
 
   @Override // from RenderInterface
   public synchronized final void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    // TODO JPH simplify use ImageRender?
-    Tensor model2pixel = geometricLayer.getMatrix();
-    Tensor translate = IdentityMatrix.of(3);
-    translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
-    translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
-    Tensor matrix = model2pixel.dot(scaling).dot(translate);
-    graphics.drawImage(obstacleImage, AffineTransforms.toAffineTransform(matrix), null);
+    // similar to ImageRender?
+    graphics.drawImage(obstacleImage, AffineTransforms.toAffineTransform( //
+        geometricLayer.getMatrix().dot(getTransform())), null);
   }
 }

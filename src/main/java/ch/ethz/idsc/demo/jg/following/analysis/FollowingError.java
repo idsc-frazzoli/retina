@@ -16,7 +16,6 @@ import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Norm;
-import ch.ethz.idsc.tensor.sca.Abs;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -57,7 +56,7 @@ public class FollowingError implements ErrorInterface {
     Tensor pose2D = Extract2D.FUNCTION.apply(pose);
     Tensor distances = Tensor.of(reference.stream().map(Extract2D.FUNCTION).map(tensor -> tensor.subtract(pose2D)).map(Norm._2::ofVector));
     int idx = ArgMin.of(distances);
-    Scalar heading_error = Abs.of(MOD.apply(pose.Get(2)).subtract(MOD.apply(reference.get(idx).Get(2))));
+    Scalar heading_error = MOD.apply(pose.Get(2)).subtract(MOD.apply(reference.get(idx).Get(2))).abs();
     return Tensors.of(distances.get(idx), heading_error);
   }
 

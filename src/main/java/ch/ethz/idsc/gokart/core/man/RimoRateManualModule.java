@@ -29,13 +29,13 @@ import ch.ethz.idsc.tensor.Scalar;
   /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
 
   @Override // from AbstractModule
-  void protected_first() {
+  protected void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(rimoRateControllerWrap);
   }
 
   @Override // from AbstractModule
-  void protected_last() {
+  protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(rimoRateControllerWrap);
   }
