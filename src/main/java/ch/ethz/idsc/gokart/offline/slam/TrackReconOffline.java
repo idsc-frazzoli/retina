@@ -49,7 +49,6 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-// TODO contains redundancies with GokartMappingModule 
 public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListener, MPCBSplineTrackListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
