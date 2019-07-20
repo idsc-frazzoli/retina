@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
@@ -16,7 +15,6 @@ import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
-import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.tensor.Scalar;
 
 public abstract class LidarProcessOffline implements LidarRayBlockListener, OfflineLogListener {
@@ -25,11 +23,10 @@ public abstract class LidarProcessOffline implements LidarRayBlockListener, Offl
   // ---
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
 
-  public LidarProcessOffline(int max_degree) {
+  /** @param lidarSpacialProvider */
+  public LidarProcessOffline(LidarSpacialProvider lidarSpacialProvider) {
     LidarAngularFiringCollector lidarAngularFiringCollector = //
         new LidarAngularFiringCollector(10_000, 3);
-    double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
-    LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, max_degree);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
@@ -56,7 +53,18 @@ public abstract class LidarProcessOffline implements LidarRayBlockListener, Offl
     protected_event(time, channel, byteBuffer);
   }
 
+  /** function processes message from log file
+   *
+   * @param time since begin of log with unit [s]
+   * @param channel
+   * @param byteBuffer */
   protected abstract void protected_event(Scalar time, String channel, ByteBuffer byteBuffer);
 
+  /** (x, y, z) is the coordinate of ray-obstacle intersection provided
+   * by the given lidarSpacialProvider
+   * 
+   * @param x
+   * @param y
+   * @param z */
   protected abstract void process(float x, float y, float z);
 }

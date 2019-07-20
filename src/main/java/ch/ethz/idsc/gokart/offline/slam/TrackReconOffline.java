@@ -24,8 +24,10 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.region.ImageRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -51,7 +53,7 @@ public class TrackReconOffline extends LidarProcessOffline implements MPCBSpline
   private Scalar time_next = Quantity.of(0, SI.SECOND);
 
   public TrackReconOffline(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
-    super(-4);
+    super(new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), -4));
     this.consumer = consumer;
     bayesianOccupancyGridThic = mappingConfig.createTrackFittingBayesianOccupancyGrid();
     bayesianOccupancyGridThin = mappingConfig.createThinBayesianOccupancyGrid();

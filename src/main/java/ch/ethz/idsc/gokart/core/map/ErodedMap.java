@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.Dimension;
+import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -46,26 +47,30 @@ import ch.ethz.idsc.tensor.Tensors;
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
     // ---
     if (Scalars.lessEquals(obsDilationRadius, cellDim))
-      // FIXME JG/JPH very inefficient
-      this.imageGrid.cells().filter(this.imageGrid::isCellOccupied).forEach(cell -> //
-      imagePixels[cellToIdx(cell)] = MASK_OCCUPIED);
+      // FIXME GJOEL/JPH very inefficient, does it make sense at all
+      imageGrid.cells() //
+          .filter(imageGrid::isCellOccupied) //
+          .forEach(cell -> imagePixels[cellToIdx(cell)] = MASK_OCCUPIED);
     else {
+      // FIXME GJOEL/JPH draw and read on same object?! -> document
       imageGraphics.setColor(COLOR_OCCUPIED);
-      this.imageGrid.cells().filter(this.imageGrid::isCellOccupied).forEach(cell -> {
-        Tensor pos = cell.multiply(cellDim).add(cellDimHalfVec);
-        drawSphere(pos, obsDilationRadius);
-      });
+      imageGrid.cells() //
+          .filter(imageGrid::isCellOccupied).forEach(cell -> {
+            Tensor pos = cell.multiply(cellDim).add(cellDimHalfVec);
+            drawSphere(pos, obsDilationRadius);
+          });
     }
   }
 
   private void drawSphere(Tensor pos, Scalar radius) {
+    // TODO GJOEL/JPH repeated operations when calling function in a loop
     Scalar radiusScaled = radius.multiply(cellDimInv);
     double dim = radiusScaled.number().doubleValue();
-    Ellipse2D sphere = new Ellipse2D.Double( //
+    Shape shape = new Ellipse2D.Double( //
         pos.Get(0).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
         pos.Get(1).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
         2 * dim, 2 * dim);
-    imageGraphics.fill(sphere);
+    imageGraphics.fill(shape);
   }
 
   @Override // from OccupancyGrid

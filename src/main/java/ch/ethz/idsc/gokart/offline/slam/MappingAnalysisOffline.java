@@ -17,7 +17,9 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
+import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -36,7 +38,7 @@ public class MappingAnalysisOffline extends LidarProcessOffline {
   private GokartPoseEvent gokartPoseEvent;
 
   public MappingAnalysisOffline(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
-    super(-1);
+    super(new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), -1));
     this.consumer = consumer;
     bayesianOccupancyGrid = mappingConfig.createBayesianOccupancyGrid();
   }
