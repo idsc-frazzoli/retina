@@ -256,7 +256,7 @@ public class TrackRefinement {
         sideStep = sideStep.add(stepsSize).negate();
       testPosition = pos.add(sidedir.multiply(sideStep));
       occupied = occupancyGrid.isMember(testPosition);
-      if (Scalars.lessThan(maxSearch, Abs.of(sideStep)))
+      if (Scalars.lessThan(maxSearch, sideStep.abs()))
         return Tensors.of(RealScalar.ZERO, RealScalar.ZERO);
     }
     // search in both directions for occupied cell

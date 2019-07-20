@@ -51,7 +51,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO contains redundancies with GokartMappingModule 
 public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListener, MPCBSplineTrackListener {
-  private static final File DIRECTORY = HomeDirectory.Pictures("log", "mapper");
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private static final Scalar DELTA = Quantity.of(0.05, SI.SECOND);
@@ -115,12 +114,13 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
       GeometricLayer geometricLayer = GeometricLayer.of(Tensors.matrix(new Number[][] { //
           { 7.5 * zoom, 0., -540 }, //
           { 0., -7.5 * zoom, 540 + 640 }, //
-          { 0., 0., 1. }, //
-      }));
-      final File file = new File(DIRECTORY, "fielddata" + count + ".csv");
+          { 0., 0., 1. } }));
       Tensor lastTrack = trackReconManagement.getTrackData();
-      if (Objects.nonNull(lastTrack))
+      if (Objects.nonNull(lastTrack) && false)
         try {
+          // TODO JPH
+          File DIRECTORY = HomeDirectory.Pictures("mappercsv");
+          File file = new File(DIRECTORY, "fielddata" + count + ".csv");
           Export.of(file, lastTrack.divide(Quantity.of(1, SI.METER)));
         } catch (Exception exception) {
           exception.printStackTrace();

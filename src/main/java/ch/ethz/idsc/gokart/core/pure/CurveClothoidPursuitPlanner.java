@@ -16,7 +16,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Last;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 
-// TODO JPH rename
 public class CurveClothoidPursuitPlanner {
   private final ClothoidPursuitConfig clothoidPursuitConfig;
   // ---
