@@ -1,12 +1,10 @@
-// code by ynager
-// adapted by mh
+// code by ynager, mh, jph
 package ch.ethz.idsc.gokart.offline.slam;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -26,20 +24,8 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
-import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.owl.gui.region.ImageRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
-import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
-import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
-import ch.ethz.idsc.retina.lidar.VelodyneModel;
-import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
-import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -49,12 +35,8 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListener, MPCBSplineTrackListener {
-  private static final String CHANNEL_LIDAR = //
-      VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
+public class TrackReconOffline extends LidarProcessOffline implements MPCBSplineTrackListener {
   private static final Scalar DELTA = Quantity.of(0.05, SI.SECOND);
-  // ---
-  private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   // ---
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
       TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
@@ -69,22 +51,10 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
   private Scalar time_next = Quantity.of(0, SI.SECOND);
 
   public TrackReconOffline(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
+    super(-4);
     this.consumer = consumer;
     bayesianOccupancyGridThic = mappingConfig.createTrackFittingBayesianOccupancyGrid();
     bayesianOccupancyGridThin = mappingConfig.createThinBayesianOccupancyGrid();
-    // COMMON BEG
-    LidarAngularFiringCollector lidarAngularFiringCollector = //
-        new LidarAngularFiringCollector(10_000, 3);
-    double offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
-    // param: max_degree
-    LidarSpacialProvider lidarSpacialProvider = new Vlp16SegmentProvider(offset, -4);
-    lidarSpacialProvider.addListener(lidarAngularFiringCollector);
-    LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-    lidarRotationProvider.addListener(lidarAngularFiringCollector);
-    velodyneDecoder.addRayListener(lidarSpacialProvider);
-    velodyneDecoder.addRayListener(lidarRotationProvider);
-    lidarAngularFiringCollector.addListener(this);
-    // COMMON END
     trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThic);
     // trackReconManagement = new TrackReconManagement(bayesianOccupancyGridThin);
     trackLayoutInitialGuess = trackReconManagement.getTrackLayoutInitialGuess();
@@ -92,11 +62,8 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
 
   private int count = 0;
 
-  @Override // from OfflineLogListener
-  public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(CHANNEL_LIDAR))
-      velodyneDecoder.lasers(byteBuffer);
-    else //
+  @Override
+  protected void protected_event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
       bayesianOccupancyGridThic.setPose(gokartPoseEvent.getPose());
@@ -146,22 +113,14 @@ public class TrackReconOffline implements OfflineLogListener, LidarRayBlockListe
     }
   }
 
-  @Override // from LidarRayBlockListener
-  public void lidarRayBlock(LidarRayBlockEvent lidarRayBlockEvent) {
-    FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
-    // if (lidarRayBlockEvent.dimensions == 3)
-    while (floatBuffer.hasRemaining()) {
-      float x = floatBuffer.get();
-      float y = floatBuffer.get();
-      float z = floatBuffer.get();
-      //
-      boolean isObstacle = spacialXZObstaclePredicate.isObstacle(x, z);
-      // ---
-      Tensor vector = Tensors.vectorDouble(x, y);
-      int type = isObstacle ? 1 : 0;
-      bayesianOccupancyGridThic.processObservation(vector, type);
-      bayesianOccupancyGridThin.processObservation(vector, type);
-    }
+  @Override
+  protected void process(float x, float y, float z) {
+    boolean isObstacle = spacialXZObstaclePredicate.isObstacle(x, z);
+    // ---
+    Tensor vector = Tensors.vectorDouble(x, y);
+    int type = isObstacle ? 1 : 0;
+    bayesianOccupancyGridThic.processObservation(vector, type);
+    bayesianOccupancyGridThin.processObservation(vector, type);
   }
 
   @Override
