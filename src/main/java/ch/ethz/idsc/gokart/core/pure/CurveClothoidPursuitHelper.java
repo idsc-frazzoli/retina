@@ -1,12 +1,9 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.pure;
 
-import java.util.List;
 import java.util.function.IntConsumer;
-import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Reverse;
@@ -28,15 +25,5 @@ import ch.ethz.idsc.tensor.alg.VectorQ;
       IntConsumer swap = i -> se2points.set(reverse.get(i), i);
       IntStream.range(0, se2points.length()).forEach(swap);
     }
-  }
-
-  /** @param ratioLimits depending on pose and speed
-   * @param pose of vehicle {x[m], y[m], angle}
-   * @param speed of vehicle [m*s^-1]
-   * @return predicate to determine whether ratio is compliant with all posed turning ratio limits */
-  public static Predicate<Scalar> isCompliant(List<DynamicRatioLimit> ratioLimits, Tensor pose, Scalar speed) {
-    return ratio -> ratioLimits.stream() //
-        .map(dynamicRatioLimit -> dynamicRatioLimit.at(pose, speed)) //
-        .allMatch(dynamicRatioLimit -> dynamicRatioLimit.isInside(ratio));
   }
 }

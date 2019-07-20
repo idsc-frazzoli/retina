@@ -1,12 +1,7 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.pure;
 
-import java.util.Collections;
-import java.util.List;
-
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
-import ch.ethz.idsc.owl.bot.se2.glc.StaticRatioLimit;
 import ch.ethz.idsc.owl.math.pursuit.AssistedCurveIntersection;
 import ch.ethz.idsc.owl.math.pursuit.PseudoSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.pursuit.SphereSe2CurveIntersection;
@@ -15,6 +10,8 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
+import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class ClothoidPursuitConfig extends PursuitConfig {
   public static final ClothoidPursuitConfig GLOBAL = AppResources.load(new ClothoidPursuitConfig());
@@ -38,7 +35,7 @@ public class ClothoidPursuitConfig extends PursuitConfig {
         : new SphereSe2CurveIntersection(lookAhead);
   }
 
-  public List<DynamicRatioLimit> ratioLimits() {
-    return Collections.singletonList(new StaticRatioLimit(turningRatioMax));
+  public Clip ratioLimits() {
+    return Clips.absolute(turningRatioMax);
   }
 }

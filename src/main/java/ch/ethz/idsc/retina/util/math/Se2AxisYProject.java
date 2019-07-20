@@ -14,26 +14,26 @@ import ch.ethz.idsc.tensor.sca.ArcTan;
 import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.SignInterface;
 
-class MapSingular implements TensorScalarFunction {
-  private static final Scalar[] SIGNUM = //
-      { DoubleScalar.NEGATIVE_INFINITY, RealScalar.ZERO, DoubleScalar.POSITIVE_INFINITY };
-  // ---
-  final Unit unit;
-
-  MapSingular(Unit unit) {
-    this.unit = unit;
-  }
-
-  @Override
-  public Scalar apply(Tensor p) {
-    Scalar px = p.Get(0);
-    SignInterface signInterface = (SignInterface) px;
-    return Quantity.of(SIGNUM[1 + signInterface.signInt()], unit);
-  }
-}
-
-// TODO JPH REL move to sophus
+// TODO JPH OWL 047 obsolete
 public class Se2AxisYProject implements TensorScalarFunction {
+  private static class MapSingular implements TensorScalarFunction {
+    private static final Scalar[] SIGNUM = //
+        { DoubleScalar.NEGATIVE_INFINITY, RealScalar.ZERO, DoubleScalar.POSITIVE_INFINITY };
+    // ---
+    final Unit unit;
+
+    MapSingular(Unit unit) {
+      this.unit = unit;
+    }
+
+    @Override
+    public Scalar apply(Tensor p) {
+      Scalar px = p.Get(0);
+      SignInterface signInterface = (SignInterface) px;
+      return Quantity.of(SIGNUM[1 + signInterface.signInt()], unit);
+    }
+  }
+
   /** @param u == {vx, 0, rate} with units {[m*s^-1], ?, [s^-1]}
    * @param p == {px, py} with units {[m], [m]}
    * @return time to arrival of a point on the y axis that is subject to flow x to reach p.

@@ -17,7 +17,6 @@ import ch.ethz.idsc.tensor.red.Norm;
  * Important: {@link Pacejka3} is not continuous for several input
  * Tensors.vector(0, 1);
  * Tensors.vector(0, 0); */
-// TODO JPH REL move to owl
 public class RobustSlip implements SlipInterface, Serializable {
   private static final TensorUnaryOperator NORMALIZE = NormalizeUnlessZero.with(Norm._2);
   // ---
