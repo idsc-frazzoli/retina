@@ -7,7 +7,6 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
   PURE_PURSUIT(PurePursuitRenderPlugin.INSTANCE), //
   CLOTHOID_PURSUIT(ClothoidPursuitRenderPlugin.INSTANCE), //
   LANE_CONSTRAINTS(LaneConstraintsRenderPlugin.INSTANCE), //
-  WAYPOINTS(WaypointsRenderPlugin.INSTANCE), //
   ;
   private final RenderPlugin renderPlugin;
 

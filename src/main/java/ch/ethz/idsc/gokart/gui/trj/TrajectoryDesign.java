@@ -169,6 +169,8 @@ public class TrajectoryDesign extends CurvatureDemo {
     PATH_SIDE_L.setCurve(renderPluginParameters.laneBoundaryL, true).render(geometricLayer, graphics);
     PATH_SIDE_R.setCurve(renderPluginParameters.laneBoundaryR, true).render(geometricLayer, graphics);
     // ---
+    WaypointsRenderPlugin.INSTANCE.renderInterface(renderPluginParameters).render(geometricLayer, graphics);
+    // ---
     renderInterface.render(geometricLayer, graphics);
     return refined;
   }
