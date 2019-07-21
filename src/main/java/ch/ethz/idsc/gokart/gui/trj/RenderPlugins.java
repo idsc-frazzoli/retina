@@ -3,18 +3,19 @@ package ch.ethz.idsc.gokart.gui.trj;
 
 import ch.ethz.idsc.owl.gui.RenderInterface;
 
-/* package */ enum CurvePoseRenderPlugins {
+/* package */ enum RenderPlugins {
   PURE_PURSUIT(PurePursuitRenderPlugin.INSTANCE), //
   CLOTHOID_PURSUIT(ClothoidPursuitRenderPlugin.INSTANCE), //
   LANE_CONSTRAINTS(LaneConstraintsRenderPlugin.INSTANCE), //
+  WAYPOINTS(WaypointsRenderPlugin.INSTANCE), //
   ;
-  private final RenderPlugin curvePoseRenderPlugin;
+  private final RenderPlugin renderPlugin;
 
-  CurvePoseRenderPlugins(RenderPlugin curvePoseRenderPlugin) {
-    this.curvePoseRenderPlugin = curvePoseRenderPlugin;
+  RenderPlugins(RenderPlugin renderPlugin) {
+    this.renderPlugin = renderPlugin;
   }
 
   public RenderInterface renderInterface(RenderPluginParameters renderPluginParameters) {
-    return curvePoseRenderPlugin.renderInterface(renderPluginParameters);
+    return renderPlugin.renderInterface(renderPluginParameters);
   }
 }

@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/* package */ public enum LaneConstraintsRenderPlugin implements RenderPlugin {
+/* package */ enum LaneConstraintsRenderPlugin implements RenderPlugin {
   INSTANCE;
   // ---
   @Override // from RenderPlugin
