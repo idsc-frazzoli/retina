@@ -25,7 +25,6 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     File file = HomeDirectory.file("Documents", "steering", "active_operations.txt");
     // try (PrintWriter printWriter = new PrintWriter())
     TableBuilder tableBuilder = new TableBuilder();
-    // TODO JPH TENSOR 075
     try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
       String prefix = "";
       int maxline = 1700_000;
