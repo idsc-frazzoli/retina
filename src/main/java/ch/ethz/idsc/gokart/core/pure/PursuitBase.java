@@ -23,7 +23,7 @@ abstract class PursuitBase<PE> implements StartAndStoppable, PutProvider<PE> {
   /** function used in tests
    * 
    * @return status */
-  /* package */ final boolean private_isOperational() {
+  public final boolean private_isOperational() {
     return status;
   }
 
@@ -38,12 +38,13 @@ abstract class PursuitBase<PE> implements StartAndStoppable, PutProvider<PE> {
   }
 
   // function non-private for testing only
-  final Optional<PE> private_putEvent(SteerColumnInterface steerColumnInterface) {
-    return private_isOperational() && steerColumnInterface.isSteerColumnCalibrated() //
-        // rimo requires RimoGetEvent for velocity control to return non-empty
-        // steer always returns non-empty at this point
-        ? control(steerColumnInterface)
-        : fallback();
+  public final Optional<PE> private_putEvent(SteerColumnInterface steerColumnInterface) {
+    return private_isOperational() //
+        && steerColumnInterface.isSteerColumnCalibrated() //
+            // rimo requires RimoGetEvent for velocity control to return non-empty
+            // steer always returns non-empty at this point
+            ? control(steerColumnInterface)
+            : fallback();
   }
 
   /** @param steerColumnInterface guaranteed to be calibrated

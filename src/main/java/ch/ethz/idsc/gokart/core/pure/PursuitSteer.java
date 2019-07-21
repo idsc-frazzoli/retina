@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-final class PursuitSteer extends PursuitBase<SteerPutEvent> {
+public final class PursuitSteer extends PursuitBase<SteerPutEvent> {
   private static final Optional<SteerPutEvent> FALLBACK = Optional.of(SteerPutEvent.PASSIVE_MOT_TRQ_1);
   // ---
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();

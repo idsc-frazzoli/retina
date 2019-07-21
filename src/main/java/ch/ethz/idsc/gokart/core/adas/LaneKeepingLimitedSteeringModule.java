@@ -12,7 +12,6 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.ref.ToString;
 import ch.ethz.idsc.tensor.sca.Clip;
 
 /** class is used to develop and test anti lock brake logic */
@@ -62,7 +61,7 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
     if (optional.isPresent()) {
       Clip permittedRange = optional.get();
       if (HapticSteerConfig.GLOBAL.printLaneInfo)
-        System.out.println("permittedRange: " + ToString.of(permittedRange));
+        System.out.println("permittedRange: " + permittedRange);
       final Scalar putTorque = HapticSteerConfig.GLOBAL.laneKeeping(currAngle.subtract(permittedRange.apply(currAngle)));
       final Scalar powerSteer = powerSteering.torque(currAngle, velocity, tsu);
       return Optional.of(SteerPutEvent.createOn(putTorque.add(powerSteer)));

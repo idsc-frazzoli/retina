@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.calib.power;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
-import ch.ethz.idsc.owl.car.math.AngularSlip;
+import ch.ethz.idsc.owl.car.slip.AngularSlip;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;

@@ -53,7 +53,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
   public final JToggleButton jToggleButtonRepos = new JToggleButton("repos.");
-  private final SpinnerLabel<CurvePoseRenderPlugins> spinnerLabelPlugins = new SpinnerLabel<>();
+  private final SpinnerLabel<RenderPlugins> spinnerLabelPlugins = new SpinnerLabel<>();
   private RenderInterface renderInterface = EmptyRender.INSTANCE;
   private RenderPluginParameters renderPluginParameters = null;
   private final LazyMouseListener lazyMouseListener = new LazyMouseListener() {
@@ -92,8 +92,8 @@ public class TrajectoryDesign extends CurvatureDemo {
       spinnerLabelLevels.addToComponentReduced(timerFrame.jToolBar, new Dimension(30, 28), "levels");
     }
     {
-      spinnerLabelPlugins.setArray(CurvePoseRenderPlugins.values());
-      spinnerLabelPlugins.setValue(CurvePoseRenderPlugins.CLOTHOID_PURSUIT);
+      spinnerLabelPlugins.setArray(RenderPlugins.values());
+      spinnerLabelPlugins.setValue(RenderPlugins.CLOTHOID_PURSUIT);
       spinnerLabelPlugins.addToComponentReduced(timerFrame.jToolBar, new Dimension(170, 28), "plugin");
       spinnerLabelPlugins.setEnabled(!jToggleButtonRepos.isSelected());
     }
@@ -168,6 +168,8 @@ public class TrajectoryDesign extends CurvatureDemo {
     // ---
     PATH_SIDE_L.setCurve(renderPluginParameters.laneBoundaryL, true).render(geometricLayer, graphics);
     PATH_SIDE_R.setCurve(renderPluginParameters.laneBoundaryR, true).render(geometricLayer, graphics);
+    // ---
+    WaypointsRenderPlugin.INSTANCE.renderInterface(renderPluginParameters).render(geometricLayer, graphics);
     // ---
     renderInterface.render(geometricLayer, graphics);
     return refined;

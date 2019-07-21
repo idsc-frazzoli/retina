@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
@@ -21,11 +22,13 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 /** class is the default choice for pursuit when driving along a curve in global
  * coordinates while the pose is updated periodically from a localization method. */
 public abstract class CurvePursuitModule extends PursuitModule implements GokartPoseListener {
+  private final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
   private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
@@ -114,7 +117,7 @@ public abstract class CurvePursuitModule extends PursuitModule implements Gokart
 
   /***************************************************/
   /** @return curve world frame coordinates */
-  /* package */ final Optional<Tensor> getCurve() {
+  public final Optional<Tensor> getCurve() {
     return optionalCurve;
   }
 

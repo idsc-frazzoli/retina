@@ -23,11 +23,17 @@ public class GprmcTest extends TestCase {
     assertEquals(gprmc.dateStamp(), "080118");
   }
 
-  public void testInvalid() {
+  public void testInvalid1() {
     String nmea = "$GPRMC,142802,V,4724.3445,N,00837.8776,E,000.0,111.4,080118,001.8,E,A*1B";
     Gprmc gprmc = Gprmc.of(nmea);
     assertFalse(gprmc.isValid());
     assertEquals(gprmc.speed(), Quantity.of(0, "knots"));
     assertEquals(gprmc.course(), Quantity.of(111.4, "deg"));
+  }
+
+  public void testInvalid2() {
+    String nmea = "$GPRMC,145817,V,4724.3230,N,00837.8329,E,,,120118,001.8,E,N*04";
+    Gprmc gprmc = Gprmc.of(nmea);
+    assertFalse(gprmc.isValid());
   }
 }

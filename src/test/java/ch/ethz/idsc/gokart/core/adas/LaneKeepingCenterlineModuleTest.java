@@ -3,9 +3,9 @@ package ch.ethz.idsc.gokart.core.adas;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -13,7 +13,6 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.ref.ToString;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
@@ -33,7 +32,7 @@ public class LaneKeepingCenterlineModuleTest extends TestCase {
     Scalar width = clip.width();
     assertTrue(Scalars.lessThan(Quantity.of(0.3, "SCE"), width));
     assertTrue(Scalars.lessThan(width, Quantity.of(0.7, "SCE")));
-    System.out.println(ToString.of(clip));
+    System.out.println(clip);
     laneKeepingCenterlineModule.runAlgo();
     laneKeepingCenterlineModule.terminate();
   }
