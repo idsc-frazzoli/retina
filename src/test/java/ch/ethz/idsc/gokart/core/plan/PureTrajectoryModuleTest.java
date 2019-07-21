@@ -65,7 +65,7 @@ public class PureTrajectoryModuleTest extends TestCase {
       assertTrue(15 < dims.get(0));
     }
     // assertFalse(pureTrajectoryModule.curvePursuitModule.pursuitRimo.private_isOperational());
-    assertFalse(pureTrajectoryModule.curvePursuitModule.pursuitSteer.private_isOperational());
+    // assertFalse(pureTrajectoryModule.curvePursuitModule.pursuitSteer.private_isOperational());
     AllGunsBlazing.publishAutonomous();
     pureTrajectoryModule.curvePursuitModule.runAlgo();
     // assertTrue(pureTrajectoryModule.curvePursuitModule.pursuitRimo.private_isOperational());
