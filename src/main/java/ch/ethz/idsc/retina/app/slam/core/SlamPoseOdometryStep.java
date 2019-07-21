@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.app.slam.core;
 import ch.ethz.idsc.retina.app.slam.GokartPoseOdometryDemo;
 import ch.ethz.idsc.retina.app.slam.SlamCoreContainer;
 import ch.ethz.idsc.retina.app.slam.config.SlamDvsConfig;
-import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringIntegrator;
+import ch.ethz.idsc.sophus.lie.se2.Se2Integrator;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -31,7 +31,6 @@ import ch.ethz.idsc.tensor.Tensor;
    * @return propagated pose */
   private static Tensor propagatePose(Tensor oldPose, Tensor velocity, double dT) {
     Tensor deltaPose = velocity.multiply(RealScalar.of(dT));
-    // TODO JPH OWL 047 use Se2Integrator
-    return Se2CoveringIntegrator.INSTANCE.spin(oldPose, deltaPose);
+    return Se2Integrator.INSTANCE.spin(oldPose, deltaPose);
   }
 }

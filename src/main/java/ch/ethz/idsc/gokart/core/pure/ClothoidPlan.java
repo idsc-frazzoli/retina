@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.owl.math.pursuit.ClothoidPursuit;
 import ch.ethz.idsc.owl.math.pursuit.ClothoidPursuits;
+import ch.ethz.idsc.owl.math.pursuit.PursuitInterface;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -19,8 +20,8 @@ public class ClothoidPlan implements Serializable {
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @return ClothoidPlan */
   public static Optional<ClothoidPlan> from(Tensor lookAhead, Tensor pose, boolean isForward) {
-    ClothoidPursuit clothoidPursuit = new ClothoidPursuit(lookAhead);
-    Optional<Scalar> optional = clothoidPursuit.firstRatio(); // with unit [m^-1]
+    PursuitInterface pursuitInterface = ClothoidPursuit.of(lookAhead);
+    Optional<Scalar> optional = pursuitInterface.firstRatio(); // with unit [m^-1]
     if (optional.isPresent()) {
       Scalar ratio = optional.get();
       Tensor curveSE2 = ClothoidPursuits.curve(lookAhead, REFINEMENT);
