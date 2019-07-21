@@ -142,7 +142,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
           curvePlannerR.getPlan(pose, velocity.Get(0), laneBoundaryR, true);
       if (HapticSteerConfig.GLOBAL.printLaneInfo)
         System.out.println(optionalL);
-      Clip ratioLimitClip = steerConfig.getRatioLimit();
+      Clip ratioLimitClip = steerConfig.getRatioLimit(); // TODO JPH/AM clip obsolete
       if (optionalL.isPresent()) {
         Scalar steerlimitLratio = ratioLimitClip.apply(optionalL.get().ratio());
         steerlimitL_SCE = steerMapping.getSCEfromRatio(steerlimitLratio);

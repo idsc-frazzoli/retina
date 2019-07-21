@@ -26,20 +26,18 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MappingAnalysisOffline extends LidarProcessOffline {
-  private static final Scalar DELTA = Quantity.of(0.1, SI.SECOND);
-  // ---
+public abstract class MappingAnalysisOffline extends LidarProcessOffline implements Consumer<BufferedImage> {
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
-  private final Consumer<BufferedImage> consumer;
   private final BayesianOccupancyGrid bayesianOccupancyGrid;
   // ---
+  private final Scalar delta;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private GokartPoseEvent gokartPoseEvent;
 
-  public MappingAnalysisOffline(MappingConfig mappingConfig, Consumer<BufferedImage> consumer) {
+  public MappingAnalysisOffline(MappingConfig mappingConfig, Scalar delta) {
     super(new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), -1));
-    this.consumer = consumer;
+    this.delta = delta;
     bayesianOccupancyGrid = mappingConfig.createBayesianOccupancyGrid();
   }
 
@@ -50,8 +48,9 @@ public class MappingAnalysisOffline extends LidarProcessOffline {
       bayesianOccupancyGrid.setPose(gokartPoseEvent.getPose());
     }
     // ---
-    if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
-      time_next = time.add(DELTA);
+    if (Scalars.lessThan(time_next, time) && //
+        Objects.nonNull(gokartPoseEvent)) {
+      time_next = time.add(delta);
       PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
       ScatterImage scatterImage = new WallScatterImage(predefinedMap);
       BufferedImage bufferedImage = scatterImage.getImage();
@@ -69,7 +68,7 @@ public class MappingAnalysisOffline extends LidarProcessOffline {
       // grid.genObstacleMap();
       // System.out.println(time);
       bayesianOccupancyGrid.genObstacleMap();
-      consumer.accept(bufferedImage);
+      accept(bufferedImage);
     }
   }
 

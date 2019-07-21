@@ -19,7 +19,6 @@ public class AedatFileHeader {
 
   public AedatFileHeader(File file) throws IOException {
     int skip = 0;
-    // TODO JPH TENSOR 075
     try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
       while (true) {
         String string = bufferedReader.readLine();

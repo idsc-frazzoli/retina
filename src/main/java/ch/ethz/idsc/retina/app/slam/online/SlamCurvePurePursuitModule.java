@@ -49,7 +49,7 @@ public final class SlamCurvePurePursuitModule extends PursuitModule {
     if (optionalCurve.isPresent()) {
       PurePursuit purePursuit = PurePursuit.fromTrajectory( //
           optionalCurve.get(), SlamDvsConfig.eventCamera.slamPrcConfig.lookAheadMeter());
-      return purePursuit.ratio().map(r -> Quantity.of(r, SI.PER_METER));
+      return purePursuit.firstRatio().map(r -> Quantity.of(r, SI.PER_METER));
     }
     System.err.println("no curve in pure pursuit");
     return Optional.empty();

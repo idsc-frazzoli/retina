@@ -29,7 +29,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     MappingConfig config = new MappingConfig();
     config.obsRadius = Quantity.of(0.8, SI.METER);
     // MappingConfig.GLOBAL.P_M = RealScalar.of(0.95);
-    OfflineLogPlayer.process(file, new MappingAnalysisOffline(config, consumer));
+    OfflineLogPlayer.process(file, new MappingAnalysisOffline(config, Quantity.of(1, SI.SECOND)) {
+      @Override
+      public void accept(BufferedImage bufferedImage) {
+        consumer.accept(bufferedImage);
+      }
+    });
     System.out.print("Done.");
   }
 }

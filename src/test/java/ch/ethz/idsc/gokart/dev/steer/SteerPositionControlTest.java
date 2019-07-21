@@ -5,6 +5,7 @@ import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
@@ -67,7 +68,7 @@ public class SteerPositionControlTest extends TestCase {
   }
 
   public void testDt() {
-    assertEquals(SteerPositionControl.DT, Quantity.of(0.02, "s"));
+    assertTrue(Scalars.lessEquals(SteerPositionControl.DT, Quantity.of(0.02, "s")));
   }
 
   public void testFailNull() {
