@@ -12,7 +12,11 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class PursuitRimo extends PursuitBase<RimoPutEvent> {
+/** HINT:
+ * THIS CLASS USED TO BE THE SPEED CONTROLLER DURING PURE PURSUIT.
+ * HOWEVER, THE PREFERENCE TURNED OUT TO BE TORQUE VECTORING.
+ * THEREFORE PURSUIT NOW ONLY CONTROLS STEERING. */
+/* package */ class PursuitRimo extends PursuitBase<RimoPutEvent> {
   /** available implementations of RimoRateControllerWrap are
    * {@link RimoRateControllerUno}, and RimoRateControllerDuo
    * UNO uses a single PI-controller */
