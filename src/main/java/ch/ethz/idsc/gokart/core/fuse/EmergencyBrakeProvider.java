@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.fuse;
 
 import ch.ethz.idsc.gokart.calib.ChassisGeometry;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.AutoboxScheduledProvider;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
@@ -9,7 +10,6 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.data.SoftWatchdog;
 import ch.ethz.idsc.retina.util.data.Watchdog;

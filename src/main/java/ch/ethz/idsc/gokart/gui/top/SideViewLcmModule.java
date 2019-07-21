@@ -5,6 +5,7 @@ import java.awt.Color;
 
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;

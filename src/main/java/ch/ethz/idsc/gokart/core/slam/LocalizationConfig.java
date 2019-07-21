@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16TiltedPlanarEmulator;
 import ch.ethz.idsc.retina.util.math.Magnitude;

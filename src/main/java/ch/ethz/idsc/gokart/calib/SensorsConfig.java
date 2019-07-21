@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.top;
+package ch.ethz.idsc.gokart.calib;
 
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Type;

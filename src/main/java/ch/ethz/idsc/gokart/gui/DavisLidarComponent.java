@@ -9,7 +9,7 @@ import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.retina.davis.app.DavisQuickComponent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;

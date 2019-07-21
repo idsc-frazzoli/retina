@@ -4,12 +4,12 @@ package ch.ethz.idsc.gokart.offline.pose;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Type;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
 import ch.ethz.idsc.gokart.offline.cache.CachedLog;

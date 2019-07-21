@@ -11,6 +11,7 @@ import java.awt.image.DataBufferByte;
 
 import javax.swing.JToggleButton;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.app.blob.BlobTrackConfig;
 import ch.ethz.idsc.retina.app.calib.ImageToGokartInterface;

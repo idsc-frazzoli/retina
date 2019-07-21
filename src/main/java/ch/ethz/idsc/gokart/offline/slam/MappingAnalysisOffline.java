@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
@@ -17,7 +18,6 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.SI;

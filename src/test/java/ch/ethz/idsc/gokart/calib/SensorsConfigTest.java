@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.top;
+package ch.ethz.idsc.gokart.calib;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
