@@ -27,7 +27,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       file.delete();
     // ---
     File file;
-    file = new File("/media/datahaki/data/gokart/0701map/20190701/20190701T174152_00", "log.lcm");
+    file = new File("/media/datahaki/data/gokart/0701map/20190701/20190701T174152_00", "20190701T174152_00.lcm");
     // ---
     if (!file.isFile())
       throw new RuntimeException();
@@ -35,7 +35,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Consumer<BufferedImage> consumer = new PngImageWriter(DIRECTORY);
     MappingConfig mappingConfig = new MappingConfig();
     mappingConfig.obsRadius = Quantity.of(0.8, SI.METER);
-    OfflineLogPlayer.process(file, new TrackReconOffline(mappingConfig, consumer));
+    OfflineLogPlayer.process(file, new TrackReconOffline(mappingConfig, Quantity.of(0.05, SI.SECOND)) {
+      @Override
+      public void accept(BufferedImage bufferedImage) {
+        consumer.accept(bufferedImage);
+      }
+    });
     System.out.print("Done.");
   }
 }

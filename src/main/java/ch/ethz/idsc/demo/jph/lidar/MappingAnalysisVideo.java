@@ -11,7 +11,9 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.slam.MappingAnalysisOffline;
 import ch.ethz.idsc.retina.util.io.BGR3ByteAnimationWriter;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ enum MappingAnalysisVideo {
   ;
@@ -22,7 +24,12 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     final String filename = HomeDirectory.file("mapping.mp4").toString();
     try (Mp4AnimationWriter mp4 = new Mp4AnimationWriter(filename, new Dimension(640, 640), snaps)) {
       Consumer<BufferedImage> consumer = new BGR3ByteAnimationWriter(mp4);
-      OfflineLogPlayer.process(file, new MappingAnalysisOffline(MappingConfig.GLOBAL, consumer));
+      OfflineLogPlayer.process(file, new MappingAnalysisOffline(MappingConfig.GLOBAL, Quantity.of(1, SI.SECOND)) {
+        @Override
+        public void accept(BufferedImage bufferedImage) {
+          consumer.accept(bufferedImage);
+        }
+      });
       System.out.print("Done.");
     }
   }
