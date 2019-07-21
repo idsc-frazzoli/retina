@@ -13,6 +13,7 @@ public enum OfflineIndex {
   ;
   public static List<File> folders(File file) throws FileNotFoundException, IOException {
     File dir = file.getParentFile();
+    // TODO JPH TENSOR 075
     try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
       return bufferedReader.lines() //
           .map(String::trim) //

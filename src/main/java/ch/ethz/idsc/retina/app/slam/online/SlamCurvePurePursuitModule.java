@@ -5,15 +5,18 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pure.PurePursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.PursuitModule;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.math.pursuit.PurePursuit;
 import ch.ethz.idsc.retina.app.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 
 /** pure pursuit controller for SLAM algorithm */
 public final class SlamCurvePurePursuitModule extends PursuitModule {
+  private final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
   private Optional<Tensor> optionalCurve = Optional.empty();
 
   public SlamCurvePurePursuitModule() {

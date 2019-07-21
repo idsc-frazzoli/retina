@@ -39,11 +39,12 @@ abstract class PursuitBase<PE> implements StartAndStoppable, PutProvider<PE> {
 
   // function non-private for testing only
   public final Optional<PE> private_putEvent(SteerColumnInterface steerColumnInterface) {
-    return private_isOperational() && steerColumnInterface.isSteerColumnCalibrated() //
-        // rimo requires RimoGetEvent for velocity control to return non-empty
-        // steer always returns non-empty at this point
-        ? control(steerColumnInterface)
-        : fallback();
+    return private_isOperational() //
+        && steerColumnInterface.isSteerColumnCalibrated() //
+            // rimo requires RimoGetEvent for velocity control to return non-empty
+            // steer always returns non-empty at this point
+            ? control(steerColumnInterface)
+            : fallback();
   }
 
   /** @param steerColumnInterface guaranteed to be calibrated
