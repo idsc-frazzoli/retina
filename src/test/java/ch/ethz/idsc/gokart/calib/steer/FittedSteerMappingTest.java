@@ -82,4 +82,8 @@ public class FittedSteerMappingTest extends TestCase {
         .map(steerMapping::getSCEfromRatio);
     assertTrue(Chop.NONE.allZero(Imag.of(tensor)));
   }
+
+  public void testInstance() {
+    assertTrue(FittedSteerMapping.instance() instanceof FittedSteerMapping);
+  }
 }
