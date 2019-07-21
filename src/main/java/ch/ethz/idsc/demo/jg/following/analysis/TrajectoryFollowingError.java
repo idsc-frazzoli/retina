@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import ch.ethz.idsc.demo.jg.FileHelper;
-import ch.ethz.idsc.gokart.core.pure.TrajectoryEvents;
+import ch.ethz.idsc.gokart.core.plan.TrajectoryEvents;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.owl.math.state.StateTime;

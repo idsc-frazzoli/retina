@@ -1,5 +1,5 @@
 // code by ynager and jph
-package ch.ethz.idsc.gokart.core.pure;
+package ch.ethz.idsc.gokart.core.plan;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;

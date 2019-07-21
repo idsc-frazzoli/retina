@@ -1,9 +1,11 @@
 // code by ynager and jph
-package ch.ethz.idsc.gokart.core.pure;
+package ch.ethz.idsc.gokart.core.plan;
 
 import java.util.List;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitModule;
+import ch.ethz.idsc.gokart.core.pure.PurePursuitConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.glc.adapter.GlcTrajectories;

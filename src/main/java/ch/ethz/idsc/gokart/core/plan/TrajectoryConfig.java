@@ -1,5 +1,5 @@
 // code by ynager
-package ch.ethz.idsc.gokart.core.pure;
+package ch.ethz.idsc.gokart.core.plan;
 
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
@@ -43,6 +43,8 @@ public class TrajectoryConfig {
   /** true = SightLinesMapping
    * false = GenericBayesianMapping */
   public Boolean mapSightLines = true;
+  /** preferred waypoint spacing */
+  public Scalar waypointsSpacing = Quantity.of(2.5, SI.METER);
   /** file that stores se2 waypoints without units
    * (this allows that the file can also be generated or imported by other software)
    * units will be attached in the function {@link #getWaypointsPose()} */

@@ -51,7 +51,7 @@ public class CurveClothoidPursuitPlanner {
     TensorUnaryOperator tensorUnaryOperator = new Se2GroupElement(pose).inverse()::combine;
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
-      CurveClothoidPursuitHelper.mirrorAndReverse(tensor);
+      ClothoidPursuitHelper.mirrorAndReverse(tensor);
     Predicate<Scalar> isCompliant = clothoidPursuitConfig.ratioLimits()::isInside;
     Scalar lookAhead = clothoidPursuitConfig.lookAhead;
     do {

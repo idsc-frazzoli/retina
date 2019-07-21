@@ -114,7 +114,7 @@ public abstract class CurvePursuitModule extends PursuitModule implements Gokart
 
   /***************************************************/
   /** @return curve world frame coordinates */
-  /* package */ final Optional<Tensor> getCurve() {
+  public final Optional<Tensor> getCurve() {
     return optionalCurve;
   }
 

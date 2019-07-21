@@ -17,8 +17,8 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
 public abstract class PursuitModule extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
-  final PursuitRimo pursuitRimo = new PursuitRimo();
-  final PursuitSteer pursuitSteer = new PursuitSteer();
+  public final PursuitRimo pursuitRimo = new PursuitRimo();
+  public final PursuitSteer pursuitSteer = new PursuitSteer();
   protected final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
   protected final PursuitConfig pursuitConfig;
 
@@ -46,7 +46,7 @@ public abstract class PursuitModule extends AbstractClockedModule {
 
   /***************************************************/
   @Override // from AbstractClockedModule
-  protected final void runAlgo() {
+  public final void runAlgo() {
     final Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     Optional<Scalar> heading = deriveHeading();
     if (heading.isPresent())

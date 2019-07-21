@@ -1,5 +1,5 @@
 // code by ynager and jph
-package ch.ethz.idsc.gokart.core.pure;
+package ch.ethz.idsc.gokart.core.plan;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
+import ch.ethz.idsc.gokart.core.pure.CurvePursuitModule;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;

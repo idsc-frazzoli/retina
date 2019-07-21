@@ -6,7 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
 
-import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
+import ch.ethz.idsc.gokart.core.plan.TrajectoryConfig;
 import ch.ethz.idsc.owl.ani.api.GlcPlannerCallback;
 import ch.ethz.idsc.owl.bot.se2.glc.GlcWaypointFollowing;
 import ch.ethz.idsc.owl.bot.se2.glc.GokartVecEntity;

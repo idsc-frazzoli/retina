@@ -12,11 +12,11 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-class PursuitRimo extends PursuitBase<RimoPutEvent> {
+public class PursuitRimo extends PursuitBase<RimoPutEvent> {
   /** available implementations of RimoRateControllerWrap are
    * {@link RimoRateControllerUno}, and RimoRateControllerDuo
    * UNO uses a single PI-controller */
-  /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
+  public final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
 
   @Override // from StartAndStoppable
   public void start() {

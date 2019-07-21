@@ -25,7 +25,7 @@ public class ClothoidPlan implements Serializable {
       Scalar ratio = optional.get();
       Tensor curveSE2 = ClothoidPursuits.curve(lookAhead, REFINEMENT);
       if (!isForward)
-        CurveClothoidPursuitHelper.mirrorAndReverse(curveSE2);
+        ClothoidPursuitHelper.mirrorAndReverse(curveSE2);
       Tensor curve = Tensor.of(curveSE2.stream().map(new Se2GroupElement(pose)::combine));
       return Optional.of(new ClothoidPlan(ratio, curve));
     }

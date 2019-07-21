@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.alg.VectorQ;
 
 // TODO JPH rename
-/* package */ enum CurveClothoidPursuitHelper {
+/* package */ enum ClothoidPursuitHelper {
   ;
   /** mirror the points along the y axis and invert their orientation
    * @param se2points curve given by points {x, y, a} */
