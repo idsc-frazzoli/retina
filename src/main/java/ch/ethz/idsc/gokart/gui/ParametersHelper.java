@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.calib.ChassisGeometry;
 import ch.ethz.idsc.gokart.calib.brake.BrakeFunctionConfig;
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.gokart.calib.steer.SteerFeedForwardConfig;
@@ -21,7 +22,6 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerPid;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 
 /* package */ enum ParametersHelper {

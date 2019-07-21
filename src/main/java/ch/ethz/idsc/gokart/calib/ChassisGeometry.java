@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.gui.top;
+package ch.ethz.idsc.gokart.calib;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
@@ -15,7 +15,6 @@ import ch.ethz.idsc.tensor.red.Total;
  * correspond to immutable characteristic of the gokart.
  * 
  * further constants can be found in {@link MPCOptimizationConfig} */
-// TODO JPH location of class not good
 public class ChassisGeometry {
   public static final ChassisGeometry GLOBAL = AppResources.load(new ChassisGeometry());
   /***************************************************/
