@@ -2,7 +2,7 @@
 package ch.ethz.idsc.owl.car.shop;
 
 import ch.ethz.idsc.owl.car.core.WheelInterface;
-import ch.ethz.idsc.owl.car.math.Pacejka3;
+import ch.ethz.idsc.owl.car.slip.Pacejka3;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 

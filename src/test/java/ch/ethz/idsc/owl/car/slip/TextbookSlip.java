@@ -1,5 +1,5 @@
 // code by edo and jph
-package ch.ethz.idsc.owl.car.math;
+package ch.ethz.idsc.owl.car.slip;
 
 import java.io.Serializable;
 

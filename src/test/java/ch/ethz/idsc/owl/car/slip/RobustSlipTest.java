@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.owl.car.math;
+package ch.ethz.idsc.owl.car.slip;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

@@ -3,7 +3,7 @@ package ch.ethz.idsc.owl.car.drift;
 
 import java.io.Serializable;
 
-import ch.ethz.idsc.owl.car.math.Pacejka3;
+import ch.ethz.idsc.owl.car.slip.Pacejka3;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
