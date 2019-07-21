@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.pure;
+package ch.ethz.idsc.gokart.core;
 
 import java.io.File;
 

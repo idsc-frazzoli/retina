@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.core.adas;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.DubendorfCurve;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvents;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;

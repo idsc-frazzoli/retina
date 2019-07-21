@@ -1,8 +1,10 @@
 // code by mg
-package ch.ethz.idsc.gokart.core.pure;
+package ch.ethz.idsc.retina.app.slam.online;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.pure.PurePursuitConfig;
+import ch.ethz.idsc.gokart.core.pure.PursuitModule;
 import ch.ethz.idsc.owl.math.pursuit.PurePursuit;
 import ch.ethz.idsc.retina.app.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.retina.util.math.SI;

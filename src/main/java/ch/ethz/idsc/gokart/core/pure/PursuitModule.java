@@ -21,7 +21,7 @@ public abstract class PursuitModule extends AbstractClockedModule {
   protected final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
   protected final PursuitConfig pursuitConfig;
 
-  PursuitModule(PursuitConfig pursuitConfig) {
+  protected PursuitModule(PursuitConfig pursuitConfig) {
     this.pursuitConfig = pursuitConfig;
   }
 

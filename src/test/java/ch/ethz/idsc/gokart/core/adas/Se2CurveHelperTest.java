@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.adas;
 
-import ch.ethz.idsc.gokart.core.pure.DubendorfCurve;
+import ch.ethz.idsc.gokart.core.DubendorfCurve;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
 
