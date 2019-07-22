@@ -30,7 +30,7 @@ public class LaneKeepingCenterlineModuleTest extends TestCase {
     assertTrue(permittedRange.isPresent());
     Clip clip = permittedRange.get();
     Scalar width = clip.width();
-    assertTrue(Scalars.lessThan(Quantity.of(0.3, "SCE"), width));
+    assertTrue(Scalars.lessThan(Quantity.of(0.1, "SCE"), width));
     assertTrue(Scalars.lessThan(width, Quantity.of(0.7, "SCE")));
     System.out.println(clip);
     laneKeepingCenterlineModule.runAlgo();
