@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.track;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -18,127 +17,13 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Normalize;
 import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
-import ch.ethz.idsc.tensor.red.Mean;
-import ch.ethz.idsc.tensor.red.Min;
-import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Abs;
 
 public class TrackRefinement {
-  public static abstract class TrackConstraint {
-    private Tensor controlPointsX = null;
-    private Tensor controlPointsY = null;
-    private Tensor radiusControlPoints = null;
-
-    public abstract void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints);
-
-    void setAll(Tensor controlPointsX, Tensor controlPointsY, Tensor radiusControlPoints) {
-      this.controlPointsX = controlPointsX;
-      this.controlPointsY = controlPointsY;
-      this.radiusControlPoints = radiusControlPoints;
-    }
-
-    public Tensor getControlPointsX() {
-      return controlPointsX;
-    }
-
-    public Tensor getControlPointsY() {
-      return controlPointsY;
-    }
-
-    public Tensor getRadiusControlPoints() {
-      return radiusControlPoints;
-    }
-  }
-
-  public static class TrackSplitConstraint extends TrackConstraint {
-    private final BSplineTrack track;
-    private Scalar trackProg = null;
-    private Tensor trackPos = null;
-    private Tensor trackDirection = null;
-
-    public TrackSplitConstraint(BSplineTrack track) {
-      this.track = track;
-    }
-
-    @Override // from TrackConstraint
-    public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
-      Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsY.Get(0));
-      Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsY.Get(1));
-      Tensor startPos = Mean.of(Tensors.of(first, second));
-      if (Objects.isNull(trackProg) || Objects.isNull(trackPos) || Objects.isNull(trackDirection)) {
-        trackProg = track.getNearestPathProgress(startPos);
-        trackPos = track.getPositionXY(trackProg);
-        trackDirection = track.getDirectionXY(trackProg);
-      }
-      Tensor realVector = second.subtract(first);
-      Scalar projection = (Scalar) Max.of(realVector.dot(trackDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
-      Tensor correctedFirst = startPos.subtract(trackDirection.multiply(projection));
-      Tensor correctedSecond = startPos.add(trackDirection.multiply(projection));
-      setAll(controlpointsX, controlpointsY, radiusControlPoints);
-      controlpointsX.set(correctedFirst.Get(0), 0);
-      controlpointsX.set(correctedSecond.Get(0), 1);
-      controlpointsY.set(correctedFirst.Get(1), 0);
-      controlpointsY.set(correctedSecond.Get(1), 1);
-    }
-  }
-
-  public static class PositionalStartConstraint extends TrackConstraint {
-    private Tensor wantedPosition = null;
-    private Tensor wantedDirection = null;
-
-    @Override // from TrackConstraint
-    public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
-      Tensor first = Tensors.of(controlpointsX.Get(0), controlpointsY.Get(0));
-      Tensor second = Tensors.of(controlpointsX.Get(1), controlpointsY.Get(1));
-      Tensor startPos = Mean.of(Tensors.of(first, second));
-      if (Objects.isNull(wantedPosition)) {
-        wantedPosition = startPos;
-        wantedDirection = Normalize.with(Norm._2).apply(second.subtract(first));
-      }
-      Tensor realVector = second.subtract(first);
-      Scalar projection = (Scalar) Max.of(realVector.dot(wantedDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
-      Tensor correctedFirst = startPos.subtract(wantedDirection.multiply(projection));
-      Tensor correctedSecond = startPos.add(wantedDirection.multiply(projection));
-      setAll(controlpointsX, controlpointsY, radiusControlPoints);
-      controlpointsX.set(correctedFirst.Get(0), 0);
-      controlpointsX.set(correctedSecond.Get(0), 1);
-      controlpointsY.set(correctedFirst.Get(1), 0);
-      controlpointsY.set(correctedSecond.Get(1), 1);
-    }
-  }
-
-  public static class PositionalEndConstraint extends TrackConstraint {
-    private Tensor wantedPosition = null;
-    private Tensor wantedDirection = null;
-
-    @Override // from TrackConstraint
-    public void compute(Tensor controlpointsX, Tensor controlpointsY, Tensor radiusControlPoints) {
-      int lastIndex = controlpointsX.length() - 1;
-      int secondLastIndex = lastIndex - 1;
-      Tensor first = Tensors.of(controlpointsX.Get(secondLastIndex), controlpointsY.Get(secondLastIndex));
-      Tensor second = Tensors.of(controlpointsX.Get(lastIndex), controlpointsY.Get(lastIndex));
-      Tensor startPos = Mean.of(Tensors.of(first, second));
-      if (Objects.isNull(wantedPosition)) {
-        wantedPosition = startPos;
-        wantedDirection = Normalize.with(Norm._2).apply(second.subtract(first));
-      }
-      Tensor realVector = second.subtract(first);
-      Scalar projection = (Scalar) Min.of(realVector.dot(wantedDirection), Quantity.of(0, SI.METER)).divide(RealScalar.of(2));
-      Tensor correctedFirst = startPos.subtract(wantedDirection.multiply(projection));
-      Tensor correctedSecond = startPos.add(wantedDirection.multiply(projection));
-      setAll(controlpointsX, controlpointsY, radiusControlPoints);
-      controlpointsX.set(correctedFirst.Get(0), secondLastIndex);
-      controlpointsX.set(correctedSecond.Get(0), lastIndex);
-      controlpointsY.set(correctedFirst.Get(1), secondLastIndex);
-      controlpointsY.set(correctedSecond.Get(1), lastIndex);
-    }
-  }
-
   private final OccupancyGrid occupancyGrid;
 
   public TrackRefinement(OccupancyGrid occupancyGrid) {
@@ -152,8 +37,7 @@ public class TrackRefinement {
   private static final TensorUnaryOperator REGULARIZATION_CYCLIC = Regularization2Step.cyclic(RnGeodesic.INSTANCE, gdRegularizer);
   private static final TensorUnaryOperator REGULARIZATION_STRING = Regularization2Step.string(RnGeodesic.INSTANCE, gdRegularizer);
 
-  Tensor getRefinedTrack(Tensor points_xyr, Scalar resolution, int iterations, boolean closed, //
-      List<TrackConstraint> constraints) {
+  Tensor getRefinedTrack(Tensor points_xyr, Scalar resolution, int iterations, boolean closed) {
     int m = (int) (points_xyr.length() * resolution.number().doubleValue());
     int n = points_xyr.length();
     Tensor queryPositions;
@@ -183,19 +67,19 @@ public class TrackRefinement {
           ? REGULARIZATION_CYCLIC.apply(points_xyr)
           : REGULARIZATION_STRING.apply(points_xyr);
       // ---
-      if (Objects.nonNull(constraints)) {
-        // TODO JPH/MH
-        Tensor controlpointsX = points_xyr.get(Tensor.ALL, 0);
-        Tensor controlpointsY = points_xyr.get(Tensor.ALL, 1);
-        Tensor radiusCtrPoints = points_xyr.get(Tensor.ALL, 2);
-        for (TrackConstraint constraint : constraints) {
-          constraint.compute(controlpointsX, controlpointsY, radiusCtrPoints);
-          controlpointsX = constraint.getControlPointsX();
-          controlpointsY = constraint.getControlPointsY();
-          radiusCtrPoints = constraint.getRadiusControlPoints();
-        }
-        points_xyr = Transpose.of(Tensors.of(controlpointsX, controlpointsY, radiusCtrPoints));
-      }
+      // constraints are not used at the moment
+      // {
+      // Tensor controlpointsX = points_xyr.get(Tensor.ALL, 0);
+      // Tensor controlpointsY = points_xyr.get(Tensor.ALL, 1);
+      // Tensor radiusCtrPoints = points_xyr.get(Tensor.ALL, 2);
+      // for (TrackConstraint constraint : constraints) {
+      // constraint.compute(controlpointsX, controlpointsY, radiusCtrPoints);
+      // controlpointsX = constraint.getControlPointsX();
+      // controlpointsY = constraint.getControlPointsY();
+      // radiusCtrPoints = constraint.getRadiusControlPoints();
+      // }
+      // points_xyr = Transpose.of(Tensors.of(controlpointsX, controlpointsY, radiusCtrPoints));
+      // }
     }
     // MPCBSplineTrack track = new MPCBSplineTrack(controlpointsX, controlpointsY, radiusCtrPoints);
     return points_xyr;

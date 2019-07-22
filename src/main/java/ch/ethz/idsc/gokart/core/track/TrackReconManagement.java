@@ -2,15 +2,12 @@
 package ch.ethz.idsc.gokart.core.track;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.map.OccupancyGrid;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.track.TrackRefinement.TrackConstraint;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
@@ -46,7 +43,7 @@ public class TrackReconManagement {
   // private boolean oldWasClosed = false;
   // private boolean cleared = false;
   // private final Timing lastTrackReset = Timing.started();
-  private List<TrackConstraint> constraints = new LinkedList<>();
+  // private List<TrackConstraint> constraints = new LinkedList<>();
   // private final Scalar openTrackValid = Quantity.of(1, SI.SECOND);
   private Scalar timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
   // private final List<TrackConstraint> trackConstraints = null;
@@ -121,7 +118,7 @@ public class TrackReconManagement {
             // we have a guess
             // TODO do this more elegantly
             // Tensor radiusCtrPoints = Tensors.vector(i -> Quantity.of(1, SI.METER), ctrpointsXY.get(0).length());
-            constraints = new LinkedList<>();
+            // constraints = new LinkedList<>();
             /* if (closedTrack) {
              * // no constraints at the moment
              * } else {
@@ -130,7 +127,7 @@ public class TrackReconManagement {
              * } */
             Tensor newTrackDataXYR = trackRefinement.getRefinedTrack( //
                 Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER)))), //
-                RealScalar.of(8), 10, closedTrack, constraints);
+                RealScalar.of(8), 10, closedTrack);
             if (Objects.nonNull(newTrackDataXYR)) {
               trackDataXYR = newTrackDataXYR;
               newSolutionNeeded = false;
@@ -163,7 +160,7 @@ public class TrackReconManagement {
               // System.out.println("open track");
               newTrackDataXYR = trackRefinement.getRefinedTrack( //
                   newTrackDataXYR, //
-                  RealScalar.of(8), 10, closedTrack, constraints);
+                  RealScalar.of(8), 10, closedTrack);
               if (Objects.nonNull(newTrackDataXYR))
                 trackDataXYR = newTrackDataXYR;
             }
@@ -175,7 +172,7 @@ public class TrackReconManagement {
       // refine
       System.out.println("refine");
       Tensor newTrackDataXYR = Objects.nonNull(trackDataXYR) //
-          ? trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 3, closedTrack, constraints) //
+          ? trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 3, closedTrack) //
           : null;
       if (Objects.nonNull(newTrackDataXYR))
         trackDataXYR = newTrackDataXYR;

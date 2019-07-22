@@ -281,8 +281,7 @@ public final class BSplineTrack implements TrackInterface {
   public TrackBoundaries getTrackBoundaries(int resolution) {
     // this is not accurate for large changes in radius
     Tensor domain = domain(resolution);
-    Tensor middle = domain //
-        .map(this::getPositionXY);
+    Tensor middle = domain.map(this::getPositionXY);
     Tensor normal = domain.map(prog -> getLeftDirectionXY(prog).multiply(getRadius(prog)));
     Tensor lineL = middle.add(normal);
     Tensor lineR = middle.subtract(normal);
