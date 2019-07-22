@@ -83,7 +83,7 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
         Optional<MPCBSplineTrack> optional = trackReconManagement.update(gokartPoseEvent, delta);
         mpcBSplineTrackRender.mpcBSplineTrack(optional);
       }
-      double zoom = 3;
+      double zoom = 2;
       GeometricLayer geometricLayer = GeometricLayer.of(Tensors.matrix(new Number[][] { //
           { 7.5 * zoom, 0., -540 }, //
           { 0., -7.5 * zoom, 540 + 640 }, //

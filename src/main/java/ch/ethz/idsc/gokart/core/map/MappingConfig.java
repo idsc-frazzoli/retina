@@ -44,6 +44,10 @@ public class MappingConfig {
   /** Minimal obstacle height. Used for inverse sensor model
    * only relevant when alongLine == true */
   public final Scalar minObsHeight = Quantity.of(0, SI.METER);
+  /** lower bounds coordinates with interpretation meter */
+  public Tensor lBounds = Tensors.vector(20, 20);
+  /** range of map with interpretation meter */
+  public Tensor range = Tensors.vector(40, 40);
 
   /***************************************************/
   public double getP_M() {
@@ -66,24 +70,21 @@ public class MappingConfig {
     return lambda.number().doubleValue();
   }
 
-  private static final Tensor LBOUNDS = Tensors.vector(20, 20);
-  private static final Tensor RANGE = Tensors.vector(35, 35);
-
   /** @return Dubilab specific BayesianOccupancyGrid */
   public BayesianOccupancyGrid createBayesianOccupancyGrid() {
-    return BayesianOccupancyGrid.of(LBOUNDS, RANGE, cellDim, obsRadius);
+    return BayesianOccupancyGrid.of(lBounds, range, cellDim, obsRadius);
   }
 
   public BayesianOccupancyGrid createTrackFittingBayesianOccupancyGrid() {
-    return BayesianOccupancyGrid.of(LBOUNDS, RANGE, cellDim, trackDrivingObsRadius, true);
+    return BayesianOccupancyGrid.of(lBounds, range, cellDim, trackDrivingObsRadius, true);
   }
 
   /** @return dubilab specific BayesianOccupancyGrid */
   public BayesianOccupancyGrid createThinBayesianOccupancyGrid() {
-    return BayesianOccupancyGrid.of(LBOUNDS, RANGE, cellDim, Quantity.of(0, SI.METER), true);
+    return BayesianOccupancyGrid.of(lBounds, range, cellDim, Quantity.of(0, SI.METER), true);
   }
 
   public SightLineOccupancyGrid createSightLineOccupancyGrid() {
-    return SightLineOccupancyGrid.of(LBOUNDS, RANGE, cellDim);
+    return SightLineOccupancyGrid.of(lBounds, range, cellDim);
   }
 }

@@ -101,7 +101,12 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     public Cell getFrom(Cell cell) {
       int nx = cell.x + dx;
       int ny = cell.y + dy;
-      if (!occupancyGrid.isCellOccupied(nx, ny))
+      if (!occupancyGrid.isCellOccupied(nx, ny)
+      // TODO JPH mapping config range too small if index out of bounds here
+      // && //
+      // nx < cellGrid.length && //
+      // ny < cellGrid[0].length
+      )
         return cellGrid[nx][ny];
       return null;
     }
