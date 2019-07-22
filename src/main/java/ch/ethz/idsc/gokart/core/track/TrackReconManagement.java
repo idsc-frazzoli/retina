@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.track;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.map.TrackRefinement.TrackConstraint;
+import ch.ethz.idsc.gokart.core.map.OccupancyGrid;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.track.TrackRefinement.TrackConstraint;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;

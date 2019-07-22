@@ -3,8 +3,8 @@ package ch.ethz.idsc.demo.mh;
 
 import java.io.File;
 
-import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
+import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import lcm.logging.LogPlayer;

@@ -1,5 +1,5 @@
 // code by mh, jph
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.track;
 
 import java.awt.Graphics2D;
 import java.util.Optional;

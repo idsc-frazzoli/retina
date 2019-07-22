@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.track;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.PriorityQueue;
 
+import ch.ethz.idsc.gokart.core.map.OccupancyGrid;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
-import ch.ethz.idsc.gokart.core.map.TrackReconManagement;
+import ch.ethz.idsc.gokart.core.track.TrackReconManagement;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.cache.CachedLog;
 import ch.ethz.idsc.retina.util.math.SI;

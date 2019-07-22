@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import junit.framework.TestCase;

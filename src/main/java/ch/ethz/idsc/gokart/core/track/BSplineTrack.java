@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.retina.util.math.UniformBSpline2;
 import ch.ethz.idsc.sophus.math.Det2D;

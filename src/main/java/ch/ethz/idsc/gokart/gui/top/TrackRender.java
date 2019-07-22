@@ -8,8 +8,8 @@ import java.awt.Stroke;
 import java.awt.geom.Path2D;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.map.TrackBoundaries;
-import ch.ethz.idsc.gokart.core.map.TrackInterface;
+import ch.ethz.idsc.gokart.core.track.TrackBoundaries;
+import ch.ethz.idsc.gokart.core.track.TrackInterface;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;

@@ -1,7 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.gokart.core.map.BSplineTrack;
+import ch.ethz.idsc.gokart.core.track.BSplineTrack;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.math.ArcTan2D;
 import ch.ethz.idsc.tensor.RealScalar;

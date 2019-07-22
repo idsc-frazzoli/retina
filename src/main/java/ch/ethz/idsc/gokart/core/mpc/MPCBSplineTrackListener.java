@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.map.TrackReconModule;
+import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 
 @FunctionalInterface
 public interface MPCBSplineTrackListener {
