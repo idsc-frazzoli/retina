@@ -29,8 +29,9 @@ import ch.ethz.idsc.tensor.sca.Clips;
 /**  */
 public class LaneKeepingCenterlineModule extends AbstractClockedModule implements //
     GokartPoseListener, TensorListener {
-  private static final Tensor OFS_L = Tensors.fromString("{0, +1[m], 0}").unmodifiable();
-  private static final Tensor OFS_R = Tensors.fromString("{0, -1[m], 0}").unmodifiable();
+
+  private static final Tensor OFS_L = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.offsetL , Quantity.of(0, SI.METER)).unmodifiable();
+  private static final Tensor OFS_R = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.offsetR , Quantity.of(0, SI.METER)).unmodifiable();
   private static final Scalar PERIOD = Quantity.of(0.1, SI.SECOND);
   // ---
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();

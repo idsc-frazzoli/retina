@@ -13,11 +13,13 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class PowerSteering {
   private final HapticSteerConfig hapticSteerConfig;
-  private final GeodesicIIR1 geodesicIIR1; // 1 means unfiltered
+  private final GeodesicIIR1 velocityGeodesicIIR1; // 1 means unfiltered
+  private final GeodesicIIR1 tsuGeodesicIIR1; // 1 means unfiltered
 
   public PowerSteering(HapticSteerConfig hapticSteerConfig) {
     this.hapticSteerConfig = hapticSteerConfig;
-    geodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
+    tsuGeodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, hapticSteerConfig.tsuFilter);
+    velocityGeodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
   }
 
   /** @param currangle with unit "SCE"
@@ -34,13 +36,14 @@ import ch.ethz.idsc.tensor.sca.Round;
         : feedForwardValue.zero();
     // ---
     AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
-    Tensor filteredVel = geodesicIIR1.apply(velocity);
+    Tensor filteredVel = velocityGeodesicIIR1.apply(velocity);
     Scalar latFront_LeftVel = axleConfiguration.wheel(0).adjoint(filteredVel).Get(1);
     Scalar latFrontRightVel = axleConfiguration.wheel(1).adjoint(filteredVel).Get(1);
     Scalar term1 = hapticSteerConfig.latForceCompensationBoundaryClip().apply( //
         latFront_LeftVel.add(latFrontRightVel).multiply(hapticSteerConfig.latForceCompensation));
     // ---
-    Scalar term2 = tsu.multiply(hapticSteerConfig.tsuFactor);
+    Scalar filteredTsu = tsuGeodesicIIR1.apply(tsu).Get();
+    Scalar term2 = filteredTsu.multiply(hapticSteerConfig.tsuFactor);
     if (hapticSteerConfig.printPower)
       System.out.println(Tensors.of(term0, term1, term2).map(Round._3));
     return term0.add(term1).add(term2);

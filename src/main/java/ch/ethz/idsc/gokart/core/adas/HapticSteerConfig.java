@@ -20,6 +20,7 @@ public class HapticSteerConfig implements Serializable {
   /** value to amplify the input in the PowerSteeringModule */
   public Boolean feedForward = true;
   // ---
+  public Scalar tsuFilter = RealScalar.of(0.2);
   public Scalar velocityFilter = RealScalar.of(0.2);
   public Scalar latForceCompensation = Quantity.of(0.2, "SCT*s*m^-1");
   public Scalar latForceCompensationBoundary = Quantity.of(0.5, "SCT");
@@ -54,6 +55,10 @@ public class HapticSteerConfig implements Serializable {
   /** torque limit */
   public Scalar laneKeepingTorqueLimit = Quantity.of(0.5, "SCT");
   public Boolean printLaneInfo = true;
+  /** torque limit */
+  public Scalar offsetL = Quantity.of(1, SI.METER);
+  public Scalar offsetR = Quantity.of(-1, SI.METER);
+
 
   /***************************************************/
   // functions for anti-lock brake
