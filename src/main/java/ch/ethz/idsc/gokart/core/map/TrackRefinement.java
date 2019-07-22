@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Abs;
 
 public class TrackRefinement {
-  public abstract class TrackConstraint {
+  public static abstract class TrackConstraint {
     private Tensor controlPointsX = null;
     private Tensor controlPointsY = null;
     private Tensor radiusControlPoints = null;
@@ -54,7 +54,7 @@ public class TrackRefinement {
     }
   }
 
-  public class TrackSplitConstraint extends TrackConstraint {
+  public static class TrackSplitConstraint extends TrackConstraint {
     private final BSplineTrack track;
     private Scalar trackProg = null;
     private Tensor trackPos = null;
@@ -86,7 +86,7 @@ public class TrackRefinement {
     }
   }
 
-  public class PositionalStartConstraint extends TrackConstraint {
+  public static class PositionalStartConstraint extends TrackConstraint {
     private Tensor wantedPosition = null;
     private Tensor wantedDirection = null;
 
@@ -111,7 +111,7 @@ public class TrackRefinement {
     }
   }
 
-  public class PositionalEndConstraint extends TrackConstraint {
+  public static class PositionalEndConstraint extends TrackConstraint {
     private Tensor wantedPosition = null;
     private Tensor wantedDirection = null;
 

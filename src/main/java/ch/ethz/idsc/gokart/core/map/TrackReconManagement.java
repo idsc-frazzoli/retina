@@ -19,7 +19,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
-import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -32,23 +31,24 @@ public class TrackReconManagement {
   private final OccupancyGrid occupancyGrid;
   private final TrackLayoutInitialGuess trackLayoutInitialGuess;
   private final TrackRefinement trackRefinement;
+  // ---
   private Tensor trackDataXYR = null;
   private int startX = -1;
   private int startY = -1;
   private int width = 0;
   private int height = 0;
   private int count = 0;
-  private int shortestRoute = 1000;
+  // private int shortestRoute = 1000;
   private double startOrientation = 0;
   private boolean closedTrack = false;
   private boolean newSolutionNeeded = false;
-  private boolean oldWasClosed = false;
-  private boolean cleared = false;
-  private final Timing lastTrackReset = Timing.started();
+  // private boolean oldWasClosed = false;
+  // private boolean cleared = false;
+  // private final Timing lastTrackReset = Timing.started();
   private List<TrackConstraint> constraints = new LinkedList<>();
-  private final Scalar openTrackValid = Quantity.of(1, SI.SECOND);
+  // private final Scalar openTrackValid = Quantity.of(1, SI.SECOND);
   private Scalar timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
-  private final List<TrackConstraint> trackConstraints = null;
+  // private final List<TrackConstraint> trackConstraints = null;
 
   public TrackReconManagement(OccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
@@ -77,7 +77,10 @@ public class TrackReconManagement {
   }
 
   public boolean isStartSet() {
-    return startX >= 0 && startX < width && startY >= 0 && startY < height;
+    return startX >= 0 //
+        && startX < width //
+        && startY >= 0 //
+        && startY < height;
   }
 
   /** set start position
@@ -181,7 +184,7 @@ public class TrackReconManagement {
     }
     if (Objects.nonNull(trackDataXYR))
       lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
-    oldWasClosed = closedTrack;
+    // oldWasClosed = closedTrack;
     return Optional.ofNullable(lastTrack);
   }
 
@@ -191,5 +194,9 @@ public class TrackReconManagement {
 
   public TrackLayoutInitialGuess getTrackLayoutInitialGuess() {
     return trackLayoutInitialGuess;
+  }
+
+  public boolean isClosedTrack() {
+    return closedTrack;
   }
 }

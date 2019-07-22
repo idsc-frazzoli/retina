@@ -41,7 +41,7 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
       TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final BayesianOccupancyGrid bayesianOccupancyGridThic;
   private final BayesianOccupancyGrid bayesianOccupancyGridThin;
-  private final TrackReconManagement trackReconManagement;
+  public final TrackReconManagement trackReconManagement;
   private final MPCBSplineTrackRender mpcBSplineTrackRender = new MPCBSplineTrackRender();
   private final TrackLayoutInitialGuess trackLayoutInitialGuess;
   private final PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
