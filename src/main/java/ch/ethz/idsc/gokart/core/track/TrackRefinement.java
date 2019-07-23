@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.gokart.core.map.OccupancyGrid;
+import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.spline.UniformBSpline2;
+import ch.ethz.idsc.retina.util.spline.BSpline2Vector;
 import ch.ethz.idsc.sophus.flt.ga.Regularization2Step;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.sophus.math.Extract2D;
@@ -24,10 +24,10 @@ import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Abs;
 
 public class TrackRefinement {
-  private final OccupancyGrid occupancyGrid;
+  private final Region<Tensor> region;
 
-  public TrackRefinement(OccupancyGrid occupancyGrid) {
-    this.occupancyGrid = occupancyGrid;
+  public TrackRefinement(Region<Tensor> region) {
+    this.region = region;
   }
 
   private static final Scalar gdRadiusGrowth = Quantity.of(0.07, SI.METER);
@@ -45,10 +45,13 @@ public class TrackRefinement {
       queryPositions = Tensors.vector(i -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
     else
       // TODO MH try Subdivide.of(0, n-2, m-1) for the below
+      // FIXME m-1 vs m
       queryPositions = Tensors.vector(i -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m - 1);
-    Tensor splineMatrix = UniformBSpline2.getBasisMatrix(n, 0, closed, queryPositions);
+    Tensor splineMatrix = queryPositions.map(BSpline2Vector.of(n, 0, closed));
+    // UniformBSpline2.getBasisMatrix(n, 0, closed, queryPositions);
     Tensor splineMatrixTransp = Transpose.of(splineMatrix);
-    Tensor splineMatrix1Der = UniformBSpline2.getBasisMatrix(n, 1, closed, queryPositions);
+    Tensor splineMatrix1Der = queryPositions.map(BSpline2Vector.of(n, 1, closed));
+    // UniformBSpline2.getBasisMatrix(n, 1, closed, queryPositions);
     /* for(int it=0;it<iterations;it++) {
      * Tensor positions = MPCBSpline.getPositions(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix);
      * Tensor sideVectors = MPCBSpline.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix1Der);
@@ -140,7 +143,7 @@ public class TrackRefinement {
       else
         sideStep = sideStep.add(stepsSize).negate();
       testPosition = pos.add(sidedir.multiply(sideStep));
-      occupied = occupancyGrid.isMember(testPosition);
+      occupied = region.isMember(testPosition);
       if (Scalars.lessThan(maxSearch, sideStep.abs()))
         return Tensors.of(RealScalar.ZERO, RealScalar.ZERO);
     }
@@ -151,7 +154,7 @@ public class TrackRefinement {
     while (!occupied && Scalars.lessThan(Abs.of(sideStep), Quantity.of(10, SI.METER))) {
       sideStep = sideStep.subtract(stepsSize);
       testPosition = pos.add(sidedir.multiply(sideStep));
-      occupied = occupancyGrid.isMember(testPosition);
+      occupied = region.isMember(testPosition);
     }
     freeline.append(testPosition);
     lowPosition = sideStep;
@@ -160,7 +163,7 @@ public class TrackRefinement {
     while (!occupied && Scalars.lessThan(Abs.of(sideStep), Quantity.of(10, SI.METER))) {
       sideStep = sideStep.add(stepsSize);
       testPosition = pos.add(sidedir.multiply(sideStep));
-      occupied = occupancyGrid.isMember(testPosition);
+      occupied = region.isMember(testPosition);
     }
     highPosition = sideStep;
     freeline.append(testPosition);

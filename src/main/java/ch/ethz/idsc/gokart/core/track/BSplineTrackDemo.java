@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.track;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import javax.swing.JToggleButton;
@@ -45,7 +47,10 @@ public class BSplineTrackDemo extends ControlPointsDemo {
         Tensor position = geometricLayer.getMouseSe2State().extract(0, 2).map(s -> Quantity.of(s, SI.METER));
         Tensor nearestPosition = bSplineTrack.getNearestPosition(position);
         geometricLayer.pushMatrix(Se2Utils.toSE2Translation(nearestPosition.map(Magnitude.METER)));
-        graphics.draw(geometricLayer.toPath2D(CirclePoints.of(10).multiply(RealScalar.of(.3))));
+        boolean inTrack = bSplineTrack.isInTrack(position);
+        graphics.setColor(inTrack ? Color.GREEN : Color.RED);
+        graphics.setStroke(new BasicStroke(2f));
+        graphics.draw(geometricLayer.toPath2D(CirclePoints.of(10).multiply(RealScalar.of(.3)), true));
         geometricLayer.popMatrix();
       }
     }

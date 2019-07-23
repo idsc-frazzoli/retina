@@ -11,6 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Normalize;
 import ch.ethz.idsc.tensor.alg.Range;
 import ch.ethz.idsc.tensor.lie.Cross;
+import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Power;
@@ -28,8 +29,10 @@ public abstract class BSplineTrack implements TrackInterface {
   private final Tensor points_xy;
   /** vector of length n */
   private final Tensor points_r;
-  private final boolean closed;
   protected final int numPoints;
+  private final ScalarTensorFunction bSpline2VectorD0;
+  private final ScalarTensorFunction bSpline2VectorD1;
+  private final ScalarTensorFunction bSpline2VectorD2;
   private final int effPoints;
   // for fast lookup using floats
   protected final float[] posX;
@@ -39,8 +42,10 @@ public abstract class BSplineTrack implements TrackInterface {
    * * @param closed */
   public BSplineTrack(Tensor points_xyr, boolean closed) {
     this.points_xyr = points_xyr;
-    this.closed = closed;
     numPoints = points_xyr.length();
+    bSpline2VectorD0 = BSpline2Vector.of(numPoints, 0, closed);
+    bSpline2VectorD1 = BSpline2Vector.of(numPoints, 1, closed);
+    bSpline2VectorD2 = BSpline2Vector.of(numPoints, 2, closed);
     points_xy = Tensor.of(points_xyr.stream().map(Extract2D.FUNCTION));
     points_r = points_xyr.get(Tensor.ALL, 2);
     effPoints = numPoints + (closed ? 0 : -2);
@@ -54,9 +59,6 @@ public abstract class BSplineTrack implements TrackInterface {
     }
   }
 
-  // public final Tensor getControlPoints() {
-  // return points_xy.copy();
-  // }
   public final Tensor combinedControlPoints() {
     return points_xyr;
   }
@@ -71,16 +73,7 @@ public abstract class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return position [m] */
   public final Tensor getPositionXY(Scalar pathProgress) {
-    return BSpline2Vector.of(numPoints, 0, closed).apply(pathProgress).dot(points_xy);
-  }
-
-  /** get the path derivative with respect to path progress
-   * 
-   * @param pathProgress progress along path
-   * corresponding to control point indices [1]
-   * @return change rate of position unit [m/1] */
-  public final Tensor getDerivationXY(Scalar pathProgress) {
-    return BSpline2Vector.of(numPoints, 1, closed).apply(pathProgress).dot(points_xy);
+    return bSpline2VectorD0.apply(pathProgress).dot(points_xy);
   }
 
   /** get radius at a certain path value
@@ -89,7 +82,16 @@ public abstract class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return radius [m] */
   public final Scalar getRadius(Scalar pathProgress) {
-    return BSpline2Vector.of(numPoints, 0, closed).apply(pathProgress).dot(points_r).Get();
+    return bSpline2VectorD0.apply(pathProgress).dot(points_r).Get();
+  }
+
+  /** get the path derivative with respect to path progress
+   * 
+   * @param pathProgress progress along path
+   * corresponding to control point indices [1]
+   * @return change rate of position unit [m/1] */
+  public final Tensor getDerivationXY(Scalar pathProgress) {
+    return bSpline2VectorD1.apply(pathProgress).dot(points_xy);
   }
 
   /** get the path direction with respect to path progress
@@ -116,7 +118,7 @@ public abstract class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return change rate of position unit [m/1^2] */
   public final Tensor get2ndDerivation(Scalar pathProgress) {
-    return BSpline2Vector.of(numPoints, 2, closed).apply(pathProgress).dot(points_xy);
+    return bSpline2VectorD2.apply(pathProgress).dot(points_xy);
   }
 
   /** get the curvature
@@ -149,15 +151,12 @@ public abstract class BSplineTrack implements TrackInterface {
     return dx * dx + dy * dy;
   }
 
-  private Scalar getDist(Tensor from, Scalar pathProgress) {
-    return Norm._2.of(getPositionXY(pathProgress).subtract(from));
-  }
-
   @Override // from TrackInterface
   public final boolean isInTrack(Tensor position) {
-    Scalar prog = getNearestPathProgress(position);
-    Scalar dist = getDist(position, prog);
-    return Scalars.lessThan(dist, getRadius(prog));
+    Scalar pathProgress = getNearestPathProgress(position);
+    return Scalars.lessThan( //
+        Norm._2.between(position, getPositionXY(pathProgress)), //
+        getRadius(pathProgress));
   }
 
   @Override // from TrackInterface

@@ -17,7 +17,7 @@ import ch.ethz.idsc.gokart.core.map.OccupancyGrid;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.spline.UniformBSpline2;
+import ch.ethz.idsc.retina.util.spline.BSpline2Vector;
 import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -442,7 +442,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
         queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
       else
         queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
-      final Tensor splineMatrix = UniformBSpline2.getBasisMatrix(n, 0, closed, queryPositions);
+      // UniformBSpline2.getBasisMatrix(n, 0, closed, queryPositions);
+      final Tensor splineMatrix = queryPositions.map(BSpline2Vector.of(n, 0, closed));
       // solve for control points: x
       Tensor pinv = PseudoInverse.of(splineMatrix);
       // TODO JPH/MH can this be simplified: local variable is not necessary
