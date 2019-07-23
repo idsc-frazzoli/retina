@@ -1,18 +1,17 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Transpose;
-import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class BSplineUtilTest extends TestCase {
+public class SidewardsUnitVectorsTest extends TestCase {
   public void testSimple() {
     Tensor controlPoints = Transpose.of(Tensors.of(Tensors.vector(1, 2, 3, 4), Tensors.vector(3, 2, 2, 1)));
     // System.out.println(controlPoints);
-    Tensor tensor = BSplineUtil.getSidewardsUnitVectors(controlPoints, IdentityMatrix.of(4));
+    Tensor tensor = SidewardsUnitVectors.of(controlPoints);
     Tensor matrix = Tensors.of( //
         Tensors.vector(0.9486832980505138, -0.31622776601683794), //
         Tensors.vector(0.7071067811865475, -0.7071067811865475), //

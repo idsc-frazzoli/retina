@@ -11,16 +11,16 @@ import java.util.function.Consumer;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.map.BayesianOccupancyGrid;
-import ch.ethz.idsc.gokart.core.map.MPCBSplineTrackRender;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
-import ch.ethz.idsc.gokart.core.map.TrackLayoutInitialGuess;
-import ch.ethz.idsc.gokart.core.map.TrackReconConfig;
-import ch.ethz.idsc.gokart.core.map.TrackReconManagement;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.core.track.MPCBSplineTrackRender;
+import ch.ethz.idsc.gokart.core.track.TrackLayoutInitialGuess;
+import ch.ethz.idsc.gokart.core.track.TrackReconConfig;
+import ch.ethz.idsc.gokart.core.track.TrackReconManagement;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
@@ -41,7 +41,7 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
       TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final BayesianOccupancyGrid bayesianOccupancyGridThic;
   private final BayesianOccupancyGrid bayesianOccupancyGridThin;
-  private final TrackReconManagement trackReconManagement;
+  public final TrackReconManagement trackReconManagement;
   private final MPCBSplineTrackRender mpcBSplineTrackRender = new MPCBSplineTrackRender();
   private final TrackLayoutInitialGuess trackLayoutInitialGuess;
   private final PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
@@ -80,13 +80,13 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
       time_next = time.add(delta);
       if (count++ > 1) {
         // TODO JPH more elegant
-        Optional<MPCBSplineTrack> optional = trackReconManagement.update(gokartPoseEvent, delta);
+        Optional<MPCBSplineTrack> optional = trackReconManagement.update(gokartPoseEvent.getPose());
         mpcBSplineTrackRender.mpcBSplineTrack(optional);
       }
-      double zoom = 3;
+      double zoom = 2;
       GeometricLayer geometricLayer = GeometricLayer.of(Tensors.matrix(new Number[][] { //
-          { 7.5 * zoom, 0., -540 }, //
-          { 0., -7.5 * zoom, 540 + 640 }, //
+          { 7.5 * zoom, 0., -540 + 320 }, //
+          { 0., -7.5 * zoom, 540 + 640 - 320 }, //
           { 0., 0., 1. } }));
       Tensor lastTrack = trackReconManagement.getTrackData();
       if (Objects.nonNull(lastTrack) && false)
@@ -105,7 +105,7 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       gokartRender.render(geometricLayer, graphics);
       mpcBSplineTrackRender.render(geometricLayer, graphics);
-      // trackLayoutInitialGuess.render(geometricLayer, graphics);
+      trackLayoutInitialGuess.render(geometricLayer, graphics);
       // ---
       bayesianOccupancyGridThin.genObstacleMap();
       bayesianOccupancyGridThic.genObstacleMap();

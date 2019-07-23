@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;

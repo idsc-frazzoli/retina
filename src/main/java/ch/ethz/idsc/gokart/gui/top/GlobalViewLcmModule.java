@@ -11,7 +11,6 @@ import java.util.List;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
-import ch.ethz.idsc.gokart.core.map.MPCBSplineTrackRender;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
 import ch.ethz.idsc.gokart.core.plan.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -20,6 +19,7 @@ import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.core.track.MPCBSplineTrackRender;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;

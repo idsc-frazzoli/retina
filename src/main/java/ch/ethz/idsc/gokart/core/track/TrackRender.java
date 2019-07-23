@@ -1,5 +1,5 @@
 // code by mh, jph
-package ch.ethz.idsc.gokart.gui.top;
+package ch.ethz.idsc.gokart.core.track;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -8,8 +8,6 @@ import java.awt.Stroke;
 import java.awt.geom.Path2D;
 import java.util.Objects;
 
-import ch.ethz.idsc.gokart.core.map.TrackBoundaries;
-import ch.ethz.idsc.gokart.core.map.TrackInterface;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
@@ -21,7 +19,7 @@ import ch.ethz.idsc.sophus.ply.Arrowhead;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class TrackRender implements RenderInterface {
+/* package */ class TrackRender implements RenderInterface {
   private static final int RESOLUTION = 100;
   private static final Tensor ARROWHEAD = Arrowhead.of(0.75);
   private static final int INTERVALS = 10;
@@ -64,18 +62,14 @@ public class TrackRender implements RenderInterface {
       Stroke strokeNormal = new BasicStroke(width);
       { // middle line
         graphics.setStroke(strokeDashed);
-        Path2D path2d = geometricLayer.toPath2D(lineMiddle);
-        if (closed)
-          path2d.closePath();
+        Path2D path2d = geometricLayer.toPath2D(lineMiddle, closed);
         graphics.setColor(new Color(255, 0, 0, 192));
         graphics.draw(path2d);
         graphics.setStroke(strokeNormal);
         render(geometricLayer, graphics, lineMiddle);
       }
       { // left line
-        Path2D path2d = geometricLayer.toPath2D(lineLeft);
-        if (closed)
-          path2d.closePath();
+        Path2D path2d = geometricLayer.toPath2D(lineLeft, closed);
         graphics.setColor(new Color(255, 0, 0, 192));
         if (true) {
           graphics.draw(path2d);
@@ -83,9 +77,7 @@ public class TrackRender implements RenderInterface {
         }
       }
       { // right line
-        Path2D path2d = geometricLayer.toPath2D(lineRight);
-        if (closed)
-          path2d.closePath();
+        Path2D path2d = geometricLayer.toPath2D(lineRight, closed);
         graphics.setColor(new Color(0, 255, 0, 192));
         if (true) {
           graphics.draw(path2d);

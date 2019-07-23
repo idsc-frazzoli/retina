@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.track;
 
 import java.util.Random;
 
@@ -44,7 +44,9 @@ public class BSplineTrackTest extends TestCase {
         { 3, 1, 2 }, //
         { 4, 0, 2 }, //
         { 5, 1, 2 } }).multiply(meter);
-    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
+    BSplineTrack bSplineTrack = new CyclicBSplineTrack(fullTensor);
+    assertTrue(bSplineTrack.isClosed());
+    assertFalse(new StringBSplineTrack(fullTensor).isClosed());
     assertEquals(bSplineTrack.getPositionXY(RealScalar.of(0)), Tensors.fromString("{0.5[m], 0.5[m]}"));
     assertEquals(bSplineTrack.getPositionXY(RealScalar.of(1)), Tensors.fromString("{1.5[m], 0.5[m]}"));
     assertEquals(bSplineTrack.getPositionXY(RealScalar.of(2)), Tensors.fromString("{2.5[m], 0.5[m]}"));
@@ -95,7 +97,7 @@ public class BSplineTrackTest extends TestCase {
     Tensor ytensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor rtensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor fullTensor = Transpose.of(Tensors.of(xtensor, ytensor, rtensor));
-    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
+    BSplineTrack bSplineTrack = new CyclicBSplineTrack(fullTensor);
     Random rand = new Random();
     for (int i = 0; i < 100; i++) {
       Scalar prog = RealScalar.of(rand.nextFloat() * 200 - 100);
@@ -119,7 +121,7 @@ public class BSplineTrackTest extends TestCase {
     Tensor ytensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor rtensor = RandomVariate.of(distribution, N).multiply(meter);
     Tensor fullTensor = Transpose.of(Tensors.of(xtensor, ytensor, rtensor));
-    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
+    BSplineTrack bSplineTrack = new CyclicBSplineTrack(fullTensor);
     Random rand = new Random();
     for (int i = 0; i < 100; i++) {
       Scalar prog = Quantity.of(rand.nextFloat() * 200 - 100, SI.ONE);
@@ -146,7 +148,7 @@ public class BSplineTrackTest extends TestCase {
     Tensor ctrY = Tensors.vector(0, 1, 1, 0).multiply(meter);
     Tensor ctrR = Tensors.vector(1, 1, 1, 1).multiply(meter);
     Tensor fullTensor = Transpose.of(Tensors.of(ctrX, ctrY, ctrR));
-    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
+    BSplineTrack bSplineTrack = new CyclicBSplineTrack(fullTensor);
     Random rand = new Random();
     for (int i = 0; i < 10; i++) {
       Tensor queryPos = Tensors.of(Quantity.of(rand.nextFloat() * 3, SI.METER), Quantity.of(rand.nextFloat() * 4, SI.METER));
@@ -170,7 +172,7 @@ public class BSplineTrackTest extends TestCase {
     Tensor ctrY = Tensors.vector(0, 1, 1, 0).multiply(meter);
     Tensor ctrR = Tensors.vector(1, 1, 1, 1).multiply(meter);
     Tensor fullTensor = Transpose.of(Tensors.of(ctrX, ctrY, ctrR));
-    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
+    BSplineTrack bSplineTrack = new CyclicBSplineTrack(fullTensor);
     Random random = new Random();
     Scalar radius = bSplineTrack.getRadius(RealScalar.of(random.nextDouble() * 100));
     Chop._10.requireClose(radius, Quantity.of(1, "m"));
@@ -183,7 +185,7 @@ public class BSplineTrackTest extends TestCase {
     Tensor ctrY = Tensors.vector(0, 1, 1, 0).multiply(meter);
     Tensor ctrR = Tensors.vector(1, 1, 1, 1).multiply(meter);
     Tensor fullTensor = Transpose.of(Tensors.of(ctrX, ctrY, ctrR));
-    BSplineTrack bSplineTrack = new BSplineTrack(fullTensor, true);
+    BSplineTrack bSplineTrack = new CyclicBSplineTrack(fullTensor);
     Tensor queryPos = Tensors.vector(0, 0.5).multiply(meter);
     Tensor nearestProg = bSplineTrack.getNearestPathProgress(queryPos);
     assertTrue(Chop._10.allZero(nearestProg));

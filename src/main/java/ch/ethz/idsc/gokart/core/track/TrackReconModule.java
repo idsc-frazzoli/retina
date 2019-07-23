@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.track;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -12,6 +12,9 @@ import javax.swing.JButton;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.map.AbstractMapping;
+import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
+import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -138,7 +141,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       if (isActive) {
         if (trackReconManagement.isStartSet()) {
           mapping.prepareMap();
-          lastTrack = trackReconManagement.update(_gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
+          lastTrack = trackReconManagement.update(_gokartPoseEvent.getPose());
         } else
           System.out.println("no start set");
       }
@@ -177,9 +180,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     trackReconManagement.exportTrack();
   }
 
-  // public void setMode(TrackReconMode trackReconMode) {
-  // this.trackReconMode = trackReconMode;
-  // }
   public void listenersAdd(MPCBSplineTrackListener mpcBSplineTrackListener) {
     listeners.add(mpcBSplineTrackListener);
   }

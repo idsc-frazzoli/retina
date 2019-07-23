@@ -1,5 +1,5 @@
 // code by mh
-package ch.ethz.idsc.gokart.core.map;
+package ch.ethz.idsc.gokart.core.track;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -13,10 +13,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.PriorityQueue;
 
+import ch.ethz.idsc.gokart.core.map.OccupancyGrid;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.UniformBSpline2;
+import ch.ethz.idsc.retina.util.spline.BSpline2Vector;
 import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -26,14 +27,24 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
+import ch.ethz.idsc.tensor.mat.LeastSquares;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
-import ch.ethz.idsc.tensor.mat.PseudoInverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
 public class TrackLayoutInitialGuess implements RenderInterface {
   private static final Tensor CIRCLE_POINTS = CirclePoints.of(13).multiply(RealScalar.of(0.3));
+
   // ---
+  private static class CellCost {
+    final Cell cell;
+    final Scalar cost;
+
+    public CellCost(Cell cell, Scalar cost) {
+      this.cell = cell;
+      this.cost = cost;
+    }
+  }
 
   private static class Cell {
     private final int x;
@@ -42,9 +53,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     private boolean inQ = false;
     private boolean processed = false;
     private Cell lastCell = null;
-    // TODO JPH/MH create type Cell+Cost and use only 1 list
-    private List<Cell> neighBors = null;
-    private List<Scalar> neighBorCost = null;
+    private List<CellCost> neighCList = null;
 
     public Cell(int x, int y) {
       this.x = x;
@@ -73,15 +82,12 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
 
     public void findNeighbors(List<Neighbor> possibleNeighbors) {
-      if (Objects.isNull(neighBors)) {
-        neighBors = new ArrayList<>();
-        neighBorCost = new ArrayList<>();
+      if (Objects.isNull(neighCList)) {
+        neighCList = new ArrayList<>();
         for (Neighbor neighbor : possibleNeighbors) {
           Cell newNeighBor = neighbor.getFrom(this);
-          if (Objects.nonNull(newNeighBor)) {
-            neighBors.add(newNeighBor);
-            neighBorCost.add(neighbor.cost);
-          }
+          if (Objects.nonNull(newNeighBor))
+            neighCList.add(new CellCost(newNeighBor, neighbor.cost));
         }
       }
     }
@@ -101,7 +107,12 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     public Cell getFrom(Cell cell) {
       int nx = cell.x + dx;
       int ny = cell.y + dy;
-      if (!occupancyGrid.isCellOccupied(nx, ny))
+      if (!occupancyGrid.isCellOccupied(nx, ny)
+      // TODO JPH mapping config range too small if index out of bounds here
+      // && //
+      // nx < cellGrid.length && //
+      // ny < cellGrid[0].length
+      )
         return cellGrid[nx][ny];
       return null;
     }
@@ -135,7 +146,6 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   // TODO MH document content of positional support:
   // contains vectors of the form {x, y, 1} without units
   private List<Tensor> positionalSupports = new LinkedList<>();
-  private Tensor controlPoints = Tensors.empty();
 
   // this is potentially slow
   Cell getFarthestCell() {
@@ -297,22 +307,19 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       currentCell.findNeighbors(possibleNeighbors);
       currentCell.processed = true;
       currentCell.inQ = false;
-      int nCount = 0;
-      for (Cell n : currentCell.neighBors) {
-        if (!n.processed) {
+      for (CellCost cellCost : currentCell.neighCList)
+        if (!cellCost.cell.processed) {
           // TODO MH/JPH maybe use neighbor cost (not that important)
-          Scalar alternativ = currentCell.cost.add(currentCell.neighBorCost.get(nCount));
-          if (Scalars.lessThan(alternativ, n.cost)) {
+          Scalar alternativ = currentCell.cost.add(cellCost.cost);
+          if (Scalars.lessThan(alternativ, cellCost.cell.cost)) {
             // this could potentially be too slow
-            priorityQueue.remove(n);
-            n.cost = alternativ;
-            n.lastCell = currentCell;
-            n.inQ = true;
-            priorityQueue.add(n);
+            priorityQueue.remove(cellCost.cell);
+            cellCost.cell.cost = alternativ;
+            cellCost.cell.lastCell = currentCell;
+            cellCost.cell.inQ = true;
+            priorityQueue.add(cellCost.cell);
           }
         }
-        ++nCount;
-      }
     }
   }
 
@@ -339,9 +346,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       curPos = getPixelPosition(gokartPosition);
     if (initialize(startX, startY, startorientation, curPos, false)) {
       processDijkstra();
-      // check if we can reach target
-      if (reachable(dijkstraTarget)) // we can reach target;
-      {
+      if (reachable(dijkstraTarget)) { // we can reach target;
         System.out.println("direct route found");
         closed = true;
         route = dijkstraTarget.getRoute();
@@ -409,17 +414,15 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     positionalSupports = new LinkedList<>();
     for (Cell cell : route) {
       Tensor pos = cell.getPos(occupancyGrid);
-      Tensor dist = pos.subtract(lastPosition);
-      Tensor enddist = pos.subtract(endPosition);
-      if (Scalars.lessThan(spacing, Norm._2.of(dist)) && //
-          Scalars.lessThan(halfspacing, Norm._2.of(enddist))) {
+      if (Scalars.lessThan(spacing, Norm._2.between(pos, lastPosition)) && //
+          Scalars.lessThan(halfspacing, Norm._2.between(pos, endPosition))) {
         lastPosition = pos;
         wantedPositionsXY.append(Extract2D.FUNCTION.apply(pos));
         // wantedPositionsY.append(pos.Get(1));
-        positionalSupports.add(pos.copy());
+        positionalSupports.add(pos);
       }
     }
-    if (wantedPositionsXY.length() > 3) {
+    if (3 < wantedPositionsXY.length()) {
       wantedPositionsXY.append(Extract2D.FUNCTION.apply(route.getLast().getPos(occupancyGrid)));
       // wantedPositionsY.append(route.getLast().getPos().Get(1));
       wantedPositionsXY = wantedPositionsXY.multiply(Quantity.of(1, SI.METER));
@@ -428,27 +431,26 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       // number of bspline query points
       int m = wantedPositionsXY.length();
       // number of control points
-      int n = (int) (wantedPositionsXY.length() * controlPointResolution.number().doubleValue());
-      // first possible value is 0
-      // last possible value is n-2
-      final Tensor queryPositions;
+      int n = (int) (m * controlPointResolution.number().doubleValue());
+      final Tensor domain;
       if (closed) // we found closed solution
-        queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
+        domain = Tensors.vector(i -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
       else
-        queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
-      final Tensor splineMatrix = UniformBSpline2.getBasisMatrix(n, 0, closed, queryPositions);
+        // value in [0, n - 2]
+        domain = Tensors.vector(i -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
       // solve for control points: x
-      Tensor pinv = PseudoInverse.of(splineMatrix);
-      // TODO JPH/MH can this be simplified: local variable is not necessary
-      Tensor controlpointsXY = pinv.dot(wantedPositionsXY);
-      controlPoints = controlpointsXY;
-      return Optional.of(controlpointsXY.copy());
+      final Tensor matrixD0 = domain.map(BSpline2Vector.of(n, 0, closed));
+      try {
+        return Optional.of(LeastSquares.of(matrixD0, wantedPositionsXY));
+      } catch (Exception exception) {
+        System.err.println("det==0");
+      }
     }
     System.out.println("no usable track!");
     return Optional.empty();
   }
 
-  @Override
+  @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.2)));
     // ---
@@ -459,7 +461,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
     // ---
     graphics.setColor(new Color(255, 200, 0, 128));
-    // TODO JPH/MH not thread safe
+    // TODO JPH not thread safe
     for (Tensor xy : positionalSupports) {
       geometricLayer.pushMatrix(Se2Utils.toSE2Translation(xy));
       Path2D path2d = geometricLayer.toPath2D(CIRCLE_POINTS);
@@ -467,7 +469,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       graphics.draw(path2d);
       geometricLayer.popMatrix();
     }
-    // TODO JPH/MH render control points !?
+    // TODO JPH render control points !?
     // {
     // graphics.setColor(Color.BLUE);
     // Path2D path2d = geometricLayer.toPath2D(controlPoints);

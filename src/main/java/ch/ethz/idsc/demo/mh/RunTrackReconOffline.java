@@ -35,7 +35,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Consumer<BufferedImage> consumer = new PngImageWriter(DIRECTORY);
     MappingConfig mappingConfig = new MappingConfig();
     mappingConfig.obsRadius = Quantity.of(0.8, SI.METER);
-    OfflineLogPlayer.process(file, new TrackReconOffline(mappingConfig, Quantity.of(0.05, SI.SECOND)) {
+    OfflineLogPlayer.process(file, new TrackReconOffline(mappingConfig, Quantity.of(0.2, SI.SECOND)) {
       @Override
       public void accept(BufferedImage bufferedImage) {
         consumer.accept(bufferedImage);
