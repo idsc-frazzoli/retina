@@ -19,15 +19,17 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.sca.Ramp;
 
 public class TrackRefinement {
   private final RegionRayTrace regionRayTrace;
 
   public TrackRefinement(Region<Tensor> region) {
-    Scalar increment = Quantity.of(0.1, SI.METER);
-    Scalar max = Quantity.of(1, SI.METER);
-    regionRayTrace = new RegionRayTrace(region, increment, max);
+    regionRayTrace = new RegionRayTrace( //
+        region, //
+        Quantity.of(0.1, SI.METER), //
+        Quantity.of(1, SI.METER), // probably max center line shift
+        Quantity.of(10, SI.METER)); // probably max boundary shift
   }
 
   private static final Scalar gdRadiusGrowth = Quantity.of(0.07, SI.METER);
@@ -53,8 +55,8 @@ public class TrackRefinement {
     int iteration = 0;
     while (iteration < iterations) {
       System.out.println("iterate " + iteration);
-      Optional<Tensor> optional = getCorrectionVectors(points_xyr, //
-          queryPositions, splineMatrix, splineMatrix1Der, resolution, closed);
+      Optional<Tensor> optional = //
+          getCorrectionVectors(points_xyr, splineMatrix, splineMatrix1Der, resolution);
       if (!optional.isPresent())
         return null;
       Tensor correct = optional.get();
@@ -75,38 +77,34 @@ public class TrackRefinement {
 
   /** .
    * @param points_xyr
-   * @param queryPositions
    * @param basisMatrix
    * @param basisMatrix1Der
    * @param resolution
-   * @param closed
    * @return */
   private Optional<Tensor> getCorrectionVectors( //
-      Tensor points_xyr, Tensor queryPositions, Tensor basisMatrix, //
-      Tensor basisMatrix1Der, Scalar resolution, boolean closed) {
+      Tensor points_xyr, Tensor basisMatrix, Tensor basisMatrix1Der, Scalar resolution) {
     // ---
     Tensor positionsXYR = basisMatrix.dot(points_xyr);
     Tensor sideVectors = BSplineUtil.getSidewardsUnitVectors( //
         Tensor.of(points_xyr.stream().map(Extract2D.FUNCTION)), //
         basisMatrix1Der);
     freeLines = new ArrayList<>();
-    Tensor sideLimits = Tensors.empty();
+    List<Limit> sideLimits = new ArrayList<>();
     for (int i = 0; i < positionsXYR.length(); ++i) {
       Tensor pos_xyr = positionsXYR.get(i).extract(0, 2);
       Tensor sidevec = sideVectors.get(i);
-      sideLimits.append(regionRayTrace.getLimits(pos_xyr, sidevec));
+      sideLimits.add(regionRayTrace.getLimits(pos_xyr, sidevec));
     }
-    boolean hasNoSolution = sideLimits.stream().anyMatch(row -> row.get(0).equals(row.get(1)));
-    if (hasNoSolution) {
-      return Optional.empty();
-    }
+    // boolean hasNoSolution = sideLimits.stream().anyMatch(row -> row.get(0).equals(row.get(1)));
+    // if (hasNoSolution) {
+    // // return Optional.empty();
+    // }
     // upwardsforce
-    Tensor clippingLo = Tensors.vector(i -> Max.of(sideLimits.Get(i, 0).add(positionsXYR.Get(i, 2)), Quantity.of(0, SI.METER)), queryPositions.length());
-    Tensor clippingHi = Tensors.vector(i -> Max.of(positionsXYR.Get(i, 2).subtract(sideLimits.Get(i, 1)), Quantity.of(0, SI.METER)), queryPositions.length());
+    Tensor clippingLo = Tensors.vector(i -> Ramp.FUNCTION.apply(positionsXYR.Get(i, 2).add(sideLimits.get(i).lo)), positionsXYR.length());
+    Tensor clippingHi = Tensors.vector(i -> Ramp.FUNCTION.apply(positionsXYR.Get(i, 2).subtract(sideLimits.get(i).hi)), positionsXYR.length());
     Tensor sideCorr = clippingLo.subtract(clippingHi).multiply(gdLimits.divide(resolution));
     Tensor posCorr = sideCorr.pmul(sideVectors);
     Tensor radiusCorr = clippingHi.add(clippingLo).multiply(gdRadius.divide(resolution).negate());
-    return Optional.of(Tensor.of(IntStream.range(0, posCorr.length()) //
-        .mapToObj(i -> posCorr.get(i).append(radiusCorr.get(i)))));
+    return Optional.of(Tensor.of(IntStream.range(0, posCorr.length()).mapToObj(i -> posCorr.get(i).append(radiusCorr.get(i)))));
   }
 }

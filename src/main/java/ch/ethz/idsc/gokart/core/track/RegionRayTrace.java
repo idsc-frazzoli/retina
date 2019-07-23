@@ -3,66 +3,69 @@ package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Abs;
+import ch.ethz.idsc.tensor.sca.Sign;
+
+/* package */ class Limit {
+  Scalar lo;
+  Scalar hi;
+}
 
 // TODO JPH class contains magic constants
 /* package */ class RegionRayTrace {
   private final Region<Tensor> region;
   private final Scalar increment;
+  private final Scalar shift;
   private final Scalar max;
 
-  public RegionRayTrace(Region<Tensor> region, Scalar increment, Scalar max) {
+  public RegionRayTrace(Region<Tensor> region, Scalar increment, Scalar shift, Scalar max) {
     this.region = region;
     this.increment = increment;
+    this.shift = shift;
     this.max = max;
   }
 
-  public Tensor getLimits(final Tensor pos, final Tensor dir) {
+  public Limit getLimits(final Tensor pos, final Tensor dir) {
+    Limit limit = new Limit();
     // find free space
-    Scalar sideStep = Quantity.of(-0.001, SI.METER);
-    Tensor testPosition = null;
-    Tensor lowPosition;
-    Tensor highPosition;
-    boolean occupied = true;
-    while (occupied) {
-      if (Scalars.lessThan(sideStep, Quantity.of(0, SI.METER)))
-        sideStep = sideStep.negate();
-      else
-        sideStep = sideStep.add(increment).negate();
-      testPosition = pos.add(dir.multiply(sideStep));
-      occupied = region.isMember(testPosition);
-      if (Scalars.lessThan(max, sideStep.abs())) {
-        // TODO JPH why not break here
-        return Tensors.of(RealScalar.ZERO, RealScalar.ZERO);
+    Scalar init = Quantity.of(-0.001, SI.METER);
+    {
+      boolean occupied = true;
+      while (occupied) {
+        if (Sign.isNegative(init))
+          init = init.negate(); // TODO JPH whut?
+        else
+          init = init.add(increment).negate();
+        Tensor element = pos.add(dir.multiply(init));
+        occupied = region.isMember(element);
+        if (Scalars.lessThan(shift, init.abs())) {
+          // TODO JPH why not break here
+          // return Optional.empty();
+          break;
+        }
       }
     }
-    // TODO JPH search in both directions for occupied cell
-    // only for debugging
-    // Tensor freeline = Tensors.empty();
-    // negative direction
-    while (!occupied && Scalars.lessThan(Abs.of(sideStep), Quantity.of(10, SI.METER))) {
-      sideStep = sideStep.subtract(increment);
-      testPosition = pos.add(dir.multiply(sideStep));
-      occupied = region.isMember(testPosition);
+    { // negative direction
+      Scalar probe = init;
+      while (Scalars.lessThan(probe.abs(), max)) {
+        probe = probe.subtract(increment);
+        if (region.isMember(pos.add(dir.multiply(probe))))
+          break;
+      }
+      limit.lo = probe;
     }
-    // freeline.append(testPosition);
-    lowPosition = sideStep;
-    // negative direction
-    occupied = false;
-    while (!occupied && Scalars.lessThan(Abs.of(sideStep), Quantity.of(10, SI.METER))) {
-      sideStep = sideStep.add(increment);
-      testPosition = pos.add(dir.multiply(sideStep));
-      occupied = region.isMember(testPosition);
+    { // positive direction
+      Scalar probe = init;
+      while (Scalars.lessThan(probe.abs(), max)) {
+        probe = probe.add(increment);
+        if (region.isMember(pos.add(dir.multiply(probe))))
+          break;
+      }
+      limit.hi = probe;
     }
-    highPosition = sideStep;
-    // freeline.append(testPosition);
-    // freeLines.add(freeline);
-    return Tensors.of(lowPosition, highPosition);
+    return limit;
   }
 }
