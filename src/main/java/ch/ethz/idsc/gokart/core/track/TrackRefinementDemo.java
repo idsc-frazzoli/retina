@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.track;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.IOException;
 import java.util.Optional;
@@ -62,6 +63,13 @@ public class TrackRefinementDemo extends BSplineTrackDemo {
       } else
         System.out.println("no can do");
     }
+  }
+
+  @Override
+  public Color color(Tensor point) {
+    return imageRegion.isMember(point) //
+        ? Color.RED
+        : Color.GREEN;
   }
 
   public static void main(String[] args) {

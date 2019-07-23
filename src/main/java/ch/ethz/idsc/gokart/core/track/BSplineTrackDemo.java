@@ -45,7 +45,7 @@ public class BSplineTrackDemo extends ControlPointsDemo {
         Path2D path2d = geometricLayer.toPath2D(CIRCLE.multiply(point.Get(2)));
         path2d.closePath();
         graphics.setStroke(new BasicStroke(4f));
-        graphics.setColor(new Color(255, 128, 128, 128));
+        graphics.setColor(color(point));
         graphics.draw(path2d);
         geometricLayer.popMatrix();
       }
@@ -69,6 +69,10 @@ public class BSplineTrackDemo extends ControlPointsDemo {
         geometricLayer.popMatrix();
       }
     }
+  }
+
+  public Color color(Tensor point) {
+    return new Color(255, 128, 128, 128);
   }
 
   public static void main(String[] args) {
