@@ -1,12 +1,7 @@
 // code by mh, modifs by jph
 package ch.ethz.idsc.retina.util.spline;
 
-import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.Clips;
-import ch.ethz.idsc.tensor.sca.Mod;
 
 /** quadratic splines */
 public enum UniformBSpline2 {
@@ -50,31 +45,7 @@ public enum UniformBSpline2 {
    * xx = b'*points(:,1);
    * yy = b'*points(:,2);
    * end */
-  private static final Scalar _0 = RealScalar.of(0.0);
-  private static final Scalar _2 = RealScalar.of(2.0);
-
-  /***************************************************/
   public static Tensor getBasisMatrix(int n, int der, boolean circle, Tensor queryPositions) {
-    return queryPositions.map(value -> getBasisVector(n, der, circle, value));
-  }
-
-  public static Tensor getBasisVector(int n, int der, boolean circle, final Scalar x) {
-    Scalar xx = circle //
-        ? x
-        : Clips.interval(0, n - 2).apply(x);
-    return Tensors.vector(i -> getBasisElement(n, i, xx, der, circle), n);
-  }
-
-  private static Scalar getBasisElement(int n, int i, Scalar x, int der, boolean circle) {
-    Scalar value = x.subtract(RealScalar.of(i)).add(_2);
-    if (circle)
-      value = Mod.function(n).apply(value);
-    if (der == 0)
-      return BSpline2D0.FUNCTION.apply(value);
-    if (der == 1)
-      return BSpline2D1.FUNCTION.apply(value);
-    if (der == 2)
-      return BSpline2D2.FUNCTION.apply(value);
-    return _0; // <- true and not a hack
+    return queryPositions.map(BSpline2Vector.of(n, der, circle));
   }
 }

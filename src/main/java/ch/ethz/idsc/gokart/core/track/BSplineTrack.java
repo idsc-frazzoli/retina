@@ -1,7 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.track;
 
-import ch.ethz.idsc.retina.util.spline.UniformBSpline2;
+import ch.ethz.idsc.retina.util.spline.BSpline2Vector;
 import ch.ethz.idsc.sophus.math.Det2D;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -71,7 +71,7 @@ public abstract class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return position [m] */
   public final Tensor getPositionXY(Scalar pathProgress) {
-    return UniformBSpline2.getBasisVector(numPoints, 0, closed, pathProgress).dot(points_xy);
+    return BSpline2Vector.of(numPoints, 0, closed).apply(pathProgress).dot(points_xy);
   }
 
   /** get the path derivative with respect to path progress
@@ -80,7 +80,7 @@ public abstract class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return change rate of position unit [m/1] */
   public final Tensor getDerivationXY(Scalar pathProgress) {
-    return UniformBSpline2.getBasisVector(numPoints, 1, closed, pathProgress).dot(points_xy);
+    return BSpline2Vector.of(numPoints, 1, closed).apply(pathProgress).dot(points_xy);
   }
 
   /** get radius at a certain path value
@@ -89,7 +89,7 @@ public abstract class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return radius [m] */
   public final Scalar getRadius(Scalar pathProgress) {
-    return UniformBSpline2.getBasisVector(numPoints, 0, closed, pathProgress).dot(points_r).Get();
+    return BSpline2Vector.of(numPoints, 0, closed).apply(pathProgress).dot(points_r).Get();
   }
 
   /** get the path direction with respect to path progress
@@ -116,7 +116,7 @@ public abstract class BSplineTrack implements TrackInterface {
    * corresponding to control point indices [1]
    * @return change rate of position unit [m/1^2] */
   public final Tensor get2ndDerivation(Scalar pathProgress) {
-    return UniformBSpline2.getBasisVector(numPoints, 2, closed, pathProgress).dot(points_xy);
+    return BSpline2Vector.of(numPoints, 2, closed).apply(pathProgress).dot(points_xy);
   }
 
   /** get the curvature

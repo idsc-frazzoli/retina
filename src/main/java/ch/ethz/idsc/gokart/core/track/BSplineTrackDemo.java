@@ -19,14 +19,14 @@ import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class BSplineTrackDemo extends ControlPointsDemo {
-  private final JToggleButton jToggleEdit = new JToggleButton("edit");
+  private final JToggleButton jToggleView = new JToggleButton("view");
   private final JToggleButton jToggleClosed = new JToggleButton("closed");
 
   public BSplineTrackDemo() {
     super(true, GeodesicDisplays.R2_ONLY);
-    timerFrame.jToolBar.add(jToggleEdit);
+    timerFrame.jToolBar.add(jToggleView);
     timerFrame.jToolBar.add(jToggleClosed);
-    jToggleEdit.addActionListener(e -> setPositioningEnabled(!jToggleEdit.isSelected()));
+    jToggleView.addActionListener(e -> setPositioningEnabled(!jToggleView.isSelected()));
   }
 
   @Override
@@ -41,7 +41,7 @@ public class BSplineTrackDemo extends ControlPointsDemo {
           : new StringBSplineTrack(points_xyr);
       RenderInterface renderInterface2 = new TrackRender().setTrack(bSplineTrack);
       renderInterface2.render(geometricLayer, graphics);
-      if (jToggleEdit.isSelected()) {
+      if (jToggleView.isSelected()) {
         Tensor position = geometricLayer.getMouseSe2State().extract(0, 2).map(s -> Quantity.of(s, SI.METER));
         Tensor nearestPosition = bSplineTrack.getNearestPosition(position);
         geometricLayer.pushMatrix(Se2Utils.toSE2Translation(nearestPosition.map(Magnitude.METER)));
