@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.track;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.Path2D;
 
 import javax.swing.JToggleButton;
 
@@ -19,8 +20,11 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Ramp;
 
 public class BSplineTrackDemo extends ControlPointsDemo {
+  private static final Tensor CIRCLE = CirclePoints.of(27);
+  // ---
   private final JToggleButton jToggleView = new JToggleButton("view");
   final JToggleButton jToggleClosed = new JToggleButton("closed");
 
@@ -33,10 +37,21 @@ public class BSplineTrackDemo extends ControlPointsDemo {
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
+    Tensor points_xyr = getControlPointsSe2().copy();
+    points_xyr.set(Ramp.FUNCTION, Tensor.ALL, 2);
+    {
+      for (Tensor point : points_xyr) {
+        geometricLayer.pushMatrix(Se2Utils.toSE2Translation(point));
+        Path2D path2d = geometricLayer.toPath2D(CIRCLE.multiply(point.Get(2)));
+        path2d.closePath();
+        graphics.setStroke(new BasicStroke(4f));
+        graphics.setColor(new Color(255, 128, 128, 128));
+        graphics.draw(path2d);
+        geometricLayer.popMatrix();
+      }
+    }
     renderControlPoints(geometricLayer, graphics);
-    Tensor controlPoints = getGeodesicControlPoints();
-    if (1 < controlPoints.length()) {
-      Tensor points_xyr = Tensor.of(controlPoints.stream().map(row -> row.append(RealScalar.of(1))));
+    if (1 < points_xyr.length()) {
       points_xyr = points_xyr.map(s -> Quantity.of(s, SI.METER));
       BSplineTrack bSplineTrack = jToggleClosed.isSelected() //
           ? new CyclicBSplineTrack(points_xyr)

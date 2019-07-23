@@ -50,13 +50,8 @@ public class TrackRefinement {
     Tensor splineMatrix = queryPositions.map(BSpline2Vector.of(n, 0, closed));
     Tensor splineMatrixTransp = Transpose.of(splineMatrix);
     Tensor splineMatrix1Der = queryPositions.map(BSpline2Vector.of(n, 1, closed));
-    /* for(int it=0;it<iterations;it++) {
-     * Tensor positions = MPCBSpline.getPositions(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix);
-     * Tensor sideVectors = MPCBSpline.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix1Der);
-     * Tensor sideLimits = Tensors.vector((i)->getSideLimits(positions.get(i), sideVectors.get(i)), positions.length());
-     * } */
-    System.out.println("Iterate " + iterations + " times!");
-    for (int i = 0; i < iterations; ++i) {
+    int iteration = 0;
+    while (iteration < iterations) {
       Optional<Tensor> optional = getCorrectionVectors(points_xyr, //
           queryPositions, splineMatrix, splineMatrix1Der, resolution, closed);
       if (!optional.isPresent())
@@ -67,22 +62,9 @@ public class TrackRefinement {
       points_xyr = closed //
           ? REGULARIZATION_CYCLIC.apply(points_xyr)
           : REGULARIZATION_STRING.apply(points_xyr);
-      // ---
-      // constraints are not used at the moment
-      // {
-      // Tensor controlpointsX = points_xyr.get(Tensor.ALL, 0);
-      // Tensor controlpointsY = points_xyr.get(Tensor.ALL, 1);
-      // Tensor radiusCtrPoints = points_xyr.get(Tensor.ALL, 2);
-      // for (TrackConstraint constraint : constraints) {
-      // constraint.compute(controlpointsX, controlpointsY, radiusCtrPoints);
-      // controlpointsX = constraint.getControlPointsX();
-      // controlpointsY = constraint.getControlPointsY();
-      // radiusCtrPoints = constraint.getRadiusControlPoints();
-      // }
-      // points_xyr = Transpose.of(Tensors.of(controlpointsX, controlpointsY, radiusCtrPoints));
-      // }
+      ++iteration;
     }
-    // MPCBSplineTrack track = new MPCBSplineTrack(controlpointsX, controlpointsY, radiusCtrPoints);
+    System.out.println("Iterate " + iteration + " times!");
     return points_xyr;
   }
 

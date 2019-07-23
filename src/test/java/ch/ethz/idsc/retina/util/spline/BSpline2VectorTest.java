@@ -10,8 +10,8 @@ import junit.framework.TestCase;
 
 public class BSpline2VectorTest extends TestCase {
   public void testBasisMatrix() {
-    for (int n = 2; n < 6; ++n) {
-      Tensor pos = Tensors.vector(0.2, 0.4, 1.3);
+    for (int n = 3; n < 6; ++n) {
+      Tensor pos = Tensors.vector(0, 0.2, 0.4, n - 2.3, n - 2);
       Tensor matrix = pos.map(BSpline2Vector.of(n, 0, false));
       Tensor vector = Array.of(l -> RealScalar.ONE, n);
       Tensor dot = matrix.dot(vector);

@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.track;
 
 import java.awt.Graphics2D;
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.swing.JButton;
 
@@ -11,6 +12,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.AxesRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.app.api.AbstractDemo;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -46,11 +48,19 @@ public class TrackRefinementDemo extends BSplineTrackDemo {
     AxesRender.INSTANCE.render(geometricLayer, graphics);
     super.render(geometricLayer, graphics);
     if (flagRefine) {
+      flagRefine = false;
       Tensor controlPoints = getGeodesicControlPoints();
       Tensor points_xyr = Tensor.of(controlPoints.stream().map(row -> row.append(RealScalar.of(1))));
       points_xyr = points_xyr.map(s -> Quantity.of(s, SI.METER));
       TrackRefinement trackRefinement = new TrackRefinement(imageRegion);
-      trackRefinement.getRefinedTrack(points_xyr, RealScalar.of(8), 10, jToggleClosed.isSelected());
+      Optional<Tensor> optional = //
+          Optional.ofNullable(trackRefinement.getRefinedTrack(points_xyr, RealScalar.of(8), 10, jToggleClosed.isSelected()));
+      if (optional.isPresent()) {
+        Tensor tensor_xyr = optional.get();
+        tensor_xyr = tensor_xyr.map(Magnitude.METER);
+        setControlPointsSe2(tensor_xyr);
+      } else
+        System.out.println("no can do");
     }
   }
 
