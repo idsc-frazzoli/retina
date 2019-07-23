@@ -180,9 +180,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     trackReconManagement.exportTrack();
   }
 
-  // public void setMode(TrackReconMode trackReconMode) {
-  // this.trackReconMode = trackReconMode;
-  // }
   public void listenersAdd(MPCBSplineTrackListener mpcBSplineTrackListener) {
     listeners.add(mpcBSplineTrackListener);
   }

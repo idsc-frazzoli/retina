@@ -105,7 +105,7 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       gokartRender.render(geometricLayer, graphics);
       mpcBSplineTrackRender.render(geometricLayer, graphics);
-      // trackLayoutInitialGuess.render(geometricLayer, graphics);
+      trackLayoutInitialGuess.render(geometricLayer, graphics);
       // ---
       bayesianOccupancyGridThin.genObstacleMap();
       bayesianOccupancyGridThic.genObstacleMap();

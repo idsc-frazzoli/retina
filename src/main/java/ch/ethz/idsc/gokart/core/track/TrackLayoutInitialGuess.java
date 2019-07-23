@@ -27,8 +27,8 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
+import ch.ethz.idsc.tensor.mat.LeastSquares;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
-import ch.ethz.idsc.tensor.mat.PseudoInverse;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Norm;
 
@@ -141,7 +141,6 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   // TODO MH document content of positional support:
   // contains vectors of the form {x, y, 1} without units
   private List<Tensor> positionalSupports = new LinkedList<>();
-  private Tensor controlPoints = Tensors.empty();
 
   // this is potentially slow
   Cell getFarthestCell() {
@@ -415,17 +414,15 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     positionalSupports = new LinkedList<>();
     for (Cell cell : route) {
       Tensor pos = cell.getPos(occupancyGrid);
-      Tensor dist = pos.subtract(lastPosition);
-      Tensor enddist = pos.subtract(endPosition);
-      if (Scalars.lessThan(spacing, Norm._2.of(dist)) && //
-          Scalars.lessThan(halfspacing, Norm._2.of(enddist))) {
+      if (Scalars.lessThan(spacing, Norm._2.between(pos, lastPosition)) && //
+          Scalars.lessThan(halfspacing, Norm._2.between(pos, endPosition))) {
         lastPosition = pos;
         wantedPositionsXY.append(Extract2D.FUNCTION.apply(pos));
         // wantedPositionsY.append(pos.Get(1));
-        positionalSupports.add(pos.copy());
+        positionalSupports.add(pos);
       }
     }
-    if (wantedPositionsXY.length() > 3) {
+    if (3 < wantedPositionsXY.length()) {
       wantedPositionsXY.append(Extract2D.FUNCTION.apply(route.getLast().getPos(occupancyGrid)));
       // wantedPositionsY.append(route.getLast().getPos().Get(1));
       wantedPositionsXY = wantedPositionsXY.multiply(Quantity.of(1, SI.METER));
@@ -434,28 +431,22 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       // number of bspline query points
       int m = wantedPositionsXY.length();
       // number of control points
-      int n = (int) (wantedPositionsXY.length() * controlPointResolution.number().doubleValue());
-      // first possible value is 0
-      // last possible value is n-2
-      final Tensor queryPositions;
+      int n = (int) (m * controlPointResolution.number().doubleValue());
+      final Tensor domain;
       if (closed) // we found closed solution
-        queryPositions = Tensors.vector((i) -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
+        domain = Tensors.vector(i -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
       else
-        queryPositions = Tensors.vector((i) -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
-      // UniformBSpline2.getBasisMatrix(n, 0, closed, queryPositions);
-      final Tensor splineMatrix = queryPositions.map(BSpline2Vector.of(n, 0, closed));
+        // value in [0, n - 2]
+        domain = Tensors.vector(i -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
       // solve for control points: x
-      Tensor pinv = PseudoInverse.of(splineMatrix);
-      // TODO JPH/MH can this be simplified: local variable is not necessary
-      Tensor controlpointsXY = pinv.dot(wantedPositionsXY);
-      controlPoints = controlpointsXY;
-      return Optional.of(controlpointsXY.copy());
+      final Tensor matrixD0 = domain.map(BSpline2Vector.of(n, 0, closed));
+      return Optional.of(LeastSquares.of(matrixD0, wantedPositionsXY));
     }
     System.out.println("no usable track!");
     return Optional.empty();
   }
 
-  @Override
+  @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.2)));
     // ---

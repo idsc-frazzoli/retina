@@ -19,8 +19,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-// TODO JPH/MH manage unused variables
 public class TrackReconManagement {
+  private static final Scalar RADIUS_SEED = Quantity.of(1.0, SI.METER);
   private static final Scalar RADIUS_OFFSET = Quantity.of(0.5, SI.METER);
   private static final Scalar SPACING = RealScalar.of(1.5); // TODO MH/JPH should be meters
   private static final Scalar CP_RESOLUTION = RealScalar.of(0.5);
@@ -67,6 +67,7 @@ public class TrackReconManagement {
   }
 
   public boolean isStartSet() {
+    // TODO JPH design bad
     return startX >= 0 //
         && startX < width //
         && startY >= 0 //
@@ -100,45 +101,23 @@ public class TrackReconManagement {
           if (optional.isPresent()) {
             Tensor ctrpointsXY = optional.get();
             // we have a guess
-            // TODO do this more elegantly
-            // Tensor radiusCtrPoints = Tensors.vector(i -> Quantity.of(1, SI.METER), ctrpointsXY.get(0).length());
-            // constraints = new LinkedList<>();
-            /* if (closedTrack) {
-             * // no constraints at the moment
-             * } else {
-             * constraints.add(refinenement.new PositionalStartConstraint());
-             * constraints.add(refinenement.new PositionalEndConstraint());
-             * } */
             Tensor newTrackDataXYR = trackRefinement.getRefinedTrack( //
-                Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER)))), //
+                Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(RADIUS_SEED))), //
                 RESOLUTION, 10, closedTrack);
             if (Objects.nonNull(newTrackDataXYR)) {
               trackDataXYR = newTrackDataXYR;
               newSolutionNeeded = false;
             } else
               newSolutionNeeded = true;
-            /* else
-             * trackData = refinenement.getRefinedTrack(//
-             * ctrpoints.get(0), //
-             * ctrpoints.get(1), //
-             * radiusCtrPoints, RealScalar.of(8), 10, closedTrack, constraints); */
-            if (Objects.nonNull(trackDataXYR)) {
-              // valid refinement
-              // create Track
-              // To consider: high startup cost -> maybe don't do this in every step
-            } else {
-              // System.out.println("no solution found!");
-              // lastTrack = null;
-            }
           }
         } else {
           // we have a partial track
           // check if route is long enough
-          if (trackLayoutInitialGuess.getRouteLength() > 2) {
+          if (2 < trackLayoutInitialGuess.getRouteLength()) {
             Optional<Tensor> optional = trackLayoutInitialGuess.getControlPointGuess(SPACING, CP_RESOLUTION);
             if (optional.isPresent()) {
               Tensor ctrpointsXY = optional.get();
-              Tensor newTrackDataXYR = Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER))));
+              Tensor newTrackDataXYR = Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(RADIUS_SEED)));
               // System.out.println("open track");
               newTrackDataXYR = trackRefinement.getRefinedTrack(newTrackDataXYR, RESOLUTION, 10, closedTrack);
               if (Objects.nonNull(newTrackDataXYR))
@@ -162,7 +141,6 @@ public class TrackReconManagement {
     }
     if (Objects.nonNull(trackDataXYR))
       lastTrack = MPCBSplineTrack.withOffset(trackDataXYR, RADIUS_OFFSET, closedTrack);
-    // oldWasClosed = closedTrack;
     return Optional.ofNullable(lastTrack);
   }
 
