@@ -1,8 +1,6 @@
 // code by mh
 package ch.ethz.idsc.retina.util.spline;
 
-import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -49,7 +47,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * end
  * </pre> */
 public abstract class BSpline2Vector implements ScalarTensorFunction {
-  static final Scalar _2 = RealScalar.of(2.0);
   private static final ScalarUnaryOperator[] BSPLINE2D = { //
       BSpline2D0.FUNCTION, //
       BSpline2D1.FUNCTION, //

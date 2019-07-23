@@ -48,10 +48,8 @@ public class TrackRefinement {
       // FIXME m-1 vs m
       queryPositions = Tensors.vector(i -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m - 1);
     Tensor splineMatrix = queryPositions.map(BSpline2Vector.of(n, 0, closed));
-    // UniformBSpline2.getBasisMatrix(n, 0, closed, queryPositions);
     Tensor splineMatrixTransp = Transpose.of(splineMatrix);
     Tensor splineMatrix1Der = queryPositions.map(BSpline2Vector.of(n, 1, closed));
-    // UniformBSpline2.getBasisMatrix(n, 1, closed, queryPositions);
     /* for(int it=0;it<iterations;it++) {
      * Tensor positions = MPCBSpline.getPositions(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix);
      * Tensor sideVectors = MPCBSpline.getSidewardsUnitVectors(controlpointsX, controlpointsY, queryPositions, closed, splineMatrix1Der);
@@ -147,7 +145,7 @@ public class TrackRefinement {
       if (Scalars.lessThan(maxSearch, sideStep.abs()))
         return Tensors.of(RealScalar.ZERO, RealScalar.ZERO);
     }
-    // search in both directions for occupied cell
+    // TODO JPH search in both directions for occupied cell
     // only for debugging
     Tensor freeline = Tensors.empty();
     // negative direction

@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
+/** function is defined for values in the interval [0, n - 2] */
 /* package */ class StringBSpline2Vector extends BSpline2Vector {
   private final Clip clip;
 
@@ -18,12 +19,12 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   @Override
   public Tensor apply(Scalar x) {
-    Scalar xx = clip.apply(x);
-    return Tensors.vector(i -> getBasisElement(i, xx), n);
+    clip.requireInside(x);
+    return Tensors.vector(i -> getBasisElement(i, x), n);
   }
 
   private Scalar getBasisElement(int i, Scalar x) {
-    Scalar value = x.subtract(RealScalar.of(i)).add(_2);
+    Scalar value = x.add(RealScalar.of(2 - i));
     return bSpline2D.apply(value);
   }
 }

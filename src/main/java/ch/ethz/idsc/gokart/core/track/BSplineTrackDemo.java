@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class BSplineTrackDemo extends ControlPointsDemo {
   private final JToggleButton jToggleView = new JToggleButton("view");
-  private final JToggleButton jToggleClosed = new JToggleButton("closed");
+  final JToggleButton jToggleClosed = new JToggleButton("closed");
 
   public BSplineTrackDemo() {
     super(true, GeodesicDisplays.R2_ONLY);

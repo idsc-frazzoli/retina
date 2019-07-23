@@ -85,8 +85,8 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
       }
       double zoom = 2;
       GeometricLayer geometricLayer = GeometricLayer.of(Tensors.matrix(new Number[][] { //
-          { 7.5 * zoom, 0., -540 }, //
-          { 0., -7.5 * zoom, 540 + 640 }, //
+          { 7.5 * zoom, 0., -540 + 320 }, //
+          { 0., -7.5 * zoom, 540 + 640 - 320 }, //
           { 0., 0., 1. } }));
       Tensor lastTrack = trackReconManagement.getTrackData();
       if (Objects.nonNull(lastTrack) && false)
