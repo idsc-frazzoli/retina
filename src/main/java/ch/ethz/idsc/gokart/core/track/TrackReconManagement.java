@@ -25,6 +25,7 @@ public class TrackReconManagement {
   private static final Scalar RADIUS_OFFSET = Quantity.of(0.5, SI.METER);
   private static final Scalar SPACING = RealScalar.of(1.5); // TODO MH/JPH should be meters
   private static final Scalar CP_RESOLUTION = RealScalar.of(0.5);
+  private static final int RESOLUTION = 8;
   // ---
   private final OccupancyGrid occupancyGrid;
   private final TrackLayoutInitialGuess trackLayoutInitialGuess;
@@ -127,7 +128,7 @@ public class TrackReconManagement {
              * } */
             Tensor newTrackDataXYR = trackRefinement.getRefinedTrack( //
                 Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER)))), //
-                RealScalar.of(8), 10, closedTrack);
+                RESOLUTION, 10, closedTrack);
             if (Objects.nonNull(newTrackDataXYR)) {
               trackDataXYR = newTrackDataXYR;
               newSolutionNeeded = false;
@@ -158,9 +159,7 @@ public class TrackReconManagement {
               Tensor ctrpointsXY = optional.get();
               Tensor newTrackDataXYR = Tensor.of(ctrpointsXY.stream().map(xy -> xy.copy().append(Quantity.of(1, SI.METER))));
               // System.out.println("open track");
-              newTrackDataXYR = trackRefinement.getRefinedTrack( //
-                  newTrackDataXYR, //
-                  RealScalar.of(8), 10, closedTrack);
+              newTrackDataXYR = trackRefinement.getRefinedTrack(newTrackDataXYR, RESOLUTION, 10, closedTrack);
               if (Objects.nonNull(newTrackDataXYR))
                 trackDataXYR = newTrackDataXYR;
             }
@@ -172,7 +171,7 @@ public class TrackReconManagement {
       // refine
       System.out.println("refine");
       Tensor newTrackDataXYR = Objects.nonNull(trackDataXYR) //
-          ? trackRefinement.getRefinedTrack(trackDataXYR, RealScalar.of(8), 3, closedTrack) //
+          ? trackRefinement.getRefinedTrack(trackDataXYR, RESOLUTION, 3, closedTrack) //
           : null;
       if (Objects.nonNull(newTrackDataXYR))
         trackDataXYR = newTrackDataXYR;

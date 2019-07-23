@@ -2,11 +2,9 @@
 package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.owl.math.region.Region;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 /* package */ class Limit {
@@ -14,7 +12,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
   Scalar hi;
 }
 
-// TODO JPH class contains magic constants
 /* package */ class RegionRayTrace {
   private final Region<Tensor> region;
   private final Scalar increment;
@@ -30,19 +27,19 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
   public Limit getLimits(final Tensor pos, final Tensor dir) {
     Limit limit = new Limit();
-    // find free space
-    Scalar init = Quantity.of(-0.001, SI.METER);
-    {
+    Scalar init = shift.zero();
+    { // find free space
       boolean occupied = true;
       while (occupied) {
         if (Sign.isNegative(init))
-          init = init.negate(); // TODO JPH whut?
+          init = init.negate();
         else
           init = init.add(increment).negate();
-        Tensor element = pos.add(dir.multiply(init));
-        occupied = region.isMember(element);
+        occupied = region.isMember(pos.add(dir.multiply(init)));
         if (Scalars.lessThan(shift, init.abs())) {
-          // TODO JPH why not break here
+          init = shift.zero();
+          // initial implementation gave up here:
+          // perhaps make depend on "occupied"
           // return Optional.empty();
           break;
         }

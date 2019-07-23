@@ -7,15 +7,13 @@ import ch.ethz.idsc.tensor.lie.Cross;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Norm;
 
-/** uses UniformBSpline2 to map control points */
-/* package */ enum BSplineUtil {
+/* package */ enum SidewardsUnitVectors {
   ;
   private static final TensorUnaryOperator NORMALIZE = NormalizeUnlessZero.with(Norm._2);
 
-  public static Tensor getSidewardsUnitVectors(Tensor controlpointsXY, Tensor basisMatrix1Der) {
-    Tensor forwardXY = basisMatrix1Der.dot(controlpointsXY);
-    return Tensor.of(forwardXY.stream() //
-        .map(Tensor::negate) // TODO MH/JPH the negate is not elegant
+  public static Tensor of(Tensor points_xy) {
+    return Tensor.of(points_xy.stream() //
+        .map(Tensor::negate) // TODO JPH the negate is not elegant
         .map(Cross::of) //
         .map(NORMALIZE));
   }
