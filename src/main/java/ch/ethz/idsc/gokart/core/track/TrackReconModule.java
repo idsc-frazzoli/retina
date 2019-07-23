@@ -141,7 +141,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       if (isActive) {
         if (trackReconManagement.isStartSet()) {
           mapping.prepareMap();
-          lastTrack = trackReconManagement.update(_gokartPoseEvent, Quantity.of(seconds, SI.SECOND));
+          lastTrack = trackReconManagement.update(_gokartPoseEvent.getPose());
         } else
           System.out.println("no start set");
       }

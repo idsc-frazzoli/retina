@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.map.OccupancyGrid;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
@@ -37,17 +36,9 @@ public class TrackReconManagement {
   private int width = 0;
   private int height = 0;
   private int count = 0;
-  // private int shortestRoute = 1000;
   private double startOrientation = 0;
   private boolean closedTrack = false;
   private boolean newSolutionNeeded = false;
-  // private boolean oldWasClosed = false;
-  // private boolean cleared = false;
-  // private final Timing lastTrackReset = Timing.started();
-  // private List<TrackConstraint> constraints = new LinkedList<>();
-  // private final Scalar openTrackValid = Quantity.of(1, SI.SECOND);
-  private Scalar timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
-  // private final List<TrackConstraint> trackConstraints = null;
 
   public TrackReconManagement(OccupancyGrid occupancyGrid) {
     this.occupancyGrid = occupancyGrid;
@@ -96,17 +87,9 @@ public class TrackReconManagement {
     occupancyGrid.clearStart(startX, startY, startOrientation);
   }
 
-  /** @param gokartPoseEvent non-null
-   * @param dTime
-   * @return */
-  public Optional<MPCBSplineTrack> update(GokartPoseEvent gokartPoseEvent, Scalar dTime) {
-    return update(gokartPoseEvent.getPose(), dTime);
-  }
-
-  private Optional<MPCBSplineTrack> update(Tensor pose, Scalar dTime) {
+  public Optional<MPCBSplineTrack> update(Tensor pose) {
     // System.out.println("update called: " + timeSinceLastTrackUpdate);
     MPCBSplineTrack lastTrack = null;
-    timeSinceLastTrackUpdate = timeSinceLastTrackUpdate.add(dTime);
     if (!closedTrack || newSolutionNeeded) {
       trackLayoutInitialGuess.update(startX, startY, startOrientation, pose);
       if (trackLayoutInitialGuess.getRouteLength() > 0) {
@@ -143,8 +126,6 @@ public class TrackReconManagement {
               // valid refinement
               // create Track
               // To consider: high startup cost -> maybe don't do this in every step
-              // TODO JPH/MH
-              timeSinceLastTrackUpdate = Quantity.of(0, SI.SECOND);
             } else {
               // System.out.println("no solution found!");
               // lastTrack = null;

@@ -80,7 +80,7 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
       time_next = time.add(delta);
       if (count++ > 1) {
         // TODO JPH more elegant
-        Optional<MPCBSplineTrack> optional = trackReconManagement.update(gokartPoseEvent, delta);
+        Optional<MPCBSplineTrack> optional = trackReconManagement.update(gokartPoseEvent.getPose());
         mpcBSplineTrackRender.mpcBSplineTrack(optional);
       }
       double zoom = 2;

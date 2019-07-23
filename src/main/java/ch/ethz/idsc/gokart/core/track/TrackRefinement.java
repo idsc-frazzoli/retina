@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.track;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -16,6 +15,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -65,31 +65,35 @@ public class TrackRefinement {
     return points_xyr;
   }
 
+  private Optional<Tensor> correction(Tensor points_xyr, Tensor matrixD0, Tensor matrixD1, int resolution) {
+    return correction( //
+        matrixD0.dot(points_xyr), //
+        SidewardsUnitVectors.of(matrixD1.dot(Tensor.of(points_xyr.stream().map(Extract2D.FUNCTION)))), //
+        resolution);
+  }
+
   /** .
    * @param points_xyr
    * @param matrixD0
    * @param matrixD1
    * @param resolution
    * @return */
-  private Optional<Tensor> correction(Tensor points_xyr, Tensor matrixD0, Tensor matrixD1, int resolution) {
-    Tensor dense_xyr = matrixD0.dot(points_xyr);
-    Tensor dense_dir = SidewardsUnitVectors.of(matrixD1.dot(Tensor.of(points_xyr.stream().map(Extract2D.FUNCTION))));
-    List<Limit> sideLimits = new ArrayList<>();
-    for (int index = 0; index < dense_xyr.length(); ++index) {
-      Tensor pos_xyr = dense_xyr.get(index).extract(0, 2);
-      Tensor sidevec = dense_dir.get(index);
-      sideLimits.add(regionRayTrace.getLimits(pos_xyr, sidevec));
-    }
+  private Optional<Tensor> correction(Tensor dense_xyr, Tensor dense_dir, int resolution) {
+    List<Limit> limits = new ArrayList<>();
+    for (int index = 0; index < dense_xyr.length(); ++index)
+      limits.add(regionRayTrace.getLimits( //
+          dense_xyr.get(index).extract(0, 2), //
+          dense_dir.get(index)));
     // boolean hasNoSolution = sideLimits.stream().anyMatch(row -> row.get(0).equals(row.get(1)));
     // if (hasNoSolution) {
     // // return Optional.empty();
     // }
     // upwardsforce
-    Tensor clippingLo = Tensors.vector(i -> Ramp.FUNCTION.apply(dense_xyr.Get(i, 2).add(sideLimits.get(i).lo)), dense_xyr.length());
-    Tensor clippingHi = Tensors.vector(i -> Ramp.FUNCTION.apply(dense_xyr.Get(i, 2).subtract(sideLimits.get(i).hi)), dense_xyr.length());
-    Tensor sideCorr = clippingLo.subtract(clippingHi).multiply(GD_LIMITS.divide(RealScalar.of(resolution)));
-    Tensor posCorr = sideCorr.pmul(dense_dir);
-    Tensor radiusCorr = clippingHi.add(clippingLo).multiply(GD_RADIUS.divide(RealScalar.of(resolution)).negate());
-    return Optional.of(Tensor.of(IntStream.range(0, posCorr.length()).mapToObj(i -> posCorr.get(i).append(radiusCorr.get(i)))));
+    Tensor clipLo = Tensors.vector(i -> Ramp.FUNCTION.apply(dense_xyr.Get(i, 2).add(limits.get(i).lo)), dense_xyr.length());
+    Tensor clipHi = Tensors.vector(i -> Ramp.FUNCTION.apply(dense_xyr.Get(i, 2).subtract(limits.get(i).hi)), dense_xyr.length());
+    Tensor dirCor = clipLo.subtract(clipHi).multiply(GD_LIMITS.divide(RealScalar.of(resolution)));
+    Tensor posCor = dirCor.pmul(dense_dir);
+    Tensor radCor = clipHi.add(clipLo).multiply(GD_RADIUS.divide(RealScalar.of(resolution)).negate());
+    return Optional.of(Join.of(1, posCor, radCor.map(Tensors::of)));
   }
 }
