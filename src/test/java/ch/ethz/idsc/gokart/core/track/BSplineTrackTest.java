@@ -45,6 +45,8 @@ public class BSplineTrackTest extends TestCase {
         { 4, 0, 2 }, //
         { 5, 1, 2 } }).multiply(meter);
     BSplineTrack bSplineTrack = new CyclicBSplineTrack(fullTensor);
+    assertTrue(bSplineTrack.isClosed());
+    assertFalse(new StringBSplineTrack(fullTensor).isClosed());
     assertEquals(bSplineTrack.getPositionXY(RealScalar.of(0)), Tensors.fromString("{0.5[m], 0.5[m]}"));
     assertEquals(bSplineTrack.getPositionXY(RealScalar.of(1)), Tensors.fromString("{1.5[m], 0.5[m]}"));
     assertEquals(bSplineTrack.getPositionXY(RealScalar.of(2)), Tensors.fromString("{2.5[m], 0.5[m]}"));

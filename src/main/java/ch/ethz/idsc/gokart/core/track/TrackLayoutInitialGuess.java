@@ -17,7 +17,7 @@ import ch.ethz.idsc.gokart.core.map.OccupancyGrid;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.UniformBSpline2;
+import ch.ethz.idsc.retina.util.spline.UniformBSpline2;
 import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.DoubleScalar;

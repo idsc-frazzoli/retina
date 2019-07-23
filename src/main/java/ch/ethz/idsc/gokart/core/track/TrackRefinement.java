@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 
 import ch.ethz.idsc.gokart.core.map.OccupancyGrid;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.math.UniformBSpline2;
+import ch.ethz.idsc.retina.util.spline.UniformBSpline2;
 import ch.ethz.idsc.sophus.flt.ga.Regularization2Step;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.sophus.math.Extract2D;

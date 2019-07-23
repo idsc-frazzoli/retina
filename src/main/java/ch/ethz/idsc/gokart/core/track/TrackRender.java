@@ -62,18 +62,14 @@ import ch.ethz.idsc.tensor.Tensor;
       Stroke strokeNormal = new BasicStroke(width);
       { // middle line
         graphics.setStroke(strokeDashed);
-        Path2D path2d = geometricLayer.toPath2D(lineMiddle);
-        if (closed)
-          path2d.closePath();
+        Path2D path2d = geometricLayer.toPath2D(lineMiddle, closed);
         graphics.setColor(new Color(255, 0, 0, 192));
         graphics.draw(path2d);
         graphics.setStroke(strokeNormal);
         render(geometricLayer, graphics, lineMiddle);
       }
       { // left line
-        Path2D path2d = geometricLayer.toPath2D(lineLeft);
-        if (closed)
-          path2d.closePath();
+        Path2D path2d = geometricLayer.toPath2D(lineLeft, closed);
         graphics.setColor(new Color(255, 0, 0, 192));
         if (true) {
           graphics.draw(path2d);
@@ -81,9 +77,7 @@ import ch.ethz.idsc.tensor.Tensor;
         }
       }
       { // right line
-        Path2D path2d = geometricLayer.toPath2D(lineRight);
-        if (closed)
-          path2d.closePath();
+        Path2D path2d = geometricLayer.toPath2D(lineRight, closed);
         graphics.setColor(new Color(0, 255, 0, 192));
         if (true) {
           graphics.draw(path2d);

@@ -1,7 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.track;
 
-import ch.ethz.idsc.retina.util.math.UniformBSpline2;
+import ch.ethz.idsc.retina.util.spline.UniformBSpline2;
 import ch.ethz.idsc.sophus.math.Det2D;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -54,15 +54,9 @@ public abstract class BSplineTrack implements TrackInterface {
     }
   }
 
-  @Override // from TrackInterface
-  public boolean isClosed() {
-    return closed;
-  }
-
-  public final Tensor getControlPoints() {
-    return points_xy.copy();
-  }
-
+  // public final Tensor getControlPoints() {
+  // return points_xy.copy();
+  // }
   public final Tensor combinedControlPoints() {
     return points_xyr;
   }
@@ -142,6 +136,10 @@ public abstract class BSplineTrack implements TrackInterface {
   // the application of abs() causes a loss of information
   // return getCurvature(pathProgress).abs().reciprocal();
   // }
+  /** problem: using normal BSpline implementation takes more time than full MPC optimization
+   * solution: fast position lookup: from 45000 micro s -> 15 micro s
+   * 
+   * @param position vector */
   public abstract Scalar getNearestPathProgress(Tensor position);
 
   final float getFastQuadraticDistance(int index, float gPosX, float gPosY) {

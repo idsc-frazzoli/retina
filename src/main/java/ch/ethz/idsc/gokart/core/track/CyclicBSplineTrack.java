@@ -1,3 +1,4 @@
+// code by mh
 package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.tensor.RealScalar;
@@ -9,18 +10,20 @@ public class CyclicBSplineTrack extends BSplineTrack {
     super(points_xyr, true);
   }
 
-  /** problem: using normal BSpline implementation takes more time than full MPC optimization
-   * solution: fast position lookup: from 45000 micro s -> 15 micro s
-   * @param position vector */
-  @Override
+  @Override // from TrackInterface
+  public boolean isClosed() {
+    return true;
+  }
+
+  @Override // from BSplineTrack
   public Scalar getNearestPathProgress(Tensor position) {
     float gPosX = position.Get(0).number().floatValue();
     float gPosY = position.Get(1).number().floatValue();
     // first control point
-    float bestDist = 10000f;
+    float bestDist = Float.MAX_VALUE;
     int bestGuess = 0;
     // initial guesses
-    for (int i = 0; i < numPoints; i++) {
+    for (int i = 0; i < numPoints; ++i) {
       int index = i * LOOKUP_SKIP;
       // quadratic distances
       float dist = getFastQuadraticDistance(index, gPosX, gPosY);
