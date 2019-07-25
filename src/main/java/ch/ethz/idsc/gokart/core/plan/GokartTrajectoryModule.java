@@ -194,72 +194,74 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
     System.out.println("entering...");
     mapping.prepareMap();
     if (Objects.nonNull(gokartPoseEvent)) {
-      final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
-      System.out.println("setup planner, tangent speed=" + tangentSpeed);
-      final Tensor xya = PoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
-      final List<TrajectorySample> head;
-      Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
-      boolean isResetPressed = optional.isPresent() && optional.get().isResetPressed();
-      if (Objects.isNull(trajectory) || isResetPressed) { // exists previous trajectory?
-        // no: plan from current position
-        System.out.println("plan from current position");
-        StateTime stateTime = new StateTime(xya, RealScalar.ZERO);
-        head = Collections.singletonList(TrajectorySample.head(stateTime));
-      } else {
-        // yes: plan from closest point + cutoffDist on previous trajectory
-        System.out.println("plan from closest point + cutoffDist on previous trajectory");
-        Scalar cutoffDist = trajectoryConfig.getCutoffDistance(tangentSpeed);
-        head = getTrajectoryUntil(trajectory, xya, Magnitude.METER.apply(cutoffDist));
-      }
-      Tensor distances = Tensor.of(waypoints.stream().map(wp -> Norm._2.ofVector(SE2WRAP.difference(wp, xya))));
-      int wpIdx = ArgMin.of(distances); // find closest waypoint to current position
-      if (head.isEmpty()) {
-        System.err.println("head is empty");
-      } else //
-      if (0 <= wpIdx) { // jan inserted check for non-empty
-        Tensor goal = waypoints.get(wpIdx);
-        // find a goal waypoint that is located beyond horizonDistance & does not lie within obstacle
-        int count = 0;
-        while (Scalars.lessThan(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), trajectoryConfig.horizonDistance) || unionRegion.isMember(goal)) {
-          wpIdx = (wpIdx + 1) % waypoints.length();
-          goal = waypoints.get(wpIdx);
-          ++count;
-          if (waypoints.length() < count) {
-            // TODO JPH
-            System.err.println("panic: infinite look prevention");
-            break;
-          }
+      if (Objects.nonNull(waypoints)) {
+        final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
+        System.out.println("setup planner, tangent speed=" + tangentSpeed);
+        final Tensor xya = PoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
+        final List<TrajectorySample> head;
+        Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
+        boolean isResetPressed = optional.isPresent() && optional.get().isResetPressed();
+        if (Objects.isNull(trajectory) || isResetPressed) { // exists previous trajectory?
+          // no: plan from current position
+          System.out.println("plan from current position");
+          StateTime stateTime = new StateTime(xya, RealScalar.ZERO);
+          head = Collections.singletonList(TrajectorySample.head(stateTime));
+        } else {
+          // yes: plan from closest point + cutoffDist on previous trajectory
+          System.out.println("plan from closest point + cutoffDist on previous trajectory");
+          Scalar cutoffDist = trajectoryConfig.getCutoffDistance(tangentSpeed);
+          head = getTrajectoryUntil(trajectory, xya, Magnitude.METER.apply(cutoffDist));
         }
-        // System.out.format("goal index = " + wpIdx + ", distance = %.2f \n", SE2WRAP.distance(xya, goal).number().floatValue());
-        int resolution = trajectoryConfig.controlResolution.number().intValue();
-        Collection<Flow> controls = flowsInterface.getFlows(resolution);
-        // goalRadius.pmul(Tensors.vector(2, 2, 1));
-        // System.out.println(goalRadius);
-        Se2ComboRegion se2ComboRegion = //
-            // Se2ComboRegion.spherical(goal, goalRadius.pmul(TrajectoryConfig.GLOBAL.goalRadiusFactor));
-            Se2ComboRegion.cone(goal, trajectoryConfig.coneHalfAngle, goalRadius.Get(2));
-        // ---
-        // GoalInterface goalInterface = new Se2MinTimeGoalManager(se2ComboRegion, controls).getGoalInterface();
-        // GoalInterface multiCostGoalInterface = MultiCostGoalAdapter.of(goalInterface, costCollection);
-        List<CostFunction> costs = new ArrayList<>();
-        costs.add(waypointCost);
-        costs.add(new Se2MinTimeGoalManager(se2ComboRegion, controls));
-        GoalInterface multiCostGoalInterface = new VectorCostGoalAdapter(costs, se2ComboRegion);
-        TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
-            STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, //
-            plannerConstraint, multiCostGoalInterface, //
-            new LexicographicRelabelDecision(VectorLexicographic.COMPARATOR));
-        // Do Planning
-        StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
-        trajectoryPlanner.insertRoot(root);
-        new Expand<>(trajectoryPlanner).maxTime(trajectoryConfig.expandTimeLimit());
-        expandResult(head, trajectoryPlanner); // build detailed trajectory and pass to purePursuit
-        return;
-      } else {
-        System.err.println("argmin index negative");
+        Tensor distances = Tensor.of(waypoints.stream().map(wp -> Norm._2.ofVector(SE2WRAP.difference(wp, xya))));
+        int wpIdx = ArgMin.of(distances); // find closest waypoint to current position
+        if (head.isEmpty()) {
+          System.err.println("head is empty");
+        } else //
+        if (0 <= wpIdx) { // jan inserted check for non-empty
+          Tensor goal = waypoints.get(wpIdx);
+          // find a goal waypoint that is located beyond horizonDistance & does not lie within obstacle
+          int count = 0;
+          while (Scalars.lessThan(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), trajectoryConfig.horizonDistance) || unionRegion.isMember(goal)) {
+            wpIdx = (wpIdx + 1) % waypoints.length();
+            goal = waypoints.get(wpIdx);
+            ++count;
+            if (waypoints.length() < count) {
+              // TODO JPH
+              System.err.println("panic: infinite look prevention");
+              break;
+            }
+          }
+          // System.out.format("goal index = " + wpIdx + ", distance = %.2f \n", SE2WRAP.distance(xya, goal).number().floatValue());
+          int resolution = trajectoryConfig.controlResolution.number().intValue();
+          Collection<Flow> controls = flowsInterface.getFlows(resolution);
+          // goalRadius.pmul(Tensors.vector(2, 2, 1));
+          // System.out.println(goalRadius);
+          Se2ComboRegion se2ComboRegion = //
+              // Se2ComboRegion.spherical(goal, goalRadius.pmul(TrajectoryConfig.GLOBAL.goalRadiusFactor));
+              Se2ComboRegion.cone(goal, trajectoryConfig.coneHalfAngle, goalRadius.Get(2));
+          // ---
+          // GoalInterface goalInterface = new Se2MinTimeGoalManager(se2ComboRegion, controls).getGoalInterface();
+          // GoalInterface multiCostGoalInterface = MultiCostGoalAdapter.of(goalInterface, costCollection);
+          List<CostFunction> costs = new ArrayList<>();
+          costs.add(waypointCost);
+          costs.add(new Se2MinTimeGoalManager(se2ComboRegion, controls));
+          GoalInterface multiCostGoalInterface = new VectorCostGoalAdapter(costs, se2ComboRegion);
+          TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
+              STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, //
+              plannerConstraint, multiCostGoalInterface, //
+              new LexicographicRelabelDecision(VectorLexicographic.COMPARATOR));
+          // Do Planning
+          StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
+          trajectoryPlanner.insertRoot(root);
+          new Expand<>(trajectoryPlanner).maxTime(trajectoryConfig.expandTimeLimit());
+          expandResult(head, trajectoryPlanner); // build detailed trajectory and pass to purePursuit
+          return;
+        } else {
+          System.err.println("argmin index negative");
+        }
       }
-    }
-    System.err.println("no curve because no pose");
+    } else
+      System.err.println("no curve because no pose");
     curvePursuitModule.setCurve(Optional.empty());
     PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }

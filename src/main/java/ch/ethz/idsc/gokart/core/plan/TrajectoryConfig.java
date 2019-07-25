@@ -50,7 +50,7 @@ public class TrajectoryConfig {
   /** file that stores se2 waypoints without units
    * (this allows that the file can also be generated or imported by other software)
    * units will be attached in the function {@link #getWaypointsPose()} */
-  public String waypoints = "/dubilab/waypoints/20190507.csv";
+  public String waypoints = "/dubilab/waypoints/20190725.csv";
 
   /***************************************************/
   /** @param tangentSpeed with unit "m*s^-1"
