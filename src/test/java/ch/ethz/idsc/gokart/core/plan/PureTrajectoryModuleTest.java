@@ -46,6 +46,7 @@ public class PureTrajectoryModuleTest extends TestCase {
       PoseHelper.toUnitless(trajectoryConfig.getWaypointsPose().get(2));
     }
     PureTrajectoryModule pureTrajectoryModule = new PureTrajectoryModule(trajectoryConfig);
+    pureTrajectoryModule.updateWaypoints(trajectoryConfig.getWaypointsPose());
     pureTrajectoryModule.first();
     {
       BYTE_ARRAY_CONSUMER.accept( //
