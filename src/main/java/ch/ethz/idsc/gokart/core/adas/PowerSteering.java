@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   /** @param currangle with unit "SCE"
    * @param velocity {vx[m*s^-1], vy[m*s^-1], omega[s^-1]}
    * @param tsu torque exerted by driver
-   * @return scalar with unit "SCT" */
+   * @return scalar with unit SCT */
   public Scalar torque(Scalar currangle, Tensor velocity, Scalar tsu) {
     // term0 is the static compensation of the restoring force, depending on the current angle
     // term1 is the compensation depending on the velocity of the steering wheel

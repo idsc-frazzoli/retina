@@ -245,9 +245,8 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
         } else {
           System.err.println("argmin index negative");
         }
-      }
-    else
-      System.err.println("no curve because no pose");
+      } else
+        System.err.println("no curve because no pose");
     curvePursuitModule.setCurve(Optional.empty());
     PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }

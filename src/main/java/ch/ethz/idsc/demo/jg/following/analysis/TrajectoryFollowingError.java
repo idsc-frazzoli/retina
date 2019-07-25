@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.Tensor;
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     super.event(time, channel, byteBuffer);
-    if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME)) {
+    if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2)) {
       List<TrajectorySample> trajectory = TrajectoryEvents.trajectory(byteBuffer);
       Tensor reference = Tensor.of(trajectory.stream().map(TrajectorySample::stateTime).map(StateTime::state));
       setReference(reference);
