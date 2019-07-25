@@ -6,9 +6,11 @@ import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.gui.trj.Se2UniformResample;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -80,5 +82,14 @@ public class TrajectoryConfig {
     return mapSightLines //
         ? SightLinesMapping.defaultObstacle()
         : GenericBayesianMapping.createObstacleMapping();
+  }
+
+  public Tensor resampledWaypoints(Tensor curve) {
+    return resampledWaypoints(curve, true);
+  }
+
+  public Tensor resampledWaypoints(Tensor curve, boolean cyclic) {
+    CurveSubdivision curveSubdivision = Se2UniformResample.of(waypointsSpacing);
+    return cyclic ? curveSubdivision.cyclic(curve) : curveSubdivision.string(curve);
   }
 }
