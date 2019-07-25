@@ -20,6 +20,7 @@ import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Round;
 
+// TODO JPH move to owl
 public class Se2UniformResample implements CurveSubdivision, Serializable {
   public static CurveSubdivision of(Scalar spacing) {
     return new Se2UniformResample(spacing);

@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.plan.TrajectoryConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.Dubilab;
 import ch.ethz.idsc.gokart.gui.top.GeneralImageRender;
@@ -88,14 +89,21 @@ public class TrajectoryDesignModule extends AbstractModule {
     }
     {
       trajectoryDesign.timerFrame.jToolBar.addSeparator();
-      File folder = new File("src/main/resources/dubilab/waypoints");
-      folder.mkdirs();
-      File file = new File(folder, DATE_FORMAT.format(new Date()) + ".csv");
+      File folder = new File("src/main/resources/dubilab");
+      File subRaw = new File(folder, "rawpoints");
+      subRaw.mkdirs();
+      File subWay = new File(folder, "waypoints");
+      subWay.mkdirs();
+      String name = DATE_FORMAT.format(new Date()) + ".csv";
+      File rawFile = new File(subRaw, name);
+      File wayFile = new File(subWay, name);
       JButton jButton = new JButton("save waypoints");
-      jButton.setToolTipText("save to " + file);
+      jButton.setToolTipText("save to " + wayFile);
       jButton.addActionListener(actionEvent -> {
         try {
-          Export.of(file, Tensor.of(trajectoryDesign.getControlPointsPose().stream().map(PoseHelper::toUnitless)).map(Round._4));
+          Export.of(rawFile, Tensor.of(trajectoryDesign.getControlPointsPose().stream().map(PoseHelper::toUnitless)).map(Round._4));
+          Export.of(wayFile, Tensor.of(TrajectoryConfig.GLOBAL.resampledWaypoints(trajectoryDesign.getControlPointsPose()) //
+              .stream().map(PoseHelper::toUnitless)).map(Round._4));
         } catch (Exception exception) {
           exception.printStackTrace();
         }

@@ -16,12 +16,12 @@ import java.util.stream.Stream;
 
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
-import ch.ethz.idsc.gokart.core.plan.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.plan.TrajectoryEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.state.StateTime;
@@ -60,11 +60,11 @@ import ch.ethz.idsc.tensor.sca.Round;
       CenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, SmoothingKernel.GAUSSIAN), 5);
   private static final Scalar METER2PIXEL = RealScalar.of(30);
   private static final ColorDataIndexed COLOR_DATA_INDEXED = ColorDataLists._097.cyclic();
-  final Tensor waypoints = Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, TrajectoryConfig.GLOBAL.getWaypointsPose(), 1);
   private static final Tensor ARROW_HEAD = Arrowhead.of(.4);
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   // ---
+  private Tensor waypoints = Tensors.empty();
   private int count = 0;
   private Tensor trail = Tensors.empty();
   private Tensor times = Tensors.empty();
@@ -147,7 +147,9 @@ import ch.ethz.idsc.tensor.sca.Round;
       trail = Tensors.empty();
       times = Tensors.empty();
       trajectory = TrajectoryEvents.trajectory(byteBuffer);
-    }
+    } else //
+    if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2))
+      waypoints = Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, Se2CurveLcm.decode(byteBuffer), 1);
   }
 
   public abstract void image(BufferedImage bufferedImage);
