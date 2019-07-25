@@ -20,6 +20,7 @@ import ch.ethz.idsc.tensor.io.Get;
     Optional<File> file = FileHelper.open(args);
     Optional<File> reference = FileHelper.choose();
     if (file.isPresent() && reference.isPresent()) {
+      System.out.println("entered loop");
       CurveFollowingError followingError = new CurveFollowingError(Get.of(reference.get()));
       System.out.print("running... ");
       OfflineLogPlayer.process(file.get(), followingError);

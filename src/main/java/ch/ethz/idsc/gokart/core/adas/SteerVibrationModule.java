@@ -11,17 +11,12 @@ import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
-import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Flatten;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -32,7 +27,6 @@ public class SteerVibrationModule extends AbstractModule implements SteerPutProv
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private SteerGetEvent steerGetEvent;
   private final Timing timing = Timing.started();
-  private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.STEER_VIBRATE);
 
   @Override
   protected void first() {
@@ -55,8 +49,6 @@ public class SteerVibrationModule extends AbstractModule implements SteerPutProv
     if (steerColumnTracker.isCalibratedAndHealthy() && optional.isPresent() && Objects.nonNull(steerGetEvent)) {
       ManualControlInterface manualControlInterface = optional.get();
       System.out.println(steerColumnTracker.getSteerColumnEncoderCentered() + " " + steerGetEvent.tsuTrq());
-      binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of( //
-          time2torque(Quantity.of(timing.seconds(), SI.SECOND)), steerColumnTracker.getSteerColumnEncoderCentered(), steerGetEvent.tsuTrq()))));
       if (manualControlInterface.isAutonomousPressed())
         return Optional.of(SteerPutEvent.createOn(time2torque(Quantity.of(timing.seconds(), SI.SECOND))));
     }
