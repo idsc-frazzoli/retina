@@ -62,7 +62,7 @@ public class CurveClothoidPursuitPlanner {
           : assistedCurveIntersection.string(tensor, prevIndex);
       if (curvePoint.isPresent()) {
         Tensor xya = curvePoint.get().getTensor();
-        ClothoidTerminalRatio clothoidTerminalRatio = ClothoidTerminalRatios.planar(xya.map(Scalar::zero), xya);
+        ClothoidTerminalRatio clothoidTerminalRatio = ClothoidTerminalRatios.of(xya.map(Scalar::zero), xya);
         if (isCompliant.test(clothoidTerminalRatio.head()) && isCompliant.test(clothoidTerminalRatio.tail())) {
           Optional<ClothoidPlan> optional = ClothoidPlan.from(xya, pose, isForward);
           if (optional.isPresent()) {
