@@ -24,6 +24,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
+import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
@@ -41,12 +42,8 @@ public class PureTrajectoryModuleTest extends TestCase {
     TrajectoryConfig trajectoryConfig = new TrajectoryConfig();
     // TODO JPH/GJOEL add separate test that uses sightlines mapping
     trajectoryConfig.mapSightLines = false;
-    trajectoryConfig.waypoints = "/dubilab/controlpoints/tires/20190116.csv";
-    {
-      PoseHelper.toUnitless(trajectoryConfig.getWaypointsPose().get(2));
-    }
     PureTrajectoryModule pureTrajectoryModule = new PureTrajectoryModule(trajectoryConfig);
-    pureTrajectoryModule.updateWaypoints(trajectoryConfig.getWaypointsPose());
+    pureTrajectoryModule.updateWaypoints(Tensor.of(ResourceData.of("/dubilab/controlpoints/tires/20190116.csv").stream().map(PoseHelper::attachUnits)));
     pureTrajectoryModule.first();
     {
       BYTE_ARRAY_CONSUMER.accept( //
