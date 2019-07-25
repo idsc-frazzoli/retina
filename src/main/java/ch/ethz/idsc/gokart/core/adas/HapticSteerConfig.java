@@ -59,7 +59,6 @@ public class HapticSteerConfig implements Serializable {
   public Scalar offsetL = Quantity.of(1, SI.METER);
   public Scalar offsetR = Quantity.of(-1, SI.METER);
 
-
   /***************************************************/
   // functions for anti-lock brake
   public Scalar criticalAngle() {
