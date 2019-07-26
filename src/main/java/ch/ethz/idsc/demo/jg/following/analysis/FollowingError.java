@@ -9,25 +9,20 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Norm;
-import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class FollowingError implements ErrorInterface {
-  private static final Mod MOD = Mod.function(Pi.TWO);
-  // ---
   private Tensor reference = Tensors.empty();
   private Tensor errors = Tensors.empty();
   // ---
-  private Tensor times = Tensors.of( //
-      Quantity.of(DoubleScalar.POSITIVE_INFINITY, SI.SECOND), //
-      Quantity.of(DoubleScalar.NEGATIVE_INFINITY, SI.SECOND));
+  private Scalar startTime = Quantity.of(DoubleScalar.POSITIVE_INFINITY, SI.SECOND);
+  private Scalar endTime = Quantity.of(DoubleScalar.NEGATIVE_INFINITY, SI.SECOND);
 
   public FollowingError() {
     System.err.println(String.format("WARN %s provides only an approximation of the actual error", this.getClass().getSimpleName())); // I told you
@@ -46,8 +41,8 @@ public class FollowingError implements ErrorInterface {
    * @param pose of vehicle {x[m], y[m], angle} */
   public void insert(Scalar time, Tensor pose) {
     if (!Tensors.isEmpty(reference)) {
-      times.set(Min.of(times.Get(0), time), 0);
-      times.set(Max.of(times.Get(1), time), 1);
+      startTime = Min.of(startTime, time);
+      endTime = Max.of(endTime, time);
       errors.append(error(pose));
     }
   }
@@ -58,9 +53,7 @@ public class FollowingError implements ErrorInterface {
     Tensor pose2D = Extract2D.FUNCTION.apply(pose);
     Tensor distances = Tensor.of(reference.stream().map(Extract2D.FUNCTION).map(tensor -> tensor.subtract(pose2D)).map(Norm._2::ofVector));
     int idx = ArgMin.of(distances);
-    Scalar diff = MOD.apply(pose.Get(2).subtract(reference.get(idx).Get(2))).abs();
-    Scalar heading_error = Min.of(diff, Pi.TWO.subtract(diff));
-    return Tensors.of(distances.get(idx), heading_error);
+    return Tensors.of(distances.get(idx), So2AlignmentError.of(pose.Get(2), reference.Get(idx, 2)));
   }
 
   @Override // from ErrorInterface
@@ -82,7 +75,7 @@ public class FollowingError implements ErrorInterface {
       Tensor average = averageError.get().map(Round._4);
       Tensor accumulated = accumulatedError().get().map(Round._4);
       return Optional.of("following error (" + this.getClass().getSimpleName() + ")\n" + //
-          "\ttime:\t" + times.Get(0).map(Round._2) + " - " + times.Get(1).map(Round._2) + "\n" + //
+          "\ttime:\t" + Round._2.apply(startTime) + " - " + Round._2.apply(endTime) + "\n" + //
           "\taverage error:\tposition: " + average.Get(0) + ",\theading: " + average.Get(1) + "\n" + //
           "\taccumulated error:\tposition: " + accumulated.Get(0) + ",\theading: " + accumulated.Get(1));
     }
