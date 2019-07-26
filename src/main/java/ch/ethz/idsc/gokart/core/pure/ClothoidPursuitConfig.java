@@ -7,6 +7,7 @@ import ch.ethz.idsc.owl.math.pursuit.PseudoSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.pursuit.SphereSe2CurveIntersection;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
@@ -16,6 +17,13 @@ import ch.ethz.idsc.tensor.sca.Clips;
 public class ClothoidPursuitConfig extends PursuitConfig {
   public static final ClothoidPursuitConfig GLOBAL = AppResources.load(new ClothoidPursuitConfig());
   // ---
+  public Boolean preserving = true;
+  @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 100)
+  public Scalar minimalLength = Quantity.of(1, SI.METER);
+  @FieldSubdivide(start = "0[m]", end = "1[m]", intervals = 100)
+  public Scalar xyThreshold = Quantity.of(.25, SI.METER);
+  @FieldSubdivide(start = "0", end = "3.14", intervals = 314)
+  public Scalar alphaThreshold = RealScalar.of(.1);
   public Boolean se2distance = false;
   @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 20)
   public Scalar fallbackLookAhead = Quantity.of(7, SI.METER);

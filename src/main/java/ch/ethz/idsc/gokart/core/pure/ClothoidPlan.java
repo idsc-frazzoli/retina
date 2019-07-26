@@ -7,9 +7,11 @@ import java.util.Optional;
 import ch.ethz.idsc.owl.math.pursuit.ClothoidPursuit;
 import ch.ethz.idsc.owl.math.pursuit.ClothoidPursuits;
 import ch.ethz.idsc.owl.math.pursuit.PursuitInterface;
+import ch.ethz.idsc.sophus.crv.clothoid.ClothoidCurvature;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Last;
 
 public class ClothoidPlan implements Serializable {
   // TODO JPH make configurable
@@ -56,5 +58,11 @@ public class ClothoidPlan implements Serializable {
   /** @return initial pose */
   public Tensor startPose() {
     return curve.get(0);
+  }
+
+  /* package */ ClothoidPlan sub(int index) {
+    Tensor subcurve = curve.extract(index,curve.length());
+    Scalar ratio = new ClothoidCurvature(subcurve.get(0), subcurve.get(1)).head();
+    return new ClothoidPlan(ratio, subcurve);
   }
 }

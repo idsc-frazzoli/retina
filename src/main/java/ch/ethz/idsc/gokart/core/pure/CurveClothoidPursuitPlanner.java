@@ -11,18 +11,21 @@ import ch.ethz.idsc.owl.math.pursuit.CurvePoint;
 import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatio;
 import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatios;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
+import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Last;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
+import ch.ethz.idsc.tensor.red.ArgMin;
+import ch.ethz.idsc.tensor.red.Norm;
 
 public class CurveClothoidPursuitPlanner {
   private final ClothoidPursuitConfig clothoidPursuitConfig;
   // ---
-  /** previous plan */
-  private Optional<ClothoidPlan> plan_prev = Optional.empty();
   private int prevIndex = 0;
+  private Optional<ClothoidPlan> plan = Optional.empty();
 
   public CurveClothoidPursuitPlanner(ClothoidPursuitConfig clothoidPursuitConfig) {
     this.clothoidPursuitConfig = clothoidPursuitConfig;
@@ -41,14 +44,28 @@ public class CurveClothoidPursuitPlanner {
   public Optional<ClothoidPlan> getPlan(Tensor pose, Scalar speed, Tensor curve, boolean closed, boolean isForward) {
     // TODO GJOEL/JPH can use more general velocity {vx, vy, omega} from state estimation
     Optional<ClothoidPlan> optional = replanning(pose, speed, curve, closed, isForward);
-    if (optional.isPresent()) {
-      plan_prev = optional;
-      PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, Last.of(optional.get().curve()), isForward);
-    }
+    optional.ifPresent(plan -> PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, Last.of(plan.curve()), isForward));
     return optional;
   }
 
   private Optional<ClothoidPlan> replanning(Tensor pose, Scalar speed, Tensor curve, boolean closed, boolean isForward) {
+    if (clothoidPursuitConfig.preserving && plan.isPresent()) {
+      Tensor local = Tensor.of(plan.get().curve().stream().map(new Se2GroupElement(pose).inverse()::combine));
+      Tensor distances = Tensor.of(local.stream().map(Extract2D.FUNCTION).map(Norm._2::ofVector));
+      int index = ArgMin.of(distances);
+      if (index < local.length() - 1 && Scalars.lessEquals(clothoidPursuitConfig.minimalLength, Last.of(distances).Get()) && //
+          Scalars.lessEquals(distances.Get(index), clothoidPursuitConfig.xyThreshold) && //
+          Scalars.lessEquals(local.Get(index, 2).abs(), clothoidPursuitConfig.alphaThreshold)) {
+        plan = plan.map(p -> p.sub(index));
+      } else {
+        plan = plan(pose, speed, curve, closed, isForward);
+      }
+    } else
+      plan = plan(pose, speed, curve, closed, isForward);
+    return plan;
+  }
+
+  private Optional<ClothoidPlan> plan(Tensor pose, Scalar speed, Tensor curve, boolean closed, boolean isForward) {
     TensorUnaryOperator tensorUnaryOperator = new Se2GroupElement(pose).inverse()::combine;
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
