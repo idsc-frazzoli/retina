@@ -45,9 +45,11 @@ public class FollowingError implements ErrorInterface {
   /** @param time [s]
    * @param pose of vehicle {x[m], y[m], angle} */
   public void insert(Scalar time, Tensor pose) {
-    times.set(Min.of(times.Get(0), time), 0);
-    times.set(Max.of(times.Get(1), time), 1);
-    errors.append(error(pose));
+    if (!Tensors.isEmpty(reference)) {
+      times.set(Min.of(times.Get(0), time), 0);
+      times.set(Max.of(times.Get(1), time), 1);
+      errors.append(error(pose));
+    }
   }
 
   /** @param pose of vehicle
@@ -56,7 +58,8 @@ public class FollowingError implements ErrorInterface {
     Tensor pose2D = Extract2D.FUNCTION.apply(pose);
     Tensor distances = Tensor.of(reference.stream().map(Extract2D.FUNCTION).map(tensor -> tensor.subtract(pose2D)).map(Norm._2::ofVector));
     int idx = ArgMin.of(distances);
-    Scalar heading_error = MOD.apply(pose.Get(2)).subtract(MOD.apply(reference.get(idx).Get(2))).abs();
+    Scalar diff = MOD.apply(pose.Get(2).subtract(reference.get(idx).Get(2))).abs();
+    Scalar heading_error = Min.of(diff, Pi.TWO.subtract(diff));
     return Tensors.of(distances.get(idx), heading_error);
   }
 
