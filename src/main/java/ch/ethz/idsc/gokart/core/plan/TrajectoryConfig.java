@@ -70,12 +70,19 @@ public class TrajectoryConfig {
         : GenericBayesianMapping.createObstacleMapping();
   }
 
-  public Tensor resampledWaypoints(Tensor curve) {
-    return resampledWaypoints(curve, true);
+  /** @param se2curve with rows as se2 coordinates of the form {x[m], y[m], alpha}
+   * @return */
+  public Tensor resampledWaypoints(Tensor se2curve) {
+    return resampledWaypoints(se2curve, true);
   }
 
-  public Tensor resampledWaypoints(Tensor curve, boolean cyclic) {
+  /** @param se2curve with rows as se2 coordinates of the form {x[m], y[m], alpha}
+   * @param cyclic
+   * @return */
+  public Tensor resampledWaypoints(Tensor se2curve, boolean cyclic) {
     CurveSubdivision curveSubdivision = Se2UniformResample.of(waypointsSpacing);
-    return cyclic ? curveSubdivision.cyclic(curve) : curveSubdivision.string(curve);
+    return cyclic //
+        ? curveSubdivision.cyclic(se2curve)
+        : curveSubdivision.string(se2curve);
   }
 }
