@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 
-// TODO JPH OWL 049 move to owl
+// TODO JPH OWL 049 obsolete
 public class Se2UniformResample extends AbstractUniformResample {
   public static CurveSubdivision of(Scalar spacing) {
     return new Se2UniformResample(spacing);

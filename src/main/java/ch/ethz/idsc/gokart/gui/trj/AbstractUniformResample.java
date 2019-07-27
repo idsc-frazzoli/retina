@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Round;
 
+// TODO JPH OWL 049 obsolete
 public abstract class AbstractUniformResample implements CurveSubdivision, Serializable {
   private final Scalar spacing;
 

@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.pdf.EqualizingDistribution;
 import ch.ethz.idsc.tensor.pdf.InverseCDF;
 
 /** function defined on the interval [0, 1] */
-// TODO JPH OWL 049 move
+// TODO JPH OWL 049 obsolete
 public class ArcLengthParametrization implements ScalarTensorFunction {
   /** @param distances vector with non-negative entries
    * @param splitInterface non-null

@@ -1,18 +1,17 @@
 // code by jph
-package ch.ethz.idsc.sophus.itp;
+package ch.ethz.idsc.sophus.math;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import ch.ethz.idsc.sophus.math.Metric;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.Unprotect;
 import ch.ethz.idsc.tensor.alg.Differences;
 
 /** implementation taken from {@link Differences} */
-// TODO JPH OWL 049 move to owl
+// TODO JPH OWL 049 obsolete
 public enum Distances {
   ;
   /** @param metric

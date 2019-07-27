@@ -82,15 +82,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
-			<artifactId>lcm-java</artifactId>
-			<version>0.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
 			<version>0.4.8</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.fazecast</groupId>
 			<artifactId>jSerialComm</artifactId>
@@ -141,7 +136,7 @@
 			<version>${lwjgl.version}</version>
 			<classifier>natives-${platform}</classifier>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.bytedeco</groupId>
 			<artifactId>javacv-platform</artifactId>
@@ -156,14 +151,6 @@
 	</dependencies>
 
 	<repositories>
-		<repository>
-			<id>lcm-java-mvn-repo</id>
-			<url>https://raw.github.com/idsc-frazzoli/lcm-java/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
 		<repository>
 			<id>owl-mvn-repo</id>
 			<url>https://raw.github.com/idsc-frazzoli/owl/mvn-repo/</url>
