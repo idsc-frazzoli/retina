@@ -13,22 +13,22 @@ import ch.ethz.idsc.tensor.pdf.InverseCDF;
 /** function defined on the interval [0, 1] */
 // TODO JPH OWL move
 public class ArcLengthParametrization implements ScalarTensorFunction {
-  /** @param differences vector with non-negative entries
+  /** @param distances vector with non-negative entries
    * @param splitInterface non-null
    * @param tensor with length one more than length of given differences
    * @return */
-  public static ScalarTensorFunction of(Tensor differences, SplitInterface splitInterface, Tensor tensor) {
-    if (differences.length() + 1 == tensor.length())
-      return new ArcLengthParametrization(differences, splitInterface, tensor);
-    throw TensorRuntimeException.of(differences, tensor);
+  public static ScalarTensorFunction of(Tensor distances, SplitInterface splitInterface, Tensor tensor) {
+    if (distances.length() + 1 == tensor.length())
+      return new ArcLengthParametrization(distances, splitInterface, tensor);
+    throw TensorRuntimeException.of(distances, tensor);
   }
 
   // ---
   private final InverseCDF inverseCDF;
   private final Interpolation interpolation;
 
-  private ArcLengthParametrization(Tensor differences, SplitInterface splitInterface, Tensor tensor) {
-    inverseCDF = (InverseCDF) EqualizingDistribution.fromUnscaledPDF(differences);
+  private ArcLengthParametrization(Tensor distances, SplitInterface splitInterface, Tensor tensor) {
+    inverseCDF = (InverseCDF) EqualizingDistribution.fromUnscaledPDF(distances);
     interpolation = GeodesicInterpolation.of(splitInterface, tensor);
   }
 
