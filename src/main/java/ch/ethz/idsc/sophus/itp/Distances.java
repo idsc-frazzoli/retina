@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.Unprotect;
 import ch.ethz.idsc.tensor.alg.Differences;
 
 /** implementation taken from {@link Differences} */
-// TODO JPH OWL move to owl
+// TODO JPH OWL 049 move to owl
 public enum Distances {
   ;
   /** @param metric
