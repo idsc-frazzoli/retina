@@ -151,9 +151,9 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
       if (HapticSteerConfig.GLOBAL.printLaneInfo)
         System.out.println("ifloop entered :)");
       Optional<ClothoidPlan> optionalL = //
-          curvePlannerL.getPlan(pose, velocity.Get(0), laneBoundaryL, true);
+          curvePlannerL.getPlan(pose, velocity, laneBoundaryL, true);
       Optional<ClothoidPlan> optionalR = //
-          curvePlannerR.getPlan(pose, velocity.Get(0), laneBoundaryR, true);
+          curvePlannerR.getPlan(pose, velocity, laneBoundaryR, true);
       if (HapticSteerConfig.GLOBAL.printLaneInfo)
         System.out.println(optionalL);
       Clip ratioLimitClip = steerConfig.getRatioLimit(); // TODO JPH/AM clip obsolete

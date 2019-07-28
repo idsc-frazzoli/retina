@@ -107,7 +107,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           initialPose = initialPose(curve);
           for (FollowingSimulations simulation : FollowingSimulations.values()) {
             simulation.run(curve, initialPose, //
-                spinnerLabelSpeed.getValue(), //
+                Tensors.of(spinnerLabelSpeed.getValue(), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
                 spinnerLabelDuration.getValue(), //
                 spinnerLabelRate.getValue().reciprocal());
             map.put(simulation.name(), simulation);
