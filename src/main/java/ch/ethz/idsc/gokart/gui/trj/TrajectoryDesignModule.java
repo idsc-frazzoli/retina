@@ -90,9 +90,9 @@ public class TrajectoryDesignModule extends AbstractModule {
     {
       trajectoryDesign.timerFrame.jToolBar.addSeparator();
       File folder = new File("src/main/resources/dubilab");
-      File subRaw = new File(folder,"rawpoints");
+      File subRaw = new File(folder, "rawpoints");
       subRaw.mkdirs();
-      File subWay = new File(folder,"waypoints");
+      File subWay = new File(folder, "waypoints");
       subWay.mkdirs();
       String name = DATE_FORMAT.format(new Date()) + ".csv";
       File rawFile = new File(subRaw, name);

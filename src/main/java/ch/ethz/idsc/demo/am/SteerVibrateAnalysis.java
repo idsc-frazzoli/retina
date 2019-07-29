@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -22,7 +21,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
-    if (channel.equals(GokartLcmChannel.STEER_VIBRATE)) {
+    if (channel.equals("steer.vibrate")) {
       Tensor tensor = VectorFloatBlob.decode(byteBuffer);
       tableBuilder.appendRow(time.map(Magnitude.SECOND), tensor);
     }

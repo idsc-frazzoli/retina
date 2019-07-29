@@ -1,6 +1,8 @@
 // code by am
 package ch.ethz.idsc.gokart.core.adas;
 
+import java.io.File;
+import java.util.Date;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
@@ -16,10 +18,13 @@ import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
+import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.io.Serialization;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.TensorListener;
@@ -29,9 +34,6 @@ import ch.ethz.idsc.tensor.sca.Clips;
 /**  */
 public class LaneKeepingCenterlineModule extends AbstractClockedModule implements //
     GokartPoseListener, TensorListener {
-  private static final Tensor OFS_L = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.offsetL, Quantity.of(0, SI.METER)).unmodifiable();
-  private static final Tensor OFS_R = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.offsetR, Quantity.of(0, SI.METER)).unmodifiable();
-  private static final Scalar PERIOD = Quantity.of(0.1, SI.SECOND);
   // ---
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -100,7 +102,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
 
   @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
-    return PERIOD;
+    return HapticSteerConfig.GLOBAL.LKperiod;
   }
 
   @Override // from GokartPoseListener
@@ -110,7 +112,10 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
 
   synchronized void setCurve(Optional<Tensor> optional) {
     optionalCurve = optional;
+    LaneKeepingCenterlineModule.exportTensor(optionalCurve.get());
     if (optional.isPresent()) {
+      Tensor OFS_L = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.offsetL, Quantity.of(0, SI.METER)).unmodifiable();
+      Tensor OFS_R = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.offsetR, Quantity.of(0, SI.METER)).unmodifiable();
       laneBoundaryL = Tensor.of(optional.get().stream() //
           .map(Se2GroupElement::new) //
           .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
@@ -126,6 +131,15 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     return optionalCurve;
   }
 
+  protected static void exportTensor(Tensor tensor) {
+    File file = HomeDirectory.file("Desktop", "setCurveRefined_" + SystemTimestamp.asString(new Date()) + ".csv");
+    try {
+      Put.of(file, tensor);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+  }
+
   /** @param curve
    * @param pose
    * @return clip values with unit "SCE" */
@@ -137,9 +151,9 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
       if (HapticSteerConfig.GLOBAL.printLaneInfo)
         System.out.println("ifloop entered :)");
       Optional<ClothoidPlan> optionalL = //
-          curvePlannerL.getPlan(pose, velocity.Get(0), laneBoundaryL, true);
+          curvePlannerL.getPlan(pose, velocity, laneBoundaryL, true);
       Optional<ClothoidPlan> optionalR = //
-          curvePlannerR.getPlan(pose, velocity.Get(0), laneBoundaryR, true);
+          curvePlannerR.getPlan(pose, velocity, laneBoundaryR, true);
       if (HapticSteerConfig.GLOBAL.printLaneInfo)
         System.out.println(optionalL);
       Clip ratioLimitClip = steerConfig.getRatioLimit(); // TODO JPH/AM clip obsolete

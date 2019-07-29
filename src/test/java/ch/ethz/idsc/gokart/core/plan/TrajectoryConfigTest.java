@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.plan;
 
-import java.util.List;
-
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
@@ -10,7 +8,8 @@ import ch.ethz.idsc.tensor.IntegerQ;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.alg.Dimensions;
+import ch.ethz.idsc.tensor.alg.MatrixQ;
+import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.UnitSystem;
@@ -44,15 +43,6 @@ public class TrajectoryConfigTest extends TestCase {
     assertEquals(RealScalar.of(Math.PI / 10), Degree.of(18));
   }
 
-  public void testWaypoints() {
-    Tensor tensor = TrajectoryConfig.GLOBAL.getWaypointsPose();
-    List<Integer> dims = Dimensions.of(tensor);
-    // System.out.println(dims);
-    assertTrue(1 < dims.get(0));
-    assertEquals((int) dims.get(1), 3); // {x, y, theta}
-    Tensor.of(tensor.stream().map(PoseHelper::toUnitless));
-  }
-
   public void testExpandFraction() {
     Clips.unit().requireInside(TrajectoryConfig.GLOBAL.expandFraction);
   }
@@ -61,5 +51,21 @@ public class TrajectoryConfigTest extends TestCase {
     Scalar timeLimit = TrajectoryConfig.GLOBAL.expandTimeLimit();
     Scalar seconds = Magnitude.SECOND.apply(timeLimit);
     Clips.unit().requireInside(seconds);
+  }
+
+  public void testResample1() {
+    Tensor curveNonUnits = ResourceData.of("/dubilab/waypoints/20190507.csv");
+    Tensor curve = Tensor.of(curveNonUnits.stream().map(PoseHelper::attachUnits));
+    Tensor waypoints = TrajectoryConfig.GLOBAL.resampledWaypoints(curve);
+    MatrixQ.require(waypoints);
+    PoseHelper.toUnitless(waypoints.get(0));
+  }
+
+  public void testResample2() {
+    Tensor curveNonUnits = ResourceData.of("/dubilab/waypoints/20190325.csv");
+    Tensor curve = Tensor.of(curveNonUnits.stream().map(PoseHelper::attachUnits));
+    Tensor waypoints = TrajectoryConfig.GLOBAL.resampledWaypoints(curve, false);
+    MatrixQ.require(waypoints);
+    PoseHelper.toUnitless(waypoints.get(0));
   }
 }

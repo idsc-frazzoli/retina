@@ -122,16 +122,6 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
     this.curvePursuitModule = curvePursuitModule;
     flowsInterface = Se2CarFlows.forward(SPEED, Magnitude.PER_METER.apply(trajectoryConfig.maxRotation));
     mapping = trajectoryConfig.getAbstractMapping();
-    // TODO obtain waypoints from TrajectoryDesignModule
-    /*
-    waypoints = Tensor.of(trajectoryConfig.getWaypointsPose().stream().map(PoseHelper::toUnitless));
-    waypointCost = WaypointDistanceCost.of( //
-        Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), //
-        true, // 1 round of refinement
-        RealScalar.of(1), // width of virtual lane in model coordinates
-        RealScalar.of(7.5), // model2pixel conversion factor
-        new Dimension(640, 640)); // resolution of image
-    */
     MinMax minMax = MinMax.of(STANDARD.footprint());
     Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
     PredefinedMap predefinedMap = TrajectoryConfig.getPredefinedMapObstacles();
@@ -144,13 +134,9 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
     final Scalar goalRadius_theta = SQRT2.divide(PARTITIONSCALE.Get(2));
     goalRadius = Tensors.of(goalRadius_xy, goalRadius_xy, goalRadius_theta);
-    /*
-    if (Objects.nonNull(globalViewLcmModule))
-      globalViewLcmModule.setWaypoints(waypoints);
-    */
   }
 
-  private synchronized void updateWaypoints(Tensor curve) {
+  /* package for testing */ synchronized void updateWaypoints(Tensor curve) {
     waypoints = Tensor.of(trajectoryConfig.resampledWaypoints(curve).stream().map(PoseHelper::toUnitless));
     waypointCost = WaypointDistanceCost.of( //
         Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), //
@@ -193,7 +179,7 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
   protected synchronized void runAlgo() {
     System.out.println("entering...");
     mapping.prepareMap();
-    if (Objects.nonNull(gokartPoseEvent)) {
+    if (Objects.nonNull(gokartPoseEvent))
       if (Objects.nonNull(waypoints)) {
         final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
         System.out.println("setup planner, tangent speed=" + tangentSpeed);
@@ -259,9 +245,8 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
         } else {
           System.err.println("argmin index negative");
         }
-      }
-    } else
-      System.err.println("no curve because no pose");
+      } else
+        System.err.println("no curve because no pose");
     curvePursuitModule.setCurve(Optional.empty());
     PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }

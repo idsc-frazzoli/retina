@@ -17,6 +17,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -29,7 +30,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     if (1 < curve.length()) {
       Tensor pose = renderPluginParameters.pose;
       CurveClothoidPursuitPlanner curveClothoidPursuitPlanner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
-      Optional<ClothoidPlan> optional = curveClothoidPursuitPlanner.getPlan(pose, Quantity.of(0, SI.VELOCITY), curve, true);
+      Optional<ClothoidPlan> optional = curveClothoidPursuitPlanner.getPlan(pose, //
+          Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
+          curve, true);
       if (optional.isPresent())
         return new ClothoidPursuitRender(optional.get());
     }
