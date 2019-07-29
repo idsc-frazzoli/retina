@@ -18,8 +18,10 @@ public class FallbackClothoidPlan implements Serializable {
    * @return ClothoidPlan */
   public static Optional<ClothoidPlan> from(Tensor pose, Scalar ratio, boolean isForward) {
     Tensor base = Tensor.of(pose.stream().map(Tensor::Get).map(Scalar::zero));
-    base.set(ratio.reciprocal(), 1);
+    Scalar radius = ratio.reciprocal();
+    base.set(radius, 1);
     Tensor curveSE2 = Tensor.of(CirclePoints.of(25).stream() //
+        .map(t -> t.multiply(radius)) //
         .map(t -> t.append(ArcTan.of(t.Get(0), t.Get(1)).add(Pi.HALF))) //
         .map(base::add));
     if (!isForward)

@@ -48,13 +48,13 @@ public class CurveClothoidPursuitPlanner {
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)
       ClothoidPursuitHelper.mirrorAndReverse(tensor);
-    Predicate<Scalar> isCompliant = clothoidPursuitConfig.ratioLimits()::isInside;
     AssistedCurveIntersection assistedCurveIntersection = clothoidPursuitConfig.getAssistedCurveIntersection();
     Optional<CurvePoint> curvePoint = closed //
         ? assistedCurveIntersection.cyclic(tensor, prevIndex) //
         : assistedCurveIntersection.string(tensor, prevIndex);
     if (curvePoint.isPresent()) {
       Tensor xya = curvePoint.get().getTensor();
+      Predicate<Scalar> isCompliant = clothoidPursuitConfig.ratioLimits()::isInside;
       ClothoidTerminalRatio clothoidTerminalRatio = ClothoidTerminalRatios.of(xya.map(Scalar::zero), xya);
       if (isCompliant.test(clothoidTerminalRatio.head()) && isCompliant.test(clothoidTerminalRatio.tail())) {
         Optional<ClothoidPlan> optional = ClothoidPlan.from(xya, pose, isForward);
@@ -62,13 +62,16 @@ public class CurveClothoidPursuitPlanner {
           prevIndex = curvePoint.get().getIndex();
           return optional;
         }
-      } else if (clothoidPursuitConfig.extendedRatioLimits().isInside(clothoidTerminalRatio.head()) //
-          && clothoidPursuitConfig.extendedRatioLimits().isInside(clothoidTerminalRatio.tail())) {
-        return FallbackClothoidPlan.from(pose, //
-            Sign.isPositiveOrZero(clothoidTerminalRatio.head()) //
-                ? clothoidPursuitConfig.turningRatioMax //
-                : clothoidPursuitConfig.turningRatioMax.negate(), //
-            isForward);
+      } else {
+        Predicate<Scalar> isPotentiallyFeasible = clothoidPursuitConfig.extendedRatioLimits()::isInside;
+        if (isPotentiallyFeasible.test(clothoidTerminalRatio.head()) && isPotentiallyFeasible.test(clothoidTerminalRatio.tail())) {
+          // TODO GJOEL implement properly; this collides with original idea of clothoid plan
+          return FallbackClothoidPlan.from(pose, //
+              Sign.isPositiveOrZero(clothoidTerminalRatio.head()) //
+                  ? clothoidPursuitConfig.turningRatioMax //
+                  : clothoidPursuitConfig.turningRatioMax.negate(), //
+              isForward);
+        }
       }
     }
     return Optional.empty();
