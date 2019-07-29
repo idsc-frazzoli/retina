@@ -14,7 +14,6 @@ import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** parser for aedat version 3.1 */
-// TODO not final class design!
 public class Aedat31FileSupplier implements StartAndStoppable {
   private static final int BUFFER_SIZE = 168996 * 2;
   // ---

@@ -14,7 +14,7 @@ public class MPCSimpleBrakingTest extends TestCase {
     MPCBraking mpcBraking = new MPCSimpleBraking();
     // this has no effect
     Timing started = Timing.started();
-    mpcBraking.setStateEstimationProvider(new FakeNewsEstimator(started));
+    // mpcBraking.setStateEstimationProvider(new FakeNewsEstimator(started));
     GokartState state0 = new GokartState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     GokartState state1 = new GokartState(1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
     GokartState state2 = new GokartState(2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);

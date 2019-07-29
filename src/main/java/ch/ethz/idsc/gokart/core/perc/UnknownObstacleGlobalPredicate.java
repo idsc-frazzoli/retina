@@ -8,7 +8,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** the purpose of the class is filter lidar points that are not already in the static obstacle map */
-public class UnknownObstacleGlobalPredicate implements SpacialObstaclePredicate {
+/* package */ class UnknownObstacleGlobalPredicate implements SpacialObstaclePredicate {
   private static final int NON_BLACK_MASK = 0xff00;
   // ---
   private final PredefinedMap predefinedMap;

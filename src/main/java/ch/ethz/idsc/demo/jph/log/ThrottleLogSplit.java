@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.pose.ThrottleSplitPredicate;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum ThrottleLogSplit {
   ;
@@ -23,7 +24,7 @@ import ch.ethz.idsc.gokart.offline.pose.ThrottleSplitPredicate;
     new LcmLogFileCutter(gokartLogInterface.file(), lapSegmenter.navigableMap()) {
       @Override
       public File filename(int index) {
-        return new File("/home/datahaki/laps", String.format("jh06%02d.lcm", index));
+        return HomeDirectory.file("laps", String.format("jh06%02d.lcm", index));
       }
     };
   }

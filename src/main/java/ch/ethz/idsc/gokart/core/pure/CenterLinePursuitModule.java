@@ -4,10 +4,10 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.map.BSplineTrack;
-import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
+import ch.ethz.idsc.gokart.core.track.BSplineTrack;
+import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;

@@ -14,12 +14,12 @@ import ch.ethz.idsc.tensor.alg.Differences;
 
 public class RimoThrustManualModule extends GuideManualModule<RimoPutEvent> {
   @Override // from AbstractModule
-  void protected_first() {
+  protected void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
-  void protected_last() {
+  protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
   }
 

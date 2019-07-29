@@ -11,7 +11,7 @@ enum ParametricResampleDemo {
   ;
   public static void main(String[] args) {
     ParametricResample pr = new ParametricResample(RealScalar.of(33), RealScalar.of(.3));
-    Tensor points = Tensors.fromString("{{100,0},{100,2},{100,3},{10,10},{10,10.2},{10,10.4},{20,40}}");
+    Tensor points = Tensors.fromString("{{100, 0}, {100, 2}, {100, 3}, {10, 10}, {10, 10.2}, {10, 10.4}, {20, 40}}");
     ResampleResult resampleResult = pr.apply(points);
     for (Tensor ret : resampleResult.getParameters()) {
       System.out.println(ret.map(Round._2));

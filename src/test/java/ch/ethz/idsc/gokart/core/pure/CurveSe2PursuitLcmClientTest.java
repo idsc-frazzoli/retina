@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import ch.ethz.idsc.gokart.core.DubendorfCurve;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.ref.TensorListener;

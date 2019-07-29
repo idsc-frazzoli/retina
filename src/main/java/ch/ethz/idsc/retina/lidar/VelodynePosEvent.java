@@ -15,7 +15,6 @@ import ch.ethz.idsc.retina.util.gps.Gprmc;
  * $GPRMC,150038,A,4724.3422,N,00837.9060,E,000.0,052.3,260519,001.8,E,D*14
  * 
  * Example of invalid
- * TODO JPH parse with string tokenizer or string#split if necessary
  * $GPRMC,145817,V,4724.3230,N,00837.8329,E,,,120118,001.8,E,N*04
  * 
  * in VLP-16 lcm package the $GPRMC is at byte offset 218 */

@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
-import ch.ethz.idsc.owl.math.planar.PurePursuit;
+import ch.ethz.idsc.owl.math.pursuit.PurePursuit;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Reverse;
@@ -37,7 +37,7 @@ public enum CurvePurePursuitHelper {
     Optional<Tensor> aheadTrail = CurveUtils.getAheadTrail(tensor, distance);
     if (aheadTrail.isPresent()) {
       PurePursuit purePursuit = PurePursuit.fromTrajectory(aheadTrail.get(), distance);
-      return purePursuit.ratio();
+      return purePursuit.firstRatio();
     }
     return Optional.empty();
   }

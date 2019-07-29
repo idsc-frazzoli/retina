@@ -13,22 +13,6 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 /* package */ abstract class ManualModule<PE> extends AbstractModule implements PutProvider<PE> {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
 
-  @Override // from AbstractModule
-  public final void first() {
-    protected_first();
-  }
-
-  @Override // from AbstractModule
-  public final void last() {
-    protected_last();
-  }
-
-  /** function invoked upon start of the module */
-  abstract void protected_first();
-
-  /** function invoked upon termination of the module */
-  abstract void protected_last();
-
   /***************************************************/
   @Override // from PutProvider
   public final ProviderRank getProviderRank() {

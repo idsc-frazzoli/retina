@@ -19,7 +19,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.owl.car.math.AngularSlip;
+import ch.ethz.idsc.owl.car.slip.AngularSlip;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -47,14 +47,14 @@ import ch.ethz.idsc.tensor.alg.Differences;
   }
 
   @Override // from ManualModule
-  final void protected_first() {
+  protected final void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
     LinmotSocket.INSTANCE.addPutProvider(linmotPutProvider);
   }
 
   @Override // from ManualModule
-  final void protected_last() {
+  protected final void last() {
     LinmotSocket.INSTANCE.removePutProvider(linmotPutProvider);
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(this);

@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.GokartLogFile;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Type;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.offline.gui.GokartLcmLogCutter;
 import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
 

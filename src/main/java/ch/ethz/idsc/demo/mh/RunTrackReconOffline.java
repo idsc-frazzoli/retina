@@ -13,12 +13,11 @@ import ch.ethz.idsc.gokart.offline.slam.TrackReconOffline;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
-import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ enum RunTrackReconOffline {
   ;
-  private static final File DIRECTORY = HomeDirectory.Pictures("log", "mapper");
+  private static final File DIRECTORY = HomeDirectory.Pictures("20190701T174152_00");
 
   public static void main(String[] args) throws FileNotFoundException, IOException {
     DIRECTORY.mkdirs();
@@ -27,11 +26,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     for (File file : DIRECTORY.listFiles())
       file.delete();
     // ---
-    File file = UserName.is("datahaki") //
-        ? new File("/media/datahaki/media/ethz/gokart/topic/trackid", "changingtrack.lcm")
-        : HomeDirectory.file("/ensemble/centerline/log.lcm");
-    // file = HomeDirectory.file("TireTrackDriving.lcm");
-    // File file = UserHome.file("20181203T135247_70097ce1.lcm.00");
+    File file;
+    file = new File("/media/datahaki/data/gokart/0701map/20190701/20190701T174152_00", "20190701T174152_00.lcm");
     // ---
     if (!file.isFile())
       throw new RuntimeException();
@@ -39,7 +35,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Consumer<BufferedImage> consumer = new PngImageWriter(DIRECTORY);
     MappingConfig mappingConfig = new MappingConfig();
     mappingConfig.obsRadius = Quantity.of(0.8, SI.METER);
-    OfflineLogPlayer.process(file, new TrackReconOffline(mappingConfig, consumer));
+    OfflineLogPlayer.process(file, new TrackReconOffline(mappingConfig, Quantity.of(0.2, SI.SECOND)) {
+      @Override
+      public void accept(BufferedImage bufferedImage) {
+        consumer.accept(bufferedImage);
+      }
+    });
     System.out.print("Done.");
   }
 }

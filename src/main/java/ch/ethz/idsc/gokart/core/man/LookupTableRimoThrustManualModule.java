@@ -24,13 +24,13 @@ public class LookupTableRimoThrustManualModule extends GuideManualModule<RimoPut
   private Scalar meanTangentSpeed = Quantity.of(0, SI.VELOCITY);
 
   @Override // from AbstractModule
-  void protected_first() {
+  protected void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
   }
 
   @Override // from AbstractModule
-  void protected_last() {
+  protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(this);
   }

@@ -25,7 +25,7 @@ public class InertialOdometryTest extends TestCase {
     InertialOdometry inertialOdometry = new InertialOdometry();
     inertialOdometry.resetPose(PoseHelper.attachUnits(Tensors.vector(1, 0, 0)));
     inertialOdometry.integrateImu( //
-        Tensors.fromString("{0.3[m*s^-2],0.1[m*s^-2]}"), Quantity.of(0.3, SI.PER_SECOND), Quantity.of(0.1, SI.SECOND));
+        Tensors.fromString("{0.3[m*s^-2], 0.1[m*s^-2]}"), Quantity.of(0.3, SI.PER_SECOND), Quantity.of(0.1, SI.SECOND));
     Chop._10.requireClose(inertialOdometry.getPose(), //
         Tensors.fromString("{1.002984551145215818[m], 0.0010448466318511013[m], 0.03}"));
     Tensor velocity = inertialOdometry.getVelocity();

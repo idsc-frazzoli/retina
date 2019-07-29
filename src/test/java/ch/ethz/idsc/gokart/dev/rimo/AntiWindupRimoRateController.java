@@ -45,7 +45,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     final Scalar windupPart = rimoConfig.Kawu.multiply(satTor_value.subtract(tor_value));
     // integral part plus anti-windup reset
     lastIPart = iPart.add(windupPart);
-    // TODO preliminary for debugging: publish ctrl internals
+    // TODO JPH preliminary for debugging: publish ctrl internals
     binaryBlobPublisher.accept(VectorFloatBlob.encode(Tensors.of( //
         vel_error, pPart, iPart, windupPart, tor_value, satTor_value)));
     return satTor_value;

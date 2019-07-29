@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     // File src = HomeDirectory.file("track_putty");
     List<TrackDriving> list = new LinkedList<>();
     int id = 0;
-    File csvFile = new File("/home/datahaki/track_putty/" + string + ".csv");
+    File csvFile = HomeDirectory.file("track_putty", string + ".csv");
     if (csvFile.isFile()) {
       TrackDriving trackDriving = new TrackDriving(Import.of(csvFile), id++);
       trackDriving.setDriver(csvFile.getName().startsWith("mh") ? "mh" : "tg");

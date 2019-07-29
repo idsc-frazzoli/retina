@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.owl.car.core;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -8,7 +10,7 @@ import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Chop;
 
-public class TwdOdometry {
+public class TwdOdometry implements Serializable {
   private final Scalar radius;
   private final Scalar factor;
 
@@ -35,7 +37,7 @@ public class TwdOdometry {
   }
 
   /** @param angularRate_Y_pair vector of the form {omegaL[s^-1], omegaR[s^-1]}
-   * @return {vx[m*s^-1], vy[m*s^-1], omega[s^-1]} */
+   * @return {vx[m*s^-1], vy[m*s^-1] == 0, omega[s^-1]} */
   public Tensor velocity(Tensor angularRate_Y_pair) {
     Scalar vx = tangentSpeed(angularRate_Y_pair);
     return Tensors.of( //

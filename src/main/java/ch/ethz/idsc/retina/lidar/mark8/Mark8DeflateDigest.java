@@ -33,7 +33,7 @@ public class Mark8DeflateDigest implements Mark8Digest {
     dst.putInt(src.getInt()); // nano sec
     // firing data
     for (int count = 0; count < Mark8Device.FIRINGS; ++count) {
-      int offset = 20 + count * FIRING_SIZE; // TODO multiplication not necessary
+      int offset = 20 + count * FIRING_SIZE; // TODO JPH multiplication not necessary
       src.position(offset + 100);
       src.get(intensity);
       src.position(offset);

@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
-import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringExponential;
 import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ enum Se2Exp {

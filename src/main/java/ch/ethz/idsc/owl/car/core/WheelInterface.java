@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.owl.car.core;
 
-import ch.ethz.idsc.owl.car.math.Pacejka3;
+import ch.ethz.idsc.owl.car.slip.Pacejka3;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 

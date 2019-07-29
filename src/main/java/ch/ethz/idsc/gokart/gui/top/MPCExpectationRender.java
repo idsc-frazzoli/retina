@@ -13,9 +13,9 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
-import ch.ethz.idsc.sophus.group.RnGeodesic;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
+import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -24,14 +24,13 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class MPCExpectationRender extends MPCControlUpdateCapture implements RenderInterface, RimoGetListener {
-  private static final Tensor DIAGONAL = DiagonalMatrix.of(.2, .1, 1);
+  private static final Tensor DIAGONAL = DiagonalMatrix.of(0.2, 0.1, 1);
   private static final Tensor MPCLINE = Tensors.fromString("{{0, 0}, {0, 3}}");
   private static final Tensor RIMOLINE = Tensors.fromString("{{0, -3}, {0, 0}}");
   private final Tensor xya;
   private final IntervalClock intervalClock = new IntervalClock();
   /** acceleration filter */
-  private final GeodesicIIR1Filter geodesicIIR1Filter = //
-      new GeodesicIIR1Filter(RnGeodesic.INSTANCE, RealScalar.of(0.1));
+  private final GeodesicIIR1 geodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, RealScalar.of(0.1));
   private Scalar lastTangentSpeed = Quantity.of(0, SI.VELOCITY);
   private Scalar currentRimoAcc = Quantity.of(-3, SI.ACCELERATION);
 
@@ -69,6 +68,6 @@ public class MPCExpectationRender extends MPCControlUpdateCapture implements Ren
         .subtract(lastTangentSpeed)//
         .divide(Quantity.of(intervalClock.seconds(), SI.SECOND));
     lastTangentSpeed = currentTangentSpeed;
-    currentRimoAcc = (Scalar) geodesicIIR1Filter.apply(acceleration);
+    currentRimoAcc = (Scalar) geodesicIIR1.apply(acceleration);
   }
 }

@@ -12,7 +12,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(FIELD)
 public @interface FieldClip {
+  /** @return permitted lower bound */
   String min();
 
+  /** @return permitted upper bound */
   String max();
 }

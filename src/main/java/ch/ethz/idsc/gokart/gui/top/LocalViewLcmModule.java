@@ -4,33 +4,33 @@ package ch.ethz.idsc.gokart.gui.top;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
-import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
+import ch.ethz.idsc.gokart.lcm.autobox.SteerColumnLcmClient;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 public class LocalViewLcmModule extends AbstractModule {
-  private static final Tensor POSE = Tensors.fromString("{0[m],-3[m],0}").unmodifiable();
+  private static final Tensor POSE = Tensors.fromString("{0[m], -3[m], 0}").unmodifiable();
   private static final Tensor MINOR_ACC = Tensors.vector(0.8, -0.0, 0);
   private static final Tensor MINOR_VEL = Tensors.vector(0.8, -6.0, 0);
   private static final Tensor MINORRIGHT = Tensors.vector(0, -3.5, 0);
   private static final Tensor DIAGONAL = DiagonalMatrix.of(0.12, 0.12, 1);
-  static final Tensor MODEL2PIXEL = Tensors.fromString("{{0,-100,200},{-100,0,300},{0,0,1}}").unmodifiable();
+  static final Tensor MODEL2PIXEL = Tensors.fromString("{{0, -100, 200}, {-100, 0, 300}, {0, 0, 1}}").unmodifiable();
   // ---
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
-  private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final SteerColumnLcmClient steerColumnLcmClient = new SteerColumnLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   // ---
@@ -47,7 +47,7 @@ public class LocalViewLcmModule extends AbstractModule {
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
-      gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
+      steerColumnLcmClient.addListener(gokartRender.steerColumnListener);
       gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
     }
@@ -71,7 +71,7 @@ public class LocalViewLcmModule extends AbstractModule {
     {
       AngularSlipRender angularSlipRender = new AngularSlipRender(matrix);
       gokartPoseLcmClient.addListener(angularSlipRender.gokartPoseListener);
-      gokartStatusLcmClient.addListener(angularSlipRender.gokartStatusListener);
+      steerColumnLcmClient.addListener(angularSlipRender.steerColumnListener);
       timerFrame.geometricComponent.addRenderInterface(angularSlipRender);
     }
     {
@@ -99,7 +99,7 @@ public class LocalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
-    gokartStatusLcmClient.startSubscriptions();
+    steerColumnLcmClient.startSubscriptions();
     vmu931ImuLcmClient.startSubscriptions();
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
@@ -113,7 +113,7 @@ public class LocalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.stopSubscriptions();
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
-    gokartStatusLcmClient.stopSubscriptions();
+    steerColumnLcmClient.stopSubscriptions();
     vmu931ImuLcmClient.stopSubscriptions();
     // ---
     timerFrame.close();

@@ -18,6 +18,8 @@ import ch.ethz.idsc.tensor.red.Norm;
 /** implementation is similar to CurvePurePursuitModule with the additional
  * feature that the trajectory is annotated with velocity */
 public final class Tse2CurvePurePursuitModule extends CurvePurePursuitModule {
+  public static final Scalar MAX_SPEED = RealScalar.of(8); // TODO JPH units
+  // ---
   private final Object lock = new Object();
   private List<TrajectorySample> trajectory;
 
@@ -49,7 +51,7 @@ public final class Tse2CurvePurePursuitModule extends CurvePurePursuitModule {
         // tensor should not be empty
         int index = ArgMin.of(tensor);
         TrajectorySample trajectorySample = trajectory.get(index);
-        return trajectorySample.stateTime().state().Get(3).divide(GokartTrajectorySRModule.MAX_SPEED);
+        return trajectorySample.stateTime().state().Get(3).divide(Tse2CurvePurePursuitModule.MAX_SPEED);
       }
     }
     return RealScalar.ZERO;

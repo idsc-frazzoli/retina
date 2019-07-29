@@ -39,7 +39,7 @@ public class DavisApsDatagramDecoder {
     // if client is started before server, x was observed not to be in range, e.g.
     // x==-1
     int x = byteBuffer.getShort();
-    // TODO check that value in valid range
+    // TODO JPH check that value in valid range
     isComplete &= x == x_next;
     for (int column = 0; column < DavisStatics.APS_COLUMNS; ++column) {
       time[x] = byteBuffer.getInt();

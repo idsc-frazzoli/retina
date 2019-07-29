@@ -7,9 +7,10 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -37,7 +38,7 @@ class SideLidarRender extends LidarRender {
       graphics.setColor(color);
       for (Tensor point : points) {
         // point is a vector of length 3
-        // point = px,py,pz which corresponds to front,left,up
+        // point = px, py, pz which corresponds to front, left, up
         // for top view we draw the px and py and for side view we draw px and pz
         Tensor v = Tensors.of(point.Get(0), point.Get(2));
         Point2D point2D = geometricLayer.toPoint2D(v);

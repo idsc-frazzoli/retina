@@ -17,8 +17,8 @@ import ch.ethz.idsc.gokart.core.sound.SoundResonator;
   public static void main(String[] args) {
     System.out.println("sound demo!");
     try {
-      // GokartSoundCreator.Exciter exciter1 = new SimpleExciter(20, 3000,30);
-      // GokartSoundCreator.Exciter exciter2 = new SimpleExciter(10, 3000,30);
+      // GokartSoundCreator.Exciter exciter1 = new SimpleExciter(20, 3000, 30);
+      // GokartSoundCreator.Exciter exciter2 = new SimpleExciter(10, 3000, 30);
       List<SoundExciter> exciters = Arrays.asList( //
           // new TestExciter(440f, 220f, 1), //
           new ElectricExciter(250, 1, -10, 250, 0.03f, 5, 0.8f), //
@@ -28,7 +28,7 @@ import ch.ethz.idsc.gokart.core.sound.SoundResonator;
           new ElectricExciter(030, 1, -10, 248, 0.03f, 5, 0.8f));
       // NoiseExciter exciter8 = new NoiseExciter(0.04f);
       // exciters.add(exciter8);
-      // GokartSoundCreator.Exciter exciter = new TestExciter(30000, 0,10);
+      // GokartSoundCreator.Exciter exciter = new TestExciter(30000, 0, 10);
       // GokartSoundCreator.Resonator resonator3 = new SimpleResonator(10010000f, 10f, 20000f);
       List<SoundResonator> resonators = Arrays.asList( //
           new SimpleResonator(1300000f, 30f, 100000f), //

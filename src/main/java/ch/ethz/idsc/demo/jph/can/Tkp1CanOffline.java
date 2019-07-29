@@ -44,7 +44,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         value0 >>= 1;
         short value1 = (short) (((canFrame.get(3) & 0xff) << 9) + ((canFrame.get(2) & 0xff) << 1));
         value1 >>= 1;
-        // TODO ONE bit removed
+        // TODO JPH ONE bit removed
         short value2 = (short) (((canFrame.get(5) & 0x7f) << 9) + ((canFrame.get(4) & 0xff) << 1));
         value2 >>= 2;
         boolean lo2 = (canFrame.get(4) & 0x01) == 0x01;

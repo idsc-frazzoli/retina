@@ -9,19 +9,16 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/** for the specification of:
- * speed limit
- * max acceleration along x axis
- * steering reg
- * moment of inertia (over mass) */
 /* package */ class MPCOptimizationParameterDynamic implements MPCOptimizationParameter {
   private static final int LENGTH = 4 * 4;
   // ---
+  /** speed limit */
   private final Scalar speedLimit;
+  /** max acceleration along x axis */
   private final Scalar xAccLimit;
-  // TODO MH document steeringReg
+  /** steering reg */
   private final Scalar steeringReg;
-  /** with unit "m" */
+  /** moment of inertia (over mass) with unit "m" */
   private final Scalar specificMoI;
 
   public MPCOptimizationParameterDynamic(ByteBuffer byteBuffer) {

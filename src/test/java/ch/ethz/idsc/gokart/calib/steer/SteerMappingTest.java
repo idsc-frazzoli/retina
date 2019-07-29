@@ -18,10 +18,12 @@ import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class SteerMappingTest extends TestCase {
+  private static final SteerMapping INSTANCE = SteerConfig.GLOBAL.getSteerMapping();
   private static final List<SteerMapping> STEER_MAPPINGS = Arrays.asList( //
       // LinearSteerMapping.INSTANCE, //
       // CubicSteerMapping.instance(), //
-      FittedSteerMapping.instance());
+      FittedSteerMapping.instance(), //
+      INSTANCE);
 
   public void testAdvancedFormulaCenter() {
     for (SteerMapping steerMapping : STEER_MAPPINGS) {
@@ -74,6 +76,6 @@ public class SteerMappingTest extends TestCase {
   }
 
   public void testContainment() {
-    assertTrue(STEER_MAPPINGS.contains(SteerConfig.GLOBAL.getSteerMapping()));
+    assertTrue(STEER_MAPPINGS.contains(INSTANCE));
   }
 }

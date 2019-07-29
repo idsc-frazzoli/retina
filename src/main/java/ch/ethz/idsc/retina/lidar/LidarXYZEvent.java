@@ -15,8 +15,8 @@ public class LidarXYZEvent {
   public final byte intensity;
 
   /** @param usec timestamp of event in [us]
-   * @param coords spacial coordinates in [m] when coords.length == 3 then coordinates are x,y,z
-   * when coords.length == 2 then coordinates are x,y
+   * @param coords spacial coordinates in [m] when coords.length == 3 then coordinates are x, y, z
+   * when coords.length == 2 then coordinates are x, y
    * @param intensity intensity of reflection [0, 1, ..., 255] 255 == most intensive return */
   public LidarXYZEvent(int usec, float[] coords, byte intensity) {
     this.usec = usec;

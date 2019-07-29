@@ -10,9 +10,9 @@ import ch.ethz.idsc.retina.davis.DavisDecoder;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.davis.DavisImuListener;
 
-/** maps the chip raw dvs/aps data to the standard coordinate system (x,y) where
- * (0,0) corresponds to left-upper corner, and (x,0) parameterizes the first/top
- * row (0,y) parameterizes the first/left column */
+/** maps the chip raw dvs/aps data to the standard coordinate system (x, y) where
+ * (0, 0) corresponds to left-upper corner, and (x, 0) parameterizes the first/top
+ * row (0, y) parameterizes the first/left column */
 public class Davis240cDecoder implements DavisDecoder {
   private static final int WIDTH = 240;
   private static final int HEIGHT = 180;

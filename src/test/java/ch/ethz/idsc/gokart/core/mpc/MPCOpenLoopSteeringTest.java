@@ -15,7 +15,7 @@ public class MPCOpenLoopSteeringTest extends TestCase {
     MPCSteering mpcSteering = new MPCOpenLoopSteering();
     // this has no effect
     Timing timing = Timing.started();
-    mpcSteering.setStateEstimationProvider(new FakeNewsEstimator(timing));
+    // mpcSteering.setStateEstimationProvider(new FakeNewsEstimator(timing));
     GokartState state0 = new GokartState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     GokartState state1 = new GokartState(1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
     GokartControl control0 = new GokartControl(0, 1);

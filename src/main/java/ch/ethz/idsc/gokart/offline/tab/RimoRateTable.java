@@ -5,12 +5,12 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -28,7 +28,7 @@ public class RimoRateTable implements OfflineTableSupplier {
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
   private RimoPutEvent rpe;
-  private GokartStatusEvent gse;
+  private SteerColumnEvent gse;
 
   public RimoRateTable(Scalar delta) {
     this.delta = delta;
@@ -43,7 +43,7 @@ public class RimoRateTable implements OfflineTableSupplier {
       rpe = RimoPutHelper.from(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
-      gse = new GokartStatusEvent(byteBuffer);
+      gse = new SteerColumnEvent(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {
       if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse) && gse.isSteerColumnCalibrated()) {

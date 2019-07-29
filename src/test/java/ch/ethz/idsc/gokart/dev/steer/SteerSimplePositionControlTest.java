@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.dev.steer;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
@@ -32,6 +33,6 @@ public class SteerSimplePositionControlTest extends TestCase {
   }
 
   public void testDt() {
-    assertEquals(SimpleSteerPositionControl.DT, Quantity.of(0.02, "s"));
+    assertTrue(Scalars.lessEquals(SimpleSteerPositionControl.DT, Quantity.of(0.02, "s")));
   }
 }

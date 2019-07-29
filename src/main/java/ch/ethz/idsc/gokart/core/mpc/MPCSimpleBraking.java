@@ -27,11 +27,6 @@ import ch.ethz.idsc.tensor.sca.Ramp;
   }
 
   @Override
-  public void setStateEstimationProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
-    // ---
-  }
-
-  @Override
   public void start() {
     // ---
   }

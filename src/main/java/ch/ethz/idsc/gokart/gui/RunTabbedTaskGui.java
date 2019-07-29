@@ -7,22 +7,16 @@ import java.util.Properties;
 
 import ch.ethz.idsc.demo.jg.following.ClothoidTrajectoryModule;
 import ch.ethz.idsc.demo.jg.following.FigureClothoidModule;
-import ch.ethz.idsc.demo.mg.slam.online.DavisSlamLidarModule;
-import ch.ethz.idsc.demo.mg.slam.online.DavisSlamOdometryModule;
-import ch.ethz.idsc.demo.mg.slam.online.DavisSlamVisualModule;
-import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamLidarModule;
-import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamOdometryModule;
-import ch.ethz.idsc.demo.mg.slam.online.SEyeSlamVisualModule;
-import ch.ethz.idsc.demo.mp.pid.PIDModule;
-import ch.ethz.idsc.demo.mp.pid.PIDTestTrackModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
-import ch.ethz.idsc.gokart.core.adas.AntilockBrakeTempExperimentModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV2Module;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV3Module;
+import ch.ethz.idsc.gokart.core.adas.LaneKeepingLimitedSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
+import ch.ethz.idsc.gokart.core.adas.SetVelSmartBrakingModule;
+import ch.ethz.idsc.gokart.core.adas.SpeedLimitPerSectionModule;
 import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
 import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
 import ch.ethz.idsc.gokart.core.fuse.AutonomousSafetyModule;
@@ -44,17 +38,16 @@ import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.PredictiveTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
-import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
+import ch.ethz.idsc.gokart.core.plan.PureTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
 import ch.ethz.idsc.gokart.core.pure.FigurePureModule;
-import ch.ethz.idsc.gokart.core.pure.GokartTrajectorySRModule;
-import ch.ethz.idsc.gokart.core.pure.PureTrajectoryModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
 import ch.ethz.idsc.gokart.core.sound.VoiceOutputModule;
+import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
@@ -65,13 +58,19 @@ import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
 import ch.ethz.idsc.gokart.gui.top.SideViewLcmModule;
-import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
+import ch.ethz.idsc.gokart.gui.trj.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
+import ch.ethz.idsc.retina.app.slam.online.DavisSlamLidarModule;
+import ch.ethz.idsc.retina.app.slam.online.DavisSlamOdometryModule;
+import ch.ethz.idsc.retina.app.slam.online.DavisSlamVisualModule;
+import ch.ethz.idsc.retina.app.slam.online.SEyeSlamLidarModule;
+import ch.ethz.idsc.retina.app.slam.online.SEyeSlamOdometryModule;
+import ch.ethz.idsc.retina.app.slam.online.SEyeSlamVisualModule;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.TabbedTaskGui;
@@ -91,7 +90,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       Vlp16RayLcmServerModule.class, // sensing lidar
       Vlp16PosLcmServerModule.class, // sensing gps
       AutoboxLcmServerModule.class, //
-      GokartStatusLcmModule.class, //
+      SteerColumnLcmModule.class, //
       GokartTimestampModule.class, //
       LoggerModule.class, //
       LabjackU3Module.class, //
@@ -125,6 +124,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       PredictiveTorqueVectoringModule.class, //
       PowerSteeringModule.class, //
+      LaneKeepingLimitedSteeringModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //
       SteeringExperimentModule.class, //
@@ -132,7 +132,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       AntilockBrakeModule.class, //
       AntilockBrakeV2Module.class, //
       AntilockBrakeV3Module.class, //
-      AntilockBrakeTempExperimentModule.class, //
+      SetVelSmartBrakingModule.class, //
+      SpeedLimitPerSectionModule.class, //
       AutomaticPowerTestModule.class, //
       RimoThrustManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
@@ -146,9 +147,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       PureTrajectoryModule.class, //
       ClothoidTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
-      PIDModule.class, //
-      PIDTestTrackModule.class, //
-      GokartTrajectorySRModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //
       DavisSlamOdometryModule.class, //
@@ -159,7 +157,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
       SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
-      LinmotCoolingModule.class, // TODO possibly auto start
+      LinmotCoolingModule.class, //
       LinmotTakeoverModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_LAB = Arrays.asList( //

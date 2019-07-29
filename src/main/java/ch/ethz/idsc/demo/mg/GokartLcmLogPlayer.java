@@ -3,9 +3,9 @@ package ch.ethz.idsc.demo.mg;
 
 import java.io.IOException;
 
-import ch.ethz.idsc.demo.mg.slam.config.EventCamera;
-import ch.ethz.idsc.demo.mg.slam.config.SlamDvsConfig;
 import ch.ethz.idsc.gokart.gui.SeyeDetailModule;
+import ch.ethz.idsc.retina.app.slam.config.EventCamera;
+import ch.ethz.idsc.retina.app.slam.config.SlamDvsConfig;
 import lcm.logging.LogPlayer;
 import lcm.logging.LogPlayerConfig;
 

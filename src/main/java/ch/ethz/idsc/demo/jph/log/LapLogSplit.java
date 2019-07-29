@@ -14,6 +14,7 @@ import ch.ethz.idsc.gokart.offline.pose.LapLogSplitPredicate;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -30,7 +31,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     new LcmLogFileCutter(gokartLogInterface.file(), logSplit.navigableMap()) {
       @Override
       public File filename(int index) {
-        return new File("/home/datahaki/laps", String.format("m%02d.lcm", index));
+        return HomeDirectory.file("laps", String.format("m%02d.lcm", index));
       }
     };
   }

@@ -58,8 +58,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
       AppCustomization.load(getClass(), new WindowConfiguration());
   private JTextArea textarea;
 
-  @Override // from AbstractModuleAutomaticPowerTestModule
-  void protected_first() {
+  @Override // from ManualModule
+  protected void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(this);
     maxPower = Quantity.of(RimoPutTires.MAX_TORQUE, NonSI.ARMS);
@@ -128,8 +128,8 @@ public class AutomaticPowerTestModule extends GuideManualModule<RimoPutEvent> im
         + bottomUpMaxSpeed.toString() + "\n" + topDownMinSpeed.toString() + "\n" + completionIndex.toString());
   }
 
-  @Override // from AbstractModule
-  void protected_last() {
+  @Override // from ManualModule
+  protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(this);
     // ---

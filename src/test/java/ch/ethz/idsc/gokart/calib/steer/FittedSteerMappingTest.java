@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.calib.steer;
 
+import java.util.Random;
+
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -10,7 +12,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clips;
+import ch.ethz.idsc.tensor.sca.Imag;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
@@ -69,5 +73,17 @@ public class FittedSteerMappingTest extends TestCase {
       max = Max.of(max, error);
     }
     assertTrue(Scalars.lessThan(max, Quantity.of(0.011, SI.PER_METER)));
+  }
+
+  public void testRootReal() {
+    SteerMapping steerMapping = FittedSteerMapping.instance();
+    Random random = new Random();
+    Tensor tensor = Subdivide.of(Quantity.of(-0.5, "m^-1"), Quantity.of(+0.5, "m^-1"), 100 + random.nextInt(100)) //
+        .map(steerMapping::getSCEfromRatio);
+    assertTrue(Chop.NONE.allZero(Imag.of(tensor)));
+  }
+
+  public void testInstance() {
+    assertTrue(FittedSteerMapping.instance() instanceof FittedSteerMapping);
   }
 }

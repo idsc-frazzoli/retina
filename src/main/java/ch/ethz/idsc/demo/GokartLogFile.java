@@ -2039,6 +2039,290 @@ public enum GokartLogFile implements LogFile {
   /** manual drive, clothoid pursuit, mpc */
   _20190530T160230_49920c9d,
   /***************************************************/
+  /* 2019-06-03 */
+  /** various clothoid pursuits */
+  _20190603T114129_d0660300,
+  /** mpc */
+  _20190603T144056_d0660300, //
+  /***************************************************/
+  /* 2019-06-04 */
+  /** slow manual driving */
+  _20190604T105606_d0660300, //
+  /** mpc */
+  _20190604T110921_d0660300, //
+  /** demo of mpc for large audience */
+  _20190604T115206_d0660300, //
+  /** mpc */
+  _20190604T134008_d0660300, //
+  /***************************************************/
+  /* 2019-06-06 */
+  /** mpc */
+  _20190606T111155_d0660300,
+  /** anti-lock braking tests */
+  _20190606T115351_f97d92a7,
+  /** anti-lock braking tests */
+  _20190606T150744_d395e2e7,
+  /** clothoid pursuit */
+  _20190606T153747_e2a760fc,
+  /** clothoid pursuit (brief experiment) */
+  _20190606T155334_e2a760fc,
+  /** clothoid pursuit */
+  _20190606T155813_e2a760fc,
+  /** clothoid pursuit */
+  _20190606T160956_5e03370d,
+  /** clothoid pursuit */
+  _20190606T161450_e2a760fc,
+  /** anti-lock braking tests */
+  _20190606T163049_258c77e8,
+  /** clothoid pursuit */
+  _20190606T164035_468077d8,
+  /** slow manual driving */
+  _20190606T170039_50106f37, //
+  /** clothoid pursuit */
+  _20190606T171341_a312fcd6, //
+  /***************************************************/
+  /* 2019-06-10 */
+  /** mpc with localization failure */
+  _20190610T094922_9f45b2ab,
+  /** manual driving */
+  _20190610T131030_9f45b2ab,
+  /** anti-lock braking tests */
+  _20190610T132237_0d4c45c9,
+  /** mpc */
+  _20190610T132446_0d4c45c9,
+  /** mpc with localization failure */
+  _20190610T133900_0d4c45c9,
+  /** slow manual driving */
+  _20190610T151049_8232d2e3,
+  /** clothoid pursuit also backwards */
+  _20190610T152729_8232d2e3,
+  /** clothoid pursuit variable look ahead */
+  _20190610T154922_8bc989ef,
+  /** mpc */
+  _20190610T164802_9f45b2ab,
+  /** mpc */
+  _20190610T170759_9f45b2ab,
+  /** anti-lock braking tests */
+  _20190610T171828_0d4c45c9,
+  /** anti-lock braking tests */
+  _20190610T172241_0d4c45c9,
+  /** anti-lock braking tests */
+  _20190610T173019_0d4c45c9,
+  /***************************************************/
+  /* 2019-06-13 */
+  /** clothoid pursuit */
+  _20190613T104610_8232d2e3,
+  /** clothoid pursuit */
+  _20190613T105100_8232d2e3,
+  /** clothoid pursuit variable look ahead */
+  _20190613T105610_8bc989ef,
+  /** anti-lock braking tests */
+  _20190613T132205_be4aceab,
+  /** anti-lock braking tests */
+  _20190613T132354_be4aceab,
+  /** manual driving with torque vectoring */
+  _20190613T132819_be4aceab,
+  /** anti-lock braking tests */
+  _20190613T135315_ee4f33e5,
+  /** anti-lock braking tests */
+  _20190613T152616_5c4ca3c9,
+  /** manual driving */
+  _20190613T153439_5c4ca3c9,
+  /** anti-lock braking tests */
+  _20190613T153638_5c4ca3c9,
+  /** anti-lock braking tests */
+  _20190613T154255_5c4ca3c9,
+  /** anti-lock braking tests */
+  _20190613T154911_5c4ca3c9,
+  /***************************************************/
+  /* 2019-06-13 */
+  /** anti-lock braking tests */
+  _20190618T110007_1d4eab2f,
+  /** anti-lock braking tests */
+  _20190618T110942_1d4eab2f,
+  /** clothoid pursuit */
+  _20190618T114147_6459cd17,
+  /** clothoid pursuit */
+  _20190618T115035_6459cd17,
+  /** clothoid pursuit */
+  _20190618T120411_a1fc3f4e,
+  /** mpc */
+  _20190618T141025_49bdeaac,
+  /** mpc */
+  _20190618T142739_49bdeaac,
+  /** mpc with localization failure */
+  _20190618T150436_49bdeaac,
+  /** mpc */
+  _20190618T154738_49bdeaac,
+  /** slow mpc with localization failure */
+  _20190618T161341_49bdeaac,
+  /** track A: extended mpc (with strange plan?) */
+  _20190618T162552_49bdeaac,
+  /** track A: extended manual driving */
+  _20190618T164804_49bdeaac,
+  /***************************************************/
+  /* 2019-06-20 */
+  /** manual driving */
+  _20190620T101655_cb84af4a,
+  /** brief slow manual driving */
+  _20190620T143043_f25ea363,
+  /** brief slow manual driving */
+  _20190620T153518_438da4db,
+  /** brief slow manual driving */
+  _20190620T154835_3b734fcf,
+  /** brief mpc */
+  _20190620T163715_3b734fcf,
+  /** mpc with let go of throttle */
+  _20190620T164839_3b734fcf,
+  /** manual driving */
+  _20190620T170421_fc9eccdf,
+  /** brief slow manual driving */
+  _20190620T170904_1490a102,
+  /***************************************************/
+  /* 2019-06-21 */
+  /** mpc with immediate localization failure */
+  _20190621T073802_1490a102,
+  /** mpc with localization failure */
+  _20190621T074256_1490a102,
+  /** brief mpc */
+  _20190621T074604_1490a102,
+  /** manual driving and mpc */
+  _20190621T095606_1490a102,
+  /** manual drive with localization failure */
+  _20190621T113211_1490a102,
+  /** fast manual driving */
+  _20190621T115919_1490a102,
+  /***************************************************/
+  /* 2019-06-24 */
+  /** mpc */
+  _20190624T115533_4ce81aa6,
+  /** mpc with solver interruptions? */
+  _20190624T144753_4ce81aa6,
+  /** mpc with localization failure */
+  _20190624T151026_12dcbfa8,
+  /** mpc */
+  _20190624T151342_12dcbfa8,
+  /***************************************************/
+  /* 2019-06-27 */
+  /** manual driving with bad state estimation
+   * and several localization failures */
+  _20190627T095640_12dcbfa8, //
+  /** mpc */
+  _20190627T103924_12dcbfa8,
+  /** mpc */
+  _20190627T132744_12dcbfa8,
+  /** mpc */
+  _20190627T133639_12dcbfa8,
+  /** mpc */
+  _20190627T143848_12dcbfa8,
+  /***************************************************/
+  /* 2019-07-01 */
+  /** mpc */
+  _20190701T163225_12dcbfa8,
+  /** professional manual driving */
+  _20190701T170957_12dcbfa8,
+  /** brief mpc */
+  _20190701T174152_12dcbfa8,
+  /** mpc */
+  _20190701T174938_12dcbfa8,
+  /** mpc */
+  _20190701T175650_12dcbfa8,
+  /***************************************************/
+  /* 2019-07-04 */
+  /** manual driving, clothoid pursuit */
+  _20190704T133612_9ee4a9f2,
+  /***************************************************/
+  /* 2019-07-07 */
+  /** slow manual driving for mapping */
+  _20190707T151835_ce6e2a12,
+  /***************************************************/
+  /* 2019-07-08 */
+  /** manual driving */
+  _20190708T114135_f3f46a8b,
+  /** brief mpc */
+  _20190708T122303_12dcbfa8,
+  /** slow and brief manual driving */
+  _20190708T142002_cea6e9da,
+  /** slow and brief manual driving */
+  _20190708T143137_68fef659,
+  /** manual driving */
+  _20190708T150455_74c62db5,
+  /***************************************************/
+  /* 2019-07-09 */
+  /** manual driving, network issue */
+  _20190709T170420_12dcbfa8,
+  /** manual driving, network issue */
+  _20190709T171438_12dcbfa8,
+  /** manual driving, mpc, network issue several times */
+  _20190709T171851_12dcbfa8,
+  /** clothoid pursuit */
+  _20190709T173859_12dcbfa8,
+  /***************************************************/
+  /* 2019-07-11 */
+  /** mpc, network issue */
+  _20190711T145245_908ca07d,
+  /** rough manual driving
+   * mpc, network issue */
+  _20190711T145949_908ca07d,
+  /** mpc, network issue */
+  _20190711T151412_908ca07d,
+  /** manual driving, mpc, network issue */
+  _20190711T160210_908ca07d,
+  /***************************************************/
+  /* 2019-07-15 using LAN-USB adapter */
+  /** slow and fast manual driving
+   * to test LAN-USB adapter */
+  _20190715T113340_908ca07d,
+  /** manual driving, fast mpc,
+   * mapping active then localization failure
+   * otherwise flawless */
+  _20190715T153458_908ca07d,
+  /***************************************************/
+  /* 2019-07-18 */
+  /** brief, slow manual driving */
+  _20190718T111041_9183887b,
+  /** brief, slow manual driving */
+  _20190718T120628_b4086d44,
+  /** brief, slow manual driving */
+  _20190718T125450_0de69aaf,
+  /** brief, slow manual driving with lane keeping steer limitation */
+  _20190718T131528_0de69aaf,
+  /***************************************************/
+  /* 2019-07-19 */
+  /** TEST OK: MANUAL, PURSUIT, MPC */
+  _20190719T141611_bcc60260,
+  /** lane keeping steer limitation */
+  _20190719T144137_fde6f02e,
+  /** lane keeping steer limitation */
+  _20190719T145302_fde6f02e,
+  /** brief, slow manual driving */
+  _20190719T145611_fde6f02e,
+  /** manual driving */
+  _20190719T150040_fde6f02e,
+  /** manual driving */
+  _20190719T150957_8c846374,
+  /** lane keeping steer limitation, mpc,
+   * exceptions in mapping results in mpc with delay */
+  _20190719T151747_ababf43b,
+  /** mpc ok */
+  _20190719T152752_ababf43b,
+  /***************************************************/
+  /* 2019-07-22 */
+  /** manual driving */
+  _20190722T131401_522c4cd4,
+  /** clothoid pursuit */
+  _20190722T132044_522c4cd4,
+  /** lane keeping */
+  _20190722T154910_68d9b69b,
+  /** lane keeping */
+  _20190722T160002_68d9b69b,
+  /** lane keeping */
+  _20190722T162209_68d9b69b,
+  /***************************************************/
+  /* 2019-07-25 */
+  /** TEST OK: MANUAL, PURSUIT, MPC */
+  _20190725T114335_95923bcb,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

@@ -8,6 +8,7 @@ import java.util.List;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationCore;
+import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
@@ -25,11 +26,12 @@ public class LidarLocalizationOffline implements OfflineLogListener, LidarRayBlo
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
-  private final LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore();
+  private final LidarLocalizationCore lidarLocalizationCore;
   public final List<GokartPoseListener> gokartPoseListeners = new LinkedList<>();
 
   /** @param pose {x[m], y[m], heading} at start of log */
-  public LidarLocalizationOffline(Tensor pose) {
+  public LidarLocalizationOffline(PredefinedMap predefinedMap, Tensor pose) {
+    lidarLocalizationCore = new LidarLocalizationCore(predefinedMap);
     lidarLocalizationCore.lidarAngularFiringCollector.addListener(this);
     lidarLocalizationCore.setTracking(true);
     lidarLocalizationCore.resetPose(pose);

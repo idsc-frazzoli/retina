@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.core.DubendorfCurve;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;

@@ -1,0 +1,9 @@
+### Mathematica ###
+*.nb
+
+
+### PDF ####
+*.pdf
+
+### JPG ###
+*.jpg

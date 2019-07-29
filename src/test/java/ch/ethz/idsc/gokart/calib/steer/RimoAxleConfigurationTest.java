@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 public class RimoAxleConfigurationTest extends TestCase {
   public void testSimple() {
     AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(Quantity.of(0.5, "SCE"));
-    Tensor uvw = Tensors.fromString("{2[m*s^-1],0.2[m*s^-1],-.3[s^-1]}");
+    Tensor uvw = Tensors.fromString("{2[m*s^-1], 0.2[m*s^-1], -0.3[s^-1]}");
     axleConfiguration.wheel(0).adjoint(uvw);
     axleConfiguration.wheel(1).adjoint(uvw);
   }

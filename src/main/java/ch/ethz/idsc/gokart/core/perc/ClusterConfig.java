@@ -1,6 +1,8 @@
 // code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
+import ch.ethz.idsc.retina.app.cluster.ClusterCollection;
+import ch.ethz.idsc.retina.app.cluster.ClustersTracking;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;

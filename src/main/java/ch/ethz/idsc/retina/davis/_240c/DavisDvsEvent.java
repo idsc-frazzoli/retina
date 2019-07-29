@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 import ch.ethz.idsc.retina.davis.DavisEvent;
 
-// TODO as class is used by Davis and Silicon eye -> find more general name
+// TODO JPH as class is used by Davis and Silicon eye -> find more general name
 public class DavisDvsEvent implements DavisEvent, Serializable {
   /** time in [us] */
   public final int time;

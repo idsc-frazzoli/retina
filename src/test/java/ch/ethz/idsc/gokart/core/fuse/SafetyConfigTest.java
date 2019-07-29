@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.owl.car.math.CircleClearanceTracker;
-import ch.ethz.idsc.owl.car.math.ClearanceTracker;
+import ch.ethz.idsc.retina.app.clear.CircleClearanceTracker;
+import ch.ethz.idsc.retina.app.clear.ClearanceTracker;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;

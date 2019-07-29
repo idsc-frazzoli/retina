@@ -1,8 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16TiltedPlanarEmulator;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -38,7 +38,7 @@ public class LocalizationConfig {
   public final Scalar resampleDs = Quantity.of(0.4, SI.METER);
   /** threshold below which the pose estimate should not be trusted */
   public final Scalar qualityMin = RealScalar.of(0.55);
-  public String predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190314.name();
+  public String predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190708.name();
 
   /***************************************************/
   /** @return grid for localization in real-time */

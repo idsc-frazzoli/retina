@@ -6,7 +6,6 @@ import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
@@ -60,7 +59,6 @@ public class MPCOptimizationParameterKinematicTest extends TestCase {
     // uncomment if you want to start the server yourself (useful if you want to see output)
     // lcmMPCControlClient.switchToExternalStart();
     try {
-      // TODO test implementation not universal. requires binary?
       mpcRequestPublisher.start();
       GokartState gokartState = new GokartState(//
           11, //
@@ -79,7 +77,7 @@ public class MPCOptimizationParameterKinematicTest extends TestCase {
       MPCControlUpdateCapture mpcControlUpdateCapture = new MPCControlUpdateCapture();
       mpcControlUpdateLcmClient.addListener(mpcControlUpdateCapture);
       DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
-      Tensor position = Tensors.of(gokartState.getX(), gokartState.getY());
+      Tensor position = gokartState.getPositionXY();
       MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER));
       mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
       Thread.sleep(100);// should even work with 30ms

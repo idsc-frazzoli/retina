@@ -1,8 +1,8 @@
 // code by vc
 package ch.ethz.idsc.demo.vc;
 
-import ch.ethz.idsc.owl.math.region.PolygonArea;
-import ch.ethz.idsc.owl.math.region.Polygons;
+import ch.ethz.idsc.sophus.ply.PolygonArea;
+import ch.ethz.idsc.sophus.ply.Polygons;
 import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ enum StaticHelper {

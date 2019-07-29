@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.ProjectionMatrix;
 import ch.ethz.idsc.retina.util.math.Viewport;
@@ -30,7 +31,7 @@ class PerspectiveLidarRender extends LidarRender {
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
       graphics.setColor(color);
-      Tensor rot1 = Rodrigues.exp(SensorsConfig.GLOBAL.vlp16_davis_w1); // TODO magic const!!! arg
+      Tensor rot1 = Rodrigues.exp(SensorsConfig.GLOBAL.vlp16_davis_w1);
       Tensor rot0 = Rodrigues.exp(SensorsConfig.GLOBAL.vlp16_davis_w0);
       Tensor rot = rot1.dot(rot0);
       for (Tensor x : points) {

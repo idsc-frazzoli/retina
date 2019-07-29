@@ -13,18 +13,17 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 /* package */ class MPCExplicitTorqueVectoringPower extends MPCPower {
   private final PowerLookupTable powerLookupTable = PowerLookupTable.getInstance();
 
-  @Override
+  @Override // from MPCPower
   Optional<Tensor> getPower(Scalar time) {
     ControlAndPredictionStep cnsStep = getStep(time);
     if (Objects.isNull(cnsStep))
       return Optional.empty();
-    Scalar braking = Ramp.FUNCTION.apply(cnsStep.gokartControl().getaB().negate());
-    Scalar leftPower = powerLookupTable.getNeededCurrent(//
-        cnsStep.gokartControl().getuL().add(braking), //
-        cnsStep.gokartState().getUx());
-    Scalar rightPower = powerLookupTable.getNeededCurrent(//
-        cnsStep.gokartControl().getuR().add(braking), //
-        cnsStep.gokartState().getUx());
-    return Optional.of(Tensors.of(leftPower, rightPower));
+    GokartControl gokartControl = cnsStep.gokartControl();
+    GokartState gokartState = cnsStep.gokartState();
+    Scalar braking = Ramp.FUNCTION.apply(gokartControl.getaB().negate());
+    Scalar velocity = gokartState.getUx();
+    return Optional.of(Tensors.of( //
+        powerLookupTable.getNeededCurrent(gokartControl.getuL().add(braking), velocity), //
+        powerLookupTable.getNeededCurrent(gokartControl.getuR().add(braking), velocity)));
   }
 }

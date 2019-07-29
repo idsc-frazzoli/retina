@@ -2,8 +2,8 @@
 package ch.ethz.idsc.gokart.offline.pose;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.sophus.group.Se2CoveringGroupElement;
-import ch.ethz.idsc.sophus.group.Se2GroupElement;
+import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
+import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringGroupElement;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Clip;

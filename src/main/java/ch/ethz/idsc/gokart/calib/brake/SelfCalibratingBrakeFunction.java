@@ -1,7 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.calib.brake;
 
-import ch.ethz.idsc.sophus.group.RnGeodesic;
+import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;

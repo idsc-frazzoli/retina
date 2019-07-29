@@ -16,14 +16,14 @@ import java.util.stream.IntStream;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.gui.top.TrajectoryDesignModule;
+import ch.ethz.idsc.gokart.gui.trj.TrajectoryDesignModule;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
-import ch.ethz.idsc.sophus.group.Se2Utils;
-import ch.ethz.idsc.sophus.planar.Arrowhead;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.ply.Arrowhead;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -107,7 +107,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           initialPose = initialPose(curve);
           for (FollowingSimulations simulation : FollowingSimulations.values()) {
             simulation.run(curve, initialPose, //
-                spinnerLabelSpeed.getValue(), //
+                Tensors.of(spinnerLabelSpeed.getValue(), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
                 spinnerLabelDuration.getValue(), //
                 spinnerLabelRate.getValue().reciprocal());
             map.put(simulation.name(), simulation);

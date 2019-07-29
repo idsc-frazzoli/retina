@@ -20,7 +20,7 @@ public class Vlp16SegmentProvider extends VelodyneSpacialProvider {
   private final float[] IR;
   private final float[] IZ;
 
-  /** @param angle_offset of azimuth so that x,y-system is aligned with robot coordinate system
+  /** @param angle_offset of azimuth so that x, y-system is aligned with robot coordinate system
    * @param max_degree until which rays are considered. For instance if max_degree == 0,
    * only rays with negative/downwards inclination are considered */
   public Vlp16SegmentProvider(double angle_offset, int max_degree) {

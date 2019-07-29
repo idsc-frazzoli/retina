@@ -12,6 +12,8 @@ import java.net.URL;
 
 import ch.ethz.idsc.tensor.io.Timing;
 
+/** inspired by
+ * <a href="https://reference.wolfram.com/language/ref/URLFetch.html">URLFetch</a> */
 public class URLFetch {
   private final URL url;
   private final ContentType contentType;

@@ -15,12 +15,12 @@ public class SteerManualModule extends GuideManualModule<SteerPutEvent> {
   private final SteerPositionControl steerPositionController = new SteerPositionControl();
 
   @Override // from AbstractModule
-  protected void protected_first() {
+  protected void first() {
     SteerSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
-  protected void protected_last() {
+  protected void last() {
     SteerSocket.INSTANCE.removePutProvider(this);
   }
 

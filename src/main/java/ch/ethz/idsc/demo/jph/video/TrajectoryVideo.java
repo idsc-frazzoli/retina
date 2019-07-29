@@ -16,30 +16,30 @@ import java.util.stream.Stream;
 
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
+import ch.ethz.idsc.gokart.core.plan.TrajectoryEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
-import ch.ethz.idsc.gokart.core.pure.TrajectoryEvents;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.planar.Extract2D;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.curve.BSpline1CurveSubdivision;
-import ch.ethz.idsc.sophus.filter.GeodesicCenter;
-import ch.ethz.idsc.sophus.filter.GeodesicCenterFilter;
-import ch.ethz.idsc.sophus.group.LieDifferences;
-import ch.ethz.idsc.sophus.group.Se2CoveringExponential;
-import ch.ethz.idsc.sophus.group.Se2Geodesic;
-import ch.ethz.idsc.sophus.group.Se2Group;
-import ch.ethz.idsc.sophus.group.Se2Utils;
-import ch.ethz.idsc.sophus.math.SmoothingKernel;
-import ch.ethz.idsc.sophus.planar.Arrowhead;
+import ch.ethz.idsc.sophus.crv.subdiv.BSpline1CurveSubdivision;
+import ch.ethz.idsc.sophus.flt.CenterFilter;
+import ch.ethz.idsc.sophus.flt.ga.GeodesicCenter;
+import ch.ethz.idsc.sophus.lie.LieDifferences;
+import ch.ethz.idsc.sophus.lie.se2.Se2Geodesic;
+import ch.ethz.idsc.sophus.lie.se2.Se2Group;
+import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringExponential;
+import ch.ethz.idsc.sophus.math.Extract2D;
+import ch.ethz.idsc.sophus.math.win.SmoothingKernel;
+import ch.ethz.idsc.sophus.ply.Arrowhead;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -57,14 +57,14 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ abstract class TrajectoryVideo implements OfflineLogListener {
   private static final TensorUnaryOperator GEODESIC_CENTER_FILTER = //
-      GeodesicCenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, SmoothingKernel.GAUSSIAN), 5);
+      CenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, SmoothingKernel.GAUSSIAN), 5);
   private static final Scalar METER2PIXEL = RealScalar.of(30);
   private static final ColorDataIndexed COLOR_DATA_INDEXED = ColorDataLists._097.cyclic();
-  final Tensor waypoints = Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, TrajectoryConfig.GLOBAL.getWaypointsPose(), 1);
   private static final Tensor ARROW_HEAD = Arrowhead.of(.4);
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   // ---
+  private Tensor waypoints = Tensors.empty();
   private int count = 0;
   private Tensor trail = Tensors.empty();
   private Tensor times = Tensors.empty();
@@ -108,7 +108,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
         Tensor tr = Se2Utils.toSE2Translation(reduceMin.negate());
         // System.out.println(extensions);
-        Tensor sc = Tensors.fromString("{{30,0,1},{0,-30," + (bufferedImage.getHeight() - 1) + "},{0,0,1}}");
+        Tensor sc = Tensors.fromString("{{30, 0, 1}, {0, -30," + (bufferedImage.getHeight() - 1) + "}, {0, 0, 1}}");
         GeometricLayer geometricLayer = GeometricLayer.of(sc.dot(tr));
         reduceMin.append(RealScalar.ZERO);
         GraphicsUtil.setQualityHigh(graphics);
@@ -147,7 +147,9 @@ import ch.ethz.idsc.tensor.sca.Round;
       trail = Tensors.empty();
       times = Tensors.empty();
       trajectory = TrajectoryEvents.trajectory(byteBuffer);
-    }
+    } else //
+    if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2))
+      waypoints = Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, Se2CurveLcm.decode(byteBuffer), 1);
   }
 
   public abstract void image(BufferedImage bufferedImage);

@@ -11,12 +11,12 @@ import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 /** conversion of joystick event to brake command */
 public class LinmotManualModule extends ManualModule<LinmotPutEvent> {
   @Override // from AbstractModule
-  void protected_first() {
+  protected void first() {
     LinmotSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
-  void protected_last() {
+  protected void last() {
     LinmotSocket.INSTANCE.removePutProvider(this);
   }
 

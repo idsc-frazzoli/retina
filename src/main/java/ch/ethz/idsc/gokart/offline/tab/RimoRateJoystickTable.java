@@ -6,12 +6,12 @@ import java.nio.ByteOrder;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -36,7 +36,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rge;
   private RimoPutEvent rpe;
-  private GokartStatusEvent gse;
+  private SteerColumnEvent gse;
   private ManualControlInterface manualControlInterface;
 
   /** @param delta
@@ -55,7 +55,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
       rpe = RimoPutHelper.from(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
-      gse = new GokartStatusEvent(byteBuffer);
+      gse = new SteerColumnEvent(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.JOYSTICK)) {
       JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
@@ -63,7 +63,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
     } else //
     if (channel.equals(GokartLcmChannel.RIMO_CONTROLLER_PI)) {
       byteBuffer.order(byteOrder);
-      VectorFloatBlob.decode(byteBuffer); // TODO not used yet
+      VectorFloatBlob.decode(byteBuffer);
     }
     if (Scalars.lessThan(time_next, time)) {
       if (Objects.nonNull(rge) && //

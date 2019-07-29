@@ -18,7 +18,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Differences;
-import ch.ethz.idsc.tensor.sca.Abs;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Ramp;
@@ -38,14 +37,14 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> imp
   }
 
   @Override // from AbstractModule
-  void protected_first() {
+  protected void first() {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
     RimoSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractModule
-  void protected_last() {
+  protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     gokartPoseLcmClient.stopSubscriptions();
   }
@@ -67,7 +66,7 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> imp
    * @return */
   /* package */ RimoPutEvent derive(Scalar ahead, Scalar gyroZ, Scalar driftRatio) {
     Scalar delta = DELTA_CLIP.of(gyroZ.multiply(ManualConfig.GLOBAL.torquePerGyro));
-    Scalar overDrift = Ramp.of(Abs.of(driftRatio).subtract(ManualConfig.GLOBAL.driftAvoidStart));
+    Scalar overDrift = Ramp.of(driftRatio.abs().subtract(ManualConfig.GLOBAL.driftAvoidStart));
     Scalar driftfactor = Ramp.of(RealScalar.ONE.subtract(overDrift.multiply(ManualConfig.GLOBAL.driftAvoidRamp)));
     delta = driftfactor.multiply(delta);
     Tensor power = TorqueVectoringClip.from(ahead, delta.negate()).multiply(ManualConfig.GLOBAL.torqueLimit);

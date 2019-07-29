@@ -27,7 +27,7 @@ public class BackgroundImage {
 
   public BackgroundImage(BufferedImage bufferedImage, Tensor model2pixel) {
     this.bufferedImage = bufferedImage;
-    this.model2pixel = model2pixel.unmodifiable();
+    this.model2pixel = model2pixel;
   }
 
   public Dimension dimension() {

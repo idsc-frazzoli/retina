@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.tvec;
 
-import ch.ethz.idsc.owl.car.math.AngularSlip;
+import ch.ethz.idsc.owl.car.slip.AngularSlip;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;

@@ -13,12 +13,13 @@ import ch.ethz.idsc.gokart.core.AutoboxSocket;
 public final class SteerSocket extends AutoboxSocket<SteerGetEvent, SteerPutEvent> {
   private static final int LOCAL_PORT = 5002;
   private static final int REMOTE_PORT = 5002;
-  /** 20ms corresponds to 50[Hz]
-   * on the CAN communication layer the update rate is 500[Hz]
-   * TODO increase
+  /** on the CAN communication layer the update rate is 500[Hz]
+   * 
+   * ante 20190721: 20ms corresponds to 50[Hz]
+   * post 20190721: 10ms corresponds to 100[Hz]
    * 
    * communication rate affects the steering PID controller */
-  private static final int SEND_PERIOD_MS = 20;
+  private static final int SEND_PERIOD_MS = 10;
   // ---
   public static final SteerSocket INSTANCE = new SteerSocket();
   // ---

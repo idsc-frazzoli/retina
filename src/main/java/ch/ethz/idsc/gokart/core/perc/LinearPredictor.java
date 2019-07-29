@@ -1,6 +1,8 @@
 // code by vc
 package ch.ethz.idsc.gokart.core.perc;
 
+import ch.ethz.idsc.retina.app.cluster.ClusterCollection;
+import ch.ethz.idsc.retina.app.cluster.ClusterDeque;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

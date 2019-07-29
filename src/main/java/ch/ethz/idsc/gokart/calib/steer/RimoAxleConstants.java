@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.calib.steer;
 
-import ch.ethz.idsc.owl.car.math.AckermannSteering;
-import ch.ethz.idsc.owl.car.math.DifferentialSpeed;
-import ch.ethz.idsc.owl.car.math.TurningGeometry;
+import ch.ethz.idsc.owl.bot.se2.AckermannSteering;
+import ch.ethz.idsc.owl.bot.se2.DifferentialSpeed;
+import ch.ethz.idsc.owl.bot.se2.TurningGeometry;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;

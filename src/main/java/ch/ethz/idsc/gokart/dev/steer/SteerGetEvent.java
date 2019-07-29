@@ -22,7 +22,7 @@ public class SteerGetEvent extends DataEvent {
   /* package */ static final int LENGTH = 44;
   // ---
   /** motAsp indicates the rotational velocity of the steering wheel.
-   * The value ranges in the interval [-100, 100]. */
+   * The value ranges typical in the interval [-150, 150]. */
   public final float motAsp_CANInput;
   /** during nominal operation motAsp_Qual is constant 2f
    * a value of 0f was observed briefly during failure instant */
@@ -59,7 +59,7 @@ public class SteerGetEvent extends DataEvent {
    * estMotTrq_Qual == 2.0 means the device is active, and then the difference
    * "refMotTrq_CANInput - estMotTrq_CANInput" should be small.
    * in autonomous mode, estMotTrq_Qual should always be 2.0
-   * TODO check the requirement during operation!
+   * TODO JPH check the requirement during operation!
    * 
    * @see #isActive()
    * @see SteerGetStatus */
