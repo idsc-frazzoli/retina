@@ -35,10 +35,10 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
   public static void main(String[] args) throws IOException {
     // String string = "20180427T125356_p2";
-    File file = HomeDirectory.file("Documents/01_6_Semester/Bachelorarbeit/lcm_files/20190530/20190530T152247_1f4048bb.lcm.00");
+    File file = HomeDirectory.file("Documents/01_6_Semester/Bachelorarbeit/lcm_files/20190729/20190729T105210_bbfb70a0.lcm.00");
     OfflineTableSupplier offlineTableSupplier = new AntilockAnalysis();
     OfflineLogPlayer.process(file, offlineTableSupplier);
-    Export.of(HomeDirectory.file("Documents/01_6_Semester/Bachelorarbeit/cuts1/20190530_lcm/analysis1.csv"),
+    Export.of(HomeDirectory.file("Documents/01_6_Semester/Bachelorarbeit/cuts1/20190729_lanekeeping1.csv"),
         offlineTableSupplier.getTable().map(CsvFormat.strict()));
   }
 }
