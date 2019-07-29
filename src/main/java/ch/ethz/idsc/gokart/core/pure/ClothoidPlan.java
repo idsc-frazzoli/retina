@@ -49,6 +49,7 @@ public class ClothoidPlan implements Serializable {
     return ratio;
   }
 
+  // TODO GJOEL document function
   public Tensor curve() {
     return curve;
   }

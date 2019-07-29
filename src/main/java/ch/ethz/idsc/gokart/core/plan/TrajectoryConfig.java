@@ -70,14 +70,9 @@ public class TrajectoryConfig {
         : GenericBayesianMapping.createObstacleMapping();
   }
 
+  /***************************************************/
   /** @param se2curve with rows as se2 coordinates of the form {x[m], y[m], alpha}
-   * @return */
-  public Tensor resampledWaypoints(Tensor se2curve) {
-    return resampledWaypoints(se2curve, true);
-  }
-
-  /** @param se2curve with rows as se2 coordinates of the form {x[m], y[m], alpha}
-   * @param cyclic
+   * @param cyclic whether the last point should be connected to the first point
    * @return */
   public Tensor resampledWaypoints(Tensor se2curve, boolean cyclic) {
     CurveSubdivision curveSubdivision = Se2UniformResample.of(waypointsSpacing);

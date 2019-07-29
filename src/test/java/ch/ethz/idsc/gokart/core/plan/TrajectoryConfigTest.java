@@ -56,7 +56,7 @@ public class TrajectoryConfigTest extends TestCase {
   public void testResample1() {
     Tensor curveNonUnits = ResourceData.of("/dubilab/waypoints/20190507.csv");
     Tensor curve = Tensor.of(curveNonUnits.stream().map(PoseHelper::attachUnits));
-    Tensor waypoints = TrajectoryConfig.GLOBAL.resampledWaypoints(curve);
+    Tensor waypoints = TrajectoryConfig.GLOBAL.resampledWaypoints(curve, true);
     MatrixQ.require(waypoints);
     PoseHelper.toUnitless(waypoints.get(0));
   }

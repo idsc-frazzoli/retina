@@ -137,7 +137,7 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
   }
 
   /* package for testing */ synchronized void updateWaypoints(Tensor curve) {
-    waypoints = Tensor.of(trajectoryConfig.resampledWaypoints(curve).stream().map(PoseHelper::toUnitless));
+    waypoints = Tensor.of(trajectoryConfig.resampledWaypoints(curve, true).stream().map(PoseHelper::toUnitless));
     waypointCost = WaypointDistanceCost.of( //
         Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), //
         true, // 1 round of refinement

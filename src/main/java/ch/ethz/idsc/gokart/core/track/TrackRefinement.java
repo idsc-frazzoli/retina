@@ -40,11 +40,11 @@ public class TrackRefinement {
         Quantity.of(10, SI.METER)); // probably max boundary shift
   }
 
-  Tensor getRefinedTrack(Tensor points_xyr, int resolution, int iterations, boolean closed) {
+  Tensor getRefinedTrack(Tensor points_xyr, int resolution, int iterations, boolean cyclic) {
     final int n = points_xyr.length();
-    Tensor domain = Tensors.vector(i -> RealScalar.of(i / (double) resolution), (closed ? n : n - 2) * resolution);
-    Tensor matrixD0 = domain.map(BSpline2Vector.of(n, 0, closed));
-    Tensor matrixD1 = domain.map(BSpline2Vector.of(n, 1, closed));
+    Tensor domain = Tensors.vector(i -> RealScalar.of(i / (double) resolution), (cyclic ? n : n - 2) * resolution);
+    Tensor matrixD0 = domain.map(BSpline2Vector.of(n, 0, cyclic));
+    Tensor matrixD1 = domain.map(BSpline2Vector.of(n, 1, cyclic));
     Tensor matrixD0Transp = Transpose.of(matrixD0);
     // ---
     int iteration = 0;
@@ -56,7 +56,7 @@ public class TrackRefinement {
       }
       points_xyr = points_xyr.add(matrixD0Transp.dot(optional.get()));
       points_xyr.set(GD_RADIUS_GROWTH::add, Tensor.ALL, 2);
-      points_xyr = closed //
+      points_xyr = cyclic //
           ? REGULARIZATION_CYCLIC.apply(points_xyr)
           : REGULARIZATION_STRING.apply(points_xyr);
       ++iteration;
