@@ -70,7 +70,7 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
       if (Objects.nonNull(steerGetEvent)) {binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of(//
           closestDistance(optionalCurve.get(), gokartPoseEvent.getPose()), //
           HapticSteerConfig.GLOBAL.offsetL, //
-          tsu, //
+          steerGetEvent.tsuTrq(), //
           velocity  ))));
       System.out.println("binaryBlob2 entered");
     }}
