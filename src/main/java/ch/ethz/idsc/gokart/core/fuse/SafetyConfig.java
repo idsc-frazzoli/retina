@@ -1,10 +1,10 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
+import ch.ethz.idsc.gokart.calib.ChassisGeometry;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.perc.SimpleSpacialObstaclePredicate;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.app.clear.CircleClearanceTracker;
 import ch.ethz.idsc.retina.app.clear.ClearanceTracker;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -55,7 +55,7 @@ public class SafetyConfig {
   }
 
   /** @param speed
-   * @param gokartStatusEvent non-null
+   * @param ratio non-null
    * @return */
   public ClearanceTracker getClearanceTracker(Scalar speed, Scalar ratio) {
     Scalar half = ChassisGeometry.GLOBAL.yHalfWidthMeter();

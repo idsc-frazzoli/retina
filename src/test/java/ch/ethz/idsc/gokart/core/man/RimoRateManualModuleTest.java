@@ -68,7 +68,7 @@ public class RimoRateManualModuleTest extends TestCase {
 
   public void testStartStop() {
     RimoRateManualModule rimoRateJoystickModule = new RimoRateManualModule();
-    rimoRateJoystickModule.protected_first();
-    rimoRateJoystickModule.protected_last();
+    rimoRateJoystickModule.first();
+    rimoRateJoystickModule.last();
   }
 }

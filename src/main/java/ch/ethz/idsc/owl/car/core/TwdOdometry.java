@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.owl.car.core;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -8,7 +10,7 @@ import ch.ethz.idsc.tensor.alg.Differences;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Chop;
 
-public class TwdOdometry {
+public class TwdOdometry implements Serializable {
   private final Scalar radius;
   private final Scalar factor;
 

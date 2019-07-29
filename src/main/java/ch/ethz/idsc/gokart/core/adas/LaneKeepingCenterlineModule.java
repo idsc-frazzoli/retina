@@ -1,55 +1,108 @@
 // code by am
 package ch.ethz.idsc.gokart.core.adas;
 
-import java.util.Objects;
+import java.io.File;
+import java.util.Date;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.gokart.dev.rimo.RimoPutProvider;
-import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.owl.bot.se2.pid.Se2CurveHelper;
+import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
+import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
+import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
+import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.sophus.lie.se2.Se2ParametricDistance;
+import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
+import ch.ethz.idsc.retina.util.time.SystemTimestamp;
+import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.Put;
+import ch.ethz.idsc.tensor.io.Serialization;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.TensorListener;
+import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
-/** class is used to develop and test anti lock brake logic */
-/* package */ class LaneKeepingCenterlineModule extends AbstractModule implements GokartPoseListener, RimoPutProvider {
+/**  */
+public class LaneKeepingCenterlineModule extends AbstractClockedModule implements //
+    GokartPoseListener, TensorListener {
+  // ---
+  private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-  private final MeasurementSlowDownModule slowDown = new MeasurementSlowDownModule();
-  private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
-  private Optional<Tensor> optionalCurve = Optional.empty();
-  private Scalar maxDistance = Quantity.of(1, SI.METER);
+  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
+  private final CurveClothoidPursuitPlanner curvePlannerL;
+  private final CurveClothoidPursuitPlanner curvePlannerR;
+  private SteerConfig steerConfig = new SteerConfig();
+  // ---
+  public GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
+  public Optional<Tensor> optionalCurve = Optional.empty();
+  public Tensor laneBoundaryL;
+  public Tensor laneBoundaryR;
+  Optional<Clip> optionalPermittedRange = Optional.empty();
+  Tensor velocity = GokartPoseEvents.motionlessUninitialized().getVelocity();
+
+  public LaneKeepingCenterlineModule() {
+    this(ClothoidPursuitConfig.GLOBAL);
+  }
+
+  public LaneKeepingCenterlineModule(ClothoidPursuitConfig _clothoidPursuitConfig) {
+    ClothoidPursuitConfig clothoidPursuitConfig = _clothoidPursuitConfig;
+    try {
+      clothoidPursuitConfig = Serialization.copy(_clothoidPursuitConfig);
+      // large value is a hack to get a solution
+      clothoidPursuitConfig.turningRatioMax = Quantity.of(1000.0, SI.PER_METER);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    curvePlannerL = new CurveClothoidPursuitPlanner(clothoidPursuitConfig);
+    curvePlannerR = new CurveClothoidPursuitPlanner(clothoidPursuitConfig);
+  }
 
   @Override // from AbstractModule
-  protected void first() {
+  public void first() {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
+    curveSe2PursuitLcmClient.addListener(this);
+    curveSe2PursuitLcmClient.startSubscriptions();
   }
 
   @Override // from AbstractModule
-  protected void last() {
+  public void last() {
     gokartPoseLcmClient.stopSubscriptions();
+    curveSe2PursuitLcmClient.stopSubscriptions();
   }
 
-  public void setCurve(Optional<Tensor> curve) {
-    if (curve.isPresent()) {
-      optionalCurve = curve;
-    } else {
-      System.err.println("Curve missing");
-      optionalCurve = Optional.empty();
+  @Override // from AbstractClockedModule
+  protected synchronized void runAlgo() {
+    boolean isQualityOk = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent);
+    Tensor pose = isQualityOk //
+        ? gokartPoseEvent.getPose() //
+        : GokartPoseEvents.motionlessUninitialized().getPose();
+    velocity = isQualityOk //
+        ? gokartPoseEvent.getVelocity() //
+        : GokartPoseEvents.motionlessUninitialized().getVelocity();
+    boolean isPresent = optionalCurve.isPresent();
+    Tensor curve = isPresent //
+        ? optionalCurve.get()//
+        : null;
+    System.out.println("isPresent: " + isPresent + "isQualityOK: " + isQualityOk);
+    if (isPresent && isQualityOk) {
+      optionalPermittedRange = getPermittedRange(curve, pose);
+      System.out.println(optionalPermittedRange);
     }
   }
 
-  final Optional<Tensor> getCurve() {
-    return optionalCurve;
+  @Override // from AbstractClockedModule
+  protected Scalar getPeriod() {
+    return HapticSteerConfig.GLOBAL.LKperiod;
   }
 
   @Override // from GokartPoseListener
@@ -57,25 +110,84 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     this.gokartPoseEvent = gokartPoseEvent;
   }
 
-  @Override
-  public ProviderRank getProviderRank() {
-    return ProviderRank.EMERGENCY;
+  synchronized void setCurve(Optional<Tensor> optional) {
+    optionalCurve = optional;
+    LaneKeepingCenterlineModule.exportTensor(optionalCurve.get());
+    if (optional.isPresent()) {
+      Tensor OFS_L = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.offsetL, Quantity.of(0, SI.METER)).unmodifiable();
+      Tensor OFS_R = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.offsetR, Quantity.of(0, SI.METER)).unmodifiable();
+      laneBoundaryL = Tensor.of(optional.get().stream() //
+          .map(Se2GroupElement::new) //
+          .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
+      laneBoundaryR = Tensor.of(optional.get().stream() //
+          .map(Se2GroupElement::new) //
+          .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
+    } else
+      System.err.println("Curve empty.");
   }
 
-  @Override
-  public Optional<RimoPutEvent> putEvent() {
-    // TODO this logic does not need to happen for every rimo put event
-    // ... instead 10[Hz] would be sufficient, or for every pose update
-    if (optionalCurve.isPresent() && Objects.nonNull(gokartPoseEvent)) {
-      Tensor pose = gokartPoseEvent.getPose(); // of the form {x[m], y[m], heading}
-      Tensor curve = optionalCurve.get();
-      int index = Se2CurveHelper.closest(curve, pose); // closest gives the index of the closest element
-      Tensor closest = curve.get(index);
-      Scalar currDistance = Se2ParametricDistance.INSTANCE.distance(closest, pose);
-      if (Scalars.lessThan(maxDistance, currDistance)) {
-        return slowDown.putEvent();
+  final Optional<Tensor> getCurve() {
+    System.out.println("got curve");
+    return optionalCurve;
+  }
+
+  protected static void exportTensor(Tensor tensor) {
+    File file = HomeDirectory.file("Desktop", "setCurveRefined_" + SystemTimestamp.asString(new Date()) + ".csv");
+    try {
+      Put.of(file, tensor);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  /** @param curve
+   * @param pose
+   * @return clip values with unit "SCE" */
+  Optional<Clip> getPermittedRange(Tensor curve, Tensor pose) {
+    // TODO AM/JPH perhaps choose different default/fallback values:
+    Scalar steerlimitL_SCE = Quantity.of(0, "SCE");
+    Scalar steerlimitR_SCE = Quantity.of(0, "SCE");
+    if (1 < curve.length()) {
+      if (HapticSteerConfig.GLOBAL.printLaneInfo)
+        System.out.println("ifloop entered :)");
+      Optional<ClothoidPlan> optionalL = //
+          curvePlannerL.getPlan(pose, velocity, laneBoundaryL, true);
+      Optional<ClothoidPlan> optionalR = //
+          curvePlannerR.getPlan(pose, velocity, laneBoundaryR, true);
+      if (HapticSteerConfig.GLOBAL.printLaneInfo)
+        System.out.println(optionalL);
+      Clip ratioLimitClip = steerConfig.getRatioLimit(); // TODO JPH/AM clip obsolete
+      if (optionalL.isPresent()) {
+        Scalar steerlimitLratio = ratioLimitClip.apply(optionalL.get().ratio());
+        steerlimitL_SCE = steerMapping.getSCEfromRatio(steerlimitLratio);
+        if (HapticSteerConfig.GLOBAL.printLaneInfo)
+          System.out.println("Limit L: " + steerlimitL_SCE);
+      }
+      if (optionalR.isPresent()) {
+        Scalar steerlimitRratio = ratioLimitClip.apply(optionalR.get().ratio());
+        steerlimitR_SCE = steerMapping.getSCEfromRatio(steerlimitRratio);
+        if (HapticSteerConfig.GLOBAL.printLaneInfo)
+          System.out.println("Limit R: " + steerlimitR_SCE);
+      }
+      if (optionalL.isPresent() && optionalR.isPresent()) {
+        try {
+          return Optional.of(Clips.interval(steerlimitR_SCE, steerlimitL_SCE));
+        } catch (Exception e) {
+          System.out.println("bad clip");
+        }
       }
     }
+    if (HapticSteerConfig.GLOBAL.printLaneInfo) {
+      System.out.println("no steer limit found");
+      System.out.println("ifloop not entered :(");
+    }
     return Optional.empty();
+  }
+
+  @Override // from TensorListener
+  public void tensorReceived(Tensor tensor) {
+    setCurve(tensor.length() <= 1 //
+        ? Optional.empty()
+        : Optional.of(tensor));
   }
 }

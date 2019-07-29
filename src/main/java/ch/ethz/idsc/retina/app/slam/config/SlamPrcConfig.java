@@ -21,6 +21,7 @@ public class SlamPrcConfig {
   public Scalar alphaCurvature;
   public Scalar extractionPoints;
   public Scalar alphaHeading;
+  /** with unit "m" */
   public Scalar lookAhead;
 
   /** @return unitless look ahead distance with interpretation in meters */

@@ -5,10 +5,12 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoWheelConfigurations;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvents;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
@@ -21,14 +23,13 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutListener;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelConfiguration;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.math.AxisAlignedBox;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
@@ -67,8 +68,8 @@ public abstract class GokartRender implements RenderInterface {
   private LinmotGetEvent linmotGetEvent = LinmotGetEvents.ZEROS;
   public final LinmotGetListener linmotGetListener = getEvent -> linmotGetEvent = getEvent;
   // ---
-  private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
-  public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  private SteerColumnEvent steerColumnEvent = SteerColumnEvents.UNKNOWN;
+  public final SteerColumnListener steerColumnListener = getEvent -> steerColumnEvent = getEvent;
 
   public final void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     { // footprint
@@ -109,10 +110,10 @@ public abstract class GokartRender implements RenderInterface {
       graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_LMT.alongX(value)));
       geometricLayer.popMatrix();
     }
-    if (gokartStatusEvent.isSteerColumnCalibrated()) {
+    if (steerColumnEvent.isSteerColumnCalibrated()) {
       graphics.setStroke(new BasicStroke());
       // draw wheels
-      for (WheelConfiguration wheelConfiguration : RimoWheelConfigurations.fromSCE(gokartStatusEvent.getSteerColumnEncoderCentered())) {
+      for (WheelConfiguration wheelConfiguration : RimoWheelConfigurations.fromSCE(steerColumnEvent.getSteerColumnEncoderCentered())) {
         geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(wheelConfiguration.local()));
         // draw tire
         graphics.setColor(COLOR_WHEEL);

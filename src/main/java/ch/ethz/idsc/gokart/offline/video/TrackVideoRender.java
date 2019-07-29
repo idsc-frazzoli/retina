@@ -9,17 +9,17 @@ import java.awt.Stroke;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionStepsMessage;
+import ch.ethz.idsc.gokart.core.plan.TrajectoryEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
-import ch.ethz.idsc.gokart.core.pure.TrajectoryEvents;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AccelerationRender;
 import ch.ethz.idsc.gokart.gui.top.AngularSlipRender;
 import ch.ethz.idsc.gokart.gui.top.ClothoidPlanRender;
@@ -93,11 +93,11 @@ import ch.ethz.idsc.tensor.sca.Round;
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartLcmChannel.STATUS)) {
-      GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
-      gokartRender.gokartStatusListener.getEvent(gokartStatusEvent);
-      angularSlipRender.gokartStatusListener.getEvent(gokartStatusEvent);
-      slipLinesRender.gokartStatusListener.getEvent(gokartStatusEvent);
-      extrudedFootprintRender.gokartStatusListener.getEvent(gokartStatusEvent);
+      SteerColumnEvent steerColumnEvent = new SteerColumnEvent(byteBuffer);
+      gokartRender.steerColumnListener.getEvent(steerColumnEvent);
+      angularSlipRender.steerColumnListener.getEvent(steerColumnEvent);
+      slipLinesRender.steerColumnListener.getEvent(steerColumnEvent);
+      extrudedFootprintRender.steerColumnListener.getEvent(steerColumnEvent);
     } else //
     if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
       linmotGetEvent = new LinmotGetEvent(byteBuffer);

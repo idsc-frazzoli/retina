@@ -3,7 +3,7 @@
 package ch.ethz.idsc.owl.car.model;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.math.RobustSlip;
+import ch.ethz.idsc.owl.car.slip.RobustSlip;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -18,7 +18,8 @@ import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Chop;
 
 /** implementation has been verified through several tests */
-/* package */ class TireForces {
+// class is used outside project
+public class TireForces {
   private static final Tensor AFFINE_ONE = Tensors.vector(1);
   private static final Tensor SUM_ALL = Tensors.vector(1, 1, 1, 1).unmodifiable();
   private static final Tensor WEIGHT_STD = Tensors.vector(+1, -1, -1, +1).unmodifiable();

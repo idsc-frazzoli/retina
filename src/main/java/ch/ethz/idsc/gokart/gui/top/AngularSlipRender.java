@@ -6,17 +6,18 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
-import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvents;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnListener;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.GokartStatusListener;
-import ch.ethz.idsc.owl.car.math.AngularSlip;
+import ch.ethz.idsc.owl.car.slip.AngularSlip;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.util.math.AxisAlignedBox;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -36,8 +37,9 @@ public class AngularSlipRender implements RenderInterface {
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   public GokartPoseListener gokartPoseListener = gokartPoseEvent -> this.gokartPoseEvent = gokartPoseEvent;
   // ---
-  private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
-  public GokartStatusListener gokartStatusListener = gokartStatusEvent -> this.gokartStatusEvent = gokartStatusEvent;
+  private SteerColumnEvent steerColumnEvent = SteerColumnEvents.UNKNOWN;
+  public SteerColumnListener steerColumnListener = //
+      gokartStatusEvent -> this.steerColumnEvent = gokartStatusEvent;
   private final Tensor matrix;
 
   public AngularSlipRender(Tensor matrix) {
@@ -62,10 +64,10 @@ public class AngularSlipRender implements RenderInterface {
         graphics.drawString(string, (int) point2d.getX() - halfWidth, (int) point2d.getY());
       }
     }
-    if (gokartStatusEvent.isSteerColumnCalibrated()) {
+    if (steerColumnEvent.isSteerColumnCalibrated()) {
       AngularSlip angularSlip = new AngularSlip( //
           gokartPoseEvent.getVelocity(), //
-          steerMapping.getRatioFromSCE(gokartStatusEvent));
+          steerMapping.getRatioFromSCE(steerColumnEvent));
       Scalar gyroZ = angularSlip.gyroZ();
       Scalar wantedRotationRate = angularSlip.wantedRotationRate();
       // ---

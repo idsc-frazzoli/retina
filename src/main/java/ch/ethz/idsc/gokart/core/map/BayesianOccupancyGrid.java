@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.retina.util.math.Bresenham;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -55,7 +55,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
     return new BayesianOccupancyGrid(lbounds, rangeCeil, dimension, obstacleRadius, fill);
   }
 
-  // TODO assign all constants in constructor using a reference to a MappingConfig instance
+  // TODO JPH assign all constants in constructor using a reference to a MappingConfig instance
   /** prior */
   private final double P_M = MappingConfig.GLOBAL.getP_M(); // prior
   private final double L_M_INV = StaticHelper.pToLogOdd(1 - P_M);

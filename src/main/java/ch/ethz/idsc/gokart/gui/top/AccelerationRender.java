@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;

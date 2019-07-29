@@ -59,7 +59,7 @@ public class SteerGetEvent extends DataEvent {
    * estMotTrq_Qual == 2.0 means the device is active, and then the difference
    * "refMotTrq_CANInput - estMotTrq_CANInput" should be small.
    * in autonomous mode, estMotTrq_Qual should always be 2.0
-   * TODO check the requirement during operation!
+   * TODO JPH check the requirement during operation!
    * 
    * @see #isActive()
    * @see SteerGetStatus */

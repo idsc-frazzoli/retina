@@ -12,7 +12,7 @@ import ch.ethz.idsc.owl.math.StateSpaceModels;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.retina.util.pose.PoseInterface;
+import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -26,8 +26,7 @@ import ch.ethz.idsc.tensor.sca.N;
 // DEMO class which provides velocity such that it can be integrated into the SLAM algorithm
 // rad 0.14, ytir = 0.65 very good rotation tracking! but speed not accurate
 // rad 0.12, ytir = 0.54 good speed tracking, rotation ok
-// TODO MG lots of commonality with GokartPoseOdometry -> unify
-public class GokartPoseOdometryDemo implements PoseInterface, RimoGetListener {
+public class GokartPoseOdometryDemo implements PoseVelocityInterface, RimoGetListener {
   public static GokartPoseOdometryDemo create(Tensor state) {
     return new GokartPoseOdometryDemo(state);
   }
@@ -39,8 +38,7 @@ public class GokartPoseOdometryDemo implements PoseInterface, RimoGetListener {
 
   // ---
   private static final Tensor VELOCITY_INIT = Tensors.fromString("{0[m*s^-1], 0[m*s^-1], 0[s^-1]}").unmodifiable();
-  // ---
-  private final Scalar dt = RimoSocket.getGetPeriod(); // 1/250[s] update period
+  private static final Scalar DT = RimoSocket.getGetPeriod(); // 1/250[s] update period
   // ---
   private Tensor state;
   /** velocity is the tangent of the state {vx[m*s^-1], 0[m*s^-1], angular_rate[s^-1]} */
@@ -65,12 +63,7 @@ public class GokartPoseOdometryDemo implements PoseInterface, RimoGetListener {
   /* package */ synchronized void step(Tensor angularRate_Y_pair) {
     velocity = RimoTwdOdometry.INSTANCE.velocity(angularRate_Y_pair);
     Flow flow = singleton(velocity);
-    state = Se2CarIntegrator.INSTANCE.step(flow, state, dt);
-  }
-
-  /** @return {vx[m*s^-1], 0[m*s^-1], omega[s^-1]} */
-  /* package */ Tensor getVelocity() {
-    return velocity;
+    state = Se2CarIntegrator.INSTANCE.step(flow, state, DT);
   }
 
   /** @return velocity unitless representation */
@@ -81,9 +74,19 @@ public class GokartPoseOdometryDemo implements PoseInterface, RimoGetListener {
         Magnitude.PER_SECOND.apply(velocity.Get(2)));
   }
 
-  @Override // from GokartPoseInterface
+  @Override // from PoseInterface
   public Tensor getPose() {
     return state.unmodifiable();
+  }
+
+  @Override // from PoseVelocityInterface
+  public Tensor getVelocity() {
+    return velocity;
+  }
+
+  @Override // from PoseVelocityInterface
+  public Scalar getGyroZ() {
+    return velocity.Get(2);
   }
 
   /** @param velocity vector of the form {vx[m*s^-1], 0[m*s^-1], omega[s^-1]}

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
@@ -29,9 +30,9 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
    * @return array of BufferedImages of length 2 */
   public static BufferedImage[] constructFrames(SlamMapFrame[] slamMapFrames, SlamCoreContainer slamCoreContainer, //
       SlamPrcContainer slamPrcContainer, Tensor gokartLidarPose) {
-    SlamMapFrame.setCorners(//
+    Stream.of(slamMapFrames).forEach(slamMapFrame -> slamMapFrame.setCorners( //
         slamCoreContainer.getOccurrenceMap().getCornerX(), //
-        slamCoreContainer.getOccurrenceMap().getCornerY());
+        slamCoreContainer.getOccurrenceMap().getCornerY()));
     paintRawMap(slamCoreContainer.getOccurrenceMap(), slamMapFrames[0].getBytes());
     Tensor pose = slamCoreContainer.getPoseUnitless().copy();
     Arrays.fill(slamMapFrames[1].getBytes(), CLEAR_BYTE);
@@ -85,7 +86,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
   // to be used to visualize the raw processed Mat object from SlamMapProcessing
   @SuppressWarnings("unused")
   private static void setProcessedMat(Mat processedMat, byte[] bytes) {
-    byte[] processedByteArray = SlamOpenCVUtil.matToByteArray(processedMat);
+    byte[] processedByteArray = OpenCVUtil.matToByteArray(processedMat);
     for (int index = 0; index < bytes.length; ++index)
       bytes[index] = processedByteArray[index] == 0 ? CLEAR_BYTE : (byte) 0;
   }

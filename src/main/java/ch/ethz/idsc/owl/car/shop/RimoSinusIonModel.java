@@ -4,14 +4,14 @@ package ch.ethz.idsc.owl.car.shop;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.calib.ChassisGeometry;
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
-import ch.ethz.idsc.owl.car.math.Pacejka3;
 import ch.ethz.idsc.owl.car.model.CarControl;
 import ch.ethz.idsc.owl.car.model.CarSteering;
+import ch.ethz.idsc.owl.car.slip.Pacejka3;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -162,7 +162,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
 
   @Override
   public Scalar muRoll() {
-    // TODO check if == 0 ok
+    // TODO JPH check if == 0 ok
     // for ==2 the car will not make a turn but slide in nose direction...
     return DoubleScalar.of(0); // rolling friction coefficient
   }

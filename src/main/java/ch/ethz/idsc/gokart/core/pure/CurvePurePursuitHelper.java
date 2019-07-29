@@ -37,7 +37,7 @@ public enum CurvePurePursuitHelper {
     Optional<Tensor> aheadTrail = CurveUtils.getAheadTrail(tensor, distance);
     if (aheadTrail.isPresent()) {
       PurePursuit purePursuit = PurePursuit.fromTrajectory(aheadTrail.get(), distance);
-      return purePursuit.ratio();
+      return purePursuit.firstRatio();
     }
     return Optional.empty();
   }

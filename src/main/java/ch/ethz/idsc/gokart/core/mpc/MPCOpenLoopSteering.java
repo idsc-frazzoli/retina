@@ -23,9 +23,4 @@ import ch.ethz.idsc.tensor.Tensors;
         cnpStep.gokartState().getS().add(rampUp), //
         cnpStep.gokartControl().getudotS()));
   }
-
-  @Override // from MPCStateProviderClient
-  public void setStateEstimationProvider(MPCStateEstimationProvider mpcstateProvider) {
-    // ---
-  }
 }

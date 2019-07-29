@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
+import ch.ethz.idsc.gokart.core.DubendorfCurve;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
@@ -26,16 +27,21 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
     CurveClothoidPursuitPlanner curveClothoidPursuitPlanner = new CurveClothoidPursuitPlanner(clothoidPursuitConfig);
     Tensor curve = DubendorfCurve.TRACK_OVAL_SE2;
     // System.out.println("curve.length==" + curve.length());
+    int success = 0;
     for (int index = 0; index < curve.length(); ++index) {
       // System.out.println(index);
       Tensor pose = curve.get(index);
-      Scalar speed = Quantity.of(1, SI.VELOCITY);
+      Tensor speed = Tensors.of(Quantity.of(1, SI.VELOCITY), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND));
       Optional<Scalar> optional = curveClothoidPursuitPlanner.getPlan( //
           pose, speed, curve, true).map(ClothoidPlan::ratio);
-      Scalar ratio = optional.get();
-      Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(ratio);
-      Clips.absoluteOne().requireInside(angle);
+      if (optional.isPresent()) {
+        Scalar ratio = optional.get();
+        Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(ratio);
+        Clips.absoluteOne().requireInside(angle);
+        success++;
+      }
     }
+    assertTrue(curve.length() / 2 < success);
   }
 
   public void testSpecific2() throws Exception {
@@ -49,7 +55,7 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
     for (int index = 0; index < curve.length(); ++index) {
       // System.out.println(index);
       Tensor pose = new Se2GroupElement(curve.get(index)).combine(PoseHelper.attachUnits(RandomVariate.of(distribution, 3)));
-      Scalar speed = Quantity.of(1, SI.VELOCITY);
+      Tensor speed = Tensors.of(Quantity.of(1, SI.VELOCITY), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND));
       Optional<Scalar> optional = curveClothoidPursuitPlanner.getPlan( //
           pose, speed, curve, true).map(ClothoidPlan::ratio);
       if (optional.isPresent()) {

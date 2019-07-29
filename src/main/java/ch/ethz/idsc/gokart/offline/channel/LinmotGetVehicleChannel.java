@@ -26,7 +26,7 @@ public enum LinmotGetVehicleChannel implements SingleChannelInterface {
 
   @Override // from SingleChannelTable
   public Tensor row(ByteBuffer byteBuffer) {
-    // TODO canonize
+    // TODO JPH canonize
     LinmotGetEvent linmotGetEvent = new LinmotGetEvent(byteBuffer);
     return Tensors.of( //
         linmotGetEvent.getActualPosition().map(Magnitude.METER).negate(), //

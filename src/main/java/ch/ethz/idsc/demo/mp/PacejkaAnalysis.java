@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -83,9 +83,9 @@ import ch.ethz.idsc.tensor.sca.Round;
       wheelAngularSpeedR = rge.getTireR.getAngularRate_Y();
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
-      GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(byteBuffer);
-      if (gokartStatusEvent.isSteerColumnCalibrated())
-        steerPosition = gokartStatusEvent.getSteerColumnEncoderCentered();
+      SteerColumnEvent steerColumnEvent = new SteerColumnEvent(byteBuffer);
+      if (steerColumnEvent.isSteerColumnCalibrated())
+        steerPosition = steerColumnEvent.getSteerColumnEncoderCentered();
     }
   }
 

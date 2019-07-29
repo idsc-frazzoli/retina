@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.ProjectionMatrix;
 import ch.ethz.idsc.retina.util.math.Viewport;

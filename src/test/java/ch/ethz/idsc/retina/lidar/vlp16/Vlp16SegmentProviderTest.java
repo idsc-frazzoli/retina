@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.lidar.vlp16;
 
 import java.util.Arrays;
 
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import junit.framework.TestCase;
 
 public class Vlp16SegmentProviderTest extends TestCase {

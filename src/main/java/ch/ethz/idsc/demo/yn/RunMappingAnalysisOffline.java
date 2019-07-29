@@ -11,7 +11,9 @@ import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.slam.MappingAnalysisOffline;
 import ch.ethz.idsc.retina.util.io.PngImageWriter;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ enum RunMappingAnalysisOffline {
   ;
@@ -23,7 +25,12 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     if (!folder.isDirectory())
       throw new RuntimeException();
     Consumer<BufferedImage> consumer = new PngImageWriter(folder);
-    OfflineLogPlayer.process(file, new MappingAnalysisOffline(MappingConfig.GLOBAL, consumer));
+    OfflineLogPlayer.process(file, new MappingAnalysisOffline(MappingConfig.GLOBAL, Quantity.of(1, SI.SECOND)) {
+      @Override
+      public void accept(BufferedImage bufferedImage) {
+        consumer.accept(bufferedImage);
+      }
+    });
     System.out.print("Done.");
   }
 }

@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.retina.app.slam.SlamParticle;
-import ch.ethz.idsc.retina.app.slam.VehicleConfig;
+import ch.ethz.idsc.retina.app.slam.SlamVehicleLimit;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.TruncatedGaussian;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -18,8 +18,8 @@ import ch.ethz.idsc.tensor.RealScalar;
   private final TruncatedGaussian tgAngAccel;
 
   public SlamResamplingStepUtil(double rougheningLinAccelStd, double rougheningAngAccelStd) {
-    tgLinAccel = new TruncatedGaussian(0, rougheningLinAccelStd, VehicleConfig.GLOBAL.LINACCEL_MIN, VehicleConfig.GLOBAL.LINACCEL_MAX);
-    tgAngAccel = new TruncatedGaussian(0, rougheningAngAccelStd, VehicleConfig.GLOBAL.ANGACCEL_MIN, VehicleConfig.GLOBAL.ANGACCEL_MAX);
+    tgLinAccel = new TruncatedGaussian(0, rougheningLinAccelStd, SlamVehicleLimit.GLOBAL.LINACCEL_MIN, SlamVehicleLimit.GLOBAL.LINACCEL_MAX);
+    tgAngAccel = new TruncatedGaussian(0, rougheningAngAccelStd, SlamVehicleLimit.GLOBAL.ANGACCEL_MIN, SlamVehicleLimit.GLOBAL.ANGACCEL_MAX);
   }
 
   /** particle resampling using neglect_low_likelihood method. After resampling, a particle roughening step is executed.
@@ -69,10 +69,10 @@ import ch.ethz.idsc.tensor.RealScalar;
   private double limitLinAccel(double oldLinVel, double dT) {
     double linAccel = tgLinAccel.nextValue();
     double newLinVel = oldLinVel + linAccel * dT;
-    if (VehicleConfig.GLOBAL.LINVEL_MAX < newLinVel)
-      return VehicleConfig.GLOBAL.LINVEL_MAX;
-    if (newLinVel < VehicleConfig.GLOBAL.LINVEL_MIN)
-      return VehicleConfig.GLOBAL.LINVEL_MIN;
+    if (SlamVehicleLimit.GLOBAL.LINVEL_MAX < newLinVel)
+      return SlamVehicleLimit.GLOBAL.LINVEL_MAX;
+    if (newLinVel < SlamVehicleLimit.GLOBAL.LINVEL_MIN)
+      return SlamVehicleLimit.GLOBAL.LINVEL_MIN;
     return newLinVel;
   }
 

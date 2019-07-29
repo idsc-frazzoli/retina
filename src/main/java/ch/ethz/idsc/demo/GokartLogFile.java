@@ -2236,6 +2236,93 @@ public enum GokartLogFile implements LogFile {
   /** slow manual driving for mapping */
   _20190707T151835_ce6e2a12,
   /***************************************************/
+  /* 2019-07-08 */
+  /** manual driving */
+  _20190708T114135_f3f46a8b,
+  /** brief mpc */
+  _20190708T122303_12dcbfa8,
+  /** slow and brief manual driving */
+  _20190708T142002_cea6e9da,
+  /** slow and brief manual driving */
+  _20190708T143137_68fef659,
+  /** manual driving */
+  _20190708T150455_74c62db5,
+  /***************************************************/
+  /* 2019-07-09 */
+  /** manual driving, network issue */
+  _20190709T170420_12dcbfa8,
+  /** manual driving, network issue */
+  _20190709T171438_12dcbfa8,
+  /** manual driving, mpc, network issue several times */
+  _20190709T171851_12dcbfa8,
+  /** clothoid pursuit */
+  _20190709T173859_12dcbfa8,
+  /***************************************************/
+  /* 2019-07-11 */
+  /** mpc, network issue */
+  _20190711T145245_908ca07d,
+  /** rough manual driving
+   * mpc, network issue */
+  _20190711T145949_908ca07d,
+  /** mpc, network issue */
+  _20190711T151412_908ca07d,
+  /** manual driving, mpc, network issue */
+  _20190711T160210_908ca07d,
+  /***************************************************/
+  /* 2019-07-15 using LAN-USB adapter */
+  /** slow and fast manual driving
+   * to test LAN-USB adapter */
+  _20190715T113340_908ca07d,
+  /** manual driving, fast mpc,
+   * mapping active then localization failure
+   * otherwise flawless */
+  _20190715T153458_908ca07d,
+  /***************************************************/
+  /* 2019-07-18 */
+  /** brief, slow manual driving */
+  _20190718T111041_9183887b,
+  /** brief, slow manual driving */
+  _20190718T120628_b4086d44,
+  /** brief, slow manual driving */
+  _20190718T125450_0de69aaf,
+  /** brief, slow manual driving with lane keeping steer limitation */
+  _20190718T131528_0de69aaf,
+  /***************************************************/
+  /* 2019-07-19 */
+  /** TEST OK: MANUAL, PURSUIT, MPC */
+  _20190719T141611_bcc60260,
+  /** lane keeping steer limitation */
+  _20190719T144137_fde6f02e,
+  /** lane keeping steer limitation */
+  _20190719T145302_fde6f02e,
+  /** brief, slow manual driving */
+  _20190719T145611_fde6f02e,
+  /** manual driving */
+  _20190719T150040_fde6f02e,
+  /** manual driving */
+  _20190719T150957_8c846374,
+  /** lane keeping steer limitation, mpc,
+   * exceptions in mapping results in mpc with delay */
+  _20190719T151747_ababf43b,
+  /** mpc ok */
+  _20190719T152752_ababf43b,
+  /***************************************************/
+  /* 2019-07-22 */
+  /** manual driving */
+  _20190722T131401_522c4cd4,
+  /** clothoid pursuit */
+  _20190722T132044_522c4cd4,
+  /** lane keeping */
+  _20190722T154910_68d9b69b,
+  /** lane keeping */
+  _20190722T160002_68d9b69b,
+  /** lane keeping */
+  _20190722T162209_68d9b69b,
+  /***************************************************/
+  /* 2019-07-25 */
+  /** TEST OK: MANUAL, PURSUIT, MPC */
+  _20190725T114335_95923bcb,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

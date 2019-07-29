@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
+
 public enum GokartLcmChannel {
   ;
   public static final String URG04LX_FRONT = "front";
@@ -13,7 +15,7 @@ public enum GokartLcmChannel {
   public static final String VMU931_AG = "vmu931.ag";
   /** backup imu */
   public static final String VMU932_AG = "vmu932.ag";
-  /** absolute steering column position {@link GokartStatusEvent} */
+  /** absolute steering column position {@link SteerColumnEvent} */
   public static final String STATUS = "gokart.status.get";
   /** {x, y, heading, quality} */
   public static final String POSE_LIDAR = "gokart.pose.lidar";
@@ -38,6 +40,7 @@ public enum GokartLcmChannel {
   public static final String RIMO_CONTROLLER_AW = "rimo.controller.aw";
   /** for finding parameters of antilockbrake module */
   public static final String LINMOT_ANTILOCK = "linmot.antilock";
+  public static final String LANEKEEPING = "lanekeeping";
   /***************************************************/
   /** lcm self test contains the string "lcm self test" as bytes */
   public static final String LCM_SELF_TEST = "LCM_SELF_TEST";

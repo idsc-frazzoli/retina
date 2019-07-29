@@ -7,9 +7,9 @@ import java.util.List;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
-import ch.ethz.idsc.owl.car.math.Pacejka3;
 import ch.ethz.idsc.owl.car.model.CarControl;
 import ch.ethz.idsc.owl.car.model.CarSteering;
+import ch.ethz.idsc.owl.car.slip.Pacejka3;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;

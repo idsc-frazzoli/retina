@@ -84,8 +84,7 @@ public class LinmotStatusWordBitTest extends TestCase {
   public void test20190516T182806() {
     Set<LinmotStatusWordBit> set = LinmotStatusWordBit.from((short) 2170);
     LinmotStateVariable linmotStateVariable = new LinmotStateVariable((short) 1035);
-    System.out.println(set);
-    System.out.println(linmotStateVariable.linmotStateVarMain);
-    System.out.println(linmotStateVariable.substate);
+    assertEquals(linmotStateVariable.linmotStateVarMain, LinmotStateVarMain.ERROR);
+    assertEquals(linmotStateVariable.substate, 11);
   }
 }

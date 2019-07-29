@@ -6,6 +6,7 @@ import java.util.Collection;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.track.TrackReconConfig;
 import ch.ethz.idsc.retina.lidar.LidarPolarFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarSectorProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;

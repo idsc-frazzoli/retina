@@ -1,15 +1,15 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
-import java.util.List;
-
-import ch.ethz.idsc.owl.bot.se2.glc.DynamicRatioLimit;
+import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
 public class ClothoidPursuitConfigTest extends TestCase {
   public void testSimple() {
     ClothoidPursuitConfig clothoidPursuitConfig = ClothoidPursuitConfig.GLOBAL;
-    List<DynamicRatioLimit> ratioLimits = clothoidPursuitConfig.ratioLimits();
-    assertEquals(ratioLimits.size(), 1);
+    Clip clip = clothoidPursuitConfig.ratioLimits();
+    clip.requireInside(Quantity.of(-0.1, "m^-1"));
+    clip.requireInside(Quantity.of(+0.1, "m^-1"));
   }
 }

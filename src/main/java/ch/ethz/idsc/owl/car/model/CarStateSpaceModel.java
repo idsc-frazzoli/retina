@@ -20,7 +20,8 @@ import ch.ethz.idsc.tensor.sca.Round;
 /** the matlab code applies a rate limiter to u
  * if this is beneficial for stability, the limiter should
  * be a layer outside of the state space model */
-/* package */ class CarStateSpaceModel implements StateSpaceModel {
+// class is used outside project
+public class CarStateSpaceModel implements StateSpaceModel {
   private final VehicleModel vehicleModel;
   private final TrackInterface trackInterface;
 

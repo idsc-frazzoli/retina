@@ -9,13 +9,12 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.ChassisGeometry;
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.top.AxisAlignedBox;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
@@ -23,6 +22,7 @@ import ch.ethz.idsc.owl.car.core.WheelConfiguration;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.map.Se2Bijection;
+import ch.ethz.idsc.retina.util.math.AxisAlignedBox;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.app.api.PathRender;
@@ -91,7 +91,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     if (extrusion) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvents.create(PoseHelper.attachUnits(xya), RealScalar.ONE);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
-      extrudedFootprintRender.gokartStatusListener.getEvent(new GokartStatusEvent(row.Get(8).number().floatValue()));
+      extrudedFootprintRender.steerColumnListener.getEvent(new SteerColumnEvent(row.Get(8).number().floatValue()));
       extrudedFootprintRender.render(geometricLayer, graphics);
     }
     if (posetrail) {

@@ -21,7 +21,7 @@ import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
-import ch.ethz.idsc.sophus.app.api.Clothoid1Display;
+import ch.ethz.idsc.sophus.app.api.ClothoidDisplay;
 import ch.ethz.idsc.sophus.app.api.GeodesicDisplay;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.app.curve.CurvatureDemo;
@@ -47,15 +47,16 @@ public class TrajectoryDesign extends CurvatureDemo {
   private static final Scalar COMB_SCALE = Quantity.of(-1.0, "m^2");
   private static final Tensor OFS_L = Tensors.fromString("{0, +1[m], 0}").unmodifiable();
   private static final Tensor OFS_R = Tensors.fromString("{0, -1[m], 0}").unmodifiable();
-  private static final PathRender PATH_SIDE_L = new PathRender(new Color(255, 128, 128, 192), 1);
-  private static final PathRender PATH_SIDE_R = new PathRender(new Color(128, 192, 128, 192), 1);
   // ---
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
+  private final JToggleButton jToggleButtonWaypoints = new JToggleButton("wayp.");
   public final JToggleButton jToggleButtonRepos = new JToggleButton("repos.");
-  private final SpinnerLabel<CurvePoseRenderPlugins> spinnerLabelPlugins = new SpinnerLabel<>();
+  private final SpinnerLabel<RenderPlugins> spinnerLabelPlugins = new SpinnerLabel<>();
   private RenderInterface renderInterface = EmptyRender.INSTANCE;
   private RenderPluginParameters renderPluginParameters = null;
+  private final PathRender pathRenderL = new PathRender(new Color(255, 128, 128, 192), 1);
+  private final PathRender pathRenderR = new PathRender(new Color(128, 192, 128, 192), 1);
   private final LazyMouseListener lazyMouseListener = new LazyMouseListener() {
     @Override
     public void lazyClicked(MouseEvent mouseEvent) {
@@ -65,8 +66,9 @@ public class TrajectoryDesign extends CurvatureDemo {
   };
 
   public TrajectoryDesign() {
-    super(Arrays.asList(Clothoid1Display.INSTANCE));
+    super(Arrays.asList(ClothoidDisplay.INSTANCE));
     jToggleCurvature.setSelected(false);
+    timerFrame.jToolBar.add(jToggleButtonWaypoints);
     {
       jToggleButtonRepos.setToolTipText("position control points with the mouse");
       jToggleButtonRepos.setSelected(isPositioningEnabled());
@@ -92,8 +94,8 @@ public class TrajectoryDesign extends CurvatureDemo {
       spinnerLabelLevels.addToComponentReduced(timerFrame.jToolBar, new Dimension(30, 28), "levels");
     }
     {
-      spinnerLabelPlugins.setArray(CurvePoseRenderPlugins.values());
-      spinnerLabelPlugins.setValue(CurvePoseRenderPlugins.CLOTHOID_PURSUIT);
+      spinnerLabelPlugins.setArray(RenderPlugins.values());
+      spinnerLabelPlugins.setValue(RenderPlugins.CLOTHOID_PURSUIT);
       spinnerLabelPlugins.addToComponentReduced(timerFrame.jToolBar, new Dimension(170, 28), "plugin");
       spinnerLabelPlugins.setEnabled(!jToggleButtonRepos.isSelected());
     }
@@ -166,8 +168,11 @@ public class TrajectoryDesign extends CurvatureDemo {
         .map(Se2GroupElement::new) //
         .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
     // ---
-    PATH_SIDE_L.setCurve(renderPluginParameters.laneBoundaryL, true).render(geometricLayer, graphics);
-    PATH_SIDE_R.setCurve(renderPluginParameters.laneBoundaryR, true).render(geometricLayer, graphics);
+    pathRenderL.setCurve(renderPluginParameters.laneBoundaryL, true).render(geometricLayer, graphics);
+    pathRenderR.setCurve(renderPluginParameters.laneBoundaryR, true).render(geometricLayer, graphics);
+    // ---
+    if (jToggleButtonWaypoints.isSelected())
+      WaypointsRenderPlugin.INSTANCE.renderInterface(renderPluginParameters).render(geometricLayer, graphics);
     // ---
     renderInterface.render(geometricLayer, graphics);
     return refined;

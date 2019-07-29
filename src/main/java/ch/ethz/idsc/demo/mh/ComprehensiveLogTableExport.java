@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
+import ch.ethz.idsc.gokart.offline.channel.LinmotGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
 import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
@@ -40,7 +41,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   public void process(File file) throws IOException {
     OfflineTableSupplier davisImuTable = SingleChannelTable.of(DavisImuChannel.INSTANCE);
     OfflineTableSupplier vmu931ImuTable = SingleChannelTable.of(Vmu931ImuChannel.INSTANCE);
-    LinmotPassiveStatusTable linmotStatusTable = new LinmotPassiveStatusTable();
+    OfflineTableSupplier linmotStatusTable = SingleChannelTable.of(LinmotGetChannel.INSTANCE);
     PowerSteerTable powerSteerTable = new PowerSteerTable(STEERINGPERIOD);
     // RimoOdometryTable rimoOdometryTable = new RimoOdometryTable();
     PowerRimoAnalysis powerRimoAnalysis = new PowerRimoAnalysis(POWERPERIOD);

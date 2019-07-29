@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
 public class BlobTrackObj {
   private static int WIDTH;
   private static int HEIGHT;
-  private static int DEFAULT_BLOB_ID;
+  private static int BLOB_ID_DEFAULT;
 
   /** set static parameters of class
    * 
@@ -15,7 +15,7 @@ public class BlobTrackObj {
   public static void setParams(BlobTrackConfig blobTrackConfig) {
     WIDTH = blobTrackConfig.davisConfig.width.number().intValue();
     HEIGHT = blobTrackConfig.davisConfig.height.number().intValue();
-    DEFAULT_BLOB_ID = blobTrackConfig.defaultBlobID.number().intValue();
+    BLOB_ID_DEFAULT = blobTrackConfig.defaultBlobID.number().intValue();
   }
 
   private final double[][] covariance;
@@ -36,7 +36,7 @@ public class BlobTrackObj {
     layerID = false;
     currentScore = 0;
     activity = 0;
-    blobID = DEFAULT_BLOB_ID;
+    blobID = BLOB_ID_DEFAULT;
   }
 
   /** updates the activity of a blob

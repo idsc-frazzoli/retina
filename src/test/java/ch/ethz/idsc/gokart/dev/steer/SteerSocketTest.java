@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class SteerSocketTest extends TestCase {
   public void testRate() {
-    assertEquals(SteerSocket.INSTANCE.getPutPeriod_ms(), 20);
+    assertTrue(SteerSocket.INSTANCE.getPutPeriod_ms() <= 20);
   }
 
   public void testSimple() {

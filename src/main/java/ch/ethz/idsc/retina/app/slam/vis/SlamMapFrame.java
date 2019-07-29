@@ -23,9 +23,8 @@ import ch.ethz.idsc.tensor.io.Primitives;
   private final int mapWidth;
   private final int mapHeight;
   // ---
-  // TODO MG talk to jan
-  private static double cornerX;
-  private static double cornerY;
+  private double cornerX;
+  private double cornerY;
 
   SlamMapFrame() {
     mapWidth = SlamDvsConfig.eventCamera.slamCoreConfig.mapWidth();
@@ -41,7 +40,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
     bytes = dataBufferByte.getData();
   }
 
-  public static void setCorners(double cornerXNew, double cornerYNew) {
+  public void setCorners(double cornerXNew, double cornerYNew) {
     cornerX = cornerXNew;
     cornerY = cornerYNew;
   }

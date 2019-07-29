@@ -1,11 +1,13 @@
 // code by jph
 package ch.ethz.idsc.gokart.calib.steer;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-public abstract class AbstractSteerMapping implements SteerMapping {
+public abstract class AbstractSteerMapping implements SteerMapping, Serializable {
   private final ScalarUnaryOperator column2steer;
   private final ScalarUnaryOperator steer2column;
 

@@ -20,6 +20,11 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
 /** to ensure that the maximum motor torque is actually applied */
 public class PowerLookupTable {
+  /** .
+   * ante 2019-07-15 MotorFunctionV1.INSTANCE was in use
+   * post 2019-07-15 MotorFunctionV2.INSTANCE is in use */
+  private static final MotorFunction MOTOR_FUNCTION = MotorFunctionV2.INSTANCE;
+  // ---
   private static final File DIRECTORY = new File("resources/lookup");
   private static final File FILE_FORWARD = new File(DIRECTORY, "powerlookuptable_forward.object");
   private static final File FILE_INVERSE = new File(DIRECTORY, "powerlookuptable_inverse.object");
@@ -53,7 +58,7 @@ public class PowerLookupTable {
     System.out.println("compute power lookup table forward...");
     // maps from (current, speed) -> (acceleration)
     LookupTable2D lookupTable2D = LookupTable2D.build( //
-        MotorFunctionV1.INSTANCE::getAccelerationEstimation, //
+        MOTOR_FUNCTION::getAccelerationEstimation, //
         RES, RES, //
         ManualConfig.GLOBAL.torqueLimitClip(), //
         CLIP_VEL);
@@ -75,7 +80,7 @@ public class PowerLookupTable {
     System.out.println("compute power lookup table inverse...");
     // maps from (acceleration, speed)->(acceleration)
     LookupTable2D lookupTable2D = forward.getInverseLookupTableBinarySearch( //
-        MotorFunctionV1.INSTANCE::getAccelerationEstimation, //
+        MOTOR_FUNCTION::getAccelerationEstimation, //
         0, //
         RES, RES, //
         CLIP_ACC, Chop._03);
@@ -116,9 +121,9 @@ public class PowerLookupTable {
   /** get the need current for a wanted acceleration
    * If the acceleration is not achievable
    * the motor current corresponding to the nearest possible acceleration value is returned
-   * @param wantedAcceleration the wanted acceleration [m/s^2]
-   * @param velocity the velocity [m/s]
-   * @return the needed motor current [ARMS] */
+   * @param wantedAcceleration [m*s^-2]
+   * @param velocity longitudinal [m*s^-1]
+   * @return needed motor current [ARMS] */
   public Scalar getNeededCurrent(Scalar wantedAcceleration, Scalar velocity) {
     return lookupTable_inverse.lookup(wantedAcceleration, velocity);
   }

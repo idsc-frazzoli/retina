@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.davis.DavisLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.retina.davis.DavisDevice;

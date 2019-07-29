@@ -18,7 +18,6 @@ import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
-import ch.ethz.idsc.gokart.gui.ControllerInfoPublish;
 import ch.ethz.idsc.retina.util.data.Word;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -155,7 +154,7 @@ import ch.ethz.idsc.tensor.Scalar;
       // System.out.println("here " + desPos);
       Scalar errPos = desPos.subtract(currAngle);
       Scalar torqueCmd = steerPositionControl.iterate(errPos);
-      ControllerInfoPublish.publish(desPos, currAngle); // TODO not permanent, only for tuning
+      // ControllerInfoPublish.publish(desPos, currAngle);
       if (jToggleController.isSelected())
         return Optional.of(SteerPutEvent.create(spinnerLabelLw.getValue(), torqueCmd));
       if (jToggleTorque.isSelected()) {

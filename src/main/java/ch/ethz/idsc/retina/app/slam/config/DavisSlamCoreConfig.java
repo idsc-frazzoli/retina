@@ -35,7 +35,8 @@ public class DavisSlamCoreConfig extends SlamCoreConfig {
     lookAheadDistance = Quantity.of(5, SI.METER);
     /** for reactive mapping modes */
     lookBehindDistance = Quantity.of(-3, SI.METER);
-    // values below are not required for davis TODO MG are set to zero to avoid errors
+    // values below are not required for davis
+    // values are set to zero to avoid errors
     cropLowerPart = Quantity.of(0, SI.METER);
     cropSides = Quantity.of(0, SI.METER);
     // update rates

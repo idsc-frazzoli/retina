@@ -229,7 +229,6 @@ public class BlobTracking {
     }
   }
 
-  // TODO MG helper function to create ImageBlob from BlobTrackObj
   public List<ImageBlob> getActiveBlobs() {
     List<ImageBlob> list = new ArrayList<>();
     for (int i = 0; i < blobs.size(); ++i)

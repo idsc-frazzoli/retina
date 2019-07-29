@@ -4,7 +4,6 @@ package ch.ethz.idsc.retina.app.slam.online;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import ch.ethz.idsc.gokart.core.pure.SlamCurvePurePursuitModule;
 import ch.ethz.idsc.retina.app.slam.SlamAlgoConfig;
 import ch.ethz.idsc.retina.app.slam.config.EventCamera;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
