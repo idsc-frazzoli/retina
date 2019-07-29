@@ -34,7 +34,6 @@ import ch.ethz.idsc.tensor.sca.Clips;
 /**  */
 public class LaneKeepingCenterlineModule extends AbstractClockedModule implements //
     GokartPoseListener, TensorListener {
-  private  final Scalar PERIOD = HapticSteerConfig.GLOBAL.LKperiod;
   // ---
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -53,8 +52,6 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   public LaneKeepingCenterlineModule() {
     this(ClothoidPursuitConfig.GLOBAL);
   }
-  
-
 
   public LaneKeepingCenterlineModule(ClothoidPursuitConfig _clothoidPursuitConfig) {
     ClothoidPursuitConfig clothoidPursuitConfig = _clothoidPursuitConfig;
@@ -105,7 +102,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
 
   @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
-    return PERIOD;
+    return HapticSteerConfig.GLOBAL.LKperiod;
   }
 
   @Override // from GokartPoseListener
@@ -133,7 +130,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     System.out.println("got curve");
     return optionalCurve;
   }
-  
+
   protected static void exportTensor(Tensor tensor) {
     File file = HomeDirectory.file("Desktop", "setCurveRefined_" + SystemTimestamp.asString(new Date()) + ".csv");
     try {
@@ -154,9 +151,9 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
       if (HapticSteerConfig.GLOBAL.printLaneInfo)
         System.out.println("ifloop entered :)");
       Optional<ClothoidPlan> optionalL = //
-          curvePlannerL.getPlan(pose, velocity.Get(0), laneBoundaryL, true);
+          curvePlannerL.getPlan(pose, velocity, laneBoundaryL, true);
       Optional<ClothoidPlan> optionalR = //
-          curvePlannerR.getPlan(pose, velocity.Get(0), laneBoundaryR, true);
+          curvePlannerR.getPlan(pose, velocity, laneBoundaryR, true);
       if (HapticSteerConfig.GLOBAL.printLaneInfo)
         System.out.println(optionalL);
       Clip ratioLimitClip = steerConfig.getRatioLimit(); // TODO JPH/AM clip obsolete
@@ -190,6 +187,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   @Override // from TensorListener
   public void tensorReceived(Tensor tensor) {
     setCurve(tensor.length() <= 1 //
-        ? Optional.empty() : Optional.of(tensor));
+        ? Optional.empty()
+        : Optional.of(tensor));
   }
 }

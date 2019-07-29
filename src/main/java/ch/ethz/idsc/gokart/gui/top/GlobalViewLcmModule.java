@@ -63,13 +63,13 @@ public class GlobalViewLcmModule extends AbstractModule {
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final PathRender pathRender = new PathRender(Color.YELLOW);
-  private final PathRender planRender = new PathRender(Color.MAGENTA);
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
   public final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
+  private final PathRender pathRender = new PathRender(Color.YELLOW);
+  private final PathRender planRender = new PathRender(Color.MAGENTA);
 
   /** @param curve may be null */
   public void setPlan(Tensor curve) {

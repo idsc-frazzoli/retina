@@ -39,16 +39,16 @@ public abstract class BSplineTrack implements TrackInterface {
   protected final float[] posY;
 
   /** @param points_xyr matrix with dimension n x 3
-   * * @param closed */
-  public BSplineTrack(Tensor points_xyr, boolean closed) {
+   * * @param cyclic */
+  public BSplineTrack(Tensor points_xyr, boolean cyclic) {
     this.points_xyr = points_xyr;
     numPoints = points_xyr.length();
-    bSpline2VectorD0 = BSpline2Vector.of(numPoints, 0, closed);
-    bSpline2VectorD1 = BSpline2Vector.of(numPoints, 1, closed);
-    bSpline2VectorD2 = BSpline2Vector.of(numPoints, 2, closed);
+    bSpline2VectorD0 = BSpline2Vector.of(numPoints, 0, cyclic);
+    bSpline2VectorD1 = BSpline2Vector.of(numPoints, 1, cyclic);
+    bSpline2VectorD2 = BSpline2Vector.of(numPoints, 2, cyclic);
     points_xy = Tensor.of(points_xyr.stream().map(Extract2D.FUNCTION));
     points_r = points_xyr.get(Tensor.ALL, 2);
-    effPoints = numPoints + (closed ? 0 : -2);
+    effPoints = numPoints + (cyclic ? 0 : -2);
     // prepare lookup
     posX = new float[(int) (effPoints / LOOKUP_RES)];
     posY = new float[(int) (effPoints / LOOKUP_RES)];

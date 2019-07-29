@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import javax.swing.JButton;
+import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -31,6 +32,7 @@ public class TrackRefinementDemo extends BSplineTrackDemo {
   }).unmodifiable();
   // ---
   private final JButton jButtonRefine = new JButton("refine");
+  private final JToggleButton jToggleRefine = new JToggleButton("auto");
   private final ImageRegion imageRegion;
   private final RenderInterface background;
   boolean flagRefine = false;
@@ -38,6 +40,7 @@ public class TrackRefinementDemo extends BSplineTrackDemo {
   public TrackRefinementDemo() throws IOException {
     jButtonRefine.addActionListener(a -> flagRefine = true);
     timerFrame.jToolBar.add(jButtonRefine);
+    timerFrame.jToolBar.add(jToggleRefine);
     Tensor obstacleImage = Import.of(HomeDirectory.file("TrackRefinement0.png"));
     imageRegion = new ImageRegion(obstacleImage, Tensors.vector(40, 40), true);
     background = RegionRenders.create(imageRegion);
@@ -48,7 +51,7 @@ public class TrackRefinementDemo extends BSplineTrackDemo {
     background.render(geometricLayer, graphics);
     AxesRender.INSTANCE.render(geometricLayer, graphics);
     super.render(geometricLayer, graphics);
-    if (flagRefine) {
+    if (flagRefine || jToggleRefine.isSelected()) {
       flagRefine = false;
       Tensor controlPoints = getGeodesicControlPoints();
       Tensor points_xyr = Tensor.of(controlPoints.stream().map(row -> row.append(RealScalar.of(1))));

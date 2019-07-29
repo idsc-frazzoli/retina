@@ -28,48 +28,48 @@ import ch.ethz.idsc.tensor.sca.Sign;
 /* package */ enum FollowingSimulations implements ErrorInterface {
   PURE {
     @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      return CurvePurePursuitHelper.getRatio(pose, curve, Sign.isPositiveOrZero(speed), PurePursuitConfig.GLOBAL.lookAhead);
+    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
+      return CurvePurePursuitHelper.getRatio(pose, curve, Sign.isPositiveOrZero(speed.Get(0)), PurePursuitConfig.GLOBAL.lookAhead);
     }
   },
   CLOTHOID_05 {
     private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
 
     @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(.5, SI.METER);
       return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed)).map(ClothoidPlan::ratio);
+          Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_3 {
     private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
 
     @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(3, SI.METER);
       return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed)).map(ClothoidPlan::ratio);
+          Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_5 {
     private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
 
     @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(5, SI.METER);
       return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed)).map(ClothoidPlan::ratio);
+          Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_7 {
     private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
 
     @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
+    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
       ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(7, SI.METER);
       return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed)).map(ClothoidPlan::ratio);
+          Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
   };
   private Tensor trail;
@@ -79,10 +79,10 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
   /** @param curve reference
    * @param initialPose of vehicle {x[m], y[m], angle}
-   * @param speed of vehicle [m*s^-1]
+   * @param speed of vehicle {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]}
    * @param duration of simulation [s]
    * @param timeStep of simulation [s] */
-  public void run(Tensor curve, Tensor initialPose, Scalar speed, Scalar duration, Scalar timeStep) {
+  public void run(Tensor curve, Tensor initialPose, Tensor speed, Scalar duration, Scalar timeStep) {
     trail = Tensors.empty();
     ratios = Tensors.empty();
     followingError = new FollowingError();
@@ -98,7 +98,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
       if (optional.isPresent())
         ratio = Clips.absolute(SteerConfig.GLOBAL.turningRatioMax).apply(optional.get());
       ratios.append(ratio);
-      pose = Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, ratio), pose, timeStep);
+      pose = Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed.Get(0), ratio), pose, timeStep);
     }
     timing.stop();
   }
@@ -143,8 +143,8 @@ import ch.ethz.idsc.tensor.sca.Sign;
   }
 
   /** @param pose of vehicle {x[m], y[m], angle}
-   * @param speed of vehicle [m*s^-1]
+   * @param speed of vehicle {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]}
    * @param curve reference
    * @return ratio [m^-1] */
-  public abstract Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve);
+  public abstract Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve);
 }
