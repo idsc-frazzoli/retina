@@ -12,10 +12,10 @@ import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatio;
 import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatios;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Last;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
+import ch.ethz.idsc.tensor.sca.Sign;
 
 public class CurveClothoidPursuitPlanner {
   private final ClothoidPursuitConfig clothoidPursuitConfig;
@@ -49,25 +49,28 @@ public class CurveClothoidPursuitPlanner {
     if (!isForward)
       ClothoidPursuitHelper.mirrorAndReverse(tensor);
     Predicate<Scalar> isCompliant = clothoidPursuitConfig.ratioLimits()::isInside;
-    Scalar lookAhead = clothoidPursuitConfig.lookAhead;
-    do {
-      AssistedCurveIntersection assistedCurveIntersection = clothoidPursuitConfig.getAssistedCurveIntersection(lookAhead);
-      Optional<CurvePoint> curvePoint = closed //
-          ? assistedCurveIntersection.cyclic(tensor, prevIndex) //
-          : assistedCurveIntersection.string(tensor, prevIndex);
-      if (curvePoint.isPresent()) {
-        Tensor xya = curvePoint.get().getTensor();
-        ClothoidTerminalRatio clothoidTerminalRatio = ClothoidTerminalRatios.of(xya.map(Scalar::zero), xya);
-        if (isCompliant.test(clothoidTerminalRatio.head()) && isCompliant.test(clothoidTerminalRatio.tail())) {
-          Optional<ClothoidPlan> optional = ClothoidPlan.from(xya, pose, isForward);
-          if (optional.isPresent()) {
-            prevIndex = curvePoint.get().getIndex();
-            return optional;
-          }
+    AssistedCurveIntersection assistedCurveIntersection = clothoidPursuitConfig.getAssistedCurveIntersection();
+    Optional<CurvePoint> curvePoint = closed //
+        ? assistedCurveIntersection.cyclic(tensor, prevIndex) //
+        : assistedCurveIntersection.string(tensor, prevIndex);
+    if (curvePoint.isPresent()) {
+      Tensor xya = curvePoint.get().getTensor();
+      ClothoidTerminalRatio clothoidTerminalRatio = ClothoidTerminalRatios.of(xya.map(Scalar::zero), xya);
+      if (isCompliant.test(clothoidTerminalRatio.head()) && isCompliant.test(clothoidTerminalRatio.tail())) {
+        Optional<ClothoidPlan> optional = ClothoidPlan.from(xya, pose, isForward);
+        if (optional.isPresent()) {
+          prevIndex = curvePoint.get().getIndex();
+          return optional;
         }
+      } else if (clothoidPursuitConfig.extendedRatioLimits().isInside(clothoidTerminalRatio.head()) //
+          && clothoidPursuitConfig.extendedRatioLimits().isInside(clothoidTerminalRatio.tail())) {
+        return FallbackClothoidPlan.from(pose, //
+            Sign.isPositiveOrZero(clothoidTerminalRatio.head()) //
+                ? clothoidPursuitConfig.turningRatioMax //
+                : clothoidPursuitConfig.turningRatioMax.negate(), //
+            isForward);
       }
-      lookAhead = lookAhead.add(clothoidPursuitConfig.lookAheadResolution);
-    } while (Scalars.lessEquals(lookAhead, clothoidPursuitConfig.fallbackLookAhead));
+    }
     return Optional.empty();
   }
 }

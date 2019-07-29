@@ -39,7 +39,7 @@ public class ClothoidPlan implements Serializable {
 
   /** @param ratio [m^-1] used to derive future heading in good precision
    * @param curve sparse planned to be followed */
-  private ClothoidPlan(Scalar ratio, Tensor curve) {
+  /* package */ ClothoidPlan(Scalar ratio, Tensor curve) {
     this.ratio = ratio;
     this.curve = curve;
   }

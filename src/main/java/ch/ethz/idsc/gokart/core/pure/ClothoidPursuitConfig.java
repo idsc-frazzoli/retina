@@ -7,6 +7,7 @@ import ch.ethz.idsc.owl.math.pursuit.PseudoSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.pursuit.SphereSe2CurveIntersection;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
@@ -17,10 +18,8 @@ public class ClothoidPursuitConfig extends PursuitConfig {
   public static final ClothoidPursuitConfig GLOBAL = AppResources.load(new ClothoidPursuitConfig());
   // ---
   public Boolean se2distance = false;
-  @FieldSubdivide(start = "0[m]", end = "10[m]", intervals = 20)
-  public Scalar fallbackLookAhead = Quantity.of(7, SI.METER);
-  @FieldSubdivide(start = "0[m]", end = "1[m]", intervals = 20)
-  public Scalar lookAheadResolution = Quantity.of(.5, SI.METER);
+  @FieldSubdivide(start = "0", end = "1", intervals = 20)
+  public Scalar ratioMargin = RealScalar.of(.1);
   /** leave some margin to steering controller
    * {@link SteerConfig#turningRatioMax} */
   public Scalar turningRatioMax = Quantity.of(0.45, SI.PER_METER);
@@ -41,5 +40,9 @@ public class ClothoidPursuitConfig extends PursuitConfig {
 
   public Clip ratioLimits() {
     return Clips.absolute(turningRatioMax);
+  }
+
+  public Clip extendedRatioLimits() {
+    return Clips.absolute(turningRatioMax.multiply(RealScalar.ONE.add(ratioMargin)));
   }
 }
