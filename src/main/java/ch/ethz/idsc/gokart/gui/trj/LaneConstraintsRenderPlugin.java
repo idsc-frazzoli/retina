@@ -43,12 +43,12 @@ import ch.ethz.idsc.tensor.sca.Round;
   // ---
   private static class LaneConstraintsRender implements RenderInterface {
     private static final Font FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
-    private static final PathRender PATH_RENDER_L = new PathRender(new Color(255, 0, 128), 2f);
-    private static final PathRender PATH_RENDER_R = new PathRender(new Color(0, 255, 128), 2f);
     // ---
     private final Tensor pose;
     private final Optional<ClothoidPlan> clothoidPlanL;
     private final Optional<ClothoidPlan> clothoidPlanR;
+    private final PathRender pathRenderL = new PathRender(new Color(255, 0, 128), 2f);
+    private final PathRender pathRenderR = new PathRender(new Color(0, 255, 128), 2f);
 
     private LaneConstraintsRender(Tensor pose, Optional<ClothoidPlan> clothoidPlanL, Optional<ClothoidPlan> clothoidPlanR) {
       this.pose = pose;
@@ -69,14 +69,14 @@ import ch.ethz.idsc.tensor.sca.Round;
         ClothoidPlan clothoidPlan = clothoidPlanL.get();
         graphics.setColor(Color.BLACK);
         graphics.drawString("L MAX=" + clothoidPlan.ratio().map(Round._4), 0, 30);
-        PATH_RENDER_L.setCurve(clothoidPlan.curve(), false).render(geometricLayer, graphics);
+        pathRenderL.setCurve(clothoidPlan.curve(), false).render(geometricLayer, graphics);
       } else
         System.out.println("no plan left");
       if (clothoidPlanR.isPresent()) {
         ClothoidPlan clothoidPlan = clothoidPlanR.get();
         graphics.setColor(Color.BLACK);
         graphics.drawString("R MAX=" + clothoidPlan.ratio().map(Round._4), 0, 50);
-        PATH_RENDER_R.setCurve(clothoidPlan.curve(), false).render(geometricLayer, graphics);
+        pathRenderR.setCurve(clothoidPlan.curve(), false).render(geometricLayer, graphics);
       } else
         System.out.println("no plan right");
     }

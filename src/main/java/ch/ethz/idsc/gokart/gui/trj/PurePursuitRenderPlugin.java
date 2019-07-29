@@ -52,18 +52,19 @@ import ch.ethz.idsc.tensor.sca.Round;
     private static final Font FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
     private static final Tensor CIRCLE_POINTS = CirclePoints.of(20).unmodifiable();
     private static final StateTime CENTER = new StateTime(Array.zeros(3), RealScalar.ZERO);
-    private static final PathRender PATH_RENDER = new PathRender(new Color(255, 128, 0), 2f);
     private static final StateIntegrator STATE_INTEGRATOR = FixedStateIntegrator.create( //
         Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
     // ---
     private final Tensor pose;
     private final Scalar ratio;
     private final Flow flow_forward;
+    private final PathRender pathRender = new PathRender(new Color(255, 128, 0), 2f);
 
     private PurePursuitRender(Tensor pose, Scalar ratio) {
       this.pose = pose;
       this.ratio = ratio;
       flow_forward = singleton(RealScalar.ONE, Magnitude.PER_METER.apply(ratio));
+      pathRender.setCurve(Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_forward).stream().map(StateTime::state)), false);
     }
 
     @Override
@@ -75,8 +76,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.setColor(new Color(128, 128, 128, 128));
         graphics.draw(geometricLayer.toPath2D(CIRCLE_POINTS.multiply(PurePursuitConfig.GLOBAL.lookAhead), true));
       }
-      PATH_RENDER.setCurve(Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_forward).stream().map(StateTime::state)), false) //
-          .render(geometricLayer, graphics);
+      pathRender.render(geometricLayer, graphics);
       geometricLayer.popMatrix();
       // ---
       graphics.setFont(FONT);

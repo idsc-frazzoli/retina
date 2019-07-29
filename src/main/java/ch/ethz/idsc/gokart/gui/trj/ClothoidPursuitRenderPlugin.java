@@ -39,12 +39,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   // ---
   private static class ClothoidPursuitRender implements RenderInterface {
     private static final Tensor CIRCLE_POINTS = CirclePoints.of(20).unmodifiable();
-    private static final PathRender PATH_RENDER = new PathRender(new Color(255, 128, 0), 2f);
     // ---
     private final ClothoidPlan clothoidPlan;
+    private final PathRender pathRender = new PathRender(new Color(255, 128, 0), 2f);
 
     private ClothoidPursuitRender(ClothoidPlan clothoidPlan) {
       this.clothoidPlan = clothoidPlan;
+      pathRender.setCurve(clothoidPlan.curve(), false);
     }
 
     @Override
@@ -60,7 +61,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       }
       geometricLayer.popMatrix();
       // ---
-      PATH_RENDER.setCurve(clothoidPlan.curve(), false).render(geometricLayer, graphics);
+      pathRender.render(geometricLayer, graphics);
     }
   }
 }

@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 
 import ch.ethz.idsc.gokart.core.plan.TrajectoryConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
-import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.spline.BSpline2Vector;
@@ -21,39 +20,30 @@ import ch.ethz.idsc.tensor.Tensors;
   // ---
   @Override // from RenderPlugin
   public RenderInterface renderInterface(RenderPluginParameters renderPluginParameters) {
-    if (1 < renderPluginParameters.laneBoundaryL.length() && //
-        1 < renderPluginParameters.laneBoundaryR.length()) {
-      Tensor bases = Tensor.of(TrajectoryConfig.GLOBAL.resampledWaypoints(renderPluginParameters.curve, true).stream() //
-          .map(PoseHelper::toUnitless) //
-          .map(Extract2D.FUNCTION));
-      return new MpcTrackRender(bases);
-    }
-    return EmptyRender.INSTANCE;
+    Tensor points_xy = Tensor.of(TrajectoryConfig.GLOBAL.resampledWaypoints(renderPluginParameters.curve, true).stream() //
+        .map(PoseHelper::toUnitless) //
+        .map(Extract2D.FUNCTION));
+    return new MpcTrackRender(points_xy);
   }
 
   // ---
   private static class MpcTrackRender implements RenderInterface {
-    private static final PathRender PATH_RENDER = new PathRender(new Color(128, 128, 128), 1.5f);
-    // ---
-    // private final Tensor bases;
-    private final RenderInterface renderInterface;
+    private final PathRender pathRender = new PathRender(new Color(128, 128, 128), 1.5f);
 
-    private MpcTrackRender(Tensor bases) {
-      // this.bases = bases;
+    private MpcTrackRender(Tensor points_xy) {
       // TODO code redundant to TrackRefinement
       boolean cyclic = true;
       int resolution = 8;
-      final int n = bases.length();
+      final int n = points_xy.length();
       Tensor domain = Tensors.vector(i -> RealScalar.of(i / (double) resolution), (cyclic ? n : n - 2) * resolution);
       Tensor matrixD0 = domain.map(BSpline2Vector.of(n, 0, cyclic));
       // Tensor matrixD1 = domain.map(BSpline2Vector.of(n, 1, cyclic));
-      renderInterface = PATH_RENDER.setCurve(matrixD0.dot(bases), true);
-      // TrackRefinement
+      pathRender.setCurve(matrixD0.dot(points_xy), true);
     }
 
     @Override
     public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-      renderInterface.render(geometricLayer, graphics);
+      pathRender.render(geometricLayer, graphics);
     }
   }
 }
