@@ -51,7 +51,7 @@ public class CurveClothoidPursuitPlanner {
     Predicate<Scalar> isCompliant = clothoidPursuitConfig.ratioLimits()::isInside;
     Scalar lookAhead = clothoidPursuitConfig.lookAhead;
     do {
-      AssistedCurveIntersection assistedCurveIntersection = clothoidPursuitConfig.getAssistedCurveIntersection();
+      AssistedCurveIntersection assistedCurveIntersection = clothoidPursuitConfig.getAssistedCurveIntersection(lookAhead);
       Optional<CurvePoint> curvePoint = closed //
           ? assistedCurveIntersection.cyclic(tensor, prevIndex) //
           : assistedCurveIntersection.string(tensor, prevIndex);
