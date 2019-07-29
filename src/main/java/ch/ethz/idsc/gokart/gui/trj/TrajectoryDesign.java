@@ -52,6 +52,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   // ---
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
+  private final JToggleButton jToggleButtonWaypoints = new JToggleButton("wayp.");
   public final JToggleButton jToggleButtonRepos = new JToggleButton("repos.");
   private final SpinnerLabel<RenderPlugins> spinnerLabelPlugins = new SpinnerLabel<>();
   private RenderInterface renderInterface = EmptyRender.INSTANCE;
@@ -67,6 +68,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   public TrajectoryDesign() {
     super(Arrays.asList(ClothoidDisplay.INSTANCE));
     jToggleCurvature.setSelected(false);
+    timerFrame.jToolBar.add(jToggleButtonWaypoints);
     {
       jToggleButtonRepos.setToolTipText("position control points with the mouse");
       jToggleButtonRepos.setSelected(isPositioningEnabled());
@@ -169,7 +171,8 @@ public class TrajectoryDesign extends CurvatureDemo {
     PATH_SIDE_L.setCurve(renderPluginParameters.laneBoundaryL, true).render(geometricLayer, graphics);
     PATH_SIDE_R.setCurve(renderPluginParameters.laneBoundaryR, true).render(geometricLayer, graphics);
     // ---
-    WaypointsRenderPlugin.INSTANCE.renderInterface(renderPluginParameters).render(geometricLayer, graphics);
+    if (jToggleButtonWaypoints.isSelected())
+      WaypointsRenderPlugin.INSTANCE.renderInterface(renderPluginParameters).render(geometricLayer, graphics);
     // ---
     renderInterface.render(geometricLayer, graphics);
     return refined;

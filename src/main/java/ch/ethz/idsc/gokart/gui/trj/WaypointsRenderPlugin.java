@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.Tensor;
 /* package */ enum WaypointsRenderPlugin implements RenderPlugin {
   INSTANCE;
   // ---
-  @Override
+  @Override // from RenderPlugin
   public RenderInterface renderInterface(RenderPluginParameters renderPluginParameters) {
     Tensor curve = renderPluginParameters.curve;
     if (1 < curve.length()) {
