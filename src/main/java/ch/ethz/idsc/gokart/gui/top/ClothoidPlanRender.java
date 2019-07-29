@@ -18,6 +18,7 @@ public class ClothoidPlanRender extends PathRender implements ClothoidPlanListen
 
   @Override // from ClothoidPlanListener
   public void planReceived(ClothoidPlan clothoidPlan) {
+    // TODO GJOEL curve is already refined
     setCurve(Nest.of(ClothoidTerminalRatios.CURVE_SUBDIVISION::string, clothoidPlan.curve(), REFINEMENT), false);
   }
 }

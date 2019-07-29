@@ -9,6 +9,6 @@ import ch.ethz.idsc.retina.util.sys.StartAndStoppableModule;
 /** GPS 18X-LVC is a OEM-GPS sensor manufactured by Garmin */
 public class Vlp16PosLcmServerModule extends StartAndStoppableModule {
   public Vlp16PosLcmServerModule() {
-    super(VelodyneLcmServers.pos(VelodyneModel.VLP16, "center", VelodyneStatics.POS_DEFAULT_PORT));
+    super(VelodyneLcmServers.pos(VelodyneModel.VLP16, "center", VelodyneStatics.POS_PORT_DEFAULT));
   }
 }

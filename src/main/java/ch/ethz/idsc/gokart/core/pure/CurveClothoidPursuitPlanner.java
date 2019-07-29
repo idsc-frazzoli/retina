@@ -21,6 +21,7 @@ public class CurveClothoidPursuitPlanner {
   private final ClothoidPursuitConfig clothoidPursuitConfig;
   // ---
   /** previous plan */
+  // TODO GJOEL/JPH plan_prev is not used. probably should exists outside of class if at all
   private Optional<ClothoidPlan> plan_prev = Optional.empty();
   private int prevIndex = 0;
 
@@ -43,6 +44,7 @@ public class CurveClothoidPursuitPlanner {
     Optional<ClothoidPlan> optional = replanning(pose, speed, curve, closed, isForward);
     if (optional.isPresent()) {
       plan_prev = optional;
+      // TODO GJOEL/JPH publishing of plan should happen outside of class
       PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, Last.of(optional.get().curve()), isForward);
     }
     return optional;

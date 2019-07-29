@@ -14,12 +14,13 @@ import ch.ethz.idsc.tensor.Tensor;
 /* package */ enum WaypointsRenderPlugin implements RenderPlugin {
   INSTANCE;
   // ---
-  @Override
+  @Override // from RenderPlugin
   public RenderInterface renderInterface(RenderPluginParameters renderPluginParameters) {
     Tensor curve = renderPluginParameters.curve;
     if (1 < curve.length()) {
-      Tensor waypoints = Tensor.of(TrajectoryConfig.GLOBAL.resampledWaypoints(curve).stream().map(PoseHelper::toUnitless));
-      return new WaypointRender(Arrowhead.of(.5), new Color(0, 0, 255, 64)).setWaypoints(waypoints);
+      Tensor waypoints = Tensor.of(TrajectoryConfig.GLOBAL.resampledWaypoints(curve, true).stream() //
+          .map(PoseHelper::toUnitless));
+      return new WaypointRender(Arrowhead.of(0.5), new Color(0, 0, 255, 64)).setWaypoints(waypoints);
     }
     return EmptyRender.INSTANCE;
   }
