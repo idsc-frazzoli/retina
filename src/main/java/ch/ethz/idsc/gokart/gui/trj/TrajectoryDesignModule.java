@@ -102,7 +102,7 @@ public class TrajectoryDesignModule extends AbstractModule {
       jButton.addActionListener(actionEvent -> {
         try {
           Export.of(rawFile, Tensor.of(trajectoryDesign.getControlPointsPose().stream().map(PoseHelper::toUnitless)).map(Round._4));
-          Export.of(wayFile, Tensor.of(TrajectoryConfig.GLOBAL.resampledWaypoints(trajectoryDesign.getControlPointsPose()) //
+          Export.of(wayFile, Tensor.of(TrajectoryConfig.GLOBAL.resampledWaypoints(trajectoryDesign.getControlPointsPose(), true) //
               .stream().map(PoseHelper::toUnitless)).map(Round._4));
         } catch (Exception exception) {
           exception.printStackTrace();
