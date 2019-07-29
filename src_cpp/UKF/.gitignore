@@ -1,0 +1,6 @@
+CMamkeFiles/
+*.cbp
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+

@@ -5,6 +5,10 @@
 
 #pragma once
 
+#define NP 3
+#define NM 1
+#define NI 1000
+
 #include <iostream>
 #include <Eigen/Dense>
 #include "functional"
@@ -43,7 +47,7 @@ public:
     ParameterMat variance;
 private:
     // debugUKF param
-    bool debugUKF = true;
+    bool debugUKF = false;
 
     // update
     void update(ParameterVec& mean,

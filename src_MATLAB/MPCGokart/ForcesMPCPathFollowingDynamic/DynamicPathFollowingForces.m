@@ -50,8 +50,8 @@ index.beta = 13;
 index.s = 14;
 index.ns = 9;
 index.nu = 5;
-index.nv = index.ns+index.nu;
-index.sb = index.nu+1;
+index.nv = index.ns+index.nu;   % = 14
+index.sb = index.nu+1;          % = 6
 index.ps = 1;
 index.pax = 2;
 index.pbeta = 3;
@@ -62,9 +62,9 @@ solvetimes = [];
 integrator_stepsize = 0.1;
 
 %% model params
-model.N = 31;
-model.nvar = index.nv;
-model.neq = index.ns;
+model.N = 31;                       % Forward horizon
+model.nvar = index.nv;              % = 14
+model.neq = index.ns;               % = 9
 model.eq = @(z,p) RK4( ...
     z(index.sb:end), ...
     z(1:index.nu), ...
@@ -101,7 +101,9 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
   %  controlPointsY.append(Quantity.of(47, SI.METER));
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));  
-points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]'; %[x,y,phi]
+points = [36.2,52,57.2,53,52,47,41.8;...          %x
+          44.933,58.2,53.8,49,44,43,38.33; ...    %y
+          1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
 %points = getPoints('/wildpoints.csv');
 points(:,3)=points(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
@@ -151,7 +153,7 @@ model.lb(index.s)=0;
 
 
 %% CodeOptions for FORCES solver
-codeoptions = getOptions('MPCPathFollowing'); %TODO MH, THIS IS NOT RUNNING?
+codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed

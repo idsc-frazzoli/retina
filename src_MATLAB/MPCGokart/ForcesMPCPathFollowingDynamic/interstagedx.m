@@ -1,11 +1,10 @@
 function dx = interstagedx(x,u,p)
     addpath('../TireAnalysis');
+    %#codegen
     global index
     
     %just for the moment
-    Cf = p(index.pmoi); % moment of inertia
-    
-    
+    Cf = p(index.pmoi); % moment of inertia    
 
     %B1 = 15;
     %C1 = 1.1;
@@ -43,7 +42,7 @@ function dx = interstagedx(x,u,p)
     %braking=max(0,-ab+casadiGetMaxNegAcc(speed));
     %brakingheatup = heatupfunction(-ab-1.5);
     %brakingcooldown = cooldownfunction(temp);
-    l = 1.19;
+    %l = 1.19; %todo unused
     ackermannAngle = -0.63.*beta.*beta.*beta+0.94*beta; %ackermann Mapping 
    
     %(VELX,VELY,VELROTZ,BETA,AB,TV, param)
