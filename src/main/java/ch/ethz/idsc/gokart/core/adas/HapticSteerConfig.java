@@ -51,15 +51,15 @@ public class HapticSteerConfig implements Serializable {
   @FieldSubdivide(start = "5.75[m*s^-1]", end = "8.5[m*s^-1]", intervals = 11)
   public Scalar setVel = Quantity.of(6.5, SI.VELOCITY);
   /** LanekeepingFactor */
-  public Scalar laneKeepingFactor = Quantity.of(-5.0, "SCT*SCE^-1");
+  public Scalar laneKeepingFactor = Quantity.of(-10.0, "SCT*SCE^-1");
   /** torque limit */
-  public Scalar laneKeepingTorqueLimit = Quantity.of(0.5, "SCT");
-  public Boolean printLaneInfo = true;
+  public Scalar laneKeepingTorqueLimit = Quantity.of(0.9, "SCT");
+  public Boolean printLaneInfo = false;
   /** lane boundaries */
-  public Scalar offsetL = Quantity.of(1, SI.METER);
-  public Scalar offsetR = Quantity.of(-1, SI.METER);
+  public Scalar offsetL = Quantity.of(0.5, SI.METER);
+  public Scalar offsetR = Quantity.of(-0.5, SI.METER);
   /** planning period  */
-  public Scalar LKperiod = Quantity.of(0.1, SI.SECOND);
+  public Scalar LKperiod = Quantity.of(0.2, SI.SECOND);
 
 
 
