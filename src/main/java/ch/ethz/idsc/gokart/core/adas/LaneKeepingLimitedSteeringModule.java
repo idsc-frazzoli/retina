@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.adas;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
@@ -64,9 +65,12 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
   Optional<SteerPutEvent> putEvent(SteerColumnInterface steerColumnInterface, SteerGetEvent steerGetEvent, Optional<Clip> optional) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar tsu = steerGetEvent.tsuTrq();
-    binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of(//
-        closestDistance(optionalCurve.get(), gokartPoseEvent.getPose()), //
-        HapticSteerConfig.GLOBAL.offsetL))));
+    if (optionalCurve.isPresent() && LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent)) {
+      binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of(//
+          closestDistance(optionalCurve.get(), gokartPoseEvent.getPose()), //
+          HapticSteerConfig.GLOBAL.offsetL))));
+      System.out.println("binaryBlob entered");
+    }
     if (HapticSteerConfig.GLOBAL.printLaneInfo)
       System.out.println("currAngle: " + currAngle);
     if (optional.isPresent()) {
@@ -79,8 +83,8 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
     }
     return Optional.empty();
   }
-  
-  public Scalar closestDistance(Tensor curve, Tensor pose){
+
+  public Scalar closestDistance(Tensor curve, Tensor pose) {
     int index = Se2CurveHelper.closest(curve, pose); // closest gives the index of the closest element
     Tensor closest = curve.get(index);
     Scalar currDistance = Se2ParametricDistance.INSTANCE.distance(closest, pose);
