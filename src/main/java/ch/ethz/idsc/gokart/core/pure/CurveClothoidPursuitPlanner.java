@@ -20,37 +20,31 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 public class CurveClothoidPursuitPlanner {
   private final ClothoidPursuitConfig clothoidPursuitConfig;
   // ---
-  /** previous plan */
-  // TODO GJOEL/JPH plan_prev is not used. probably should exists outside of class if at all
-  private Optional<ClothoidPlan> plan_prev = Optional.empty();
   private int prevIndex = 0;
 
   public CurveClothoidPursuitPlanner(ClothoidPursuitConfig clothoidPursuitConfig) {
     this.clothoidPursuitConfig = clothoidPursuitConfig;
   }
 
-  public Optional<ClothoidPlan> getPlan(Tensor pose, Scalar speed, Tensor curve, boolean isForward) {
+  public Optional<ClothoidPlan> getPlan(Tensor pose, Tensor speed, Tensor curve, boolean isForward) {
     return getPlan(pose, speed, curve, true, isForward);
   }
 
   /** @param pose of vehicle {x[m], y[m], angle}
-   * @param speed of vehicle [m*s^-1]
+   * @param speed of vehicle {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]}
    * @param curve in world coordinates
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @param closed whether curve is closed or not
    * @return geodesic plan */
-  public Optional<ClothoidPlan> getPlan(Tensor pose, Scalar speed, Tensor curve, boolean closed, boolean isForward) {
-    // TODO GJOEL/JPH can use more general velocity {vx, vy, omega} from state estimation
+  public Optional<ClothoidPlan> getPlan(Tensor pose, Tensor speed, Tensor curve, boolean closed, boolean isForward) {
     Optional<ClothoidPlan> optional = replanning(pose, speed, curve, closed, isForward);
-    if (optional.isPresent()) {
-      plan_prev = optional;
+    if (optional.isPresent())
       // TODO GJOEL/JPH publishing of plan should happen outside of class
       PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, Last.of(optional.get().curve()), isForward);
-    }
     return optional;
   }
 
-  private Optional<ClothoidPlan> replanning(Tensor pose, Scalar speed, Tensor curve, boolean closed, boolean isForward) {
+  private Optional<ClothoidPlan> replanning(Tensor pose, Tensor speed, Tensor curve, boolean closed, boolean isForward) {
     TensorUnaryOperator tensorUnaryOperator = new Se2GroupElement(pose).inverse()::combine;
     Tensor tensor = Tensor.of(curve.stream().map(tensorUnaryOperator));
     if (!isForward)

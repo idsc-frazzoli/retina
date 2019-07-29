@@ -27,9 +27,9 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule {
     if (optionalCurve.isPresent()) {
       Optional<ClothoidPlan> plan = curveClothoidPursuitPlanner.getPlan( //
           pose, //
-          speed, //
+          gokartPoseEvent.getVelocity(), //
           optionalCurve.get(), //
-          isForward);
+          isForward());
       if (Objects.nonNull(globalViewLcmModule))
         globalViewLcmModule.setPlan(plan.map(ClothoidPlan::curve).orElse(null));
       return plan.map(ClothoidPlan::ratio);

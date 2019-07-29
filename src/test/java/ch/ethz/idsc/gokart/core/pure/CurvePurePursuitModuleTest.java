@@ -6,7 +6,6 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.dev.AllGunsBlazing;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -54,19 +53,6 @@ public class CurvePurePursuitModuleTest extends TestCase {
     // assertFalse(purePursuitModule.pursuitRimo.private_isOperational());
     _checkFallback(purePursuitModule.pursuitSteer.putEvent());
     // assertFalse(purePursuitModule.pursuitRimo.putEvent().isPresent());
-    purePursuitModule.last();
-  }
-
-  public void testSimple2() throws Exception {
-    CurvePursuitModule purePursuitModule = new CurvePurePursuitModule(PurePursuitConfig.GLOBAL);
-    purePursuitModule.first();
-    assertTrue(purePursuitModule.isForward());
-    purePursuitModule.rimoGetListener.getEvent(RimoGetEvents.create(1000, 1000));
-    assertTrue(purePursuitModule.isForward());
-    purePursuitModule.rimoGetListener.getEvent(RimoGetEvents.create(-1000, -1000));
-    assertFalse(purePursuitModule.isForward());
-    purePursuitModule.rimoGetListener.getEvent(RimoGetEvents.create(-10, -10));
-    assertTrue(purePursuitModule.isForward());
     purePursuitModule.last();
   }
 
