@@ -15,6 +15,7 @@ import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
 
@@ -22,6 +23,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
  * coordinates while the pose is updated periodically from a localization method. */
 public abstract class CurvePursuitModule extends PursuitModule implements GokartPoseListener {
   private final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
+  private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   // ---
   protected Optional<Tensor> optionalCurve = Optional.empty();
@@ -100,6 +102,6 @@ public abstract class CurvePursuitModule extends PursuitModule implements Gokart
 
   /** @return true if gokart is stationary or moving forwards */
   /* package */ final boolean isForward() {
-    return Sign.isPositiveOrZero(gokartPoseEvent.getVelocity().Get(0));
+    return Sign.isPositiveOrZero(speedChop.apply(gokartPoseEvent.getVelocity().Get(0)));
   }
 }
