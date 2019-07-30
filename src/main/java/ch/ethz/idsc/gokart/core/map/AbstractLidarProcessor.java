@@ -13,6 +13,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /* package */ abstract class AbstractLidarProcessor implements StartAndStoppable, LidarRayBlockListener, Runnable {
+  // TODO JPH thread cannot be in base class but needs to be in real-time wrapper
   private final Thread thread = new Thread(this);
   protected volatile boolean isLaunched = true;
   // ---

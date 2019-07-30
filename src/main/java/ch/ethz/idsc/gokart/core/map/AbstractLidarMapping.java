@@ -8,14 +8,14 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 
 public abstract class AbstractLidarMapping extends AbstractLidarProcessor implements GokartPoseListener {
-  // TODO GJOEL check rationale behind constant 10000!
+  // TODO JPH check rationale behind constant 10000!
   protected static final int LIDAR_SAMPLES = 10_000;
   // ---
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   /** implementations are encouraged to test quality of pose before using coordinate */
   protected GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   // ---
-  protected final int waitMillis;
+  protected final int waitMillis; // TODO JPH obsolete
   protected final SpacialXZObstaclePredicate spacialXZObstaclePredicate;
 
   /* package */ AbstractLidarMapping(SpacialXZObstaclePredicate spacialXZObstaclePredicate, int waitMillis) {

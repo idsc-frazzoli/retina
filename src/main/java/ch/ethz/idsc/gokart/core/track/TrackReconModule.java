@@ -13,8 +13,8 @@ import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
-import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
+import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
@@ -49,7 +49,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final AbstractMapping<? extends ImageGrid> mapping = // SightLineMapping.defaultTrack();
-      GenericBayesianMapping.createTrackMapping();
+      MappingConfig.GLOBAL.createTrackMapping();
   private final TrackReconManagement trackReconManagement;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();

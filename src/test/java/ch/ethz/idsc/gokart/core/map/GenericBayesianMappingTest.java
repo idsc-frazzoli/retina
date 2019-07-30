@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 public class GenericBayesianMappingTest extends TestCase {
   public void testSimple() {
-    GenericBayesianMapping gokartMappingModule = GenericBayesianMapping.createObstacleMapping();
+    AbstractMapping<BayesianOccupancyGrid> gokartMappingModule = MappingConfig.GLOBAL.createObstacleMapping();
     gokartMappingModule.start();
     gokartMappingModule.stop();
   }
