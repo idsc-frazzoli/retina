@@ -14,7 +14,7 @@ import ch.ethz.idsc.owl.glc.core.GlcNode;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 
-public class PureTrajectoryModule extends GokartTrajectoryModule {
+public class PureTrajectoryModule extends GlcTrajectoryModule {
   public PureTrajectoryModule() {
     this(TrajectoryConfig.GLOBAL);
   }
