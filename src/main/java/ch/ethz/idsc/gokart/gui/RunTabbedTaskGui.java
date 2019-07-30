@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import ch.ethz.idsc.demo.jg.following.ClothoidTrajectoryModule;
+import ch.ethz.idsc.gokart.core.plan.ClothoidTrajectoryModule;
 import ch.ethz.idsc.demo.jg.following.FigureClothoidModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;

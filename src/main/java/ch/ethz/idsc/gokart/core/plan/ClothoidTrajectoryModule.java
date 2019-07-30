@@ -1,12 +1,10 @@
 // code by ynager, jph, gjoel
-package ch.ethz.idsc.demo.jg.following;
+package ch.ethz.idsc.gokart.core.plan;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.plan.GokartTrajectoryModule;
-import ch.ethz.idsc.gokart.core.plan.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;

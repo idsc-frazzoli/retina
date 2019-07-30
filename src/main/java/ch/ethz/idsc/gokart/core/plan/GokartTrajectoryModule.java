@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
@@ -69,6 +71,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.RotateLeft;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.ArgMin;
@@ -179,8 +182,8 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
   protected synchronized void runAlgo() {
     System.out.println("entering...");
     mapping.prepareMap();
-    if (Objects.nonNull(gokartPoseEvent))
-      if (Objects.nonNull(waypoints)) {
+    if (Objects.nonNull(gokartPoseEvent)) {
+      if (Objects.nonNull(waypoints) && Tensors.nonEmpty(waypoints)) {
         final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
         System.out.println("setup planner, tangent speed=" + tangentSpeed);
         final Tensor xya = PoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
@@ -199,24 +202,18 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
           head = getTrajectoryUntil(trajectory, xya, Magnitude.METER.apply(cutoffDist));
         }
         Tensor distances = Tensor.of(waypoints.stream().map(wp -> Norm._2.ofVector(SE2WRAP.difference(wp, xya))));
-        int wpIdx = ArgMin.of(distances); // find closest waypoint to current position
+        int wpIdx = ArgMin.of(distances); // find closest waypoint to current position, exists since waypoints is non-null/-empty
         if (head.isEmpty()) {
           System.err.println("head is empty");
-        } else //
-        if (0 <= wpIdx) { // jan inserted check for non-empty
-          Tensor goal = waypoints.get(wpIdx);
-          // find a goal waypoint that is located beyond horizonDistance & does not lie within obstacle
-          int count = 0;
-          while (Scalars.lessThan(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), trajectoryConfig.horizonDistance) || unionRegion.isMember(goal)) {
-            wpIdx = (wpIdx + 1) % waypoints.length();
-            goal = waypoints.get(wpIdx);
-            ++count;
-            if (waypoints.length() < count) {
-              // TODO JPH
-              System.err.println("panic: infinite look prevention");
-              break;
-            }
-          }
+        } else {
+          Predicate<Tensor> conflicts = goal -> //
+              Scalars.lessEquals(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), trajectoryConfig.horizonDistance) || unionRegion.isMember(goal);
+          Iterator<Tensor> iterator = RotateLeft.of(waypoints, wpIdx).iterator();
+          Tensor goal = iterator.next();
+          while (iterator.hasNext() && conflicts.test(goal))
+            goal = iterator.next();
+          if (conflicts.test(goal))
+            System.err.println("no feasible goal found"); // TODO JPH
           // System.out.format("goal index = " + wpIdx + ", distance = %.2f \n", SE2WRAP.distance(xya, goal).number().floatValue());
           int resolution = trajectoryConfig.controlResolution.number().intValue();
           Collection<Flow> controls = flowsInterface.getFlows(resolution);
@@ -242,11 +239,11 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
           new Expand<>(trajectoryPlanner).maxTime(trajectoryConfig.expandTimeLimit());
           expandResult(head, trajectoryPlanner); // build detailed trajectory and pass to purePursuit
           return;
-        } else {
-          System.err.println("argmin index negative");
         }
       } else
-        System.err.println("no curve because no pose");
+        System.err.println("no curve because no waypoints: " + waypoints);
+    } else
+      System.err.println("no curve because no pose");
     curvePursuitModule.setCurve(Optional.empty());
     PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }
