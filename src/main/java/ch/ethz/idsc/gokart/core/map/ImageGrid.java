@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.sca.Floor;
  *
  * the cascade of affine transformation is
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
-public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
+public class ImageGrid implements OccupancyGrid, RenderInterface {
   protected static final byte MASK_OCCUPIED = 0;
   protected static final Color COLOR_OCCUPIED = Color.BLACK;
   protected static final Color COLOR_UNKNOWN = Color.WHITE;
@@ -97,6 +97,7 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   }
 
   /** @return Stream of all index combinations as Tensors */
+  // TODO JPH function is non-sense
   protected final Stream<Tensor> cells() {
     return IntStream.range(0, dimX()).mapToObj(x -> IntStream.range(0, dimY()).mapToObj(y -> //
     Tensors.vector(x, y))).flatMap(Function.identity());
@@ -187,6 +188,11 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   public final boolean isCellOccupied(int pix, int piy) {
     return isCellInGrid(pix, piy) //
         && imagePixels[cellToIdx(pix, piy)] == MASK_OCCUPIED;
+  }
+
+  @Override // from OccupancyGrid
+  public void clearStart(int startX, int startY, double orientation) {
+    // ---
   }
 
   @Override // from Region<Tensor>

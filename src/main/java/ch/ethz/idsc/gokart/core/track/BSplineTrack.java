@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Power;
 
-// TODO JPH/MH need estimation of length of track so that resolution can be adapted
+// TODO JPH need estimation of length of track so that resolution can be adapted
 public abstract class BSplineTrack implements TrackInterface {
   protected static final int SPLINE_ORDER = 2;
   private static final TensorUnaryOperator NORMALIZE = Normalize.with(Norm._2);
