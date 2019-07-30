@@ -65,17 +65,6 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
   Optional<SteerPutEvent> putEvent(SteerColumnInterface steerColumnInterface, SteerGetEvent steerGetEvent, Optional<Clip> optional) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar tsu = steerGetEvent.tsuTrq();
-    if (optionalCurve.isPresent() && LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent)) {
-      System.out.println("binaryBlob1 entered");
-      if (Objects.nonNull(steerGetEvent)) {
-        binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of(//
-            closestDistance(optionalCurve.get(), gokartPoseEvent.getPose()), //
-            HapticSteerConfig.GLOBAL.offsetL, //
-            steerGetEvent.tsuTrq(), //
-            velocity))));
-        System.out.println("binaryBlob2 entered");
-      }
-    }
     if (HapticSteerConfig.GLOBAL.printLaneInfo)
       System.out.println("currAngle: " + currAngle);
     if (optional.isPresent()) {
@@ -85,6 +74,13 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
       final Scalar putTorque = HapticSteerConfig.GLOBAL.laneKeeping(currAngle.subtract(permittedRange.apply(currAngle)));
       System.out.println("putTorque: " + putTorque);
       final Scalar powerSteer = powerSteering.torque(currAngle, velocity, tsu);
+      if (optionalCurve.isPresent() && LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) && Objects.nonNull(steerGetEvent)) {
+        binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of(//
+            closestDistance(optionalCurve.get(), gokartPoseEvent.getPose()), //
+            HapticSteerConfig.GLOBAL.offsetL, //
+            steerGetEvent.tsuTrq(), //
+            velocity, putTorque))));
+      }
       return Optional.of(SteerPutEvent.createOn(putTorque.add(powerSteer)));
     }
     return Optional.empty();

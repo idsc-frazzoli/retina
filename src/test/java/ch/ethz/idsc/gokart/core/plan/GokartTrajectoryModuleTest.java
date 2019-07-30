@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.plan;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -28,12 +31,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-
 /* package */ enum GokartTrajectoryModuleTest {
   ;
-
   private static final ByteArrayConsumer BYTE_ARRAY_CONSUMER = new BinaryBlobPublisher(GokartLcmChannel.POSE_LIDAR);
 
   public static void testSimple(GokartTrajectoryModule gokartTrajectoryModule) throws Exception {

@@ -38,7 +38,6 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     File file = HomeDirectory.Documents("01_6_Semester/Bachelorarbeit/lcm_files/20190729/20190729T105210_bbfb70a0.lcm.00");
     OfflineTableSupplier offlineTableSupplier = new AntilockAnalysis();
     OfflineLogPlayer.process(file, offlineTableSupplier);
-    Export.of(HomeDirectory.Documents("01_6_Semester/Bachelorarbeit/cuts1/20190729_lanekeeping1.csv"),
-        offlineTableSupplier.getTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.Documents("01_6_Semester/Bachelorarbeit/cuts1/20190729_lanekeeping1.csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
   }
 }

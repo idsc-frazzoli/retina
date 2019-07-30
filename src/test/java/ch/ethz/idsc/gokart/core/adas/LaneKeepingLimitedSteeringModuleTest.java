@@ -25,7 +25,6 @@ public class LaneKeepingLimitedSteeringModuleTest extends TestCase {
 
   private static final Tensor CURVE = DubendorfCurve.TRACK_OVAL_SE2;
 
-  // FIXME AM
   public void testSimple1() {
     LaneKeepingLimitedSteeringModule laneKeepingLimitedSteeringModule = new LaneKeepingLimitedSteeringModule();
     laneKeepingLimitedSteeringModule.launch();
@@ -37,13 +36,13 @@ public class LaneKeepingLimitedSteeringModuleTest extends TestCase {
     assertTrue(permittedRange.isPresent());
     Clip clip = permittedRange.get();
     Scalar width = clip.width();
-    // assertTrue(Scalars.lessThan(Quantity.of(0.3, "SCE"), width));
+    assertTrue(Scalars.lessThan(Quantity.of(0.2, "SCE"), width));
     assertTrue(Scalars.lessThan(width, Quantity.of(0.7, "SCE")));
     System.out.println(clip);
     laneKeepingLimitedSteeringModule.runAlgo();
     {
       PowerSteering powerSteering = new PowerSteering(HapticSteerConfig.GLOBAL);
-      Scalar currangle = Quantity.of(0.2, "SCE");
+      Scalar currangle = Quantity.of(0.1, "SCE");
       Scalar powerSteeringTorque = powerSteering.torque(currangle, GokartPoseEvents.motionlessUninitialized().getVelocity(), Quantity.of(0, "SCT"));
       Optional<SteerPutEvent> optional = laneKeepingLimitedSteeringModule.putEvent( //
           new SteerColumnAdapter(true, currangle), //

@@ -207,7 +207,7 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
           System.err.println("head is empty");
         } else {
           Predicate<Tensor> conflicts = goal -> //
-              Scalars.lessEquals(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), trajectoryConfig.horizonDistance) || unionRegion.isMember(goal);
+          Scalars.lessEquals(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), trajectoryConfig.horizonDistance) || unionRegion.isMember(goal);
           Iterator<Tensor> iterator = RotateLeft.of(waypoints, wpIdx).iterator();
           Tensor goal = iterator.next();
           while (iterator.hasNext() && conflicts.test(goal))
