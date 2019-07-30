@@ -6,13 +6,13 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.davis._240c.DavisEventStatistics;
 import ch.ethz.idsc.retina.davis.app.DavisImageBuffer;
 import ch.ethz.idsc.retina.davis.app.FirstImageTriggerExportControl;
 import ch.ethz.idsc.retina.davis.app.SignalResetDifference;
 import ch.ethz.idsc.retina.davis.io.DavisEventsTextWriter;
 import ch.ethz.idsc.retina.davis.io.DavisPngImageWriter;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import idsc.BinaryBlob;
 import lcm.logging.Log;
 import lcm.logging.Log.Event;

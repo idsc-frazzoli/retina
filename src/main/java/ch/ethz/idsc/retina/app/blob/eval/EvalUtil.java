@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
   ;
   private static final String COMMA_DELIMITER = ",";
   private static final String NEW_LINE = "\n";
-  private static final int DEFAULT_BLOB_ID = 0;
+  private static final int BLOB_ID_DEFAULT = 0;
 
   /** saves a List<List<ImageBlob>> object to a CSV file.
    * 
@@ -89,7 +89,7 @@ import ch.ethz.idsc.tensor.io.Primitives;
         double[][] cov = new double[][] { //
             { row.Get(3).number().doubleValue(), row.Get(5).number().doubleValue() },
             { row.Get(5).number().doubleValue(), row.Get(4).number().doubleValue() } };
-        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true, DEFAULT_BLOB_ID));
+        extractedFeatures.get(index).add(new ImageBlob(pos, cov, timestamp, true, BLOB_ID_DEFAULT));
       }
       return extractedFeatures;
     } catch (Exception exception) {

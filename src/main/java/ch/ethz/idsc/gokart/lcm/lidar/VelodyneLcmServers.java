@@ -43,7 +43,7 @@ public enum VelodyneLcmServers {
   public static void main(String[] args) {
     VelodyneModel velodyneModel = VelodyneModel.HDL32E;
     String channel = "center";
-    int portRay = VelodyneStatics.RAY_DEFAULT_PORT;
+    int portRay = VelodyneStatics.RAY_PORT_DEFAULT;
     if (1 <= args.length)
       velodyneModel = VelodyneModel.valueOf(args[1].toUpperCase());
     if (2 <= args.length)

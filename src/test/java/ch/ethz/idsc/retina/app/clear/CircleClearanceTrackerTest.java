@@ -7,6 +7,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clips;
@@ -71,9 +72,8 @@ public class CircleClearanceTrackerTest extends TestCase {
     assertFalse(circleClearanceTracker.contact().isPresent());
     boolean obstructed = circleClearanceTracker.isObstructed(PoseHelper.attachUnits(Tensors.vector(0.6, 0.1, 0.05)));
     assertTrue(obstructed);
-    Quantity time = (Quantity) circleClearanceTracker.contact().get();
-    Clips.interval(0.3, 0.4).requireInside(time.value());
-    assertEquals(time.unit(), SI.SECOND);
+    Scalar time = circleClearanceTracker.contact().get();
+    Clips.interval(Quantity.of(0.3, "s"), Quantity.of(0.4, SI.SECOND)).requireInside(time);
     PoseHelper.toUnitless(circleClearanceTracker.violation().get());
   }
 }

@@ -5,8 +5,9 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
+import java.io.Serializable;
 
-public class ImageScore implements SlamScore {
+public class ImageScore implements SlamScore, Serializable {
   /** @param bufferedImage grayscale image in byte array encoding, each pixel corresponds to one byte */
   public static SlamScore of(BufferedImage bufferedImage) {
     return new ImageScore(bufferedImage);

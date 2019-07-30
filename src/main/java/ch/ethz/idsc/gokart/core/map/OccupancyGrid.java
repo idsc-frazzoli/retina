@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.map;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.tensor.Tensor;
 
-// TODO JPH/MH if a plannable occumancy grid is needed it can extend from this interface occupancy grid
+// TODO JPH if a planable occupancy grid is needed it can extend from this interface occupancy grid
 public interface OccupancyGrid extends Region<Tensor> {
   /** @return vector of length 2 */
   Tensor getGridSize();
@@ -18,5 +18,6 @@ public interface OccupancyGrid extends Region<Tensor> {
   Tensor getTransform();
 
   /** clear area around starting position */
+  // TODO JPH function obsolete, also bad API
   void clearStart(int startX, int startY, double orientation);
 }

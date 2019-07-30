@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.joystick;
 
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** DO NOT INSERT NEW JOYSTICKS BETWEEN EXISTING JOYSTICKS INSTEAD APPEND NEW
  * JOYSTICKS TO LIST */

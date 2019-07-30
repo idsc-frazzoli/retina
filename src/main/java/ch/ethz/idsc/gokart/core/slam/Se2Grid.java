@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 
-/* package */ class Se2Grid {
+/* package */ class Se2Grid implements Serializable {
   private final List<Se2GridPoint> list;
 
   /** size and complexity grows cubic in fan

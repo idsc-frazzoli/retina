@@ -11,11 +11,10 @@ import ch.ethz.idsc.tensor.Tensors;
   private static final PowerLookupTable POWER_LOOKUP_TABLE = PowerLookupTable.getInstance();
 
   /** @param wantedAcceleration [m*s^-2]
-   * @param wantedZTorque [ONE]
-   * @param velocity [m/s]
+   * @param wantedZTorque unitless
+   * @param velocity [m*s^-1]
    * @return vector of length 2 with required motor currents [ARMS] */
-  // TODO JPH/MH write tests specifically for method getAdvancedMotorCurrents
-  /* package */ static Tensor getAdvancedMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
+  public static Tensor getMotorCurrents(Scalar wantedAcceleration, Scalar wantedZTorque, Scalar velocity) {
     Tensor minMax = POWER_LOOKUP_TABLE.getMinMaxAcceleration(velocity);
     // get clipped individual accelerations
     PowerClip powerClip = new PowerClip(minMax.Get(0), minMax.Get(1));

@@ -26,6 +26,7 @@ import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatios;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -84,7 +85,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
             ClothoidPursuitConfig clothoidPursuitConfig = ClothoidPursuitConfig.GLOBAL;
             Timing timing = Timing.started();
             optional = planner.getPlan(PoseHelper.attachUnits(mouseSe2), //
-                spinnerLabelSpeed.getValue(), //
+                Tensors.of(spinnerLabelSpeed.getValue(), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
                 trajectoryDesign.getRefinedCurve(), //
                 Sign.isPositiveOrZero(spinnerLabelSpeed.getValue()));
             timing.stop();
