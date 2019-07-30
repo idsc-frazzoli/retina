@@ -48,19 +48,17 @@ public class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGri
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
   }
 
-  // from AbstractMapping
-  @Override
+  @Override // from AbstractMapping
   public final void prepareMap() {
     occupancyGrid.genObstacleMap();
   }
 
-  // from AbstractMapping
-  @Override
+  @Override // from AbstractMapping
   public final BayesianOccupancyGrid getMap() {
     return occupancyGrid;
   }
 
-  @Override
+  @Override // from Runnable
   public final void run() {
     while (isLaunched) {
       Tensor points = points_ferry;

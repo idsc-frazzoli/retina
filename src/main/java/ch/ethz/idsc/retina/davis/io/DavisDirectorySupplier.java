@@ -7,8 +7,8 @@ import java.io.FileReader;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 
 /** utility for working with files from Robotics and Perception Group, UZH */

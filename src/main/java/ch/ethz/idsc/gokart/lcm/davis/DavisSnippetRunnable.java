@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.Date;
 
 import ch.ethz.idsc.gokart.lcm.LcmLogProcess;
-import ch.ethz.idsc.owl.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public abstract class DavisSnippetRunnable implements Runnable {
   private final int milliSeconds;
