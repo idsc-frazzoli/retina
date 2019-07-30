@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.calib.power;
 
 import ch.ethz.idsc.tensor.Scalar;
 
+@FunctionalInterface
 /* package */ interface MotorFunction {
   /** @param power with unit "ARMS"
    * @param speed with unit velocity e.g. "m*s^-1"

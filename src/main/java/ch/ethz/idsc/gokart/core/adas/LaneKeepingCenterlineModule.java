@@ -132,7 +132,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   }
 
   protected static void exportTensor(Tensor tensor) {
-    File file = HomeDirectory.file("Desktop", "setCurveRefined_" + SystemTimestamp.asString(new Date()) + ".csv");
+    File file = HomeDirectory.Desktop("setCurveRefined_" + SystemTimestamp.asString(new Date()) + ".csv");
     try {
       Put.of(file, tensor);
     } catch (Exception exception) {

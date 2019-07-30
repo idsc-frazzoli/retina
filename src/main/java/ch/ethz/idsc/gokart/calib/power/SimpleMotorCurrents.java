@@ -19,6 +19,6 @@ public final class SimpleMotorCurrents implements MotorCurrentsInterface {
         torqueVectoringConfig.getDynamicAndStatic(angularSlip), //
         angularSlip.gyroZ());
     // left and right power prefer power over Z-torque
-    return StaticHelper.getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
+    return StaticHelper.getMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
   }
 }

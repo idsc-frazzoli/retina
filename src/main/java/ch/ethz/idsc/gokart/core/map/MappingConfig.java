@@ -1,6 +1,8 @@
 // code by ynager
 package ch.ethz.idsc.gokart.core.map;
 
+import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
+import ch.ethz.idsc.gokart.core.track.TrackReconConfig;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -70,6 +72,7 @@ public class MappingConfig {
     return lambda.number().doubleValue();
   }
 
+  /***************************************************/
   /** @return Dubilab specific BayesianOccupancyGrid */
   public BayesianOccupancyGrid createBayesianOccupancyGrid() {
     return BayesianOccupancyGrid.of(lBounds, range, cellDim, obsRadius);
@@ -80,11 +83,28 @@ public class MappingConfig {
   }
 
   /** @return dubilab specific BayesianOccupancyGrid */
+  // TODO JPH only used for offline
   public BayesianOccupancyGrid createThinBayesianOccupancyGrid() {
     return BayesianOccupancyGrid.of(lBounds, range, cellDim, Quantity.of(0, SI.METER), true);
   }
 
   public SightLineOccupancyGrid createSightLineOccupancyGrid() {
     return SightLineOccupancyGrid.of(lBounds, range, cellDim);
+  }
+
+  public GenericBayesianMapping createObstacleMapping() {
+    return new GenericBayesianMapping( //
+        SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
+        1000, //
+        createBayesianOccupancyGrid(), //
+        -1);
+  }
+
+  public GenericBayesianMapping createTrackMapping() {
+    return new GenericBayesianMapping( //
+        TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
+        200, //
+        createTrackFittingBayesianOccupancyGrid(), //
+        -6);
   }
 }

@@ -4,10 +4,8 @@ package ch.ethz.idsc.gokart.core.map;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
-import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.track.TrackReconConfig;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
@@ -16,25 +14,13 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** class interprets sensor data from lidar */
-public class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGrid> {
-  public static GenericBayesianMapping createTrackMapping() {
-    return new GenericBayesianMapping( //
-        TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
-        200, MappingConfig.GLOBAL.createTrackFittingBayesianOccupancyGrid(), //
-        -6);
-  }
-
-  public static GenericBayesianMapping createObstacleMapping() {
-    return new GenericBayesianMapping( //
-        SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate(), //
-        1000, MappingConfig.GLOBAL.createBayesianOccupancyGrid(), -1);
-  }
-
-  // ---
-  // TODO GJOEL document parameters
-  private GenericBayesianMapping( //
+/* package */ class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGrid> {
+  // TODO document parameters
+  public GenericBayesianMapping( //
       SpacialXZObstaclePredicate spacialXZObstaclePredicate, //
-      int waitMillis, BayesianOccupancyGrid bayesianOccupancyGrid, int max_alt) {
+      int waitMillis, //
+      BayesianOccupancyGrid bayesianOccupancyGrid, //
+      int max_alt) {
     super(spacialXZObstaclePredicate, waitMillis, bayesianOccupancyGrid);
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(LIDAR_SAMPLES, 3);
     VelodyneSpacialProvider velodyneSpacialProvider = //
@@ -48,19 +34,17 @@ public class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGri
     vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
   }
 
-  // from AbstractMapping
-  @Override
+  @Override // from AbstractMapping
   public final void prepareMap() {
     occupancyGrid.genObstacleMap();
   }
 
-  // from AbstractMapping
-  @Override
+  @Override // from AbstractMapping
   public final BayesianOccupancyGrid getMap() {
     return occupancyGrid;
   }
 
-  @Override
+  @Override // from Runnable
   public final void run() {
     while (isLaunched) {
       Tensor points = points_ferry;

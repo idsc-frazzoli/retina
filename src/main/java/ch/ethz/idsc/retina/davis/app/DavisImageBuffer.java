@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.davis.app;
 
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.img.ImageCopy;

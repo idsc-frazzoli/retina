@@ -325,7 +325,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
 
   private Tensor getPixelPosition(Tensor worldPosition) {
     Tensor transform = occupancyGrid.getTransform();
-    // TODO JPH/MH try the following line:
+    // TODO JPH try the following line:
     // Tensor wp = worldPosition.extract(0, 2).append(Quantity.of(1, SI.METER));
     Tensor wp = Tensors.empty();
     wp.append(worldPosition.Get(0));

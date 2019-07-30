@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
 
