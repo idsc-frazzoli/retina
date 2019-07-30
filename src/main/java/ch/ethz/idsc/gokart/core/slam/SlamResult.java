@@ -1,11 +1,13 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-public class SlamResult {
+public class SlamResult implements Serializable {
   private final Tensor matrix;
   private final Scalar quality;
 

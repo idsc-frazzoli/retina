@@ -1,11 +1,13 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-/* package */ class Se2GridPoint {
+/* package */ class Se2GridPoint implements Serializable {
   private final Tensor mask;
   private final Tensor tangent;
   private final Tensor coord;

@@ -7,7 +7,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.sophus.lie.se2.Se2Geodesic;
-import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringIntegrator;
+import ch.ethz.idsc.sophus.lie.se2.Se2Integrator;
 import ch.ethz.idsc.sophus.lie.so2.So2;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -57,8 +57,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     // update gyro
     this.gyroZ = gyroZ;
     // integrate pose
-    pose = Se2CoveringIntegrator.INSTANCE.spin(pose, getVelocity().multiply(deltaT));
-    pose.set(So2.MOD, 2);
+    pose = Se2Integrator.INSTANCE.spin(pose, getVelocity().multiply(deltaT));
   }
 
   @Override // from PoseVelocityInterface
