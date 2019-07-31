@@ -56,8 +56,6 @@ public class RimoRateControllerUnoTest extends TestCase {
     RimoPutEvent rimoPutEvent = rrcw.iterate(Quantity.of(1, "s^-1")).get();
     // because "uno" uses a single PI controller, the torques have the same absolute value
     assertEquals(rimoPutEvent.putTireL.getTorqueRaw(), -rimoPutEvent.putTireR.getTorqueRaw());
-    // System.out.println(rimoPutEvent.putTireL.getTorqueRaw());
-    // System.out.println(rimoPutEvent.putTireR.getTorqueRaw());
     assertTrue(rimoPutEvent.putTireL.getTorqueRaw() >= -60);
     assertTrue(rimoPutEvent.putTireR.getTorqueRaw() <= 60);
   }
