@@ -28,7 +28,6 @@ import ch.ethz.idsc.owl.rrts.core.TransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
 import ch.ethz.idsc.sophus.math.SplitInterface;
-import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -40,7 +39,7 @@ import ch.ethz.idsc.tensor.alg.RotateLeft;
 public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlanner> {
   private static final SplitInterface SPLIT_INTERFACE = Clothoid3.INSTANCE;
   private final TransitionSpace transitionSpace;
-  private final Scalar resolution = RationalScalar.of(1, 2); // TODO is this related to PARTITIONSCALE?
+  private final Scalar resolution = RealScalar.ONE; // TODO is this related to PARTITIONSCALE?
   private final Collection<TransitionRegionQuery> transitionRegionQueries;
 
   public RrtsTrajectoryModule(TrajectoryConfig trajectoryConfig, //
@@ -54,8 +53,9 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
 
   @Override // from GokartTrajectoryModule
   protected final TransitionPlanner setupTreePlanner(StateTime root, Tensor goal) {
-    int rootIdx = locate(root.state()).get();
-    Tensor segment = RotateLeft.of(waypoints, rootIdx).extract(0, Math.floorMod(locate(goal).get() - rootIdx + 1, waypoints.length()));
+    int rootIdx = locate(waypoints, root.state());
+    Tensor shifted = RotateLeft.of(waypoints, rootIdx);
+    Tensor segment = shifted.extract(0, locate(shifted, goal) + 1);
     LaneInterface lane = StableLane.of(SPLIT_INTERFACE, segment, goalRadius.Get(0));
     // ---
     List<TransitionRegionQuery> transitionRegionQueries = //
