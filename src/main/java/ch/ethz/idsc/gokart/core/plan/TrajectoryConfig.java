@@ -2,8 +2,8 @@
 package ch.ethz.idsc.gokart.core.plan;
 
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
-import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
+import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.trj.Se2UniformResample;
@@ -67,17 +67,12 @@ public class TrajectoryConfig {
   public AbstractMapping<? extends ImageGrid> getAbstractMapping() {
     return mapSightLines //
         ? SightLinesMapping.defaultObstacle()
-        : GenericBayesianMapping.createObstacleMapping();
+        : MappingConfig.GLOBAL.createObstacleMapping();
   }
 
+  /***************************************************/
   /** @param se2curve with rows as se2 coordinates of the form {x[m], y[m], alpha}
-   * @return */
-  public Tensor resampledWaypoints(Tensor se2curve) {
-    return resampledWaypoints(se2curve, true);
-  }
-
-  /** @param se2curve with rows as se2 coordinates of the form {x[m], y[m], alpha}
-   * @param cyclic
+   * @param cyclic whether the last point should be connected to the first point
    * @return */
   public Tensor resampledWaypoints(Tensor se2curve, boolean cyclic) {
     CurveSubdivision curveSubdivision = Se2UniformResample.of(waypointsSpacing);

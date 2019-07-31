@@ -142,7 +142,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   private LinkedList<Cell> route;
   // TODO MH not used
   private LinkedList<Cell> forwardRoute;
-  private boolean closed = false;
+  private boolean cyclic = false;
   // TODO MH document content of positional support:
   // contains vectors of the form {x, y, 1} without units
   private List<Tensor> positionalSupports = new LinkedList<>();
@@ -160,7 +160,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
   }
 
   public boolean isClosed() {
-    return closed;
+    return cyclic;
   }
 
   private static final Comparator<Cell> COMPARATOR = new Comparator<Cell>() {
@@ -325,7 +325,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
 
   private Tensor getPixelPosition(Tensor worldPosition) {
     Tensor transform = occupancyGrid.getTransform();
-    // TODO JPH/MH try the following line:
+    // TODO JPH try the following line:
     // Tensor wp = worldPosition.extract(0, 2).append(Quantity.of(1, SI.METER));
     Tensor wp = Tensors.empty();
     wp.append(worldPosition.Get(0));
@@ -348,11 +348,11 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       processDijkstra();
       if (reachable(dijkstraTarget)) { // we can reach target;
         System.out.println("direct route found");
-        closed = true;
+        cyclic = true;
         route = dijkstraTarget.getRoute();
       } else {
         System.out.println("direct round not found");
-        closed = false;
+        cyclic = false;
         actualTarget = getFarthestCell();
         LinkedList<Cell> routeFromStart = actualTarget.getRoute();
         // route = routeFromStart;
@@ -433,13 +433,13 @@ public class TrackLayoutInitialGuess implements RenderInterface {
       // number of control points
       int n = (int) (m * controlPointResolution.number().doubleValue());
       final Tensor domain;
-      if (closed) // we found closed solution
+      if (cyclic) // we found closed solution
         domain = Tensors.vector(i -> RealScalar.of((n + 0.0) * (i / (m + 0.0))), m);
       else
         // value in [0, n - 2]
         domain = Tensors.vector(i -> RealScalar.of((n - 2.0) * (i / (m - 1.0))), m);
       // solve for control points: x
-      final Tensor matrixD0 = domain.map(BSpline2Vector.of(n, 0, closed));
+      final Tensor matrixD0 = domain.map(BSpline2Vector.of(n, 0, cyclic));
       try {
         return Optional.of(LeastSquares.of(matrixD0, wantedPositionsXY));
       } catch (Exception exception) {

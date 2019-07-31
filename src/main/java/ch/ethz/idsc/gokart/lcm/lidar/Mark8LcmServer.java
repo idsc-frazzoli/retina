@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.lidar.mark8.Mark8Digest;
  * <p>if the sensor is the only client to the device, the sensor typically
  * requires 20 seconds to respond with the first measurements */
 public class Mark8LcmServer {
-  public static final int DEFAULT_RETURNS = 1;
+  public static final int RETURNS_DEFAULT = 1;
   // ---
   private final String ip;
   private final Mark8Digest mark8Digest;

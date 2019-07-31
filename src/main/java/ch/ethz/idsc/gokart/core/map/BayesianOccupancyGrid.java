@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.math.Bresenham;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -58,13 +59,13 @@ public class BayesianOccupancyGrid extends ImageGrid {
   // TODO JPH assign all constants in constructor using a reference to a MappingConfig instance
   /** prior */
   private final double P_M = MappingConfig.GLOBAL.getP_M(); // prior
-  private final double L_M_INV = StaticHelper.pToLogOdd(1 - P_M);
+  private final double L_M_INV = BayesianOccupancyGrid.pToLogOdd(1 - P_M);
   /** inv sensor model p(m|z) */
   private final double P_M_HIT = MappingConfig.GLOBAL.getP_M_HIT();
   private final double P_M_PASS = MappingConfig.GLOBAL.getP_M_PASS();
   /** cells with p(m|z_1:t) > probThreshold are considered occupied */
   private final double P_THRESH = MappingConfig.GLOBAL.getP_THRESH();
-  private final double L_THRESH = StaticHelper.pToLogOdd(P_THRESH);
+  private final double L_THRESH = BayesianOccupancyGrid.pToLogOdd(P_THRESH);
   private final double[] PREDEFINED_P = { 1 - P_M_HIT, P_M_HIT, P_M_PASS };
   /** forgetting factor for previous classifications */
   private final double lambda = MappingConfig.GLOBAL.getLambda();
@@ -96,9 +97,9 @@ public class BayesianOccupancyGrid extends ImageGrid {
     // PREDEFINED_P
     logOdds = new double[dimX() * dimY()];
     if (!fillMap)
-      Arrays.fill(logOdds, StaticHelper.pToLogOdd(P_M));
+      Arrays.fill(logOdds, BayesianOccupancyGrid.pToLogOdd(P_M));
     else {
-      Arrays.fill(logOdds, StaticHelper.pToLogOdd(0.99));
+      Arrays.fill(logOdds, BayesianOccupancyGrid.pToLogOdd(0.99));
       setHset();
     }
   }
@@ -204,7 +205,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
       // ---
       lidar2cellLayer.pushMatrix(getWorld2grid()); // updated world to grid
       double[] logOddsNew = new double[dimX() * dimY()];
-      Arrays.fill(logOddsNew, StaticHelper.pToLogOdd(P_M));
+      Arrays.fill(logOddsNew, BayesianOccupancyGrid.pToLogOdd(P_M));
       synchronized (hset) {
         hset.clear();
         Tensor trans = lidarToCell(toPos(Tensors.vector(0, 0))); // calculate translation
@@ -247,7 +248,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
    * @param p_m_z probability in [0, 1] that Cell is occupied given the current observation z */
   private void updateCellLogOdd(int pix, int piy, double p_m_z) {
     int idx = cellToIdx(pix, piy);
-    double logOddDelta = StaticHelper.pToLogOdd(p_m_z) + L_M_INV;
+    double logOddDelta = BayesianOccupancyGrid.pToLogOdd(p_m_z) + L_M_INV;
     logOdds[idx] = lambda * logOdds[idx] + logOddDelta;
     if (Double.isInfinite(logOdds[idx]))
       throw new ArithmeticException("Overflow");
@@ -273,5 +274,12 @@ public class BayesianOccupancyGrid extends ImageGrid {
       }
       setHset();
     }
+  }
+
+  /** @param p from the open interval (0, 1)
+   * @return */
+  static double pToLogOdd(double p) {
+    GlobalAssert.that(p < 1);
+    return Math.log(p / (1 - p));
   }
 }

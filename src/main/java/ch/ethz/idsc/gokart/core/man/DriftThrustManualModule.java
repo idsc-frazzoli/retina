@@ -57,7 +57,7 @@ public class DriftThrustManualModule extends GuideManualModule<RimoPutEvent> imp
     return Optional.of(derive( //
         Differences.of(manualControlInterface.getAheadPair_Unit()).Get(0), //
         gokartPoseEvent.getGyroZ(), //
-        DriftRatio.of(gokartPoseEvent.getVelocity())));
+        DriftRatio.INSTANCE.apply(gokartPoseEvent.getVelocity())));
   }
 
   /** @param ahead in the interval [-1, 1]

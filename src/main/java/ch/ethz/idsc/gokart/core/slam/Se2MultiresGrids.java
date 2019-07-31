@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import ch.ethz.idsc.tensor.Scalar;
 
 /** j2b2 project
  * http://hakenberg.de/automation/j2b2_competition.htm */
-public class Se2MultiresGrids {
+public class Se2MultiresGrids implements Serializable {
   /** .
    * 20190331 ante decr == 0.6
    * 20190331 post decr == 0.55 */

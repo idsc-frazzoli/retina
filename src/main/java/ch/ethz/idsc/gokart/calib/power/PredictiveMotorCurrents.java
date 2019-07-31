@@ -13,13 +13,14 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class PredictiveMotorCurrents implements MotorCurrentsInterface {
+public final class PredictiveMotorCurrents implements MotorCurrentsInterface {
   private static final double MIN_DT = 0.000001;
   private static final Scalar ROLLING_AVERAGE_VALUE = Quantity.of(0.0, SI.ANGULAR_ACCELERATION);
   // ---
   private final TorqueVectoringConfig torqueVectoringConfig;
   private final IntervalClock intervalClock = new IntervalClock();
   private final GeodesicIIR1 geodesicIIR1;
+  // ---
   private Scalar wantedRotationRate_last = null;
   private Scalar rotationAcc_fallback = ROLLING_AVERAGE_VALUE;
 
@@ -40,7 +41,7 @@ public class PredictiveMotorCurrents implements MotorCurrentsInterface {
         torqueVectoringConfig.getDynamicAndStatic(angularSlip).add(predictiveComponent), // One
         angularSlip.gyroZ());
     // left and right power prefer power over Z-torque
-    return StaticHelper.getAdvancedMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
+    return StaticHelper.getMotorCurrents(wantedAcceleration, wantedZTorque, angularSlip.tangentSpeed());
   }
 
   /** @param wantedRotationRate [s^-1]

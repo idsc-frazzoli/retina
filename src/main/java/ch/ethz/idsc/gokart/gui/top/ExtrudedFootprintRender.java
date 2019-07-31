@@ -73,6 +73,7 @@ public class ExtrudedFootprintRender implements RenderInterface {
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_forward) {
+          // TODO JPH there should be something more efficient available!
           Tensor pose = Se2Utils.toSE2Matrix(x);
           w1.append(pose.dot(p1));
           w2.append(pose.dot(p2));

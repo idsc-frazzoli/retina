@@ -6,7 +6,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.util.Objects;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class ImageCopy {
   private static final BufferedImage DUMMY = new BufferedImage(1, 1, BufferedImage.TYPE_BYTE_GRAY);

@@ -101,7 +101,7 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
   }
 
   /* package for testing */ synchronized void updateWaypoints(Tensor curve) {
-    waypoints = Tensor.of(trajectoryConfig.resampledWaypoints(curve).stream().map(PoseHelper::toUnitless));
+    waypoints = Tensor.of(trajectoryConfig.resampledWaypoints(curve, true).stream().map(PoseHelper::toUnitless));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setWaypoints(waypoints);
   }

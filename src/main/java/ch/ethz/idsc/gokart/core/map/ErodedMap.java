@@ -22,6 +22,8 @@ import ch.ethz.idsc.tensor.Tensors;
     return new ErodedMap(imageGrid, imageGrid.lbounds.unmodifiable(), rangeCeil, dimension, obstacleRadius);
   }
 
+  // TODO JPH either extend image grid, or have member.
+  // ... design bad since super class is only partially used (imageGraphics)
   private final ImageGrid imageGrid;
   private final Scalar obsDilationRadius;
   private final Tensor cellDimHalfVec;
@@ -71,10 +73,5 @@ import ch.ethz.idsc.tensor.Tensors;
         pos.Get(1).multiply(cellDimInv).subtract(radiusScaled).number().doubleValue(), //
         2 * dim, 2 * dim);
     imageGraphics.fill(shape);
-  }
-
-  @Override // from OccupancyGrid
-  public void clearStart(int startX, int startY, double orientation) {
-    // ---
   }
 }

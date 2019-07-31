@@ -34,6 +34,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Round;
 
+// TODO JPH auto update graphics when control points change
 public class TrajectoryDesignModule extends AbstractModule {
   protected static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
   // ---
@@ -102,7 +103,7 @@ public class TrajectoryDesignModule extends AbstractModule {
       jButton.addActionListener(actionEvent -> {
         try {
           Export.of(rawFile, Tensor.of(trajectoryDesign.getControlPointsPose().stream().map(PoseHelper::toUnitless)).map(Round._4));
-          Export.of(wayFile, Tensor.of(TrajectoryConfig.GLOBAL.resampledWaypoints(trajectoryDesign.getControlPointsPose()) //
+          Export.of(wayFile, Tensor.of(TrajectoryConfig.GLOBAL.resampledWaypoints(trajectoryDesign.getControlPointsPose(), true) //
               .stream().map(PoseHelper::toUnitless)).map(Round._4));
         } catch (Exception exception) {
           exception.printStackTrace();
