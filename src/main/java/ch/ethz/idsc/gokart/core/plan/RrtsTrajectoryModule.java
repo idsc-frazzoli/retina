@@ -32,6 +32,7 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.alg.RotateLeft;
@@ -54,7 +55,7 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
 
   @Override // from GokartTrajectoryModule
   protected final TransitionPlanner setupTreePlanner(StateTime root, Tensor goal) {
-    int rootIdx = locate(root.state()).get();
+    int rootIdx = locate(root.state()).orElseThrow(() -> TensorRuntimeException.of(waypoints));
     Tensor segment = RotateLeft.of(waypoints, rootIdx).extract(0, Math.floorMod(locate(goal).get() - rootIdx + 1, waypoints.length()));
     LaneInterface lane = StableLane.of(SPLIT_INTERFACE, segment, goalRadius.Get(0));
     // ---
