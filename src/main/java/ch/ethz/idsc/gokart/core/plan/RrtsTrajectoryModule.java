@@ -13,6 +13,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
+import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.owl.math.lane.StableLane;
 import ch.ethz.idsc.owl.math.state.StateTime;
@@ -32,8 +33,8 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.alg.RotateLeft;
+import ch.ethz.idsc.tensor.opt.Pi;
 
 // TODO make configurable as parameter
 public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlanner> {
@@ -66,9 +67,12 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
         new LaneRrtsPlannerServer(transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, true) {
       @Override
       protected RrtsNodeCollection rrtsNodeCollection() {
-        Tensor lbound = Array.zeros(3);
-        Tensor ubound = Tensors.vector(60, 60, 2 * Math.PI);
-        return RrtsNodeCollections.clothoid(lbound, ubound); // TODO GJOEL/JPH replace with next owl version
+        Scalar r = goalRadius.Get(0);
+        MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
+        MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
+        return RrtsNodeCollections.clothoid( // TODO GJOEL/JPH replace with next owl version
+            Tensors.of(minMaxX.min().subtract(r), minMaxY.min().subtract(r), RealScalar.ZERO), //
+            Tensors.of(minMaxX.max().add(r), minMaxY.max().add(r), Pi.TWO));
       }
 
       @Override
