@@ -6,6 +6,7 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
+import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneSpacialProvider;
@@ -36,12 +37,12 @@ import ch.ethz.idsc.tensor.Tensor;
 
   @Override // from AbstractMapping
   public final void prepareMap() {
-    occupancyGrid.genObstacleMap();
+    imageGrid.genObstacleMap();
   }
 
   @Override // from AbstractMapping
   public final BayesianOccupancyGrid getMap() {
-    return occupancyGrid;
+    return imageGrid;
   }
 
   @Override // from Runnable
@@ -51,10 +52,10 @@ import ch.ethz.idsc.tensor.Tensor;
       if (Objects.nonNull(points) && //
           LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent)) {
         points_ferry = null;
-        occupancyGrid.setPose(gokartPoseEvent.getPose());
+        imageGrid.setPose(gokartPoseEvent.getPose());
         for (Tensor point : points) { // point x, y, z
           boolean isObstacle = spacialXZObstaclePredicate.isObstacle(point); // only x and z are used
-          occupancyGrid.processObservation( //
+          imageGrid.processObservation( //
               point, //
               isObstacle ? 1 : 0);
         }
@@ -65,5 +66,11 @@ import ch.ethz.idsc.tensor.Tensor;
           // ---
         }
     }
+  }
+
+  @Override
+  public Region<Tensor> getErodedRegion() {
+    // TODO JPH Auto-generated method stub
+    return null;
   }
 }

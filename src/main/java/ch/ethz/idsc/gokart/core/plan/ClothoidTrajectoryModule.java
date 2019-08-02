@@ -32,7 +32,7 @@ public class ClothoidTrajectoryModule extends GokartTrajectoryModule {
       List<TrajectorySample> tail = //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       trajectory = Trajectories.glue(head, tail);
-      PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
+      PlannerPublish.trajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
       // failure to reach goal
       // ante 20181025: previous trajectory was cleared

@@ -66,10 +66,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     trackReconManagement = new TrackReconManagement(mapping.getMap());
   }
 
-  public ImageGrid trackMapping() {
-    return mapping.getMap();
-  }
-
   @Override // from AbstractModule
   protected void first() {
     timerFrame.geometricComponent.setModel2Pixel(HANGAR_MODEL2PIXEL);

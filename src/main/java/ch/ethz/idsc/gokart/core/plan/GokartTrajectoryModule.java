@@ -51,7 +51,6 @@ import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.order.VectorLexicographic;
-import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
@@ -82,7 +81,7 @@ import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO make configurable as parameter
 public abstract class GokartTrajectoryModule extends AbstractClockedModule {
-  private static final VehicleModel STANDARD = RimoSinusIonModel.standard();
+  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
   private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
@@ -108,9 +107,9 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
   protected List<TrajectorySample> trajectory = null;
   /** waypoints are stored without units */
   private /* final */ Tensor waypoints;
-  private PlannerConstraint plannerConstraint;
   private final Tensor goalRadius;
-  private Region<Tensor> unionRegion;
+  /** predefinedObstacles contains known static obstacles */
+  private final Region<Tensor> predefinedObstacles;
   // TODO magic const redundant
   private /* final */ CostFunction waypointCost;
   /** arrives at 50[Hz] */
@@ -125,15 +124,12 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
     this.curvePursuitModule = curvePursuitModule;
     flowsInterface = Se2CarFlows.forward(SPEED, Magnitude.PER_METER.apply(trajectoryConfig.maxRotation));
     mapping = trajectoryConfig.getAbstractMapping();
-    MinMax minMax = MinMax.of(STANDARD.footprint());
-    Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
-    PredefinedMap predefinedMap = TrajectoryConfig.getPredefinedMapObstacles();
-    ImageRegion imageRegion = predefinedMap.getImageRegion();
-    // ---
-    unionRegion = RegionUnion.wrap(Arrays.asList( //
-        Se2PointsVsRegions.line(x_samples, imageRegion), mapping.getMap()));
-    plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
-    // ---
+    {
+      MinMax minMax = MinMax.of(VEHICLE_MODEL.footprint());
+      Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
+      PredefinedMap predefinedMap = TrajectoryConfig.getPredefinedMapObstacles();
+      predefinedObstacles = Se2PointsVsRegions.line(x_samples, predefinedMap.getImageRegion());
+    }
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
     final Scalar goalRadius_theta = SQRT2.divide(PARTITIONSCALE.Get(2));
     goalRadius = Tensors.of(goalRadius_xy, goalRadius_xy, goalRadius_theta);
@@ -149,10 +145,6 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
         new Dimension(640, 640)); // resolution of image
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setWaypoints(waypoints);
-  }
-
-  public ImageGrid obstacleMapping() {
-    return mapping.getMap();
   }
 
   @Override // from AbstractClockedModule
@@ -181,9 +173,12 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
   @Override // from AbstractClockedModule
   protected synchronized void runAlgo() {
     System.out.println("entering...");
-    mapping.prepareMap();
     if (Objects.nonNull(gokartPoseEvent)) {
       if (Objects.nonNull(waypoints) && Tensors.nonEmpty(waypoints)) {
+        mapping.prepareMap();
+        Region<Tensor> unionRegion = RegionUnion.wrap(Arrays.asList( //
+            predefinedObstacles, mapping.getMap()));
+        PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
         final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
         System.out.println("setup planner, tangent speed=" + tangentSpeed);
         final Tensor xya = PoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
@@ -210,10 +205,11 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
           Scalars.lessEquals(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), trajectoryConfig.horizonDistance) || unionRegion.isMember(goal);
           Iterator<Tensor> iterator = RotateLeft.of(waypoints, wpIdx).iterator();
           Tensor goal = iterator.next();
+          // TODO GJOEL/JPH criterion is too primitive
           while (iterator.hasNext() && conflicts.test(goal))
             goal = iterator.next();
           if (conflicts.test(goal))
-            System.err.println("no feasible goal found"); // TODO JPH
+            System.err.println("no feasible goal-waypoint found"); // TODO GJOEL/JPH
           // System.out.format("goal index = " + wpIdx + ", distance = %.2f \n", SE2WRAP.distance(xya, goal).number().floatValue());
           int resolution = trajectoryConfig.controlResolution.number().intValue();
           Collection<Flow> controls = flowsInterface.getFlows(resolution);
@@ -245,7 +241,7 @@ public abstract class GokartTrajectoryModule extends AbstractClockedModule {
     } else
       System.err.println("no curve because no pose");
     curvePursuitModule.setCurve(Optional.empty());
-    PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
+    PlannerPublish.trajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }
 
   /** @param trajectory
