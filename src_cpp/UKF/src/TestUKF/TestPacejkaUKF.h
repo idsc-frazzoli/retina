@@ -2,17 +2,12 @@
 // Created by maximilien on 22.05.19.
 //
 
-#pragma once
-#define NP 3
-#define NM 1
-#define NI 500
-
-
 #include "../UnscentedKalmanFilter.h"
 
 
 class TestPacejkaUKF {
 public:
+
     typedef UnscentedKalmanFilter<NP, NM, NI> UKF;
 
     void test(
@@ -21,6 +16,7 @@ public:
             UKF::ParameterMat variance
             );
 
+    // debug variables
     double rmse = 0;
     double convergence = 0;
 

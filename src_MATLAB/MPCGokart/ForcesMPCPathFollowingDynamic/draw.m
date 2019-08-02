@@ -38,7 +38,7 @@ for i=1:nu-1
     x = [p(i,1),p(next,1)];
    y = [p(i,2),p(next,2)];
    vc = acc(i)/maxacc;
-   line(x,y,'Color',[0.5-0.5*vc,0.5+0.5*vc,0]);
+   line(x,y,'Color',[0.5-0.5*vc,0.5+0.5*vc,0]); %%TODO MH not working
    %draw angle
    spc = spc+1;
    if(spc>=spacing)

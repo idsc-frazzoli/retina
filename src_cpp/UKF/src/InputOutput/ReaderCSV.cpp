@@ -13,10 +13,11 @@ using namespace Eigen;
 template <typename M>
 M load_csv (const std::string & path) {
 
-    // TODO condition for non empty file
-
     std::ifstream indata;
     indata.open(path);
+    if (indata.fail()){
+        std::cout << "File non existing, manually create it" << std::endl;
+    }
     std::string line;
     std::vector<double> values;
     uint rows = 0;
