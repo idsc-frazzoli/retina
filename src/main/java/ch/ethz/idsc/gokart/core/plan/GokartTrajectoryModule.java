@@ -54,6 +54,7 @@ import ch.ethz.idsc.tensor.alg.RotateLeft;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.ArgMin;
+import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
@@ -154,10 +155,16 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
           StateTime stateTime = new StateTime(xya, RealScalar.ZERO);
           head = Collections.singletonList(TrajectorySample.head(stateTime));
         } else {
-          // yes: plan from closest point + cutoffDist on previous trajectory
-          System.out.println("plan from closest point + cutoffDist on previous trajectory");
+          // yes: try to plan from closest point + cutoffDist on previous trajectory
           Scalar cutoffDist = trajectoryConfig.getCutoffDistance(tangentSpeed);
-          head = getTrajectoryUntil(xya, Magnitude.METER.apply(cutoffDist));
+          head = getTrajectoryUntil(xya, Magnitude.METER.apply(cutoffDist)).map(trj -> { // is the previous trajectory still valid?
+            System.out.println("plan from closest point + cutoffDist on previous trajectory"); // yes
+            return trj;
+          }).orElseGet(() -> {
+            System.out.println("plan from current position"); // no
+            StateTime stateTime = new StateTime(xya, RealScalar.ZERO);
+            return Collections.singletonList(TrajectorySample.head(stateTime));
+          });
         }
         if (head.isEmpty()) {
           System.err.println("head is empty");
@@ -192,17 +199,20 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
    * @param cutoffDistHead non-negative unit-less
    * @return
    * @throws Exception if cutoffDistHead is negative, or no waypoints are present */
-  private List<TrajectorySample> getTrajectoryUntil(Tensor pose, Scalar cutoffDistHead) {
+  private Optional<List<TrajectorySample>> getTrajectoryUntil(Tensor pose, Scalar cutoffDistHead) {
     int closestIdx = locate(trajectory, pose);
     Tensor closest = trajectory.get(closestIdx).stateTime().state();
-    return trajectory.stream() //
-        .skip(Math.max(closestIdx - 5, 0)) // TODO magic const
-        .filter(trajectorySample -> Scalars.lessEquals( //
-            Norm._2.ofVector(SE2WRAP.difference(closest, trajectorySample.stateTime().state())), Sign.requirePositiveOrZero(cutoffDistHead))) //
-        .collect(Collectors.toList());
+    if (Scalars.lessThan(Norm._2.ofVector(SE2WRAP.difference(pose, closest)), trajectoryConfig.proximityDistance)) {
+      return Optional.of(trajectory.stream() //
+          .skip(Math.max(closestIdx - 5, 0)) // TODO magic const
+          .filter(trajectorySample -> Scalars.lessEquals( //
+              Norm._2.ofVector(SE2WRAP.difference(closest, trajectorySample.stateTime().state())), Sign.requirePositiveOrZero(cutoffDistHead))) //
+          .collect(Collectors.toList()));
+    }
+    return Optional.empty();
   }
 
-  protected static final int locate(Collection<TrajectorySample> trajectory, Tensor state) {
+  protected static int locate(Collection<TrajectorySample> trajectory, Tensor state) {
     if (Objects.isNull(trajectory) || trajectory.isEmpty()) {
       trajectory.forEach(System.err::println);
       throw TensorRuntimeException.of(state);
@@ -210,13 +220,13 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
     return locate(trajectory.stream().map(TrajectorySample::stateTime).map(StateTime::state), state);
   }
 
-  protected static final int locate(Tensor waypoints, Tensor state) {
+  protected static int locate(Tensor waypoints, Tensor state) {
     if (Objects.isNull(waypoints) || Tensors.isEmpty(waypoints))
       throw TensorRuntimeException.of(state, waypoints);
     return locate(waypoints.stream(), state);
   }
 
-  private static final int locate(Stream<Tensor> stream, Tensor state) {
+  private static int locate(Stream<Tensor> stream, Tensor state) {
     Tensor distances = Tensor.of(stream.map(wp -> Norm._2.ofVector(SE2WRAP.difference(wp, state))));
     return ArgMin.of(distances); // find closest waypoint to current position, exists since waypoints is non-null/-empty
   }
