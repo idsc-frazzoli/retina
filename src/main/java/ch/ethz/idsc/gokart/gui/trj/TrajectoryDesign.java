@@ -145,7 +145,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   public Tensor getRefinedCurve() {
     Tensor control = getControlPointsPose();
     int degree = spinnerLabelDegree.getValue();
-    CurveSubdivision curveSubdivision = new LaneRiesenfeldCurveSubdivision(geodesicDisplay().geodesicInterface(), degree);
+    CurveSubdivision curveSubdivision = LaneRiesenfeldCurveSubdivision.of(geodesicDisplay().geodesicInterface(), degree);
     int levels = spinnerLabelLevels.getValue();
     return Nest.of(curveSubdivision::cyclic, control, levels);
   }

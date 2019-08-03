@@ -15,7 +15,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.sophus.lie.se2.Se2ParametricDistance;
+import ch.ethz.idsc.sophus.hs.r2.Se2ParametricDistance;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;

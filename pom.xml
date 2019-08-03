@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
-			<version>0.4.8</version>
+			<version>0.4.9</version>
 		</dependency>
 
 		<dependency>

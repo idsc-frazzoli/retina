@@ -86,6 +86,7 @@ public class SightLinesMapping extends AbstractMapping<SightLineOccupancyGrid> {
 
   @Override
   public Region<Tensor> getErodedRegion() {
+    // ImageRegion
     // TODO JPH Auto-generated method stub
     return null;
   }
