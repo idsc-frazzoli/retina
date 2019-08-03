@@ -26,7 +26,7 @@ import ch.ethz.idsc.retina.util.math.AxisAlignedBox;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.app.api.PathRender;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -103,7 +103,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
           .map(tuo -> tuo.apply(COG)));
       pathRender.setCurve(points, false).render(geometricLayer, graphics);
     }
-    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
+    geometricLayer.pushMatrix(Se2Matrix.of(xya));
     {
       Path2D path2d = geometricLayer.toPath2D(FOOTPRINT);
       path2d.closePath();

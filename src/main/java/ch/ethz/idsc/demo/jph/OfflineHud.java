@@ -32,7 +32,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.region.ImageRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -108,7 +108,7 @@ public class OfflineHud implements OfflineLogListener {
         }).unmodifiable();
         // geometricLayer.pushMatrix(PREDEFINED_MAP.getModel2Pixel());
         geometricLayer.pushMatrix(model2pixel);
-        geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(Tensors.vector(-25, 40, -.6)));
+        geometricLayer.pushMatrix(Se2Matrix.of(Tensors.vector(-25, 40, -.6)));
         {
           geometricLayer.pushMatrix(DiagonalMatrix.of(1 / 7.5, 1 / 7.5, 1));
           renderInterface.render(geometricLayer, graphics);

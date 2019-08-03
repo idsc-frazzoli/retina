@@ -9,7 +9,7 @@ import java.awt.geom.Point2D;
 import ch.ethz.idsc.owl.gui.ColorLookup;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.sophus.util.BoundedLinkedList;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -70,7 +70,7 @@ public abstract class CrosshairRender implements RenderInterface {
     synchronized (boundedLinkedList) {
       int count = 0;
       for (Tensor velXY : boundedLinkedList) {
-        geometricLayer.pushMatrix(Se2Utils.toSE2Translation(velXY));
+        geometricLayer.pushMatrix(Se2Matrix.translation(velXY));
         graphics.setColor(colorDataIndexed.getColor(count));
         graphics.fill(geometricLayer.toPath2D(POLYGON));
         geometricLayer.popMatrix();

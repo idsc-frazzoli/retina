@@ -41,7 +41,7 @@ import ch.ethz.idsc.owl.gui.ren.TrajectoryRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.sophus.app.api.PathRender;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -78,12 +78,12 @@ import ch.ethz.idsc.tensor.sca.Round;
     this.poseChannel = poseChannel;
     accelerationRender = new AccelerationRender(50, //
         Inverse.of(model2pixel) //
-            .dot(Se2Utils.toSE2Matrix(Tensors.vector(960 + 250, 140, 0))) //
-            .dot(Se2Utils.toSE2Matrix(Tensors.vector(0, 0, -Math.PI / 2))) //
+            .dot(Se2Matrix.of(Tensors.vector(960 + 250, 140, 0))) //
+            .dot(Se2Matrix.of(Tensors.vector(0, 0, -Math.PI / 2))) //
             .dot(DiagonalMatrix.of(8, -8, 1)));
     Tensor matrix = Inverse.of(model2pixel) //
-        .dot(Se2Utils.toSE2Matrix(Tensors.vector(960 - 250, 140, 0))) //
-        .dot(Se2Utils.toSE2Matrix(Tensors.vector(0, 0, -Math.PI / 2))) //
+        .dot(Se2Matrix.of(Tensors.vector(960 - 250, 140, 0))) //
+        .dot(Se2Matrix.of(Tensors.vector(0, 0, -Math.PI / 2))) //
         .dot(DiagonalMatrix.of(10, -10, 1));
     groundSpeedRender = new GroundSpeedRender(50, matrix);
     angularSlipRender = new AngularSlipRender(matrix);
