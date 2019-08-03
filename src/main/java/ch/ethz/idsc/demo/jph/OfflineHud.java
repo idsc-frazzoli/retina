@@ -53,7 +53,7 @@ public class OfflineHud implements OfflineLogListener {
   public static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.GLOBAL.getPredefinedMap();
   // ---
   private final Scalar delta;
-  final RenderInterface renderInterface = new ImageRender( //
+  final RenderInterface renderInterface = ImageRender.scale( //
       PREDEFINED_MAP.getImage(), Tensors.vector(1, 1));
   final GokartRender gokartRender = new GlobalGokartRender();
   final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);

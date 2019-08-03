@@ -10,7 +10,7 @@ import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
 import ch.ethz.idsc.tensor.red.Nest;
 
 public class ClothoidPlanRender extends PathRender implements ClothoidPlanListener {
-  private final static int REFINEMENT = 5;
+  private final static int REFINEMENT = 3;
 
   public ClothoidPlanRender(Color color) {
     super(color);
