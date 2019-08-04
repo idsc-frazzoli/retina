@@ -16,7 +16,7 @@ import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 
 // TODO make configurable as parameter
-public class ClothoidTrajectoryModule extends GokartTrajectoryModule {
+public class ClothoidTrajectoryModule extends GlcTrajectoryModule {
   public ClothoidTrajectoryModule() {
     this(TrajectoryConfig.GLOBAL);
   }

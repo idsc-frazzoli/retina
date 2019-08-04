@@ -38,9 +38,8 @@ public class CurveClothoidPursuitPlanner {
    * @return geodesic plan */
   public Optional<ClothoidPlan> getPlan(Tensor pose, Tensor speed, Tensor curve, boolean closed, boolean isForward) {
     Optional<ClothoidPlan> optional = replanning(pose, speed, curve, closed, isForward);
-    if (optional.isPresent())
-      // TODO GJOEL/JPH publishing of plan should happen outside of class
-      PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, Last.of(optional.get().curve()), isForward);
+    // TODO GJOEL/JPH publishing of plan should happen outside of class
+    optional.ifPresent(plan -> PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, Last.of(plan.curve()), isForward));
     return optional;
   }
 
