@@ -12,10 +12,12 @@ import ch.ethz.idsc.gokart.core.pure.CurvePursuitModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
+import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidRrtsNdType;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.owl.math.lane.StableLane;
+import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.rrts.LaneRrtsPlannerServer;
@@ -65,25 +67,30 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
     TransitionRegionQuery transitionRegionQuery = TransitionRegionQueryUnion.wrap(transitionRegionQueries);
     LaneRrtsPlannerServer laneRrtsPlannerServer = //
         new LaneRrtsPlannerServer(transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, true) {
-      @Override
-      protected RrtsNodeCollection rrtsNodeCollection() {
-        Scalar r = goalRadius.Get(0);
-        MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
-        MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
-        return RrtsNodeCollections.clothoid( // TODO GJOEL/JPH replace with next owl version
-            Tensors.of(minMaxX.min().subtract(r), minMaxY.min().subtract(r), RealScalar.ZERO), //
-            Tensors.of(minMaxX.max().add(r), minMaxY.max().add(r), Pi.TWO));
-      }
+          @Override
+          protected RrtsNodeCollection rrtsNodeCollection() {
+            Scalar r = goalRadius.Get(0);
+            MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
+            MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
+            Tensor lbounds_ = Tensors.of(minMaxX.min().subtract(r), minMaxY.min().subtract(r), RealScalar.ZERO);
+            Tensor ubounds_ = Tensors.of(minMaxX.max().add(r), minMaxY.max().add(r), Pi.TWO);
+            return new RrtsNodeCollections(ClothoidRrtsNdType.INSTANCE, lbounds_, ubounds_);
+          }
 
-      @Override
-      protected Tensor uBetween(StateTime orig, StateTime dest) {
-        return RrtsFlowHelper.U_SE2.apply(orig, dest);
-      }
-    };
+          @Override
+          protected Tensor uBetween(StateTime orig, StateTime dest) {
+            return RrtsFlowHelper.U_SE2.apply(orig, dest);
+          }
+        };
     laneRrtsPlannerServer.setState(root);
     laneRrtsPlannerServer.setGoal(goal);
     laneRrtsPlannerServer.accept(lane);
     return laneRrtsPlannerServer;
+  }
+
+  private Region<Tensor> obstacleMapping() {
+    // FIXME GJOEL MERGING ISSUES!
+    throw new RuntimeException();
   }
 
   @Override // from GokartTrajectoryModule
@@ -92,7 +99,7 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
     if (optional.isPresent()) {
       trajectory = Trajectories.glue(head, optional.get());
       curvePursuitModule.setTrajectory(optional.get());
-      PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
+      PlannerPublish.trajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
       // failure to reach goal
       // ante 20181025: previous trajectory was cleared

@@ -10,6 +10,6 @@ import ch.ethz.idsc.tensor.Scalar;
 
   /** set the current wheel rate
    * 
-   * @param vel_avg current wheel rate unit "s^-1" */
+   * @param vel_avg current wheel rate (average) with unit "s^-1" */
   void setWheelRate(Scalar vel_avg);
 }

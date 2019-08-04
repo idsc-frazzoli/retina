@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.app.api.AbstractDemo;
 import ch.ethz.idsc.sophus.app.api.ControlPointsDemo;
 import ch.ethz.idsc.sophus.app.api.GeodesicDisplays;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
@@ -41,7 +41,7 @@ public class BSplineTrackDemo extends ControlPointsDemo {
     points_xyr.set(Ramp.FUNCTION, Tensor.ALL, 2);
     {
       for (Tensor point : points_xyr) {
-        geometricLayer.pushMatrix(Se2Utils.toSE2Translation(point));
+        geometricLayer.pushMatrix(Se2Matrix.translation(point));
         Path2D path2d = geometricLayer.toPath2D(CIRCLE.multiply(point.Get(2)));
         path2d.closePath();
         graphics.setStroke(new BasicStroke(4f));
@@ -61,7 +61,7 @@ public class BSplineTrackDemo extends ControlPointsDemo {
       if (jToggleView.isSelected()) {
         Tensor position = geometricLayer.getMouseSe2State().extract(0, 2).map(s -> Quantity.of(s, SI.METER));
         Tensor nearestPosition = bSplineTrack.getNearestPosition(position);
-        geometricLayer.pushMatrix(Se2Utils.toSE2Translation(nearestPosition.map(Magnitude.METER)));
+        geometricLayer.pushMatrix(Se2Matrix.translation(nearestPosition.map(Magnitude.METER)));
         boolean inTrack = bSplineTrack.isInTrack(position);
         graphics.setColor(inTrack ? Color.GREEN : Color.RED);
         graphics.setStroke(new BasicStroke(2f));

@@ -32,6 +32,8 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.data.Lists;
 import ch.ethz.idsc.owl.data.tree.TreePlanner;
 import ch.ethz.idsc.owl.glc.adapter.Expand;
+import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
+import ch.ethz.idsc.owl.glc.core.PlannerConstraint;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
@@ -54,14 +56,13 @@ import ch.ethz.idsc.tensor.alg.RotateLeft;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.ArgMin;
-import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Sign;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO make configurable as parameter
 public abstract class GokartTrajectoryModule<T extends TreePlanner> extends AbstractClockedModule {
-  private static final VehicleModel STANDARD = RimoSinusIonModel.standard();
+  private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
   protected static final Tensor PARTITIONSCALE = Tensors.of( //
       RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
@@ -84,6 +85,8 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
   private GokartPoseEvent gokartPoseEvent = null;
   protected List<TrajectorySample> trajectory = null;
   /** waypoints are stored without units */
+  /** predefinedObstacles contains known static obstacles */
+  private final Region<Tensor> predefinedObstacles;
   protected Tensor waypoints;
   protected Region<Tensor> unionRegion;
 
@@ -91,7 +94,14 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
     this.trajectoryConfig = trajectoryConfig;
     this.curvePursuitModule = curvePursuitModule;
     mapping = trajectoryConfig.getAbstractMapping();
-    MinMax minMax = MinMax.of(STANDARD.footprint());
+    // FIXME GJOEL MERGING ISSUES?
+    {
+      MinMax minMax = MinMax.of(VEHICLE_MODEL.footprint());
+      Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
+      PredefinedMap predefinedMap = TrajectoryConfig.getPredefinedMapObstacles();
+      predefinedObstacles = Se2PointsVsRegions.line(x_samples, predefinedMap.getImageRegion());
+    }
+    MinMax minMax = MinMax.of(VEHICLE_MODEL.footprint());
     Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
     PredefinedMap predefinedMap = TrajectoryConfig.getPredefinedMapObstacles();
     ImageRegion imageRegion = predefinedMap.getImageRegion();
@@ -108,10 +118,6 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
     waypoints = Tensor.of(trajectoryConfig.resampledWaypoints(curve, true).stream().map(PoseHelper::toUnitless));
     if (Objects.nonNull(globalViewLcmModule))
       globalViewLcmModule.setWaypoints(waypoints);
-  }
-
-  public ImageGrid obstacleMapping() {
-    return mapping.getMap();
   }
 
   @Override // from AbstractClockedModule
@@ -140,9 +146,12 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
   @Override // from AbstractClockedModule
   protected synchronized void runAlgo() {
     System.out.println("entering...");
-    mapping.prepareMap();
     if (Objects.nonNull(gokartPoseEvent)) {
       if (Objects.nonNull(waypoints) && Tensors.nonEmpty(waypoints)) {
+        mapping.prepareMap();
+        Region<Tensor> unionRegion = RegionUnion.wrap(Arrays.asList( //
+            predefinedObstacles, mapping.getMap()));
+        PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
         final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
         System.out.println("setup planner, tangent speed=" + tangentSpeed);
         final Tensor xya = PoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();
@@ -170,9 +179,10 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
           System.err.println("head is empty");
         } else {
           Predicate<Tensor> conflicts = goal -> //
-              Scalars.lessEquals(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), trajectoryConfig.horizonDistance) || unionRegion.isMember(goal);
+          Scalars.lessEquals(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), trajectoryConfig.horizonDistance) || unionRegion.isMember(goal);
           Iterator<Tensor> iterator = RotateLeft.of(waypoints, locate(waypoints, xya)).iterator();
           Tensor goal = iterator.next();
+          // TODO GJOEL/JPH criterion is too primitive
           while (iterator.hasNext() && conflicts.test(goal))
             goal = iterator.next();
           if (conflicts.test(goal))
@@ -192,7 +202,7 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
     } else
       System.err.println("no curve because no pose");
     curvePursuitModule.setCurve(Optional.empty());
-    PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
+    PlannerPublish.trajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }
 
   /** @param pose
