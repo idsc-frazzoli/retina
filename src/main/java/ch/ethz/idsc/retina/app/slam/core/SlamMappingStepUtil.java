@@ -1,8 +1,8 @@
 // code by mg
 package ch.ethz.idsc.retina.app.slam.core;
 
-import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.app.slam.MapProvider;
+import ch.ethz.idsc.sophus.hs.r2.Se2Bijection;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 

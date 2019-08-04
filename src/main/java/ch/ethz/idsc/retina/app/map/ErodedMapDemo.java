@@ -13,6 +13,7 @@ import java.util.Arrays;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.region.ImageRender;
 import ch.ethz.idsc.owl.gui.ren.AxesRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
@@ -41,7 +42,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
     matrix = Se2Matrix.of(Tensors.vector(1, 0, 0.3)) //
         .dot(DiagonalMatrix.of(0.1, 0.1, 1)) //
         .dot(Se2Matrix.flipY(bufferedImage.getHeight()));
-    EroMap eroMap = new EroMap(bufferedImage, matrix);
+    ErodableMap eroMap = new ErodableMap(bufferedImage, matrix);
     timerFrame1.geometricComponent.addRenderInterface(eroMap);
     {
       LazyMouseListener lazyMouseListener = new LazyMouseListener() {
@@ -78,7 +79,9 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
         int radius = spinnerRefine.getValue();
         BufferedImageRegion bufferedImageRegion = eroMap.erodedRegion(radius);
         // ---
-        bufferedImageRegion.render(geometricLayer, graphics);
+        ImageRender.of(bufferedImageRegion.bufferedImage(), bufferedImageRegion.pixel2model()) //
+            // bufferedImageRegion
+            .render(geometricLayer, graphics);
         // ---
         for (Tensor _x : Subdivide.of(0, 7, 23)) {
           for (Tensor _y : Subdivide.of(0, 6, 23)) {

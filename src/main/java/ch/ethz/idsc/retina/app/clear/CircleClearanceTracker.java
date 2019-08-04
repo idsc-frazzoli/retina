@@ -4,8 +4,8 @@ package ch.ethz.idsc.retina.app.clear;
 import java.io.Serializable;
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.sophus.hs.r2.Se2AxisYProject;
+import ch.ethz.idsc.sophus.hs.r2.Se2Bijection;
 import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringExponential;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
