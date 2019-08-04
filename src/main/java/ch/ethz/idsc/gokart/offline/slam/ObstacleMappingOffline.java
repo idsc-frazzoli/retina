@@ -56,7 +56,7 @@ public class ObstacleMappingOffline extends LidarProcessOffline {
       File folder = HomeDirectory.Pictures("eroded");
       folder.mkdir();
       try {
-        ImageIO.write(erodableMap.erodedRegion(3.2).bufferedImage(), "png", new File(folder, String.format("%06d.png", count)));
+        ImageIO.write(erodableMap.erodedRegion(3).bufferedImage(), "png", new File(folder, String.format("%06d.png", count)));
         System.out.println("written " + count);
       } catch (Exception exception) {
         exception.printStackTrace();

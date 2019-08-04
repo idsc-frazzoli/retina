@@ -63,7 +63,7 @@ public class ErodableMap implements RenderInterface {
 
   /** @param radius 0 means no erosion
    * @return */
-  /* package */ BufferedImage createErodedMap(double radius) {
+  /* package */ BufferedImage createErodedMap(int radius) {
     BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
     double rad = radius + 0.5;
     double wid = rad * 2;
@@ -80,7 +80,13 @@ public class ErodableMap implements RenderInterface {
     return bufferedImage;
   }
 
-  public BufferedImageRegion erodedRegion(double radius) {
+  /** Hint:
+   * The parameter radius is intentionally of type integer, because the
+   * drawing into the black/white image does not support higher precision!
+   * 
+   * @param radius
+   * @return */
+  public BufferedImageRegion erodedRegion(int radius) {
     return new BufferedImageRegion(createErodedMap(radius), pixel2model, true);
   }
 
