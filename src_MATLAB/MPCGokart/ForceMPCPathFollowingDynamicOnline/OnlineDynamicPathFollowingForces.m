@@ -1,8 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Dynamic MPC Script
+% **Online** Dynamic MPC Script
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % code by mh
-% annotation mcp
+% annotation and adaptation for online estimation by mcp
+%
+% This script take about 10 min to create and compile 
 
 
 %add force path (change that for yourself)
@@ -27,9 +29,7 @@ pointsO = 4;
 pointsN = 10;
 splinestart = 1;
 nextsplinepoints = 0;
-%parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
-% variables z =
-% [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
+
 
 
 %% global parameters index
@@ -62,9 +62,9 @@ solvetimes = [];
 integrator_stepsize = 0.1;
 
 %% model params
-model.N = 31;                       % Forward horizon
-model.nvar = index.nv;              % = 14
-model.neq = index.ns;               % = 9
+model.N = 31;
+model.nvar = index.nv;
+model.neq = index.ns;
 model.eq = @(z,p) RK4( ...
     z(index.sb:end), ...
     z(1:index.nu), ...
@@ -78,41 +78,19 @@ l = 1;
 %limit lateral acceleration
 model.nh = 5; 
 model.ineq = @(z,p) nlconst(z,p);
-%model.hu = [36,0];
-%model.hl = [-inf,-inf];
 model.hu = [0;0;1;0;0];
 model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 
 % Random control points for trajectory sampling
-%points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
-  %  controlPointsX.append(Quantity.of(36.2, SI.METER));
-  %  controlPointsX.append(Quantity.of(52, SI.METER));
-  %  controlPointsX.append(Quantity.of(57.2, SI.METER));
-  %  controlPointsX.append(Quantity.of(53, SI.METER));
-  %  controlPointsX.append(Quantity.of(52, SI.METER));
-  %  controlPointsX.append(Quantity.of(47, SI.METER));
-  %  controlPointsX.append(Quantity.of(41.8, SI.METER));
-  %  // Y
-  %  controlPointsY.append(Quantity.of(44.933, SI.METER));
-  %  controlPointsY.append(Quantity.of(58.2, SI.METER));
-  %  controlPointsY.append(Quantity.of(53.8, SI.METER));
-  %  controlPointsY.append(Quantity.of(49, SI.METER));
-  %  controlPointsY.append(Quantity.of(47, SI.METER));
-  %  controlPointsY.append(Quantity.of(43, SI.METER));
-  %  controlPointsY.append(Quantity.of(38.333, SI.METER));  
 points = [36.2,52,57.2,53,52,47,41.8;...          %x
           44.933,58.2,53.8,49,44,43,38.33; ...    %y
           1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
-%points = getPoints('/wildpoints.csv');
 points(:,3)=points(:,3)-0.2;
-%points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
-%points = [0,40,40,5,0;0,0,10,9,10]';
 
 
 
 trajectorytimestep = integrator_stepsize;
-%[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 model.npar = pointsO + 3*pointsN;
 for i=1:model.N
    model.objective{i} = @(z,p)objective(...
@@ -123,23 +101,16 @@ for i=1:model.N
        p(index.pax),...
        p(index.pbeta));
 end
-%model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
 
 model.xinitidx = index.sb:index.nv;
-% variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
-%model.ub(index.dotbeta)=5;
-%model.lb(index.dotbeta)=-5;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
-%model.ub(index.ab)=2;
 model.lb(index.ab)=-4.5;
 model.lb(index.ab)=-inf;
 model.ub(index.tv)=1.7;
 model.lb(index.tv)=-1.7;
-%model.ub(index.tv)=0.1;
-%model.lb(index.tv)=-0.1;
 model.lb(index.slack)=0;
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;
@@ -147,13 +118,11 @@ model.lb(index.beta)=-0.5;
 model.ub(index.s)=pointsN-2;
 model.lb(index.s)=0;
 
-%model.ub = [inf, +5, 1.6, +inf, +inf, +inf, +inf,0.45,pointsN-2,85];  % simple upper bounds 
-%model.lb = [-inf, -5, -0.1, -inf, -inf,  -inf, 0,-0.45,0,-inf];  % simple lower bounds 
 
 
 
 %% CodeOptions for FORCES solver
-codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
+codeoptions = getOptions('OnlineMPCPathFollowing'); % Needed FORCES License and Casadi 2.4.2 or above
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
@@ -162,13 +131,11 @@ codeoptions.timing = 1;
 
 output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
-FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
+FORCES_NLP(model, codeoptions, output); % Needed FORCES License and Casadi 2.4.2 or above
 
 tend = 1000;
 eulersteps = 10;
 planintervall = 1
-%[...,x,y,theta,v,ab,beta,s,braketemp]
-%[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
 fpoints = points(1:2,1:2);
 pdir = diff(fpoints);
 [pstartx,pstarty] = casadiDynamicBSPLINE(0.01,points);
@@ -181,7 +148,6 @@ xs(index.v-index.nu)=5;
 xs(index.ab-index.nu)=0;
 xs(index.beta-index.nu)=0;
 xs(index.s-index.nu)=0.01;
-%xs(index.braketemp-index.nu)=40;
 history = zeros(tend*eulersteps,model.nvar+1);
 splinepointhist = zeros(tend,pointsN*3+1);
 plansx = [];
@@ -190,12 +156,9 @@ planss = [];
 targets = [];
 planc = 10;
 x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
-%x0 = zeros(model.N*model.nvar,1); 
 tstart = 1;
-%paras = ttpos(tstart:tstart+model.N-1,2:3)';
 for i =1:tend
     tstart = i;
-    %model.xinit = [0,5,0,0.1,0,0];
 
     %find bspline
     if(1)
@@ -204,12 +167,8 @@ for i =1:tend
             %spline step forward
             splinestart = splinestart+1;
             xs(index.s-index.nu)=xs(index.s-index.nu)-1;
-            %if(splinestart>pointsN)
-                %splinestart = splinestart-pointsN;
-            %end
         end
     end
-    %xs(6)=xs(6)+normrnd(0,0.04);
     xs(index.ab-index.nu)=min(casadiGetMaxAcc(xs(index.v-index.nu))-0.0001,xs(index.ab-index.nu));
     problem.xinit = xs';
     %do it every time because we don't care about the performance of this
@@ -227,14 +186,11 @@ for i =1:tend
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     
     
-    %paras = ttpos(tstart:tstart+model.N-1,2:3)';
     problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints) , model.N ,1);
-    %problem.all_parameters = zeros(22,1);
     problem.x0 = x0(:);
-    %problem.x0 = rand(341,1);
     
     % solve mpc
-    [output,exitflag,info] = MPCPathFollowing(problem);
+    [output,exitflag,info] = OnlineMPCPathFollowing(problem);
     solvetimes(end+1)=info.solvetime;
     if(exitflag==0)
        a = 1; 
@@ -262,6 +218,8 @@ for i =1:tend
        targets = [targets;tx,ty];
     end
 end
+
 %[t,ab,dotbeta,x,y,theta,v,beta,s]
-draw
+
+% draw %%TODO MH ttpos undefined
 

@@ -2,29 +2,26 @@
 // Created by maximilien on 22.05.19.
 //
 
-#pragma once
-#define NP 10
-#define NM 1
-#define NI 500
-
-
 #include "../UnscentedKalmanFilter.h"
 
 
 class TestUKF {
 public:
-    void test();
+
     typedef UnscentedKalmanFilter<NP, NM, NI> UKF;
+
+    void test();
+
     static UKF::MeasurementVec measureFunction(UKF::ParameterVec parameter, double k);
 
+    // debug variables
     double rmse = 0;
     double convergence = 0;
-
-    double groundTruthWeight = 300;
+    double weightGroundTruth = 300;
 
 private:
     bool print = false;
-    bool writeCSV = false;
+    bool writeCSV = true;
 
 };
 

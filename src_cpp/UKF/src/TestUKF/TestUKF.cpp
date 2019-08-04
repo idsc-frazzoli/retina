@@ -3,7 +3,7 @@
 // based on https://www.mathworks.com/matlabcentral/fileexchange/18217-learning-the-unscented-kalman-filter
 //
 
-#include "../Test/TestUKF.h"
+#include "../TestUKF/TestUKF.h"
 #include "../InputOutput/WriterUKF.h"
 #include "../InputOutput/ReaderCSV.cpp"
 #include <iostream>
@@ -19,8 +19,8 @@ void TestUKF::test() {
 
     // init
     // *******************************************************************
-    double q = 0; //std of process
-    double r = 0; //std of measurement
+    double q = 0.1; //std of process
+    double r = 0.1; //std of measurement
     UKF::ParameterMat processCov = UKF::ParameterMat::Identity() * q; // cov of process
     UKF::MeasurementMat measureCov = UKF::MeasurementMat::Identity() * r; // cov of measurement
 
@@ -34,7 +34,7 @@ void TestUKF::test() {
 
     // extract slip
     Eigen::MatrixXd data =
-            load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/slip_20190708T114135_f3f46a8b.lcm.00.csv");
+            load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/pacejkaFull_20190708T114135_f3f46a8b.lcm.00.csv");
 
     //UKF
     UKF ukf = UKF(x, P);
@@ -118,23 +118,22 @@ void TestUKF::test() {
                 z);
 
         //for plotting
-        Eigen::MatrixXd value(4, 1);
-        value << i, ukf.mean(0), ukf.mean(1), ukf.mean(2);
+        Eigen::MatrixXd value(NP+1, 1);
+        value << i, ukf.mean(0), ukf.mean(1), ukf.mean(2), ukf.mean(3), ukf.mean(4), ukf.mean(5), ukf.mean(6), ukf.mean(7), ukf.mean(8), ukf.mean(9);
         params.col(i) = value;
     }
 
-    // print
     if (print){
         std::cout << "params" << std::endl << params << std::endl;
     }
 
     // compute rmse Weight
     for (int i = 0; i < NI; i++){
-        rmse += std::sqrt(pow(params(10,i) - groundTruthWeight,2));
+        rmse += std::sqrt(pow(params(10,i) - weightGroundTruth,2));
     }
 
     // compute convergence
-    convergence = std::sqrt(pow(params(10,NI-1) - groundTruthWeight,2));
+    convergence = std::sqrt(pow(params(10,NI-1) - weightGroundTruth,2));
 
 
 
@@ -142,6 +141,8 @@ void TestUKF::test() {
     std::cout << "Variance: \t" << std::endl << ukf.variance << std::endl;
     std::cout << "RMSE: \t " << rmse << std::endl;
     std::cout << "Convergence: \t " << convergence << std::endl;
+
+
 
     // export for plot
     // *******************************************************************
