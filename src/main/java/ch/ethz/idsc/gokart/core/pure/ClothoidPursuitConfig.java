@@ -30,6 +30,10 @@ public class ClothoidPursuitConfig extends PursuitConfig {
   }
 
   public AssistedCurveIntersection getAssistedCurveIntersection() {
+    return getAssistedCurveIntersection(lookAhead);
+  }
+
+  public AssistedCurveIntersection getAssistedCurveIntersection(Scalar lookAhead) {
     return se2distance //
         ? new PseudoSe2CurveIntersection(lookAhead) //
         : new SphereSe2CurveIntersection(lookAhead);

@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.sophus.lie.se2.Se2ParametricDistance;
+import ch.ethz.idsc.sophus.hs.r2.Se2ParametricDistance;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;

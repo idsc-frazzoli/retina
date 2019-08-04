@@ -24,7 +24,7 @@ import ch.ethz.idsc.owl.math.state.StateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -73,7 +73,8 @@ public class ExtrudedFootprintRender implements RenderInterface {
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_forward) {
-          Tensor pose = Se2Utils.toSE2Matrix(x);
+          // TODO JPH there should be something more efficient available!
+          Tensor pose = Se2Matrix.of(x);
           w1.append(pose.dot(p1));
           w2.append(pose.dot(p2));
         }
@@ -88,7 +89,7 @@ public class ExtrudedFootprintRender implements RenderInterface {
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_reverse) {
-          Tensor pose = Se2Utils.toSE2Matrix(x);
+          Tensor pose = Se2Matrix.of(x);
           w1.append(pose.dot(p1));
           w2.append(pose.dot(p2));
         }

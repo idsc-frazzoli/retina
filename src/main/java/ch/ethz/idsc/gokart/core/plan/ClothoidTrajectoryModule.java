@@ -1,12 +1,10 @@
 // code by ynager, jph, gjoel
-package ch.ethz.idsc.demo.jg.following;
+package ch.ethz.idsc.gokart.core.plan;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.plan.GokartTrajectoryModule;
-import ch.ethz.idsc.gokart.core.plan.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -18,7 +16,7 @@ import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 
 // TODO make configurable as parameter
-public class ClothoidTrajectoryModule extends GokartTrajectoryModule {
+public class ClothoidTrajectoryModule extends GlcTrajectoryModule {
   public ClothoidTrajectoryModule() {
     this(TrajectoryConfig.GLOBAL);
   }
@@ -34,7 +32,7 @@ public class ClothoidTrajectoryModule extends GokartTrajectoryModule {
       List<TrajectorySample> tail = //
           GlcTrajectories.detailedTrajectoryTo(trajectoryPlanner.getStateIntegrator(), optional.get());
       trajectory = Trajectories.glue(head, tail);
-      PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
+      PlannerPublish.trajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, trajectory);
     } else {
       // failure to reach goal
       // ante 20181025: previous trajectory was cleared

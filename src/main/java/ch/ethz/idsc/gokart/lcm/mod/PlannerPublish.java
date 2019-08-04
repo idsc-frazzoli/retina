@@ -16,7 +16,7 @@ import lcm.lcm.LCM;
 public enum PlannerPublish {
   ;
   // TODO JPH encoding not final: node info may be sufficient, flow not considered yet
-  public static void publishTrajectory(String channel, List<TrajectorySample> trajectory) {
+  public static void trajectory(String channel, List<TrajectorySample> trajectory) {
     Tensor tensor = Tensor.of(trajectory.stream() //
         .map(TrajectorySample::stateTime) //
         .map(StateTime::joined));

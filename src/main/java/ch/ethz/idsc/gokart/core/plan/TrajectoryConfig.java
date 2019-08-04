@@ -2,19 +2,19 @@
 package ch.ethz.idsc.gokart.core.plan;
 
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
-import ch.ethz.idsc.gokart.core.map.GenericBayesianMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
+import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
+import ch.ethz.idsc.sophus.hs.r2.Se2UniformResample;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
@@ -29,6 +29,8 @@ public class TrajectoryConfig {
    * post 20180904: changed horizonDistance from 8 to 10 so that the gokart plans through a gateway
    * post 20181025: changed horizonDistance to 12 */
   public Scalar horizonDistance = RealScalar.of(10);
+  /** proximityDistance is unit-less because it entails all three: x, y, heading using Se2Wrap */
+  public Scalar proximityDistance = RealScalar.ONE;
   /** number of different steering angles for path planning
    * value has to be an integer */
   public Scalar controlResolution = RealScalar.of(9);
@@ -45,10 +47,6 @@ public class TrajectoryConfig {
   public Boolean mapSightLines = true;
   /** preferred waypoint spacing */
   public Scalar waypointsSpacing = Quantity.of(2.5, SI.METER);
-  /** file that stores se2 waypoints without units
-   * (this allows that the file can also be generated or imported by other software)
-   * units will be attached in the function {@link #getWaypointsPose()} */
-  public String waypoints = "/dubilab/waypoints/20190507.csv";
 
   /***************************************************/
   /** @param tangentSpeed with unit "m*s^-1"
@@ -63,14 +61,6 @@ public class TrajectoryConfig {
     return planningPeriod.multiply(expandFraction);
   }
 
-  /** loads waypoints file
-   * 
-   * @return matrix with dimensions N x 3 where each row is of the form {wx[m], wy[m], wangle}
-   * @throws Exception if waypoints cannot be retrieved from resources */
-  public Tensor getWaypointsPose() {
-    return Tensor.of(ResourceData.of(waypoints).stream().map(PoseHelper::attachUnits));
-  }
-
   /** @return */
   public static PredefinedMap getPredefinedMapObstacles() {
     return PredefinedMap.DUBILAB_OBSTACLES_20190314;
@@ -79,6 +69,17 @@ public class TrajectoryConfig {
   public AbstractMapping<? extends ImageGrid> getAbstractMapping() {
     return mapSightLines //
         ? SightLinesMapping.defaultObstacle()
-        : GenericBayesianMapping.createObstacleMapping();
+        : MappingConfig.GLOBAL.createObstacleMapping();
+  }
+
+  /***************************************************/
+  /** @param se2curve with rows as se2 coordinates of the form {x[m], y[m], alpha}
+   * @param cyclic whether the last point should be connected to the first point
+   * @return */
+  public Tensor resampledWaypoints(Tensor se2curve, boolean cyclic) {
+    CurveSubdivision curveSubdivision = Se2UniformResample.of(waypointsSpacing);
+    return cyclic //
+        ? curveSubdivision.cyclic(se2curve)
+        : curveSubdivision.string(se2curve);
   }
 }

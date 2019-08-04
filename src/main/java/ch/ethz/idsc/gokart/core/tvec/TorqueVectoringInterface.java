@@ -5,6 +5,7 @@ import ch.ethz.idsc.owl.car.slip.AngularSlip;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
+@FunctionalInterface
 public interface TorqueVectoringInterface {
   /** @param angularSlip
    * @param wantedPower unitless ideally in the interval [-1, 1]

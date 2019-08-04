@@ -38,7 +38,6 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     File file = HomeDirectory.file("/gokartlogs/20190729/20190729T170004_e1fcde97.lcm.00");
     OfflineTableSupplier offlineTableSupplier = new AntilockAnalysis();
     OfflineLogPlayer.process(file, offlineTableSupplier);
-    Export.of(HomeDirectory.file("Desktop", "lanekeeping1701.csv"),
-        offlineTableSupplier.getTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file("Desktop", "lanekeeping1701.csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
   }
 }

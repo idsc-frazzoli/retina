@@ -9,7 +9,7 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/** class is the default choice for geodesic pursuit when driving along a curve in global
+/** class is the default choice for clothoid pursuit when driving along a curve in global
  * coordinates while the pose is updated periodically from a localization method. */
 public class CurveClothoidPursuitModule extends CurvePursuitModule {
   private final GlobalViewLcmModule globalViewLcmModule = //
@@ -27,14 +27,14 @@ public class CurveClothoidPursuitModule extends CurvePursuitModule {
     if (optionalCurve.isPresent()) {
       Optional<ClothoidPlan> plan = curveClothoidPursuitPlanner.getPlan( //
           pose, //
-          speed, //
+          gokartPoseEvent.getVelocity(), //
           optionalCurve.get(), //
-          isForward);
+          isForward());
       if (Objects.nonNull(globalViewLcmModule))
         globalViewLcmModule.setPlan(plan.map(ClothoidPlan::curve).orElse(null));
       return plan.map(ClothoidPlan::ratio);
     }
-    System.err.println("no curve in geodesic pursuit");
+    System.err.println("no curve in clothoid pursuit");
     return Optional.empty();
   }
 

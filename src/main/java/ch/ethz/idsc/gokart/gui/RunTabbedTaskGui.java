@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import ch.ethz.idsc.demo.jg.following.ClothoidTrajectoryModule;
 import ch.ethz.idsc.demo.jg.following.FigureClothoidModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
@@ -38,8 +37,12 @@ import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.PredictiveTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
+import ch.ethz.idsc.gokart.core.map.OccupancyMappingModule;
+import ch.ethz.idsc.gokart.core.map.OccupancyViewerModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
+import ch.ethz.idsc.gokart.core.plan.ClothoidRrtsTrajectoryModule;
+import ch.ethz.idsc.gokart.core.plan.ClothoidTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.PureTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
@@ -146,6 +149,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       MPCKinematicDrivingModule.class, //
       PureTrajectoryModule.class, //
       ClothoidTrajectoryModule.class, //
+      ClothoidRrtsTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //
@@ -155,6 +159,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       SEyeSlamVisualModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
+      OccupancyMappingModule.class, //
+      OccupancyViewerModule.class, //
       SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, //

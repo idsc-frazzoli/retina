@@ -16,12 +16,12 @@ import java.util.stream.Stream;
 
 import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.demo.jph.sys.DatahakiLogFileLocator;
-import ch.ethz.idsc.gokart.core.plan.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.plan.TrajectoryEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.state.StateTime;
@@ -35,7 +35,7 @@ import ch.ethz.idsc.sophus.flt.ga.GeodesicCenter;
 import ch.ethz.idsc.sophus.lie.LieDifferences;
 import ch.ethz.idsc.sophus.lie.se2.Se2Geodesic;
 import ch.ethz.idsc.sophus.lie.se2.Se2Group;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringExponential;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.sophus.math.win.SmoothingKernel;
@@ -60,11 +60,11 @@ import ch.ethz.idsc.tensor.sca.Round;
       CenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, SmoothingKernel.GAUSSIAN), 5);
   private static final Scalar METER2PIXEL = RealScalar.of(30);
   private static final ColorDataIndexed COLOR_DATA_INDEXED = ColorDataLists._097.cyclic();
-  final Tensor waypoints = Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, TrajectoryConfig.GLOBAL.getWaypointsPose(), 1);
   private static final Tensor ARROW_HEAD = Arrowhead.of(.4);
   private static final LieDifferences LIE_DIFFERENCES = //
       new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   // ---
+  private Tensor waypoints = Tensors.empty();
   private int count = 0;
   private Tensor trail = Tensors.empty();
   private Tensor times = Tensors.empty();
@@ -106,7 +106,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         Graphics2D graphics = bufferedImage.createGraphics();
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-        Tensor tr = Se2Utils.toSE2Translation(reduceMin.negate());
+        Tensor tr = Se2Matrix.translation(reduceMin.negate());
         // System.out.println(extensions);
         Tensor sc = Tensors.fromString("{{30, 0, 1}, {0, -30," + (bufferedImage.getHeight() - 1) + "}, {0, 0, 1}}");
         GeometricLayer geometricLayer = GeometricLayer.of(sc.dot(tr));
@@ -114,7 +114,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         GraphicsUtil.setQualityHigh(graphics);
         graphics.setColor(COLOR_DATA_INDEXED.getColor(2));
         for (Tensor waypoint : waypoints) {
-          geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(waypoint));
+          geometricLayer.pushMatrix(Se2Matrix.of(waypoint));
           Path2D path2d = geometricLayer.toPath2D(ARROW_HEAD);
           path2d.closePath();
           graphics.fill(path2d);
@@ -147,7 +147,9 @@ import ch.ethz.idsc.tensor.sca.Round;
       trail = Tensors.empty();
       times = Tensors.empty();
       trajectory = TrajectoryEvents.trajectory(byteBuffer);
-    }
+    } else //
+    if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2))
+      waypoints = Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, Se2CurveLcm.decode(byteBuffer), 1);
   }
 
   public abstract void image(BufferedImage bufferedImage);

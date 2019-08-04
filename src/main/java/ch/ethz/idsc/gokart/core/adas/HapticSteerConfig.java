@@ -58,10 +58,8 @@ public class HapticSteerConfig implements Serializable {
   /** lane boundaries */
   public Scalar offsetL = Quantity.of(0.5, SI.METER);
   public Scalar offsetR = Quantity.of(-0.5, SI.METER);
-  /** planning period  */
+  /** planning period */
   public Scalar LKperiod = Quantity.of(0.2, SI.SECOND);
-
-
 
   /***************************************************/
   // functions for anti-lock brake

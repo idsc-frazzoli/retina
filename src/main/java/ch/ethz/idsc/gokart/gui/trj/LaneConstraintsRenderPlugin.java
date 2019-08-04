@@ -17,6 +17,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -32,25 +33,29 @@ import ch.ethz.idsc.tensor.sca.Round;
       // large value is a hack to get a solution
       clothoidPursuitConfig.turningRatioMax = Quantity.of(1000, SI.PER_METER);
       Optional<ClothoidPlan> optionalL = //
-          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), renderPluginParameters.laneBoundaryL, true);
+          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, //
+              Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
+              renderPluginParameters.laneBoundaryL, true);
       Optional<ClothoidPlan> optionalR = //
-          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, Quantity.of(0, SI.VELOCITY), renderPluginParameters.laneBoundaryR, true);
-      return new ClothoidPursuitRender(pose, optionalL, optionalR);
+          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, //
+              Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
+              renderPluginParameters.laneBoundaryR, true);
+      return new LaneConstraintsRender(pose, optionalL, optionalR);
     }
     return EmptyRender.INSTANCE;
   }
 
   // ---
-  private static class ClothoidPursuitRender implements RenderInterface {
+  private static class LaneConstraintsRender implements RenderInterface {
     private static final Font FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
     // ---
-    private final PathRender pathRenderL = new PathRender(new Color(255, 0, 128), 2f);
-    private final PathRender pathRenderR = new PathRender(new Color(0, 255, 128), 2f);
     private final Tensor pose;
     private final Optional<ClothoidPlan> clothoidPlanL;
     private final Optional<ClothoidPlan> clothoidPlanR;
+    private final PathRender pathRenderL = new PathRender(new Color(255, 0, 128), 2f);
+    private final PathRender pathRenderR = new PathRender(new Color(0, 255, 128), 2f);
 
-    private ClothoidPursuitRender(Tensor pose, Optional<ClothoidPlan> clothoidPlanL, Optional<ClothoidPlan> clothoidPlanR) {
+    private LaneConstraintsRender(Tensor pose, Optional<ClothoidPlan> clothoidPlanL, Optional<ClothoidPlan> clothoidPlanR) {
       this.pose = pose;
       this.clothoidPlanL = clothoidPlanL;
       this.clothoidPlanR = clothoidPlanR;
