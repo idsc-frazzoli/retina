@@ -32,10 +32,7 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.data.Lists;
 import ch.ethz.idsc.owl.data.tree.TreePlanner;
 import ch.ethz.idsc.owl.glc.adapter.Expand;
-import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
-import ch.ethz.idsc.owl.glc.core.PlannerConstraint;
 import ch.ethz.idsc.owl.math.MinMax;
-import ch.ethz.idsc.owl.math.region.ImageRegion;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.region.RegionUnion;
 import ch.ethz.idsc.owl.math.state.StateTime;
@@ -72,10 +69,10 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
-  /** sight lines mapping was successfully used for trajectory planning in a demo on 20190507 */
-  private final AbstractMapping<? extends ImageGrid> mapping;
   /** arrives at 50[Hz] */
   private final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
+  /** sight lines mapping was successfully used for trajectory planning in a demo on 20190507 */
+  protected final AbstractMapping<? extends ImageGrid> mapping;
   // = SightLinesMapping.defaultObstacle();
   // GenericBayesianMapping.createObstacleMapping();
   protected final TrajectoryConfig trajectoryConfig;
@@ -85,8 +82,6 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
   private GokartPoseEvent gokartPoseEvent = null;
   protected List<TrajectorySample> trajectory = null;
   /** waypoints are stored without units */
-  /** predefinedObstacles contains known static obstacles */
-  private final Region<Tensor> predefinedObstacles;
   protected Tensor waypoints;
   protected Region<Tensor> unionRegion;
 
@@ -94,20 +89,12 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
     this.trajectoryConfig = trajectoryConfig;
     this.curvePursuitModule = curvePursuitModule;
     mapping = trajectoryConfig.getAbstractMapping();
-    // FIXME GJOEL MERGING ISSUES?
-    {
-      MinMax minMax = MinMax.of(VEHICLE_MODEL.footprint());
-      Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
-      PredefinedMap predefinedMap = TrajectoryConfig.getPredefinedMapObstacles();
-      predefinedObstacles = Se2PointsVsRegions.line(x_samples, predefinedMap.getImageRegion());
-    }
     MinMax minMax = MinMax.of(VEHICLE_MODEL.footprint());
     Tensor x_samples = Subdivide.of(minMax.min().get(0), minMax.max().get(0), 2); // {-0.295, 0.7349999999999999, 1.765}
     PredefinedMap predefinedMap = TrajectoryConfig.getPredefinedMapObstacles();
-    ImageRegion imageRegion = predefinedMap.getImageRegion();
+    Region<Tensor> predefinedObstacles = Se2PointsVsRegions.line(x_samples, predefinedMap.getImageRegion()); // contains known static obstacles
     // ---
-    unionRegion = RegionUnion.wrap(Arrays.asList( //
-        Se2PointsVsRegions.line(x_samples, imageRegion), mapping.getMap()));
+    unionRegion = RegionUnion.wrap(Arrays.asList(predefinedObstacles, mapping.getMap()));
     // ---
     final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
     final Scalar goalRadius_theta = SQRT2.divide(PARTITIONSCALE.Get(2));
@@ -149,9 +136,6 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
     if (Objects.nonNull(gokartPoseEvent)) {
       if (Objects.nonNull(waypoints) && Tensors.nonEmpty(waypoints)) {
         mapping.prepareMap();
-        Region<Tensor> unionRegion = RegionUnion.wrap(Arrays.asList( //
-            predefinedObstacles, mapping.getMap()));
-        PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
         final Scalar tangentSpeed = gokartPoseEvent.getVelocity().Get(0);
         System.out.println("setup planner, tangent speed=" + tangentSpeed);
         final Tensor xya = PoseHelper.toUnitless(gokartPoseEvent.getPose()).unmodifiable();

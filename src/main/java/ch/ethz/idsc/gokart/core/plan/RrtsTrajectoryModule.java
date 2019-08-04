@@ -17,7 +17,6 @@ import ch.ethz.idsc.owl.glc.adapter.Trajectories;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.owl.math.lane.StableLane;
-import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.rrts.LaneRrtsPlannerServer;
@@ -62,7 +61,7 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
     LaneInterface lane = StableLane.of(SPLIT_INTERFACE, segment, goalRadius.Get(0));
     // ---
     List<TransitionRegionQuery> transitionRegionQueries = //
-        new ArrayList<>(Collections.singletonList(new SampledTransitionRegionQuery(obstacleMapping(), RealScalar.of(0.05)))); // TODO magic constant
+        new ArrayList<>(Collections.singletonList(new SampledTransitionRegionQuery(mapping.getMap(), RealScalar.of(0.05)))); // TODO magic constant
     transitionRegionQueries.addAll(this.transitionRegionQueries);
     TransitionRegionQuery transitionRegionQuery = TransitionRegionQueryUnion.wrap(transitionRegionQueries);
     LaneRrtsPlannerServer laneRrtsPlannerServer = //
@@ -86,11 +85,6 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
     laneRrtsPlannerServer.setGoal(goal);
     laneRrtsPlannerServer.accept(lane);
     return laneRrtsPlannerServer;
-  }
-
-  private Region<Tensor> obstacleMapping() {
-    // FIXME GJOEL MERGING ISSUES!
-    throw new RuntimeException();
   }
 
   @Override // from GokartTrajectoryModule

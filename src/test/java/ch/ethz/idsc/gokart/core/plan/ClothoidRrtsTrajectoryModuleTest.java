@@ -14,7 +14,6 @@ public class ClothoidRrtsTrajectoryModuleTest extends TestCase {
     // TODO JPH/GJOEL add separate test that uses sightlines mapping
     trajectoryConfig.mapSightLines = false;
     ClothoidRrtsTrajectoryModule clothoidTrajectoryModule = new ClothoidRrtsTrajectoryModule(trajectoryConfig);
-    // FIXME GJOEL MERGING ISSUE TEST
-    // GokartTrajectoryModuleTest.testPose(clothoidTrajectoryModule);
+    GokartTrajectoryModuleTest.testPose(clothoidTrajectoryModule);
   }
 }
