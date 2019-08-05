@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class SimpleTorqueVectoringTest extends TestCase {
+public class DirectTorqueVectoringTest extends TestCase {
   public void testZeros() {
     TorqueVectoringConfig torqueVectoringConfig = new TorqueVectoringConfig();
     torqueVectoringConfig.staticCompensation = Quantity.of(0.4, SI.ACCELERATION.negate());

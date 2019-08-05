@@ -1,8 +1,8 @@
 // code by jph
-package ch.ethz.idsc.owl.car.model;
+package ch.ethz.idsc.owl.car.shop;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.car.shop.CHatchbackModel;
+import ch.ethz.idsc.owl.car.model.CarControl;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
 

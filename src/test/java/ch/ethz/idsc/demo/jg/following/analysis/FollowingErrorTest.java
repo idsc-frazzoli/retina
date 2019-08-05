@@ -1,10 +1,9 @@
 // code by gjoel
-package ch.ethz.idsc.demo.jg;
+package ch.ethz.idsc.demo.jg.following.analysis;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import ch.ethz.idsc.demo.jg.following.analysis.FollowingError;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
