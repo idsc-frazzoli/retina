@@ -41,7 +41,7 @@ public class TrajectoryConfig {
   public Scalar maxRotation = Quantity.of(15, "deg*m^-1");
   /** half angle of conic goal region */
   public Scalar coneHalfAngle = Degree.of(18);
-  public Tensor goalRadiusFactor = Tensors.vector(4, 4, 2);
+  public Scalar rrtsLaneWidth = Quantity.of(3, SI.METER);
   /** true = SightLinesMapping
    * false = GenericBayesianMapping */
   public Boolean mapSightLines = true;
