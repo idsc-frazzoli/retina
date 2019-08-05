@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
-public class PerSectionModuleTest extends TestCase {
+public class SpeedLimitPerSectionModuleTest extends TestCase {
   public void testSimple() {
     SpeedLimitPerSectionModule perSectionModule = new SpeedLimitPerSectionModule();
     perSectionModule.first();

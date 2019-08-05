@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
-public class SteerVibrationTest extends TestCase {
+public class SteerVibrationModuleTest extends TestCase {
   public void testSimple() {
     SteerVibrationModule steerVibrationModule = new SteerVibrationModule();
     steerVibrationModule.first();

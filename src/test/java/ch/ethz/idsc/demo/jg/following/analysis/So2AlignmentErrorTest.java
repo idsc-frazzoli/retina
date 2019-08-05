@@ -1,7 +1,6 @@
 // code by gjoel
-package ch.ethz.idsc.demo.jg;
+package ch.ethz.idsc.demo.jg.following.analysis;
 
-import ch.ethz.idsc.demo.jg.following.analysis.So2AlignmentError;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.opt.Pi;

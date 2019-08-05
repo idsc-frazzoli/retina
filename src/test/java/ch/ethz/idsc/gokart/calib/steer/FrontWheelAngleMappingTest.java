@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
-public class FrontWheelSteerMappingTest extends TestCase {
+public class FrontWheelAngleMappingTest extends TestCase {
   public void testSimple() {
     Scalar scalar = FrontWheelAngleMapping._LEFT.getAngleFromSCE(Quantity.of(0.0, "SCE"));
     assertEquals(scalar, RealScalar.ZERO);

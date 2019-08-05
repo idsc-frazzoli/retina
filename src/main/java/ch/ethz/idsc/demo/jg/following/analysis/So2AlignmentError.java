@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.jg.following.analysis;
 import ch.ethz.idsc.sophus.lie.so2.So2;
 import ch.ethz.idsc.tensor.Scalar;
 
+// TODO JPH OWL 050 So2Metric
 public enum So2AlignmentError {
   ;
   public static Scalar of(Scalar a1, Scalar a2) {

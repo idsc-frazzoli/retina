@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.core.pos;
+package ch.ethz.idsc.retina.lidar;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -7,13 +7,6 @@ import java.nio.ByteBuffer;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
-import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
-import ch.ethz.idsc.retina.lidar.LidarRayDataListener;
-import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
-import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
-import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.tensor.Scalar;
 import junit.framework.Assert;

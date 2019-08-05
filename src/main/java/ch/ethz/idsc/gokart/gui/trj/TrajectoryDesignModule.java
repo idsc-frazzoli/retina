@@ -114,7 +114,7 @@ public class TrajectoryDesignModule extends AbstractModule {
     }
     try {
       BackgroundImage backgroundImage = Dubilab.backgroundImage20190408();
-      GeneralImageRender generalImageRender = new GeneralImageRender(backgroundImage.bufferedImage, Inverse.of(backgroundImage.model2pixel));
+      GeneralImageRender generalImageRender = new GeneralImageRender(backgroundImage.bufferedImage(), Inverse.of(backgroundImage.model2pixel()));
       trajectoryDesign.timerFrame.geometricComponent.addRenderInterfaceBackground(generalImageRender);
     } catch (Exception exception) {
       exception.printStackTrace();

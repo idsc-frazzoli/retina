@@ -13,6 +13,7 @@ import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
+import ch.ethz.idsc.gokart.core.map.OccupancyConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
 import ch.ethz.idsc.gokart.core.plan.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
@@ -47,6 +48,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPid;
       TrajectoryConfig.GLOBAL, //
       // PlanSRConfig.GLOBAL, //
       MappingConfig.GLOBAL, //
+      OccupancyConfig.GLOBAL, //
       // DavisSlamPrcConfig.GLOBAL, //
       // DavisSlamCoreConfig.GLOBAL, //
       // PIDTuningParams.GLOBAL, //

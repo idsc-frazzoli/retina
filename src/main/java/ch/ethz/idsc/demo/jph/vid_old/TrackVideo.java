@@ -67,8 +67,8 @@ import ch.ethz.idsc.tensor.sca.Round;
       for (int index = 0; index < max; ++index) {
         System.out.println(index);
         Scalar time = list.get(0).timeFor(index);
-        graphics.drawImage(backgroundImage.bufferedImage, 0, 0, null);
-        GeometricLayer geometricLayer = GeometricLayer.of(backgroundImage.model2pixel);
+        graphics.drawImage(backgroundImage.bufferedImage(), 0, 0, null);
+        GeometricLayer geometricLayer = GeometricLayer.of(backgroundImage.model2pixel());
         // ri.render(geometricLayer, graphics);
         {
           Entry<Scalar, ControlAndPredictionSteps> floorEntry = navigableMap.floorEntry(Quantity.of(time, SI.SECOND));
