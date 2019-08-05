@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.map;
 
-import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Objects;
@@ -27,12 +26,9 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Dot;
-import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 /** free space module always runs in the background
  * 
@@ -56,15 +52,11 @@ public class OccupancyMappingModule extends AbstractModule implements //
   private Tensor points_ferry = null;
 
   public OccupancyMappingModule() {
-    // TODO JPH this is dubilab specific an will be moved to config area
-    BufferedImage bufferedImage = new BufferedImage(160, 80, BufferedImage.TYPE_BYTE_GRAY);
-    Tensor model2pixel = Dot.of( //
-        Se2Matrix.of(Tensors.vector(32, 20, Math.PI / 4)), //
-        DiagonalMatrix.of( //
-            38.4 / bufferedImage.getWidth(), //
-            19.2 / bufferedImage.getHeight(), 1), //
-        Se2Matrix.flipY(bufferedImage.getHeight()));
-    erodableMap = new ErodableMap(bufferedImage, model2pixel);
+    this(OccupancyConfig.GLOBAL);
+  }
+
+  public OccupancyMappingModule(OccupancyConfig occupancyConfig) {
+    erodableMap = occupancyConfig.erodableMap();
     // ---
     // TODO JPH make configurable
     spacialXZObstaclePredicate = TrackReconConfig.GLOBAL.createSpacialXZObstaclePredicate();

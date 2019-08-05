@@ -40,7 +40,7 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
         file.toString(), //
         dimension, //
         Magnitude.PER_SECOND.toInt(trackVideoConfig.frameRate));
-    trackVideoRender = new TrackVideoRender(backgroundImage.model2pixel, poseChannel);
+    trackVideoRender = new TrackVideoRender(backgroundImage.model2pixel(), poseChannel);
     bufferedImage = new BufferedImage( //
         dimension.width, //
         dimension.height, //
@@ -52,8 +52,8 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     trackVideoRender.event(time, channel, byteBuffer);
     if (channel.equals(poseChannel)) {
-      graphics.drawImage(backgroundImage.bufferedImage, 0, 0, null);
-      trackVideoRender.render(GeometricLayer.of(backgroundImage.model2pixel), graphics);
+      graphics.drawImage(backgroundImage.bufferedImage(), 0, 0, null);
+      trackVideoRender.render(GeometricLayer.of(backgroundImage.model2pixel()), graphics);
       graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
       graphics.setColor(Color.GRAY);
       graphics.drawString(String.format("time :%9s", time.map(Round._2)), 0, 25);
