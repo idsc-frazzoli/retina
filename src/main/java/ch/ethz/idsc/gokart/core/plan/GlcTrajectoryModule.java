@@ -35,17 +35,24 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.Nest;
+import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO make configurable as parameter
 public abstract class GlcTrajectoryModule extends GokartTrajectoryModule<TrajectoryPlanner> {
+  private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
   private static final Scalar SPEED = RealScalar.of(2.5);
+  private static final Tensor PARTITIONSCALE = Tensors.of( //
+      RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
   private static final FixedStateIntegrator FIXED_STATE_INTEGRATOR = //
       FixedStateIntegrator.create(Se2CarIntegrator.INSTANCE, RationalScalar.of(2, 10), 4);
   private static final StateTimeRaster STATE_TIME_RASTER = //
       new EtaRaster(PARTITIONSCALE, StateTimeTensorFunction.state(SE2WRAP::represent));
   // ---
   private final FlowsInterface flowsInterface;
+  private final Tensor goalRadius;
   private PlannerConstraint plannerConstraint;
   // TODO magic const redundant
   private CostFunction waypointCost;
@@ -58,6 +65,10 @@ public abstract class GlcTrajectoryModule extends GokartTrajectoryModule<Traject
     super(trajectoryConfig, curvePursuitModule);
     flowsInterface = Se2CarFlows.forward(SPEED, Magnitude.PER_METER.apply(trajectoryConfig.maxRotation));
     plannerConstraint = RegionConstraints.timeInvariant(unionRegion);
+    // ---
+    final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
+    final Scalar goalRadius_theta = SQRT2.divide(PARTITIONSCALE.Get(2));
+    goalRadius = Tensors.of(goalRadius_xy, goalRadius_xy, goalRadius_theta);
   }
 
   /* package for testing */ synchronized void updateWaypoints(Tensor curve) {
