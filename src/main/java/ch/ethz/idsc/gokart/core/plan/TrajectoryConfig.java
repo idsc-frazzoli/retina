@@ -6,10 +6,10 @@ import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
-import ch.ethz.idsc.gokart.gui.trj.Se2UniformResample;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
+import ch.ethz.idsc.sophus.hs.r2.Se2UniformResample;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -29,6 +29,8 @@ public class TrajectoryConfig {
    * post 20180904: changed horizonDistance from 8 to 10 so that the gokart plans through a gateway
    * post 20181025: changed horizonDistance to 12 */
   public Scalar horizonDistance = RealScalar.of(10);
+  /** proximityDistance is unit-less because it entails all three: x, y, heading using Se2Wrap */
+  public Scalar proximityDistance = RealScalar.ONE;
   /** number of different steering angles for path planning
    * value has to be an integer */
   public Scalar controlResolution = RealScalar.of(9);

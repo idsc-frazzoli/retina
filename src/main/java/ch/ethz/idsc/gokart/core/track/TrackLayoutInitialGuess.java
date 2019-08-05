@@ -18,7 +18,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.spline.BSpline2Vector;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -463,7 +463,7 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     graphics.setColor(new Color(255, 200, 0, 128));
     // TODO JPH not thread safe
     for (Tensor xy : positionalSupports) {
-      geometricLayer.pushMatrix(Se2Utils.toSE2Translation(xy));
+      geometricLayer.pushMatrix(Se2Matrix.translation(xy));
       Path2D path2d = geometricLayer.toPath2D(CIRCLE_POINTS);
       path2d.closePath();
       graphics.draw(path2d);

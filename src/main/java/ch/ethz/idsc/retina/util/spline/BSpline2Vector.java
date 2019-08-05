@@ -46,6 +46,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * yy = b'*points(:,2);
  * end
  * </pre> */
+// TODO JPH replace in some cases using bspline2 subdivision
 public abstract class BSpline2Vector implements ScalarTensorFunction {
   private static final ScalarUnaryOperator[] BSPLINE2D = { //
       BSpline2D0.FUNCTION, //
