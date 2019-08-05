@@ -14,7 +14,7 @@ import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
@@ -58,11 +58,11 @@ public class LocalViewLcmModule extends AbstractModule {
     }
     {
       AccelerationRender accelerationRender = new AccelerationRender(100, //
-          Se2Utils.toSE2Matrix(MINOR_ACC).dot(DIAGONAL));
+          Se2Matrix.of(MINOR_ACC).dot(DIAGONAL));
       vmu931ImuLcmClient.addListener(accelerationRender);
       timerFrame.geometricComponent.addRenderInterface(accelerationRender);
     }
-    final Tensor matrix = Se2Utils.toSE2Matrix(MINOR_VEL).dot(DIAGONAL);
+    final Tensor matrix = Se2Matrix.of(MINOR_VEL).dot(DIAGONAL);
     {
       GroundSpeedRender groundSpeedRender = new GroundSpeedRender(50, matrix);
       gokartPoseLcmClient.addListener(groundSpeedRender);

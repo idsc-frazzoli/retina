@@ -26,16 +26,17 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     this.rimoConfig = rimoConfig;
   }
 
-  private Scalar integral = Quantity.of(0, SI.METER);
-  /** gokart velocity */
-  private Scalar velocity = Quantity.of(0, SI.VELOCITY);
+  private Scalar integral = Quantity.of(0.0, SI.METER);
+  private Scalar vel_avg = Quantity.of(0.0, SI.PER_SECOND);
 
   @Override // from RimoRateController
-  public Scalar iterate(final Scalar vel_error) {
+  public Scalar iterate(Scalar vel_error) {
     final Scalar tangentVelError = RimoTireConfiguration._REAR.radius().multiply(vel_error);
     final Scalar pPart = tangentVelError.multiply(rimoConfig.lKp);
     final Scalar iPart = integral.multiply(rimoConfig.lKi);
     final Scalar acc_value = pPart.add(iPart);
+    /* gokart velocity */
+    Scalar velocity = RimoTireConfiguration._REAR.radius().multiply(vel_avg);
     final Scalar currentValue = lookupTable.getNeededCurrent(acc_value, velocity);
     Tensor minmax = lookupTable.getMinMaxAcceleration(velocity); // get min and max available
     // TODO JPH check if can do more precise clipping
@@ -47,6 +48,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override // from RimoRateController
   public void setWheelRate(Scalar vel_avg) {
-    velocity = vel_avg.multiply(RimoTireConfiguration._REAR.radius());
+    this.vel_avg = vel_avg;
   }
 }

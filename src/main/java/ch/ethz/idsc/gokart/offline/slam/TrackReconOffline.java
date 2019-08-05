@@ -98,7 +98,7 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
         } catch (Exception exception) {
           exception.printStackTrace();
         }
-      ImageRender imageRender = ImageRender.of(predefinedMap.getImage(), predefinedMap.range());
+      ImageRender imageRender = ImageRender.range(predefinedMap.getImage(), predefinedMap.range());
       imageRender.render(geometricLayer, graphics);
       // bayesianOccupancyGridThic.render(geometricLayer, graphics);
       bayesianOccupancyGridThin.render(geometricLayer, graphics);

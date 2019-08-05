@@ -17,7 +17,8 @@ import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-/* package */ abstract class AbstractLidarMapping implements StartAndStoppable, LidarRayBlockListener, Runnable, GokartPoseListener {
+/* package */ abstract class AbstractLidarMapping implements //
+    StartAndStoppable, LidarRayBlockListener, Runnable, GokartPoseListener {
   // TODO JPH check rationale behind constant 10000!
   protected static final int LIDAR_SAMPLES = 10_000;
   // ---

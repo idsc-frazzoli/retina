@@ -32,7 +32,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.AxisAlignedBox;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -44,7 +44,7 @@ import ch.ethz.idsc.tensor.img.ColorFormat;
 public abstract class GokartRender implements RenderInterface {
   private static final Tensor[] OFFSET_TORQUE = new Tensor[] { Tensors.vector(0, -0.15, 0), Tensors.vector(0, +0.15, 0) };
   private static final Tensor[] OFFSET_RATE = new Tensor[] { Tensors.vector(0, +0.15, 0), Tensors.vector(0, -0.15, 0) };
-  private static final Tensor MATRIX_BRAKE = Se2Utils.toSE2Translation(Tensors.vector(1.0, 0.05));
+  private static final Tensor MATRIX_BRAKE = Se2Matrix.translation(Tensors.vector(1.0, 0.05));
   private static final Color COLOR_WHEEL = new Color(128, 128, 128, 128);
   private static final Color COLOR_SLIP = new Color(255, 128, 64, 128 + 64);
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
@@ -85,12 +85,12 @@ public abstract class GokartRender implements RenderInterface {
       for (int wheel = 0; wheel < 2; ++wheel) {
         geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(axleConfiguration.wheel(wheel).local()));
         // ---
-        geometricLayer.pushMatrix(Se2Utils.toSE2Translation(OFFSET_TORQUE[wheel]));
+        geometricLayer.pushMatrix(Se2Matrix.translation(OFFSET_TORQUE[wheel]));
         graphics.setColor(Color.BLUE);
         graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongX(tarms_pair.Get(wheel))));
         geometricLayer.popMatrix();
         // ---
-        geometricLayer.pushMatrix(Se2Utils.toSE2Translation(OFFSET_RATE[wheel]));
+        geometricLayer.pushMatrix(Se2Matrix.translation(OFFSET_RATE[wheel]));
         graphics.setColor(new Color(0, 160, 0));
         graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongX(rateY_draw.Get(wheel))));
         geometricLayer.popMatrix();

@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
+import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class LookupRimoRateControllerTest extends TestCase {
@@ -25,19 +26,16 @@ public class LookupRimoRateControllerTest extends TestCase {
   }
 
   public void testErrorZero() {
-    System.out.println("Kp   =" + RimoConfig.GLOBAL.Kp);
-    System.out.println("Ki   =" + RimoConfig.GLOBAL.Ki);
-    System.out.println("AWP =" + RimoConfig.GLOBAL.lAntiWindupPadding);
-    LookupRimoRateController srrc = new LookupRimoRateController(RimoConfig.GLOBAL);
+    LookupRimoRateController lookupRimoRateController = new LookupRimoRateController(RimoConfig.GLOBAL);
+    lookupRimoRateController.setWheelRate(Quantity.of(0.1, SI.PER_SECOND));
     {
-      Scalar scalar = srrc.iterate(Quantity.of(10, "s^-1")); // initially large error
+      Scalar scalar = lookupRimoRateController.iterate(Quantity.of(10, "s^-1")); // initially large error
       Magnitude.ARMS.apply(scalar);
       assertTrue(Scalars.lessEquals(Quantity.of(0, NonSI.ARMS), scalar));
     }
     for (int count = 0; count < 1000; ++count) {
-      @SuppressWarnings("unused")
-      Scalar scalar = srrc.iterate(Quantity.of(0.1, "s^-1")); // check integral part
-      // System.out.println(scalar);
+      Scalar scalar = lookupRimoRateController.iterate(Quantity.of(0.1, "s^-1")); // check integral part
+      Clips.positive(Quantity.of(180, NonSI.ARMS)).requireInside(scalar);
     }
   }
 }

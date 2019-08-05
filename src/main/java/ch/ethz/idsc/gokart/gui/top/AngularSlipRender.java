@@ -19,7 +19,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.AxisAlignedBox;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -71,12 +71,12 @@ public class AngularSlipRender implements RenderInterface {
       Scalar gyroZ = angularSlip.gyroZ();
       Scalar wantedRotationRate = angularSlip.wantedRotationRate();
       // ---
-      geometricLayer.pushMatrix(Se2Utils.toSE2Translation(Tensors.vectorDouble(-11, 0)));
+      geometricLayer.pushMatrix(Se2Matrix.translation(Tensors.vectorDouble(-11, 0)));
       graphics.setColor(GroundSpeedRender.COLOR_VELOCITY);
       graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(Magnitude.PER_SECOND.apply(gyroZ))));
       geometricLayer.popMatrix();
       // ---
-      geometricLayer.pushMatrix(Se2Utils.toSE2Translation(Tensors.vectorDouble(-12, 0)));
+      geometricLayer.pushMatrix(Se2Matrix.translation(Tensors.vectorDouble(-12, 0)));
       graphics.setColor(Color.BLUE);
       graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_BOX.alongY(Magnitude.PER_SECOND.apply(wantedRotationRate))));
       geometricLayer.popMatrix();

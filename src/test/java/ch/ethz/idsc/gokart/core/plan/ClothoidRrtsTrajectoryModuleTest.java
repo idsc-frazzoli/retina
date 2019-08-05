@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.plan;
 import junit.framework.TestCase;
 
 public class ClothoidRrtsTrajectoryModuleTest extends TestCase {
-    public void testSimple() throws Exception {
+  public void testSimple() throws Exception {
     ClothoidRrtsTrajectoryModule clothoidTrajectoryModule = new ClothoidRrtsTrajectoryModule();
     GokartTrajectoryModuleTest.testSimple(clothoidTrajectoryModule);
   }

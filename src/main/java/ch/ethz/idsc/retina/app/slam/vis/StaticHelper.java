@@ -9,10 +9,10 @@ import java.util.stream.Stream;
 
 import org.bytedeco.javacpp.opencv_core.Mat;
 
-import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.app.slam.MapProvider;
 import ch.ethz.idsc.retina.app.slam.SlamCoreContainer;
 import ch.ethz.idsc.retina.app.slam.SlamPrcContainer;
+import ch.ethz.idsc.sophus.hs.r2.Se2Bijection;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Primitives;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;

@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.util.pose;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -16,7 +16,7 @@ public enum PoseHelper {
    * @param state vector with units {x[m], y[m], angle[]}
    * @return */
   public static Tensor toSE2Matrix(Tensor state) {
-    return Se2Utils.toSE2Matrix(toUnitless(state));
+    return Se2Matrix.of(toUnitless(state));
   }
 
   /** @param state of the form {x[m], y[m], angle}

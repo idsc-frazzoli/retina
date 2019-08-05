@@ -8,9 +8,9 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.PursuitPlanLcm;
 import ch.ethz.idsc.owl.math.pursuit.AssistedCurveIntersection;
 import ch.ethz.idsc.owl.math.pursuit.CurvePoint;
-import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatio;
 import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatios;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
+import ch.ethz.idsc.sophus.math.HeadTailInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -38,9 +38,8 @@ public class CurveClothoidPursuitPlanner {
    * @return geodesic plan */
   public Optional<ClothoidPlan> getPlan(Tensor pose, Tensor speed, Tensor curve, boolean closed, boolean isForward) {
     Optional<ClothoidPlan> optional = replanning(pose, speed, curve, closed, isForward);
-    if (optional.isPresent())
-      // TODO GJOEL/JPH publishing of plan should happen outside of class
-      PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, Last.of(optional.get().curve()), isForward);
+    // TODO GJOEL/JPH publishing of plan should happen outside of class
+    optional.ifPresent(plan -> PursuitPlanLcm.publish(GokartLcmChannel.PURSUIT_PLAN, pose, Last.of(plan.curve()), isForward));
     return optional;
   }
 
@@ -58,7 +57,7 @@ public class CurveClothoidPursuitPlanner {
           : assistedCurveIntersection.string(tensor, prevIndex);
       if (curvePoint.isPresent()) {
         Tensor xya = curvePoint.get().getTensor();
-        ClothoidTerminalRatio clothoidTerminalRatio = ClothoidTerminalRatios.of(xya.map(Scalar::zero), xya);
+        HeadTailInterface clothoidTerminalRatio = ClothoidTerminalRatios.of(xya.map(Scalar::zero), xya);
         if (isCompliant.test(clothoidTerminalRatio.head()) && isCompliant.test(clothoidTerminalRatio.tail())) {
           Optional<ClothoidPlan> optional = ClothoidPlan.from(xya, pose, isForward);
           if (optional.isPresent()) {
