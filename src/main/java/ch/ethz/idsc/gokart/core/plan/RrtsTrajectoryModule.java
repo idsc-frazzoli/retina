@@ -30,6 +30,7 @@ import ch.ethz.idsc.owl.rrts.core.TransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
 import ch.ethz.idsc.sophus.math.SplitInterface;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -58,7 +59,7 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
     int rootIdx = locate(waypoints, root.state());
     Tensor shifted = RotateLeft.of(waypoints, rootIdx);
     Tensor segment = shifted.extract(0, locate(shifted, goal) + 1);
-    LaneInterface lane = StableLane.of(SPLIT_INTERFACE, segment, goalRadius.Get(0));
+    LaneInterface lane = StableLane.of(SPLIT_INTERFACE, segment, trajectoryConfig.rrtsLaneWidth);
     // ---
     List<TransitionRegionQuery> transitionRegionQueries = //
         new ArrayList<>(Collections.singletonList(new SampledTransitionRegionQuery(mapping.getMap(), RealScalar.of(0.05)))); // TODO magic constant
@@ -68,7 +69,7 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
         new LaneRrtsPlannerServer(transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, true) {
           @Override
           protected RrtsNodeCollection rrtsNodeCollection() {
-            Scalar r = goalRadius.Get(0);
+            Scalar r = trajectoryConfig.rrtsLaneWidth.multiply(RationalScalar.HALF);
             MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
             MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
             Tensor lbounds_ = Tensors.of(minMaxX.min().subtract(r), minMaxY.min().subtract(r), RealScalar.ZERO);

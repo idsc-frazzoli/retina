@@ -51,18 +51,13 @@ import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.RotateLeft;
 import ch.ethz.idsc.tensor.alg.Subdivide;
-import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Sign;
-import ch.ethz.idsc.tensor.sca.Sqrt;
 
 // TODO make configurable as parameter
 public abstract class GokartTrajectoryModule<T extends TreePlanner> extends AbstractClockedModule {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
-  private static final Scalar SQRT2 = Sqrt.of(RealScalar.of(2));
-  protected static final Tensor PARTITIONSCALE = Tensors.of( //
-      RealScalar.of(2), RealScalar.of(2), Degree.of(10).reciprocal()).unmodifiable();
   protected static final Se2Wrap SE2WRAP = Se2Wrap.INSTANCE;
   // ---
   private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
@@ -77,7 +72,6 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
   // GenericBayesianMapping.createObstacleMapping();
   protected final TrajectoryConfig trajectoryConfig;
   protected final CurvePursuitModule curvePursuitModule;
-  protected final Tensor goalRadius;
   // ---
   private GokartPoseEvent gokartPoseEvent = null;
   protected List<TrajectorySample> trajectory = null;
@@ -95,10 +89,6 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
     Region<Tensor> predefinedObstacles = Se2PointsVsRegions.line(x_samples, predefinedMap.getImageRegion()); // contains known static obstacles
     // ---
     unionRegion = RegionUnion.wrap(Arrays.asList(predefinedObstacles, mapping.getMap()));
-    // ---
-    final Scalar goalRadius_xy = SQRT2.divide(PARTITIONSCALE.Get(0));
-    final Scalar goalRadius_theta = SQRT2.divide(PARTITIONSCALE.Get(2));
-    goalRadius = Tensors.of(goalRadius_xy, goalRadius_xy, goalRadius_theta);
   }
 
   /* package for testing */ synchronized void updateWaypoints(Tensor curve) {
