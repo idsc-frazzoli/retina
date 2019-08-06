@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util.data;
+package ch.ethz.idsc.retina.util.time;
 
 /** a soft watchdog recovers from the barking state
  * by a notification from the application layer.

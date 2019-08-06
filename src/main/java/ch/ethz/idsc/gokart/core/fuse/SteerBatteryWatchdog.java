@@ -9,8 +9,8 @@ import ch.ethz.idsc.gokart.dev.misc.MiscSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.retina.util.data.HardWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
+import ch.ethz.idsc.retina.util.time.HardWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 
 /** sends stop command if the steer battery voltage is outside of valid range for a certain duration */
 public final class SteerBatteryWatchdog extends EmergencyModule<RimoPutEvent> implements MiscGetListener {

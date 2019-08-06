@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util.data;
+package ch.ethz.idsc.retina.util.time;
 
 /** implementation of an un-recoverable watchdog
  * 

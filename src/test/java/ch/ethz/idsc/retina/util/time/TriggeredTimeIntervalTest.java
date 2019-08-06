@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.retina.util.data;
+package ch.ethz.idsc.retina.util.time;
 
 import junit.framework.TestCase;
 
