@@ -1,5 +1,5 @@
 // code by vc
-package ch.ethz.idsc.demo.vc;
+package ch.ethz.idsc.retina.app.area;
 
 import ch.ethz.idsc.sophus.ply.PolygonArea;
 import ch.ethz.idsc.sophus.ply.Polygons;

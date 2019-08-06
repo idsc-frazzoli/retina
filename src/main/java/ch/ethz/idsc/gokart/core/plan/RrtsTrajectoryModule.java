@@ -60,7 +60,7 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
     int rootIdx = locate(waypoints, root.state());
     Tensor shifted = RotateLeft.of(waypoints, rootIdx);
     Tensor segment = shifted.extract(0, locate(shifted, goal) + 1);
-    final Scalar r =  Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth);
+    final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth);
     LaneInterface lane = StableLane.of(SPLIT_INTERFACE, segment, r);
     // ---
     List<TransitionRegionQuery> transitionRegionQueries = //

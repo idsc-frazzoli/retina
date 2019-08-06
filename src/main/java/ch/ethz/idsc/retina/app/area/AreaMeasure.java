@@ -1,5 +1,5 @@
 // code by vc
-package ch.ethz.idsc.demo.vc;
+package ch.ethz.idsc.retina.app.area;
 
 import java.awt.geom.Area;
 import java.awt.geom.Point2D;
@@ -20,8 +20,8 @@ import java.awt.geom.Rectangle2D;
     double y = bounds2d.getY();
     double width = bounds2d.getWidth();
     double height = bounds2d.getHeight();
-    for (int i = 0; i < RES; i++) {
-      for (int j = 0; j < RES; j++) {
+    for (int i = 0; i < RES; ++i) {
+      for (int j = 0; j < RES; ++j) {
         Point2D point = new Point2D.Double(x + i * width / RES, y + j * height / RES);
         if (area.contains(point))
           ++count;

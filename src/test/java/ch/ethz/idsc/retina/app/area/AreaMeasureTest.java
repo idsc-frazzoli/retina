@@ -1,5 +1,5 @@
 // code by vc, jph
-package ch.ethz.idsc.demo.vc;
+package ch.ethz.idsc.retina.app.area;
 
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RationalScalar;
