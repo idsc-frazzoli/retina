@@ -1,22 +1,18 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
-import java.nio.FloatBuffer;
+import java.io.Serializable;
 
-import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.VectorQ;
+import ch.ethz.idsc.tensor.io.Primitives;
 
-public class LookupTable1D {
+public class LookupTable1D implements Serializable {
   private final float[] array;
 
   /** @param vector */
   public LookupTable1D(Tensor vector) {
-    array = new float[vector.length()];
-    FloatBuffer floatBuffer = FloatBuffer.wrap(array);
-    vector.stream() //
-        .map(Scalar.class::cast) //
-        .map(Scalar::number) //
-        .forEach(n -> floatBuffer.put(n.floatValue()));
+    array = Primitives.toFloatArray(VectorQ.require(vector));
   }
 
   /** @param index

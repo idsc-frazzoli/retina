@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.Unit;
 
-class SteerGains {
+/* package */ class SteerGains {
   private static final Unit UNIT_KI = Unit.of("SCE^-1*SCT*s^-1");
   private static final Unit UNIT_KP = Unit.of("SCE^-1*SCT");
   private static final Unit UNIT_KD = Unit.of("SCE^-1*SCT*s");

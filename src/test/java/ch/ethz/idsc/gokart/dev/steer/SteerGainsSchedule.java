@@ -10,17 +10,17 @@ import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 /* package */ enum SteerGainsSchedule {
   INSTANCE;
   // ---
-  private final ScalarTensorFunction stf;
+  private final ScalarTensorFunction scalarTensorFunction;
 
   private SteerGainsSchedule() {
     Tensor table = ResourceData.of("/dev/steer/gains.csv");
-    stf = PiecewiseLinearFunction.of( //
+    scalarTensorFunction = PiecewiseLinearFunction.of( //
         table.get(Tensor.ALL, 0), //
         Tensor.of(table.stream().map(row -> row.extract(1, 4))));
   }
 
   /* package */ Tensor getTriple(Scalar scalar) {
-    return stf.apply(scalar);
+    return scalarTensorFunction.apply(scalar);
   }
 
   SteerGains getGains(Scalar scalar) {

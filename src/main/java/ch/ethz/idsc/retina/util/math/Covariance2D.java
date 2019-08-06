@@ -21,6 +21,10 @@ public class Covariance2D {
     Tensor rotation = RotationMatrix.of(angle);
     Tensor diagonal = DiagonalMatrix.of(firstAxis, secondAxis);
     Tensor matrix = rotation.dot(diagonal).dot(Transpose.of(rotation));
+    // TODO can speed up to
+    // RotationMatrix[t].DiagonalMatrix[{a, b}].RotationMatrix[-t] ==
+    // {{a Cos[t]^2 + b Sin[t]^2, (a - b) Cos[t] Sin[t]},
+    // {(a - b) Cos[t] Sin[t], b Cos[t]^2 + a Sin[t]^2}}
     matrix.set(matrix.get(0, 1), 1, 0);
     return new Covariance2D(matrix);
   }
@@ -43,6 +47,7 @@ public class Covariance2D {
 
   /** @return angle between the eigenvector belonging to the first eigenvalue and the x-axis */
   public Scalar angle() {
+    // TODO is this well-defined? shouldn't the max abs Eigenvalue be identified?
     return ArcTan2D.of(eigensystem.vectors().get(0));
   }
 
