@@ -13,7 +13,7 @@ import ch.ethz.idsc.gokart.offline.video.TrackVideoWriter;
   ;
   private static void run(File file, File dest) throws IOException, Exception {
     try (TrackVideoWriter trackVideoWriter = new TrackVideoWriter( //
-        RunVideoBackground.get20190610(), new TrackVideoConfig(), dest)) {
+        RunVideoBackground.auto(file), new TrackVideoConfig(), dest)) {
       OfflineLogPlayer.process(file, trackVideoWriter);
     }
   }

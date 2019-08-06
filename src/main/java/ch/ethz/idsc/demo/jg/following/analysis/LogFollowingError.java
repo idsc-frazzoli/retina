@@ -16,7 +16,7 @@ import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/* package */ class TrajectoryFollowingError extends OfflineFollowingError {
+/* package */ class LogFollowingError extends OfflineFollowingError {
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     super.event(time, channel, byteBuffer);
@@ -36,7 +36,7 @@ import ch.ethz.idsc.tensor.Tensor;
   public static void main(String[] args) throws Exception {
     Optional<File> file = FileHelper.open(args);
     if (file.isPresent()) {
-      TrajectoryFollowingError followingError = new TrajectoryFollowingError();
+      LogFollowingError followingError = new LogFollowingError();
       System.out.print("running... ");
       OfflineLogPlayer.process(file.get(), followingError);
       System.out.println("finished");
