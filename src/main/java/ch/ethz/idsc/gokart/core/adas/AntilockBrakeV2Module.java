@@ -37,6 +37,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
+// TODO AM is V2 still needed?
 public class AntilockBrakeV2Module extends AbstractModule implements LinmotPutProvider, Vmu931ImuFrameListener {
   private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
