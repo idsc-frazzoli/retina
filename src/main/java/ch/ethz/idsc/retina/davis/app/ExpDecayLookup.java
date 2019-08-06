@@ -1,7 +1,10 @@
 // code by az and jph
 package ch.ethz.idsc.retina.davis.app;
 
-/* package */ class ExpDecayLookup {
+import java.io.Serializable;
+
+// TODO create byteTable1D 
+/* package */ class ExpDecayLookup implements Serializable {
   private final byte[] array;
 
   /** @param length

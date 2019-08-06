@@ -3,8 +3,6 @@ package ch.ethz.idsc.retina.joystick;
 
 import java.util.function.Supplier;
 
-import ch.ethz.idsc.retina.util.GlobalAssert;
-
 /** DO NOT INSERT NEW JOYSTICKS BETWEEN EXISTING JOYSTICKS INSTEAD APPEND NEW
  * JOYSTICKS TO LIST */
 public enum JoystickType {
@@ -42,7 +40,8 @@ public enum JoystickType {
     this.buttons = buttons;
     this.hats = hats;
     /** a short mask is used to encode button status */
-    GlobalAssert.that(buttons <= 16);
+    if (16 < buttons)
+      throw new RuntimeException("" + buttons);
   }
 
   public int encodingSize() {

@@ -5,9 +5,9 @@ import ch.ethz.idsc.tensor.io.Timing;
 
 /** represents an interval in time */
 public final class TriggeredTimeInterval {
+  private final Timing timing = Timing.stopped();
   private final double duration_seconds;
   private boolean isBlown = false;
-  private final Timing timing = Timing.stopped();
 
   public TriggeredTimeInterval(double duration_seconds) {
     this.duration_seconds = duration_seconds;
