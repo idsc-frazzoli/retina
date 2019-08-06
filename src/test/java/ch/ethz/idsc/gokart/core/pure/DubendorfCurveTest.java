@@ -17,9 +17,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
-public class DubendorfCurve2Test extends TestCase {
+public class DubendorfCurveTest extends TestCase {
   public void testDistances() {
-    Tensor CURVE = DubendorfCurve2.HYPERLOOP_EIGHT;
+    Tensor CURVE = DubendorfCurve.HYPERLOOP_EIGHT;
     List<Integer> list = Dimensions.of(CURVE);
     assertEquals((int) list.get(1), 2);
     DoubleSummaryStatistics dss = Differences.of(CURVE).stream() //
@@ -33,7 +33,7 @@ public class DubendorfCurve2Test extends TestCase {
   }
 
   public void testHyperloop() {
-    assertEquals(DubendorfCurve2.HYPERLOOP_EIGHT.length(), 640);
+    assertEquals(DubendorfCurve.HYPERLOOP_EIGHT.length(), 640);
   }
 
   private static void testCurve(Tensor curve) {
@@ -50,11 +50,11 @@ public class DubendorfCurve2Test extends TestCase {
   }
 
   public void testDistances2() {
-    testCurve(DubendorfCurve2.OVAL);
-    testCurve(DubendorfCurve2.DEMODAY_EIGHT);
-    testCurve(DubendorfCurve2.HYPERLOOP_EIGHT);
-    testCurve(DubendorfCurve2.HYPERLOOP_OVAL);
-    testCurve(DubendorfCurve2.TIRES_TRACK_A);
-    testCurve(DubendorfCurve2.TIRES_TRACK_B);
+    testCurve(DubendorfCurve.OVAL);
+    testCurve(DubendorfCurve.DEMODAY_EIGHT);
+    testCurve(DubendorfCurve.HYPERLOOP_EIGHT);
+    testCurve(DubendorfCurve.HYPERLOOP_OVAL);
+    testCurve(DubendorfCurve.TIRES_TRACK_A);
+    testCurve(DubendorfCurve.TIRES_TRACK_B);
   }
 }

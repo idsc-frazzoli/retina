@@ -16,13 +16,13 @@ import ch.ethz.idsc.tensor.red.Nest;
 /** .
  * ante 20190430: curve points were unitless
  * post 20190430: points of any curve have units */
-public enum DubendorfCurve {
+public enum OvalTrack {
   ;
   private static final TensorUnaryOperator SUBDIVISION_SE2 = //
       new FourPointCurveSubdivision(Se2Geodesic.INSTANCE)::cyclic;
   // ---
-  public static final Tensor TRACK_OVAL_R2 = track_oval();
-  public static final Tensor TRACK_OVAL_SE2 = track_oval_se2();
+  public static final Tensor R2 = track_oval();
+  public static final Tensor SE2 = track_oval_se2();
 
   /** matrix with 2 columns */
   private static Tensor project_se2_r2(Tensor control) {

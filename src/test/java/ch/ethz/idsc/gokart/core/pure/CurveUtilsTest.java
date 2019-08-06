@@ -53,7 +53,7 @@ public class CurveUtilsTest extends TestCase {
         Quantity.of(44.933, SI.METER), //
         Degree.of(55));
     TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(xyz).inverse();
-    Tensor tensor = Tensor.of(DubendorfCurve2.OVAL.stream().map(tensorUnaryOperator));
+    Tensor tensor = Tensor.of(DubendorfCurve.OVAL.stream().map(tensorUnaryOperator));
     Optional<Tensor> optional = CurveUtils.getAheadTrail(tensor, Quantity.of(3, SI.METER));
     assertTrue(optional.isPresent());
   }
@@ -66,7 +66,7 @@ public class CurveUtilsTest extends TestCase {
           Quantity.of(44.933, SI.METER), //
           Degree.of(deg.Get()));
       TensorUnaryOperator tensorUnaryOperator = new Se2Bijection(xyz).inverse();
-      Tensor tensor = Tensor.of(DubendorfCurve2.OVAL.stream().map(tensorUnaryOperator));
+      Tensor tensor = Tensor.of(DubendorfCurve.OVAL.stream().map(tensorUnaryOperator));
       Optional<Tensor> optional = CurveUtils.getAheadTrail(tensor, Quantity.of(3, SI.METER));
       assertFalse(optional.isPresent());
     }

@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Nest;
 
-public enum DubendorfCurve2 {
+public enum DubendorfCurve {
   ;
   private static final TensorUnaryOperator SUBDIVISION_RN = //
       new FourPointCurveSubdivision(RnGeodesic.INSTANCE)::cyclic;
