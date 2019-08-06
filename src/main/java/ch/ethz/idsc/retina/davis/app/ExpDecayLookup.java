@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.davis.app;
 
 import java.io.Serializable;
 
-// TODO create byteTable1D 
+// TODO JPH use Primitives.toByteArray on vector 
 /* package */ class ExpDecayLookup implements Serializable {
   private final byte[] array;
 
