@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -72,24 +73,41 @@ public enum RunVideoBackground {
     return BackgroundImage.from(HomeDirectory.Pictures("20190610T154922_00.png"), _20190401);
   }
 
+  public static BackgroundImage auto(File file) throws IOException {
+    File directory = file.getParentFile();
+    return BackgroundImage.from(new File(directory, directory.getName() + ".bck.png"), _20190401);
+  }
+
   public static void main(String[] args) throws IOException {
     Optional<File> optionalFile = FileHelper.open(args);
     if (optionalFile.isPresent()) {
-      GokartLogInterface gokartLogInterface = //
-          GokartLogAdapter.of(optionalFile.get());
-      Optional<ByteBuffer> optional = FirstLogMessage.of(gokartLogInterface.file(), GokartPoseChannel.INSTANCE.channel());
-      BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
-      Graphics2D graphics = bufferedImage.createGraphics();
-      graphics.setColor(Color.WHITE);
-      graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-      graphics.setColor(new Color(0, 0, 0, 16));
-      ObstacleAggregate obstacleAggregate = new ObstacleAggregate( //
-          GokartPoseChannel.INSTANCE.channel(), //
-          graphics, //
-          _20190401, //
-          GokartPoseEvent.of(optional.get()).getPose());
-      OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
-      ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20190610T154922_00.png"));
+      File file = optionalFile.get();
+      try {
+        render(file);
+      } catch (FileNotFoundException e) {
+        // most common error is to select file instead of directory
+        render(file.getParentFile());
+      }
     }
+  }
+
+  private static void render(File directory) throws IOException {
+    GokartLogInterface gokartLogInterface = //
+        GokartLogAdapter.of(directory);
+    Optional<ByteBuffer> optional = FirstLogMessage.of(gokartLogInterface.file(), GokartPoseChannel.INSTANCE.channel());
+    BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D graphics = bufferedImage.createGraphics();
+    graphics.setColor(Color.WHITE);
+    graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+    graphics.setColor(new Color(0, 0, 0, 16));
+    ObstacleAggregate obstacleAggregate = new ObstacleAggregate( //
+        GokartPoseChannel.INSTANCE.channel(), //
+        graphics, //
+        _20190401, //
+        GokartPoseEvent.of(optional.get()).getPose());
+    System.out.print("processing... ");
+    OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
+    System.out.print("finished");
+    ImageIO.write(bufferedImage, "png", new File(directory, directory.getName() + ".bck.png"));
   }
 }
