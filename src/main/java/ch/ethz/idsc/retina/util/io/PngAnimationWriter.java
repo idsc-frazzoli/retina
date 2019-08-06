@@ -20,6 +20,11 @@ public class PngAnimationWriter implements AnimationWriter {
   // ---
   private int image_count = -1;
 
+  /** Careful: content of given directory will be deleted!
+   * 
+   * @param directory
+   * @param format
+   * @throws Exception */
   public PngAnimationWriter(File directory, String format) throws Exception {
     if (directory.isDirectory())
       DeleteDirectory.of(directory, 1, MAX_IMAGES);
@@ -31,8 +36,12 @@ public class PngAnimationWriter implements AnimationWriter {
     this.format = format + ".png";
   }
 
-  public PngAnimationWriter(File folder) throws Exception {
-    this(folder, "%06d");
+  /** Careful: content of given directory will be deleted!
+   * 
+   * @param directory
+   * @throws Exception */
+  public PngAnimationWriter(File directory) throws Exception {
+    this(directory, "%06d");
   }
 
   @Override // from AnimationWriter
