@@ -15,9 +15,9 @@ import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
+import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -33,12 +33,12 @@ import ch.ethz.idsc.tensor.sca.Round;
       // large value is a hack to get a solution
       clothoidPursuitConfig.turningRatioMax = Quantity.of(1000, SI.PER_METER);
       Optional<ClothoidPlan> optionalL = //
-          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, //
-              Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
+          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan( //
+              pose, VelocityHelper.ZERO, //
               renderPluginParameters.laneBoundaryL, true);
       Optional<ClothoidPlan> optionalR = //
-          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, //
-              Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
+          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan( //
+              pose, VelocityHelper.ZERO, //
               renderPluginParameters.laneBoundaryR, true);
       return new LaneConstraintsRender(pose, optionalL, optionalR);
     }

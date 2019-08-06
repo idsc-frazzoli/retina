@@ -1,13 +1,16 @@
 // code by jph
 package ch.ethz.idsc.retina.util.gps;
 
+import java.io.IOException;
+
+import ch.ethz.idsc.tensor.io.Serialization;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class GprmcTest extends TestCase {
-  public void testSimple() {
+  public void testSimple() throws ClassNotFoundException, IOException {
     String nmea = "$GPRMC,155524,A,4724.3266,N,00837.8624,E,002.0,172.1,131217,001.8,E,A*10";
-    Gprmc gprmc = Gprmc.of(nmea);
+    Gprmc gprmc = Serialization.copy(Gprmc.of(nmea));
     assertEquals(gprmc.gpsX(), Quantity.of(8.378624, "deg"));
     assertEquals(gprmc.gpsY(), Quantity.of(4724.3266 * 1E-2, "deg"));
     assertEquals(gprmc.dateStamp(), "131217");

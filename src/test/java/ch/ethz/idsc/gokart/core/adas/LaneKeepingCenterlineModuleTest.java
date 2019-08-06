@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.adas;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.DubendorfCurve;
+import ch.ethz.idsc.gokart.core.OvalTrack;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
 public class LaneKeepingCenterlineModuleTest extends TestCase {
-  private static final Tensor CURVE = DubendorfCurve.TRACK_OVAL_SE2;
+  private static final Tensor CURVE = OvalTrack.SE2;
 
   public void testSimple() {
     LaneKeepingCenterlineModule laneKeepingCenterlineModule = new LaneKeepingCenterlineModule();
