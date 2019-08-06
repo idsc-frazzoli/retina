@@ -24,6 +24,7 @@ public final class TriggeredTimeInterval {
 
   /** @return true if present time is inside the triggered time interval */
   public boolean isActive() {
-    return isBlown && timing.seconds() < duration_seconds;
+    return isBlown //
+        && timing.seconds() < duration_seconds;
   }
 }

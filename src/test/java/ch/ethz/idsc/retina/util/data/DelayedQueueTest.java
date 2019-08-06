@@ -36,4 +36,13 @@ public class DelayedQueueTest extends TestCase {
       assertEquals(optional.get().intValue(), 103);
     }
   }
+
+  public void testFail() {
+    try {
+      new DelayedQueue<>(-1);
+      fail();
+    } catch (Exception exception) {
+      // ---
+    }
+  }
 }
