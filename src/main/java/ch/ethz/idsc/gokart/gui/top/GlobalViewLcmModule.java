@@ -28,7 +28,9 @@ import ch.ethz.idsc.gokart.lcm.autobox.SteerColumnLcmClient;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ren.LaneRender;
 import ch.ethz.idsc.owl.gui.ren.WaypointRender;
+import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
@@ -70,6 +72,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   public final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
   private final PathRender pathRender = new PathRender(Color.YELLOW);
   private final PathRender planRender = new PathRender(Color.MAGENTA);
+  private final LaneRender laneRender = new LaneRender(false);
 
   /** @param curve may be null */
   public void setPlan(Tensor curve) {
@@ -79,6 +82,11 @@ public class GlobalViewLcmModule extends AbstractModule {
   /** @param waypoints may be null */
   public void setWaypoints(Tensor waypoints) {
     waypointRender.setWaypoints(waypoints);
+  }
+
+  /** @param laneInterface may be null */
+  public void setLane(LaneInterface laneInterface) {
+    laneRender.setLane(laneInterface);
   }
 
   @Override // from AbstractModule
@@ -93,6 +101,7 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(pathRender);
       viewLcmFrame.geometricComponent.addRenderInterface(planRender);
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
+      viewLcmFrame.geometricComponent.addRenderInterface(laneRender);
     }
     // if (true)
     {

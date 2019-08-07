@@ -60,7 +60,7 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   protected static final Se2Wrap SE2WRAP = Se2Wrap.INSTANCE;
   // ---
-  private final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
+  protected final GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
