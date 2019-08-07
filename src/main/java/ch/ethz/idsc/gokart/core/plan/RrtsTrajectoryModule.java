@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pure.CurvePursuitModule;
@@ -55,6 +56,13 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
     this.transitionRegionQueries = Arrays.asList(transitionRegionQueries);
   }
 
+  @Override // from AbstractClockedModule
+  protected void last() {
+    super.last();
+    if (Objects.nonNull(globalViewLcmModule))
+      globalViewLcmModule.setLane(null);
+  }
+
   @Override // from GokartTrajectoryModule
   protected final TransitionPlanner setupTreePlanner(StateTime root, Tensor goal) {
     int rootIdx = locate(waypoints, root.state());
@@ -68,7 +76,7 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
     transitionRegionQueries.addAll(this.transitionRegionQueries);
     TransitionRegionQuery transitionRegionQuery = TransitionRegionQueryUnion.wrap(transitionRegionQueries);
     LaneRrtsPlannerServer laneRrtsPlannerServer = //
-        new LaneRrtsPlannerServer(transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, true) {
+        new LaneRrtsPlannerServer(transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, trajectoryConfig.greedy) {
           @Override
           protected RrtsNodeCollection rrtsNodeCollection() {
             Scalar r_2 = r.multiply(RationalScalar.HALF);
@@ -87,6 +95,8 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
     laneRrtsPlannerServer.setState(root);
     laneRrtsPlannerServer.setGoal(goal);
     laneRrtsPlannerServer.accept(lane);
+    if (Objects.nonNull(globalViewLcmModule))
+      globalViewLcmModule.setLane(lane);
     return laneRrtsPlannerServer;
   }
 
