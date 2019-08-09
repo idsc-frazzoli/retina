@@ -85,21 +85,16 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     points_xya.set(Ramp.FUNCTION, Tensor.ALL, 2);
     if (1 < points_xya.length() && jButton.isSelected()) {
       Tensor points_xyr = points_xya.map(s -> Quantity.of(s, SI.METER));
-      BSplineTrack bSplineTrack = jToggleClosed.isSelected() //
-          ? new CyclicBSplineTrack(points_xyr)
-          : new StringBSplineTrack(points_xyr);
+      BSplineTrack bSplineTrack = BSplineTrack.of(points_xyr, jToggleClosed.isSelected());
       Dimension dimension = timerFrame.geometricComponent.jComponent.getSize();
       Tensor pixel2model = Inverse.of(timerFrame.geometricComponent.getModel2Pixel());
       GeometricLayer gl = GeometricLayer.of(pixel2model);
-      int step = 5;
+      int step = 4;
       Tensor raster = Tensors.reserve(dimension.height / step);
       for (int y = 0; y < dimension.height; y += step) {
         Tensor row = Tensors.reserve(dimension.width / step);
-        for (int x = 0; x < dimension.width; x += step) {
-          Tensor vector = gl.toVector(x, y);
-          Scalar progress = bSplineTrack.getNearestPathProgress(vector);
-          row.append(progress);
-        }
+        for (int x = 0; x < dimension.width; x += step)
+          row.append(bSplineTrack.getNearestPathProgress(gl.toVector(x, y)));
         raster.append(row);
       }
       ColorDataGradient colorDataGradient = jToggleClosed.isSelected() //

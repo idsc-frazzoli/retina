@@ -5,14 +5,9 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class CyclicBSplineTrack extends BSplineTrack {
+/* package */ class CyclicBSplineTrack extends BSplineTrack {
   public CyclicBSplineTrack(Tensor points_xyr) {
     super(points_xyr, true);
-  }
-
-  @Override // from TrackInterface
-  public boolean isClosed() {
-    return true;
   }
 
   @Override // from BSplineTrack
@@ -23,7 +18,7 @@ public class CyclicBSplineTrack extends BSplineTrack {
     float bestDist = Float.MAX_VALUE;
     int bestGuess = 0;
     // initial guesses
-    for (int i = 0; i < numPoints; ++i) {
+    for (int i = 0; i < effPoints(); ++i) {
       int index = i * LOOKUP_SKIP;
       // quadratic distances
       float dist = getFastQuadraticDistance(index, gPosX, gPosY);
@@ -56,8 +51,6 @@ public class CyclicBSplineTrack extends BSplineTrack {
         bestDist = upperDist;
       } else
         precision /= 2;
-      // System.out.println("pos: "+bestGuess*lookupRes);
-      // System.out.println(Math.sqrt(getFastQuadraticDistance(bestGuess, gPosX, gPosY)));
     }
     return RealScalar.of(bestGuess * LOOKUP_RES);
   }
