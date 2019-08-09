@@ -1,6 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.track;
 
+import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
 public interface TrackInterface {
@@ -10,7 +11,7 @@ public interface TrackInterface {
 
   /** @param resolution
    * @return */
-  TrackBoundaries getTrackBoundaries(int resolution);
+  LaneInterface getTrackBoundaries(int resolution);
 
   Tensor getNearestPosition(Tensor position);
 
