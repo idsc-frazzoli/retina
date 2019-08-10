@@ -35,6 +35,7 @@ import ch.ethz.idsc.tensor.io.ImageFormat;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
+import ch.ethz.idsc.tensor.qty.Boole;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
@@ -93,8 +94,11 @@ import ch.ethz.idsc.tensor.sca.Ramp;
       Tensor raster = Tensors.reserve(dimension.height / step);
       for (int y = 0; y < dimension.height; y += step) {
         Tensor row = Tensors.reserve(dimension.width / step);
+        // for (int x = 0; x < dimension.width; x += step)
+        // row.append(bSplineTrack.getNearestPathProgress(gl.toVector(x, y)));
         for (int x = 0; x < dimension.width; x += step)
-          row.append(bSplineTrack.getNearestPathProgress(gl.toVector(x, y)));
+          row.append(Boole.of(bSplineTrack.isInTrack(gl.toVector(x, y).map(s -> Quantity.of(s, SI.METER)))));
+        // row.append(bSplineTrack.getNearestPathProgress(gl.toVector(x, y)));
         raster.append(row);
       }
       ColorDataGradient colorDataGradient = jToggleClosed.isSelected() //
@@ -121,8 +125,8 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     if (1 < points_xya.length()) {
       Tensor points_xyr = points_xya.map(s -> Quantity.of(s, SI.METER));
       BSplineTrack bSplineTrack = jToggleClosed.isSelected() //
-          ? new CyclicBSplineTrack(points_xyr)
-          : new StringBSplineTrack(points_xyr);
+          ? new BSplineTrackCyclic(points_xyr)
+          : new BSplineTrackString(points_xyr);
       RenderInterface renderInterface2 = new TrackRender().setTrack(bSplineTrack);
       renderInterface2.render(geometricLayer, graphics);
       if (jToggleView.isSelected()) {

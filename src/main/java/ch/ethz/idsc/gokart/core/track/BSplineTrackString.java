@@ -5,21 +5,25 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/* package */ class StringBSplineTrack extends BSplineTrack {
-  public StringBSplineTrack(Tensor points_xyr) {
+/* package */ class BSplineTrackString extends BSplineTrack {
+  private static final Scalar ZERO = RealScalar.of(0.0);
+
+  public BSplineTrackString(Tensor points_xyr) {
     super(points_xyr, false);
   }
 
   @Override // from BSplineTrack
   public Scalar getNearestPathProgress(Tensor position) {
-    // FIXME throws an exception if num points == 2
+    int effPoints = effPoints();
+    if (effPoints <= 0)
+      return ZERO;
     float gPosX = position.Get(0).number().floatValue();
     float gPosY = position.Get(1).number().floatValue();
     // first control point
-    float bestDist = Float.MAX_VALUE;
+    float bestDist = Float.MAX_VALUE; // 3.4028235e+38f
     int bestGuess = 0;
     // initial guesses
-    for (int i = 0; i < effPoints(); ++i) {
+    for (int i = 0; i < effPoints; ++i) {
       int index = i * LOOKUP_SKIP;
       // quadratic distances
       float dist = getFastQuadraticDistance(index, gPosX, gPosY);

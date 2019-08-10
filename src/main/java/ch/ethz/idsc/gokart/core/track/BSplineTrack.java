@@ -18,15 +18,16 @@ import ch.ethz.idsc.tensor.sca.Power;
 
 // TODO JPH need estimation of length of track so that resolution can be adapted
 public abstract class BSplineTrack implements TrackInterface {
-  protected static final int SPLINE_ORDER = 2;
+  private static final int SPLINE_ORDER = 2;
   private static final TensorUnaryOperator NORMALIZE = Normalize.with(Norm._2);
-  protected static final int LOOKUP_SKIP = 200;
+  // ---
+  static final int LOOKUP_SKIP = 200;
   static final float LOOKUP_RES = 1f / LOOKUP_SKIP;
 
   public static BSplineTrack of(Tensor points_xyr, boolean cyclic) {
     return cyclic //
-        ? new CyclicBSplineTrack(points_xyr)
-        : new StringBSplineTrack(points_xyr);
+        ? new BSplineTrackCyclic(points_xyr)
+        : new BSplineTrackString(points_xyr);
   }
 
   // ---
@@ -57,7 +58,7 @@ public abstract class BSplineTrack implements TrackInterface {
     bSpline2VectorD2 = BSpline2Vector.of(numPoints, 2, cyclic);
     points_xy = Tensor.of(points_xyr.stream().map(Extract2D.FUNCTION));
     points_r = points_xyr.get(Tensor.ALL, 2);
-    effPoints = numPoints + (cyclic ? 0 : -2);
+    effPoints = numPoints + (cyclic ? 0 : -SPLINE_ORDER);
     // prepare lookup
     posX = new float[(int) (effPoints / LOOKUP_RES)];
     posY = new float[(int) (effPoints / LOOKUP_RES)];
@@ -73,10 +74,12 @@ public abstract class BSplineTrack implements TrackInterface {
     return points_xyr;
   }
 
+  /** @return length of control points */
   public final int numPoints() {
     return numPoints;
   }
 
+  /** @return length of control points minus spline order if non-cyclic */
   public final int effPoints() {
     return effPoints;
   }
@@ -95,6 +98,8 @@ public abstract class BSplineTrack implements TrackInterface {
   /** @param pathProgress along center line
    * @return radius [m] */
   public final Scalar getRadius(Scalar pathProgress) {
+    // TODO JPH attempt to replace by de boors algo
+    // return BSplineFunction.of(2, points_r).apply(pathProgress).Get();
     return bSpline2VectorD0.apply(pathProgress).dot(points_r).Get();
   }
 
@@ -120,7 +125,7 @@ public abstract class BSplineTrack implements TrackInterface {
    * @param pathProgress along center line
    * corresponding to control point indices [1]
    * @return direction of the path [1] */
-  final Tensor getLeftDirectionXY(Scalar pathProgress) {
+  /* package */ final Tensor getLeftDirectionXY(Scalar pathProgress) {
     return Cross.of(getDirectionXY(pathProgress));
   }
 
@@ -150,7 +155,8 @@ public abstract class BSplineTrack implements TrackInterface {
    * problem: using normal BSpline implementation takes more time than full MPC optimization
    * solution: fast position lookup: from 45000 micro s -> 15 micro s
    * 
-   * @param parameter of center line curve */
+   * @param position of the form {px[m], py[m]}
+   * @return parameter of center line curve */
   public abstract Scalar getNearestPathProgress(Tensor position);
 
   final float getFastQuadraticDistance(int index, float gPosX, float gPosY) {
