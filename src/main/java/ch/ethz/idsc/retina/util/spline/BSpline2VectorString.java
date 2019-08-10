@@ -9,10 +9,10 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 /** function is defined for values in the interval [0, n - 2] */
-/* package */ class StringBSpline2Vector extends BSpline2Vector {
+/* package */ class BSpline2VectorString extends BSpline2Vector {
   private final Clip clip;
 
-  public StringBSpline2Vector(int n, int der) {
+  public BSpline2VectorString(int n, int der) {
     super(n, der);
     clip = Clips.interval(0, n - 2);
   }

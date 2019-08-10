@@ -5,25 +5,25 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class StringBSplineTrack extends BSplineTrack {
-  public StringBSplineTrack(Tensor points_xyr) {
-    super(points_xyr, false);
-  }
+/* package */ class BSplineTrackString extends BSplineTrack {
+  private static final Scalar ZERO = RealScalar.of(0.0);
 
-  @Override // from TrackInterface
-  public boolean isClosed() {
-    return false;
+  public BSplineTrackString(Tensor points_xyr) {
+    super(points_xyr, false);
   }
 
   @Override // from BSplineTrack
   public Scalar getNearestPathProgress(Tensor position) {
+    int effPoints = effPoints();
+    if (effPoints <= 0)
+      return ZERO;
     float gPosX = position.Get(0).number().floatValue();
     float gPosY = position.Get(1).number().floatValue();
     // first control point
-    float bestDist = Float.MAX_VALUE;
+    float bestDist = Float.MAX_VALUE; // 3.4028235e+38f
     int bestGuess = 0;
     // initial guesses
-    for (int i = 0; i < numPoints - SPLINE_ORDER; ++i) {
+    for (int i = 0; i < effPoints; ++i) {
       int index = i * LOOKUP_SKIP;
       // quadratic distances
       float dist = getFastQuadraticDistance(index, gPosX, gPosY);
@@ -56,8 +56,6 @@ public class StringBSplineTrack extends BSplineTrack {
         bestDist = upperDist;
       } else
         precision /= 2;
-      // System.out.println("pos: "+bestGuess*lookupRes);
-      // System.out.println(Math.sqrt(getFastQuadraticDistance(bestGuess, gPosX, gPosY)));
     }
     return RealScalar.of(bestGuess * LOOKUP_RES);
   }

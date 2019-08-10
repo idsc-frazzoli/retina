@@ -8,10 +8,10 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Mod;
 
 /** function is periodic. values are mapped to the interval [0, n) using modulo. */
-/* package */ class CyclicBSpline2Vector extends BSpline2Vector {
+/* package */ class BSpline2VectorCyclic extends BSpline2Vector {
   private final Mod mod;
 
-  public CyclicBSpline2Vector(int n, int der) {
+  public BSpline2VectorCyclic(int n, int der) {
     super(n, der);
     mod = Mod.function(n);
   }

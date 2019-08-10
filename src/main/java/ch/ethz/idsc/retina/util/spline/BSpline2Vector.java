@@ -61,8 +61,8 @@ public abstract class BSpline2Vector implements ScalarTensorFunction {
    * @return */
   public static ScalarTensorFunction of(int n, int derivative, boolean cyclic) {
     return cyclic //
-        ? new CyclicBSpline2Vector(n, derivative)
-        : new StringBSpline2Vector(n, derivative);
+        ? new BSpline2VectorCyclic(n, derivative)
+        : new BSpline2VectorString(n, derivative);
   }
 
   // ---
