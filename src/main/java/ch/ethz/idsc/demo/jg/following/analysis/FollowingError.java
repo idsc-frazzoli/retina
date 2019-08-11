@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.jg.following.analysis;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.sophus.lie.so2.So2Metric;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -53,7 +54,7 @@ public class FollowingError implements ErrorInterface {
     Tensor pose2D = Extract2D.FUNCTION.apply(pose);
     Tensor distances = Tensor.of(reference.stream().map(Extract2D.FUNCTION).map(tensor -> tensor.subtract(pose2D)).map(Norm._2::ofVector));
     int idx = ArgMin.of(distances);
-    return Tensors.of(distances.get(idx), So2AlignmentError.of(pose.Get(2), reference.Get(idx, 2)));
+    return Tensors.of(distances.get(idx), So2Metric.INSTANCE.distance(pose.get(2), reference.get(idx, 2)));
   }
 
   @Override // from ErrorInterface
