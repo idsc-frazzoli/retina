@@ -24,6 +24,9 @@ public abstract class BSplineTrack implements TrackInterface {
   static final int LOOKUP_SKIP = 200;
   static final float LOOKUP_RES = 1f / LOOKUP_SKIP;
 
+  /** @param points_xyr of dimensions n x 3 with scalars of same unit
+   * @param cyclic
+   * @return */
   public static BSplineTrack of(Tensor points_xyr, boolean cyclic) {
     return cyclic //
         ? new BSplineTrackCyclic(points_xyr)

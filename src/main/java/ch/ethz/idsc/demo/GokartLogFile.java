@@ -2323,6 +2323,12 @@ public enum GokartLogFile implements LogFile {
   /** TEST OK: MANUAL, PURSUIT, MPC */
   _20190725T114335_95923bcb,
   /***************************************************/
+  /* 2019-07-29 */
+  /** lane keeping */
+  _20190729T115559_23a2aa6f, //
+  /** lane keeping */
+  _20190729T140711_23a2aa6f, //
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
