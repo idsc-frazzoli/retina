@@ -18,10 +18,21 @@ import ch.ethz.idsc.tensor.sca.Power;
 
 // TODO JPH need estimation of length of track so that resolution can be adapted
 public abstract class BSplineTrack implements TrackInterface {
-  protected static final int SPLINE_ORDER = 2;
+  private static final int SPLINE_ORDER = 2;
   private static final TensorUnaryOperator NORMALIZE = Normalize.with(Norm._2);
-  protected static final int LOOKUP_SKIP = 200;
+  // ---
+  static final int LOOKUP_SKIP = 200;
   static final float LOOKUP_RES = 1f / LOOKUP_SKIP;
+
+  /** @param points_xyr of dimensions n x 3 with scalars of same unit
+   * @param cyclic
+   * @return */
+  public static BSplineTrack of(Tensor points_xyr, boolean cyclic) {
+    return cyclic //
+        ? new BSplineTrackCyclic(points_xyr)
+        : new BSplineTrackString(points_xyr);
+  }
+
   // ---
   /** matrix of dimension n x 3 */
   private final Tensor points_xyr;
@@ -29,7 +40,8 @@ public abstract class BSplineTrack implements TrackInterface {
   private final Tensor points_xy;
   /** vector of length n */
   private final Tensor points_r;
-  protected final int numPoints;
+  private final int numPoints;
+  private final boolean cyclic;
   private final ScalarTensorFunction bSpline2VectorD0;
   private final ScalarTensorFunction bSpline2VectorD1;
   private final ScalarTensorFunction bSpline2VectorD2;
@@ -40,15 +52,16 @@ public abstract class BSplineTrack implements TrackInterface {
 
   /** @param points_xyr matrix with dimension n x 3
    * * @param cyclic */
-  public BSplineTrack(Tensor points_xyr, boolean cyclic) {
+  protected BSplineTrack(Tensor points_xyr, boolean cyclic) {
     this.points_xyr = points_xyr;
     numPoints = points_xyr.length();
+    this.cyclic = cyclic;
     bSpline2VectorD0 = BSpline2Vector.of(numPoints, 0, cyclic);
     bSpline2VectorD1 = BSpline2Vector.of(numPoints, 1, cyclic);
     bSpline2VectorD2 = BSpline2Vector.of(numPoints, 2, cyclic);
     points_xy = Tensor.of(points_xyr.stream().map(Extract2D.FUNCTION));
     points_r = points_xyr.get(Tensor.ALL, 2);
-    effPoints = numPoints + (cyclic ? 0 : -2);
+    effPoints = numPoints + (cyclic ? 0 : -SPLINE_ORDER);
     // prepare lookup
     posX = new float[(int) (effPoints / LOOKUP_RES)];
     posY = new float[(int) (effPoints / LOOKUP_RES)];
@@ -59,36 +72,43 @@ public abstract class BSplineTrack implements TrackInterface {
     }
   }
 
+  /** @return matrix with rows of the form {px[m], py[m], radius[m]} */
   public final Tensor combinedControlPoints() {
     return points_xyr;
   }
 
+  /** @return length of control points */
   public final int numPoints() {
     return numPoints;
   }
 
-  /** get position at a certain path value
-   * 
-   * @param pathProgress progress along path
-   * corresponding to control point indices [1]
-   * @return position [m] */
+  /** @return length of control points minus spline order if non-cyclic */
+  public final int effPoints() {
+    return effPoints;
+  }
+
+  @Override // from TrackInterface
+  public final boolean isClosed() {
+    return cyclic;
+  }
+
+  /** @param pathProgress along center line
+   * @return position along center line {px[m], py[m]} */
   public final Tensor getPositionXY(Scalar pathProgress) {
     return bSpline2VectorD0.apply(pathProgress).dot(points_xy);
   }
 
-  /** get radius at a certain path value
-   * 
-   * @param pathProgress progress along path
-   * corresponding to control point indices [1]
+  /** @param pathProgress along center line
    * @return radius [m] */
   public final Scalar getRadius(Scalar pathProgress) {
+    // TODO JPH attempt to replace by de boors algo
+    // return BSplineFunction.of(2, points_r).apply(pathProgress).Get();
     return bSpline2VectorD0.apply(pathProgress).dot(points_r).Get();
   }
 
   /** get the path derivative with respect to path progress
    * 
-   * @param pathProgress progress along path
-   * corresponding to control point indices [1]
+   * @param pathProgress along center line corresponding to control point indices
    * @return change rate of position unit [m/1] */
   public final Tensor getDerivationXY(Scalar pathProgress) {
     return bSpline2VectorD1.apply(pathProgress).dot(points_xy);
@@ -96,7 +116,7 @@ public abstract class BSplineTrack implements TrackInterface {
 
   /** get the path direction with respect to path progress
    * 
-   * @param pathProgress progress along path
+   * @param pathProgress along center line
    * corresponding to control point indices [1]
    * @return direction of the path [1] */
   public final Tensor getDirectionXY(Scalar pathProgress) {
@@ -105,16 +125,16 @@ public abstract class BSplineTrack implements TrackInterface {
 
   /** get perpendicular vector to the right of the path
    * 
-   * @param pathProgress progress along path
+   * @param pathProgress along center line
    * corresponding to control point indices [1]
    * @return direction of the path [1] */
-  final Tensor getLeftDirectionXY(Scalar pathProgress) {
+  /* package */ final Tensor getLeftDirectionXY(Scalar pathProgress) {
     return Cross.of(getDirectionXY(pathProgress));
   }
 
   /** get the 2nd path derivative with respect to path progress
    * 
-   * @param pathProgress progress along path
+   * @param pathProgress along center line
    * corresponding to control point indices [1]
    * @return change rate of position unit [m/1^2] */
   public final Tensor get2ndDerivation(Scalar pathProgress) {
@@ -123,9 +143,9 @@ public abstract class BSplineTrack implements TrackInterface {
 
   /** get the curvature
    * 
-   * @param pathProgress progress along path
+   * @param pathProgress along center line
    * corresponding to control point indices [1]
-   * @return curvature unit [1/m] */
+   * @return curvature unit [m^-1] */
   public final Scalar getSignedCurvature(Scalar pathProgress) {
     Tensor firstDer = getDerivationXY(pathProgress);
     Tensor secondDer = get2ndDerivation(pathProgress);
@@ -133,15 +153,13 @@ public abstract class BSplineTrack implements TrackInterface {
     return Det2D.of(firstDer, secondDer).divide(under);
   }
 
-  // function local radius is not used/tested and numerically unstable
-  // public Scalar getLocalRadius(Scalar pathProgress) {
-  // the application of abs() causes a loss of information
-  // return getCurvature(pathProgress).abs().reciprocal();
-  // }
-  /** problem: using normal BSpline implementation takes more time than full MPC optimization
+  /** path progress does not depend on radius
+   * 
+   * problem: using normal BSpline implementation takes more time than full MPC optimization
    * solution: fast position lookup: from 45000 micro s -> 15 micro s
    * 
-   * @param position vector */
+   * @param position of the form {px[m], py[m]}
+   * @return parameter of center line curve */
   public abstract Scalar getNearestPathProgress(Tensor position);
 
   final float getFastQuadraticDistance(int index, float gPosX, float gPosY) {

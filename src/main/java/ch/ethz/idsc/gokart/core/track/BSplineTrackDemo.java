@@ -9,6 +9,7 @@ import java.awt.geom.Path2D;
 import javax.swing.JToggleButton;
 
 import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ren.AxesRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -22,25 +23,26 @@ import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
-public class BSplineTrackDemo extends ControlPointsDemo {
+/* package */ class BSplineTrackDemo extends ControlPointsDemo {
   private static final Tensor CIRCLE = CirclePoints.of(27);
   // ---
   private final JToggleButton jToggleView = new JToggleButton("view");
-  final JToggleButton jToggleClosed = new JToggleButton("closed");
+  /* package */ final JToggleButton jToggleClosed = new JToggleButton("closed");
 
   public BSplineTrackDemo() {
     super(true, GeodesicDisplays.R2_ONLY);
     timerFrame.jToolBar.add(jToggleView);
     timerFrame.jToolBar.add(jToggleClosed);
+    timerFrame.geometricComponent.addRenderInterfaceBackground(AxesRender.INSTANCE);
     jToggleView.addActionListener(e -> setPositioningEnabled(!jToggleView.isSelected()));
   }
 
   @Override
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    Tensor points_xyr = getControlPointsSe2().copy();
-    points_xyr.set(Ramp.FUNCTION, Tensor.ALL, 2);
+    final Tensor points_xya = getControlPointsSe2().copy();
+    points_xya.set(Ramp.FUNCTION, Tensor.ALL, 2);
     {
-      for (Tensor point : points_xyr) {
+      for (Tensor point : points_xya) {
         geometricLayer.pushMatrix(Se2Matrix.translation(point));
         Path2D path2d = geometricLayer.toPath2D(CIRCLE.multiply(point.Get(2)));
         path2d.closePath();
@@ -51,11 +53,11 @@ public class BSplineTrackDemo extends ControlPointsDemo {
       }
     }
     renderControlPoints(geometricLayer, graphics);
-    if (1 < points_xyr.length()) {
-      points_xyr = points_xyr.map(s -> Quantity.of(s, SI.METER));
+    if (1 < points_xya.length()) {
+      Tensor points_xyr = points_xya.map(s -> Quantity.of(s, SI.METER));
       BSplineTrack bSplineTrack = jToggleClosed.isSelected() //
-          ? new CyclicBSplineTrack(points_xyr)
-          : new StringBSplineTrack(points_xyr);
+          ? new BSplineTrackCyclic(points_xyr)
+          : new BSplineTrackString(points_xyr);
       RenderInterface renderInterface2 = new TrackRender().setTrack(bSplineTrack);
       renderInterface2.render(geometricLayer, graphics);
       if (jToggleView.isSelected()) {
@@ -75,7 +77,7 @@ public class BSplineTrackDemo extends ControlPointsDemo {
     return new Color(255, 128, 128, 128);
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     AbstractDemo abstractDemo = new BSplineTrackDemo();
     abstractDemo.timerFrame.jFrame.setBounds(100, 100, 600, 600);
     abstractDemo.timerFrame.jFrame.setVisible(true);
