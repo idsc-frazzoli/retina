@@ -14,6 +14,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidRrtsNdType;
+import ch.ethz.idsc.owl.bot.se2.rrts.Se2RrtsFlow;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
@@ -21,7 +22,6 @@ import ch.ethz.idsc.owl.math.lane.StableLane;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.rrts.LaneRrtsPlannerServer;
-import ch.ethz.idsc.owl.rrts.RrtsFlowHelper;
 import ch.ethz.idsc.owl.rrts.RrtsNodeCollections;
 import ch.ethz.idsc.owl.rrts.adapter.SampledTransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.adapter.TransitionRegionQueryUnion;
@@ -89,7 +89,7 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
 
           @Override
           protected Tensor uBetween(StateTime orig, StateTime dest) {
-            return RrtsFlowHelper.U_SE2.apply(orig, dest);
+            return Se2RrtsFlow.uBetween(orig, dest);
           }
         };
     laneRrtsPlannerServer.setState(root);

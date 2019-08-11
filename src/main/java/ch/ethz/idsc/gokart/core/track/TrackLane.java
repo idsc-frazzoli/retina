@@ -12,7 +12,7 @@ public class TrackLane implements LaneInterface {
   private final Tensor left;
   private final Tensor right;
 
-  public TrackLane(BSplineTrack track, Tensor domain){
+  public TrackLane(BSplineTrack track, Tensor domain) {
     // this is not accurate for large changes in radius
     Tensor middle = domain.map(track::getPositionXY);
     Tensor normal = domain.map(prog -> track.getLeftDirectionXY(prog).multiply(track.getRadius(prog)));
