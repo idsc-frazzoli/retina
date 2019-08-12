@@ -190,4 +190,19 @@ public class BSplineTrackTest extends TestCase {
     Tensor nearestProg = bSplineTrack.getNearestPathProgress(queryPos);
     assertTrue(Chop._10.allZero(nearestProg));
   }
+
+  public void testNullFail() {
+    try {
+      BSplineTrack.of(null, false);
+      fail();
+    } catch (Exception exception) {
+      // ---
+    }
+    try {
+      BSplineTrack.of(null, true);
+      fail();
+    } catch (Exception exception) {
+      // ---
+    }
+  }
 }

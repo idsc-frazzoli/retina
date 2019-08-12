@@ -73,6 +73,10 @@ public enum RunVideoBackground {
     return BackgroundImage.from(HomeDirectory.Pictures("20190610T154922_00.png"), _20190401);
   }
 
+  public static BackgroundImage get20190701() throws IOException {
+    return BackgroundImage.from(HomeDirectory.Pictures("20190701T175650_00.png"), _20190401);
+  }
+
   public static BackgroundImage auto(File file) throws IOException {
     File directory = file.getParentFile();
     return BackgroundImage.from(new File(directory, directory.getName() + ".bck.png"), _20190401);

@@ -17,12 +17,12 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
-import ch.ethz.idsc.tensor.io.Import;
+import ch.ethz.idsc.tensor.io.ResourceData;
 
 /* package */ enum RaceAnalysisExport {
   ;
   public static void main(String[] args) throws IOException {
-    Tensor points_xyr = Import.of(HomeDirectory.file("thetrackctrl.csv"));
+    Tensor points_xyr = ResourceData.of("/dubilab/analysis/track/20190701.csv");
     BSplineTrack bSplineTrack = BSplineTrack.of(points_xyr, true);
     // ---
     File folder = new File("/media/datahaki/data/gokart/0701mpc");

@@ -15,16 +15,22 @@ import ch.ethz.idsc.tensor.Tensors;
 
 /** draws brief history of rear axle center with orientation
  * to indicate drift in video playback */
-/* package */ class DriftLinesRender implements GokartPoseListener, RenderInterface {
-  private static final Color COLOR = new Color(128, 128, 128, 64);
-  private static final Tensor PATH = Tensors.of( //
-      Tensors.vector(0.0, 0.0), //
-      Tensors.vector(0.4, 0.0));
+public class DriftLinesRender implements GokartPoseListener, RenderInterface {
+  private final Color color;
+  private final Tensor path;
   // ---
   private final BoundedLinkedList<Tensor> boundedLinkedList;
 
   public DriftLinesRender(int limit) {
+    this(limit, new Color(128, 128, 128, 64), 0.4);
+  }
+
+  public DriftLinesRender(int limit, Color color, double dx) {
     boundedLinkedList = new BoundedLinkedList<>(limit);
+    this.color = color;
+    path = Tensors.of( //
+        Tensors.vector(0.0, 0.0), //
+        Tensors.vector(dx, 0.0));
   }
 
   @Override // from GokartPoseListener
@@ -37,10 +43,10 @@ import ch.ethz.idsc.tensor.Tensors;
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     synchronized (boundedLinkedList) {
-      graphics.setColor(COLOR);
+      graphics.setColor(color);
       for (Tensor matrix : boundedLinkedList) {
         geometricLayer.pushMatrix(matrix);
-        graphics.draw(geometricLayer.toPath2D(PATH));
+        graphics.draw(geometricLayer.toPath2D(path));
         geometricLayer.popMatrix();
       }
     }

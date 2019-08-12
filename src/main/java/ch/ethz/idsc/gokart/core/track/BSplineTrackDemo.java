@@ -3,8 +3,10 @@ package ch.ethz.idsc.gokart.core.track;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 
 import javax.swing.JToggleButton;
 
@@ -19,6 +21,7 @@ import ch.ethz.idsc.sophus.app.api.GeodesicDisplays;
 import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
@@ -42,14 +45,22 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     final Tensor points_xya = getControlPointsSe2().copy();
     points_xya.set(Ramp.FUNCTION, Tensor.ALL, 2);
     {
+      int count = 0;
+      graphics.setStroke(new BasicStroke(4f));
+      graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 15));
       for (Tensor point : points_xya) {
         geometricLayer.pushMatrix(Se2Matrix.translation(point));
         Path2D path2d = geometricLayer.toPath2D(CIRCLE.multiply(point.Get(2)));
         path2d.closePath();
-        graphics.setStroke(new BasicStroke(4f));
         graphics.setColor(color(point));
         graphics.draw(path2d);
+        if (count < 0) {
+          Point2D point2d = geometricLayer.toPoint2D(Array.zeros(2));
+          graphics.setColor(Color.BLACK);
+          graphics.drawString("" + count, (int) point2d.getX() + 4, (int) point2d.getY() + 5);
+        }
         geometricLayer.popMatrix();
+        ++count;
       }
     }
     renderControlPoints(geometricLayer, graphics);

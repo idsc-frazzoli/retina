@@ -38,6 +38,7 @@
 * [20190621_applications_bi-invariant_mean.pdf](https://github.com/idsc-frazzoli/retina/files/3321256/20190621_applications_bi-invariant_mean.pdf)
 * [20190629_tsutrq_autonomous_driving.pdf](https://github.com/idsc-frazzoli/retina/files/3342895/20190629_tsutrq_autonomous_driving.pdf)
 * [20190630_code_of_dubilab.pdf](https://github.com/idsc-frazzoli/retina/files/3342886/20190630_code_of_dubilab.pdf)
+* [20190812_autonomous_human_racing.pdf](https://github.com/idsc-frazzoli/retina/files/3492127/20190812_autonomous_human_racing.pdf)
 
 ## Bug Reports
 
