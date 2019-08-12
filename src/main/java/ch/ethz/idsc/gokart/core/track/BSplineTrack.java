@@ -26,7 +26,8 @@ public abstract class BSplineTrack implements TrackInterface {
 
   /** @param points_xyr of dimensions n x 3 with scalars of same unit
    * @param cyclic
-   * @return */
+   * @return
+   * @throws Exception if given points_xyr is null */
   public static BSplineTrack of(Tensor points_xyr, boolean cyclic) {
     return cyclic //
         ? new BSplineTrackCyclic(points_xyr)

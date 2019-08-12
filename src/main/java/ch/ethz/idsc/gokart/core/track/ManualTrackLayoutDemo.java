@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
@@ -21,6 +24,7 @@ import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.app.api.PathRender;
+import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -35,6 +39,7 @@ import ch.ethz.idsc.tensor.img.Hue;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.ImageFormat;
+import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -42,16 +47,22 @@ import ch.ethz.idsc.tensor.sca.Ramp;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class ManualTrackLayoutDemo extends BSplineTrackDemo {
+  private static final List<Integer> DEGREES = Arrays.asList(1, 2, 3, 4, 5);
   private static final ColorDataGradient COLOR_DATA_GRADIENT_STRING = //
       ColorDataGradients.CLASSIC.deriveWithOpacity(RealScalar.of(0.5));
   // ---
   private final ColorDataGradient colorDataGradient;
+  private final SpinnerLabel<Integer> spinnerDegree = new SpinnerLabel<>();
   private final JToggleButton jButtonRender = new JToggleButton("render");
   private final JButton jButtonExport = new JButton("export");
   private RenderInterface renderInterface = EmptyRender.INSTANCE;
 
   public ManualTrackLayoutDemo() {
     timerFrame.jToolBar.add(jButtonRender);
+    // ---
+    spinnerDegree.setList(DEGREES);
+    spinnerDegree.setValue(4);
+    spinnerDegree.addToComponentReduced(timerFrame.jToolBar, new Dimension(50, 28), "steps");
     jButtonRender.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -61,7 +72,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     ScalarTensorFunction scalarTensorFunction = //
         value -> ColorFormat.toVector(Hue.of(value.number().doubleValue(), 0.7, 1, 0.5));
     Tensor tensor = Subdivide.of(0, 1, 255).map(scalarTensorFunction);
-    for (int index = 0; index < tensor.length(); index += 16)
+    for (int index = 0; index < tensor.length(); index += 8)
       tensor.set(Tensors.vector(0, 0, 0, 0), index);
     colorDataGradient = new ColorDataGradient() {
       @Override
@@ -88,6 +99,9 @@ import ch.ethz.idsc.tensor.sca.Round;
       }
     });
     timerFrame.jToolBar.add(jButtonExport);
+    Tensor points = ResourceData.of("/dubilab/analysis/track/20190701.csv");
+    if (Objects.nonNull(points))
+      setControlPointsSe2(points);
   }
 
   private void setCurveR2(Tensor curve) {
@@ -106,7 +120,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       Dimension dimension = timerFrame.geometricComponent.jComponent.getSize();
       Tensor pixel2model = Inverse.of(timerFrame.geometricComponent.getModel2Pixel());
       GeometricLayer gl = GeometricLayer.of(pixel2model);
-      int step = 4;
+      int step = spinnerDegree.getValue();
       Tensor raster = Tensors.reserve(dimension.height / step);
       for (int y = 0; y < dimension.height; y += step) {
         Tensor row = Tensors.reserve(dimension.width / step);
