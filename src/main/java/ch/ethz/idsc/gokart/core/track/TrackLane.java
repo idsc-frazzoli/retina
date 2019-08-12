@@ -25,22 +25,27 @@ public class TrackLane implements LaneInterface {
     right = Join.of(1, lineR, heading).unmodifiable();
   }
 
+  @Override
   public Tensor controlPoints() {
     return mid;
   }
 
+  @Override
   public Tensor midLane() {
     return mid;
   }
 
+  @Override
   public Tensor leftBoundary() {
     return left;
   }
 
+  @Override
   public Tensor rightBoundary() {
     return right;
   }
 
+  @Override
   public Tensor margins() {
     return margins;
   }
