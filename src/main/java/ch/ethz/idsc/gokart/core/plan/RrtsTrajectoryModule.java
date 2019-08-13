@@ -14,13 +14,13 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidRrtsNdType;
+import ch.ethz.idsc.owl.bot.se2.rrts.Se2RrtsFlow;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.rrts.LaneRrtsPlannerServer;
-import ch.ethz.idsc.owl.rrts.RrtsFlowHelper;
 import ch.ethz.idsc.owl.rrts.RrtsNodeCollections;
 import ch.ethz.idsc.owl.rrts.adapter.SampledTransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.adapter.TransitionRegionQueryUnion;
@@ -69,7 +69,8 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
       TransitionRegionQuery transitionRegionQuery = TransitionRegionQueryUnion.wrap(transitionRegionQueries);
       LaneRrtsPlannerServer laneRrtsPlannerServer = //
           new LaneRrtsPlannerServer(transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, trajectoryConfig.greedy) {
-            @Override protected RrtsNodeCollection rrtsNodeCollection() {
+            @Override
+            protected RrtsNodeCollection rrtsNodeCollection() {
               Scalar r_2 = r.multiply(RationalScalar.HALF);
               MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
               MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
@@ -78,8 +79,9 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
               return new RrtsNodeCollections(ClothoidRrtsNdType.INSTANCE, lbounds_, ubounds_);
             }
 
-            @Override protected Tensor uBetween(StateTime orig, StateTime dest) {
-              return RrtsFlowHelper.U_SE2.apply(orig, dest);
+            @Override
+            protected Tensor uBetween(StateTime orig, StateTime dest) {
+              return Se2RrtsFlow.uBetween(orig, dest);
             }
           };
       LaneInterface lane = optional.get();

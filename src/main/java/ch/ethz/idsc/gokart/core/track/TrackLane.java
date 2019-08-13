@@ -15,45 +15,39 @@ public class TrackLane implements LaneInterface {
   private final Tensor right;
 
   public TrackLane(BSplineTrack track, Tensor domain) {
-    this(track, domain, false);
-  }
-
-  public TrackLane(BSplineTrack track, Tensor domain, boolean unitless) {
     // this is not accurate for large changes in radius
     Tensor middle = domain.map(track::getPositionXY);
     Tensor normal = domain.map(prog -> track.getLeftDirectionXY(prog).multiply(track.getRadius(prog)));
     Tensor lineL = middle.add(normal);
     Tensor lineR = middle.subtract(normal);
     Tensor heading = Tensor.of(domain.map(track::getDerivationXY).stream().map(ArcTan2D::of).map(Tensors::of));
-    if (unitless) {
-      margins = domain.map(track::getRadius).map(Magnitude.METER).unmodifiable();
-      mid = Tensor.of(Join.of(1, middle, heading).stream().map(PoseHelper::toUnitless)).unmodifiable();
-      left = Tensor.of(Join.of(1, lineL, heading).stream().map(PoseHelper::toUnitless)).unmodifiable();
-      right = Tensor.of(Join.of(1, lineR, heading).stream().map(PoseHelper::toUnitless)).unmodifiable();
-    } else {
-      margins = domain.map(track::getRadius).unmodifiable();
-      mid = Join.of(1, middle, heading).unmodifiable();
-      left = Join.of(1, lineL, heading).unmodifiable();
-      right = Join.of(1, lineR, heading).unmodifiable();
-    }
+    margins = domain.map(track::getRadius).unmodifiable();
+    mid = Join.of(1, middle, heading).unmodifiable();
+    left = Join.of(1, lineL, heading).unmodifiable();
+    right = Join.of(1, lineR, heading).unmodifiable();
   }
 
+  @Override
   public Tensor controlPoints() {
     return mid;
   }
 
+  @Override
   public Tensor midLane() {
     return mid;
   }
 
+  @Override
   public Tensor leftBoundary() {
     return left;
   }
 
+  @Override
   public Tensor rightBoundary() {
     return right;
   }
 
+  @Override
   public Tensor margins() {
     return margins;
   }
