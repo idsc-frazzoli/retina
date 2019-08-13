@@ -17,7 +17,6 @@ import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
-import ch.ethz.idsc.gokart.core.plan.ReconRrtsTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -80,7 +79,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     {
       if (Objects.nonNull(globalViewLcmModule))
         listenersAdd(globalViewLcmModule.trackReconRender);
-      ModuleAuto.INSTANCE.getExtensions(ReconRrtsTrajectoryModule.class).forEach(this::listenersAdd);
     }
     {
       JButton jButton = new JButton("set start");
@@ -120,9 +118,10 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private void private_windowClosed() {
     mapping.stop();
     listenersRemove(trackReconRender);
-    if (Objects.nonNull(globalViewLcmModule))
+    if (Objects.nonNull(globalViewLcmModule)) {
       listenersRemove(globalViewLcmModule.trackReconRender);
-    ModuleAuto.INSTANCE.getExtensions(ReconRrtsTrajectoryModule.class).forEach(this::listenersRemove);
+      globalViewLcmModule.trackReconRender.mpcBSplineTrack(Optional.empty());
+    }
     gokartPoseLcmClient.stopSubscriptions();
     terminate();
   }

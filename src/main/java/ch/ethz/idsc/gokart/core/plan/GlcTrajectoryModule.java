@@ -78,8 +78,8 @@ public class GlcTrajectoryModule extends GokartTrajectoryModule<TrajectoryPlanne
     goalRadius = Tensors.of(goalRadius_xy, goalRadius_xy, goalRadius_theta);
   }
 
-  /* package for testing */ @Override
-  synchronized void updateWaypoints(Tensor curve) {
+  @Override // from GokartTrajectoryModule
+  /* package for testing */ synchronized void updateWaypoints(Tensor curve) {
     super.updateWaypoints(curve);
     waypointCost = WaypointDistanceCost.of( //
         Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), //
