@@ -1,11 +1,15 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
+import java.io.IOException;
+
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.VectorQ;
+import ch.ethz.idsc.tensor.io.Serialization;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.sca.Chop;
@@ -30,6 +34,14 @@ public class Covariance2DTest extends TestCase {
     VectorQ.requireLength(stdDev, 2);
     assertEquals(stdDev.Get(0).number().floatValue(), 1.7908397, 1e-6);
     assertEquals(stdDev.Get(1).number().floatValue(), 1.3389896, 1e-6);
+  }
+
+  public void testReconstruct() throws ClassNotFoundException, IOException {
+    Covariance2D covariance2d = //
+        Serialization.copy(Covariance2D.of(RationalScalar.HALF, RealScalar.ONE, RealScalar.ZERO));
+    Scalar angle = covariance2d.angle();
+    Chop._06.requireClose(angle, Pi.HALF);
+    Chop._06.requireClose(covariance2d.stdDev(), Tensors.vector(1.0, 0.7071067811865476));
   }
 
   public void testThree() {

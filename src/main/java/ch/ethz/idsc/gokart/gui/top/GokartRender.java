@@ -23,6 +23,10 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutListener;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetEvents;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelConfiguration;
@@ -68,6 +72,9 @@ public abstract class GokartRender implements RenderInterface {
   private LinmotGetEvent linmotGetEvent = LinmotGetEvents.ZEROS;
   public final LinmotGetListener linmotGetListener = getEvent -> linmotGetEvent = getEvent;
   // ---
+  private SteerGetEvent steerGetEvent = SteerGetEvents.ZEROS;
+  public final SteerGetListener steerGetListener = getEvent -> steerGetEvent = getEvent;
+  // ---
   private SteerColumnEvent steerColumnEvent = SteerColumnEvents.UNKNOWN;
   public final SteerColumnListener steerColumnListener = getEvent -> steerColumnEvent = getEvent;
 
@@ -109,6 +116,27 @@ public abstract class GokartRender implements RenderInterface {
       Scalar value = linmotGetEvent.getActualPosition().multiply(DoubleScalar.of(-12.0));
       graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_LMT.alongX(value)));
       geometricLayer.popMatrix();
+    }
+    {
+      graphics.setStroke(new BasicStroke());
+      AxisAlignedBox axisAlignedBox = new AxisAlignedBox(RealScalar.of(0.1));
+      {
+        graphics.setColor(new Color(128, 128, 128));
+        Tensor polygon = axisAlignedBox.alongY(SteerPutEvent.RTORQUE.apply(steerGetEvent.tsuTrq()));
+        geometricLayer.pushMatrix(Se2Matrix.of(Tensors.vector(0.6, 0, 0)));
+        graphics.fill(geometricLayer.toPath2D(polygon));
+        geometricLayer.popMatrix();
+      }
+      {
+        graphics.setColor(new Color(128, 0, 128));
+        Scalar motTrq = steerGetEvent.isActive() //
+            ? SteerPutEvent.RTORQUE.apply(steerGetEvent.estMotTrq())
+            : RealScalar.ZERO;
+        Tensor polygon = axisAlignedBox.alongY(motTrq);
+        geometricLayer.pushMatrix(Se2Matrix.of(Tensors.vector(0.5, 0, 0)));
+        graphics.fill(geometricLayer.toPath2D(polygon));
+        geometricLayer.popMatrix();
+      }
     }
     if (steerColumnEvent.isSteerColumnCalibrated()) {
       graphics.setStroke(new BasicStroke());
