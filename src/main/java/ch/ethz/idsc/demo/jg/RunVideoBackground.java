@@ -1,4 +1,4 @@
-// code by jph
+// code by jph, gjoel
 package ch.ethz.idsc.demo.jg;
 
 import java.awt.Color;
@@ -28,6 +28,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 /** produces a high resolution image with lidar obstacles */
+// TODO JPH refactor
 public enum RunVideoBackground {
   ;
   public static final Dimension DIMENSION = new Dimension(1920, 1080);
@@ -71,10 +72,6 @@ public enum RunVideoBackground {
 
   public static BackgroundImage get20190610() throws IOException {
     return BackgroundImage.from(HomeDirectory.Pictures("20190610T154922_00.png"), _20190401);
-  }
-
-  public static BackgroundImage get20190701() throws IOException {
-    return BackgroundImage.from(HomeDirectory.Pictures("20190701T175650_00.png"), _20190401);
   }
 
   public static BackgroundImage auto(File file) throws IOException {

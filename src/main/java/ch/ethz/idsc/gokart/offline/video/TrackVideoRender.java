@@ -19,6 +19,7 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.AccelerationRender;
 import ch.ethz.idsc.gokart.gui.top.AngularSlipRender;
@@ -33,6 +34,7 @@ import ch.ethz.idsc.gokart.gui.top.TachometerMustangDash;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
+import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
@@ -102,6 +104,10 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
       linmotGetEvent = new LinmotGetEvent(byteBuffer);
       gokartRender.linmotGetListener.getEvent(linmotGetEvent);
+    } else //
+    if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
+      SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
+      gokartRender.steerGetListener.getEvent(steerGetEvent);
     } else //
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);

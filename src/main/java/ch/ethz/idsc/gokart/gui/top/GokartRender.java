@@ -23,6 +23,10 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutListener;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetEvents;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelConfiguration;
@@ -30,6 +34,7 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.AxisAlignedBox;
+import ch.ethz.idsc.retina.util.math.CurvedBar;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
@@ -40,15 +45,19 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public abstract class GokartRender implements RenderInterface {
   private static final Tensor[] OFFSET_TORQUE = new Tensor[] { Tensors.vector(0, -0.15, 0), Tensors.vector(0, +0.15, 0) };
   private static final Tensor[] OFFSET_RATE = new Tensor[] { Tensors.vector(0, +0.15, 0), Tensors.vector(0, -0.15, 0) };
-  private static final Tensor MATRIX_BRAKE = Se2Matrix.translation(Tensors.vector(1.0, 0.05));
+  private static final Tensor MATRIX_BRAKE = Se2Matrix.translation(Tensors.vector(1.2, 0.05));
   private static final Color COLOR_WHEEL = new Color(128, 128, 128, 128);
   private static final Color COLOR_SLIP = new Color(255, 128, 64, 128 + 64);
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   public static final Scalar SLIP_FACTOR = RealScalar.of(0.20);
+  private static final Scalar ANGLE_FACTOR = RealScalar.of(0.5);
+  private static final CurvedBar CURVED_BAR_MOT = new CurvedBar(RealScalar.of(1.00), RealScalar.of(0.12));
+  private static final CurvedBar CURVED_BAR_TSU = new CurvedBar(RealScalar.of(0.86), RealScalar.of(0.12));
   // ---
   private static final AxisAlignedBox AXIS_ALIGNED_BOX = //
       new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.8)));
@@ -67,6 +76,9 @@ public abstract class GokartRender implements RenderInterface {
   // ---
   private LinmotGetEvent linmotGetEvent = LinmotGetEvents.ZEROS;
   public final LinmotGetListener linmotGetListener = getEvent -> linmotGetEvent = getEvent;
+  // ---
+  private SteerGetEvent steerGetEvent = SteerGetEvents.ZEROS;
+  public final SteerGetListener steerGetListener = getEvent -> steerGetEvent = getEvent;
   // ---
   private SteerColumnEvent steerColumnEvent = SteerColumnEvents.UNKNOWN;
   public final SteerColumnListener steerColumnListener = getEvent -> steerColumnEvent = getEvent;
@@ -109,6 +121,25 @@ public abstract class GokartRender implements RenderInterface {
       Scalar value = linmotGetEvent.getActualPosition().multiply(DoubleScalar.of(-12.0));
       graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_LMT.alongX(value)));
       geometricLayer.popMatrix();
+    }
+    {
+      final int alpha = 255;
+      graphics.setStroke(new BasicStroke());
+      {
+        graphics.setColor(new Color(224, 160, 160, alpha));
+        Scalar value = steerGetEvent.isActive() //
+            ? SteerPutEvent.RTORQUE.apply(steerGetEvent.estMotTrq()).multiply(ANGLE_FACTOR)
+            : RealScalar.ZERO;
+        Tensor polygon = CURVED_BAR_MOT.single(value);
+        graphics.fill(geometricLayer.toPath2D(polygon));
+      }
+      { // manual torque
+        graphics.setColor(new Color(160 / 2, 224, 160 / 2, 64));
+        graphics.draw(geometricLayer.toPath2D(CURVED_BAR_TSU.span(Clips.absolute(ANGLE_FACTOR)), true));
+        Scalar value = SteerPutEvent.RTORQUE.apply(steerGetEvent.tsuTrq()).multiply(ANGLE_FACTOR);
+        graphics.setColor(new Color(160, 224, 160, alpha));
+        graphics.fill(geometricLayer.toPath2D(CURVED_BAR_TSU.single(value)));
+      }
     }
     if (steerColumnEvent.isSteerColumnCalibrated()) {
       graphics.setStroke(new BasicStroke());

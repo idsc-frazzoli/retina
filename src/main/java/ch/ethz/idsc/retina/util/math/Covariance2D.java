@@ -1,6 +1,8 @@
 // code by mg, jph
 package ch.ethz.idsc.retina.util.math;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.sophus.math.ArcTan2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -12,7 +14,7 @@ import ch.ethz.idsc.tensor.mat.Eigensystem;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 /** immutable */
-public class Covariance2D {
+public class Covariance2D implements Serializable {
   /** @param firstAxis
    * @param secondAxis
    * @param angle
@@ -48,6 +50,7 @@ public class Covariance2D {
   /** @return angle between the eigenvector belonging to the first eigenvalue and the x-axis */
   public Scalar angle() {
     // TODO is this well-defined? shouldn't the max abs Eigenvalue be identified?
+    // int index = ArgMax.of(eigensystem.values().map(Scalar::abs));
     return ArcTan2D.of(eigensystem.vectors().get(0));
   }
 

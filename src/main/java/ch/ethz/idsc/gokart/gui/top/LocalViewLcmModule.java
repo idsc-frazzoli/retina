@@ -8,6 +8,7 @@ import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerColumnLcmClient;
+import ch.ethz.idsc.gokart.lcm.autobox.SteerGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
@@ -30,6 +31,7 @@ public class LocalViewLcmModule extends AbstractModule {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
+  private final SteerGetLcmClient steerGetLcmClient = new SteerGetLcmClient();
   private final SteerColumnLcmClient steerColumnLcmClient = new SteerColumnLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
@@ -47,6 +49,7 @@ public class LocalViewLcmModule extends AbstractModule {
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
+      steerGetLcmClient.addListener(gokartRender.steerGetListener);
       steerColumnLcmClient.addListener(gokartRender.steerColumnListener);
       gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
@@ -88,17 +91,12 @@ public class LocalViewLcmModule extends AbstractModule {
       BrakeCalibrationRender brakeCalibrationRender = new BrakeCalibrationRender(MINORRIGHT);
       timerFrame.geometricComponent.addRenderInterface(brakeCalibrationRender);
     }
-    // {
-    // SteerTurnRender steerTurnRender = new SteerTurnRender(Se2Utils.toSE2Matrix(MINOR_TRN));
-    // gokartPoseLcmClient.addListener(steerTurnRender.gokartPoseListener);
-    // gokartStatusLcmClient.addListener(steerTurnRender.gokartStatusListener);
-    // timerFrame.geometricComponent.addRenderInterface(steerTurnRender);
-    // }
     // ---
     gokartPoseLcmClient.startSubscriptions();
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
+    steerGetLcmClient.startSubscriptions();
     steerColumnLcmClient.startSubscriptions();
     vmu931ImuLcmClient.startSubscriptions();
     // ---
@@ -113,6 +111,7 @@ public class LocalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.stopSubscriptions();
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
+    steerGetLcmClient.stopSubscriptions();
     steerColumnLcmClient.stopSubscriptions();
     vmu931ImuLcmClient.stopSubscriptions();
     // ---

@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.demo.jg.RunVideoBackground;
+import ch.ethz.idsc.demo.jph.video.RunVideoBackground;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
