@@ -56,8 +56,8 @@ public abstract class GokartRender implements RenderInterface {
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
   public static final Scalar SLIP_FACTOR = RealScalar.of(0.20);
   private static final Scalar ANGLE_FACTOR = RealScalar.of(0.5);
-  private static final CurvedBar CURVED_BAR_MOT = new CurvedBar(RealScalar.of(1.00), RealScalar.of(0.1));
-  private static final CurvedBar CURVED_BAR_TSU = new CurvedBar(RealScalar.of(0.88), RealScalar.of(0.1));
+  private static final CurvedBar CURVED_BAR_MOT = new CurvedBar(RealScalar.of(1.00), RealScalar.of(0.12));
+  private static final CurvedBar CURVED_BAR_TSU = new CurvedBar(RealScalar.of(0.86), RealScalar.of(0.12));
   // ---
   private static final AxisAlignedBox AXIS_ALIGNED_BOX = //
       new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.8)));
@@ -123,9 +123,10 @@ public abstract class GokartRender implements RenderInterface {
       geometricLayer.popMatrix();
     }
     {
+      final int alpha = 255;
       graphics.setStroke(new BasicStroke());
       {
-        graphics.setColor(new Color(224, 160, 160, 128 + 64));
+        graphics.setColor(new Color(224, 160, 160, alpha));
         Scalar value = steerGetEvent.isActive() //
             ? SteerPutEvent.RTORQUE.apply(steerGetEvent.estMotTrq()).multiply(ANGLE_FACTOR)
             : RealScalar.ZERO;
@@ -136,7 +137,7 @@ public abstract class GokartRender implements RenderInterface {
         graphics.setColor(new Color(160 / 2, 224, 160 / 2, 64));
         graphics.draw(geometricLayer.toPath2D(CURVED_BAR_TSU.span(Clips.absolute(ANGLE_FACTOR)), true));
         Scalar value = SteerPutEvent.RTORQUE.apply(steerGetEvent.tsuTrq()).multiply(ANGLE_FACTOR);
-        graphics.setColor(new Color(160, 224, 160, 128 + 64));
+        graphics.setColor(new Color(160, 224, 160, alpha));
         graphics.fill(geometricLayer.toPath2D(CURVED_BAR_TSU.single(value)));
       }
     }

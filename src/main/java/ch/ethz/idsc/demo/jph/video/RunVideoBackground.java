@@ -64,9 +64,21 @@ public enum RunVideoBackground {
     return BackgroundImage.from(HomeDirectory.Pictures("20190530T143412_00.png"), _20190401);
   }
 
+  public static BackgroundImage get20190701() throws IOException {
+    return BackgroundImage.from(HomeDirectory.Pictures("20190701T175650_00.png"), _20190401);
+  }
+
+  public static BackgroundImage get20190729a() throws IOException {
+    return BackgroundImage.from(HomeDirectory.Pictures("20190729T115559_00.png"), _20190401);
+  }
+
+  public static BackgroundImage get20190729b() throws IOException {
+    return BackgroundImage.from(HomeDirectory.Pictures("20190729T140711_00.png"), _20190401);
+  }
+
   public static void main(String[] args) throws IOException {
     GokartLogInterface gokartLogInterface = //
-        GokartLogAdapter.of(new File("/media/datahaki/data/gokart/plans/20190530/20190530T143412_00"));
+        GokartLogAdapter.of(new File("/media/datahaki/data/gokart/lane/20190729/20190729T140711_00"));
     Optional<ByteBuffer> optional = FirstLogMessage.of(gokartLogInterface.file(), GokartPoseChannel.INSTANCE.channel());
     BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = bufferedImage.createGraphics();
@@ -79,6 +91,6 @@ public enum RunVideoBackground {
         _20190401, //
         GokartPoseEvent.of(optional.get()).getPose());
     OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
-    ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20190530T143412_00.png"));
+    ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20190729T140711_00.png"));
   }
 }
