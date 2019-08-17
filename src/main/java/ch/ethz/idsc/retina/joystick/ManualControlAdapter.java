@@ -1,8 +1,8 @@
 // code by jph
-package ch.ethz.idsc.gokart.dev;
+package ch.ethz.idsc.retina.joystick;
 
-import ch.ethz.idsc.retina.joystick.ManualControlInterface;
-import ch.ethz.idsc.tensor.RealScalar;
+import java.io.Serializable;
+
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
@@ -13,10 +13,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** immutable */
-public class ManualControlAdapter implements ManualControlInterface {
-  public static final ManualControlInterface PASSIVE = new ManualControlAdapter( //
-      RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO, Tensors.vector(0, 0), false, false);
-  // ---
+public class ManualControlAdapter implements ManualControlInterface, Serializable {
   private final Scalar steerLeft;
   private final Scalar breakStrength;
   private final Scalar aheadAverage;

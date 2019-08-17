@@ -33,6 +33,9 @@ import ch.ethz.idsc.owl.car.core.WheelConfiguration;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.joystick.ManualControlListener;
+import ch.ethz.idsc.retina.joystick.ManualControls;
 import ch.ethz.idsc.retina.util.math.AxisAlignedBox;
 import ch.ethz.idsc.retina.util.math.CurvedBar;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -47,10 +50,12 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.sca.Clips;
 
+/** Implementations are:
+ * GlobalGokartRender
+ * LocalGokartRender */
 public abstract class GokartRender implements RenderInterface {
   private static final Tensor[] OFFSET_TORQUE = new Tensor[] { Tensors.vector(0, -0.15, 0), Tensors.vector(0, +0.15, 0) };
   private static final Tensor[] OFFSET_RATE = new Tensor[] { Tensors.vector(0, +0.15, 0), Tensors.vector(0, -0.15, 0) };
-  private static final Tensor MATRIX_BRAKE = Se2Matrix.translation(Tensors.vector(1.2, 0.05));
   private static final Color COLOR_WHEEL = new Color(128, 128, 128, 128);
   private static final Color COLOR_SLIP = new Color(255, 128, 64, 128 + 64);
   private static final VehicleModel VEHICLE_MODEL = RimoSinusIonModel.standard();
@@ -62,7 +67,11 @@ public abstract class GokartRender implements RenderInterface {
   private static final AxisAlignedBox AXIS_ALIGNED_BOX = //
       new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.8)));
   /** linmot push indicator */
-  private static final AxisAlignedBox AXIS_ALIGNED_LMT = new AxisAlignedBox(RealScalar.of(0.2));
+  private static final Tensor MATRIX_LINMOT = Se2Matrix.translation(Tensors.vector(1.2, 0.2));
+  private static final AxisAlignedBox AXIS_ALIGNED_LINMOT = new AxisAlignedBox(RealScalar.of(0.15));
+  /** throttle push indicator */
+  private static final Tensor MATRIX_THROTTLE = Se2Matrix.translation(Tensors.vector(1.2, -0.2));
+  private static final AxisAlignedBox AXIS_ALIGNED_THROTTLE = new AxisAlignedBox(RealScalar.of(0.10));
   // ---
   /** gokart pose event is also used in rendering */
   protected GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
@@ -82,11 +91,17 @@ public abstract class GokartRender implements RenderInterface {
   // ---
   private SteerColumnEvent steerColumnEvent = SteerColumnEvents.UNKNOWN;
   public final SteerColumnListener steerColumnListener = getEvent -> steerColumnEvent = getEvent;
+  // ---
+  private ManualControlInterface manualControlInterface = ManualControls.PASSIVE;
+  public final ManualControlListener manualControlListener = getEvent -> manualControlInterface = getEvent;
 
   public final void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     { // footprint
+      Tensor footprint = VEHICLE_MODEL.footprint();
       graphics.setColor(new Color(224, 224, 224, 192));
-      graphics.fill(geometricLayer.toPath2D(VEHICLE_MODEL.footprint()));
+      graphics.fill(geometricLayer.toPath2D(footprint));
+      graphics.setColor(new Color(64, 64, 64, 192));
+      graphics.draw(geometricLayer.toPath2D(footprint, true));
     }
     { // rear wheel torques and rear wheel odometry
       Tensor tarms_pair = rimoPutEvent.getTorque_Y_pair().map(Magnitude.ARMS).multiply(RealScalar.of(5E-4));
@@ -117,9 +132,19 @@ public abstract class GokartRender implements RenderInterface {
       Scalar rescaled = LinmotConfig.CLIP_TEMPERATURE.rescale(temperatureMax);
       Color color = ColorFormat.toColor(ColorDataGradients.ROSE.apply(rescaled));
       graphics.setColor(color);
-      geometricLayer.pushMatrix(MATRIX_BRAKE);
+      geometricLayer.pushMatrix(MATRIX_LINMOT);
       Scalar value = linmotGetEvent.getActualPosition().multiply(DoubleScalar.of(-12.0));
-      graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_LMT.alongX(value)));
+      graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_LINMOT.alongX(value)));
+      geometricLayer.popMatrix();
+    }
+    {
+      Scalar MAX = DoubleScalar.of(0.5);
+      Scalar value = manualControlInterface.getAheadAverage().multiply(MAX);
+      geometricLayer.pushMatrix(MATRIX_THROTTLE);
+      graphics.setColor(new Color(128, 128, 128, 64));
+      graphics.draw(geometricLayer.toPath2D(AXIS_ALIGNED_THROTTLE.alongX(MAX), true));
+      graphics.setColor(new Color(128, 128, 128, 128 + 64));
+      graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_THROTTLE.alongX(value)));
       geometricLayer.popMatrix();
     }
     {
