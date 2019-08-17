@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.core.man;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.dev.ManualControlAdapter;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.retina.joystick.ManualControlAdapter;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;

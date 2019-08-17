@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.gui.top;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
+import ch.ethz.idsc.gokart.lcm.ManualControlLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
@@ -31,6 +32,7 @@ public class LocalViewLcmModule extends AbstractModule {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
+  private final ManualControlLcmClient manualControlLcmClient = new ManualControlLcmClient();
   private final SteerGetLcmClient steerGetLcmClient = new SteerGetLcmClient();
   private final SteerColumnLcmClient steerColumnLcmClient = new SteerColumnLcmClient();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
@@ -49,6 +51,7 @@ public class LocalViewLcmModule extends AbstractModule {
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
+      manualControlLcmClient.addListener(gokartRender.manualControlListener);
       steerGetLcmClient.addListener(gokartRender.steerGetListener);
       steerColumnLcmClient.addListener(gokartRender.steerColumnListener);
       gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
@@ -96,6 +99,7 @@ public class LocalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
+    manualControlLcmClient.startSubscriptions();
     steerGetLcmClient.startSubscriptions();
     steerColumnLcmClient.startSubscriptions();
     vmu931ImuLcmClient.startSubscriptions();
@@ -111,6 +115,7 @@ public class LocalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.stopSubscriptions();
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
+    manualControlLcmClient.stopSubscriptions();
     steerGetLcmClient.stopSubscriptions();
     steerColumnLcmClient.stopSubscriptions();
     vmu931ImuLcmClient.stopSubscriptions();
