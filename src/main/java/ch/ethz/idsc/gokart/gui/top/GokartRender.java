@@ -47,7 +47,9 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-// TODO JPH DO NOT USE THIS IN GLOBAL VIEWER!
+/** Implementations are:
+ * GlobalGokartRender
+ * LocalGokartRender */
 public abstract class GokartRender implements RenderInterface {
   private static final Tensor[] OFFSET_TORQUE = new Tensor[] { Tensors.vector(0, -0.15, 0), Tensors.vector(0, +0.15, 0) };
   private static final Tensor[] OFFSET_RATE = new Tensor[] { Tensors.vector(0, +0.15, 0), Tensors.vector(0, -0.15, 0) };

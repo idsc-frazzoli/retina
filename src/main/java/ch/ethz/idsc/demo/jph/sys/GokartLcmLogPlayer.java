@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.demo.GokartLogFile;
-import ch.ethz.idsc.gokart.offline.cache.CachedLog;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import lcm.logging.LogPlayer;
@@ -22,7 +21,7 @@ import lcm.logging.LogPlayerConfig;
     // file = new File("/media/datahaki/media/ethz/gokart/topic/trackid", "changingtrack.lcm");
     // file = new File("/media/datahaki/data/gokart/cuts/20190318/20190318T142605_08/post.lcm");
     // file = new File("/media/datahaki/data/gokart/vmu932/20190527/20190527T145700_00", "log.lcm");
-    file = CachedLog._20190701T174152_00.file();
+    // file = CachedLog._20190701T174152_00.file();
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
     logPlayerConfig.speed_denominator = 1;

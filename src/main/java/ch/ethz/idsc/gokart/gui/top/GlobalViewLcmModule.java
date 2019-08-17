@@ -153,13 +153,11 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     {
-      GokartRender gokartRender = new GlobalGokartRender();
-      rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
-      rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
-      linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
-      steerColumnLcmClient.addListener(gokartRender.steerColumnListener);
-      gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
-      viewLcmFrame.geometricComponent.addRenderInterface(gokartRender);
+      SmallGokartRender smallGokartRender = new SmallGokartRender();
+      rimoGetLcmClient.addListener(smallGokartRender.rimoGetListener);
+      rimoPutLcmClient.addListener(smallGokartRender.rimoPutListener);
+      gokartPoseLcmClient.addListener(smallGokartRender.gokartPoseListener);
+      viewLcmFrame.geometricComponent.addRenderInterface(smallGokartRender);
     }
     viewLcmFrame.geometricComponent.addRenderInterface(Dubilab.GRID_RENDER);
     {
