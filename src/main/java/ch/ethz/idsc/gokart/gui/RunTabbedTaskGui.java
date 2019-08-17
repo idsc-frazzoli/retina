@@ -8,16 +8,16 @@ import java.util.Properties;
 import ch.ethz.idsc.demo.jg.following.FigureClothoidModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
-import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
+import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV1Module;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV2Module;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV3Module;
+import ch.ethz.idsc.gokart.core.adas.ConstantTorqueSteerModule;
 import ch.ethz.idsc.gokart.core.adas.LaneKeepingLimitedSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.SetVelSmartBrakingModule;
 import ch.ethz.idsc.gokart.core.adas.SpeedLimitPerSectionModule;
 import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
-import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
 import ch.ethz.idsc.gokart.core.fuse.AutonomousSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
@@ -131,9 +131,9 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       LaneKeepingLimitedSteeringModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //
-      SteeringExperimentModule.class, //
+      ConstantTorqueSteerModule.class, //
       AntilockBrakeCheckConditions.class, //
-      AntilockBrakeModule.class, //
+      AntilockBrakeV1Module.class, //
       AntilockBrakeV2Module.class, //
       AntilockBrakeV3Module.class, //
       SetVelSmartBrakingModule.class, //

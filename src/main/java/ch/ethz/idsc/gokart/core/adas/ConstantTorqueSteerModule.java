@@ -1,4 +1,4 @@
-// code by am and jph
+// code by am, jph
 package ch.ethz.idsc.gokart.core.adas;
 
 import java.util.Optional;
@@ -10,7 +10,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
-public class SteeringExperimentModule extends AbstractModule implements SteerPutProvider {
+public final class ConstantTorqueSteerModule extends AbstractModule implements SteerPutProvider {
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
 
   @Override
@@ -30,9 +30,8 @@ public class SteeringExperimentModule extends AbstractModule implements SteerPut
 
   @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
-    if (steerColumnTracker.isCalibratedAndHealthy()) {
+    if (steerColumnTracker.isCalibratedAndHealthy())
       return Optional.of(SteerPutEvent.createOn(HapticSteerConfig.GLOBAL.constantTorque));
-    }
     return Optional.empty();
   }
 }
