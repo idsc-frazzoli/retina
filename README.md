@@ -114,7 +114,7 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 * [2018-06 bitluni's lab](https://www.youtube.com/watch?v=GQVsl4fV3O0)
 * [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
 * [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
-* 2019-04 Superquark
+* [2019-08 SuperQuark](https://www.raiplay.it/video/2019/08/SuperQuark-73b2ae02-700d-46fb-9fc1-3bdd5a03d5cd.html)
 
 ---
 

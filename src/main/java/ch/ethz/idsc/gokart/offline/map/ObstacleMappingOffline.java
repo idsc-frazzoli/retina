@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.offline.slam;
+package ch.ethz.idsc.gokart.offline.map;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,6 +12,7 @@ import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.track.TrackReconConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.offline.slam.LidarProcessOffline;
 import ch.ethz.idsc.retina.app.map.ErodableMap;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.SI;

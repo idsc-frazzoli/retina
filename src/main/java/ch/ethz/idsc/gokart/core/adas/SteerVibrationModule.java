@@ -1,4 +1,4 @@
-// code by am and jph
+// code by am, jph
 package ch.ethz.idsc.gokart.core.adas;
 
 import java.util.Objects;
@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.opt.Pi;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Sin;
 
-public class SteerVibrationModule extends AbstractModule implements SteerPutProvider, SteerGetListener {
+public final class SteerVibrationModule extends AbstractModule implements SteerPutProvider, SteerGetListener {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private SteerGetEvent steerGetEvent;
@@ -31,6 +31,7 @@ public class SteerVibrationModule extends AbstractModule implements SteerPutProv
   @Override
   protected void first() {
     SteerSocket.INSTANCE.addPutProvider(this);
+    // FIXME AM subscribe SteerGetListener?
   }
 
   @Override
@@ -55,14 +56,14 @@ public class SteerVibrationModule extends AbstractModule implements SteerPutProv
     return Optional.empty();
   }
 
-  /* package */ Scalar time2torque(Scalar time) {
+  /* package */ static Scalar time2torque(Scalar time) {
     Scalar frequency = HapticSteerConfig.GLOBAL.vibrationFrequency;
     Scalar amplitude = HapticSteerConfig.GLOBAL.vibrationAmplitude;
     Scalar radian = frequency.multiply(time).multiply(Pi.TWO);
     return Sin.FUNCTION.apply(radian).multiply(amplitude);
   }
 
-  @Override
+  @Override // from SteerGetListener
   public void getEvent(SteerGetEvent getEvent) {
     this.steerGetEvent = getEvent;
   }

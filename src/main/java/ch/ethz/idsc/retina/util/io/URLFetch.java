@@ -20,6 +20,7 @@ public class URLFetch {
 
   /** @param url
    * @param contentType */
+  // TODO JPH make restriction to a certain contentType optional!
   public URLFetch(URL url, ContentType contentType) {
     this.url = url;
     this.contentType = contentType;

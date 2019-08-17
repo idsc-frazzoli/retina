@@ -5,28 +5,18 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
-import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
-import ch.ethz.idsc.gokart.dev.linmot.LinmotPutProvider;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931ImuLcmClient;
-import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
-import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -35,22 +25,17 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
-public class AntilockBrakeV3Module extends AbstractModule implements LinmotPutProvider, Vmu931ImuFrameListener {
-  private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
-  private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
-  private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
-  private final HapticSteerConfig hapticSteerConfig;
-  private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
+public class AntilockBrakeV3Module extends AntilockBrakeModule implements Vmu931ImuFrameListener {
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
   private final Vmu931ImuLcmClient vmu931imuLcmClient = new Vmu931ImuLcmClient();
   private Scalar currentAcceleration = Quantity.of(0, SI.ACCELERATION);
 
   public AntilockBrakeV3Module() {
-    this(HapticSteerConfig.GLOBAL);
+    super(HapticSteerConfig.GLOBAL);
   }
 
   public AntilockBrakeV3Module(HapticSteerConfig hapticSteerConfig) {
-    this.hapticSteerConfig = hapticSteerConfig;
+    super(hapticSteerConfig);
   }
 
   @Override // from AbstractModule
@@ -63,25 +48,18 @@ public class AntilockBrakeV3Module extends AbstractModule implements LinmotPutPr
 
   @Override // from AbstractModule
   protected void last() {
-    vmu931imuLcmClient.stopSubscriptions();
     RimoSocket.INSTANCE.removeGetListener(rimoGetListener);
     LinmotSocket.INSTANCE.removePutProvider(this);
+    vmu931imuLcmClient.stopSubscriptions();
   }
-
-  @Override // from LinmotPutProvider
-  public ProviderRank getProviderRank() {
-    return ProviderRank.EMERGENCY;
-  }
-
-  // button is pressed -> full brake without ABS
-  private Scalar brakePosition = HapticSteerConfig.GLOBAL.fullBraking;
 
   @Override
   public Optional<LinmotPutEvent> putEvent() {
     Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
     if (optional.isPresent()) {
       ManualControlInterface manualControlInterface = optional.get();
-      if (manualControlInterface.isAutonomousPressed() && lidarLocalizationModule != null) {
+      if (manualControlInterface.isAutonomousPressed() && //
+          lidarLocalizationModule != null) {
         return notsmartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
       }
     }

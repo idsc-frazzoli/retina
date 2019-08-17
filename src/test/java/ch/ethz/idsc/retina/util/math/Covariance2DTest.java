@@ -8,14 +8,28 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.io.Serialization;
+import ch.ethz.idsc.tensor.lie.RotationMatrix;
+import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 import ch.ethz.idsc.tensor.opt.Pi;
+import ch.ethz.idsc.tensor.pdf.Distribution;
+import ch.ethz.idsc.tensor.pdf.NormalDistribution;
+import ch.ethz.idsc.tensor.pdf.RandomVariate;
+import ch.ethz.idsc.tensor.pdf.UniformDistribution;
+import ch.ethz.idsc.tensor.red.ArgMax;
 import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class Covariance2DTest extends TestCase {
+  /* package */ static Tensor explicit(Scalar a, Scalar b, Scalar angle) {
+    Tensor rotation = RotationMatrix.of(angle);
+    Tensor diagonal = DiagonalMatrix.of(a, b);
+    return rotation.dot(diagonal).dot(Transpose.of(rotation));
+  }
+
   public void testSimple() {
     Covariance2D covariance2d = new Covariance2D(Tensors.matrix(new Number[][] { { 3, 0.5 }, { 0.5, 2 } }));
     double rotAngle = covariance2d.angle().number().doubleValue();
@@ -54,6 +68,20 @@ public class Covariance2DTest extends TestCase {
     Scalar rotAngle = RealScalar.of(-0.3);
     Covariance2D covariance2d = Covariance2D.of(RealScalar.of(1), RealScalar.of(2), rotAngle);
     Chop._12.requireClose(covariance2d.angle(), rotAngle.add(Pi.HALF));
+  }
+
+  public void testIndex() {
+    Distribution distribution = UniformDistribution.unit();
+    Distribution angleDistribution = NormalDistribution.of(0, 10);
+    for (int count = 0; count < 100; ++count) {
+      Scalar a = RandomVariate.of(distribution);
+      Scalar b = RandomVariate.of(distribution);
+      Scalar angle = RandomVariate.of(angleDistribution);
+      Chop._12.requireClose(Covariance2D.matrix(a, b, angle), explicit(a, b, angle));
+      Covariance2D covariance2d = Covariance2D.of(a, b, angle);
+      int index = ArgMax.of(covariance2d.eigensystem().values().map(Scalar::abs));
+      assertEquals(index, 0);
+    }
   }
 
   public void testFailDimension() {

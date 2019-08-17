@@ -84,7 +84,7 @@ public class ErodableMap implements RenderInterface {
    * The parameter radius is intentionally of type integer, because the
    * drawing into the black/white image does not support higher precision!
    * 
-   * @param radius
+   * @param radius 0 means no erosion
    * @return */
   public BufferedImageRegion erodedRegion(int radius) {
     return new BufferedImageRegion(createErodedMap(radius), pixel2model, true);
