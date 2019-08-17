@@ -6,6 +6,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.WindowConstants;
+
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.AxesRender;
@@ -45,6 +47,7 @@ public class OccupancyViewerModule extends AbstractClockedModule {
   @Override
   protected void first() {
     occupancyMappingModule.subscribe(this);
+    timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     timerFrame.jFrame.setVisible(true);
   }
 
@@ -70,7 +73,7 @@ public class OccupancyViewerModule extends AbstractClockedModule {
     ModuleAuto.INSTANCE.runOne(OccupancyMappingModule.class);
     ModuleAuto.INSTANCE.runOne(OccupancyViewerModule.class);
     OccupancyViewerModule occupancyViewerModule = ModuleAuto.INSTANCE.getInstance(OccupancyViewerModule.class);
-    // ---
+    occupancyViewerModule.timerFrame.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     occupancyViewerModule.timerFrame.jFrame.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosed(WindowEvent windowEvent) {

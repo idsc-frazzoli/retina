@@ -1,5 +1,5 @@
 // code by ynager
-package ch.ethz.idsc.gokart.offline.slam;
+package ch.ethz.idsc.gokart.offline.map;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -18,6 +18,9 @@ import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
+import ch.ethz.idsc.gokart.offline.slam.LidarProcessOffline;
+import ch.ethz.idsc.gokart.offline.slam.ScatterImage;
+import ch.ethz.idsc.gokart.offline.slam.WallScatterImage;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.SI;

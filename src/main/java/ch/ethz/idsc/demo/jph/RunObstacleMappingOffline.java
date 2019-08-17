@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.offline.slam.ObstacleMappingOffline;
+import ch.ethz.idsc.gokart.offline.map.ObstacleMappingOffline;
 
 /* package */ enum RunObstacleMappingOffline {
   ;

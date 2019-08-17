@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.gokart.offline.slam;
+package ch.ethz.idsc.gokart.offline.map;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

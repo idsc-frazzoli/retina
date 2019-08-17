@@ -6,7 +6,7 @@ import java.io.File;
 
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.offline.slam.MappingAnalysisOffline;
+import ch.ethz.idsc.gokart.offline.map.MappingAnalysisOffline;
 import ch.ethz.idsc.retina.util.io.PngAnimationWriter;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.io.AnimationWriter;

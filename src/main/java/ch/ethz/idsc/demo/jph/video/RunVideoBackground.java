@@ -18,7 +18,7 @@ import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.slam.ObstacleAggregate;
+import ch.ethz.idsc.gokart.offline.map.ObstacleAggregate;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Tensor;
