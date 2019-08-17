@@ -6,11 +6,12 @@ import java.io.IOException;
 
 import ch.ethz.idsc.retina.util.io.ContentType;
 import ch.ethz.idsc.retina.util.io.URLFetch;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.UserName;
 import junit.framework.TestCase;
 
 public class CachedLogTest extends TestCase {
-  public void testSimple() throws IOException {
+  public void testSimple() throws Exception {
     if (UserName.is("datahaki")) {
       for (CachedLog cachedLog : CachedLog.values()) {
         File file = cachedLog.file();
@@ -21,9 +22,23 @@ public class CachedLogTest extends TestCase {
 
   public void testPing() throws IOException, InterruptedException {
     for (CachedLog cachedLog : CachedLog.values()) {
-      URLFetch urlFetch = new URLFetch(cachedLog.url(), ContentType.APPLICATION_OCTETSTREAM);
-      assertTrue(urlFetch.ping());
-      Thread.sleep(100);
+      try (URLFetch urlFetch = new URLFetch(cachedLog.url())) {
+        assertTrue(1000 < urlFetch.contentLength());
+        ContentType.APPLICATION_OCTETSTREAM.require(urlFetch.contentType());
+        Thread.sleep(50);
+      }
+    }
+  }
+
+  public void testDuplicate() throws IOException {
+    try (URLFetch urlFetch = new URLFetch(CachedLog._20190404T143912_24.url())) {
+      urlFetch.download(HomeDirectory.Downloads("urlfetchtest1.png"));
+      try {
+        urlFetch.download(HomeDirectory.Downloads("urlfetchtest2.png"));
+        fail();
+      } catch (Exception exception) {
+        // ---
+      }
     }
   }
 }

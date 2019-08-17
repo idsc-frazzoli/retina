@@ -30,4 +30,9 @@ public enum ContentType {
     String first = string.split(";")[0];
     return expression.equalsIgnoreCase(first);
   }
+
+  public void require(String string) {
+    if (!matches(string))
+      throw new IllegalArgumentException(string);
+  }
 }

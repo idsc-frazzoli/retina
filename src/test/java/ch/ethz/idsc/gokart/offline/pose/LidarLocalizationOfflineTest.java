@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.offline.pose;
 
 import java.io.File;
-import java.io.IOException;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Type;
@@ -23,7 +22,7 @@ import ch.ethz.idsc.tensor.red.Mean;
 import junit.framework.TestCase;
 
 public class LidarLocalizationOfflineTest extends TestCase {
-  public void testCached() throws IOException {
+  public void testCached() throws Exception {
     final String _predefinedMap = LocalizationConfig.GLOBAL.predefinedMap;
     CachedLog cachedLog = CachedLog._20190404T143912_24;
     final String _planarVmu931Type = SensorsConfig.GLOBAL.planarVmu931Type;// = PlanarVmu931Type.ROT90.name();

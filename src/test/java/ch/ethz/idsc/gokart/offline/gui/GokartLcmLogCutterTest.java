@@ -20,7 +20,7 @@ public class GokartLcmLogCutterTest extends TestCase {
     gokartLcmLogCutter.jFrame.setVisible(false);
   }
 
-  public void testCached() throws IOException, InterruptedException {
+  public void testCached() throws Exception {
     CachedLog cachedLog = CachedLogs.randomSmall();
     File file = cachedLog.file();
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);

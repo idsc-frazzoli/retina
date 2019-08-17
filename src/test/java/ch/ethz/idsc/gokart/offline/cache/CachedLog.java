@@ -73,7 +73,10 @@ public enum CachedLog {
     directory.mkdirs();
     File file = new File(directory, title() + ".lcm");
     if (!file.isFile())
-      new URLFetch(url(), ContentType.APPLICATION_OCTETSTREAM).to(file);
+      try (URLFetch urlFetch = new URLFetch(url())) {
+        ContentType.APPLICATION_OCTETSTREAM.require(urlFetch.contentType());
+        urlFetch.downloadIfNotExists(file);
+      }
     return file;
   }
 }
