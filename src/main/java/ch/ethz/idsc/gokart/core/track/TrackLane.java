@@ -1,6 +1,8 @@
 package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
+import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.math.ArcTan2D;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -48,5 +50,34 @@ public class TrackLane implements LaneInterface {
   @Override
   public Tensor margins() {
     return margins;
+  }
+
+  public LaneInterface unitless() {
+    return new LaneInterface() {
+      @Override
+      public Tensor controlPoints() {
+        return Tensor.of(mid.stream().map(PoseHelper::toUnitless));
+      }
+
+      @Override
+      public Tensor midLane() {
+        return Tensor.of(mid.stream().map(PoseHelper::toUnitless));
+      }
+
+      @Override
+      public Tensor leftBoundary() {
+        return Tensor.of(left.stream().map(PoseHelper::toUnitless));
+      }
+
+      @Override
+      public Tensor rightBoundary() {
+        return Tensor.of(right.stream().map(PoseHelper::toUnitless));
+      }
+
+      @Override
+      public Tensor margins() {
+        return margins.map(Magnitude.METER);
+      }
+    };
   }
 }

@@ -18,7 +18,6 @@ import ch.ethz.idsc.owl.bot.se2.rrts.Se2RrtsFlow;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
-import ch.ethz.idsc.owl.math.lane.StableLane;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.rrts.LaneRrtsPlannerServer;
@@ -30,19 +29,15 @@ import ch.ethz.idsc.owl.rrts.core.TransitionPlanner;
 import ch.ethz.idsc.owl.rrts.core.TransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
-import ch.ethz.idsc.sophus.math.SplitInterface;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.RotateLeft;
 import ch.ethz.idsc.tensor.opt.Pi;
 
 // TODO make configurable as parameter
-public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlanner> {
-  private static final SplitInterface SPLIT_INTERFACE = Clothoid3.INSTANCE;
+public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlanner> {
   private final TransitionSpace transitionSpace;
   private final Scalar resolution = RealScalar.ONE; // TODO is this related to PARTITIONSCALE?
   private final Collection<TransitionRegionQuery> transitionRegionQueries;
@@ -64,40 +59,40 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
   }
 
   @Override // from GokartTrajectoryModule
-  protected final TransitionPlanner setupTreePlanner(StateTime root, Tensor goal) {
-    int rootIdx = locate(waypoints, root.state());
-    Tensor shifted = RotateLeft.of(waypoints, rootIdx);
-    Tensor segment = shifted.extract(0, locate(shifted, goal) + 1);
-    final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth);
-    LaneInterface lane = StableLane.of(SPLIT_INTERFACE, segment, r);
-    // ---
-    List<TransitionRegionQuery> transitionRegionQueries = //
-        new ArrayList<>(Collections.singletonList(new SampledTransitionRegionQuery(mapping.getMap(), RealScalar.of(0.05)))); // TODO magic constant
-    transitionRegionQueries.addAll(this.transitionRegionQueries);
-    TransitionRegionQuery transitionRegionQuery = TransitionRegionQueryUnion.wrap(transitionRegionQueries);
-    LaneRrtsPlannerServer laneRrtsPlannerServer = //
-        new LaneRrtsPlannerServer(transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, trajectoryConfig.greedy) {
-          @Override
-          protected RrtsNodeCollection rrtsNodeCollection() {
-            Scalar r_2 = r.multiply(RationalScalar.HALF);
-            MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
-            MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
-            Tensor lbounds_ = Tensors.of(minMaxX.min().subtract(r_2), minMaxY.min().subtract(r_2), RealScalar.ZERO);
-            Tensor ubounds_ = Tensors.of(minMaxX.max().add(r_2), minMaxY.max().add(r_2), Pi.TWO);
-            return new RrtsNodeCollections(ClothoidRrtsNdType.INSTANCE, lbounds_, ubounds_);
-          }
+  protected final Optional<TransitionPlanner> setupTreePlanner(StateTime root, Tensor goal) {
+    Optional<LaneInterface> optional = laneSegment(root.state(), goal);
+    if (optional.isPresent()) {
+      final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth);
+      List<TransitionRegionQuery> transitionRegionQueries = //
+          new ArrayList<>(Collections.singletonList(new SampledTransitionRegionQuery(mapping.getMap(), RealScalar.of(0.05)))); // TODO magic constant
+      transitionRegionQueries.addAll(this.transitionRegionQueries);
+      TransitionRegionQuery transitionRegionQuery = TransitionRegionQueryUnion.wrap(transitionRegionQueries);
+      LaneRrtsPlannerServer laneRrtsPlannerServer = //
+          new LaneRrtsPlannerServer(transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, trajectoryConfig.greedy) {
+            @Override
+            protected RrtsNodeCollection rrtsNodeCollection() {
+              Scalar r_2 = r.multiply(RationalScalar.HALF);
+              MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
+              MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
+              Tensor lbounds_ = Tensors.of(minMaxX.min().subtract(r_2), minMaxY.min().subtract(r_2), RealScalar.ZERO);
+              Tensor ubounds_ = Tensors.of(minMaxX.max().add(r_2), minMaxY.max().add(r_2), Pi.TWO);
+              return new RrtsNodeCollections(ClothoidRrtsNdType.INSTANCE, lbounds_, ubounds_);
+            }
 
-          @Override
-          protected Tensor uBetween(StateTime orig, StateTime dest) {
-            return Se2RrtsFlow.uBetween(orig, dest);
-          }
-        };
-    laneRrtsPlannerServer.setState(root);
-    laneRrtsPlannerServer.setGoal(goal);
-    laneRrtsPlannerServer.accept(lane);
-    if (Objects.nonNull(globalViewLcmModule))
-      globalViewLcmModule.setLane(lane);
-    return laneRrtsPlannerServer;
+            @Override
+            protected Tensor uBetween(StateTime orig, StateTime dest) {
+              return Se2RrtsFlow.uBetween(orig, dest);
+            }
+          };
+      LaneInterface lane = optional.get();
+      laneRrtsPlannerServer.setState(root);
+      laneRrtsPlannerServer.setGoal(goal);
+      laneRrtsPlannerServer.accept(lane);
+      if (Objects.nonNull(globalViewLcmModule))
+        globalViewLcmModule.setLane(lane);
+      return Optional.of(laneRrtsPlannerServer);
+    }
+    return Optional.empty();
   }
 
   @Override // from GokartTrajectoryModule
@@ -114,4 +109,6 @@ public class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlann
       System.err.println("use old trajectory");
     }
   }
+
+  protected abstract Optional<LaneInterface> laneSegment(Tensor state, Tensor goal);
 }

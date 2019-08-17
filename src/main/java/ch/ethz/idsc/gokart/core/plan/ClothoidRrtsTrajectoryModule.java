@@ -8,7 +8,7 @@ import ch.ethz.idsc.owl.bot.se2.rrts.TransitionCurvatureQuery;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
 
-public class ClothoidRrtsTrajectoryModule extends RrtsTrajectoryModule {
+public class ClothoidRrtsTrajectoryModule extends DynamicRrtsTrajectoryModule {
   private static final Scalar TURNING_RATIO_MAX = Magnitude.PER_METER.apply(ClothoidPursuitConfig.GLOBAL.turningRatioMax);
 
   public ClothoidRrtsTrajectoryModule() {

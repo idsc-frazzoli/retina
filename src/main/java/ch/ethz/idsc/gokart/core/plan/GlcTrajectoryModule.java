@@ -78,8 +78,8 @@ public class GlcTrajectoryModule extends GokartTrajectoryModule<TrajectoryPlanne
     goalRadius = Tensors.of(goalRadius_xy, goalRadius_xy, goalRadius_theta);
   }
 
-  /* package for testing */ @Override
-  synchronized void updateWaypoints(Tensor curve) {
+  @Override // from GokartTrajectoryModule
+  /* package for testing */ synchronized void updateWaypoints(Tensor curve) {
     super.updateWaypoints(curve);
     waypointCost = WaypointDistanceCost.of( //
         Nest.of(new BSpline1CurveSubdivision(Se2Geodesic.INSTANCE)::cyclic, waypoints, 1), //
@@ -90,7 +90,7 @@ public class GlcTrajectoryModule extends GokartTrajectoryModule<TrajectoryPlanne
   }
 
   @Override // from GokartTrajectoryModule
-  protected final TrajectoryPlanner setupTreePlanner(StateTime root, Tensor goal) {
+  protected final Optional<TrajectoryPlanner> setupTreePlanner(StateTime root, Tensor goal) {
     int resolution = trajectoryConfig.controlResolution.number().intValue();
     Collection<Flow> controls = flowsInterface.getFlows(resolution);
     // goalRadius.pmul(Tensors.vector(2, 2, 1));
@@ -105,10 +105,10 @@ public class GlcTrajectoryModule extends GokartTrajectoryModule<TrajectoryPlanne
     costs.add(waypointCost);
     costs.add(new Se2MinTimeGoalManager(se2ComboRegion, controls));
     GoalInterface multiCostGoalInterface = new VectorCostGoalAdapter(costs, se2ComboRegion);
-    return new StandardTrajectoryPlanner( //
+    return Optional.of(new StandardTrajectoryPlanner( //
         STATE_TIME_RASTER, FIXED_STATE_INTEGRATOR, controls, //
         plannerConstraint, multiCostGoalInterface, //
-        new LexicographicRelabelDecision(VectorLexicographic.COMPARATOR));
+        new LexicographicRelabelDecision(VectorLexicographic.COMPARATOR)));
   }
 
   @Override // from GokartTrajectoryModule

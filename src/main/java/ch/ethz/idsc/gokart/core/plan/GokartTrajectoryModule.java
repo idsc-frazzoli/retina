@@ -164,10 +164,11 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
           else {
             // Do Planning
             StateTime root = Lists.getLast(head).stateTime(); // non-empty due to check above
-            T treePlanner = setupTreePlanner(root, goal);
-            treePlanner.insertRoot(root);
-            new Expand<>(treePlanner).maxTime(trajectoryConfig.expandTimeLimit());
-            expandResult(head, treePlanner); // build detailed trajectory and pass to purePursuit
+            setupTreePlanner(root, goal).ifPresent(treePlanner -> {
+              treePlanner.insertRoot(root);
+              new Expand<>(treePlanner).maxTime(trajectoryConfig.expandTimeLimit());
+              expandResult(head, treePlanner); // build detailed trajectory and pass to purePursuit
+            });
           }
           return;
         }
@@ -224,7 +225,7 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
     return Collections.unmodifiableList(trajectory);
   }
 
-  protected abstract T setupTreePlanner(StateTime root, Tensor goal);
+  protected abstract Optional<T> setupTreePlanner(StateTime root, Tensor goal);
 
   protected abstract void expandResult(List<TrajectorySample> head, T treePlanner);
 }
