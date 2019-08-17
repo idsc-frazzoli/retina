@@ -188,6 +188,7 @@ public class PresenterLcmModule extends AbstractModule {
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
+      steerGetLcmClient.addListener(gokartRender.steerGetListener);
       steerColumnLcmClient.addListener(gokartRender.steerColumnListener);
       gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);

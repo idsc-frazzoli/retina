@@ -47,6 +47,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
 import ch.ethz.idsc.tensor.sca.Clips;
 
+// TODO JPH DO NOT USE THIS IN GLOBAL VIEWER!
 public abstract class GokartRender implements RenderInterface {
   private static final Tensor[] OFFSET_TORQUE = new Tensor[] { Tensors.vector(0, -0.15, 0), Tensors.vector(0, +0.15, 0) };
   private static final Tensor[] OFFSET_RATE = new Tensor[] { Tensors.vector(0, +0.15, 0), Tensors.vector(0, -0.15, 0) };
@@ -85,8 +86,11 @@ public abstract class GokartRender implements RenderInterface {
 
   public final void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     { // footprint
+      Tensor footprint = VEHICLE_MODEL.footprint();
       graphics.setColor(new Color(224, 224, 224, 192));
-      graphics.fill(geometricLayer.toPath2D(VEHICLE_MODEL.footprint()));
+      graphics.fill(geometricLayer.toPath2D(footprint));
+      graphics.setColor(new Color(64, 64, 64, 192));
+      graphics.draw(geometricLayer.toPath2D(footprint, true));
     }
     { // rear wheel torques and rear wheel odometry
       Tensor tarms_pair = rimoPutEvent.getTorque_Y_pair().map(Magnitude.ARMS).multiply(RealScalar.of(5E-4));

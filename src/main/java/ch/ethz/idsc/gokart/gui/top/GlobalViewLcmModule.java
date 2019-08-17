@@ -103,7 +103,6 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
       viewLcmFrame.geometricComponent.addRenderInterface(laneRender);
     }
-    // if (true)
     {
       ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
       extrudedFootprintRender.color = new Color(0, 255, 255, 128);
