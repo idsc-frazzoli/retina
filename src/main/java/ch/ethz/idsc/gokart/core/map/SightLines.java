@@ -10,10 +10,10 @@ import java.util.Comparator;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarPolarFiringCollector;
@@ -72,13 +72,13 @@ public class SightLines extends AbstractLidarMapping implements RenderInterface 
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()) && //
+    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) && //
         !pointsPolar.isEmpty()) {
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
       geometricLayer.pushMatrix(SensorsConfig.GLOBAL.vlp16Gokart());
       // ---
       Tensor polygon = polygon();
-      // TODO apply filter? median, min, ...
+      // TODO JPH apply filter? median, min, ...
       graphics.setColor(Color.RED);
       polygon.forEach(point -> {
         Point2D point2D = geometricLayer.toPoint2D(point);

@@ -4,10 +4,10 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.map.BSplineTrack;
-import ch.ethz.idsc.gokart.core.map.TrackReconModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
+import ch.ethz.idsc.gokart.core.track.BSplineTrack;
+import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -21,7 +21,7 @@ public class CenterLinePursuitModule extends AbstractModule implements MPCBSplin
   private static final int RESOLUTION = 200;
   // ---
   private final TrackReconModule trackReconModule = ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-  private final CurvePursuitModule curvePurePursuitModule = new CurvePurePursuitModule(PursuitConfig.GLOBAL);
+  private final CurvePursuitModule curvePurePursuitModule = new CurvePurePursuitModule(PurePursuitConfig.GLOBAL);
 
   @Override
   protected void first() {

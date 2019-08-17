@@ -4,12 +4,12 @@ package ch.ethz.idsc.gokart.core.slam;
 import java.util.List;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
@@ -63,7 +63,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
       Tensor pre_delta = slamResult.getTransform();
       Tensor poseDelta = lidar.dot(pre_delta).dot(inverseLidar);
       model = model.dot(poseDelta); // advance gokart
-      Tensor result = Se2Utils.fromSE2Matrix(model);
+      Tensor result = Se2Matrix.toVector(model);
       return Optional.of(GokartPoseEvents.offlineV1( //
           PoseHelper.attachUnits(result), //
           slamResult.getQuality()));

@@ -3,13 +3,14 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.calib.ChassisGeometry;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import ch.ethz.idsc.retina.util.data.OfflineVectorInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -17,7 +18,8 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ class GokartState implements OfflineVectorInterface, BufferInsertable {
+/** Reference: Marc Heim Thesis, p. 37 eq. 3.52 */
+/* package */ class GokartState implements PoseVelocityInterface, OfflineVectorInterface, BufferInsertable {
   public static final int LENGTH = 11 * Float.BYTES; // 11 * 4
   private static final Scalar ZERO_DEGC = Quantity.of(0.0, NonSI.DEGREE_CELSIUS);
   // ---
@@ -48,16 +50,16 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   /** create GokartState
    * 
    * @param time in "s"
-   * @param Ux forward velocity in "m/s"
-   * @param Uy lateral velocity (left is positive) in "m/s"
-   * @param dotPsi rotation velocity in "1/s"
+   * @param Ux forward velocity in "m*s^-1"
+   * @param Uy lateral velocity (left is positive) in "m*s^-1"
+   * @param dotPsi rotation velocity in "s^-1"
    * @param X X-position in "m"
    * @param Y Y-position in "m"
    * @param Psi orientation in "1"
-   * @param w2L left rear wheel speed in "1/s"
-   * @param w2R right rear wheel speed in "1/s"
-   * @param s wheel encoder position in "SCE" */
-  GokartState(//
+   * @param w2L left rear wheel speed in "s^-1"
+   * @param w2R right rear wheel speed in "s^-1"
+   * @param s steer column encoder position in "SCE" */
+  GokartState( //
       float time, //
       float Ux, //
       float Uy, //
@@ -74,15 +76,15 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   /** create GokartState
    * 
    * @param time in "s"
-   * @param Ux forward velocity in "m/s"
-   * @param Uy lateral velocity (left is positive) in "m/s"
-   * @param dotPsi rotation vel0city in "1/s"
+   * @param Ux forward velocity in "m*s^-1"
+   * @param Uy lateral velocity (left is positive) in "m*s^-1"
+   * @param dotPsi rotation vel0city in "s^-1"
    * @param X X-position in "m"
    * @param Y Y-position in "m"
    * @param Psi orientation in "1"
-   * @param w2L left rear wheel speed in "1/s"
-   * @param w2R right rear wheel speed in "1/s"
-   * @param s wheel encoder position in "SCE"
+   * @param w2L left rear wheel speed in "s^-1"
+   * @param w2R right rear wheel speed in "s^-1"
+   * @param s steer column encoder position in "SCE"
    * @param bTemp brake temperature in "degC" */
   public GokartState( //
       float time, //
@@ -112,15 +114,15 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   /** create GokartState
    * 
    * @param time time in "s"
-   * @param Ux forward velocity in "m/s"
-   * @param Uy lateral velocity (left is positive) in "m/s"
-   * @param dotPsi rotation velocity in "1/s"
+   * @param Ux forward velocity in "m*s^-1"
+   * @param Uy lateral velocity (left is positive) in "m*s^-1"
+   * @param dotPsi rotation velocity in "s^-1"
    * @param X X-position in "m"
    * @param Y Y-position in "m"
    * @param Psi orientation in "1"
-   * @param w2L left rear wheel speed in "1/s"
-   * @param w2R right rear wheel speed in "1/s"
-   * @param s wheel encoder position in "SCE" */
+   * @param w2L left rear wheel speed in "s^-1"
+   * @param w2R right rear wheel speed in "s^-1"
+   * @param s steer column encoder position in "SCE" */
   public GokartState( //
       Scalar time, //
       Scalar Ux, //
@@ -137,16 +139,16 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   /** create GokartState
    * 
-   * @param time time in "s"
-   * @param Ux forward velocity in "m/s"
-   * @param Uy lateral velocity (left is positive) in "m/s"
-   * @param dotPsi rotation velocity in "1/s"
+   * @param time in "s"
+   * @param Ux forward velocity in "m*s^-1"
+   * @param Uy lateral velocity (left is positive) in "m*s^-1"
+   * @param dotPsi rotation velocity in "s^-1"
    * @param X X-position in "m"
    * @param Y Y-position in "m"
    * @param Psi orientation in "1"
-   * @param w2L left rear wheel speed in "1/s"
-   * @param w2R right rear wheel speed in "1/s"
-   * @param s wheel encoder position in "SCE"
+   * @param w2L left rear wheel speed in "s^-1"
+   * @param w2R right rear wheel speed in "s^-1"
+   * @param s steer column encoder position in "SCE"
    * @param bTemp brake temperature in "degC" */
   public GokartState( //
       Scalar time, //
@@ -192,56 +194,69 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     bTemp = byteBuffer.getFloat();
   }
 
+  /** @return time in "s" */
   public Scalar getTime() {
     return Quantity.of(time, SI.SECOND);
   }
 
+  /** @return forward velocity in "m*s^-1" */
   public Scalar getUx() {
     return Quantity.of(Ux, SI.VELOCITY);
   }
 
-  public Scalar getUy() {
+  /** @return lateral velocity (left is positive) in "m*s^-1" */
+  private Scalar getUy() {
     return Quantity.of(Uy, SI.VELOCITY);
   }
 
-  public Scalar getdotPsi() {
-    return Quantity.of(dotPsi, SI.PER_SECOND);
-  }
-
-  /** @return quantity with unit "m" */
-  public Scalar getX() {
+  /** @return X-position in "m" */
+  private Scalar getX() {
     return Quantity.of(X, SI.METER);
   }
 
-  /** @return quantity with unit "m" */
-  public Scalar getY() {
+  /** @return Y-position in "m" */
+  private Scalar getY() {
     return Quantity.of(Y, SI.METER);
   }
 
   /** @return heading of vehicle with interpretation in radian */
-  public Scalar getPsi() {
+  private Scalar getPsi() {
     return RealScalar.of(Psi);
   }
 
+  /** @return left rear wheel speed in "s^-1" */
   public Scalar getw2L() {
     return Quantity.of(w2L, SI.PER_SECOND);
   }
 
+  /** @return right rear wheel speed in "s^-1" */
   public Scalar getw2R() {
     return Quantity.of(w2R, SI.PER_SECOND);
   }
 
+  /** @return steer column encoder position in "SCE" */
   public Scalar getS() {
     return Quantity.of(s, SteerPutEvent.UNIT_ENCODER);
   }
 
+  /** @return brake temperature in "degC" */
   public Scalar getBTemp() {
     return Quantity.of(bTemp, NonSI.DEGREE_CELSIUS);
   }
 
-  /** @return {x[m], y[m], psi} */
+  @Override // from PoseInterface
   public Tensor getPose() {
     return Tensors.of(getX(), getY(), getPsi());
+  }
+
+  @Override // from PoseVelocityInterface
+  public Tensor getVelocity() {
+    return Tensors.of(getUx(), getUy(), getGyroZ());
+  }
+
+  @Override // from PoseVelocityInterface
+  public Scalar getGyroZ() {
+    return Quantity.of(dotPsi, SI.PER_SECOND);
   }
 
   /** @return {x[m], y[m]} */
@@ -299,7 +314,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         getTime(), //
         getUx(), //
         getUy(), //
-        getdotPsi(), //
+        getGyroZ(), //
         getX(), //
         getY(), //
         getPsi(), //

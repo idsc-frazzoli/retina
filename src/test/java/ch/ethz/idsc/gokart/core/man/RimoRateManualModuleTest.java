@@ -3,13 +3,13 @@ package ch.ethz.idsc.gokart.core.man;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.dev.ManualControlAdapter;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
+import ch.ethz.idsc.retina.joystick.ManualControlAdapter;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
@@ -68,7 +68,7 @@ public class RimoRateManualModuleTest extends TestCase {
 
   public void testStartStop() {
     RimoRateManualModule rimoRateJoystickModule = new RimoRateManualModule();
-    rimoRateJoystickModule.protected_first();
-    rimoRateJoystickModule.protected_last();
+    rimoRateJoystickModule.first();
+    rimoRateJoystickModule.last();
   }
 }

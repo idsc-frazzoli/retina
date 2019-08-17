@@ -11,23 +11,23 @@ import org.jfree.chart.ChartUtils;
 
 import ch.ethz.idsc.gokart.offline.channel.DavisDvsChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.channel.GokartStatusChannel;
 import ch.ethz.idsc.gokart.offline.channel.LabjackAdcChannel;
 import ch.ethz.idsc.gokart.offline.channel.LinmotGetVehicleChannel;
 import ch.ethz.idsc.gokart.offline.channel.LinmotPutVehicleChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.RimoPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.SingleChannelInterface;
+import ch.ethz.idsc.gokart.offline.channel.SteerColumnChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.SteerPutChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vlp16RayChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuVehicleChannel;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
-import ch.ethz.idsc.sophus.math.WindowCenterSampler;
+import ch.ethz.idsc.sophus.math.win.UniformWindowSampler;
+import ch.ethz.idsc.sophus.util.plot.ListPlot;
+import ch.ethz.idsc.sophus.util.plot.VisualRow;
+import ch.ethz.idsc.sophus.util.plot.VisualSet;
 import ch.ethz.idsc.subare.util.HtmlUtf8;
-import ch.ethz.idsc.subare.util.plot.ListPlot;
-import ch.ethz.idsc.subare.util.plot.VisualRow;
-import ch.ethz.idsc.subare.util.plot.VisualSet;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -122,7 +122,7 @@ public class HtmlLogReport {
       visualSet.add(domain, tensor.get(Tensor.ALL, 8)).setLabel("raw");
     }
     {
-      Tensor tensor = map.get(GokartStatusChannel.INSTANCE);
+      Tensor tensor = map.get(SteerColumnChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
       visualSet.add(domain, tensor.get(Tensor.ALL, 1)).setLabel("calibrated (0 = straight)");
     }
@@ -254,7 +254,7 @@ public class HtmlLogReport {
     {
       Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
       Tensor domain = tensor.get(Tensor.ALL, 0);
-      Tensor mask = new WindowCenterSampler(GaussianWindow.FUNCTION).apply(100);
+      Tensor mask = UniformWindowSampler.of(GaussianWindow.FUNCTION).apply(100 * 2 + 1);
       Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
       Tensor smoothY = ListConvolve.of(mask, tensor.get(Tensor.ALL, 3));
       Tensor smoothZ = ListConvolve.of(mask, tensor.get(Tensor.ALL, 4));

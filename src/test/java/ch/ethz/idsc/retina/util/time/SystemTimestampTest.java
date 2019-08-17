@@ -7,5 +7,6 @@ public class SystemTimestampTest extends TestCase {
   public void testSimple() {
     String string = SystemTimestamp.asString();
     assertEquals(string.length(), 8 + 1 + 6);
+    assertEquals(string.charAt(8), 'T');
   }
 }

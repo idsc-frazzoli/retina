@@ -9,19 +9,19 @@ import java.nio.FloatBuffer;
 import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.retina.davis.app.DavisQuickComponent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.util.math.ProjectionMatrix;
 import ch.ethz.idsc.retina.util.math.Viewport;
+import ch.ethz.idsc.sophus.lie.so3.So3Exponential;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.Hue;
-import ch.ethz.idsc.tensor.lie.Rodrigues;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 public class DavisLidarComponent extends DavisQuickComponent implements LidarRayBlockListener {
@@ -41,8 +41,8 @@ public class DavisLidarComponent extends DavisQuickComponent implements LidarRay
         ProjectionMatrix.of(RealScalar.of(1.1), viewport.aspectRatio(), Clips.interval(1, 100)).unmodifiable();
     if (Objects.nonNull(_points)) {
       Tensor points = _points;
-      Tensor rot1 = Rodrigues.exp(SensorsConfig.GLOBAL.vlp16_davis_w1);
-      Tensor rot0 = Rodrigues.exp(SensorsConfig.GLOBAL.vlp16_davis_w0);
+      Tensor rot1 = So3Exponential.INSTANCE.exp(SensorsConfig.GLOBAL.vlp16_davis_w1);
+      Tensor rot0 = So3Exponential.INSTANCE.exp(SensorsConfig.GLOBAL.vlp16_davis_w0);
       Tensor rot = rot1.dot(rot0);
       for (Tensor x : points) {
         Tensor pw = rot.dot(x.add(SensorsConfig.GLOBAL.vlp16_davis_t)).append(NUMERIC_ONE);

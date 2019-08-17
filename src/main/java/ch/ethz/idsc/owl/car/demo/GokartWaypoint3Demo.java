@@ -6,7 +6,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
 
-import ch.ethz.idsc.gokart.core.pure.TrajectoryConfig;
 import ch.ethz.idsc.owl.ani.api.GlcPlannerCallback;
 import ch.ethz.idsc.owl.bot.se2.glc.GlcWaypointFollowing;
 import ch.ethz.idsc.owl.bot.se2.glc.GokartVecEntity;
@@ -21,10 +20,11 @@ import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
 import ch.ethz.idsc.owl.math.region.ConeRegion;
 import ch.ethz.idsc.owl.math.region.RegionWithDistance;
 import ch.ethz.idsc.owl.math.state.StateTime;
-import ch.ethz.idsc.sophus.planar.Arrowhead;
+import ch.ethz.idsc.sophus.ply.Arrowhead;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.ResourceData;
 
 /** demo to simulate dubendorf hangar */
 // TODO JPH what does this demo do?
@@ -35,7 +35,7 @@ class GokartWaypoint3Demo implements DemoInterface {
   public OwlyAnimationFrame start() {
     OwlyAnimationFrame owlyAnimationFrame = new OwlyAnimationFrame();
     final StateTime initial = new StateTime(Tensors.vector(33.6, 41.5, 0.6), RealScalar.ZERO);
-    final Tensor waypoints = TrajectoryConfig.GLOBAL.getWaypointsPose();
+    final Tensor waypoints = ResourceData.of("/dubilab/controlpoints/tires/20190116.csv"); // FIXME replace placeholder waypoints
     // final CostFunction waypointCost = WaypointDistanceCost.linear(waypoints, Tensors.vector(85.33, 85.33), 10.0f, new Dimension(640, 640));
     GokartVecEntity gokartEntity = new GokartVecEntity(initial) {
       @Override

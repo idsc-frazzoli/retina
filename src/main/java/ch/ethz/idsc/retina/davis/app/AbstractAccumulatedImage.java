@@ -19,7 +19,7 @@ import ch.ethz.idsc.retina.util.img.TimedImageListener;
  * in black color */
 public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   /** default value 50 ms */
-  public static final int INTERVAL_DEFAULT_US = 50_000;
+  public static final int INTERVAL_US_DEFAULT = 50_000;
   /** periods without events of length longer than max gap means the timer
    * will skip to the next event position. this is the case when the log file
    * skips to the future. */
@@ -38,7 +38,7 @@ public abstract class AbstractAccumulatedImage implements DavisDvsListener {
   private boolean rotated = false;
 
   protected AbstractAccumulatedImage(DavisDevice davisDevice) {
-    setInterval(INTERVAL_DEFAULT_US);
+    setInterval(INTERVAL_US_DEFAULT);
     width = davisDevice.getWidth();
     height = davisDevice.getHeight();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);

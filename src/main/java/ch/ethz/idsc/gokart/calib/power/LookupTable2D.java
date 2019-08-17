@@ -1,8 +1,6 @@
 // code by mheim
 package ch.ethz.idsc.gokart.calib.power;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
@@ -127,29 +125,5 @@ public class LookupTable2D implements Serializable {
     return Tensors.of( //
         lookup(otherValue, clip1.min()), //
         lookup(otherValue, clip1.max()));
-  }
-
-  /** export lookup table to csv format
-   * 
-   * @param bufferedWriter
-   * @throws IOException */
-  public void exportToMatlab(BufferedWriter bufferedWriter) throws IOException {
-    // write dimensions
-    int dimN0 = scale.Get(0).number().intValue() + 1;
-    int dimN1 = scale.Get(1).number().intValue() + 1;
-    bufferedWriter.write(dimN0 + "\n");
-    bufferedWriter.write(dimN1 + "\n");
-    bufferedWriter.write(clip0.min().number().floatValue() + "," + clip0.max().number().floatValue() + "\n");
-    bufferedWriter.write(clip1.min().number().floatValue() + "," + clip1.max().number().floatValue() + "\n");
-    // write units
-    bufferedWriter.write(QuantityUnit.of(clip0.min()) + "\n");
-    bufferedWriter.write(QuantityUnit.of(clip1.min()) + "\n");
-    bufferedWriter.write(unit + "\n");
-    for (int i0 = 0; i0 < dimN0; ++i0) {
-      String[] linevals = new String[dimN1];
-      for (int i1 = 0; i1 < dimN1; ++i1)
-        linevals[i1] = interpolation.get(Tensors.vector(i0, i1)).toString();
-      bufferedWriter.write(String.join(",", linevals) + "\n");
-    }
   }
 }

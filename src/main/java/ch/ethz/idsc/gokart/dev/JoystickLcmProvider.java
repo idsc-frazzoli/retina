@@ -9,8 +9,8 @@ import ch.ethz.idsc.retina.joystick.JoystickDecoder;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.data.SoftWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
+import ch.ethz.idsc.retina.util.time.SoftWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 
 /** client to lcm channel with joystick information */
 /* package */ final class JoystickLcmProvider extends BinaryLcmClient implements ManualControlProvider, StartAndStoppable {

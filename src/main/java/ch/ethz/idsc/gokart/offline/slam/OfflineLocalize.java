@@ -5,9 +5,9 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.slam.ImageScore;
 import ch.ethz.idsc.gokart.core.slam.SlamScore;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrame;
 import ch.ethz.idsc.retina.davis.data.DavisImuFrameListener;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -55,7 +55,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   }
 
   public final Tensor getPositionVector() {
-    return Se2Utils.fromSE2Matrix(model);
+    return Se2Matrix.toVector(model);
   }
 
   @Override // from DavisImuFrameListener
@@ -80,7 +80,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
 
   protected final void appendRow(Scalar ratio, int sum, double duration) {
     LocalizationResult localizationResult = new LocalizationResult( //
-        time, Se2Utils.fromSE2Matrix(model), Clips.unit().requireInside(ratio));
+        time, Se2Matrix.toVector(model), Clips.unit().requireInside(ratio));
     listeners.forEach(listener -> listener.localizationCallback(localizationResult));
   }
 

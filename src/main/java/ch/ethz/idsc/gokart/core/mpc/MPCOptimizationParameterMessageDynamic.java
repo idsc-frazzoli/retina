@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
-// TODO similar to MPCOptimizationParameterMessageKinematic 
+// TODO MH/JPH similar to MPCOptimizationParameterMessageKinematic 
 /* package */ class MPCOptimizationParameterMessageDynamic extends MPCNativeMessage {
   private final MPCOptimizationParameter mpcOptimizationParameter;
 

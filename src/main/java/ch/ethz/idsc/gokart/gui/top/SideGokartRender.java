@@ -6,12 +6,15 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
+import ch.ethz.idsc.gokart.calib.ChassisGeometry;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -58,7 +61,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
     }
     { // draw the 16 lidar rays from -15deg to 15deg
       final Scalar py = Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16Height);
-      Tensor translate = Se2Utils.toSE2Matrix(Tensors.of( //
+      Tensor translate = Se2Matrix.of(Tensors.of( //
           Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16_pose.Get(0)), // translation right (in pixel space)
           py, // translation up (in pixel space) to
           RealScalar.ZERO // rotation is pixel space
@@ -84,7 +87,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
     }
     { // draw rear tire
       Scalar radius = Magnitude.METER.apply(RimoTireConfiguration._REAR.radius());
-      Tensor translate = Se2Utils.toSE2Matrix(Tensors.vector( //
+      Tensor translate = Se2Matrix.of(Tensors.vector( //
           0, // translation right (in pixel space)
           radius.number().doubleValue(), // translation up (in pixel space)
           0 // rotation is pixel space
@@ -98,8 +101,8 @@ import ch.ethz.idsc.tensor.sca.Chop;
     }
     { // draw front tire
       Scalar radius = Magnitude.METER.apply(RimoTireConfiguration.FRONT.radius());
-      Tensor translate = Se2Utils.toSE2Matrix(Tensors.vector( //
-          Magnitude.METER.toDouble(ChassisGeometry.GLOBAL.xAxleRtoF), // translation right (in pixel space)
+      Tensor translate = Se2Matrix.of(Tensors.vector( //
+          Magnitude.METER.toDouble(RimoAxleConstants.xAxleRtoF), // translation right (in pixel space)
           radius.number().doubleValue(), // translation up (in pixel space)
           0 // rotation is pixel space
       ));

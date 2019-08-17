@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.offline.cache.CachedLog;
+import ch.ethz.idsc.gokart.offline.cache.CachedLogs;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.DeleteDirectory;
@@ -23,7 +24,7 @@ public class HtmlLogReportTest extends TestCase {
   }
 
   public void testCached() throws IOException {
-    CachedLog cachedLog = CachedLog._20190401T115537_02;
+    CachedLog cachedLog = CachedLogs.randomSmall();
     File file = cachedLog.file();
     GokartLcmMap gokartLcmMap = new GokartLcmMap(file);
     File root = HomeDirectory.Downloads(getClass().getSimpleName());

@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
 
@@ -21,7 +21,7 @@ import ch.ethz.idsc.retina.util.img.TimedImageListener;
 // TODO JPH contains a lot of redundancy
 public final class ConstantAccumulatedImage implements DavisDvsListener {
   /** default value 50 ms */
-  public static final int INTERVAL_DEFAULT_US = 1_000;
+  public static final int INTERVAL_US_DEFAULT = 1_000;
   /** periods without events of length longer than max gap means the timer
    * will skip to the next event position. this is the case when the log file
    * skips to the future. */
@@ -38,7 +38,7 @@ public final class ConstantAccumulatedImage implements DavisDvsListener {
   private Integer last = null;
 
   public ConstantAccumulatedImage(DavisDevice davisDevice) {
-    setInterval(INTERVAL_DEFAULT_US);
+    setInterval(INTERVAL_US_DEFAULT);
     width = davisDevice.getWidth();
     height = davisDevice.getHeight();
     bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);

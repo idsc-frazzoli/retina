@@ -14,8 +14,11 @@ import lcm.logging.LogPlayerConfig;
   public static void main(String[] args) throws IOException {
     LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
     File file;
-    file = new File("/home/maximilien/Downloads/20190215T150920_380160a9.lcm.00");
-    file = new File("/home/maximilien/Downloads/20190401T101109_411917b6.lcm.00");
+    // file = new File("/home/maximilien/Downloads/20190215T150920_380160a9.lcm.00");
+    // file = new File("/home/maximilien/Downloads/20190401T101109_411917b6.lcm.00");
+    // file = new File("/home/maximilien/Downloads/20190627T133639_12dcbfa8.lcm.00");
+    // file = new File("/home/maximilien/Downloads/20190708T114135_f3f46a8b.lcm.00");
+    file = new File("/home/maximilien/Downloads/20190711T160210_908ca07d.lcm.00");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
     logPlayerConfig.speed_denominator = 1;

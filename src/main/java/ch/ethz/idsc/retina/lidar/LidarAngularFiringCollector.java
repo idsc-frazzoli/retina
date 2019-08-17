@@ -6,7 +6,7 @@ import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** collects a lidar scan of a complete 360 rotation into a pointcloud consisting
  * of 3d, or 2d points

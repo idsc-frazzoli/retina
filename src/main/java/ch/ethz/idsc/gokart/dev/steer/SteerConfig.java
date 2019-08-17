@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.dev.steer;
 
+import ch.ethz.idsc.gokart.calib.steer.ClipSteerMapping;
 import ch.ethz.idsc.gokart.calib.steer.FittedSteerMapping;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -65,14 +66,20 @@ public class SteerConfig {
   }
 
   /***************************************************/
-  /** @return default steer mapping */
-  public SteerMapping getSteerMapping() {
-    return FittedSteerMapping.instance();
+  /** @return clip for quantities with unit "m^-1", limit of turning ratio in practice */
+  public Clip getRatioLimit() {
+    return Clips.absolute(turningRatioMax);
   }
 
-  /** @return */
-  public Clip getRatioLimit() {
-    Scalar ratioMax = getSteerMapping().getRatioFromSCE(columnMax);
-    return Clips.absolute(ratioMax);
+  /** @return default steer mapping */
+  public SteerMapping getSteerMapping() {
+    SteerMapping steerMapping = FittedSteerMapping.instance();
+    return ClipSteerMapping.wrap( //
+        steerMapping, //
+        Clips.absolute(steerMapping.getRatioFromSCE(columnMax)));
+  }
+
+  /* package */ Clip columnMaxClip() {
+    return Clips.absolute(columnMax);
   }
 }

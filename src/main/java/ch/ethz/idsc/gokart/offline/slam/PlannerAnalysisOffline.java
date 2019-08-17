@@ -10,8 +10,8 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.core.plan.TrajectoryEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pure.TrajectoryEvents;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -23,7 +23,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.planar.Arrowhead;
+import ch.ethz.idsc.sophus.ply.Arrowhead;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -58,7 +58,7 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
     if (Scalars.lessThan(time_next, time) && Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(delta);
       System.out.print("Extracting log at " + time.map(Round._2) + "\n");
-      PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+      PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
       scatterImage = new WallScatterImage(predefinedMap);
       // ---
       GeometricLayer geometricLayer = GeometricLayer.of(predefinedMap.getModel2Pixel());

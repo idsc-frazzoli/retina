@@ -6,14 +6,14 @@ import java.awt.image.DataBufferByte;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.davis.DavisApsListener;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.img.DimensionInterface;
 
-/** for davis240c the raw image data arrives in the order (0,0), (0,1), ...,
- * (0,179), (1,0), (1,1), ..., (239,179) */
+/** for davis240c the raw image data arrives in the order (0, 0), (0, 1), ...,
+ * (0, 179), (1, 0), (1, 1), ..., (239, 179) */
 public class DavisImageProvider implements DavisApsListener {
   private final int width;
   private final int height;
@@ -46,7 +46,7 @@ public class DavisImageProvider implements DavisApsListener {
   public void davisAps(DavisApsEvent davisApsEvent) {
     apsTracker.aps(davisApsEvent, height);
     byte intensity = davisApsEvent.grayscale();
-    int index = davisApsEvent.x + (davisApsEvent.y * width); // TODO should precompute?
+    int index = davisApsEvent.x + (davisApsEvent.y * width);
     bytes[index] = intensity;
     if (davisApsEvent.y == lastY) {
       time[davisApsEvent.x] = davisApsEvent.time;

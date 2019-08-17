@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
 import junit.framework.TestCase;
@@ -20,8 +20,8 @@ public class Vlp16PassiveSlowingTest extends TestCase {
 
   public void testEvents() throws Exception {
     Vlp16ClearanceModule vlp16ClearanceModule = new Vlp16PassiveSlowing();
-    GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(0.1f);
-    vlp16ClearanceModule.getEvent(gokartStatusEvent);
+    SteerColumnEvent steerColumnEvent = new SteerColumnEvent(0.1f);
+    vlp16ClearanceModule.getEvent(steerColumnEvent);
     assertFalse(vlp16ClearanceModule.putEvent().isPresent());
     float[] coords = new float[3];
     // ---
@@ -67,8 +67,8 @@ public class Vlp16PassiveSlowingTest extends TestCase {
 
   public void testEventsBypass() throws Exception {
     Vlp16PassiveSlowing vlp16PassiveSlowing = new Vlp16PassiveSlowing();
-    GokartStatusEvent gokartStatusEvent = new GokartStatusEvent(0.1f);
-    vlp16PassiveSlowing.getEvent(gokartStatusEvent);
+    SteerColumnEvent steerColumnEvent = new SteerColumnEvent(0.1f);
+    vlp16PassiveSlowing.getEvent(steerColumnEvent);
     assertFalse(vlp16PassiveSlowing.putEvent().isPresent());
     float[] coords = new float[3];
     // ---
@@ -113,9 +113,9 @@ public class Vlp16PassiveSlowingTest extends TestCase {
 
   public void testCalibrationError() {
     Vlp16ClearanceModule vcm = new Vlp16PassiveSlowing();
-    vcm.getEvent(new GokartStatusEvent(0.1f));
+    vcm.getEvent(new SteerColumnEvent(0.1f));
     assertFalse(vcm.putEvent().isPresent());
-    vcm.getEvent(new GokartStatusEvent(Float.NaN));
+    vcm.getEvent(new SteerColumnEvent(Float.NaN));
     assertFalse(vcm.putEvent().isPresent());
   }
 

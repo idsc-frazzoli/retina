@@ -12,14 +12,14 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
 import ch.ethz.idsc.gokart.gui.top.AccumulatedEventRender;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.gui.top.ExtrudedFootprintRender;
 import ch.ethz.idsc.gokart.gui.top.GlobalGokartRender;
 import ch.ethz.idsc.gokart.gui.top.GokartRender;
@@ -32,7 +32,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.region.ImageRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -50,10 +50,10 @@ import ch.ethz.idsc.tensor.sca.Round;
 // public because class is referenced outside of retina
 public class OfflineHud implements OfflineLogListener {
   public static final Dimension DIMENSION = new Dimension(1920, 480);
-  public static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.getPredefinedMap();
+  public static final PredefinedMap PREDEFINED_MAP = LocalizationConfig.GLOBAL.getPredefinedMap();
   // ---
   private final Scalar delta;
-  final RenderInterface renderInterface = new ImageRender( //
+  final RenderInterface renderInterface = ImageRender.scale( //
       PREDEFINED_MAP.getImage(), Tensors.vector(1, 1));
   final GokartRender gokartRender = new GlobalGokartRender();
   final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
@@ -63,7 +63,7 @@ public class OfflineHud implements OfflineLogListener {
   // ---
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private RimoGetEvent rimoGetEvent;
-  private GokartStatusEvent gokartStatusEvent;
+  private SteerColumnEvent steerColumnEvent;
   private GokartPoseEvent gokartPoseEvent;
 
   public OfflineHud(Scalar period) {
@@ -78,7 +78,7 @@ public class OfflineHud implements OfflineLogListener {
       rimoGetEvent = new RimoGetEvent(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
-      gokartStatusEvent = new GokartStatusEvent(byteBuffer);
+      steerColumnEvent = new SteerColumnEvent(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.POSE_LIDAR)) {
       gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
@@ -92,7 +92,7 @@ public class OfflineHud implements OfflineLogListener {
     ) {
       // System.out.println(time_next);
       if (Objects.nonNull(rimoGetEvent) && //
-          Objects.nonNull(gokartStatusEvent)) {
+          Objects.nonNull(steerColumnEvent)) {
         BufferedImage bufferedImage = //
             new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_3BYTE_BGR);
         Graphics2D graphics = bufferedImage.createGraphics();
@@ -108,27 +108,27 @@ public class OfflineHud implements OfflineLogListener {
         }).unmodifiable();
         // geometricLayer.pushMatrix(PREDEFINED_MAP.getModel2Pixel());
         geometricLayer.pushMatrix(model2pixel);
-        geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(Tensors.vector(-25, 40, -.6)));
+        geometricLayer.pushMatrix(Se2Matrix.of(Tensors.vector(-25, 40, -.6)));
         {
           geometricLayer.pushMatrix(DiagonalMatrix.of(1 / 7.5, 1 / 7.5, 1));
           renderInterface.render(geometricLayer, graphics);
           geometricLayer.popMatrix();
         }
         trigonometryRender.gokartPoseListener.getEvent(gokartPoseEvent);
-        trigonometryRender.gokartStatusListener.getEvent(gokartStatusEvent);
+        trigonometryRender.steerColumnListener.getEvent(steerColumnEvent);
         trigonometryRender.render(geometricLayer, graphics);
         extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
-        extrudedFootprintRender.gokartStatusListener.getEvent(gokartStatusEvent);
+        extrudedFootprintRender.steerColumnListener.getEvent(steerColumnEvent);
         extrudedFootprintRender.color = Color.CYAN;
         extrudedFootprintRender.render(geometricLayer, graphics);
         gokartRender.rimoGetListener.getEvent(rimoGetEvent);
-        gokartRender.gokartStatusListener.getEvent(gokartStatusEvent);
+        gokartRender.steerColumnListener.getEvent(steerColumnEvent);
         gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
         gokartRender.render(geometricLayer, graphics);
         accumulatedEventRender.render(geometricLayer, graphics);
         // ---
         graphics.setColor(Color.GREEN);
-        Scalar vel = ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent);
+        Scalar vel = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
         String string = String.format("%+3.1f[m/s]", vel.map(Round._1).Get().number().doubleValue());
         // System.out.println(string);
         graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 10));

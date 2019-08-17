@@ -15,8 +15,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   private final Scalar b;
   private final Scalar d;
 
-  /** @param d cubic coefficient
-   * @param b linear coefficient */
+  /** @param b linear coefficient
+   * @param d cubic coefficient */
   public InverseSteerCubic(Scalar b, Scalar d) {
     this.b = b;
     this.d = d;

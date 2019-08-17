@@ -12,16 +12,25 @@ import java.net.URL;
 
 import ch.ethz.idsc.tensor.io.Timing;
 
+/** inspired by
+ * <a href="https://reference.wolfram.com/language/ref/URLFetch.html">URLFetch</a> */
 public class URLFetch {
   private final URL url;
   private final ContentType contentType;
 
   /** @param url
+   * @param contentType */
+  // TODO JPH make restriction to a certain contentType optional!
+  public URLFetch(URL url, ContentType contentType) {
+    this.url = url;
+    this.contentType = contentType;
+  }
+
+  /** @param url
    * @param contentType
    * @throws MalformedURLException */
   public URLFetch(String url, ContentType contentType) throws MalformedURLException {
-    this.url = new URL(url);
-    this.contentType = contentType;
+    this(new URL(url), contentType);
   }
 
   /** @param file to download web content to
@@ -52,7 +61,7 @@ public class URLFetch {
               int bytesRead = -1;
               while ((bytesRead = inputStream.read(buffer)) != -1)
                 outputStream.write(buffer, 0, bytesRead);
-              System.out.println("File downloaded: " + timing.seconds());
+              System.out.println("url downloaded in " + timing.seconds() + "[s]");
             }
           }
         }
@@ -64,5 +73,19 @@ public class URLFetch {
       System.err.println("No file to download. Server replied HTTP code: " + responseCode);
     }
     httpURLConnection.disconnect();
+  }
+
+  /** @return true if URL is available for download
+   * @throws IOException */
+  public boolean ping() throws IOException {
+    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+    int responseCode = httpURLConnection.getResponseCode();
+    // always check HTTP response code first
+    if (responseCode == HttpURLConnection.HTTP_OK) {
+      // tests show that often: disposition == null
+      String content_type = httpURLConnection.getContentType();
+      return contentType.matches(content_type);
+    }
+    return false;
   }
 }

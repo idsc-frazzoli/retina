@@ -43,6 +43,8 @@ public class SteerColumnTrackerTest extends TestCase {
     assertTrue(steerColumnTracker.isSteerColumnCalibrated());
     assertTrue(steerColumnTracker.isCalibratedAndHealthy());
     steerColumnTracker.getEvent(SteerGetFactory.create(-0.76f)); // >1.55
+    assertTrue(steerColumnTracker.isCalibratedAndHealthy());
+    steerColumnTracker.getEvent(SteerGetFactory.create(-0.86f)); // >1.65
     assertFalse(steerColumnTracker.isCalibratedAndHealthy());
   }
 

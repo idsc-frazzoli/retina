@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Bulletin implements Iterable<String> {
-  private List<String> list = new LinkedList<>();
+  private final List<String> list = new LinkedList<>();
 
   public void append(String line) {
     Stream.of(line.split("\\n"))//

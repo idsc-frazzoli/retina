@@ -16,15 +16,4 @@ public class Vmu931CalibrationWatchdogTest extends TestCase {
     assertTrue(Chop.NONE.allZero(optional.get().getTorque_Y_pair()));
     vmu931CalibrationWatchdog.last();
   }
-
-  public void testOk() throws InterruptedException {
-    Vmu931CalibrationWatchdog vmu931CalibrationWatchdog = new Vmu931CalibrationWatchdog(() -> true);
-    vmu931CalibrationWatchdog.first();
-    assertTrue(vmu931CalibrationWatchdog.putEvent().isPresent());
-    vmu931CalibrationWatchdog.vmu931ImuFrame(null);
-    assertFalse(vmu931CalibrationWatchdog.putEvent().isPresent());
-    Thread.sleep(500);
-    assertTrue(vmu931CalibrationWatchdog.putEvent().isPresent());
-    vmu931CalibrationWatchdog.last();
-  }
 }

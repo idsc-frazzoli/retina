@@ -36,7 +36,7 @@ import ch.ethz.idsc.tensor.Tensors;
 enum DriftExtDemo {
   ;
   public static void main(String[] args) throws IOException {
-    // the resolution refers to the last 3 of the state coordinates (x,y,theta,beta,r,Ux)
+    // the resolution refers to the last 3 of the state coordinates (x, y, theta, beta, r, Ux)
     Tensor eta = Tensors.vector(30, 30, 5); // magic const
     StateIntegrator stateIntegrator = FixedStateIntegrator.create( //
         MidpointIntegrator.INSTANCE, RationalScalar.of(1, 10), 7);
@@ -55,14 +55,14 @@ enum DriftExtDemo {
     ));
     // ---
     PlannerConstraint plannerConstraint = RegionConstraints.timeInvariant(region);
-    // consider only (beta,r,Ux)
+    // consider only (beta, r, Ux)
     StateTimeRaster stateTimeRaster = new EtaRaster(eta, x -> x.state().extract(3, 6));
     TrajectoryPlanner trajectoryPlanner = new StandardTrajectoryPlanner( //
         stateTimeRaster, stateIntegrator, controls, plannerConstraint, goalInterface);
     // ---
     trajectoryPlanner.insertRoot(new StateTime(Tensors.vector(0, 0, 0, 0, 0, 1), RealScalar.ZERO));
     GlcExpand glcExpand = new GlcExpand(trajectoryPlanner);
-    glcExpand.findAny(10000);
+    glcExpand.findAny(10_000);
     int iters = glcExpand.getExpandCount();
     // Expand.maxSteps(trajectoryPlanner, 10000);
     System.out.println(iters);

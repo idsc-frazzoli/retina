@@ -1,10 +1,10 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
-import ch.ethz.idsc.gokart.dev.ManualControlAdapter;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.retina.joystick.ManualControlAdapter;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;

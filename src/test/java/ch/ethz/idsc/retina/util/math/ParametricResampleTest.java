@@ -20,8 +20,8 @@ public class ParametricResampleTest extends TestCase {
   public void testSimple() {
     Scalar threshold = RealScalar.of(33);
     Scalar ds = RealScalar.of(.3);
-    Tensor points = Tensors.fromString("{{100,0},{100,2},{100,3},{10,10},{10,10.2},{10,10.4},{20,40}}");
-    UniformResample uniformResample = new UniformResample(threshold, ds);
+    Tensor points = Tensors.fromString("{{100, 0}, {100, 2}, {100, 3}, {10, 10}, {10, 10.2}, {10, 10.4}, {20, 40}}");
+    DeprecatedUniformResample uniformResample = new DeprecatedUniformResample(threshold, ds);
     ParametricResample parametricResample = new ParametricResample(threshold, ds);
     ResampleResult resampleResult = parametricResample.apply(points);
     List<Tensor> list = uniformResample.apply(points);
@@ -52,8 +52,8 @@ public class ParametricResampleTest extends TestCase {
   public void testMore() {
     Scalar threshold = RealScalar.of(33);
     Scalar ds = RealScalar.of(.3);
-    Tensor points = Tensors.fromString("{{10,-100},{100,0},{100,0.1},{100,0.2},{100,2},{100,2},{100,2},{100,3},{100,7},{10,10}}");
-    UniformResample uniformResample = new UniformResample(threshold, ds);
+    Tensor points = Tensors.fromString("{{10, -100}, {100, 0}, {100, 0.1}, {100, 0.2}, {100, 2}, {100, 2}, {100, 2}, {100, 3}, {100, 7}, {10, 10}}");
+    DeprecatedUniformResample uniformResample = new DeprecatedUniformResample(threshold, ds);
     ParametricResample parametricResample = new ParametricResample(threshold, ds);
     ResampleResult resampleResult = parametricResample.apply(points);
     List<Tensor> list = uniformResample.apply(points);

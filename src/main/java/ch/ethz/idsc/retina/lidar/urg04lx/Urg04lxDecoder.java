@@ -5,9 +5,9 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
 import ch.ethz.idsc.retina.lidar.LidarRayDataListener;
 import ch.ethz.idsc.retina.lidar.LidarRayDataProvider;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class Urg04lxDecoder implements LidarRayDataProvider {
   /** 'U' 'B' as short in little endian "BU" == Binary Urg */

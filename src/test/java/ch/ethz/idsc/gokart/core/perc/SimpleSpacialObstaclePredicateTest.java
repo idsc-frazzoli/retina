@@ -1,6 +1,7 @@
 // code by vc, jph
 package ch.ethz.idsc.gokart.core.perc;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -27,18 +28,20 @@ public class SimpleSpacialObstaclePredicateTest extends TestCase {
   }
 
   public void testSimpleXZFarFront() {
+    float incline = SensorsConfig.GLOBAL.vlp16_incline.number().floatValue();
     SpacialXZObstaclePredicate sop = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
     // double z_corrected = z - x * inc; // negative sign
-    assertTrue(sop.isObstacle(100, 100 * 0.04f));
-    assertFalse(sop.isObstacle(100, 100 * 0.04f + 0.6f));
-    assertFalse(sop.isObstacle(100, 100 * 0.04f - 1.2f));
+    assertTrue(sop.isObstacle(100, 100 * incline));
+    assertFalse(sop.isObstacle(100, 100 * incline + 0.6f));
+    assertFalse(sop.isObstacle(100, 100 * incline - 1.2f));
   }
 
   public void testSimpleXZFarBack() {
+    float incline = SensorsConfig.GLOBAL.vlp16_incline.number().floatValue();
     SpacialXZObstaclePredicate sop = SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
     // double z_corrected = z - x * inc; // negative sign
-    assertTrue(sop.isObstacle(-100, -100 * 0.04f));
-    assertFalse(sop.isObstacle(-100, -100 * 0.04f + 0.6f));
-    assertFalse(sop.isObstacle(-100, -100 * 0.04f - 1.2f));
+    assertTrue(sop.isObstacle(-100, -100 * incline));
+    assertFalse(sop.isObstacle(-100, -100 * incline + 0.6f));
+    assertFalse(sop.isObstacle(-100, -100 * incline - 1.2f));
   }
 }

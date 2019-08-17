@@ -21,7 +21,6 @@ public class PowerRimoAnalysisTest extends TestCase {
     OfflineTableSupplier offlineTableSupplier = new PowerRimoAnalysis(Quantity.of(0, "s"));
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
-    // System.out.println(Dimensions.of(tensor));
     assertEquals(Dimensions.of(tensor), Arrays.asList(6005, 17));
   }
 }

@@ -1,30 +1,32 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.pure;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.planar.ClothoidPursuit;
-import ch.ethz.idsc.sophus.group.Se2GroupElement;
+import ch.ethz.idsc.owl.math.pursuit.ClothoidPursuit;
+import ch.ethz.idsc.owl.math.pursuit.ClothoidPursuits;
+import ch.ethz.idsc.owl.math.pursuit.PursuitInterface;
+import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class ClothoidPlan {
-  private static final int REFINEMENT = 2;
+public class ClothoidPlan implements Serializable {
+  // TODO JPH make configurable
+  private static final int REFINEMENT = 3;
 
-  /** @param lookAhead {x[m], y[m], angle}
+  /** @param lookAhead {x[m], y[m], angle} in vehicle coordinates
    * @param pose of vehicle {x[m], y[m], angle}
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @return ClothoidPlan */
   public static Optional<ClothoidPlan> from(Tensor lookAhead, Tensor pose, boolean isForward) {
-    ClothoidPursuit clothoidPursuit = new ClothoidPursuit(lookAhead);
-    Optional<Scalar> optional = clothoidPursuit.firstRatio(); // with unit [m^-1]
-    // System.out.println("optional=" + optional);
-    // return optional
+    PursuitInterface pursuitInterface = ClothoidPursuit.of(lookAhead);
+    Optional<Scalar> optional = pursuitInterface.firstRatio(); // with unit [m^-1]
     if (optional.isPresent()) {
       Scalar ratio = optional.get();
-      Tensor curveSE2 = ClothoidPursuit.curve(lookAhead, REFINEMENT);
+      Tensor curveSE2 = ClothoidPursuits.curve(lookAhead, REFINEMENT);
       if (!isForward)
-        CurveClothoidPursuitHelper.mirrorAndReverse(curveSE2);
+        ClothoidPursuitHelper.mirrorAndReverse(curveSE2);
       Tensor curve = Tensor.of(curveSE2.stream().map(new Se2GroupElement(pose)::combine));
       return Optional.of(new ClothoidPlan(ratio, curve));
     }
@@ -33,7 +35,7 @@ public class ClothoidPlan {
 
   // ---
   private final Scalar ratio;
-  private final Tensor curve;
+  private final Tensor curve; // in directional order (not equivalent to driving order when in reverse)
 
   /** @param ratio [m^-1] used to derive future heading in good precision
    * @param curve sparse planned to be followed */
@@ -42,11 +44,19 @@ public class ClothoidPlan {
     this.curve = curve;
   }
 
+  /** @return ratio (i.e. curvature) for driving along the begin of the clothoid */
   public Scalar ratio() {
     return ratio;
   }
 
+  /** @return clothoid curve in global coordinates
+   * in directional order (not equivalent to driving order when in reverse) */
   public Tensor curve() {
     return curve;
+  }
+
+  /** @return initial pose */
+  public Tensor startPose() {
+    return curve.get(0);
   }
 }

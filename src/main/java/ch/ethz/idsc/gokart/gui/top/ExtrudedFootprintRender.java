@@ -4,14 +4,15 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import ch.ethz.idsc.gokart.calib.steer.GokartStatusEvents;
+import ch.ethz.idsc.gokart.calib.ChassisGeometry;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvents;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnListener;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.GokartStatusListener;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -23,7 +24,7 @@ import ch.ethz.idsc.owl.math.state.StateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -40,22 +41,22 @@ public class ExtrudedFootprintRender implements RenderInterface {
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   public final GokartPoseListener gokartPoseListener = getEvent -> gokartPoseEvent = getEvent;
   // ---
-  private GokartStatusEvent gokartStatusEvent = GokartStatusEvents.UNKNOWN;
-  public final GokartStatusListener gokartStatusListener = getEvent -> gokartStatusEvent = getEvent;
+  private SteerColumnEvent steerColumnEvent = SteerColumnEvents.UNKNOWN;
+  public final SteerColumnListener steerColumnListener = getEvent -> steerColumnEvent = getEvent;
   // ---
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   public Color color = new Color(0, 0, 255, 128);
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    if (gokartStatusEvent.isSteerColumnCalibrated()) {
+    if (steerColumnEvent.isSteerColumnCalibrated()) {
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
       // ---
       Scalar XAD = ChassisGeometry.GLOBAL.xAxleDistanceMeter(); // axle distance
       Scalar YHW = ChassisGeometry.GLOBAL.yHalfWidthMeter(); // half width
       final Tensor p1;
       final Tensor p2;
-      final Scalar ratio = steerMapping.getRatioFromSCE(gokartStatusEvent); // <- calibration checked
+      final Scalar ratio = steerMapping.getRatioFromSCE(steerColumnEvent); // <- calibration checked
       if (Sign.isPositive(ratio)) {
         p1 = Tensors.of(RealScalar.ZERO, YHW, RealScalar.ONE);
         p2 = Tensors.of(XAD, YHW.negate(), RealScalar.ONE);
@@ -72,7 +73,8 @@ public class ExtrudedFootprintRender implements RenderInterface {
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_forward) {
-          Tensor pose = Se2Utils.toSE2Matrix(x);
+          // TODO JPH there should be something more efficient available!
+          Tensor pose = Se2Matrix.of(x);
           w1.append(pose.dot(p1));
           w2.append(pose.dot(p2));
         }
@@ -87,7 +89,7 @@ public class ExtrudedFootprintRender implements RenderInterface {
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_reverse) {
-          Tensor pose = Se2Utils.toSE2Matrix(x);
+          Tensor pose = Se2Matrix.of(x);
           w1.append(pose.dot(p1));
           w2.append(pose.dot(p2));
         }
@@ -102,7 +104,9 @@ public class ExtrudedFootprintRender implements RenderInterface {
   /** @param speed [m*s^-1]
    * @param ratio [m^-1]
    * @return */
+  // TODO JPH OWL 052 obsolete Se2CarFlows
   /* package for testing */ static Flow singleton(Scalar speed, Tensor ratio) {
+    // CarControls
     return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, //
         N.DOUBLE.of(Tensors.of(speed, speed.zero(), ratio.multiply(speed))));
   }

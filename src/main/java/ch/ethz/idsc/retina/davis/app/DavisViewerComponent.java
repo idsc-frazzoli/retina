@@ -21,8 +21,6 @@ import ch.ethz.idsc.retina.util.img.TimedImageListener;
 import ch.ethz.idsc.tensor.sca.Round;
 
 public class DavisViewerComponent implements DavisImuFrameListener {
-  // private static final Font FONT = new Font(Font.DIALOG, Font.PLAIN, 8);
-  // ---
   BufferedImage sigImage = null;
   BufferedImage rstImage = null;
   BufferedImage difImage = null;
@@ -31,11 +29,10 @@ public class DavisViewerComponent implements DavisImuFrameListener {
   DavisImuFrame imuFrame = null;
   private final IntervalClock intervalClock = new IntervalClock();
   DavisTallyEvent davisTallyEvent;
-  // Tensor displayEventCount = Array.zeros(3);
   public final ColumnTimedImageListener rstListener = new ColumnTimedImageListener() {
     @Override
     public void columnTimedImage(ColumnTimedImage columnTimedImage) {
-      // TODO store reference
+      // TODO JPH store reference
       if (!columnTimedImage.isComplete)
         System.err.println("rst incomplete");
       rstImage = columnTimedImage.bufferedImage;

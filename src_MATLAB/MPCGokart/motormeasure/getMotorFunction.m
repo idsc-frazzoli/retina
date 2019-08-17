@@ -21,6 +21,9 @@ end
 if(0)
     folders{end+1} = '/retina_out/motorSysID/';
 end
+if(1)
+    folders{end+1} = '/retina_out/exhaustivemotortest.lcm/';
+end
 N = numel(folders);
 tic;
 for i = 1:N
@@ -29,7 +32,7 @@ for i = 1:N
 end
 toc;
 
-% [t,tms,vx,vy,vr,ax,ay,s,pl,pr,pal,par,vwx]
+% [t,tms,vx,vy,vr,ax,ay,s,pl,pr,pal,par,vwx,px,py,po,lm]
 
 l = 1.19;
 l1 = 0.73;
@@ -37,30 +40,47 @@ l2 = l-l1;
 
 SysID=SysID(30000:end,:);
 %SysID=SysID(54000:55000,:);
-t = SysID(:,1);
+t = SysID(:,2)/1000;
 s = SysID(:,8);
+vwx = SysID(:,13);
+lm = SysID(:,17);
 pl = SysID(:,9);
-dpl = getDerivation(pl, 300, 0.001);
+ax = SysID(:,6);
+dpl = getDerivation(vwx, 200, 0.001);
+dplb = gaussfilter(ax, 300);
 absdpl = abs(dpl);
+timesel = diff(t)<0.005&abs(diff(pl))<0.01;
+timesel = [timesel;timesel(end)];
+nnz(timesel)
+timesel=imerode(timesel,ones(1000,1));
+nnz(timesel)
 hold on
-plot(t,pl);
-plot(t,absdpl);
+plot(t,pl,'DisplayName', 'powervalue');
+yyaxis right
+plot(t,vwx,'DisplayName', 'wheelspeed');
+plot(t,dpl,'DisplayName', 'dot wheelspeed');
+plot(t,dplb,'DisplayName', 'IMU ax');
+plot(t,timesel,'DisplayName', 'timesel');
 hold off
+legend show
+
+
 steerSel = abs(s)<0.1;
 powSel = absdpl<10;
 
-%SysID=SysID(steerSel,:);
+SysID=SysID(timesel,:);
 %SysID=SysID(steerSel&powSel,:);
 t = SysID(:,1);
 dt = (t(101)-t(1))/100;
 tms = SysID(:,2);
+vwx = SysID(:,13);
 vx = SysID(:,3);
 vy = SysID(:,4);
 vr = SysID(:,5);
 ar = getDerivation(vr, 60, dt);
 ax = SysID(:,6);
 ay = SysID(:,7);
-sax = gaussfilter(ax,30);
+sax = dplb(timesel,:);
 say = gaussfilter(ay,30);
 scay = say+l2*ar;
 cvy = vy+l2*vr;
@@ -75,49 +95,20 @@ ptv = (par-pal)/2;
 vwx = SysID(:,13);
 
 figure
-title('ay')
+title('coverage');
 hold on
-plot(t,ay)
-plot(t,say)
+xlabel('speed [m/s]')
+ylabel('power [Arms]')
+plot(vwx,pl,'o');
 hold off
 
 figure
-title('acc comparison')
 hold on
-yyaxis left
-plot(t,sax,'DisplayName', 'a-X')
-yyaxis right
-plot(t,mean([pl,pr],2),'DisplayName', 'power a-X')
-legend show
+scatter3(vwx,pl,sax);
+xlabel('speed [m/s]')
+ylabel('power [Arms]')
+zlabel('acceleration [m/s^2]')
 hold off
-
-figure
-title('torque vectoring')
-hold on
-plot(t,vr,'DisplayName', 'rot')
-plot(t,ptv,'DisplayName', 'tv')
-%plot(t,-beta*10,'DisplayName', 'beta')
-plot(t,kinrot,'DisplayName', 'kin rot')
-legend show
-hold off
-
-figure
-title('velocity')
-hold on
-plot(t,vy,'DisplayName', 'v-Y')
-plot(t,vx,'DisplayName', 'v-X')
-plot(t,vwx,'DisplayName', 'wheelspeed-X')
-legend show
-hold off
-
-figure
-title('rotationalAcceleration')
-hold on
-plot(t,vr,'DisplayName', 'rot')
-plot(t,ar,'DisplayName', 'rotacc')
-legend show
-hold off
-
 %%
 
 
@@ -142,7 +133,7 @@ plot(t,meanRateAcceleration);
 legend('power','forward acceleration [m/s^2]')
 
 %meanrate
-meanRate = vx;
+meanRate = vwx;
 bottom = prctile(meanRate,bc);
 top = prctile(meanRate,tc);
 %meanRate = max(min(meanRate,top),bottom)/8;%clamp
@@ -199,11 +190,15 @@ combD = [posD;negD.*[1,-1,-1,-1]];
 
 %split into positive and negative power
 powerthreshold =100;
-combPosPowerD = combD(combD(:,3)>powerthreshold,:);
-combNegPowerD = combD(combD(:,3)<-powerthreshold,:);
+powerthresholdoffset = -700;
+combPosPowerD = combD(combD(:,3)>powerthreshold+powerthresholdoffset,:);
+combNegPowerD = combD(combD(:,3)<-powerthreshold+powerthresholdoffset,:);
 
 if(true)
     %fit plane
+    xxx = combPosPowerD(:,2)
+    yyy = combPosPowerD(:,3)
+    zzz = combPosPowerD(:,4)
     sfpos = fit(combPosPowerD(:,2:3),combPosPowerD(:,4),'poly33');
     figure
     hold on
@@ -217,7 +212,7 @@ end
 
 if(true)
     %fit plane
-    sfneg = fit(combNegPowerD(:,2:3),combNegPowerD(:,4),'poly33');
+    sfneg = fit(combNegPowerD(:,2:3),combNegPowerD(:,4),'poly55');
     figure
     hold on
     scatter3(combNegPowerD(:,2),combNegPowerD(:,3),combNegPowerD(:,4));

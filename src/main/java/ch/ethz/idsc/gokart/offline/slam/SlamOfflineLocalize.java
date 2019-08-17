@@ -5,11 +5,11 @@ import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
 import ch.ethz.idsc.tensor.DoubleScalar;
@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.sca.N;
 
 /** localization using only lidar */
 public class SlamOfflineLocalize extends OfflineLocalize {
-  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
+  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.GLOBAL.getPredefinedMap().getModel2Pixel();
   private static final Se2MultiresGrids SE2_MULTIRES_GRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
   // ---
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();

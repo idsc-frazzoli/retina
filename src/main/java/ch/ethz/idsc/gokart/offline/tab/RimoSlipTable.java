@@ -4,14 +4,14 @@ package ch.ethz.idsc.gokart.offline.tab;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuFramePublisher;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
@@ -35,7 +35,7 @@ public class RimoSlipTable implements OfflineTableSupplier {
   private RimoGetEvent rge;
   private RimoPutEvent rpe;
   private DavisImuFrame dif;
-  private GokartStatusEvent gse;
+  private SteerColumnEvent gse;
 
   public RimoSlipTable(Scalar delta) {
     this.delta = delta;
@@ -50,7 +50,7 @@ public class RimoSlipTable implements OfflineTableSupplier {
       rpe = RimoPutHelper.from(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
-      gse = new GokartStatusEvent(byteBuffer);
+      gse = new SteerColumnEvent(byteBuffer);
     } else //
     if (channel.equals(DAVIS)) {
       dif = new DavisImuFrame(byteBuffer);
@@ -59,8 +59,8 @@ public class RimoSlipTable implements OfflineTableSupplier {
       if (Objects.nonNull(rge) && Objects.nonNull(rpe) && Objects.nonNull(gse) && Objects.nonNull(dif)) {
         time_next = time.add(delta);
         Tensor rates = rge.getAngularRate_Y_pair();
-        Scalar speed = ChassisGeometry.GLOBAL.odometryTangentSpeed(rge);
-        Scalar rate = ChassisGeometry.GLOBAL.odometryTurningRate(rge);
+        Scalar speed = RimoTwdOdometry.tangentSpeed(rge);
+        Scalar rate = RimoTwdOdometry.turningRate(rge);
         dif.gyroImageFrame();
         tableBuilder.appendRow( //
             time.map(Magnitude.SECOND), //

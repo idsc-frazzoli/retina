@@ -11,7 +11,8 @@ import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.sca.Cos;
 
-class DriftExtStateSpaceModel implements StateSpaceModel, Serializable {
+// class is used outside project
+public class DriftExtStateSpaceModel implements StateSpaceModel, Serializable {
   private final DriftStateSpaceModel driftStateSpaceModel;
 
   public DriftExtStateSpaceModel(DriftParameters driftParameters) {
@@ -29,10 +30,5 @@ class DriftExtStateSpaceModel implements StateSpaceModel, Serializable {
     // Scalar UxWorld = U.multiply(Cos.of(beta.add(theta)));
     // Scalar UyWorld = U.multiply(Sin.of(beta.add(theta)));
     return Join.of(AngleVector.of(beta.add(theta)).multiply(U), Tensors.of(r), dxLower);
-  }
-
-  @Override
-  public Scalar getLipschitz() {
-    return null;
   }
 }

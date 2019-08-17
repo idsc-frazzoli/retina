@@ -8,11 +8,10 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
 import ch.ethz.idsc.gokart.offline.channel.DavisImuChannel;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.channel.VelodyneLocalizationChannel;
+import ch.ethz.idsc.gokart.offline.channel.LinmotGetChannel;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.gokart.offline.tab.PowerRimoAnalysis;
 import ch.ethz.idsc.gokart.offline.tab.PowerSteerTable;
-import ch.ethz.idsc.gokart.offline.tab.RimoOdometryTable;
 import ch.ethz.idsc.gokart.offline.tab.RimoRateTable;
 import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -26,7 +25,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /* package */ class ComprehensiveLogTableExport {
   private static final Scalar STEERINGPERIOD = Quantity.of(0.01, SI.SECOND);
   private static final Scalar POWERPERIOD = Quantity.of(0.01, SI.SECOND);
-  private static final Scalar OFFSET = Quantity.of(0, SI.SECOND);
+  // private static final Scalar OFFSET = Quantity.of(0, SI.SECOND);
   // ---
   private final File outputFolder;
 
@@ -42,14 +41,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   public void process(File file) throws IOException {
     OfflineTableSupplier davisImuTable = SingleChannelTable.of(DavisImuChannel.INSTANCE);
     OfflineTableSupplier vmu931ImuTable = SingleChannelTable.of(Vmu931ImuChannel.INSTANCE);
-    LinmotPassiveStatusTable linmotStatusTable = new LinmotPassiveStatusTable();
+    OfflineTableSupplier linmotStatusTable = SingleChannelTable.of(LinmotGetChannel.INSTANCE);
     PowerSteerTable powerSteerTable = new PowerSteerTable(STEERINGPERIOD);
-    RimoOdometryTable rimoOdometryTable = new RimoOdometryTable();
+    // RimoOdometryTable rimoOdometryTable = new RimoOdometryTable();
     PowerRimoAnalysis powerRimoAnalysis = new PowerRimoAnalysis(POWERPERIOD);
     RimoRateTable rimoRateTable = new RimoRateTable(POWERPERIOD);
     // RimoSlipTable rimoSlipTable = new RimoSlipTable(PERIOD);
     // LocalizationTable localizationTable = new LocalizationTable(PERIOD, true);
-    OfflineTableSupplier velodyneLocalizationTable = SingleChannelTable.of(VelodyneLocalizationChannel.INSTANCE);
+    // OfflineTableSupplier velodyneLocalizationTable = SingleChannelTable.of(VelodynePosChannel.INSTANCE);
     OfflineTableSupplier gokartPoseTable = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
     BasicSysIDTable basicSysIDTable = new BasicSysIDTable();
     //

@@ -13,8 +13,8 @@ import javax.imageio.ImageIO;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.region.Polygons;
 import ch.ethz.idsc.retina.util.img.ImageCopy;
+import ch.ethz.idsc.sophus.ply.Polygons;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -30,7 +30,7 @@ public class UpdatedMap {
 
   public UpdatedMap() {
     ImageCopy imageCopy = new ImageCopy();
-    PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+    PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
     imageCopy.update(predefinedMap.getImage());
     toPixel = toPixel(predefinedMap.getModel2Pixel());
     bufferedImage = imageCopy.get();

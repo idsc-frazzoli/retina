@@ -4,10 +4,10 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.List;
 import java.util.Optional;
 
-import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
+import ch.ethz.idsc.sophus.hs.r2.Se2Bijection;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -18,10 +18,12 @@ import ch.ethz.idsc.tensor.red.Norm;
 /** implementation is similar to CurvePurePursuitModule with the additional
  * feature that the trajectory is annotated with velocity */
 public final class Tse2CurvePurePursuitModule extends CurvePurePursuitModule {
+  public static final Scalar MAX_SPEED = RealScalar.of(8); // TODO JPH units
+  // ---
   private final Object lock = new Object();
   private List<TrajectorySample> trajectory;
 
-  public Tse2CurvePurePursuitModule(PursuitConfig pursuitConfig) {
+  public Tse2CurvePurePursuitModule(PurePursuitConfig pursuitConfig) {
     super(pursuitConfig);
   }
 
@@ -49,7 +51,7 @@ public final class Tse2CurvePurePursuitModule extends CurvePurePursuitModule {
         // tensor should not be empty
         int index = ArgMin.of(tensor);
         TrajectorySample trajectorySample = trajectory.get(index);
-        return trajectorySample.stateTime().state().Get(3).divide(GokartTrajectorySRModule.MAX_SPEED);
+        return trajectorySample.stateTime().state().Get(3).divide(Tse2CurvePurePursuitModule.MAX_SPEED);
       }
     }
     return RealScalar.ZERO;

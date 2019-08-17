@@ -6,15 +6,14 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.perc.GokartSegmentProjection;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
@@ -33,7 +32,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
+/* package */ class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
@@ -110,7 +109,7 @@ public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
 
   public static void main(String[] args) throws InterruptedException, IOException, Exception {
     try (FreeSpaceVideo freeSpaceVideo = new FreeSpaceVideo()) {
-      OfflineLogPlayer.process(new File("/home/datahaki/ensemblelaps/dynamic", "m13.lcm"), freeSpaceVideo);
+      OfflineLogPlayer.process(HomeDirectory.file("ensemblelaps", "dynamic", "m13.lcm"), freeSpaceVideo);
     }
   }
 }

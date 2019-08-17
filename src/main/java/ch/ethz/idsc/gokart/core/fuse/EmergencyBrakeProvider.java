@@ -1,19 +1,20 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.fuse;
 
+import ch.ethz.idsc.gokart.calib.ChassisGeometry;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
+import ch.ethz.idsc.gokart.calib.steer.RimoTwdOdometry;
 import ch.ethz.idsc.gokart.core.AutoboxScheduledProvider;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotConfig;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.retina.util.data.SoftWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.time.SoftWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
@@ -55,7 +56,7 @@ public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<Linmo
 
   @Override // from RimoGetListener
   public void getEvent(RimoGetEvent rimoGetEvent) {
-    velocity = CLIP.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
+    velocity = CLIP.apply(RimoTwdOdometry.tangentSpeed(rimoGetEvent));
   }
 
   public void pacify() {

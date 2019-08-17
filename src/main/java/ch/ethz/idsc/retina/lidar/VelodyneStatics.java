@@ -15,9 +15,9 @@ public enum VelodyneStatics {
   // ---
   // DEFAULT VALUES
   /** default port on which vlp16/hdl32e publishes firing data */
-  public static final int RAY_DEFAULT_PORT = 2368;
+  public static final int RAY_PORT_DEFAULT = 2368;
   /** default port on which vlp16/hdl32e publishes positioning data */
-  public static final int POS_DEFAULT_PORT = 8308;
+  public static final int POS_PORT_DEFAULT = 8308;
   // ---
   // PROTOCOL CONSTANTS
   /** resolution of one full rotation */

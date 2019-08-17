@@ -9,10 +9,10 @@ import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.u3.LabjackAdcFrame;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.data.SoftWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.time.SoftWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -38,7 +38,7 @@ public final class GokartLabjackLcmClient extends BinaryLcmClient implements Man
   @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     Tensor nextFrame = new LabjackAdcFrame(byteBuffer).allADC();
-    // average the button values on channels 0,1,3
+    // average the button values on channels 0, 1, 3
     Tensor mean = nextFrame.add(prevFrame).multiply(HALF); // moving average of width 2
     // preserve the throttle value on channel 2
     mean.set(nextFrame.Get(GokartLabjackAdc.THROTTLE.ordinal()), GokartLabjackAdc.THROTTLE.ordinal());

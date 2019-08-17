@@ -10,24 +10,27 @@ import java.util.List;
 
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.map.TrackReconRender;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCControlUpdateLcmClient;
+import ch.ethz.idsc.gokart.core.plan.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
-import ch.ethz.idsc.gokart.core.pure.TrajectoryLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.core.track.MPCBSplineTrackRender;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoPutLcmClient;
+import ch.ethz.idsc.gokart.lcm.autobox.SteerColumnLcmClient;
 import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ren.LaneRender;
 import ch.ethz.idsc.owl.gui.ren.WaypointRender;
+import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
@@ -37,7 +40,7 @@ import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.api.PathRender;
-import ch.ethz.idsc.sophus.planar.Arrowhead;
+import ch.ethz.idsc.sophus.ply.Arrowhead;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.ref.TensorListener;
@@ -54,7 +57,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
   private final RimoPutLcmClient rimoPutLcmClient = new RimoPutLcmClient();
   private final LinmotGetLcmClient linmotGetLcmClient = new LinmotGetLcmClient();
-  private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final SteerColumnLcmClient steerColumnLcmClient = new SteerColumnLcmClient();
   private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final List<TrajectoryLcmClient> trajectoryLcmClients = Arrays.asList( //
       TrajectoryLcmClient.xyat(), //
@@ -62,13 +65,14 @@ public class GlobalViewLcmModule extends AbstractModule {
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
-  private final PathRender pathRender = new PathRender(Color.YELLOW);
-  private final PathRender planRender = new PathRender(Color.MAGENTA);
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
-  public final TrackReconRender trackReconRender = new TrackReconRender();
+  public final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
+  private final PathRender pathRender = new PathRender(Color.YELLOW);
+  private final PathRender planRender = new PathRender(Color.MAGENTA);
+  private final LaneRender laneRender = new LaneRender(false);
 
   /** @param curve may be null */
   public void setPlan(Tensor curve) {
@@ -80,11 +84,16 @@ public class GlobalViewLcmModule extends AbstractModule {
     waypointRender.setWaypoints(waypoints);
   }
 
+  /** @param laneInterface may be null */
+  public void setLane(LaneInterface laneInterface) {
+    laneRender.setLane(laneInterface);
+  }
+
   @Override // from AbstractModule
   public void first() {
     viewLcmFrame.geometricComponent.setButtonDrag(MouseEvent.BUTTON1);
     {
-      PredefinedMap predefinedMap = LocalizationConfig.getPredefinedMap();
+      PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
       RenderInterface renderInterface = new BufferedImageRender(predefinedMap.getImage());
       viewLcmFrame.geometricComponent.addRenderInterface(renderInterface);
     }
@@ -92,13 +101,13 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(pathRender);
       viewLcmFrame.geometricComponent.addRenderInterface(planRender);
       viewLcmFrame.geometricComponent.addRenderInterface(waypointRender);
+      viewLcmFrame.geometricComponent.addRenderInterface(laneRender);
     }
-    // if (true)
     {
       ExtrudedFootprintRender extrudedFootprintRender = new ExtrudedFootprintRender();
       extrudedFootprintRender.color = new Color(0, 255, 255, 128);
       gokartPoseLcmClient.addListener(extrudedFootprintRender.gokartPoseListener);
-      gokartStatusLcmClient.addListener(extrudedFootprintRender.gokartStatusListener);
+      steerColumnLcmClient.addListener(extrudedFootprintRender.steerColumnListener);
       viewLcmFrame.geometricComponent.addRenderInterface(extrudedFootprintRender);
     }
     // ---
@@ -144,13 +153,11 @@ public class GlobalViewLcmModule extends AbstractModule {
       viewLcmFrame.geometricComponent.addRenderInterface(trajectoryRender);
     }
     {
-      GokartRender gokartRender = new GlobalGokartRender();
-      rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
-      rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
-      linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
-      gokartStatusLcmClient.addListener(gokartRender.gokartStatusListener);
-      gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
-      viewLcmFrame.geometricComponent.addRenderInterface(gokartRender);
+      SmallGokartRender smallGokartRender = new SmallGokartRender();
+      rimoGetLcmClient.addListener(smallGokartRender.rimoGetListener);
+      rimoPutLcmClient.addListener(smallGokartRender.rimoPutListener);
+      gokartPoseLcmClient.addListener(smallGokartRender.gokartPoseListener);
+      viewLcmFrame.geometricComponent.addRenderInterface(smallGokartRender);
     }
     viewLcmFrame.geometricComponent.addRenderInterface(Dubilab.GRID_RENDER);
     {
@@ -161,7 +168,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.startSubscriptions();
     rimoPutLcmClient.startSubscriptions();
     linmotGetLcmClient.startSubscriptions();
-    gokartStatusLcmClient.startSubscriptions();
+    steerColumnLcmClient.startSubscriptions();
     vlp16LcmHandler.startSubscriptions();
     davisImuLcmClient.startSubscriptions();
     trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
@@ -188,7 +195,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     rimoGetLcmClient.stopSubscriptions();
     rimoPutLcmClient.stopSubscriptions();
     linmotGetLcmClient.stopSubscriptions();
-    gokartStatusLcmClient.stopSubscriptions();
+    steerColumnLcmClient.stopSubscriptions();
     curveSe2PursuitLcmClient.stopSubscriptions();
     // ---
     vlp16LcmHandler.stopSubscriptions();
@@ -217,6 +224,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   }
 
   public static void main(String[] args) throws Exception {
+    LocalizationConfig.GLOBAL.predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190708.name();
     standalone();
   }
 }

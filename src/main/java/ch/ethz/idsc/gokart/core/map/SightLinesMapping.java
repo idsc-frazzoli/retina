@@ -6,6 +6,8 @@ import java.util.Collection;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.track.TrackReconConfig;
+import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.lidar.LidarPolarFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarSectorProvider;
 import ch.ethz.idsc.retina.lidar.VelodyneStatics;
@@ -30,7 +32,7 @@ public class SightLinesMapping extends AbstractMapping<SightLineOccupancyGrid> {
   }
 
   // ---
-  private final ErodedMap map = ErodedMap.of(occupancyGrid, MappingConfig.GLOBAL.obsRadius);
+  private final ErodedMap erodedMap = ErodedMap.of(imageGrid, MappingConfig.GLOBAL.obsRadius);
   private final BlindSpots blindSpots;
 
   private SightLinesMapping(SpacialXZObstaclePredicate predicate, int waitMillis, BlindSpots blindSpots) {
@@ -50,19 +52,19 @@ public class SightLinesMapping extends AbstractMapping<SightLineOccupancyGrid> {
 
   @Override // from AbstractMapping
   public void prepareMap() {
-    map.genObstacleMap();
+    erodedMap.genObstacleMap();
   }
 
   @Override // from AbstractMapping
   public ImageGrid getMap() {
-    return map;
+    return erodedMap;
   }
 
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     super.getEvent(gokartPoseEvent);
-    occupancyGrid.setPose(gokartPoseEvent.getPose());
-    map.setPose(gokartPoseEvent.getPose());
+    imageGrid.setPose(gokartPoseEvent.getPose());
+    erodedMap.setPose(gokartPoseEvent.getPose());
   }
 
   @Override // from Runnable
@@ -72,7 +74,7 @@ public class SightLinesMapping extends AbstractMapping<SightLineOccupancyGrid> {
       if (!points.isEmpty()) {
         Tensor polygon = SightLineHandler.polygon(points);
         SightLineHandler.closeSector(polygon);
-        occupancyGrid.updateMap(polygon);
+        imageGrid.updateMap(polygon);
       } else
         try {
           Thread.sleep(waitMillis);
@@ -80,5 +82,12 @@ public class SightLinesMapping extends AbstractMapping<SightLineOccupancyGrid> {
           // ---
         }
     }
+  }
+
+  @Override
+  public Region<Tensor> getErodedRegion() {
+    // ImageRegion
+    // TODO JPH Auto-generated method stub
+    return null;
   }
 }

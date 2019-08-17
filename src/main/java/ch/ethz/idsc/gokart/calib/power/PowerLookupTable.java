@@ -20,6 +20,11 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
 /** to ensure that the maximum motor torque is actually applied */
 public class PowerLookupTable {
+  /** .
+   * ante 2019-07-15 MotorFunctionV1.INSTANCE was in use
+   * post 2019-07-15 MotorFunctionV2.INSTANCE is in use */
+  private static final MotorFunction MOTOR_FUNCTION = MotorFunctionV2.INSTANCE;
+  // ---
   private static final File DIRECTORY = new File("resources/lookup");
   private static final File FILE_FORWARD = new File(DIRECTORY, "powerlookuptable_forward.object");
   private static final File FILE_INVERSE = new File(DIRECTORY, "powerlookuptable_inverse.object");
@@ -53,7 +58,7 @@ public class PowerLookupTable {
     System.out.println("compute power lookup table forward...");
     // maps from (current, speed) -> (acceleration)
     LookupTable2D lookupTable2D = LookupTable2D.build( //
-        MotorFunction::getAccelerationEstimation, //
+        MOTOR_FUNCTION::getAccelerationEstimation, //
         RES, RES, //
         ManualConfig.GLOBAL.torqueLimitClip(), //
         CLIP_VEL);
@@ -75,7 +80,7 @@ public class PowerLookupTable {
     System.out.println("compute power lookup table inverse...");
     // maps from (acceleration, speed)->(acceleration)
     LookupTable2D lookupTable2D = forward.getInverseLookupTableBinarySearch( //
-        MotorFunction::getAccelerationEstimation, //
+        MOTOR_FUNCTION::getAccelerationEstimation, //
         0, //
         RES, RES, //
         CLIP_ACC, Chop._03);
@@ -97,7 +102,7 @@ public class PowerLookupTable {
    * Example: {-1.6261117143630983[m*s^-2], 1.8412589178085328[m*s^-2]}
    * 
    * @param velocity current velocity [m/s]
-   * @return a tensor of the maximal and minimal acceleration [m/s^2] */
+   * @return a tensor of the maximal and minimal acceleration [m*s^-2] */
   public Tensor getMinMaxAcceleration(Scalar velocity) {
     // the min and max values are multiplied by 1.02
     // in order to ensure that the maximum value can be output
@@ -116,15 +121,15 @@ public class PowerLookupTable {
   /** get the need current for a wanted acceleration
    * If the acceleration is not achievable
    * the motor current corresponding to the nearest possible acceleration value is returned
-   * @param wantedAcceleration the wanted acceleration [m/s^2]
-   * @param velocity the velocity [m/s]
-   * @return the needed motor current [ARMS] */
+   * @param wantedAcceleration [m*s^-2]
+   * @param velocity longitudinal [m*s^-1]
+   * @return needed motor current [ARMS] */
   public Scalar getNeededCurrent(Scalar wantedAcceleration, Scalar velocity) {
     return lookupTable_inverse.lookup(wantedAcceleration, velocity);
   }
 
   /** get the acceleration characterized by the relative power value
-   * @param power value scaled from [-1,1] characterizing the requested power value [ONE]
+   * @param power value scaled from [-1, 1] characterizing the requested power value [ONE]
    * -1: minimal acceleration (full deceleration)
    * 0: no motor current
    * 1: maximal acceleration
@@ -138,7 +143,7 @@ public class PowerLookupTable {
   /** get the acceleration characterized by the relative power value
    *
    * @param torqueFreeAcc with unit [m*s^-2]
-   * @param power value scaled from [-1,1] characterizing the requested power value [ONE]
+   * @param power value scaled from [-1, 1] characterizing the requested power value [ONE]
    * -1: minimal acceleration (full deceleration)
    * 0: no acceleration
    * 1: maximal acceleration

@@ -1,16 +1,18 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.slam;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.alg.Dimensions;
+import ch.ethz.idsc.tensor.io.Serialization;
 import ch.ethz.idsc.tensor.qty.Degree;
 import junit.framework.TestCase;
 
 public class Se2MultiresGridsTest extends TestCase {
-  public void testSimple() {
-    Se2MultiresGrids se2MultiresGrids = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
+  public void testSimple() throws ClassNotFoundException, IOException {
+    Se2MultiresGrids se2MultiresGrids = Serialization.copy(LocalizationConfig.GLOBAL.createSe2MultiresGrids());
     assertEquals(se2MultiresGrids.levels(), 4);
     for (int index = 0; index < 4; ++index) {
       int length = se2MultiresGrids.grid(index).gridPoints().size();

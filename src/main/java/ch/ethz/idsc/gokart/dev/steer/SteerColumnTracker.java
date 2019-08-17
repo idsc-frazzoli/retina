@@ -28,8 +28,9 @@ public final class SteerColumnTracker implements SteerGetListener, SteerColumnIn
    * as of now: 1.55
    * on test day 2019-04-20: after calibration the interval width
    * is 1.49609[SCE] which means that the bounds [1.45, 1.55] are
-   * still warranted. */
-  private static final double HARD = 1.55;
+   * still warranted.
+   * 2019-05-26: 1.65 */
+  private static final double HARD = 1.65;
   // ---
   private final IntervalTracker intervalTracker = new IntervalTracker();
   private boolean isRelRckQual = true;

@@ -4,16 +4,14 @@ package ch.ethz.idsc.owl.car.shop;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ethz.idsc.gokart.calib.ChassisGeometry;
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
-import ch.ethz.idsc.owl.car.math.Pacejka3;
 import ch.ethz.idsc.owl.car.model.CarControl;
 import ch.ethz.idsc.owl.car.model.CarSteering;
-import ch.ethz.idsc.owl.car.model.DefaultCarModel;
-import ch.ethz.idsc.owl.car.model.DefaultWheelConstant;
-import ch.ethz.idsc.owl.car.model.MotorTorques;
+import ch.ethz.idsc.owl.car.slip.Pacejka3;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -76,7 +74,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
     // final Scalar TR = DoubleScalar.of(1.200 / 2); // half rear track
     // measured:
     final Scalar TF = chassisGeometry.yTireFrontMeter(); // half front track
-    final Scalar TR = chassisGeometry.yTireRearMeter(); // half rear track
+    final Scalar TR = Magnitude.METER.apply(RimoAxleConfiguration.rear().wheel(0).local().Get(1)); // half rear track
     final Scalar TWF = RealScalar.of(0.09); // tire width front on ground
     // tire width front total: 13 cm (same as tire rear width on ground)
     final Scalar TWR = RealScalar.of(0.13); // tire width read
@@ -90,7 +88,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
     final Scalar HRX = HFX.subtract(DoubleScalar.of(2.060)); // measured
     final Scalar HFY = DoubleScalar.of(1.45 / 2); // measured
     final Scalar reduce = RealScalar.of(.6);
-    hull = Tensors.empty();
+    Tensor hull = Tensors.empty();
     hull.append(Tensors.of(HFX, TF.multiply(reduce), LZ));
     hull.append(Tensors.of(LF, HFY, LZ));
     hull.append(Tensors.of(LR, HFY, LZ));
@@ -99,6 +97,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
     hull.append(Tensors.of(LR, HFY.negate(), LZ));
     hull.append(Tensors.of(LF, HFY.negate(), LZ));
     hull.append(Tensors.of(HFX, TF.multiply(reduce).negate(), LZ));
+    this.hull = hull.unmodifiable();
   }
 
   // ---
@@ -164,7 +163,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
 
   @Override
   public Scalar muRoll() {
-    // TODO check if == 0 ok
+    // TODO JPH check if == 0 ok
     // for ==2 the car will not make a turn but slide in nose direction...
     return DoubleScalar.of(0); // rolling friction coefficient
   }

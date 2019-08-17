@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.sca.N;
 
 /** draws line of speed as well as brief history of velocities */
 public class GroundSpeedRender extends CrosshairRender implements GokartPoseListener {
-  public static final Color COLOR_VELOCITY = new Color(200, 67, 255);
+  /* package */ static final Color COLOR_VELOCITY = new Color(200, 67, 255);
   private static final Stroke STROKE_DEFAULT = new BasicStroke();
   private static final Tensor ORIGIN = Array.zeros(2).map(N.DOUBLE);
   // ---
@@ -35,14 +35,16 @@ public class GroundSpeedRender extends CrosshairRender implements GokartPoseList
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     this.gokartPoseEvent = gokartPoseEvent;
-    push_end(velXY(gokartPoseEvent));
+    push_back(velXY(gokartPoseEvent));
   }
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(matrix);
     GraphicsUtil.setQualityHigh(graphics);
-    super.render(geometricLayer, graphics);
+    // ---
+    renderCrosshairTrace(geometricLayer, graphics);
+    // ---
     graphics.setColor(COLOR_VELOCITY);
     graphics.setStroke(new BasicStroke(geometricLayer.model2pixelWidth(0.25)));
     graphics.draw(geometricLayer.toPath2D(Tensors.of(ORIGIN, velXY(gokartPoseEvent))));

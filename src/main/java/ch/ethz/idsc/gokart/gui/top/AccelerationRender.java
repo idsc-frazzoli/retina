@@ -4,13 +4,14 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Imu;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.filter.GeodesicIIR1Filter;
-import ch.ethz.idsc.sophus.group.RnGeodesic;
+import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
+import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -22,7 +23,7 @@ public class AccelerationRender extends CrosshairRender implements Vmu931ImuFram
   private static final Scalar FILTER = RealScalar.of(0.02);
   // ---
   private final PlanarVmu931Imu planarVmu931Imu = SensorsConfig.GLOBAL.getPlanarVmu931Imu();
-  private final GeodesicIIR1Filter geodesicIIR1Filter = new GeodesicIIR1Filter(RnGeodesic.INSTANCE, FILTER);
+  private final GeodesicIIR1 geodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, FILTER);
   private final Tensor matrix;
 
   /** @param limit
@@ -35,15 +36,15 @@ public class AccelerationRender extends CrosshairRender implements Vmu931ImuFram
   @Override // from Vmu931ImuFrameListener
   public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
     Tensor accXY = planarVmu931Imu.accXY(vmu931ImuFrame).map(Magnitude.ACCELERATION);
-    Tensor tensor = geodesicIIR1Filter.apply(accXY);
-    push_end(tensor);
+    Tensor tensor = geodesicIIR1.apply(accXY);
+    push_back(tensor);
   }
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     geometricLayer.pushMatrix(matrix);
     graphics.setColor(Color.GRAY);
-    super.render(geometricLayer, graphics);
+    renderCrosshairTrace(geometricLayer, graphics);
     geometricLayer.popMatrix();
   }
 }

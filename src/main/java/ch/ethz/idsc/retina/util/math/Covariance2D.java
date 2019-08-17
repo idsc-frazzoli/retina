@@ -1,28 +1,45 @@
 // code by mg, jph
 package ch.ethz.idsc.retina.util.math;
 
-import ch.ethz.idsc.sophus.planar.ArcTan2D;
+import java.io.Serializable;
+
+import ch.ethz.idsc.sophus.math.ArcTan2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.TensorRuntimeException;
-import ch.ethz.idsc.tensor.alg.Transpose;
-import ch.ethz.idsc.tensor.lie.RotationMatrix;
-import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.Eigensystem;
+import ch.ethz.idsc.tensor.red.ArgMax;
+import ch.ethz.idsc.tensor.red.Times;
+import ch.ethz.idsc.tensor.sca.Cos;
+import ch.ethz.idsc.tensor.sca.Sin;
 import ch.ethz.idsc.tensor.sca.Sqrt;
 
 /** immutable */
-public class Covariance2D {
+public class Covariance2D implements Serializable {
   /** @param firstAxis
    * @param secondAxis
    * @param angle
    * @return */
   public static Covariance2D of(Scalar firstAxis, Scalar secondAxis, Scalar angle) {
-    Tensor rotation = RotationMatrix.of(angle);
-    Tensor diagonal = DiagonalMatrix.of(firstAxis, secondAxis);
-    Tensor matrix = rotation.dot(diagonal).dot(Transpose.of(rotation));
+    Tensor matrix = matrix(firstAxis, secondAxis, angle);
     matrix.set(matrix.get(0, 1), 1, 0);
     return new Covariance2D(matrix);
+  }
+
+  /** @param a
+   * @param b
+   * @param angle
+   * @return RotationMatrix[angle].DiagonalMatrix[{a, b}].RotationMatrix[-angle] */
+  public static Tensor matrix(Scalar a, Scalar b, Scalar angle) {
+    Scalar c = Cos.FUNCTION.apply(angle);
+    Scalar s = Sin.FUNCTION.apply(angle);
+    Scalar c2 = c.multiply(c);
+    Scalar s2 = s.multiply(s);
+    Scalar dg = Times.of(a.subtract(b), c, s);
+    return Tensors.matrix(new Scalar[][] { //
+        { a.multiply(c2).add(b.multiply(s2)), dg }, //
+        { dg, b.multiply(c2).add(a.multiply(s2)) } });
   }
 
   // ---
@@ -43,11 +60,16 @@ public class Covariance2D {
 
   /** @return angle between the eigenvector belonging to the first eigenvalue and the x-axis */
   public Scalar angle() {
-    return ArcTan2D.of(eigensystem.vectors().get(0));
+    int index = ArgMax.of(eigensystem.values().map(Scalar::abs));
+    return ArcTan2D.of(eigensystem.vectors().get(index));
   }
 
   /** @return vector of length 2 consisting of eigenvalues */
   public Tensor stdDev() {
     return Sqrt.of(eigensystem.values());
+  }
+
+  /* package */ Eigensystem eigensystem() {
+    return eigensystem;
   }
 }

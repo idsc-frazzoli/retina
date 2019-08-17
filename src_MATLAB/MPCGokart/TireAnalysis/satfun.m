@@ -10,7 +10,7 @@ function y = satfun(x)
         else
             y = 1;
         end
-        y=0.99*y;
+        y=0.95*y;
     else
         d = (1+r-x)/r;
         y=0.95*if_else(x<l,x,...

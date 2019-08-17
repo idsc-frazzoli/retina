@@ -1,11 +1,15 @@
 // code by jph
 package ch.ethz.idsc.gokart.dev.steer;
 
+import java.io.IOException;
+
+import ch.ethz.idsc.gokart.calib.steer.ClipSteerMapping;
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.io.Serialization;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
@@ -40,10 +44,9 @@ public class SteerConfigTest extends TestCase {
 
   public void testTurningAtLimit() {
     // according to our model
-    Scalar angle = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(SteerConfig.GLOBAL.turningRatioMax);
+    Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(SteerConfig.GLOBAL.turningRatioMax);
     // angle == 0.45218923155923850 ante 20190509
     // angle == 0.49164265965082177 post 20190509
-    // System.out.println(angle);
     Clips.interval(0.48, 0.5).requireInside(angle);
   }
 
@@ -55,5 +58,22 @@ public class SteerConfigTest extends TestCase {
     // conclusion: we should build a more accurate model that maps [encoder <-> effective steering angle]
     Clip clip = Clips.interval(Quantity.of(0.5, SteerPutEvent.UNIT_ENCODER), SteerConfig.GLOBAL.columnMax);
     assertTrue(clip.isInside(encoder));
+  }
+
+  public void testUnsafe() throws ClassNotFoundException, IOException {
+    SteerMapping steerMapping = Serialization.copy(SteerConfig.GLOBAL.getSteerMapping());
+    Clip clip = SteerConfig.GLOBAL.columnMaxClip();
+    Scalar shrink = RealScalar.of(0.9999);
+    clip.requireInside(steerMapping.getSCEfromRatio(Quantity.of(-1, SI.PER_METER)).multiply(shrink));
+    clip.requireInside(steerMapping.getSCEfromRatio(Quantity.of(+1, "m^-1")).multiply(shrink));
+  }
+
+  public void testRatioLimit() {
+    Clip clip = SteerConfig.GLOBAL.getRatioLimit();
+    clip.requireInside(SteerConfig.GLOBAL.turningRatioMax);
+  }
+
+  public void testInstance() {
+    assertTrue(SteerConfig.GLOBAL.getSteerMapping() instanceof ClipSteerMapping);
   }
 }

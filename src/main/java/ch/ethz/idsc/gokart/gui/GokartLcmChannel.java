@@ -1,6 +1,8 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui;
 
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
+
 public enum GokartLcmChannel {
   ;
   public static final String URG04LX_FRONT = "front";
@@ -9,8 +11,11 @@ public enum GokartLcmChannel {
   public static final String SEYE_OVERVIEW = "overview";
   /** the labjack u3 substitutes the joystick */
   public static final String LABJACK_U3_ADC = "labjack.u3.adc";
+  /** primary imu */
   public static final String VMU931_AG = "vmu931.ag";
-  /** absolute steering column position {@link GokartStatusEvent} */
+  /** backup imu */
+  public static final String VMU932_AG = "vmu932.ag";
+  /** absolute steering column position {@link SteerColumnEvent} */
   public static final String STATUS = "gokart.status.get";
   /** {x, y, heading, quality} */
   public static final String POSE_LIDAR = "gokart.pose.lidar";
@@ -23,6 +28,7 @@ public enum GokartLcmChannel {
    * message is self contained: state, time, flow */
   public static final String TRAJECTORY_XYAVT_STATETIME = "gokart.trajectory.xyavt";
   public static final String PURSUIT_CURVE_SE2 = "pursuit.curve.se2";
+  public static final String PURSUIT_PLAN = "pursuit.plan";
   // ---
   public static final String MPC_FORCES_CNS = "mpc.forces.cns";
   // ---
@@ -34,6 +40,7 @@ public enum GokartLcmChannel {
   public static final String RIMO_CONTROLLER_AW = "rimo.controller.aw";
   /** for finding parameters of antilockbrake module */
   public static final String LINMOT_ANTILOCK = "linmot.antilock";
+  public static final String LANEKEEPING = "lanekeeping";
   /***************************************************/
   /** lcm self test contains the string "lcm self test" as bytes */
   public static final String LCM_SELF_TEST = "LCM_SELF_TEST";

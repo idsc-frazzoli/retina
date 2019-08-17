@@ -16,9 +16,12 @@ import ch.ethz.idsc.tensor.Tensors;
 public enum Vlp16RayChannel implements SingleChannelInterface {
   INSTANCE;
   // ---
+  private static final String CHANNEL = //
+      VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
+
   @Override // from SingleChannelInterface
   public String channel() {
-    return VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
+    return CHANNEL;
   }
 
   @Override // from SingleChannelInterface

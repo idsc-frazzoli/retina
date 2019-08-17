@@ -3,15 +3,12 @@ package ch.ethz.idsc.gokart.core.man;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerUno;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
-import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.Scalar;
 
@@ -29,17 +26,16 @@ import ch.ethz.idsc.tensor.Scalar;
  * 
  * superseded by {@link RimoTorqueManualModule} */
 /* package */ class RimoRateManualModule extends GuideManualModule<RimoPutEvent> {
-  private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   /* package */ final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
 
   @Override // from AbstractModule
-  void protected_first() {
+  protected void first() {
     RimoSocket.INSTANCE.addPutProvider(this);
     RimoSocket.INSTANCE.addGetListener(rimoRateControllerWrap);
   }
 
   @Override // from AbstractModule
-  void protected_last() {
+  protected void last() {
     RimoSocket.INSTANCE.removePutProvider(this);
     RimoSocket.INSTANCE.removeGetListener(rimoRateControllerWrap);
   }
@@ -49,8 +45,6 @@ import ch.ethz.idsc.tensor.Scalar;
   Optional<RimoPutEvent> control( //
       SteerColumnInterface steerColumnInterface, ManualControlInterface manualControlInterface) {
     Scalar speed = RimoConfig.GLOBAL.rateLimit.multiply(manualControlInterface.getAheadAverage());
-    Scalar ratio = steerMapping.getRatioFromSCE(steerColumnInterface);
-    Scalar theta = ChassisGeometry.GLOBAL.steerAngleForTurningRatio(ratio);
-    return rimoRateControllerWrap.iterate(speed, theta);
+    return rimoRateControllerWrap.iterate(speed);
   }
 }

@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 /** frame with button that launches a fixed duration of davis data recording
  * followed by a conversion to uzh format */

@@ -3,11 +3,11 @@ package ch.ethz.idsc.gokart.core.man;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.dev.ManualControlAdapter;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.retina.joystick.ManualControlAdapter;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensors;

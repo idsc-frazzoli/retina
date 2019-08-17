@@ -12,14 +12,14 @@ import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.GuiConfig;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class ViewLcmFrame extends TimerFrame {
-  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.getPredefinedMap().getModel2Pixel();
+  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.GLOBAL.getPredefinedMap().getModel2Pixel();
   // ---
   private final LidarLocalizationModule lidarLocalizationModule = //
       ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
@@ -59,7 +59,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     Tensor init = lidarLocalizationModule.getPose(); // {x[m], y[m], angle}
     Tensor gokart = PoseHelper.toSE2Matrix(init);
     Tensor newPose = LinearSolve.of(MODEL2PIXEL_INITIAL, model2pixel.dot(gokart));
-    lidarLocalizationModule.resetPose(PoseHelper.attachUnits(Se2Utils.fromSE2Matrix(newPose)));
+    lidarLocalizationModule.resetPose(PoseHelper.attachUnits(Se2Matrix.toVector(newPose)));
     geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL); // undo drag by user
   }
 }

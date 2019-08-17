@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 public class CurvePurePursuitModule extends CurvePursuitModule {
-  public CurvePurePursuitModule(PursuitConfig pursuitConfig) {
+  public CurvePurePursuitModule(PurePursuitConfig pursuitConfig) {
     super(pursuitConfig);
   }
 
@@ -19,7 +19,7 @@ public class CurvePurePursuitModule extends CurvePursuitModule {
           pose, //
           optionalCurve.get(), //
           closed, //
-          isForward, //
+          isForward(), //
           pursuitConfig.lookAhead);
     System.err.println("no curve in pure pursuit");
     return Optional.empty();

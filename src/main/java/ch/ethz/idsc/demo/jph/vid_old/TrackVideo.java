@@ -39,10 +39,10 @@ import ch.ethz.idsc.tensor.sca.Round;
     final String string = TrackDrivingTables.SINGLETON.getParentFile().getName();
     final String filename = HomeDirectory.file(string + ".mp4").toString();
     // ---
-    File src = HomeDirectory.file("track_putty");
+    // File src = HomeDirectory.file("track_putty");
     List<TrackDriving> list = new LinkedList<>();
     int id = 0;
-    File csvFile = new File("/home/datahaki/track_putty/" + string + ".csv");
+    File csvFile = HomeDirectory.file("track_putty", string + ".csv");
     if (csvFile.isFile()) {
       TrackDriving trackDriving = new TrackDriving(Import.of(csvFile), id++);
       trackDriving.setDriver(csvFile.getName().startsWith("mh") ? "mh" : "tg");
@@ -67,8 +67,8 @@ import ch.ethz.idsc.tensor.sca.Round;
       for (int index = 0; index < max; ++index) {
         System.out.println(index);
         Scalar time = list.get(0).timeFor(index);
-        graphics.drawImage(backgroundImage.bufferedImage, 0, 0, null);
-        GeometricLayer geometricLayer = GeometricLayer.of(backgroundImage.model2pixel);
+        graphics.drawImage(backgroundImage.bufferedImage(), 0, 0, null);
+        GeometricLayer geometricLayer = GeometricLayer.of(backgroundImage.model2pixel());
         // ri.render(geometricLayer, graphics);
         {
           Entry<Scalar, ControlAndPredictionSteps> floorEntry = navigableMap.floorEntry(Quantity.of(time, SI.SECOND));

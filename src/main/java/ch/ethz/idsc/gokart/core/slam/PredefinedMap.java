@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
  * name refers to png-file in repository, do not rename!
  * 
  * the predefined geometry is crucial for lidar-based localization */
-// TODO not necessary to mix localization and obstacles, for instance extrusion only required in one case
+// TODO JPH not necessary to mix localization and obstacles, for instance extrusion only required in one case
 public enum PredefinedMap implements LocalizationImage {
   /** image of known static obstacles */
   // DUBILAB_OBSTACLES_20180423(7.5), //
@@ -53,8 +53,10 @@ public enum PredefinedMap implements LocalizationImage {
   DUBILAB_LOCALIZATION_20190309(7.5), //
   /** dust proof wall */
   DUBILAB_LOCALIZATION_20190314(7.5), //
-  // TODO EPHEMERAL 023
+  /** empty space */
   DUBILAB_OBSTACLES_20190314(7.5), //
+  /** dust proof wall */
+  DUBILAB_LOCALIZATION_20190708(7.5), //
   ;
   /** number of pixels to extrude geometry for localization */
   private static final int TTL = 3;
@@ -145,6 +147,6 @@ public enum PredefinedMap implements LocalizationImage {
   }
 
   public static void main(String[] args) throws IOException {
-    ImageIO.write(DUBILAB_OBSTACLES_20190314.bufferedImage, "png", HomeDirectory.Pictures("20190314.png"));
+    ImageIO.write(DUBILAB_LOCALIZATION_20190708.bufferedImage, "png", HomeDirectory.Pictures("20190708.png"));
   }
 }

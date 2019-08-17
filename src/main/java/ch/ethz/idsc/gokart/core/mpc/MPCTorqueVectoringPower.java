@@ -4,19 +4,19 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.power.MotorCurrentsInterface;
+import ch.ethz.idsc.gokart.calib.power.PredictiveMotorCurrents;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
-import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedPredictiveTorqueVectoring;
-import ch.ethz.idsc.gokart.core.tvec.ImprovedNormalizedTorqueVectoring;
 import ch.ethz.idsc.gokart.core.tvec.TorqueVectoringConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.owl.car.math.AngularSlip;
+import ch.ethz.idsc.owl.car.slip.AngularSlip;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 /* package */ class MPCTorqueVectoringPower extends MPCPower {
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  private final ImprovedNormalizedTorqueVectoring torqueVectoring = //
-      new ImprovedNormalizedPredictiveTorqueVectoring(TorqueVectoringConfig.GLOBAL);
+  private final MotorCurrentsInterface motorCurrentsInterface = //
+      new PredictiveMotorCurrents(TorqueVectoringConfig.GLOBAL);
   private final MPCSteering mpcSteering;
   // ---
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
@@ -34,12 +34,13 @@ import ch.ethz.idsc.tensor.Tensor;
     Optional<Tensor> optional = mpcSteering.getSteering(time);
     if (!optional.isPresent())
       return Optional.empty();
+    GokartState gokartState = mpcStateEstimationProvider.getState();
     Scalar ratio = steerMapping.getRatioFromSCE(optional.get().Get(0)); // steering angle of imaginary front wheel
-    Scalar tangentialSpeed = mpcStateEstimationProvider.getState().getUx();
+    Scalar tangentialSpeed = gokartState.getUx();
     // compute (negative) angular slip
-    Scalar gyroZ = mpcStateEstimationProvider.getState().getdotPsi(); // unit s^-1
+    Scalar gyroZ = gokartState.getGyroZ(); // unit s^-1
     Scalar wantedAcceleration = cnsStep.gokartControl().getaB();
-    AngularSlip angularSlip = new AngularSlip(tangentialSpeed, ratio, gyroZ);
-    return Optional.of(torqueVectoring.getMotorCurrentsFromAcceleration(angularSlip, wantedAcceleration));
+    return Optional.of(motorCurrentsInterface.fromAcceleration( //
+        new AngularSlip(tangentialSpeed, ratio, gyroZ), wantedAcceleration));
   }
 }

@@ -1,9 +1,9 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import ch.ethz.idsc.gokart.core.map.BSplineTrack;
+import ch.ethz.idsc.gokart.core.track.BSplineTrack;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.sophus.planar.ArcTan2D;
+import ch.ethz.idsc.sophus.math.ArcTan2D;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -33,7 +33,7 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
   /** @param points_xyr matrix with dimension n x 3
    * @param closed */
   public MPCBSplineTrack(Tensor points_xyr, boolean closed) {
-    bSplineTrack = new BSplineTrack(points_xyr, closed);
+    bSplineTrack = BSplineTrack.of(points_xyr, closed); //
   }
 
   // TODO JPH optimize

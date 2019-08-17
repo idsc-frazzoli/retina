@@ -17,7 +17,6 @@ import lcm.logging.LogPlayerConfig;
     file = HomeDirectory.file("temp/20180108T165210_manual.lcm");
     file = HomeDirectory.file("gokart/twist/20180108T165210_4/log.lcm");
     file = HomeDirectory.file("gokart/short/20180108T165210_1/log.lcm");
-    // /home/datahaki/gokart/pursuit/20180108T165210
     file = HomeDirectory.file("gokart/pursuit/20180112T154355/log.lcm");
     file = HomeDirectory.file("gokart/manual/20180108T154035/log.lcm");
     file = HomeDirectory.file("Downloads/logs/log.lcm");

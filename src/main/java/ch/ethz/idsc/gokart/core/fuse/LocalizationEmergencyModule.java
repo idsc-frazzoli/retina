@@ -12,9 +12,9 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.retina.util.data.SoftWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.time.SoftWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 import ch.ethz.idsc.tensor.Scalars;
 
 /** prevents driving if pose is has insufficient quality for timeout duration */
@@ -40,7 +40,7 @@ public class LocalizationEmergencyModule extends AbstractModule implements Gokar
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     this.gokartPoseEvent = gokartPoseEvent;
-    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent.getQuality()))
+    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent))
       watchdog.notifyWatchdog();
   }
 

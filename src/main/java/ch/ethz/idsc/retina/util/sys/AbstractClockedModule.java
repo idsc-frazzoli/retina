@@ -1,4 +1,4 @@
-// code by swisstrolley+ and jph
+// code by swisstrolley+ and jph, gjoel
 package ch.ethz.idsc.retina.util.sys;
 
 import java.util.Timer;
@@ -23,17 +23,7 @@ public abstract class AbstractClockedModule extends AbstractModule {
   /** Task to be executed for user implementation. */
   protected abstract void runAlgo();
 
-  /** Initialization for user implementation.
-   * Runs before runEventModule() is ever called. */
-  @Override // from AbstractModule
-  protected abstract void first();
-
-  /** Graceful closure for user implementation Runs after runEventModule() is
-   * terminated for good. */
-  @Override // from AbstractModule
-  protected abstract void last();
-
-  /** Period between runClockedModule execution.
+  /** Period between runAlgo() execution.
    * 
    * @return task period as {@link Quantity} time unit, i.e. [s], [ms], or [Hz^-1] etc. */
   protected abstract Scalar getPeriod();

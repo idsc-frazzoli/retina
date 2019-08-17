@@ -9,37 +9,22 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoConfig;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
-import ch.ethz.idsc.gokart.gui.top.ChassisGeometry;
-import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
+import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Chop;
+import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 /** class is the default choice for pursuit when driving along a curve in global
  * coordinates while the pose is updated periodically from a localization method. */
 public abstract class CurvePursuitModule extends PursuitModule implements GokartPoseListener {
+  private final Clip ratioClip = SteerConfig.GLOBAL.getRatioLimit();
   private final Chop speedChop = RimoConfig.GLOBAL.speedChop();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-  private final RimoGetLcmClient rimoGetLcmClient = new RimoGetLcmClient();
-  /** forward motion is determined by odometry:
-   * noise in the measurements around zero are also mapped to "forward" */
-  protected boolean isForward = true;
-  protected Scalar speed = Quantity.of(0, SI.VELOCITY);
-  /* package */ final RimoGetListener rimoGetListener = new RimoGetListener() {
-    @Override
-    public void getEvent(RimoGetEvent rimoGetEvent) {
-      speed = speedChop.apply(ChassisGeometry.GLOBAL.odometryTangentSpeed(rimoGetEvent));
-      isForward = Sign.isPositiveOrZero(speed);
-    }
-  };
   // ---
   protected Optional<Tensor> optionalCurve = Optional.empty();
   protected boolean closed = true;
@@ -53,13 +38,10 @@ public abstract class CurvePursuitModule extends PursuitModule implements Gokart
   protected final void protected_first() {
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
-    rimoGetLcmClient.addListener(rimoGetListener);
-    rimoGetLcmClient.startSubscriptions();
   }
 
   @Override // from PursuitModule
   protected void protected_last() {
-    rimoGetLcmClient.stopSubscriptions();
     gokartPoseLcmClient.stopSubscriptions();
   }
 
@@ -95,7 +77,7 @@ public abstract class CurvePursuitModule extends PursuitModule implements Gokart
   }
 
   public synchronized final void setTrajectory(List<TrajectorySample> trajectory) {
-    setTrajectory(trajectory, true);
+    setTrajectory(trajectory, false);
   }
 
   public synchronized final void setTrajectory(List<TrajectorySample> trajectory, boolean closed) {
@@ -114,12 +96,12 @@ public abstract class CurvePursuitModule extends PursuitModule implements Gokart
 
   /***************************************************/
   /** @return curve world frame coordinates */
-  /* package */ final Optional<Tensor> getCurve() {
+  public final Optional<Tensor> getCurve() {
     return optionalCurve;
   }
 
   /** @return true if gokart is stationary or moving forwards */
   /* package */ final boolean isForward() {
-    return isForward;
+    return Sign.isPositiveOrZero(speedChop.apply(gokartPoseEvent.getVelocity().Get(0)));
   }
 }

@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.core.map.TrackReconModule;
+import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
@@ -85,9 +85,9 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     // lcmMPCControlClient.addControlUpdateListener(MPCInformationProvider.getInstance());
     // lcmMPCPathFollowingClient.registerControlUpdateLister(MPCActiveCompensationLearning.getInstance());
     // state estimation provider
-    mpcBraking.setStateEstimationProvider(mpcStateEstimationProvider);
+    // mpcBraking.setStateEstimationProvider(mpcStateEstimationProvider);
     // mpcPower.setStateEstimationProvider(mpcStateEstimationProvider);
-    mpcSteering.setStateEstimationProvider(mpcStateEstimationProvider);
+    // mpcSteering.setStateEstimationProvider(mpcStateEstimationProvider);
   }
 
   private final void requestControl() {

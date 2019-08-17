@@ -56,21 +56,25 @@ Dyn. MPC [outside](https://www.youtube.com/watch?v=59E95E_RkH8), [inside](https:
 ## Student Projects
 
 The student projects are supervised by Andrea Censi, Jacopo Tani, Alessandro Zanardi, and Jan Hakenberg.
-The gokart is operated at Innovation Park Duebendorf since December 2017.
+The gokart is operated at Innovation Park Dübendorf since December 2017.
+
+### 2017
+
+* Noah Isaak, Richard von Moos (BT): micro autobox programming, low-level actuator logic
 
 ### 2018
 
 * Mario Gini (MT): simultaneous localization and mapping for event-based vision systems inspired by Weikersdorfer/Hoffmann/Conradt; reliable waypoint extraction and following
 * Yannik Nager (MT): bayesian occupancy grid; trajectory planning
 * Valentina Cavinato (SP): tracking of moving obstacles
-* Marc Heim (MT): calibration of steering, motors, braking; torque vectoring; track reconnaissance; model predictive contouring control; synthesis of engine sound
+* Marc Heim (MT): calibration of steering, motors, braking; torque vectoring; track reconnaissance; [model predictive contouring control](https://www.youtube.com/watch?v=7dnlF5QVJoo); synthesis of engine sound; [drone video](https://www.youtube.com/watch?v=bmIQxtiAzhQ)
 
 ### 2019
 
-* Michael von Bueren (MT): simulation of gokart dynamics
-* Joel Gaechter (MT): precise mapping
-* Antonia Mosberger (BT): power steering
-* Maximilien Picquet (SP): PID controller for trajectory following
+* Michael von Büren (MT): simulation of gokart dynamics
+* Joel Gächter (MT): precise mapping, [clothoid pursuit](https://www.youtube.com/watch?v=nF43WfSGdls)
+* Antonia Mosberger (BT): power steering, anti-lock braking, lane keeping
+* Maximilien Picquet (SP): Pacejka parameter estimation using unscented Kalman filter
 
 ## Gallery Manual Driving
 
@@ -81,6 +85,12 @@ The gokart is operated at Innovation Park Duebendorf since December 2017.
 ![torquevectoring](https://user-images.githubusercontent.com/4012178/49995554-c75c0100-ff8c-11e8-8a86-f50b6e6833ad.jpg)
 
 [Torque Vectoring](https://www.youtube.com/watch?v=szKhTCxhPyI)
+
+<td>
+
+![doughnuts](https://user-images.githubusercontent.com/4012178/60753913-c5fe2e80-9fd9-11e9-9aa9-af307331b246.jpg)
+
+[Doughnuts](https://www.youtube.com/watch?v=zcBImlS0sE4), [pc view](https://www.youtube.com/watch?v=DRjB3XNt4Vo)
 
 </tr>
 </table>
@@ -104,6 +114,7 @@ The gokart is operated at Innovation Park Duebendorf since December 2017.
 * [2018-06 bitluni's lab](https://www.youtube.com/watch?v=GQVsl4fV3O0)
 * [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
 * [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
+* [2019-08 SuperQuark](https://www.raiplay.it/video/2019/08/SuperQuark-73b2ae02-700d-46fb-9fc1-3bdd5a03d5cd.html)
 
 ---
 
@@ -268,6 +279,7 @@ We observed that in *global shutter mode*, during signal image capture the strea
 ## References
 
 * [*Simultaneous localization and mapping for event-based vision systems*](https://mediatum.ub.tum.de/doc/1191908/1191908.pdf) by David Weikersdorfer, Raoul Hoffmann, and Joerg Conradt
+* [*Asynchronous event-based multikernel algorithm for high-speed visual features tracking*](https://ieeexplore.ieee.org/document/6899691) by Xavier Lagorce et al.
 
 ---
 

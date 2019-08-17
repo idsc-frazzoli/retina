@@ -80,4 +80,11 @@ public class LinmotStatusWordBitTest extends TestCase {
     assertEquals(set.toString(), //
         "[SWITCH_ON, ERROR, VOLTAGE, QUICK_STEP, SWITCH_ON_LOCK, WARNING, HOMED, IN_RANGE1]");
   }
+
+  public void test20190516T182806() {
+    Set<LinmotStatusWordBit> set = LinmotStatusWordBit.from((short) 2170);
+    LinmotStateVariable linmotStateVariable = new LinmotStateVariable((short) 1035);
+    assertEquals(linmotStateVariable.linmotStateVarMain, LinmotStateVarMain.ERROR);
+    assertEquals(linmotStateVariable.substate, 11);
+  }
 }

@@ -6,10 +6,10 @@ import java.util.Optional;
 import ch.ethz.idsc.demo.jg.following.analysis.ErrorInterface;
 import ch.ethz.idsc.demo.jg.following.analysis.FollowingError;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
-import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitHelper;
+import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
+import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
 import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
-import ch.ethz.idsc.gokart.core.pure.GeodesicPursuitParams;
-import ch.ethz.idsc.gokart.core.pure.PursuitConfig;
+import ch.ethz.idsc.gokart.core.pure.PurePursuitConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
@@ -19,71 +19,74 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-public enum FollowingSimulations implements ErrorInterface {
+/* package */ enum FollowingSimulations implements ErrorInterface {
   PURE {
     @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      return CurvePurePursuitHelper.getRatio(pose, curve, Sign.isPositiveOrZero(speed), PursuitConfig.GLOBAL.lookAhead);
+    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
+      return CurvePurePursuitHelper.getRatio(pose, curve, Sign.isPositiveOrZero(speed.Get(0)), PurePursuitConfig.GLOBAL.lookAhead);
     }
   },
   CLOTHOID_05 {
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
+
     @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(.5, SI.METER);
-      return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
+      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(.5, SI.METER);
+      return planner.getPlan(pose, speed, curve, //
+          Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_3 {
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
+
     @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(3, SI.METER);
-      return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
+      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(3, SI.METER);
+      return planner.getPlan(pose, speed, curve, //
+          Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_5 {
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
+
     @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(5, SI.METER);
-      return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
+      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(5, SI.METER);
+      return planner.getPlan(pose, speed, curve, //
+          Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
   },
   CLOTHOID_7 {
+    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
+
     @Override
-    public Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve) {
-      GeodesicPursuitParams.GLOBAL.minDistance = Quantity.of(7, SI.METER);
-      return CurveClothoidPursuitHelper.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed), //
-          PursuitConfig.GLOBAL.trajectoryEntryFinder, //
-          PursuitConfig.ratioLimits()).map(ClothoidPlan::ratio);
+    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
+      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(7, SI.METER);
+      return planner.getPlan(pose, speed, curve, //
+          Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
   };
   private Tensor trail;
   private Tensor ratios;
   private FollowingError followingError;
+  private Timing timing;
 
   /** @param curve reference
    * @param initialPose of vehicle {x[m], y[m], angle}
-   * @param speed of vehicle [m*s^-1]
+   * @param speed of vehicle {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]}
    * @param duration of simulation [s]
    * @param timeStep of simulation [s] */
-  public void run(Tensor curve, Tensor initialPose, Scalar speed, Scalar duration, Scalar timeStep) {
+  public void run(Tensor curve, Tensor initialPose, Tensor speed, Scalar duration, Scalar timeStep) {
     trail = Tensors.empty();
     ratios = Tensors.empty();
     followingError = new FollowingError();
+    timing = Timing.started();
     // ---
     followingError.setReference(curve);
     Tensor pose = initialPose;
@@ -95,8 +98,9 @@ public enum FollowingSimulations implements ErrorInterface {
       if (optional.isPresent())
         ratio = Clips.absolute(SteerConfig.GLOBAL.turningRatioMax).apply(optional.get());
       ratios.append(ratio);
-      pose = Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed, ratio), pose, timeStep);
+      pose = Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed.Get(0), ratio), pose, timeStep);
     }
+    timing.stop();
   }
 
   /** @return vehicle trail {{x[m], y[m], angle}, ...} */
@@ -114,6 +118,11 @@ public enum FollowingSimulations implements ErrorInterface {
     return ratios().map(MinMax::of);
   }
 
+  /** @return simulation duation [s] */
+  public Optional<Scalar> simulationTime() {
+    return Optional.ofNullable(timing).map(t -> Quantity.of(t.seconds(), SI.SECOND));
+  }
+
   @Override // from ErrorInterface
   public final Optional<Tensor> averageError() {
     return followingError.averageError();
@@ -128,13 +137,14 @@ public enum FollowingSimulations implements ErrorInterface {
   public Optional<String> getReport() {
     return followingError.getReport().map(report -> //
     name() + ratioRange().map(range -> " " + report + //
-        "\n\tratios:\tmin = " + Round._4.apply(range.min().Get()) + ", max = " + Round._4.apply(range.max().Get())) //
+        "\n\tratios:\tmin = " + Round._4.apply(range.min().Get()) + ", max = " + Round._4.apply(range.max().Get()) + //
+        "\n\tsimulation duration:\t" + simulationTime().get()) //
         .orElse(" not yet run"));
   }
 
   /** @param pose of vehicle {x[m], y[m], angle}
-   * @param speed of vehicle [m*s^-1]
+   * @param speed of vehicle {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]}
    * @param curve reference
    * @return ratio [m^-1] */
-  public abstract Optional<Scalar> setup(Tensor pose, Scalar speed, Tensor curve);
+  public abstract Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve);
 }

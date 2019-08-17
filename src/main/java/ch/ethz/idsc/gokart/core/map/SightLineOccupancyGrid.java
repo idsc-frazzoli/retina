@@ -57,7 +57,7 @@ public class SightLineOccupancyGrid extends ImageGrid {
   private void obstacles(Tensor polygon) {
     imageGraphics.setColor(COLOR_OCCUPIED);
     polygon.forEach(point -> {
-      // TODO JG/JPH this filtering should happen elsewhere
+      // TODO GJOEL/JPH this filtering should happen elsewhere
       if (!point.equals(Array.zeros(2))) {
         Tensor cell = lidarToCell(point);
         if (isCellInGrid(cell))

@@ -6,7 +6,8 @@ import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-class TimerDemo {
+/** demo was developed to design timer and semaphore interplay in AbstractClockedModule */
+/* package */ class TimerDemo {
   Semaphore semaphore = new Semaphore(1);
   Timer timer = new Timer();
 

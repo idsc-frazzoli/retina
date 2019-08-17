@@ -12,13 +12,13 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.AffineTransforms;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.RadiusXY;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.group.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.sca.Floor;
  *
  * the cascade of affine transformation is
  * lidar2cell == grid2gcell * world2grid * gokart2world * lidar2gokart */
-public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
+public class ImageGrid implements OccupancyGrid, RenderInterface {
   protected static final byte MASK_OCCUPIED = 0;
   protected static final Color COLOR_OCCUPIED = Color.BLACK;
   protected static final Color COLOR_UNKNOWN = Color.WHITE;
@@ -44,6 +44,7 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   protected final BufferedImage obstacleImage;
   protected final byte[] imagePixels;
   protected final Graphics2D imageGraphics;
+  /** 3 x 3 diagonal matrix */
   protected final Tensor scaling;
   // ---
   protected GeometricLayer lidar2cellLayer;
@@ -54,7 +55,7 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   /** @param lbounds vector of length 2
    * @param rangeCeil effective size of grid in coordinate space of the form {value, value}
    * @param dimension of grid in cell space */
-  // TODO might be better as tensor
+  // TODO JPH might be better as tensor
   /* package */ ImageGrid(Tensor lbounds, Tensor rangeCeil, Dimension dimension) {
     VectorQ.requireLength(rangeCeil, 2);
     System.out.println("Grid range: " + rangeCeil);
@@ -96,13 +97,14 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   }
 
   /** @return Stream of all index combinations as Tensors */
+  // TODO JPH function is non-sense
   protected final Stream<Tensor> cells() {
     return IntStream.range(0, dimX()).mapToObj(x -> IntStream.range(0, dimY()).mapToObj(y -> //
     Tensors.vector(x, y))).flatMap(Function.identity());
   }
 
   protected final Tensor getWorld2grid() {
-    return Se2Utils.toSE2Matrix(lbounds.negate().append(RealScalar.ZERO));
+    return Se2Matrix.of(lbounds.negate().append(RealScalar.ZERO));
   }
 
   /** set vehicle pose w.r.t world frame
@@ -119,7 +121,6 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
    * @param pos vector of the form {px, py, ...}; only the first two entries are considered
    * @return Tensor {pix, piy} */
   protected final Tensor lidarToCell(Tensor pos) {
-    // TODO investigate if class with 2 int's is an attractive replacement as key type
     return Floor.of(lidar2cellLayer.toVector(pos));
   }
 
@@ -136,7 +137,9 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   /** @param cell Tensor {pix, piy}
    * @return byte array index */
   protected final int cellToIdx(Tensor cell) {
-    return cellToIdx(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
+    return cellToIdx( //
+        cell.Get(0).number().intValue(), //
+        cell.Get(1).number().intValue());
   }
 
   /** @param pix of cell
@@ -154,14 +157,17 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
   /** @param cell Tensor {pix, piy}
    * @return whether cell is in grid */
   protected final boolean isCellInGrid(Tensor cell) {
-    return isCellInGrid(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
+    return isCellInGrid( //
+        cell.Get(0).number().intValue(), //
+        cell.Get(1).number().intValue());
   }
 
   /** @param pix of cell
    * @param piy of cell
    * @return whether cell is in grid */
   protected final boolean isCellInGrid(int pix, int piy) {
-    return 0 <= pix && pix < dimX() && 0 <= piy && piy < dimY();
+    return 0 <= pix && pix < dimX() //
+        && 0 <= piy && piy < dimY();
   }
 
   @Override // from OccupancyGrid
@@ -169,18 +175,24 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
     Tensor translate = IdentityMatrix.of(3);
     translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
     translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
-    return IdentityMatrix.of(3).dot(scaling).dot(translate);
+    return scaling.dot(translate);
   }
 
   public final boolean isCellOccupied(Tensor cell) {
-    return isCellOccupied(cell.Get(0).number().intValue(), cell.Get(1).number().intValue());
+    return isCellOccupied( //
+        cell.Get(0).number().intValue(), //
+        cell.Get(1).number().intValue());
   }
 
   @Override // from OccupancyGrid
   public final boolean isCellOccupied(int pix, int piy) {
-    if (isCellInGrid(pix, piy))
-      return imagePixels[cellToIdx(pix, piy)] == MASK_OCCUPIED;
-    return true;
+    return isCellInGrid(pix, piy) //
+        && imagePixels[cellToIdx(pix, piy)] == MASK_OCCUPIED;
+  }
+
+  @Override // from OccupancyGrid
+  public void clearStart(int startX, int startY, double orientation) {
+    // ---
   }
 
   @Override // from Region<Tensor>
@@ -190,12 +202,8 @@ public abstract class ImageGrid implements OccupancyGrid, RenderInterface {
 
   @Override // from RenderInterface
   public synchronized final void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    // TODO JPH simplify use ImageRender?
-    Tensor model2pixel = geometricLayer.getMatrix();
-    Tensor translate = IdentityMatrix.of(3);
-    translate.set(lbounds.get(0).multiply(cellDimInv), 0, 2);
-    translate.set(lbounds.get(1).multiply(cellDimInv), 1, 2);
-    Tensor matrix = model2pixel.dot(scaling).dot(translate);
-    graphics.drawImage(obstacleImage, AffineTransforms.toAffineTransform(matrix), null);
+    // similar to ImageRender?
+    graphics.drawImage(obstacleImage, AffineTransforms.toAffineTransform( //
+        geometricLayer.getMatrix().dot(getTransform())), null);
   }
 }

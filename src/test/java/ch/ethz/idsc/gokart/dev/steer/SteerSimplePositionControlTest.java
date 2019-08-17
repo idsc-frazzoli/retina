@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.dev.steer;
 
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
@@ -11,7 +12,7 @@ import junit.framework.TestCase;
 
 public class SteerSimplePositionControlTest extends TestCase {
   public void testSimple() {
-    SimpleSteerPositionControl simpleSteerPositionControl = new SimpleSteerPositionControl();
+    SteerSimplePositionControl simpleSteerPositionControl = new SteerSimplePositionControl();
     simpleSteerPositionControl.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
     simpleSteerPositionControl.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
     simpleSteerPositionControl.iterate(Quantity.of(1, SteerPutEvent.UNIT_ENCODER));
@@ -22,7 +23,7 @@ public class SteerSimplePositionControlTest extends TestCase {
   }
 
   public void testSimple2() {
-    SimpleSteerPositionControl simpleSteerPositionControl = new SimpleSteerPositionControl();
+    SteerSimplePositionControl simpleSteerPositionControl = new SteerSimplePositionControl();
     Distribution distribution = NormalDistribution.standard();
     for (int i = 0; i < 100; i++) {
       Scalar err_pos = Quantity.of(RandomVariate.of(distribution), SteerPutEvent.UNIT_ENCODER);
@@ -32,6 +33,6 @@ public class SteerSimplePositionControlTest extends TestCase {
   }
 
   public void testDt() {
-    assertEquals(SimpleSteerPositionControl.DT, Quantity.of(0.02, "s"));
+    assertTrue(Scalars.lessEquals(SteerSimplePositionControl.DT, Quantity.of(0.02, "s")));
   }
 }

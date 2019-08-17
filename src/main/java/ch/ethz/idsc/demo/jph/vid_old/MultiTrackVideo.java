@@ -34,16 +34,16 @@ public class MultiTrackVideo {
       for (int index = 0; index < max; ++index) {
         System.out.println(index);
         // draw background image
-        graphics.drawImage(backgroundImage.bufferedImage, 0, 0, null);
+        graphics.drawImage(backgroundImage.bufferedImage(), 0, 0, null);
         // draw all vehicles
-        Tensor model2pixel = backgroundImage.model2pixel;
+        Tensor model2pixel = backgroundImage.model2pixel();
         GeometricLayer geometricLayer = GeometricLayer.of(model2pixel);
         for (TrackDriving trackDriving : list)
           trackDriving.render(index, geometricLayer, graphics);
         for (AbstractFrameRender abstractFrameRender : abstractFrameRenders)
           abstractFrameRender.render(index, geometricLayer, graphics);
         mp4AnimationWriter.append(bufferedImage);
-        if (index == 10000)
+        if (index == 10_000)
           break;
       }
     }

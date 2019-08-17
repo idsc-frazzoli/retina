@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.lidar.mark8;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import ch.ethz.idsc.owl.data.GlobalAssert;
+import ch.ethz.idsc.retina.util.GlobalAssert;
 
 public class Mark8DeflateDigest implements Mark8Digest {
   private static final int ENCODING_MAX = 65535; // 65535
@@ -33,7 +33,7 @@ public class Mark8DeflateDigest implements Mark8Digest {
     dst.putInt(src.getInt()); // nano sec
     // firing data
     for (int count = 0; count < Mark8Device.FIRINGS; ++count) {
-      int offset = 20 + count * FIRING_SIZE; // TODO multiplication not necessary
+      int offset = 20 + count * FIRING_SIZE; // TODO JPH multiplication not necessary
       src.position(offset + 100);
       src.get(intensity);
       src.position(offset);

@@ -4,8 +4,8 @@ package ch.ethz.idsc.gokart.core.fuse;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
-import ch.ethz.idsc.retina.util.data.SoftWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
+import ch.ethz.idsc.retina.util.time.SoftWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 
 /** prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */

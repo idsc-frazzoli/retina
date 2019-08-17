@@ -3,19 +3,19 @@ package ch.ethz.idsc.gokart.core.fuse;
 
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.calib.SensorsConfig;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
+import ch.ethz.idsc.gokart.calib.steer.SteerColumnListener;
 import ch.ethz.idsc.gokart.calib.steer.SteerMapping;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.GokartStatusEvent;
-import ch.ethz.idsc.gokart.gui.GokartStatusListener;
-import ch.ethz.idsc.gokart.gui.top.SensorsConfig;
-import ch.ethz.idsc.gokart.lcm.autobox.GokartStatusLcmClient;
+import ch.ethz.idsc.gokart.lcm.autobox.SteerColumnLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmClient;
-import ch.ethz.idsc.owl.car.math.ClearanceTracker;
-import ch.ethz.idsc.owl.car.math.ObstructedClearanceTracker;
+import ch.ethz.idsc.retina.app.clear.ClearanceTracker;
+import ch.ethz.idsc.retina.app.clear.ObstructedClearanceTracker;
 import ch.ethz.idsc.retina.lidar.LidarSpacialListener;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
 import ch.ethz.idsc.retina.lidar.LidarXYZEvent;
@@ -23,9 +23,9 @@ import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
-import ch.ethz.idsc.retina.util.data.SoftWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.time.SoftWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -36,13 +36,13 @@ import ch.ethz.idsc.tensor.red.Min;
  * prevents acceleration if something is in the way
  * for instance when a person is entering or leaving the gokart */
 abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implements //
-    LidarSpacialListener, GokartStatusListener {
+    LidarSpacialListener, SteerColumnListener {
   private static final Scalar UNIT_SPEED = DoubleScalar.of(1);
   private static final double PENALTY_DURATION_S = 0.5;
   // ---
   private final VelodyneLcmClient velodyneLcmClient;
   private final LidarSpacialProvider lidarSpacialProvider;
-  private final GokartStatusLcmClient gokartStatusLcmClient = new GokartStatusLcmClient();
+  private final SteerColumnLcmClient steerColumnLcmClient = new SteerColumnLcmClient();
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final Watchdog watchdog = SoftWatchdog.barking(PENALTY_DURATION_S);
@@ -59,8 +59,8 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   protected final void first() {
     lidarSpacialProvider.addListener(this);
     velodyneLcmClient.startSubscriptions();
-    gokartStatusLcmClient.addListener(this);
-    gokartStatusLcmClient.startSubscriptions();
+    steerColumnLcmClient.addListener(this);
+    steerColumnLcmClient.startSubscriptions();
     protected_first();
     RimoSocket.INSTANCE.addPutProvider(this);
   }
@@ -70,7 +70,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
     RimoSocket.INSTANCE.removePutProvider(this);
     protected_last();
     velodyneLcmClient.stopSubscriptions();
-    gokartStatusLcmClient.stopSubscriptions();
+    steerColumnLcmClient.stopSubscriptions();
   }
 
   void protected_first() {
@@ -98,7 +98,7 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
   }
 
   @Override // from GokartStatusListener
-  public final void getEvent(GokartStatusEvent gokartStatusEvent) {
+  public final void getEvent(SteerColumnEvent steerColumnEvent) {
     Optional<Scalar> touching = clearanceTracker.contact();
     if (touching.isPresent()) {
       Optional<Scalar> _contact = contact;
@@ -106,10 +106,10 @@ abstract class Vlp16ClearanceModule extends EmergencyModule<RimoPutEvent> implem
           ? Optional.of(Min.of(_contact.get(), touching.get())) //
           : touching;
     }
-    clearanceTracker = gokartStatusEvent.isSteerColumnCalibrated() //
+    clearanceTracker = steerColumnEvent.isSteerColumnCalibrated() //
         ? SafetyConfig.GLOBAL.getClearanceTracker( //
             UNIT_SPEED, //
-            Magnitude.PER_METER.apply(steerMapping.getRatioFromSCE(gokartStatusEvent)))
+            Magnitude.PER_METER.apply(steerMapping.getRatioFromSCE(steerColumnEvent)))
         : new ObstructedClearanceTracker(RealScalar.of(1));
   }
 

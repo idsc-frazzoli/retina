@@ -9,7 +9,7 @@ import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.glc.adapter.CatchyTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.gui.win.BaseFrame;
 import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
-import ch.ethz.idsc.owl.math.region.ImageRegion;
+import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.state.TrajectoryRegionQuery;
 import ch.ethz.idsc.subare.core.td.SarsaType;
 import ch.ethz.idsc.tensor.Tensor;
@@ -19,12 +19,12 @@ import ch.ethz.idsc.tensor.Tensors;
   @Override
   public BaseFrame start() {
     OwlyAnimationFrame owlyAnimationFrame = new OwlyAnimationFrame();
-    R2ImageRegionWrap r2ImageRegionWrap = R2ImageRegions._GTOB;
-    ImageRegion imageRegion = r2ImageRegionWrap.imageRegion();
+    R2ImageRegionWrap r2ImageRegionWrap = R2ImageRegions._0F5C_2182;
+    Region<Tensor> imageRegion = r2ImageRegionWrap.imageRegion();
     TrajectoryRegionQuery trajectoryRegionQuery = CatchyTrajectoryRegionQuery.timeInvariant(imageRegion);
     owlyAnimationFrame.addBackground(RegionRenders.create(imageRegion));
     owlyAnimationFrame.addBackground(RegionRenders.create(trajectoryRegionQuery));
-    Tensor startPos = Tensors.vector(3.000, 6.983, 0.000);
+    Tensor startPos = Tensors.vector(5.117, 5.950, 0.000);
     CarPolicyEntity carPolicyEntity = //
         new CarPolicyEntity(startPos, SarsaType.ORIGINAL, trajectoryRegionQuery);
     owlyAnimationFrame.add(carPolicyEntity);

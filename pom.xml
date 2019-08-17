@@ -82,28 +82,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
-			<artifactId>tensor</artifactId>
-			<version>0.7.3</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.ethz.idsc</groupId>
-			<artifactId>ephemeral</artifactId>
-			<version>0.2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.ethz.idsc</groupId>
-			<artifactId>lcm-java</artifactId>
-			<version>0.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
-			<version>0.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.ethz.idsc</groupId>
-			<artifactId>subare</artifactId>
-			<version>0.2.9</version>
+			<version>0.5.0</version>
 		</dependency>
 
 		<dependency>
@@ -156,53 +136,16 @@
 			<version>${lwjgl.version}</version>
 			<classifier>natives-${platform}</classifier>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.bytedeco</groupId>
-			<artifactId>javacv-platform</artifactId>
-			<version>1.4.1</version>
-		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>3.8.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
 	<repositories>
-		<repository>
-			<id>tensor-mvn-repo</id>
-			<url>https://raw.github.com/idsc-frazzoli/tensor/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>subare-mvn-repo</id>
-			<url>https://raw.github.com/idsc-frazzoli/subare/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>ephemeral-mvn-repo</id>
-			<url>https://raw.github.com/idsc-frazzoli/ephemeral/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>lcm-java-mvn-repo</id>
-			<url>https://raw.github.com/idsc-frazzoli/lcm-java/mvn-repo/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
 		<repository>
 			<id>owl-mvn-repo</id>
 			<url>https://raw.github.com/idsc-frazzoli/owl/mvn-repo/</url>

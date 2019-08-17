@@ -11,6 +11,4 @@ public class GokartLogConfig {
    * Example: {41.99[m], 49.20[m], 0.4424784}
    * Default: null */
   public Tensor pose = null;
-  /** name or initials of driver */
-  public String driver = "";
 }

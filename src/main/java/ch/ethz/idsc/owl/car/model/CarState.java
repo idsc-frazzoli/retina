@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Join;
 
+// class is used outside project
 public class CarState {
   public final Scalar Ux; // 1 long speed body frame [m/s]
   public final Scalar Uy; // 2 lateral speed body frame [m/s]

@@ -8,7 +8,10 @@ import ch.ethz.idsc.tensor.alg.Series;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** the constants in the fitted model were derived in the report
- * 20190509_steering_turning_ratio */
+ * 20190509_steering_turning_ratio
+ * 
+ * the mapping {@link #getSCEfromRatio(Scalar)} is defined for input value ratios in the interval
+ * [-0.5[m^-1], +0.5[m^-1]]. for values outside this interval, the return value produces a complex number! */
 public class FittedSteerMapping extends AbstractSteerMapping {
   private static final SteerMapping INSTANCE = new FittedSteerMapping( //
       Quantity.of(+0.8284521034333863, "SCE^-1*m^-1"), Quantity.of(-0.33633373640449604, "SCE^-3*m^-1"), //
@@ -24,8 +27,6 @@ public class FittedSteerMapping extends AbstractSteerMapping {
       Scalar steer2column1, Scalar steer2column3, Scalar steer2column5) {
     super( //
         Series.of(Tensors.of(RealScalar.ZERO, column2steer1, RealScalar.ZERO, column2steer3)), //
-        new InverseSteerCubic(column2steer1, column2steer3)
-    // Series.of(Tensors.of(RealScalar.ZERO, steer2column1, RealScalar.ZERO, steer2column3, RealScalar.ZERO, steer2column5))
-    );
+        new InverseSteerCubic(column2steer1, column2steer3));
   }
 }

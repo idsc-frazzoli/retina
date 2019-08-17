@@ -16,16 +16,26 @@ public class BackgroundImage {
    * @return
    * @throws IOException */
   public static BackgroundImage from(File file, Tensor model2pixel) throws IOException {
-    return new BackgroundImage(ImageIO.read(file), model2pixel);
+    BufferedImage bufferedImage = ImageIO.read(file);
+    FadeTop.of(bufferedImage);
+    return new BackgroundImage(bufferedImage, model2pixel);
   }
 
   // ---
-  public final BufferedImage bufferedImage;
-  public final Tensor model2pixel;
+  private final BufferedImage bufferedImage;
+  private final Tensor model2pixel;
 
   public BackgroundImage(BufferedImage bufferedImage, Tensor model2pixel) {
     this.bufferedImage = bufferedImage;
-    this.model2pixel = model2pixel.unmodifiable();
+    this.model2pixel = model2pixel;
+  }
+
+  public BufferedImage bufferedImage() {
+    return bufferedImage;
+  }
+
+  public Tensor model2pixel() {
+    return model2pixel;
   }
 
   public Dimension dimension() {
