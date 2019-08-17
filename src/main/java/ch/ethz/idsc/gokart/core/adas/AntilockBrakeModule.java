@@ -21,6 +21,7 @@ public abstract class AntilockBrakeModule extends AbstractModule implements Linm
   protected final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   // ---
   protected final HapticSteerConfig hapticSteerConfig;
+  /** velocity is higher than setVel -> full stop */
   protected Scalar brakePosition;
 
   public AntilockBrakeModule(HapticSteerConfig hapticSteerConfig) {

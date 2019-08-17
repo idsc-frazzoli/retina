@@ -31,7 +31,7 @@ public final class SteerVibrationModule extends AbstractModule implements SteerP
   @Override
   protected void first() {
     SteerSocket.INSTANCE.addPutProvider(this);
-    // TODO AM subscribe SteerGetListener?
+    // FIXME AM subscribe SteerGetListener?
   }
 
   @Override
