@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.gokart.offline.cache.CachedLog;
+import ch.ethz.idsc.gokart.offline.cache.CachedLogs;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import junit.framework.TestCase;
 
@@ -20,7 +21,7 @@ public class GokartLcmLogCutterTest extends TestCase {
   }
 
   public void testCached() throws IOException, InterruptedException {
-    CachedLog cachedLog = CachedLog._20190401T115537_02;
+    CachedLog cachedLog = CachedLogs.randomSmall();
     File file = cachedLog.file();
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     GokartLcmLogCutter gokartLcmLogCutter = //
