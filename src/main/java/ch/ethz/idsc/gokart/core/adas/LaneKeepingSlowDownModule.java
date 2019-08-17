@@ -42,8 +42,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    if (LaneHelper.leftLane(optionalCurve, gokartPoseEvent, slowDownDistance)) {
-      System.out.println("left lane");
+    if (LaneHelper.isOutside(optionalCurve, gokartPoseEvent, slowDownDistance)) {
+      System.out.println("outside lane");
       return slowDown.putEvent();
     }
     System.out.println("still on lane");

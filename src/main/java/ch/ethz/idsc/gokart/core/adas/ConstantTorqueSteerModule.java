@@ -10,6 +10,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
+/** applies contant torque to */
 public final class ConstantTorqueSteerModule extends AbstractModule implements SteerPutProvider {
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
 

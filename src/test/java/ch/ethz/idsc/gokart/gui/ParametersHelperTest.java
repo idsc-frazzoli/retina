@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.qty.QuantityUnit;
 import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.ref.TensorReflection;
+import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
 
 public class ParametersHelperTest extends TestCase {
@@ -71,6 +72,24 @@ public class ParametersHelperTest extends TestCase {
         if (cls.equals(Scalar.class)) {
           Scalar scalar = (Scalar) field.get(object); // may throw Exception
           require(scalar);
+        }
+      }
+    }
+  }
+
+  public void testFieldSubdivideClip() throws IllegalArgumentException, IllegalAccessException {
+    for (Object object : ParametersHelper.OBJECTS) {
+      TensorProperties tensorProperties = TensorProperties.wrap(object);
+      List<Field> list = tensorProperties.fields().collect(Collectors.toList());
+      for (Field field : list) {
+        Class<?> cls = field.getType();
+        if (cls.equals(Scalar.class)) {
+          FieldSubdivide fieldSubdivide = field.getAnnotation(FieldSubdivide.class);
+          if (Objects.nonNull(fieldSubdivide)) {
+            Clip clip = TensorReflection.clip(fieldSubdivide);
+            Scalar scalar = (Scalar) field.get(object); // may throw Exception
+            clip.requireInside(scalar);
+          }
         }
       }
     }
