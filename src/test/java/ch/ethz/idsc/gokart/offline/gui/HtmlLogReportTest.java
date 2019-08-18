@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.offline.gui;
 
 import java.io.File;
-import java.io.IOException;
 
 import ch.ethz.idsc.gokart.offline.cache.CachedLog;
 import ch.ethz.idsc.gokart.offline.cache.CachedLogs;
@@ -23,7 +22,7 @@ public class HtmlLogReportTest extends TestCase {
     assertTrue(Tensors.isEmpty(tensor));
   }
 
-  public void testCached() throws IOException {
+  public void testCached() throws Exception {
     CachedLog cachedLog = CachedLogs.randomSmall();
     File file = cachedLog.file();
     GokartLcmMap gokartLcmMap = new GokartLcmMap(file);

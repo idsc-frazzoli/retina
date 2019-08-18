@@ -11,12 +11,17 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.owl.math.region.BufferedImageRegion;
 import ch.ethz.idsc.retina.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.io.Timing;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class OccupancyMappingOffline implements OfflineLogListener {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   // ---
+  public final Timing timing = Timing.stopped();
+  public final Scalar maxTime = Quantity.of(0, SI.SECOND);
   private final OccupancyMappingCore occupancyMappingCore = new OccupancyMappingCore(OccupancyConfig.GLOBAL);
 
   @Override
@@ -26,7 +31,9 @@ public class OccupancyMappingOffline implements OfflineLogListener {
       occupancyMappingCore.getEvent(gokartPoseEvent);
     } else //
     if (channel.equals(CHANNEL_LIDAR)) {
-      occupancyMappingCore.vlp16Decoder.lasers(byteBuffer);
+      timing.start();
+      occupancyMappingCore.velodyneDecoder.lasers(byteBuffer);
+      timing.stop();
     }
   }
 

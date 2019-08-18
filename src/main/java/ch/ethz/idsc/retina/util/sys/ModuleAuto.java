@@ -56,7 +56,7 @@ public enum ModuleAuto {
       }
     }
     AbstractModule abstractModule = module.getDeclaredConstructor().newInstance();
-    System.out.println(new Date() + " Module Auto: Launching: " + module);
+    System.out.println("run: " + module.getName());
     abstractModule.launch();
     synchronized (moduleMap) {
       moduleMap.put(module, abstractModule);
@@ -69,7 +69,7 @@ public enum ModuleAuto {
       abstractModule = moduleMap.remove(module);
     }
     if (Objects.nonNull(abstractModule)) {
-      System.out.println(new Date() + " Module Auto: Terminating: " + module);
+      System.out.println("end: " + module.getName());
       abstractModule.terminate();
     } else
       System.err.println("not registered: " + module.getSimpleName());

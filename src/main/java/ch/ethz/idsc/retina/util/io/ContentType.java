@@ -25,7 +25,12 @@ public enum ContentType {
     this.expression = expression;
   }
 
-  public boolean matches(String string) {
+  public void require(String string) {
+    if (!matches(string))
+      throw new IllegalArgumentException(string);
+  }
+
+  private boolean matches(String string) {
     // text/html; charset=UTF-8
     String first = string.split(";")[0];
     return expression.equalsIgnoreCase(first);

@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.map;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.cache.CachedLog;
@@ -18,7 +17,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 import junit.framework.TestCase;
 
 public class OccupancyMappingCoreTest extends TestCase {
-  public void testSimple() throws IOException {
+  public void testSimple() throws Exception {
     File file = CachedLog._20190701T174152_00.file();
     OccupancyMappingOffline occupancyMappingOffline = new OccupancyMappingOffline();
     OfflineLogPlayer.process(file, occupancyMappingOffline);

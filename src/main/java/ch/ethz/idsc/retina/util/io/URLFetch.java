@@ -1,3 +1,4 @@
+// TODO JPH TENSOR V078 obsolete
 // code by jph
 package ch.ethz.idsc.retina.util.io;
 
@@ -7,85 +8,82 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
-import ch.ethz.idsc.tensor.io.Timing;
-
-/** inspired by
+/** Example:
+ * <pre>
+ * try (URLFetch urlFetch = new URLFetch(new URL("http://www.hakenberg.de/favicon.ico"))) {
+ * urlFetch.downloadIfMissing(HomeDirectory.file("favicon.ico"));
+ * }
+ * </pre>
+ * 
+ * <p>inspired by
  * <a href="https://reference.wolfram.com/language/ref/URLFetch.html">URLFetch</a> */
-public class URLFetch {
-  private final URL url;
-  private final ContentType contentType;
+public class URLFetch implements AutoCloseable {
+  private final HttpURLConnection httpURLConnection;
+  private final String contentType;
+  private final int length;
 
   /** @param url
-   * @param contentType */
-  // TODO JPH make restriction to a certain contentType optional!
-  public URLFetch(URL url, ContentType contentType) {
-    this.url = url;
-    this.contentType = contentType;
+   * @throws IOException */
+  public URLFetch(URL url) throws IOException {
+    httpURLConnection = (HttpURLConnection) url.openConnection();
+    int responseCode = httpURLConnection.getResponseCode();
+    if (responseCode == HttpURLConnection.HTTP_OK) {
+      contentType = httpURLConnection.getContentType();
+      length = httpURLConnection.getContentLength();
+    } else {
+      httpURLConnection.disconnect();
+      throw new IOException("" + responseCode);
+    }
   }
 
-  /** @param url
-   * @param contentType
-   * @throws MalformedURLException */
-  public URLFetch(String url, ContentType contentType) throws MalformedURLException {
-    this(new URL(url), contentType);
+  public URLFetch(String url) throws IOException {
+    this(new URL(url));
+  }
+
+  /** @return
+   * @throws IOException */
+  public InputStream inputStream() throws IOException {
+    return httpURLConnection.getInputStream();
+  }
+
+  /** @param file to download web content to if file does not already exist,
+   * or has the wrong length
+   * @throws IOException */
+  public void downloadIfMissing(File file) throws IOException {
+    if (file.isFile() && //
+        file.length() == length)
+      return;
+    download(file);
   }
 
   /** @param file to download web content to
-   * @throws IOException */
-  public void to(File file) throws IOException {
-    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-    int responseCode = httpURLConnection.getResponseCode();
-    // always check HTTP response code first
-    if (responseCode == HttpURLConnection.HTTP_OK) {
-      // tests show that often: disposition == null
-      String disposition = httpURLConnection.getHeaderField("Content-Disposition");
-      String content_type = httpURLConnection.getContentType();
-      if (contentType.matches(content_type)) {
-        int contentLength = httpURLConnection.getContentLength();
-        System.out.println("Content-Type = " + content_type);
-        System.out.println("Content-Disposition = " + disposition);
-        System.out.println("Content-Length = " + contentLength);
-        if (file.isFile() && //
-            file.length() == contentLength) {
-          System.out.println("file exists and has same size.");
-        } else {
-          byte[] buffer = new byte[4096]; // buffer size
-          // opens input stream from the HTTP connection
-          Timing timing = Timing.started();
-          try (InputStream inputStream = httpURLConnection.getInputStream()) {
-            // opens an output stream to save into file
-            try (OutputStream outputStream = new FileOutputStream(file)) {
-              int bytesRead = -1;
-              while ((bytesRead = inputStream.read(buffer)) != -1)
-                outputStream.write(buffer, 0, bytesRead);
-              System.out.println("url downloaded in " + timing.seconds() + "[s]");
-            }
-          }
-        }
-      } else {
-        httpURLConnection.disconnect();
-        throw new RuntimeException(content_type);
+   * @throws IOException if function was already called */
+  public void download(File file) throws IOException {
+    try (InputStream inputStream = httpURLConnection.getInputStream()) {
+      try (OutputStream outputStream = new FileOutputStream(file)) {
+        byte[] buffer = new byte[4096]; // buffer size
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1)
+          outputStream.write(buffer, 0, bytesRead);
       }
-    } else {
-      System.err.println("No file to download. Server replied HTTP code: " + responseCode);
     }
     httpURLConnection.disconnect();
   }
 
-  /** @return true if URL is available for download
-   * @throws IOException */
-  public boolean ping() throws IOException {
-    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-    int responseCode = httpURLConnection.getResponseCode();
-    // always check HTTP response code first
-    if (responseCode == HttpURLConnection.HTTP_OK) {
-      // tests show that often: disposition == null
-      String content_type = httpURLConnection.getContentType();
-      return contentType.matches(content_type);
-    }
-    return false;
+  /** @return number of bytes to download */
+  public int length() {
+    return length;
+  }
+
+  /** @return */
+  public String contentType() {
+    return contentType;
+  }
+
+  @Override // from AutoCloseable
+  public void close() throws IOException {
+    httpURLConnection.disconnect();
   }
 }

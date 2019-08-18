@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.map;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
@@ -9,6 +10,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmClient;
 import ch.ethz.idsc.owl.math.region.BufferedImageRegion;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.tensor.Tensor;
 
 /** free space module always runs in the background
  * 
@@ -23,6 +25,7 @@ public class OccupancyMappingModule extends AbstractModule implements Runnable {
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final Vlp16LcmClient vlp16LcmClient;
   private volatile boolean isLaunched = true;
+  private Tensor points_ferry = null;
 
   public OccupancyMappingModule() {
     this(OccupancyConfig.GLOBAL);
@@ -30,12 +33,13 @@ public class OccupancyMappingModule extends AbstractModule implements Runnable {
 
   public OccupancyMappingModule(OccupancyConfig occupancyConfig) {
     occupancyMappingCore = new OccupancyMappingCore(occupancyConfig) {
-      @Override
-      public void action() {
+      @Override // from TensorListener
+      public void tensorReceived(Tensor points) {
+        points_ferry = points;
         thread.interrupt();
       }
     };
-    vlp16LcmClient = SensorsConfig.GLOBAL.vlp16LcmClient(occupancyMappingCore.vlp16Decoder);
+    vlp16LcmClient = SensorsConfig.GLOBAL.vlp16LcmClient(occupancyMappingCore.velodyneDecoder);
   }
 
   @Override
@@ -69,8 +73,11 @@ public class OccupancyMappingModule extends AbstractModule implements Runnable {
   @Override
   public void run() {
     while (isLaunched) {
-      boolean process = occupancyMappingCore.process();
-      if (!process)
+      if (Objects.nonNull(points_ferry)) {
+        Tensor points = points_ferry;
+        points_ferry = null;
+        occupancyMappingCore.process(points);
+      } else
         try {
           Thread.sleep(1_000);
         } catch (Exception exception) {
