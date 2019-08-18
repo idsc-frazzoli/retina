@@ -23,7 +23,7 @@ public class CachedLogTest extends TestCase {
   public void testPing() throws IOException, InterruptedException {
     for (CachedLog cachedLog : CachedLog.values()) {
       try (URLFetch urlFetch = new URLFetch(cachedLog.url())) {
-        assertTrue(1000 < urlFetch.contentLength());
+        assertTrue(1000 < urlFetch.length());
         ContentType.APPLICATION_OCTETSTREAM.require(urlFetch.contentType());
         Thread.sleep(50);
       }

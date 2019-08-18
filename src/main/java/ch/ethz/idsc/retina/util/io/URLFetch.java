@@ -1,3 +1,4 @@
+// TODO JPH TENSOR 078 obsolete
 // code by jph
 package ch.ethz.idsc.retina.util.io;
 
@@ -9,12 +10,19 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/** inspired by
+/** Example:
+ * <pre>
+ * try (URLFetch urlFetch = new URLFetch(new URL("http://www.hakenberg.de/favicon.ico"))) {
+ * urlFetch.downloadIfMissing(HomeDirectory.file("favicon.ico"));
+ * }
+ * </pre>
+ * 
+ * <p>inspired by
  * <a href="https://reference.wolfram.com/language/ref/URLFetch.html">URLFetch</a> */
 public class URLFetch implements AutoCloseable {
   private final HttpURLConnection httpURLConnection;
   private final String contentType;
-  private final int contentLength;
+  private final int length;
 
   /** @param url
    * @throws IOException */
@@ -23,30 +31,40 @@ public class URLFetch implements AutoCloseable {
     int responseCode = httpURLConnection.getResponseCode();
     if (responseCode == HttpURLConnection.HTTP_OK) {
       contentType = httpURLConnection.getContentType();
-      contentLength = httpURLConnection.getContentLength();
-    } else
+      length = httpURLConnection.getContentLength();
+    } else {
+      httpURLConnection.disconnect();
       throw new IOException("" + responseCode);
+    }
   }
 
   public URLFetch(String url) throws IOException {
     this(new URL(url));
   }
 
-  /** @param file to download web content to
+  /** @return
    * @throws IOException */
-  public void downloadIfNotExists(File file) throws IOException {
-    if (file.isFile() && file.length() == contentLength)
+  public InputStream inputStream() throws IOException {
+    return httpURLConnection.getInputStream();
+  }
+
+  /** @param file to download web content to if file does not already exist,
+   * or has the wrong length
+   * @throws IOException */
+  public void downloadIfMissing(File file) throws IOException {
+    if (file.isFile() && //
+        file.length() == length)
       return;
     download(file);
   }
 
-  /** @param file
+  /** @param file to download web content to
    * @throws IOException if function was already called */
   public void download(File file) throws IOException {
-    byte[] buffer = new byte[4096]; // buffer size
     try (InputStream inputStream = httpURLConnection.getInputStream()) {
       try (OutputStream outputStream = new FileOutputStream(file)) {
-        int bytesRead = -1;
+        byte[] buffer = new byte[4096]; // buffer size
+        int bytesRead;
         while ((bytesRead = inputStream.read(buffer)) != -1)
           outputStream.write(buffer, 0, bytesRead);
       }
@@ -55,8 +73,8 @@ public class URLFetch implements AutoCloseable {
   }
 
   /** @return number of bytes to download */
-  public int contentLength() {
-    return contentLength;
+  public int length() {
+    return length;
   }
 
   /** @return */

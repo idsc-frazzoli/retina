@@ -75,7 +75,7 @@ public enum CachedLog {
     if (!file.isFile())
       try (URLFetch urlFetch = new URLFetch(url())) {
         ContentType.APPLICATION_OCTETSTREAM.require(urlFetch.contentType());
-        urlFetch.downloadIfNotExists(file);
+        urlFetch.downloadIfMissing(file);
       }
     return file;
   }

@@ -42,6 +42,7 @@ public class ErodableMap implements RenderInterface {
     geometricLayer.pushMatrix(IdentityMatrix.of(3));
   }
 
+  /** @param matrix with dimensions 3 x 3 */
   public void setReference(Tensor matrix) {
     geometricLayer.popMatrix();
     geometricLayer.pushMatrix(matrix);
