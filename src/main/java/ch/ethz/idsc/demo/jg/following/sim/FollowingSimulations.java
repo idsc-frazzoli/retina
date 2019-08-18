@@ -12,7 +12,7 @@ import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
 import ch.ethz.idsc.gokart.core.pure.PurePursuitConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
-import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
+import ch.ethz.idsc.owl.bot.se2.glc.Se2CarFlows;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -98,7 +98,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
       if (optional.isPresent())
         ratio = Clips.absolute(SteerConfig.GLOBAL.turningRatioMax).apply(optional.get());
       ratios.append(ratio);
-      pose = Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed.Get(0), ratio), pose, timeStep);
+      pose = Se2CarIntegrator.INSTANCE.step(Se2CarFlows.singleton(speed.Get(0), ratio), pose, timeStep);
     }
     timing.stop();
   }
