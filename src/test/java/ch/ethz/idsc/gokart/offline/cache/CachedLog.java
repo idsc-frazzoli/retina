@@ -68,6 +68,8 @@ public enum CachedLog {
     }
   }
 
+  /** @return lcm log file
+   * @throws IOException */
   public File file() throws IOException {
     File directory = new File("resources/cache/lcm", name().substring(1, 1 + 8));
     directory.mkdirs();

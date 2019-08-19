@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
+import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionStepsMessage;
 import ch.ethz.idsc.gokart.core.plan.TrajectoryEvents;
@@ -20,6 +21,7 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
+import ch.ethz.idsc.gokart.dev.u3.GokartLabjackFrame;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.AccelerationRender;
 import ch.ethz.idsc.gokart.gui.top.AngularSlipRender;
@@ -39,11 +41,16 @@ import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
+import ch.ethz.idsc.owl.gui.ren.LaneRender;
 import ch.ethz.idsc.owl.gui.ren.TrajectoryRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.lane.LaneInterface;
+import ch.ethz.idsc.owl.math.lane.StableLane;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
+import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -55,6 +62,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private static final Stroke STROKE = //
       new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
   private final PathRender pathRender = new PathRender(new Color(128, 128, 0), STROKE);
+  private final LaneRender laneRender = new LaneRender(true);
   private final MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(20);
   private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
   private final DriftLinesRender driftLinesRender = new DriftLinesRender(250);
@@ -140,13 +148,19 @@ import ch.ethz.idsc.tensor.sca.Round;
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
       se2ExpFixpointRender.getEvent(gokartPoseEvent);
     } else //
-    if (channel.equals("davis240c.overview.dvs")) {
+    if (channel.equals("davis240c.overview.dvs")) { // TODO JPH
       hasDavis240c = true;
       accumulatedImageRender.davisDvsDatagramDecoder.decode(byteBuffer);
+    } else //
+    if (channel.equals(GokartLcmChannel.LABJACK_U3_ADC)) {
+      ManualControlInterface manualControlInterface = new GokartLabjackFrame(byteBuffer);
+      gokartRender.manualControlListener.manualControl(manualControlInterface);
     } else //
     if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2)) {
       Tensor tensor = Se2CurveLcm.decode(byteBuffer).unmodifiable();
       pathRender.setCurve(tensor, true);
+      LaneInterface laneInterface = new StableLane(Tensors.empty(), tensor, HapticSteerConfig.GLOBAL.halfWidth.multiply(RealScalar.of(2)));
+      laneRender.setLane(laneInterface);
     } else //
     if (channel.equals(GokartLcmChannel.PURSUIT_PLAN)) {
       ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer);
@@ -157,7 +171,9 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    pathRender.render(geometricLayer, graphics);
+    // TODO JPH
+    // pathRender.render(geometricLayer, graphics);
+    laneRender.render(geometricLayer, graphics);
     if (hasDavis240c)
       accumulatedImageRender.render(geometricLayer, graphics);
     mpcPredictionSequenceRender.render(geometricLayer, graphics);

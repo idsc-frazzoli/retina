@@ -77,7 +77,7 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
       if (optionalCurve.isPresent() && LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) && Objects.nonNull(steerGetEvent) && optional.isPresent()) {
         binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of(//
             closestDistance(optionalCurve.get(), gokartPoseEvent.getPose()), //
-            HapticSteerConfig.GLOBAL.offsetL, //
+            HapticSteerConfig.GLOBAL.halfWidth, //
             steerGetEvent.tsuTrq(), //
             velocity, putTorque))));
       }

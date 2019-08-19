@@ -56,10 +56,9 @@ public class HapticSteerConfig implements Serializable {
   public Scalar laneKeepingTorqueLimit = Quantity.of(0.9, "SCT");
   public Boolean printLaneInfo = false;
   /** lane boundaries */
-  public Scalar offsetL = Quantity.of(0.5, SI.METER);
-  public Scalar offsetR = Quantity.of(-0.5, SI.METER);
+  public Scalar halfWidth = Quantity.of(0.5, SI.METER);
   /** planning period */
-  public Scalar LKperiod = Quantity.of(0.2, SI.SECOND);
+  public Scalar laneKeepingPeriod = Quantity.of(0.2, SI.SECOND);
 
   /***************************************************/
   // functions for anti-lock brake

@@ -137,7 +137,7 @@ public abstract class GokartRender implements RenderInterface {
       graphics.fill(geometricLayer.toPath2D(AXIS_ALIGNED_LINMOT.alongX(value)));
       geometricLayer.popMatrix();
     }
-    {
+    { // throttle
       Scalar MAX = DoubleScalar.of(0.5);
       Scalar value = manualControlInterface.getAheadAverage().multiply(MAX);
       geometricLayer.pushMatrix(MATRIX_THROTTLE);
@@ -151,7 +151,7 @@ public abstract class GokartRender implements RenderInterface {
       final int alpha = 255;
       graphics.setStroke(new BasicStroke());
       {
-        graphics.setColor(new Color(224, 160, 160, alpha));
+        graphics.setColor(new Color(224, 160 - 64, 224, alpha));
         Scalar value = steerGetEvent.isActive() //
             ? SteerPutEvent.RTORQUE.apply(steerGetEvent.estMotTrq()).multiply(ANGLE_FACTOR)
             : RealScalar.ZERO;
@@ -162,7 +162,7 @@ public abstract class GokartRender implements RenderInterface {
         graphics.setColor(new Color(160 / 2, 224, 160 / 2, 64));
         graphics.draw(geometricLayer.toPath2D(CURVED_BAR_TSU.span(Clips.absolute(ANGLE_FACTOR)), true));
         Scalar value = SteerPutEvent.RTORQUE.apply(steerGetEvent.tsuTrq()).multiply(ANGLE_FACTOR);
-        graphics.setColor(new Color(160, 224, 160, alpha));
+        graphics.setColor(new Color(160 - 64, 224, 160 - 64, alpha));
         graphics.fill(geometricLayer.toPath2D(CURVED_BAR_TSU.single(value)));
       }
     }

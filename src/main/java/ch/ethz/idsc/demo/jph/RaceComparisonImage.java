@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.demo.jph.video.RunVideoBackground;
+import ch.ethz.idsc.demo.VideoBackground;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -27,7 +27,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final GeometricLayer geometricLayer;
 
   public RaceComparisonImage() throws IOException {
-    backgroundImage = RunVideoBackground.get20190701();
+    backgroundImage = VideoBackground.get20190701();
     bufferedImage = backgroundImage.bufferedImage();
     graphics = bufferedImage.createGraphics();
     geometricLayer = GeometricLayer.of(backgroundImage.model2pixel());
