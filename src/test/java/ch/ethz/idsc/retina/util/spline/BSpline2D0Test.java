@@ -9,6 +9,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.alg.UnitVector;
 import ch.ethz.idsc.tensor.opt.BSplineFunction;
+import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 import junit.framework.TestCase;
@@ -24,7 +25,7 @@ public class BSpline2D0Test extends TestCase {
   public void testBPs1() {
     Scalar scalar = BSpline2D0.FUNCTION.apply(RationalScalar.of(1, 3));
     Chop._12.requireClose(scalar, DoubleScalar.of(0.05555555555555555));
-    BSplineFunction bSplineFunction = BSplineFunction.of(2, UnitVector.of(11, 5));
+    ScalarTensorFunction bSplineFunction = BSplineFunction.string(2, UnitVector.of(11, 5));
     ScalarUnaryOperator shift1 = s -> s.add(RationalScalar.of(3, 2));
     ScalarUnaryOperator shift2 = s -> s.add(RationalScalar.of(5, 1));
     for (Tensor _x : Subdivide.of(-2, 2, 200)) {

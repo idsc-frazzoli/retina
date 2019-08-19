@@ -4,6 +4,7 @@ package ch.ethz.idsc.owl.car.model;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.slip.RobustSlip;
+import ch.ethz.idsc.sophus.lie.so3.So3Exponential;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -11,7 +12,6 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.lie.Cross;
-import ch.ethz.idsc.tensor.lie.Rodrigues;
 import ch.ethz.idsc.tensor.lie.RotationMatrix;
 import ch.ethz.idsc.tensor.mat.LinearSolve;
 import ch.ethz.idsc.tensor.red.Total;
@@ -115,7 +115,7 @@ public class TireForces {
    * @param index
    * @return */
   /* package */ Tensor get_ui_3(Scalar delta, int index) { // as in doc
-    Tensor rotation_3 = Rodrigues.exp(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, delta.negate()));
+    Tensor rotation_3 = So3Exponential.INSTANCE.exp(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, delta.negate()));
     Tensor tangent_3 = carState.u_3d().add(Cross.of(carState.rate_3d(), vehicleModel.wheelConstant(index).lever()));
     return rotation_3.dot(tangent_3).extract(0, 2);
   }

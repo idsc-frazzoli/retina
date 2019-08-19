@@ -22,7 +22,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
-import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatios;
+import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -48,7 +48,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
       if (!trajectoryDesign.jToggleButtonRepos.isSelected()) {
         mouseSe2 = geometricLayer.getMouseSe2State();
         if (optional.isPresent()) {
-          Tensor refined = Nest.of(ClothoidTerminalRatios.CURVE_SUBDIVISION::string, optional.get().curve(), REFINEMENT);
+          Tensor refined = Nest.of(Clothoid3.CURVE_SUBDIVISION::string, optional.get().curve(), REFINEMENT);
           Path2D path2d = geometricLayer.toPath2D(refined);
           graphics.setColor(Color.MAGENTA);
           graphics.draw(path2d);

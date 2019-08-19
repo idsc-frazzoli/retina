@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -55,7 +55,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   }
 
   public final Tensor getPositionVector() {
-    return Se2Utils.fromSE2Matrix(model);
+    return Se2Matrix.toVector(model);
   }
 
   @Override // from DavisImuFrameListener
@@ -80,7 +80,7 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
 
   protected final void appendRow(Scalar ratio, int sum, double duration) {
     LocalizationResult localizationResult = new LocalizationResult( //
-        time, Se2Utils.fromSE2Matrix(model), Clips.unit().requireInside(ratio));
+        time, Se2Matrix.toVector(model), Clips.unit().requireInside(ratio));
     listeners.forEach(listener -> listener.localizationCallback(localizationResult));
   }
 

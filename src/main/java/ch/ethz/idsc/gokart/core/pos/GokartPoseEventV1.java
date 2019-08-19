@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -15,10 +16,6 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class GokartPoseEventV1 extends DataEvent implements GokartPoseEvent {
   static final int LENGTH = Double.BYTES * 3 + Float.BYTES;
-  static final Tensor VELOCITY_ZERO = Tensors.of( //
-      Quantity.of(0.0, SI.VELOCITY), //
-      Quantity.of(0.0, SI.VELOCITY), //
-      Quantity.of(0.0, SI.PER_SECOND)).unmodifiable();
   private static final Scalar GYROZ_ZERO = Quantity.of(0.0, SI.PER_SECOND);
   // ---
   private final double x;
@@ -67,7 +64,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from PoseVelocityInterface
   public Tensor getVelocity() {
-    return VELOCITY_ZERO;
+    return VelocityHelper.ZERO;
   }
 
   @Override // from PoseVelocityInterface

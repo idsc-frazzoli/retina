@@ -1,15 +1,18 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
+import java.io.IOException;
+
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.UnitVector;
+import ch.ethz.idsc.tensor.io.Serialization;
 import ch.ethz.idsc.tensor.sca.Round;
 import junit.framework.TestCase;
 
 public class AngleVectorLookupFloatTest extends TestCase {
-  public void testSimple() {
-    AngleVectorLookupFloat tlf = new AngleVectorLookupFloat(360, false, 0);
+  public void testSimple() throws ClassNotFoundException, IOException {
+    AngleVectorLookupFloat tlf = Serialization.copy(new AngleVectorLookupFloat(360, false, 0));
     float dx = tlf.dx(20);
     float dy = tlf.dy(20);
     assertEquals(dx, (float) Math.cos(20 * 2 * Math.PI / 360));

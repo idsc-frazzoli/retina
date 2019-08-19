@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class TrackRefinementDemo extends BSplineTrackDemo {
+/* package */ class TrackRefinementDemo extends BSplineTrackDemo {
   private static final Tensor MODEL2PIXEL_INITIAL = Tensors.matrix(new Number[][] { //
       { 30, 0, 0 }, //
       { 0, -30, 800 }, //

@@ -22,7 +22,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.sophus.ply.Arrowhead;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -63,7 +63,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           graphics.draw(geometricLayer.toPath2D(trail.get()));
         }
         if (Tensors.nonEmpty(initialPose)) {
-          geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(PoseHelper.toUnitless(initialPose)));
+          geometricLayer.pushMatrix(Se2Matrix.of(PoseHelper.toUnitless(initialPose)));
           Path2D path2d = geometricLayer.toPath2D(Arrowhead.of(.75));
           path2d.closePath();
           graphics.setColor(Color.MAGENTA);

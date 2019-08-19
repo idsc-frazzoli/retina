@@ -43,7 +43,7 @@ public class PoseLcmServerModuleTest extends TestCase {
     assertNull(gokartPoseCapture.gokartPoseEvent);
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
     ModuleAuto.INSTANCE.runOne(PoseLcmServerModule.class);
-    Thread.sleep(50);
+    Thread.sleep(100);
     assertNotNull(gokartPoseCapture.gokartPoseEvent);
     ModuleAuto.INSTANCE.endOne(LidarLocalizationModule.class);
     ModuleAuto.INSTANCE.endOne(PoseLcmServerModule.class);

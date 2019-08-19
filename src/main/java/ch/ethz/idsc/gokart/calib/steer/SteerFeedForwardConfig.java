@@ -1,4 +1,4 @@
-// code by jph
+// code by am, jph
 package ch.ethz.idsc.gokart.calib.steer;
 
 import ch.ethz.idsc.retina.util.sys.AppResources;

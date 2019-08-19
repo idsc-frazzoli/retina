@@ -1,4 +1,4 @@
-// code by jph
+// code by jph, gjoel
 package ch.ethz.idsc.demo.jg;
 
 import java.awt.Color;
@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
@@ -18,15 +19,16 @@ import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.slam.ObstacleAggregate;
+import ch.ethz.idsc.gokart.offline.map.ObstacleAggregate;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 
 /** produces a high resolution image with lidar obstacles */
+// TODO JPH refactor
 public enum RunVideoBackground {
   ;
   public static final Dimension DIMENSION = new Dimension(1920, 1080);
@@ -37,10 +39,10 @@ public enum RunVideoBackground {
       "{{42.72771097503904, 42.122947603812364, -4322.645828532184}, {42.122947603812364, -42.72771097503904, 729.4840362558339}, {0.0, 0.0, 1.0}}");
   // "{{42.72771097503904, 42.122947603812364, -4498.645828532184}, {42.122947603812364, -42.72771097503904, 626.4840362558339}, {0.0, 0.0, 1.0}}");
   /** large */
-  public static final Tensor _20190311 = Se2Utils.toSE2Translation(Tensors.vector(0, +200)).dot(DiagonalMatrix.of(0.9, 0.9, 1).dot(Tensors.fromString( //
+  public static final Tensor _20190311 = Se2Matrix.translation(Tensors.vector(0, +200)).dot(DiagonalMatrix.of(0.9, 0.9, 1).dot(Tensors.fromString( //
       "{{36.67799433628459, 35.43620650503479, -1900.5265224432885}, {35.43620650503479, -36.67799433628459, 620.3647376620074}, {0.0, 0.0, 1.0}}")));
   /** dustproof wall */
-  public static final Tensor _20190401 = Se2Utils.toSE2Translation(Tensors.vector(0, +120)).dot(Tensors.fromString( //
+  public static final Tensor _20190401 = Se2Matrix.translation(Tensors.vector(0, +120)).dot(Tensors.fromString( //
       "{{36.67799433628459, 35.43620650503479, -1900.5265224432885}, {35.43620650503479, -36.67799433628459, 620.3647376620074}, {0.0, 0.0, 1.0}}"));
 
   // ---
@@ -72,24 +74,41 @@ public enum RunVideoBackground {
     return BackgroundImage.from(HomeDirectory.Pictures("20190610T154922_00.png"), _20190401);
   }
 
+  public static BackgroundImage auto(File file) throws IOException {
+    File directory = file.getParentFile();
+    return BackgroundImage.from(new File(directory, directory.getName() + ".bck.png"), _20190401);
+  }
+
   public static void main(String[] args) throws IOException {
     Optional<File> optionalFile = FileHelper.open(args);
     if (optionalFile.isPresent()) {
-      GokartLogInterface gokartLogInterface = //
-          GokartLogAdapter.of(optionalFile.get());
-      Optional<ByteBuffer> optional = FirstLogMessage.of(gokartLogInterface.file(), GokartPoseChannel.INSTANCE.channel());
-      BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
-      Graphics2D graphics = bufferedImage.createGraphics();
-      graphics.setColor(Color.WHITE);
-      graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-      graphics.setColor(new Color(0, 0, 0, 16));
-      ObstacleAggregate obstacleAggregate = new ObstacleAggregate( //
-          GokartPoseChannel.INSTANCE.channel(), //
-          graphics, //
-          _20190401, //
-          GokartPoseEvent.of(optional.get()).getPose());
-      OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
-      ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20190610T154922_00.png"));
+      File file = optionalFile.get();
+      try {
+        render(file);
+      } catch (FileNotFoundException e) {
+        // most common error is to select file instead of directory
+        render(file.getParentFile());
+      }
     }
+  }
+
+  private static void render(File directory) throws IOException {
+    GokartLogInterface gokartLogInterface = //
+        GokartLogAdapter.of(directory);
+    Optional<ByteBuffer> optional = FirstLogMessage.of(gokartLogInterface.file(), GokartPoseChannel.INSTANCE.channel());
+    BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D graphics = bufferedImage.createGraphics();
+    graphics.setColor(Color.WHITE);
+    graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+    graphics.setColor(new Color(0, 0, 0, 16));
+    ObstacleAggregate obstacleAggregate = new ObstacleAggregate( //
+        GokartPoseChannel.INSTANCE.channel(), //
+        graphics, //
+        _20190401, //
+        GokartPoseEvent.of(optional.get()).getPose());
+    System.out.print("processing... ");
+    OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
+    System.out.print("finished");
+    ImageIO.write(bufferedImage, "png", new File(directory, directory.getName() + ".bck.png"));
   }
 }

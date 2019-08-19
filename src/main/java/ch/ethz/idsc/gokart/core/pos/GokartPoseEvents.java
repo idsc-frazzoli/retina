@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -16,7 +17,7 @@ public enum GokartPoseEvents {
   private static final GokartPoseEvent MOTIONLESS_0 = create( //
       POSE_IDENTITY, //
       RealScalar.ZERO, //
-      GokartPoseEventV1.VELOCITY_ZERO);
+      VelocityHelper.ZERO);
 
   /** @return motionless with pose quality == 0, instance of {@link GokartPoseEventV2} */
   public static GokartPoseEvent motionlessUninitialized() {
@@ -47,7 +48,7 @@ public enum GokartPoseEvents {
   /** @param pose {x[m], y[m], alpha}
    * @param quality in the interval [0, 1] */
   public static GokartPoseEvent create(Tensor pose, Scalar quality) {
-    return create(pose, quality, GokartPoseEventV1.VELOCITY_ZERO);
+    return create(pose, quality, VelocityHelper.ZERO);
   }
 
   /***************************************************/

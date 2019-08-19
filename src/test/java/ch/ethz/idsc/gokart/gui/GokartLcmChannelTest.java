@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class GokartLcmChannelTest extends TestCase {
   public void testEmpty() {
-    PlannerPublish.publishTrajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
+    PlannerPublish.trajectory(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME, new ArrayList<>());
   }
 
   public void testLabjack() {

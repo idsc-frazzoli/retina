@@ -36,7 +36,6 @@ public class RimoConfig {
   /** used for lookup table */
   public Scalar lKp = Quantity.of(0, SI.ACCELERATION.add(SI.VELOCITY.negate()));
   public Scalar lKi = Quantity.of(1, SI.ACCELERATION.add(SI.METER.negate()));
-  public Scalar lAntiWindupPadding = Quantity.of(0.1, SI.ACCELERATION);
   /** constant for anti wind-up used by revised rimo rate controller */
   public Scalar Kawu = RealScalar.of(0);
   /** the physical maximum torque limit is 2316[ARMS]

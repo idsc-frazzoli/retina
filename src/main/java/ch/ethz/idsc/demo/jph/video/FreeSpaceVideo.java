@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-public class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
+/* package */ class FreeSpaceVideo implements OfflineLogListener, AutoCloseable {
   private static final String CHANNEL_LIDAR = //
       VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();

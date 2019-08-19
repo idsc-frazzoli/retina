@@ -36,18 +36,35 @@ public enum TensorReflection {
         fieldSubdivide.intervals());
   }
 
+  /** @param fieldSubdivide
+   * @return
+   * @throws Exception if parsing of strings to scalars fails */
+  public static Clip clip(FieldSubdivide fieldSubdivide) {
+    return Clips.interval( //
+        Scalars.fromString(fieldSubdivide.start()), //
+        Scalars.fromString(fieldSubdivide.end()));
+  }
+
+  /***************************************************/
   /** @param fieldClip
    * @return Optional.empty() if given fieldClip is null,
    * or fields specified by given fieldClip are invalid */
   public static Optional<Clip> of(FieldClip fieldClip) {
     if (Objects.nonNull(fieldClip))
       try {
-        return Optional.of(Clips.interval( //
-            Scalars.fromString(fieldClip.min()), //
-            Scalars.fromString(fieldClip.max())));
+        return Optional.of(clip(fieldClip));
       } catch (Exception exception) {
         // ---
       }
     return Optional.empty();
+  }
+
+  /** @param fieldClip
+   * @return
+   * @throws Exception if parsing of strings to scalars fails */
+  public static Clip clip(FieldClip fieldClip) {
+    return Clips.interval( //
+        Scalars.fromString(fieldClip.min()), //
+        Scalars.fromString(fieldClip.max()));
   }
 }

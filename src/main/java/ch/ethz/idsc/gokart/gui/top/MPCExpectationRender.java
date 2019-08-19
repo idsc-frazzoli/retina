@@ -15,7 +15,7 @@ import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -40,18 +40,18 @@ public class MPCExpectationRender extends MPCControlUpdateCapture implements Ren
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(xya));
+    geometricLayer.pushMatrix(Se2Matrix.of(xya));
     geometricLayer.pushMatrix(DIAGONAL);
     // rimo line
     Tensor rimoAccXY = Tensors.of(Magnitude.ACCELERATION.apply(currentRimoAcc), RealScalar.ZERO);
-    geometricLayer.pushMatrix(Se2Utils.toSE2Translation(rimoAccXY));
+    geometricLayer.pushMatrix(Se2Matrix.translation(rimoAccXY));
     graphics.setColor(Color.BLUE);
     graphics.draw(geometricLayer.toPath2D(RIMOLINE));
     geometricLayer.popMatrix();
     // mpc line
     Scalar currentMPCAcc = getFirstWantedAcceleration();
     Tensor mpcAccXY = Tensors.of(Magnitude.ACCELERATION.apply(currentMPCAcc), RealScalar.ZERO);
-    geometricLayer.pushMatrix(Se2Utils.toSE2Translation(mpcAccXY));
+    geometricLayer.pushMatrix(Se2Matrix.translation(mpcAccXY));
     graphics.setColor(Color.RED);
     graphics.draw(geometricLayer.toPath2D(MPCLINE));
     geometricLayer.popMatrix();

@@ -14,7 +14,7 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -29,7 +29,7 @@ public class ResampledLidarRender extends LidarRender {
       return;
     final Tensor points = _points;
     // System.out.println("IN=" + supplier.get());
-    final Tensor lidar = Se2Utils.toSE2Matrix(supplier.get());
+    final Tensor lidar = Se2Matrix.of(supplier.get());
     geometricLayer.pushMatrix(lidar);
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));

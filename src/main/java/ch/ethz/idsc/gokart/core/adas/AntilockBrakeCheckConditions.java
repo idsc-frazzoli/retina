@@ -1,6 +1,4 @@
 // code by am
-// goal is to check via vibration if the given slipping conditions are fulfilled
-// Hilfsmodul für das Erstellen des ABS
 package ch.ethz.idsc.gokart.core.adas;
 
 import java.util.Optional;
@@ -24,15 +22,17 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-/** class is used to develop and test anti lock brake logic */
+/** class is used to develop and test anti lock brake logic
+ * 
+ * goal is to check via vibration if the given slipping conditions are fulfilled
+ * Hilfsmodul für das Erstellen des ABS */
 public class AntilockBrakeCheckConditions extends AbstractModule implements SteerPutProvider {
-  // private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
-  private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
+  private final RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final HapticSteerConfig hapticSteerConfig;
-  private SteerVibrationModule steerVibration = new SteerVibrationModule();
+  private SteerVibrationModule steerVibrationModule = new SteerVibrationModule();
 
   public AntilockBrakeCheckConditions() {
     this(HapticSteerConfig.GLOBAL);
@@ -72,10 +72,10 @@ public class AntilockBrakeCheckConditions extends AbstractModule implements Stee
         double slip2 = Magnitude.ONE.toDouble(slip.Get(1));
         double minSlip = Magnitude.ONE.toDouble(HapticSteerConfig.GLOBAL.minSlip);
         if (slip1 > minSlip) {
-          steerVibration.putEvent();
+          steerVibrationModule.putEvent();
         }
         if (slip2 > minSlip) {
-          steerVibration.putEvent();
+          steerVibrationModule.putEvent();
         }
         Scalar velocityAngle = ArcTan2D.of(velocityOrigin); // velocityAngle is in radian
         Scalar angleSCE = steerColumnTracker.getSteerColumnEncoderCentered();
@@ -84,7 +84,7 @@ public class AntilockBrakeCheckConditions extends AbstractModule implements Stee
         double velocityAngleDouble = Magnitude.DEGREE_ANGLE.toDouble(velocityAngle);
         double angleDifference = (Math.abs(angleGradDouble) - Math.abs(velocityAngleDouble));
         if (angleDifference > Magnitude.ONE.toDouble(hapticSteerConfig.criticalAngle())) {
-          steerVibration.putEvent();
+          steerVibrationModule.putEvent();
         }
       }
       return Optional.empty();

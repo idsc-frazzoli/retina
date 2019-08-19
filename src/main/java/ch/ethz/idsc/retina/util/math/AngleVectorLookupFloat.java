@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
+import java.io.Serializable;
 import java.nio.FloatBuffer;
 
 import ch.ethz.idsc.tensor.lie.AngleVector;
@@ -9,7 +10,7 @@ import ch.ethz.idsc.tensor.lie.AngleVector;
  * instead of calls to {@link Math#cos(double)} etc.
  * 
  * @see AngleVector */
-public class AngleVectorLookupFloat {
+public class AngleVectorLookupFloat implements Serializable {
   private final float[] array;
 
   /** @param length of complete revolution, resolution

@@ -12,8 +12,8 @@ import ch.ethz.idsc.owl.bot.se2.glc.GokartVecEntity;
 import ch.ethz.idsc.owl.bot.se2.glc.HelperHangarMap;
 import ch.ethz.idsc.owl.bot.util.DemoInterface;
 import ch.ethz.idsc.owl.bot.util.RegionRenders;
+import ch.ethz.idsc.owl.glc.adapter.EntityGlcPlannerCallback;
 import ch.ethz.idsc.owl.glc.adapter.RegionConstraints;
-import ch.ethz.idsc.owl.glc.adapter.SimpleGlcPlannerCallback;
 import ch.ethz.idsc.owl.glc.core.PlannerConstraint;
 import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
@@ -58,7 +58,7 @@ class GokartWaypoint3Demo implements DemoInterface {
     // ---
     // RenderInterface renderInterface = ;
     owlyAnimationFrame.addBackground(new WaypointRender(Arrowhead.of(0.6), new Color(64, 192, 64, 64)).setWaypoints(waypoints));
-    GlcPlannerCallback glcPlannerCallback = new SimpleGlcPlannerCallback(gokartEntity);
+    GlcPlannerCallback glcPlannerCallback = EntityGlcPlannerCallback.of(gokartEntity);
     GlcWaypointFollowing wpf = new GlcWaypointFollowing( //
         waypoints, RealScalar.of(2), gokartEntity, plannerConstraint, //
         Arrays.asList(gokartEntity, glcPlannerCallback));

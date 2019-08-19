@@ -22,7 +22,6 @@ public class RimoRateJoystickTableTest extends TestCase {
     OfflineTableSupplier offlineTableSupplier = new RimoRateJoystickTable(Quantity.of(0, "s"), ByteOrder.BIG_ENDIAN);
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
-    // System.out.println(Dimensions.of(tensor));
     assertEquals(Dimensions.of(tensor), Arrays.asList(5920, 10));
   }
 }

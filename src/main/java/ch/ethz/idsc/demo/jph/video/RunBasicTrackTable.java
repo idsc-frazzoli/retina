@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 import ch.ethz.idsc.gokart.offline.video.BasicTrackTable;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-enum RunBasicTrackTable {
+/* package */ enum RunBasicTrackTable {
   ;
   public static void main(String[] args) {
     File folder = HomeDirectory.file("ensemblelaps/dynamic");

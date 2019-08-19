@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.adas;
 
-import ch.ethz.idsc.gokart.core.DubendorfCurve;
+import ch.ethz.idsc.gokart.core.OvalTrack;
 import ch.ethz.idsc.tensor.Tensors;
 import junit.framework.TestCase;
 
@@ -17,7 +17,7 @@ public class Se2CurveHelperTest extends TestCase {
   }
 
   public void testEuclid() {
-    int index = Se2CurveHelper.closestEuclid(DubendorfCurve.TRACK_OVAL_SE2);
+    int index = Se2CurveHelper.closestEuclid(OvalTrack.SE2);
     assertEquals(index, 179);
   }
 }

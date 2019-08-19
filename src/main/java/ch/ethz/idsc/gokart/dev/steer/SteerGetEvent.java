@@ -145,7 +145,9 @@ public class SteerGetEvent extends DataEvent {
    * refMotTrq_CANInput closely correlates to the demanded torque
    * as commanded by {@link SteerPutEvent}. Due to communication,
    * there is a time delay until the demanded torque is considered
-   * as "reference" by the steering actuator. */
+   * as "reference" by the steering actuator.
+   * 
+   * @return quantity with unit "SCT" */
   public Scalar refMotTrq() {
     return Quantity.of(refMotTrq_CANInput, SteerPutEvent.UNIT_RTORQUE);
   }
@@ -153,7 +155,9 @@ public class SteerGetEvent extends DataEvent {
   /** when the device {@link #isActive()} then the difference between
    * "estMotTrq_CANInput - refMotTrq_CANInput" is typically small.
    * When the torque command is disabled, the value estMotTrq_CANInput
-   * takes an arbitrary value that should be ignored. */
+   * takes an arbitrary value that should be ignored.
+   * 
+   * @return quantity with unit "SCT" */
   public Scalar estMotTrq() {
     return Quantity.of(estMotTrq_CANInput, SteerPutEvent.UNIT_RTORQUE);
   }

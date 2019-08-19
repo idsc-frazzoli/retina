@@ -95,6 +95,13 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 </tr>
 </table>
 
+## Press Coverage
+
+* [2018-06 bitluni's lab](https://www.youtube.com/watch?v=GQVsl4fV3O0)
+* [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
+* [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
+* [2019-08 SuperQuark](https://www.raiplay.it/video/2019/08/SuperQuark-73b2ae02-700d-46fb-9fc1-3bdd5a03d5cd.html)
+
 ## Architecture
 
 * [`tensor`](https://github.com/idsc-frazzoli/tensor) for linear algebra with physical units
@@ -109,13 +116,6 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 
 ![gokart_operation](https://user-images.githubusercontent.com/4012178/54883114-371e3980-4e62-11e9-9ffd-4d152ffe1609.png)
 
-## Press Coverage
-
-* [2018-06 bitluni's lab](https://www.youtube.com/watch?v=GQVsl4fV3O0)
-* [2018-10 Innovationspark](https://www.switzerland-innovation.com/zurich/node/414)
-* [2018-12 Telezueri](https://www.telezueri.ch/zuerinews/200-millionen-franken-fuer-innovationspark-duebendorf-133778855)
-* 2019-04 Superquark
-
 ---
 
 ![ethz300](https://user-images.githubusercontent.com/4012178/45925071-bf9d3b00-bf0e-11e8-9d92-e30650fd6bf6.png)
@@ -124,7 +124,7 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 
 Sensor interfaces
 
-![retina](https://user-images.githubusercontent.com/4012178/57229063-846ef880-7015-11e9-84f7-976b31d924a9.png)
+![retina](https://user-images.githubusercontent.com/4012178/63222215-03db9e80-c1a5-11e9-9d62-30af57c107fd.png)
 
 ## Features
 

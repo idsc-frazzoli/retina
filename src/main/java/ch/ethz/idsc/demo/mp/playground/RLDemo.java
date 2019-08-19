@@ -9,7 +9,7 @@ import ch.ethz.idsc.owl.bot.util.RegionRenders;
 import ch.ethz.idsc.owl.glc.adapter.CatchyTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.gui.win.BaseFrame;
 import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
-import ch.ethz.idsc.owl.math.region.ImageRegion;
+import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.owl.math.state.TrajectoryRegionQuery;
 import ch.ethz.idsc.subare.core.td.SarsaType;
 import ch.ethz.idsc.tensor.Tensor;
@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.Tensors;
   public BaseFrame start() {
     OwlyAnimationFrame owlyAnimationFrame = new OwlyAnimationFrame();
     R2ImageRegionWrap r2ImageRegionWrap = R2ImageRegions._0F5C_2182;
-    ImageRegion imageRegion = r2ImageRegionWrap.imageRegion();
+    Region<Tensor> imageRegion = r2ImageRegionWrap.imageRegion();
     TrajectoryRegionQuery trajectoryRegionQuery = CatchyTrajectoryRegionQuery.timeInvariant(imageRegion);
     owlyAnimationFrame.addBackground(RegionRenders.create(imageRegion));
     owlyAnimationFrame.addBackground(RegionRenders.create(trajectoryRegionQuery));

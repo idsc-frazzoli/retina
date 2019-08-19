@@ -15,7 +15,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.slam.ObstacleAggregate;
+import ch.ethz.idsc.gokart.offline.map.ObstacleAggregate;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 /* package */ enum ObstacleMapImage {

@@ -5,15 +5,11 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
-import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
-import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerUno;
@@ -29,8 +25,6 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
@@ -41,20 +35,16 @@ import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
-public class SetVelSmartBrakingModule extends AbstractModule implements PutProvider<LinmotPutEvent>, Vmu931ImuFrameListener {
-  private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
-  private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
-  private final LidarLocalizationModule lidarLocalizationModule = ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
-  private final HapticSteerConfig hapticSteerConfig;
+public class SetVelSmartBrakingModule extends AntilockBrakeModule implements Vmu931ImuFrameListener {
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
   private final Vmu931ImuLcmClient vmu931imuLcmClient = new Vmu931ImuLcmClient();
-  private Scalar currentAcceleration = Quantity.of(0, SI.ACCELERATION);
+  private Scalar currentAcceleration = Quantity.of(0.0, SI.ACCELERATION);
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
-  final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
-  RimoPutProvider rimoPutProvider = new RimoPutProvider() {
+  private final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
+  /* package */ final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
     @Override
     public Optional<RimoPutEvent> putEvent() {
-      Scalar speed = hapticSteerConfig.setVel.add(Quantity.of(1, SI.VELOCITY));
+      Scalar speed = hapticSteerConfig.setVel.add(Quantity.of(1.0, SI.VELOCITY));
       Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
       if (optional.isPresent()) {
         accelerate = true;
@@ -72,11 +62,11 @@ public class SetVelSmartBrakingModule extends AbstractModule implements PutProvi
   };
 
   public SetVelSmartBrakingModule() {
-    this(HapticSteerConfig.GLOBAL);
+    super(HapticSteerConfig.GLOBAL);
   }
 
   public SetVelSmartBrakingModule(HapticSteerConfig hapticSteerConfig) {
-    this.hapticSteerConfig = hapticSteerConfig;
+    super(hapticSteerConfig);
   }
 
   @Override // from AbstractModule
@@ -101,13 +91,7 @@ public class SetVelSmartBrakingModule extends AbstractModule implements PutProvi
     rimoRateControllerWrap.getEvent(getEvent);
   }
 
-  @Override // from PutProvider
-  public ProviderRank getProviderRank() {
-    return ProviderRank.EMERGENCY;
-  }
-
   // velocity is higher than setVel -> full stop
-  private Scalar brakePosition = HapticSteerConfig.GLOBAL.fullBraking;
   private boolean fullStopping = false;
   private boolean accelerate = false;
 

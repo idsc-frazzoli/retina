@@ -18,7 +18,7 @@ import ch.ethz.idsc.owl.gui.win.AffineTransforms;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.RadiusXY;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -104,7 +104,7 @@ public class ImageGrid implements OccupancyGrid, RenderInterface {
   }
 
   protected final Tensor getWorld2grid() {
-    return Se2Utils.toSE2Matrix(lbounds.negate().append(RealScalar.ZERO));
+    return Se2Matrix.of(lbounds.negate().append(RealScalar.ZERO));
   }
 
   /** set vehicle pose w.r.t world frame

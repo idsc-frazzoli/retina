@@ -21,7 +21,6 @@ public class PowerSteerTableTest extends TestCase {
     OfflineTableSupplier offlineTableSupplier = new PowerSteerTable(Quantity.of(0, "s"));
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
-    // System.out.println(Dimensions.of(tensor));
     assertEquals(Dimensions.of(tensor), Arrays.asList(6052, 15));
   }
 }

@@ -38,6 +38,7 @@
 * [20190621_applications_bi-invariant_mean.pdf](https://github.com/idsc-frazzoli/retina/files/3321256/20190621_applications_bi-invariant_mean.pdf)
 * [20190629_tsutrq_autonomous_driving.pdf](https://github.com/idsc-frazzoli/retina/files/3342895/20190629_tsutrq_autonomous_driving.pdf)
 * [20190630_code_of_dubilab.pdf](https://github.com/idsc-frazzoli/retina/files/3342886/20190630_code_of_dubilab.pdf)
+* [20190812_autonomous_human_racing.pdf](https://github.com/idsc-frazzoli/retina/files/3492127/20190812_autonomous_human_racing.pdf)
 
 ## Bug Reports
 
@@ -47,3 +48,4 @@ Definition: The following is a classification of code, aka a *bug*, that is repo
 * [20180309_bug_2.pdf](https://github.com/idsc-frazzoli/retina/files/1801725/20180309_bug_2.pdf)
 * [20180608_bug_3.pdf](https://github.com/idsc-frazzoli/retina/files/2083168/20180608_bug_3.pdf)
 * [20190417_bug_4.pdf](https://github.com/idsc-frazzoli/retina/files/3089486/20190417_bug_4.pdf)
+* [20190810_bug_5.pdf](https://github.com/idsc-frazzoli/retina/files/3488787/20190810_bug_5.pdf)

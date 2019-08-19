@@ -4,7 +4,9 @@ package ch.ethz.idsc.gokart.dev.rimo;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class RimoPutEventTest extends TestCase {
@@ -34,5 +36,11 @@ public class RimoPutEventTest extends TestCase {
     RimoPutTire putR = new RimoPutTire(RimoPutTire.OPERATION, (short) 0, (short) 20);
     RimoPutEvent rpe = new RimoPutEvent(putL, putR);
     assertEquals(rpe.getTorque_Y_pair(), Tensors.fromString("{-10[ARMS], 20[ARMS]}"));
+  }
+
+  public void testTorqueZero() {
+    Tensor torque_Y_pair = RimoPutEvent.OPTIONAL_RIMO_PASSIVE.get().getTorque_Y_pair();
+    assertTrue(Chop.NONE.allZero(torque_Y_pair));
+    assertEquals(torque_Y_pair, Tensors.fromString("{0[ARMS], 0[ARMS]}"));
   }
 }

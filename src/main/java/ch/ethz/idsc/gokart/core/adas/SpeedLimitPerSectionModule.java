@@ -4,8 +4,6 @@ package ch.ethz.idsc.gokart.core.adas;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
-import ch.ethz.idsc.gokart.core.GetListener;
-import ch.ethz.idsc.gokart.core.PutProvider;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -13,7 +11,9 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
+import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerUno;
 import ch.ethz.idsc.gokart.dev.rimo.RimoRateControllerWrap;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
@@ -28,13 +28,13 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** class is used to develop and test anti lock brake logic */
-public class SpeedLimitPerSectionModule extends AbstractModule implements PutProvider<RimoPutEvent>, GokartPoseListener {
+public class SpeedLimitPerSectionModule extends AbstractModule implements RimoPutProvider, GokartPoseListener {
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
-  final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
+  private final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   private final Tensor poseFunction = Tensors.of(RealScalar.of(1.182), Quantity.of(84.647, SI.METER));
-  public final GetListener<RimoGetEvent> rimoGetListener = new GetListener<RimoGetEvent>() {
+  public final RimoGetListener rimoGetListener = new RimoGetListener() {
     @Override
     public void getEvent(RimoGetEvent getEvent) {
       rimoGetEvent = getEvent;

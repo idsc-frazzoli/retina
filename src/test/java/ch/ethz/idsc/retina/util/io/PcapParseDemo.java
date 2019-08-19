@@ -4,7 +4,7 @@ package ch.ethz.idsc.retina.util.io;
 import java.io.File;
 
 /** demo exists in case inspection of a pcap file is useful */
-enum PcapParseDemo {
+/* package */ enum PcapParseDemo {
   ;
   public static void main(String[] args) throws Exception {
     PcapPacketListener pcapPacketListener = new PcapPacketListener() {

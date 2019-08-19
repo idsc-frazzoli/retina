@@ -13,13 +13,11 @@ import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
+import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.CirclePoints;
-import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ enum ClothoidPursuitRenderPlugin implements RenderPlugin {
   INSTANCE;
@@ -30,9 +28,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     if (1 < curve.length()) {
       Tensor pose = renderPluginParameters.pose;
       CurveClothoidPursuitPlanner curveClothoidPursuitPlanner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
-      Optional<ClothoidPlan> optional = curveClothoidPursuitPlanner.getPlan(pose, //
-          Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
-          curve, true);
+      Optional<ClothoidPlan> optional = curveClothoidPursuitPlanner.getPlan( //
+          pose, VelocityHelper.ZERO, curve, true);
       if (optional.isPresent())
         return new ClothoidPursuitRender(optional.get());
     }

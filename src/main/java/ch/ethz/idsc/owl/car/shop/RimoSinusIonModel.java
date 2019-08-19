@@ -88,7 +88,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
     final Scalar HRX = HFX.subtract(DoubleScalar.of(2.060)); // measured
     final Scalar HFY = DoubleScalar.of(1.45 / 2); // measured
     final Scalar reduce = RealScalar.of(.6);
-    hull = Tensors.empty();
+    Tensor hull = Tensors.empty();
     hull.append(Tensors.of(HFX, TF.multiply(reduce), LZ));
     hull.append(Tensors.of(LF, HFY, LZ));
     hull.append(Tensors.of(LR, HFY, LZ));
@@ -97,6 +97,7 @@ public class RimoSinusIonModel extends DefaultCarModel {
     hull.append(Tensors.of(LR, HFY.negate(), LZ));
     hull.append(Tensors.of(LF, HFY.negate(), LZ));
     hull.append(Tensors.of(HFX, TF.multiply(reduce).negate(), LZ));
+    this.hull = hull.unmodifiable();
   }
 
   // ---

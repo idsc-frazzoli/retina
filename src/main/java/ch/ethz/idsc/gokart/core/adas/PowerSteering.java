@@ -2,7 +2,7 @@
 package ch.ethz.idsc.gokart.core.adas;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
-import ch.ethz.idsc.gokart.calib.steer.SteerFeedForwardConfig;
+import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
@@ -11,6 +11,10 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
+/** implementation of manual power steering consisting of three terms:
+ * {@link SteerFeedForward}
+ * lateral force compensation
+ * tsuTrq, i.e. torque by driver */
 /* package */ class PowerSteering {
   private final HapticSteerConfig hapticSteerConfig;
   private final GeodesicIIR1 velocityGeodesicIIR1; // 1 means unfiltered
@@ -30,7 +34,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     // term0 is the static compensation of the restoring force, depending on the current angle
     // term1 is the compensation depending on the velocity of the steering wheel
     // term2 amplifies the torque exerted by the driver
-    Scalar feedForwardValue = SteerFeedForwardConfig.GLOBAL.series().apply(currangle);
+    Scalar feedForwardValue = SteerFeedForward.FUNCTION.apply(currangle);
     Scalar term0 = hapticSteerConfig.feedForward //
         ? feedForwardValue
         : feedForwardValue.zero();

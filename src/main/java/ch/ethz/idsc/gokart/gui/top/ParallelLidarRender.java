@@ -10,7 +10,7 @@ import java.util.Objects;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -30,7 +30,7 @@ class ParallelLidarRender extends LidarRender {
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(supplier.get()));
+    geometricLayer.pushMatrix(Se2Matrix.of(supplier.get()));
     {
       Point2D point2D = geometricLayer.toPoint2D(Tensors.vector(0, 0));
       Point2D width = geometricLayer.toPoint2D(Tensors.vector(0.1, 0));

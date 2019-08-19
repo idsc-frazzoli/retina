@@ -5,15 +5,15 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.sophus.lie.se2.Se2ParametricDistance;
+import ch.ethz.idsc.sophus.hs.r2.Se2ParametricDistance;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 
-public enum LaneHelper {
+/* package */ enum LaneHelper {
   ;
   /** function is used to determine whether the gokart has left the lane */
-  public static boolean leftLane(Optional<Tensor> optionalCurve, GokartPoseEvent gokartPoseEvent, Scalar criticalDistance) {
+  public static boolean isOutside(Optional<Tensor> optionalCurve, GokartPoseEvent gokartPoseEvent, Scalar criticalDistance) {
     if (optionalCurve.isPresent() && Objects.nonNull(gokartPoseEvent)) {
       Tensor pose = gokartPoseEvent.getPose(); // of the form {x[m], y[m], heading}
       Tensor curve = optionalCurve.get();

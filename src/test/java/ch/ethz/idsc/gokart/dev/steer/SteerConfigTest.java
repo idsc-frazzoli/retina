@@ -47,7 +47,6 @@ public class SteerConfigTest extends TestCase {
     Scalar angle = RimoAxleConstants.steerAngleForTurningRatio(SteerConfig.GLOBAL.turningRatioMax);
     // angle == 0.45218923155923850 ante 20190509
     // angle == 0.49164265965082177 post 20190509
-    // System.out.println(angle);
     Clips.interval(0.48, 0.5).requireInside(angle);
   }
 

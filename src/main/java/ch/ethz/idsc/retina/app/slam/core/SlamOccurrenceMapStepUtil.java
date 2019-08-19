@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.map.Se2Bijection;
 import ch.ethz.idsc.retina.app.calib.GokartToImageInterface;
 import ch.ethz.idsc.retina.app.calib.ImageToGokartInterface;
 import ch.ethz.idsc.retina.app.slam.MapProvider;
 import ch.ethz.idsc.retina.app.slam.SlamParticle;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
+import ch.ethz.idsc.sophus.hs.r2.Se2Bijection;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.Inverse;

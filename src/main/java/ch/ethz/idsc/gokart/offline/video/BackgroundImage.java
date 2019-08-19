@@ -22,12 +22,20 @@ public class BackgroundImage {
   }
 
   // ---
-  public final BufferedImage bufferedImage;
-  public final Tensor model2pixel;
+  private final BufferedImage bufferedImage;
+  private final Tensor model2pixel;
 
   public BackgroundImage(BufferedImage bufferedImage, Tensor model2pixel) {
     this.bufferedImage = bufferedImage;
     this.model2pixel = model2pixel;
+  }
+
+  public BufferedImage bufferedImage() {
+    return bufferedImage;
+  }
+
+  public Tensor model2pixel() {
+    return model2pixel;
   }
 
   public Dimension dimension() {

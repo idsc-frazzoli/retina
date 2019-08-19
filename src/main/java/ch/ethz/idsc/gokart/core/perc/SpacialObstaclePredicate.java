@@ -5,6 +5,7 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** implementations specify the reference frame of the input point to be
  * in lidar coordinates, global coordinates, or other */
+@FunctionalInterface
 public interface SpacialObstaclePredicate {
   /** @param point of the form {px, py, pz}
    * @return true if given point represents an obstacle */

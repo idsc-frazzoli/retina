@@ -19,7 +19,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.app.clear.CircleClearanceTracker;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -58,7 +58,7 @@ class Vlp16ClearanceRender extends LidarRender {
           });
           Optional<Tensor> optional = circleClearanceCollector.violation();
           if (optional.isPresent()) {
-            Tensor m = Se2Utils.toSE2Matrix(optional.get());
+            Tensor m = Se2Matrix.of(optional.get());
             geometricLayer.pushMatrix(m);
             graphics.setStroke(new BasicStroke(3));
             {

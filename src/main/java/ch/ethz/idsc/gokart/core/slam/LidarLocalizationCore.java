@@ -37,6 +37,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
  * 2) lidar-based pose and velocity estimates at 20[Hz]
  * 
  * PoseVelocityInterface provides fused (and therefore filtered) pose and velocity */
+// TODO JPH design is clumsy when used in offline mode
 public class LidarLocalizationCore implements //
     LidarRayBlockListener, Vmu931ImuFrameListener, Runnable, PoseVelocityInterface {
   /** the constant 0.1 was established in post-processing
@@ -69,6 +70,7 @@ public class LidarLocalizationCore implements //
   private GeodesicIIR1 geodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, IIR1_FILTER_GYROZ);
   private Scalar gyroZ_vmu931 = Quantity.of(0.0, SI.PER_SECOND);
   private Scalar gyroZ_filtered = Quantity.of(0.0, SI.PER_SECOND);
+  /** thread is not started when in offline mode */
   final Thread thread = new Thread(this);
 
   public LidarLocalizationCore(PredefinedMap predefinedMap) {

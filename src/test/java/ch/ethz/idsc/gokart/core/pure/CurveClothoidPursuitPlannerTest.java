@@ -4,7 +4,7 @@ package ch.ethz.idsc.gokart.core.pure;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
-import ch.ethz.idsc.gokart.core.DubendorfCurve;
+import ch.ethz.idsc.gokart.core.OvalTrack;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
@@ -25,7 +25,7 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
     // Tensors.fromString("{35.1[m], 44.9[m], 1}");
     ClothoidPursuitConfig clothoidPursuitConfig = ClothoidPursuitConfig.GLOBAL;
     CurveClothoidPursuitPlanner curveClothoidPursuitPlanner = new CurveClothoidPursuitPlanner(clothoidPursuitConfig);
-    Tensor curve = DubendorfCurve.TRACK_OVAL_SE2;
+    Tensor curve = OvalTrack.SE2;
     // System.out.println("curve.length==" + curve.length());
     int success = 0;
     for (int index = 0; index < curve.length(); ++index) {
@@ -48,7 +48,7 @@ public class CurveClothoidPursuitPlannerTest extends TestCase {
     // Tensors.fromString("{35.1[m], 44.9[m], 1}");
     ClothoidPursuitConfig clothoidPursuitConfig = ClothoidPursuitConfig.GLOBAL;
     CurveClothoidPursuitPlanner curveClothoidPursuitPlanner = new CurveClothoidPursuitPlanner(clothoidPursuitConfig);
-    Tensor curve = DubendorfCurve.TRACK_OVAL_SE2;
+    Tensor curve = OvalTrack.SE2;
     // System.out.println("curve.length==" + curve.length());
     Distribution distribution = NormalDistribution.of(0, 0.1);
     int success = 0;

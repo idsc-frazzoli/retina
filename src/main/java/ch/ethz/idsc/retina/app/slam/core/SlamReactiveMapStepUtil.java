@@ -3,7 +3,7 @@ package ch.ethz.idsc.retina.app.slam.core;
 
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.app.slam.MapProvider;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.mat.Inverse;
 
@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
    * @param occurrenceMap
    * @param lookBehindDistance interpreted as [m] */
   public static void clearNonvisibleOccurrenceMap(Tensor gokartPose, MapProvider occurrenceMap, double lookBehindDistance) {
-    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Utils.toSE2Matrix(gokartPose)));
+    GeometricLayer worldToGokartLayer = GeometricLayer.of(Inverse.of(Se2Matrix.of(gokartPose)));
     double[] mapArray = occurrenceMap.getMapArray();
     for (int i = 0; i < mapArray.length; i++)
       if (mapArray[i] != 0) {

@@ -8,8 +8,8 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
-import ch.ethz.idsc.retina.util.data.HardWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
+import ch.ethz.idsc.retina.util.time.HardWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 
 /** module detects when human presses the break while the software
  * is controlling the break

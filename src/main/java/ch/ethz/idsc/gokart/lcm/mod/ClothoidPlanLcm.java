@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.lcm.mod;
 import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
+import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Tensor;
 
 public enum ClothoidPlanLcm {
@@ -12,6 +13,8 @@ public enum ClothoidPlanLcm {
    * @return clothoid plan */
   public static ClothoidPlan decode(ByteBuffer byteBuffer) {
     Tensor decoded = PursuitPlanLcm.decode(byteBuffer);
-    return ClothoidPlan.from(decoded.get(1), decoded.get(0), PursuitPlanLcm.decodeIsForward(decoded).orElse(true)).get();
+    Tensor pose = decoded.get(0);
+    Tensor lookAhead = new Se2GroupElement(pose).inverse().combine(decoded.get(1));
+    return ClothoidPlan.from(lookAhead, pose, PursuitPlanLcm.decodeIsForward(decoded).orElse(true)).get();
   }
 }

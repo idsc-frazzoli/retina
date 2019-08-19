@@ -19,6 +19,7 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutHelper;
+import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.AccelerationRender;
 import ch.ethz.idsc.gokart.gui.top.AngularSlipRender;
@@ -33,6 +34,7 @@ import ch.ethz.idsc.gokart.gui.top.TachometerMustangDash;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
+import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
@@ -41,7 +43,7 @@ import ch.ethz.idsc.owl.gui.ren.TrajectoryRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.sophus.app.api.PathRender;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -78,12 +80,12 @@ import ch.ethz.idsc.tensor.sca.Round;
     this.poseChannel = poseChannel;
     accelerationRender = new AccelerationRender(50, //
         Inverse.of(model2pixel) //
-            .dot(Se2Utils.toSE2Matrix(Tensors.vector(960 + 250, 140, 0))) //
-            .dot(Se2Utils.toSE2Matrix(Tensors.vector(0, 0, -Math.PI / 2))) //
+            .dot(Se2Matrix.of(Tensors.vector(960 + 250, 140, 0))) //
+            .dot(Se2Matrix.of(Tensors.vector(0, 0, -Math.PI / 2))) //
             .dot(DiagonalMatrix.of(8, -8, 1)));
     Tensor matrix = Inverse.of(model2pixel) //
-        .dot(Se2Utils.toSE2Matrix(Tensors.vector(960 - 250, 140, 0))) //
-        .dot(Se2Utils.toSE2Matrix(Tensors.vector(0, 0, -Math.PI / 2))) //
+        .dot(Se2Matrix.of(Tensors.vector(960 - 250, 140, 0))) //
+        .dot(Se2Matrix.of(Tensors.vector(0, 0, -Math.PI / 2))) //
         .dot(DiagonalMatrix.of(10, -10, 1));
     groundSpeedRender = new GroundSpeedRender(50, matrix);
     angularSlipRender = new AngularSlipRender(matrix);
@@ -102,6 +104,10 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (channel.equals(LinmotLcmServer.CHANNEL_GET)) {
       linmotGetEvent = new LinmotGetEvent(byteBuffer);
       gokartRender.linmotGetListener.getEvent(linmotGetEvent);
+    } else //
+    if (channel.equals(SteerLcmServer.CHANNEL_GET)) {
+      SteerGetEvent steerGetEvent = new SteerGetEvent(byteBuffer);
+      gokartRender.steerGetListener.getEvent(steerGetEvent);
     } else //
     if (channel.equals(RimoLcmServer.CHANNEL_GET)) {
       RimoGetEvent rimoGetEvent = new RimoGetEvent(byteBuffer);

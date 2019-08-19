@@ -9,8 +9,8 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.lidar.Urg04lxLcmClient;
 import ch.ethz.idsc.retina.lidar.LidarRayDataListener;
-import ch.ethz.idsc.retina.util.data.HardWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
+import ch.ethz.idsc.retina.util.time.HardWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 
 /** sends stop command if front lidar is not operational
  * 

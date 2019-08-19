@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
+import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.ScalarQ;
 import ch.ethz.idsc.tensor.Tensor;
@@ -21,11 +22,11 @@ import lcm.lcm.LCM;
 public enum PursuitPlanLcm {
   ;
   /** @param channel
-   * @param pose {x[m], y[m], angle}
-   * @param lookAhead {x[m], y[m], angle}
+   * @param pose {x[m], y[m], angle} in global coordinates
+   * @param goal {x[m], y[m], angle} in global coordinates
    * @param isForward whether vehicle drives forward */
-  public static void publish(String channel, Tensor pose, Tensor lookAhead, boolean isForward) {
-    LCM.getSingleton().publish(channel, encode(isForward, pose, lookAhead));
+  public static void publish(String channel, Tensor pose, Tensor goal, boolean isForward) {
+    LCM.getSingleton().publish(channel, encode(isForward, pose, goal));
   }
 
   /** @param tensors of the form {x[m], y[m], angle}
@@ -55,9 +56,10 @@ public enum PursuitPlanLcm {
   }
 
   /** @param byteBuffer
-   * @return lookAhead {x[m], y[m], angle} */
+   * @return lookAhead {x[m], y[m], angle} in vehicle coordinates */
   public static Tensor decodeLookAhead(ByteBuffer byteBuffer) {
-    return decode(byteBuffer).get(1);
+    Tensor decoded = decode(byteBuffer);
+    return new Se2GroupElement(decoded.get(0)).inverse().combine(decoded.get(1));
   }
 
   /** @param byteBuffer

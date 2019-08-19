@@ -20,7 +20,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityTensor;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-public class NoFrictionExperiment extends AbstractModule implements SteerPutProvider {
+/** applies sawtooth torque signal to steering
+ * 
+ * <p>the experiment was conducted with no-slip surface pads in order
+ * to estimate the restoring force at various steering angles. */
+public final class NoFrictionExperiment extends AbstractModule implements SteerPutProvider {
   private static final Scalar SAMPLE_DURATION = Quantity.of(30, SI.SECOND);
   // ---
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();

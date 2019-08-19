@@ -8,12 +8,15 @@ import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** class is used apply the slowDownMeasurement when the lane is left */
+// TODO AM can this class be deleted?
+@Refactor
 /* package */ class LaneKeepingSlowDownModule extends LaneKeepingCenterlineModule implements RimoPutProvider {
   private final MeasurementSlowDownModule slowDown = new MeasurementSlowDownModule();
   private Scalar slowDownDistance = Quantity.of(1, SI.METER);
@@ -42,8 +45,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    if (LaneHelper.leftLane(optionalCurve, gokartPoseEvent, slowDownDistance)) {
-      System.out.println("left lane");
+    if (LaneHelper.isOutside(optionalCurve, gokartPoseEvent, slowDownDistance)) {
+      System.out.println("outside lane");
       return slowDown.putEvent();
     }
     System.out.println("still on lane");

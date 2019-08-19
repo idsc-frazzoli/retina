@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
+import ch.ethz.idsc.tensor.io.Serialization;
 import junit.framework.TestCase;
 
 public class IntervalTrackerTest extends TestCase {
@@ -27,5 +28,14 @@ public class IntervalTrackerTest extends TestCase {
     it.setValue(2);
     assertEquals(it.getValueCentered(), -2.0);
     assertEquals(it.getValue(), 2.0);
+  }
+
+  public void testNonSerializable() {
+    try {
+      Serialization.copy(new IntervalTracker());
+      fail();
+    } catch (Exception exception) {
+      // ---
+    }
   }
 }

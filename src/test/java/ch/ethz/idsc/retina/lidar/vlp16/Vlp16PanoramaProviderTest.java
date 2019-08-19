@@ -13,12 +13,7 @@ public class Vlp16PanoramaProviderTest extends TestCase {
     // TODO JPH lock Vlp16PanoramaProvider.PIXEL_Y to StaticHelper
     int[] array = IntStream.range(0, 16).map(Vlp16Helper::degree).toArray();
     Tensor vector = Tensors.vectorInt(array);
-    // int[] order =
     Ordering.DECREASING.of(vector);
-    // System.out.println(Tensors.vectorInt(order));
-    // assertTrue(Arrays.equals(Vlp16PanoramaProvider.PIXEL_Y, of));
-    // int[] array2 =
     IntStream.of(Vlp16PanoramaProvider.PIXEL_Y).map(Vlp16Helper::degree).toArray();
-    // System.out.println(Tensors.vectorInt(array2));
   }
 }

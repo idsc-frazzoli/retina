@@ -1,6 +1,4 @@
 // code by am
-// goal is to check via vibration if the given slipping conditions are fulfilled
-// Hilfsmodul für das Erstellen des ABS
 package ch.ethz.idsc.gokart.core.adas;
 
 import java.util.Optional;
@@ -24,7 +22,10 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
-/** class is used to develop and test anti lock brake logic */
+/** class is used to develop and test anti lock brake logic
+ * 
+ * goal is to check via vibration if the given slipping conditions are fulfilled
+ * Hilfsmodul für das Erstellen des ABS */
 public class AntilockBrakeV2CheckConditions extends AbstractModule implements SteerPutProvider {
   // private final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   private RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
@@ -57,7 +58,7 @@ public class AntilockBrakeV2CheckConditions extends AbstractModule implements St
     return ProviderRank.MANUAL;
   }
 
-  public Optional<SteerPutEvent> putEvent1(Tensor angularRate_Y_pair, Tensor velocityOrigin) {
+  public final Optional<SteerPutEvent> putEvent(Tensor angularRate_Y_pair, Tensor velocityOrigin) {
     if (lidarLocalizationModule != null) {
       Scalar angularRate_Origin = velocityOrigin.Get(0).divide(RimoTireConfiguration._REAR.radius());
       Tensor angularRage_Origin_pair = Tensors.of(angularRate_Origin, angularRate_Origin);
@@ -83,7 +84,7 @@ public class AntilockBrakeV2CheckConditions extends AbstractModule implements St
   @Override // from LinmotPutProvider
   public Optional<SteerPutEvent> putEvent() {
     if (steerColumnTracker.isCalibratedAndHealthy()) {
-      Optional.of(putEvent1(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity()));
+      Optional.of(putEvent(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity()));
     }
     return Optional.empty();
   }
