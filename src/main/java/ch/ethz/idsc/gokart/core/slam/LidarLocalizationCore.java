@@ -37,7 +37,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
  * 2) lidar-based pose and velocity estimates at 20[Hz]
  * 
  * PoseVelocityInterface provides fused (and therefore filtered) pose and velocity */
-// TODO JPH design is clumsy when used in offline mode
+// TODO JPH design is clumsy when used in offline mode, for an alternative see OccupancyMappingCore
 public class LidarLocalizationCore implements //
     LidarRayBlockListener, Vmu931ImuFrameListener, Runnable, PoseVelocityInterface {
   /** the constant 0.1 was established in post-processing

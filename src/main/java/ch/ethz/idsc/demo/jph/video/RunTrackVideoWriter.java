@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.jph.video;
 import java.io.File;
 import java.io.IOException;
 
+import ch.ethz.idsc.demo.VideoBackground;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.video.TrackVideoConfig;
 import ch.ethz.idsc.gokart.offline.video.TrackVideoWriter;
@@ -13,7 +14,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   ;
   private static void run(File file, File dest) throws IOException, Exception {
     try (TrackVideoWriter trackVideoWriter = new TrackVideoWriter( //
-        RunVideoBackground.get20190530(), new TrackVideoConfig(), dest)) {
+        VideoBackground.get20190530(), new TrackVideoConfig(), dest)) {
       OfflineLogPlayer.process(file, trackVideoWriter);
     }
   }

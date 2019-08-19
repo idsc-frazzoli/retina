@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import ch.ethz.idsc.demo.jg.FileHelper;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.retina.util.io.DialogInput;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Get;
 
@@ -20,7 +21,7 @@ import ch.ethz.idsc.tensor.io.Get;
     System.out.println("choose log file");
     Optional<File> file = FileHelper.open(args);
     System.out.println("choose reference file");
-    Optional<File> reference = FileHelper.choose();
+    Optional<File> reference = DialogInput.chooseFile();
     if (file.isPresent() && reference.isPresent()) {
       FileFollowingError followingError = new FileFollowingError(Get.of(reference.get()));
       System.out.print("running... ");
