@@ -7,12 +7,12 @@ import java.io.IOException;
 import ch.ethz.idsc.demo.VideoBackground;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-public enum RunVideoBackground {
+/* package */ enum RunVideoBackground {
   ;
   public static void main(String[] args) throws IOException {
     VideoBackground.render( //
-        new File("/media/datahaki/data/gokart/lane/20190805/20190805T153837_02/log.lcm"), //
+        new File("/media/datahaki/data/gokart/lane/20190812/20190812T155500_00/log.lcm"), //
         VideoBackground._20190401, //
-        HomeDirectory.Pictures("20190805T153837_02.png"));
+        HomeDirectory.Pictures("20190812T155500_00.png"));
   }
 }

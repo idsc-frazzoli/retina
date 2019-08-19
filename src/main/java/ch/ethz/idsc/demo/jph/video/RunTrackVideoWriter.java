@@ -2,26 +2,29 @@
 package ch.ethz.idsc.demo.jph.video;
 
 import java.io.File;
-import java.io.IOException;
 
 import ch.ethz.idsc.demo.VideoBackground;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.gokart.offline.video.TrackVideoConfig;
 import ch.ethz.idsc.gokart.offline.video.TrackVideoWriter;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
+// TODO JPH test coverage
 /* package */ enum RunTrackVideoWriter {
   ;
-  private static void run(File file, File dest) throws IOException, Exception {
-    try (TrackVideoWriter trackVideoWriter = new TrackVideoWriter( //
-        VideoBackground.get20190530(), new TrackVideoConfig(), dest)) {
+  public static void main(String[] args) throws Exception {
+    String name = "20190812T134244_00";
+    BackgroundImage backgroundImage = BackgroundImage.from( //
+        HomeDirectory.Pictures(name + ".png"), //
+        VideoBackground._20190401);
+    File file = new File("/media/datahaki/data/gokart/lane/20190812/" + name + "/log.lcm");
+    File dest = HomeDirectory.file(name + ".mp4");
+    TrackVideoConfig trackVideoConfig = new TrackVideoConfig();
+    // trackVideoConfig.frameLimit = 500;
+    try (TrackVideoWriter trackVideoWriter = new TrackVideoWriter(backgroundImage, trackVideoConfig, dest)) {
       OfflineLogPlayer.process(file, trackVideoWriter);
     }
-  }
-
-  public static void main(String[] args) throws Exception {
-    run(new File("/media/datahaki/data/gokart/vmu932/20190527/20190527T145700_00/log.lcm"), //
-        HomeDirectory.file("20190527T145700_00_some.mp4"));
     System.out.println("[done.]");
   }
 }

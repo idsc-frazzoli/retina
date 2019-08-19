@@ -43,7 +43,7 @@ public class ExtrudedFootprintRender implements RenderInterface {
   public final SteerColumnListener steerColumnListener = getEvent -> steerColumnEvent = getEvent;
   // ---
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  public Color color = new Color(0, 0, 255, 128);
+  public Color color = new Color(64 + 32, 64 + 32, 255, 128 - 64);
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
