@@ -2343,6 +2343,10 @@ public enum GokartLogFile implements LogFile {
   /** lane keeping */
   _20190812T155500_388cea64, //
   /***************************************************/
+  /* 2019-08-19 */
+  /** 5-minute operation (IMU issues?) */
+  _20190819T120821_c21b2aba, //
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
