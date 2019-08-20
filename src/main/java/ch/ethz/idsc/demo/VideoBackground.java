@@ -80,9 +80,10 @@ public enum VideoBackground {
   /** @param lcm_log
    * @param model2pixel
    * @param image
+   * @return image file
    * @throws IOException */
   // TODO JPH test coverage
-  public static void render(File lcm_log, Tensor model2pixel, File image) throws IOException {
+  public static File render(File lcm_log, Tensor model2pixel, File image) throws IOException {
     Optional<ByteBuffer> optional = FirstLogMessage.of(lcm_log, GokartPoseChannel.INSTANCE.channel());
     BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);
     Graphics2D graphics = bufferedImage.createGraphics();
@@ -96,9 +97,10 @@ public enum VideoBackground {
         GokartPoseEvent.of(optional.get()).getPose());
     OfflineLogPlayer.process(lcm_log, obstacleAggregate);
     ImageIO.write(bufferedImage, "png", image);
+    return image;
   }
 
-  public static void render(File directory) throws IOException {
+  public static File render(File directory) throws IOException {
     GokartLogInterface gokartLogInterface = //
         GokartLogAdapter.of(directory);
     Optional<ByteBuffer> optional = FirstLogMessage.of(gokartLogInterface.file(), GokartPoseChannel.INSTANCE.channel());
@@ -115,6 +117,8 @@ public enum VideoBackground {
     System.out.print("processing... ");
     OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);
     System.out.print("finished");
-    ImageIO.write(bufferedImage, "png", new File(directory, directory.getName() + ".bck.png"));
+    File image = new File(directory, directory.getName() + ".bck.png");
+    ImageIO.write(bufferedImage, "png", image);
+    return image;
   }
 }
