@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import ch.ethz.idsc.retina.util.io.ContentType;
-import ch.ethz.idsc.retina.util.io.URLFetch;
+import ch.ethz.idsc.tensor.io.URLFetch;
 
 public enum CachedLog {
   /** glc trajectory planning with changing obstacles

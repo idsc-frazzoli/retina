@@ -53,7 +53,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   private final SpinnerLabel<RenderPlugins> spinnerLabelPlugins = new SpinnerLabel<>();
   private RenderInterface renderInterface = EmptyRender.INSTANCE;
   private RenderPluginParameters renderPluginParameters = null;
-  private final LaneRender laneRender = new LaneRender(true);
+  private final LaneRender laneRender = new LaneRender();
   private final LazyMouseListener lazyMouseListener = new LazyMouseListener() {
     @Override
     public void lazyClicked(MouseEvent mouseEvent) {
@@ -159,11 +159,11 @@ public class TrajectoryDesign extends CurvatureDemo {
         refined, //
         PoseHelper.attachUnits(geometricLayer.getMouseSe2State()));
     LaneInterface laneInterface = //
-        new StableLane(getControlPointsPose(), refined, HapticSteerConfig.GLOBAL.halfWidth.multiply(RealScalar.of(2)));
+        StableLane.of(getControlPointsPose(), refined, HapticSteerConfig.GLOBAL.halfWidth);
     renderPluginParameters.laneBoundaryL = laneInterface.leftBoundary();
     renderPluginParameters.laneBoundaryR = laneInterface.rightBoundary();
     // ---
-    laneRender.setLane(laneInterface);
+    laneRender.setLane(laneInterface, true);
     laneRender.render(geometricLayer, graphics);
     // ---
     if (jToggleButtonWaypoints.isSelected())

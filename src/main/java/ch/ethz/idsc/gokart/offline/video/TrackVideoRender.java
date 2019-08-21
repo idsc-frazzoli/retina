@@ -50,7 +50,6 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -62,7 +61,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private static final Stroke STROKE = //
       new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
   private final PathRender pathRender = new PathRender(new Color(128, 128, 0), STROKE);
-  private final LaneRender laneRender = new LaneRender(true);
+  private final LaneRender laneRender = new LaneRender();
   private final MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(20);
   private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
   private final DriftLinesRender driftLinesRender = new DriftLinesRender(250);
@@ -159,8 +158,9 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2)) {
       Tensor tensor = Se2CurveLcm.decode(byteBuffer).unmodifiable();
       pathRender.setCurve(tensor, true);
-      LaneInterface laneInterface = new StableLane(Tensors.empty(), tensor, HapticSteerConfig.GLOBAL.halfWidth.multiply(RealScalar.of(2)));
-      laneRender.setLane(laneInterface);
+      LaneInterface laneInterface = //
+          StableLane.of(Tensors.empty(), tensor, HapticSteerConfig.GLOBAL.halfWidth);
+      laneRender.setLane(laneInterface, true);
     } else //
     if (channel.equals(GokartLcmChannel.PURSUIT_PLAN)) {
       ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer);
