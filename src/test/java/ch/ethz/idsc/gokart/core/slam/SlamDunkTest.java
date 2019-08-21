@@ -59,7 +59,7 @@ public class SlamDunkTest extends TestCase {
     OfflineLogPlayer.process(GokartLogAdapterTest.SIMPLE.file(), offlineLogListener);
     assertEquals(offlineLocalize.skipped.length(), 1);
     Clip clip = Clips.interval(0.35, 1);
-    Tensor table = tableBuilder.toTable();
+    Tensor table = tableBuilder.getTable();
     assertEquals(table.map(clip), table);
     System.out.println(table);
     // System.out.println(offlineLocalize.getTable().get(Tensor.ALL, 7));

@@ -115,6 +115,6 @@ import ch.ethz.idsc.tensor.sca.Round;
       throw new RuntimeException("not fused");
     if (Objects.isNull(failure_index))
       return Tensors.empty();
-    return tableBuilder.toTable().extract(failure_index - 60, failure_index + 20);
+    return tableBuilder.getTable().extract(failure_index - 60, failure_index + 20);
   }
 }

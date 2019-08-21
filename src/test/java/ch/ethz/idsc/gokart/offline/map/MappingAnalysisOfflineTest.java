@@ -24,7 +24,7 @@ public class MappingAnalysisOfflineTest extends TestCase {
         @Override
         public void accept(BufferedImage bufferedImage) {
           try {
-            animationWriter.append(bufferedImage);
+            animationWriter.write(bufferedImage);
           } catch (Exception exception) {
             exception.printStackTrace();
             throw new RuntimeException();

@@ -1,8 +1,10 @@
 // code by am
 package ch.ethz.idsc.gokart.core.adas;
 
+import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
@@ -10,7 +12,9 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.Refactor;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.sophus.hs.r2.Se2ParametricDistance;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -45,7 +49,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   @Override
   public Optional<RimoPutEvent> putEvent() {
-    if (LaneHelper.isOutside(optionalCurve, gokartPoseEvent, slowDownDistance)) {
+    if (LaneKeepingSlowDownModule.isOutside(optionalCurve, gokartPoseEvent, slowDownDistance)) {
       System.out.println("outside lane");
       return slowDown.putEvent();
     }
@@ -56,5 +60,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   @Override
   public ProviderRank getProviderRank() {
     return ProviderRank.EMERGENCY;
+  }
+
+  /** function is used to determine whether the gokart has left the lane */
+  public static boolean isOutside(Optional<Tensor> optionalCurve, GokartPoseEvent gokartPoseEvent, Scalar criticalDistance) {
+    if (optionalCurve.isPresent() && Objects.nonNull(gokartPoseEvent)) {
+      Tensor pose = gokartPoseEvent.getPose(); // of the form {x[m], y[m], heading}
+      Tensor curve = optionalCurve.get();
+      int index = Se2CurveHelper.closest(curve, pose); // closest gives the index of the closest element
+      Tensor closest = curve.get(index);
+      Scalar currDistance = Se2ParametricDistance.INSTANCE.distance(closest, pose);
+      return Scalars.lessThan(criticalDistance, currDistance);
+    }
+    return false;
   }
 }

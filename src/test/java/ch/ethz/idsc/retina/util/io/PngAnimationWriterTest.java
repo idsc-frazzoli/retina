@@ -14,8 +14,8 @@ public class PngAnimationWriterTest extends TestCase {
     File directory = HomeDirectory.Pictures(PngAnimationWriter.class.getSimpleName());
     assertFalse(directory.exists());
     try (AnimationWriter animationWriter = new PngAnimationWriter(directory)) {
-      animationWriter.append(new BufferedImage(2, 2, BufferedImage.TYPE_BYTE_GRAY));
-      animationWriter.append(new BufferedImage(3, 3, BufferedImage.TYPE_BYTE_GRAY));
+      animationWriter.write(new BufferedImage(2, 2, BufferedImage.TYPE_BYTE_GRAY));
+      animationWriter.write(new BufferedImage(3, 3, BufferedImage.TYPE_BYTE_GRAY));
     }
     assertTrue(directory.isDirectory());
     DeleteDirectory deleteDirectory = DeleteDirectory.of(directory, 1, 3);

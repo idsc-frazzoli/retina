@@ -57,6 +57,6 @@ public class ChannelTimingTable implements OfflineTableSupplier {
           min, //
           max);
     }
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 }

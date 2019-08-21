@@ -16,7 +16,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
  * 
  * One application is to log the messages received from and
  * the commands sent to the micro-autobox. */
-public class AutoboxLcmServerModule extends AbstractModule {
+public final class AutoboxLcmServerModule extends AbstractModule {
   @Override // from AbstractModule
   protected void first() {
     RimoSocket.INSTANCE.addGetListener(RimoLcmServer.INSTANCE);

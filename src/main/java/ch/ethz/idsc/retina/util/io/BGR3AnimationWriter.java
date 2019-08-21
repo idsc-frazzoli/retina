@@ -18,18 +18,18 @@ public class BGR3AnimationWriter implements AnimationWriter {
   }
 
   @Override // from AnimationWriter
-  public void append(BufferedImage bufferedImage) throws Exception {
+  public void write(BufferedImage bufferedImage) throws Exception {
     BufferedImage frame = new BufferedImage( //
         bufferedImage.getWidth(), //
         bufferedImage.getHeight(), //
         BufferedImage.TYPE_3BYTE_BGR);
     frame.createGraphics().drawImage(bufferedImage, 0, 0, null);
-    animationWriter.append(frame);
+    animationWriter.write(frame);
   }
 
   @Override // from AnimationWriter
-  public void append(Tensor tensor) throws Exception {
-    animationWriter.append(tensor);
+  public void write(Tensor tensor) throws Exception {
+    animationWriter.write(tensor);
   }
 
   @Override // from AnimationWriter

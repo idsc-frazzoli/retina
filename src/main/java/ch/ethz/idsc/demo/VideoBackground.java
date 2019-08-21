@@ -82,7 +82,6 @@ public enum VideoBackground {
    * @param image
    * @return image file
    * @throws IOException */
-  // TODO JPH test coverage
   public static File render(File lcm_log, Tensor model2pixel, File image) throws IOException {
     Optional<ByteBuffer> optional = FirstLogMessage.of(lcm_log, GokartPoseChannel.INSTANCE.channel());
     BufferedImage bufferedImage = new BufferedImage(DIMENSION.width, DIMENSION.height, BufferedImage.TYPE_INT_ARGB);

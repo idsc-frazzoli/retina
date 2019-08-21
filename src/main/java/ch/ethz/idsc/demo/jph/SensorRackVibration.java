@@ -141,9 +141,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     // file = UserHome.file("20180607T095321_a.lcm");
     OfflineLogPlayer.process(file, vlp16Floor);
     String name = gokartLogFile.getTitle();
-    Export.of(HomeDirectory.file(name + "_lidar.csv"), vlp16Floor.tableBuilder1.toTable().map(CsvFormat.strict()));
-    Export.of(HomeDirectory.file(name + "_accel.csv"), vlp16Floor.tableBuilder2.toTable().map(CsvFormat.strict()));
-    Export.of(HomeDirectory.file(name + "_brake.csv"), vlp16Floor.tableBuilder3.toTable().map(CsvFormat.strict()));
-    Export.of(HomeDirectory.file(name + "_event.csv"), vlp16Floor.tableBuilder4.toTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file(name + "_lidar.csv"), vlp16Floor.tableBuilder1.getTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file(name + "_accel.csv"), vlp16Floor.tableBuilder2.getTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file(name + "_brake.csv"), vlp16Floor.tableBuilder3.getTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file(name + "_event.csv"), vlp16Floor.tableBuilder4.getTable().map(CsvFormat.strict()));
   }
 }

@@ -86,7 +86,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
         graphics.setColor(Color.LIGHT_GRAY);
         graphics.drawString(String.format("time:%7s[s]", time.map(Round._3)), 0, 25);
-        mp4AnimationWriter.append(bufferedImage);
+        mp4AnimationWriter.write(bufferedImage);
         if (index == 200)
           break;
       }
