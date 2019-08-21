@@ -1,6 +1,6 @@
+// coed by gjoel
 package ch.ethz.idsc.demo.jg;
 
-import javax.imageio.ImageIO;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -11,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
+
+import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.demo.VideoBackground;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
@@ -24,9 +26,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Array;
 
-public enum ReferenceShowoff {
+/* package */ enum ReferenceShowoff {
   ;
-
   private static final Stroke STROKE = new BasicStroke(1.5f);
   private static final Color COLOR = Color.RED;
 

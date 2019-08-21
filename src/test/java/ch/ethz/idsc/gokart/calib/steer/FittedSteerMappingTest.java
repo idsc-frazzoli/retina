@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.calib.steer;
 
+import java.io.IOException;
 import java.util.Random;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnAdapter;
@@ -10,6 +11,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Subdivide;
+import ch.ethz.idsc.tensor.io.Serialization;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Chop;
@@ -19,8 +21,8 @@ import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class FittedSteerMappingTest extends TestCase {
-  public void testAdvancedFormulaCenter() {
-    SteerMapping steerMapping = FittedSteerMapping.instance();
+  public void testAdvancedFormulaCenter() throws ClassNotFoundException, IOException {
+    SteerMapping steerMapping = Serialization.copy(FittedSteerMapping.instance());
     Scalar ratio = steerMapping.getRatioFromSCE( //
         new SteerColumnAdapter(true, Quantity.of(0, "SCE")));
     assertEquals(ratio, Quantity.of(0, SI.PER_METER));

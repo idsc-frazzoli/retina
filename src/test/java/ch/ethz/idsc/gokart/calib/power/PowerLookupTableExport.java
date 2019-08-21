@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.MatrixQ;
@@ -16,13 +17,15 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
+/** the purpose of the power lookup tables export as csv was for import
+ * to python gokart simulation. */
 /* package */ enum PowerLookupTableExport {
   ;
   public static void main(String[] args) throws IOException {
     int div = 1;
     Clip CLIP_VEL = PowerLookupTable.CLIP_VEL;
     {
-      Clip clipARMS = Clips.absolute(Quantity.of(+2316, "ARMS"));
+      Clip clipARMS = Clips.absolute(Quantity.of(+2316, NonSI.ARMS));
       Tensor si = Subdivide.increasing(clipARMS, 900 / div);
       Tensor sj = Subdivide.increasing(CLIP_VEL, 800 / div);
       Tensor matrix = //
