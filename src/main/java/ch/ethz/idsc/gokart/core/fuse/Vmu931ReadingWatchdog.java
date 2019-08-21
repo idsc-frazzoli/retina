@@ -12,7 +12,7 @@ import ch.ethz.idsc.retina.util.time.SoftWatchdog;
 import ch.ethz.idsc.retina.util.time.Watchdog;
 
 /** module ensures that VMU931 data is available via LCM */
-public class Vmu931ReadingWatchdog extends EmergencyModule<RimoPutEvent> implements Vmu931ImuFrameListener {
+public final class Vmu931ReadingWatchdog extends EmergencyModule<RimoPutEvent> implements Vmu931ImuFrameListener {
   private static final double TIMEOUT_S = 0.3;
   // ---
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();

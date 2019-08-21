@@ -8,9 +8,10 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
 /** communication link between pc and micro-autobox.
- * operation of the gokart without AutoboxSocketModule is not possible. */
-public class AutoboxSocketModule extends AbstractModule {
-  @Override
+ * 
+ * The gokart cannot be operated without AutoboxSocketModule. */
+public final class AutoboxSocketModule extends AbstractModule {
+  @Override // from AbstractModule
   protected void first() {
     RimoSocket.INSTANCE.start();
     LinmotSocket.INSTANCE.start();
@@ -18,7 +19,7 @@ public class AutoboxSocketModule extends AbstractModule {
     MiscSocket.INSTANCE.start();
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     RimoSocket.INSTANCE.stop();
     LinmotSocket.INSTANCE.stop();

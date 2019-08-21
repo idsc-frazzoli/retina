@@ -45,7 +45,7 @@ public class LaneKeepingCenterlineModuleTest extends TestCase {
         RealScalar.of(0));
     GokartPoseEvent testEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
     Scalar criticalDistance = Quantity.of(1, SI.METER);
-    LaneHelper.isOutside(curve, testEvent, criticalDistance);
+    LaneKeepingSlowDownModule.isOutside(curve, testEvent, criticalDistance);
     System.out.println(" ");
   }
 }

@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * when driver is pushing the brake
  * 
  * the state lasts until the brake is recalibrated */
-public class SteerPassiveModule extends AbstractModule implements LinmotGetListener, PutProvider<SteerPutEvent> {
+public final class SteerPassiveModule extends AbstractModule implements LinmotGetListener, PutProvider<SteerPutEvent> {
   /** threshold that determines that driver is pushing the brake */
   private static final Scalar ACTUAL_POSITION_PRESSED = Quantity.of(-0.02, SI.METER);
   // ---
