@@ -19,36 +19,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class TorqueVectoringModuleTest extends TestCase {
-  public void testSimple() throws Exception {
-    TorqueVectoringModule torqueVectoringModule = new DirectTorqueVectoringModule();
-    torqueVectoringModule.first();
-    torqueVectoringModule.last();
-  }
-
-  public void testControl() throws Exception {
-    TorqueVectoringModule torqueVectoringModule = new DirectTorqueVectoringModule();
-    torqueVectoringModule.first();
-    {
-      RimoGetEvent rimoGetEvent = RimoGetEvents.create(100, 200);
-      Scalar vx = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
-      SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
-      RimoPutEvent rimoPutEvent = torqueVectoringModule.derive( //
-          steerColumnAdapter, RealScalar.ZERO, Tensors.of(vx, vx.zero(), Quantity.of(0.0, SI.PER_SECOND)));
-      assertEquals(rimoPutEvent.putTireL.getTorque(), Quantity.of(0, NonSI.ARMS));
-      assertEquals(rimoPutEvent.putTireR.getTorque(), Quantity.of(0, NonSI.ARMS));
-    }
-    // full forward
-    RimoGetEvent rimoGetEvent = RimoGetEvents.create(200, 200);
-    Scalar vx = RimoTwdOdometry.tangentSpeed(rimoGetEvent);
-    SteerColumnAdapter steerColumnAdapter = new SteerColumnAdapter(true, Quantity.of(0, "SCE"));
-    RimoPutEvent rimoPutEvent = torqueVectoringModule.derive( //
-        steerColumnAdapter, RealScalar.ONE, Tensors.of(vx, vx.zero(), Quantity.of(0.0, SI.PER_SECOND)));
-    assertEquals(rimoPutEvent.putTireL.getTorque(), ManualConfig.GLOBAL.torqueLimit.negate());
-    assertEquals(rimoPutEvent.putTireR.getTorque(), ManualConfig.GLOBAL.torqueLimit);
-    // half forward slip right
-    torqueVectoringModule.last();
-  }
-
   public void testControl2() throws Exception {
     TorqueVectoringModule torqueVectoringModule = new DirectTorqueVectoringModule();
     torqueVectoringModule.first();
