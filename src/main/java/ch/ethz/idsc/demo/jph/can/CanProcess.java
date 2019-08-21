@@ -76,6 +76,6 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     }
     String name2 = file.getName();
     name2 = name2.substring(0, name2.length() - 4) + ".csv";
-    Export.of(HomeDirectory.file(name2), tableBuilder.toTable());
+    Export.of(HomeDirectory.file(name2), tableBuilder.getTable());
   }
 }

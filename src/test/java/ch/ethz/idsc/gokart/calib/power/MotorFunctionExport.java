@@ -35,7 +35,7 @@ import ch.ethz.idsc.tensor.sca.Round;
             _v.map(Magnitude.VELOCITY).map(Round._6), //
             acc.map(Magnitude.ACCELERATION).map(Round._6));
       }
-    Export.of(HomeDirectory.file(motorFunctionBase.getClass().getSimpleName() + ".csv"), tableBuilder.toTable());
+    Export.of(HomeDirectory.file(motorFunctionBase.getClass().getSimpleName() + ".csv"), tableBuilder.getTable());
   }
 
   public static void main(String[] args) throws IOException {

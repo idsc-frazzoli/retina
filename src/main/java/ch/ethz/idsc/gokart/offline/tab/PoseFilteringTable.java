@@ -41,7 +41,7 @@ public class PoseFilteringTable implements OfflineTableSupplier {
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 
   /** @param lcmfile

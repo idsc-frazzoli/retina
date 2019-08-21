@@ -85,7 +85,7 @@ public class Mp4AnimationWriter implements AnimationWriter {
   int count = 0;
 
   @Override // from AnimationWriter
-  public void append(BufferedImage bufferedImage) {
+  public void write(BufferedImage bufferedImage) {
     /** This is LIKELY not in YUV420P format, so we're going to convert it using some handy utilities. */
     if (Objects.isNull(converter))
       converter = MediaPictureConverterFactory.createConverter(bufferedImage, picture);
@@ -95,7 +95,7 @@ public class Mp4AnimationWriter implements AnimationWriter {
   }
 
   @Override // from AnimationWriter
-  public void append(Tensor tensor) {
+  public void write(Tensor tensor) {
     throw new UnsupportedOperationException();
   }
 

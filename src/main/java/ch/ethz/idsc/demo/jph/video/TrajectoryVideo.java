@@ -161,7 +161,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       TrajectoryVideo trajectoryImages = new TrajectoryVideo() {
         @Override
         public void image(BufferedImage bufferedImage) {
-          mp4.append(bufferedImage);
+          mp4.write(bufferedImage);
         }
       };
       OfflineLogPlayer.process(file, trajectoryImages);

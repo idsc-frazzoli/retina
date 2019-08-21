@@ -29,6 +29,6 @@ public class TrajectoryTable implements OfflineTableSupplier {
 
   @Override
   public Tensor getTable() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 }
