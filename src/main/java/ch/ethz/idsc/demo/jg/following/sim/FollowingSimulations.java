@@ -81,7 +81,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
       return Quantity.of(7, SI.METER);
     }
   };
-
   // ---
   private Tensor trail;
   private Tensor ratios;

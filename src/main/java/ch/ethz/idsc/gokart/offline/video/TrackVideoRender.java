@@ -37,6 +37,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
@@ -48,6 +49,7 @@ import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.owl.math.lane.StableLane;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Scalar;
@@ -58,10 +60,13 @@ import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class TrackVideoRender implements OfflineLogListener, RenderInterface {
+  private static final String CHANNEL_LIDAR = //
+      VelodyneLcmChannels.ray(VelodyneModel.VLP16, GokartLcmChannel.VLP16_CENTER);
   private static final Stroke STROKE = //
       new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
   private final PathRender pathRender = new PathRender(new Color(128, 128, 0), STROKE);
   private final LaneRender laneRender = new LaneRender();
+  private final LidarPointsRender lidarPointsRender = new LidarPointsRender(30_000);
   private final MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(20);
   private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
   private final DriftLinesRender driftLinesRender = new DriftLinesRender(250);
@@ -101,6 +106,9 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
+    if (channel.equals(CHANNEL_LIDAR)) {
+      lidarPointsRender.velodyneDecoder.lasers(byteBuffer);
+    } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
       SteerColumnEvent steerColumnEvent = new SteerColumnEvent(byteBuffer);
       gokartRender.steerColumnListener.getEvent(steerColumnEvent);
@@ -139,6 +147,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     else //
     if (channel.equals(poseChannel)) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
+      lidarPointsRender.getEvent(gokartPoseEvent);
       driftLinesRender.getEvent(gokartPoseEvent);
       slipLinesRender.getEvent(gokartPoseEvent);
       groundSpeedRender.getEvent(gokartPoseEvent);
@@ -174,6 +183,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     // TODO JPH
     // pathRender.render(geometricLayer, graphics);
     laneRender.render(geometricLayer, graphics);
+    lidarPointsRender.render(geometricLayer, graphics);
     if (hasDavis240c)
       accumulatedImageRender.render(geometricLayer, graphics);
     mpcPredictionSequenceRender.render(geometricLayer, graphics);

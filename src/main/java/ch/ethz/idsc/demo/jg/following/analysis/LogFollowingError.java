@@ -16,9 +16,6 @@ import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Transpose;
-import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Nest;
 
 /* package */ class LogFollowingError extends OfflineFollowingError {
