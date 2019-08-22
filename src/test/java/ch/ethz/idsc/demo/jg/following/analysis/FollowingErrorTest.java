@@ -28,6 +28,10 @@ public class FollowingErrorTest extends TestCase {
     assertEquals(followingError.averageError().get().Get(0), Norm._2.ofVector(ERROR.extract(0, 2)));
     assertEquals(followingError.averageError().get().Get(1), ERROR.Get(2).abs());
     // ---
+    assertTrue(followingError.maximumError().isPresent());
+    assertEquals(followingError.maximumError().get().Get(0), Norm._2.ofVector(ERROR.extract(0, 2)));
+    assertEquals(followingError.maximumError().get().Get(1), ERROR.Get(2).abs());
+    // ---
     assertTrue(followingError.accumulatedError().isPresent());
     assertEquals(followingError.accumulatedError().get().Get(0), //
         Norm._2.ofVector(ERROR.extract(0, 2)).multiply(RealScalar.of(trajectory.length())));

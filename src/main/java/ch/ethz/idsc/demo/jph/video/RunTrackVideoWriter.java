@@ -14,12 +14,12 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /* package */ enum RunTrackVideoWriter {
   ;
   public static void main(String[] args) throws Exception {
-    String name = "20190812T134244_00";
+    String imageName = "20190701T175650_00";
     BackgroundImage backgroundImage = BackgroundImage.from( //
-        HomeDirectory.Pictures(name + ".png"), //
+        HomeDirectory.Pictures(imageName + ".png"), //
         VideoBackground._20190401);
-    File file = new File("/media/datahaki/data/gokart/lane/20190812/" + name + "/log.lcm");
-    File dest = HomeDirectory.file(name + ".mp4");
+    File file = new File("/media/datahaki/data/gokart/0701hum/20190701T170957_04/log.lcm");
+    File dest = HomeDirectory.file(imageName + ".mp4");
     TrackVideoConfig trackVideoConfig = new TrackVideoConfig();
     // trackVideoConfig.frameLimit = 500;
     try (TrackVideoWriter trackVideoWriter = new TrackVideoWriter(backgroundImage, trackVideoConfig, dest)) {

@@ -110,7 +110,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
                 Tensors.of(spinnerLabelSpeed.getValue(), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
                 spinnerLabelDuration.getValue(), //
                 spinnerLabelRate.getValue().reciprocal());
-            map.put(simulation.name(), simulation);
+            map.put(simulation.identifier(), simulation);
             System.out.println(simulation.getReport().get());
             export(simulation.trail().get(), simulation.name().toLowerCase());
           }
