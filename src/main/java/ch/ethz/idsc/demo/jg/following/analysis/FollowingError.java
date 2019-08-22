@@ -102,4 +102,8 @@ public class FollowingError implements ErrorInterface {
     else
       return Optional.empty();
   }
+
+  public Tensor errors() {
+    return errors.copy().unmodifiable();
+  }
 }

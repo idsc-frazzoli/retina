@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.stream.IntStream;
 import javax.swing.JButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.demo.jg.following.analysis.ErrorDistributions;
 import ch.ethz.idsc.gokart.gui.trj.TrajectoryDesignModule;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -28,6 +30,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 import ch.ethz.idsc.tensor.io.Export;
@@ -41,6 +44,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /* package */ class FollowingSimulator extends TrajectoryDesignModule {
   private static final Scalar SIGMA_POS = Quantity.of(1, SI.METER);
   private static final Scalar DELTA_ANGLE = Pi.VALUE.divide(RealScalar.of(4));
+  private static final String[] ERROR_TYPES = {"position error", "heading error"};
+  private static final Scalar[] BIN_SIZES = {Quantity.of(0.01, "m"),RealScalar.of(0.01)};
   // ---
   private static final ColorDataIndexed COLORS = ColorDataLists._250.cyclic();
   // ---
@@ -114,6 +119,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
             System.out.println(simulation.getReport().get());
             export(simulation.trail().get(), simulation.name().toLowerCase());
           }
+          try {
+            plot();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         } else
           System.out.println("no curve found!");
       });
@@ -142,6 +152,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private void plot() throws IOException {
+    Tensor[] errors = map.values().stream().map(FollowingSimulations::errors).map(Transpose::of).toArray(Tensor[]::new);
+    String[] identifiers = map.keySet().toArray(new String[map.size()]);
+    ErrorDistributions.plot(errors, identifiers, ERROR_TYPES, BIN_SIZES);
   }
 
   public static void main(String[] args) {

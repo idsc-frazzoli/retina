@@ -153,6 +153,10 @@ import ch.ethz.idsc.tensor.sca.Sign;
     return followingError.accumulatedError();
   }
 
+  public final Tensor errors() {
+    return followingError.errors();
+  }
+
   @Override // from ErrorInterface
   public Optional<String> getReport() {
     return followingError.getReport().map(report -> //
