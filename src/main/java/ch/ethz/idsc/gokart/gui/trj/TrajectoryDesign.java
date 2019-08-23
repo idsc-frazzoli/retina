@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.trj;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -33,6 +34,7 @@ import ch.ethz.idsc.sophus.app.util.LazyMouseListener;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
 import ch.ethz.idsc.sophus.crv.subdiv.LaneRiesenfeldCurveSubdivision;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.sophus.lie.so2.So2;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -147,9 +149,16 @@ public class TrajectoryDesign extends CurvatureDemo {
     return Nest.of(curveSubdivision::cyclic, control, levels);
   }
 
+  private final FootprintRender footprintRender = new FootprintRender(new Color(0, 128, 128, 64));
+
   @Override // from CurvatureDemo
   public Tensor protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     renderControlPoints(geometricLayer, graphics);
+    if (!jToggleButtonRepos.isSelected()) {
+      geometricLayer.pushMatrix(Se2Matrix.of(geometricLayer.getMouseSe2State()));
+      footprintRender.render(geometricLayer, graphics);
+      geometricLayer.popMatrix();
+    }
     GeodesicDisplay geodesicDisplay = geodesicDisplay();
     Tensor refined = getRefinedCurve();
     Tensor render = Tensor.of(refined.stream().map(geodesicDisplay::toPoint));

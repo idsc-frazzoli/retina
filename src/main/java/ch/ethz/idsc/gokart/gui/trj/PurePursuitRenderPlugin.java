@@ -10,7 +10,6 @@ import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
 import ch.ethz.idsc.gokart.core.pure.PurePursuitConfig;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -55,6 +54,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     private static final StateIntegrator STATE_INTEGRATOR = FixedStateIntegrator.create( //
         Se2CarIntegrator.INSTANCE, RationalScalar.of(1, 4), 4 * 5);
     // ---
+    private final FootprintRender footprintRender = new FootprintRender(new Color(128, 128, 128, 64));
     private final Tensor pose;
     private final Scalar ratio;
     private final Flow flow_forward;
@@ -70,8 +70,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     @Override
     public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(pose));
-      graphics.setColor(new Color(128, 128, 128, 64));
-      graphics.fill(geometricLayer.toPath2D(RimoSinusIonModel.standard().footprint()));
+      footprintRender.render(geometricLayer, graphics);
       {
         graphics.setColor(new Color(128, 128, 128, 128));
         graphics.draw(geometricLayer.toPath2D(CIRCLE_POINTS.multiply(PurePursuitConfig.GLOBAL.lookAhead), true));
