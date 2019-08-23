@@ -82,17 +82,17 @@ public class FollowingError implements ErrorInterface {
     String report = "";
     Optional<Tensor> optional = averageError();
     if (optional.isPresent()) {
-      Tensor avg = optional.get();
+      Tensor avg = optional.get().map(Round._4);
       report += "\taverage error:\tposition: " + avg.Get(0) + ",\theading: " + avg.Get(1) + "\n";
     }
     optional = maximumError();
     if (optional.isPresent()) {
-      Tensor max = optional.get();
+      Tensor max = optional.get().map(Round._4);
       report += "\tmaximum error:\tposition: " + max.Get(0) + ",\theading: " + max.Get(1) + "\n";
     }
     optional = accumulatedError();
     if (optional.isPresent()) {
-      Tensor acc = optional.get();
+      Tensor acc = optional.get().map(Round._4);
       report += "\tsummed error:\tposition: " + acc.Get(0) + ",\theading: " + acc.Get(1);
     }
     if (report.length() > 0)

@@ -21,7 +21,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private static final Scalar[] BIN_SIZES = { Quantity.of(0.01, "m"), RealScalar.of(0.01)};
 
   public static void main(String[] args) throws Exception {
-    Arrays.stream(args).forEach(System.out::println);
     Iterator<String> iterator = Arrays.asList(args).iterator();
     List<String> sources = new ArrayList<>();
     List<Tensor> errors  = new ArrayList<>();
@@ -30,8 +29,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       OfflineLogPlayer.process(new File(iterator.next()), followingError);
       errors.add(Transpose.of(followingError.errors()));
       followingError.getReport().ifPresent(System.out::println);
+      sources.add(iterator.next());
     }
     ErrorDistributions.plot(errors.stream().toArray(Tensor[]::new), sources.toArray(new String[sources.size()]), ERROR_TYPES, BIN_SIZES);
-    sources.add(iterator.next());
   }
 }
