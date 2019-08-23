@@ -66,7 +66,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
   private final PathRender pathRender = new PathRender(new Color(128, 128, 0), STROKE);
   private final LaneRender laneRender = new LaneRender();
-  private final LidarPointsRender lidarPointsRender = new LidarPointsRender(30_000);
+  private final LidarPointsRender lidarPointsRender;
   private final MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(20);
   private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
   private final DriftLinesRender driftLinesRender = new DriftLinesRender(250);
@@ -90,6 +90,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   public TrackVideoRender(Tensor model2pixel, String poseChannel) {
     this.poseChannel = poseChannel;
+    lidarPointsRender = new LidarPointsRender(model2pixel, 30_000);
     accelerationRender = new AccelerationRender(50, //
         Inverse.of(model2pixel) //
             .dot(Se2Matrix.of(Tensors.vector(960 + 250, 140, 0))) //

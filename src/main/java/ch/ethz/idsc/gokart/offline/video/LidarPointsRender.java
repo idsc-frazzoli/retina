@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
+import ch.ethz.idsc.owl.gui.ColorLookup;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarPacketCollector;
@@ -23,24 +24,34 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SegmentProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.util.BoundedLinkedList;
-import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.img.Hue;
+import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.mat.IdentityMatrix;
 
 /** shares code with OccupancyMappingCore */
 /* package */ class LidarPointsRender implements RenderInterface, GokartPoseListener, LidarRayBlockListener {
+  private static final class ColorShape {
+    private final int color;
+    private final int x;
+    private final int y;
+
+    public ColorShape(int color, int x, int y) {
+      this.color = color;
+      this.x = x;
+      this.y = y;
+    }
+  }
+
   public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
-  private final int maxSize;
-  private final BoundedLinkedList<Tensor> boundedLinkedList;
+  // private final int maxSize;
+  private final BoundedLinkedList<ColorShape> boundedLinkedList;
+  private final ColorDataIndexed colorLookup = ColorLookup.hsluv_lightness(128, 0.7);
   private final Tensor lidar2gokart = PoseHelper.toSE2Matrix(SensorsConfig.GLOBAL.vlp16_pose);
   private final GeometricLayer lidar2model = GeometricLayer.of(IdentityMatrix.of(3));
   // ---
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
 
-  public LidarPointsRender(int maxSize) {
-    this.maxSize = maxSize;
+  public LidarPointsRender(Tensor model2pixel, int maxSize) {
     LidarPacketCollector lidarPacketCollector = new LidarPacketCollector(10_000, 3);
     VelodyneSpacialProvider velodyneSpacialProvider = //
         new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), -3);
@@ -51,20 +62,16 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
     velodyneDecoder.addRayListener(lidarPacketCollector);
     // ---
     boundedLinkedList = new BoundedLinkedList<>(maxSize);
+    lidar2model.pushMatrix(model2pixel);
     lidar2model.pushMatrix(IdentityMatrix.of(3));
     lidar2model.pushMatrix(lidar2gokart);
   }
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
-    int count = 0;
-    for (Tensor point : boundedLinkedList) {
-      Point2D point2d = geometricLayer.toPoint2D(point);
-      graphics.setColor(Hue.of(0.6, 1, 1, (maxSize - count) / (double) maxSize));
-      graphics.fillRect( //
-          (int) point2d.getX(), //
-          (int) point2d.getY(), 1, 1);
-      ++count;
+    for (ColorShape colorShape : boundedLinkedList) {
+      graphics.setColor(colorLookup.getColor(colorShape.color));
+      graphics.fillRect(colorShape.x, colorShape.y, 1, 1);
     }
   }
 
@@ -83,15 +90,21 @@ import ch.ethz.idsc.tensor.mat.IdentityMatrix;
       throw new RuntimeException("dim=" + lidarRayBlockEvent.dimensions);
     // ---
     FloatBuffer floatBuffer = lidarRayBlockEvent.floatBuffer;
-    process(Tensors.vector(i -> Tensors.of( //
-        DoubleScalar.of(floatBuffer.get()), //
-        DoubleScalar.of(floatBuffer.get()), //
-        DoubleScalar.of(floatBuffer.get())), lidarRayBlockEvent.size()));
+    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent))
+      for (int index = 0; index < lidarRayBlockEvent.size(); ++index)
+        process( //
+            floatBuffer.get(), //
+            floatBuffer.get(), //
+            floatBuffer.get());
+    else
+      System.err.println("pqual=" + gokartPoseEvent.getQuality());
   }
 
-  private void process(Tensor points) {
-    if (LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent))
-      for (Tensor point : points) // point x, y, z
-        boundedLinkedList.add(lidar2model.toVector(point));
+  private void process(float x, float y, float z) {
+    Point2D point2d = lidar2model.toPoint2D(x, y);
+    boundedLinkedList.add(new ColorShape( //
+        Math.min(Math.max(0, 64 + (int) (z * 64)), 127), //
+        (int) point2d.getX(), //
+        (int) point2d.getY()));
   }
 }

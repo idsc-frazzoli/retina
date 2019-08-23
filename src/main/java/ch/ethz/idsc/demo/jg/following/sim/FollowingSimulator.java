@@ -44,8 +44,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /* package */ class FollowingSimulator extends TrajectoryDesignModule {
   private static final Scalar SIGMA_POS = Quantity.of(1, SI.METER);
   private static final Scalar DELTA_ANGLE = Pi.VALUE.divide(RealScalar.of(4));
-  private static final String[] ERROR_TYPES = {"position error", "heading error"};
-  private static final Scalar[] BIN_SIZES = {Quantity.of(0.01, "m"),RealScalar.of(0.01)};
+  private static final String[] ERROR_TYPES = { "position error", "heading error" };
+  private static final Scalar[] BIN_SIZES = { Quantity.of(0.01, "m"), RealScalar.of(0.01) };
   // ---
   private static final ColorDataIndexed COLORS = ColorDataLists._250.cyclic();
   // ---

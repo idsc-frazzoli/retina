@@ -18,7 +18,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     BackgroundImage backgroundImage = BackgroundImage.from( //
         HomeDirectory.Pictures(imageName + ".png"), //
         VideoBackground._20190401);
-    File file = new File("/media/datahaki/data/gokart/0701hum/20190701T170957_04/log.lcm");
+    File file = new File("/media/datahaki/data/gokart/0701mpc/20190701T175650_01/log.lcm");
     File dest = HomeDirectory.file(imageName + ".mp4");
     TrackVideoConfig trackVideoConfig = new TrackVideoConfig();
     // trackVideoConfig.frameLimit = 500;

@@ -16,14 +16,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ enum MultiLogFollowingError {
   ;
-
-  private static final String[] ERROR_TYPES = {"position error", "heading error"};
-  private static final Scalar[] BIN_SIZES = { Quantity.of(0.01, "m"), RealScalar.of(0.01)};
+  private static final String[] ERROR_TYPES = { "position error", "heading error" };
+  private static final Scalar[] BIN_SIZES = { Quantity.of(0.01, "m"), RealScalar.of(0.01) };
 
   public static void main(String[] args) throws Exception {
     Iterator<String> iterator = Arrays.asList(args).iterator();
     List<String> sources = new ArrayList<>();
-    List<Tensor> errors  = new ArrayList<>();
+    List<Tensor> errors = new ArrayList<>();
     while (iterator.hasNext()) {
       LogFollowingError followingError = new LogFollowingError();
       OfflineLogPlayer.process(new File(iterator.next()), followingError);

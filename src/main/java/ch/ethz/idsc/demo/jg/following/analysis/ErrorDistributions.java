@@ -3,6 +3,8 @@ package ch.ethz.idsc.demo.jg.following.analysis;
 
 import java.io.IOException;
 
+import org.jfree.chart.ChartUtils;
+
 import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.sophus.util.plot.ListPlot;
 import ch.ethz.idsc.sophus.util.plot.VisualRow;
@@ -14,11 +16,9 @@ import ch.ethz.idsc.tensor.alg.Range;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.pdf.BinCounts;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import org.jfree.chart.ChartUtils;
 
 public enum ErrorDistributions {
   ;
-
   private static final int WIDTH = 900;
   private static final int HEIGHT = 600;
 
