@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
-/* package */ class SetVelSimpleBrakingModule extends AntilockBrakeModule {
+/* package */ class SetVelSimpleBrakingModule extends AntilockBrakeBaseModule {
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
   private final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
 

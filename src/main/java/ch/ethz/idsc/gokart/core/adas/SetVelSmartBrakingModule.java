@@ -35,7 +35,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
-public class SetVelSmartBrakingModule extends AntilockBrakeModule implements Vmu931ImuFrameListener {
+public class SetVelSmartBrakingModule extends AntilockBrakeBaseModule implements Vmu931ImuFrameListener {
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
   private final Vmu931ImuLcmClient vmu931imuLcmClient = new Vmu931ImuLcmClient();
   private Scalar currentAcceleration = Quantity.of(0.0, SI.ACCELERATION);
