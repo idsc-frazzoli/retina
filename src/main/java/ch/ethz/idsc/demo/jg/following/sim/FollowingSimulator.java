@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -40,6 +41,7 @@ import ch.ethz.idsc.tensor.pdf.NormalDistribution;
 import ch.ethz.idsc.tensor.pdf.RandomVariate;
 import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Round;
 
 /* package */ class FollowingSimulator extends TrajectoryDesignModule {
   private static final Scalar SIGMA_POS = Quantity.of(1, SI.METER);
@@ -52,6 +54,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final SpinnerLabel<Scalar> spinnerLabelRate = new SpinnerLabel<>();
   private final SpinnerLabel<Scalar> spinnerLabelDuration = new SpinnerLabel<>();
   private final SpinnerLabel<Scalar> spinnerLabelSpeed = new SpinnerLabel<>();
+  // ---
+  private final boolean latex = System.getProperty("user.name").equals("joelg");
+  private int rep = 1;
   // ---
   private Tensor initialPose = Tensors.empty();
   private final Map<String, FollowingSimulations> map = new HashMap<>();
@@ -119,6 +124,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
             System.out.println(simulation.getReport().get());
             export(simulation.trail().get(), simulation.name().toLowerCase());
           }
+          if (latex)
+            System.out.println(latex(FollowingSimulations.values(), "smooth"));
           try {
             plot();
           } catch (IOException e) {
@@ -158,6 +165,43 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Tensor[] errors = map.values().stream().map(FollowingSimulations::errors).map(Transpose::of).toArray(Tensor[]::new);
     String[] identifiers = map.keySet().toArray(new String[map.size()]);
     ErrorDistributions.plot(errors, identifiers, ERROR_TYPES, BIN_SIZES);
+  }
+
+  /** @param simulations
+   * @param track
+   * @return partial latex table code
+   * before:
+   *  \begin{table}[H]
+   *  \begin{tabular}{@{\extracolsep{4pt}}ccccccc}
+   *  \hline
+   *  \multirow{2}{*}{\textbf{track (run)}} & \multirow{2}{*}{\textbf{controller}} & \multirow{2}{*}{\textbf{look ahead [m]}}
+   *  & \multicolumn{2}{c}{\textbf{position [m]}} & \multicolumn{2}{c}{\textbf{heading}} \\ \cline{4-5} \cline{6-7}
+   *  &&& \textbf{avg} & \textbf{max} & \textbf{avg} & \textbf{max} \\
+   *  \hline \hline
+   * after:
+   *  \end{tabular}
+   *  \end{table} */
+  private String latex(FollowingSimulations[] simulations, String track) {
+    String latex = "";
+    int i = 0;
+    for (FollowingSimulations simulation : simulations) {
+      Tensor avg = simulation.averageError().get().map(Round._4);
+      Tensor max = simulation.maximumError().get().map(Round._4);
+      if (i == 0)
+        latex += String.format(Locale.US, "\\multirow{4}{*}{%s (%d)} & pure pursuit & 3.5 & %.4f & %.4f & %.4f & %.4f \\\\ \\cline{2-7}\n", //
+            track, rep++, avg.Get(0).number().doubleValue(), max.Get(0).number().doubleValue(), //
+            avg.Get(1).number().doubleValue(), max.Get(1).number().doubleValue());
+      else if (i == 1)
+        latex += String.format(Locale.US, "& \\multirow{3}{*}{clothoid pursuit} & 3.5 & %.4f & %.4f & %.4f & %.4f \\\\\n", //
+            avg.Get(0).number().doubleValue(), max.Get(0).number().doubleValue(), //
+            avg.Get(1).number().doubleValue(), max.Get(1).number().doubleValue());
+      else
+        latex += String.format(Locale.US, "&& %d & %.4f & %.4f & %.4f & %.4f \\\\\n", i == 2 ? 5 : 7, //
+            avg.Get(0).number().doubleValue(), max.Get(0).number().doubleValue(), //
+            avg.Get(1).number().doubleValue(), max.Get(1).number().doubleValue());
+      i++;
+    }
+    return latex + "\\hline";
   }
 
   public static void main(String[] args) {
