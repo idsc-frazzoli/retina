@@ -6,13 +6,13 @@ import junit.framework.TestCase;
 
 public class AntilockBrakeModuleTest extends TestCase {
   public void testSimple() {
-    AntilockBrakeModule antilockBrakeModule = new AntilockBrakeV1Module();
+    AntilockBrakeBaseModule antilockBrakeModule = new AntilockBrakeModule();
     assertEquals(antilockBrakeModule.getProviderRank(), ProviderRank.EMERGENCY);
   }
 
   public void testNullFail() {
     try {
-      new AntilockBrakeV1Module(null);
+      new AntilockBrakeModule(null);
       fail();
     } catch (Exception exception) {
       // ---

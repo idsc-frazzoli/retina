@@ -4,14 +4,9 @@ package ch.ethz.idsc.gokart.core.adas;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.OvalTrack;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
-import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import junit.framework.TestCase;
@@ -37,15 +32,4 @@ public class LaneKeepingCenterlineModuleTest extends TestCase {
     laneKeepingCenterlineModule.terminate();
   }
 
-  public void testSimple4() {
-    Optional<Tensor> curve = Optional.of(Tensors.fromString("{{1[m], 1[m], 2}, {3[m], 2[m], 4}}"));
-    Tensor pose = Tensors.of( //
-        Quantity.of(10000, SI.METER), //
-        Quantity.of(10000, SI.METER), //
-        RealScalar.of(0));
-    GokartPoseEvent testEvent = GokartPoseEvents.create(pose, RealScalar.ONE);
-    Scalar criticalDistance = Quantity.of(1, SI.METER);
-    LaneKeepingSlowDownModule.isOutside(curve, testEvent, criticalDistance);
-    System.out.println(" ");
-  }
 }
