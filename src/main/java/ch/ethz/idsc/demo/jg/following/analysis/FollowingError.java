@@ -4,11 +4,13 @@ package ch.ethz.idsc.demo.jg.following.analysis;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.sophus.lie.so2.So2Metric;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Max;
@@ -53,7 +55,7 @@ public class FollowingError implements ErrorInterface {
     Tensor pose2D = Extract2D.FUNCTION.apply(pose);
     Tensor distances = Tensor.of(reference.stream().map(Extract2D.FUNCTION).map(tensor -> tensor.subtract(pose2D)).map(Norm._2::ofVector));
     int idx = ArgMin.of(distances);
-    return Tensors.of(distances.get(idx), So2AlignmentError.of(pose.Get(2), reference.Get(idx, 2)));
+    return Tensors.of(distances.get(idx), So2Metric.INSTANCE.distance(pose.get(2), reference.get(idx, 2)));
   }
 
   @Override // from ErrorInterface
@@ -64,21 +66,44 @@ public class FollowingError implements ErrorInterface {
   }
 
   @Override // from ErrorInterface
+  public final Optional<Tensor> maximumError() {
+    if (errors.length() > 0)
+      return Optional.of(Tensor.of(Transpose.of(errors).stream().map(t -> t.stream().reduce(Max::of).get())));
+    return Optional.empty();
+  }
+
+  @Override // from ErrorInterface
   public final Optional<Tensor> accumulatedError() {
     return errors.stream().reduce(Tensor::add);
   }
 
   @Override // from ErrorInterface
   public Optional<String> getReport() {
-    Optional<Tensor> averageError = averageError();
-    if (averageError.isPresent()) {
-      Tensor average = averageError.get().map(Round._4);
-      Tensor accumulated = accumulatedError().get().map(Round._4);
+    String report = "";
+    Optional<Tensor> optional = averageError();
+    if (optional.isPresent()) {
+      Tensor avg = optional.get().map(Round._4);
+      report += "\taverage error:\tposition: " + avg.Get(0) + ",\theading: " + avg.Get(1) + "\n";
+    }
+    optional = maximumError();
+    if (optional.isPresent()) {
+      Tensor max = optional.get().map(Round._4);
+      report += "\tmaximum error:\tposition: " + max.Get(0) + ",\theading: " + max.Get(1) + "\n";
+    }
+    optional = accumulatedError();
+    if (optional.isPresent()) {
+      Tensor acc = optional.get().map(Round._4);
+      report += "\tsummed error:\tposition: " + acc.Get(0) + ",\theading: " + acc.Get(1);
+    }
+    if (report.length() > 0)
       return Optional.of("following error (" + this.getClass().getSimpleName() + ")\n" + //
           "\ttime:\t" + Round._2.apply(startTime) + " - " + Round._2.apply(endTime) + "\n" + //
-          "\taverage error:\tposition: " + average.Get(0) + ",\theading: " + average.Get(1) + "\n" + //
-          "\taccumulated error:\tposition: " + accumulated.Get(0) + ",\theading: " + accumulated.Get(1));
-    }
-    return Optional.empty();
+          report);
+    else
+      return Optional.empty();
+  }
+
+  public Tensor errors() {
+    return errors.copy().unmodifiable();
   }
 }

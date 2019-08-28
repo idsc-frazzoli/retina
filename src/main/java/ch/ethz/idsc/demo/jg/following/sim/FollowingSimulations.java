@@ -12,7 +12,7 @@ import ch.ethz.idsc.gokart.core.pure.CurvePurePursuitHelper;
 import ch.ethz.idsc.gokart.core.pure.PurePursuitConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
-import ch.ethz.idsc.owl.bot.se2.glc.CarHelper;
+import ch.ethz.idsc.owl.bot.se2.glc.Se2CarFlows;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -29,27 +29,26 @@ import ch.ethz.idsc.tensor.sca.Sign;
   PURE {
     @Override
     public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
-      return CurvePurePursuitHelper.getRatio(pose, curve, Sign.isPositiveOrZero(speed.Get(0)), PurePursuitConfig.GLOBAL.lookAhead);
+      return CurvePurePursuitHelper.getRatio(pose, curve, Sign.isPositiveOrZero(speed.Get(0)), lookAhead());
+    }
+
+    @Override
+    public Scalar lookAhead() {
+      return PurePursuitConfig.GLOBAL.lookAhead;
     }
   },
-  CLOTHOID_05 {
+  CLOTHOID_3_5 {
     private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
 
     @Override
     public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(.5, SI.METER);
+      ClothoidPursuitConfig.GLOBAL.lookAhead = lookAhead();
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
-  },
-  CLOTHOID_3 {
-    private final CurveClothoidPursuitPlanner planner = new CurveClothoidPursuitPlanner(ClothoidPursuitConfig.GLOBAL);
 
-    @Override
-    public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(3, SI.METER);
-      return planner.getPlan(pose, speed, curve, //
-          Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
+    public Scalar lookAhead() {
+      return Quantity.of(3.5, SI.METER);
     }
   },
   CLOTHOID_5 {
@@ -57,9 +56,14 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
     @Override
     public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(5, SI.METER);
+      ClothoidPursuitConfig.GLOBAL.lookAhead = lookAhead();
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
+    }
+
+    @Override
+    public Scalar lookAhead() {
+      return Quantity.of(5, SI.METER);
     }
   },
   CLOTHOID_7 {
@@ -67,15 +71,25 @@ import ch.ethz.idsc.tensor.sca.Sign;
 
     @Override
     public Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve) {
-      ClothoidPursuitConfig.GLOBAL.lookAhead = Quantity.of(7, SI.METER);
+      ClothoidPursuitConfig.GLOBAL.lookAhead = lookAhead();
       return planner.getPlan(pose, speed, curve, //
           Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
+
+    @Override
+    public Scalar lookAhead() {
+      return Quantity.of(7, SI.METER);
+    }
   };
+  // ---
   private Tensor trail;
   private Tensor ratios;
   private FollowingError followingError;
   private Timing timing;
+
+  public String identifier() {
+    return name().split("_")[0] + " (" + lookAhead() + ")";
+  }
 
   /** @param curve reference
    * @param initialPose of vehicle {x[m], y[m], angle}
@@ -98,7 +112,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
       if (optional.isPresent())
         ratio = Clips.absolute(SteerConfig.GLOBAL.turningRatioMax).apply(optional.get());
       ratios.append(ratio);
-      pose = Se2CarIntegrator.INSTANCE.step(CarHelper.singleton(speed.Get(0), ratio), pose, timeStep);
+      pose = Se2CarIntegrator.INSTANCE.step(Se2CarFlows.singleton(speed.Get(0), ratio), pose, timeStep);
     }
     timing.stop();
   }
@@ -129,14 +143,23 @@ import ch.ethz.idsc.tensor.sca.Sign;
   }
 
   @Override // from ErrorInterface
+  public final Optional<Tensor> maximumError() {
+    return followingError.maximumError();
+  }
+
+  @Override // from ErrorInterface
   public final Optional<Tensor> accumulatedError() {
     return followingError.accumulatedError();
+  }
+
+  public final Tensor errors() {
+    return followingError.errors();
   }
 
   @Override // from ErrorInterface
   public Optional<String> getReport() {
     return followingError.getReport().map(report -> //
-    name() + ratioRange().map(range -> " " + report + //
+    identifier() + ratioRange().map(range -> " " + report + //
         "\n\tratios:\tmin = " + Round._4.apply(range.min().Get()) + ", max = " + Round._4.apply(range.max().Get()) + //
         "\n\tsimulation duration:\t" + simulationTime().get()) //
         .orElse(" not yet run"));
@@ -147,4 +170,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
    * @param curve reference
    * @return ratio [m^-1] */
   public abstract Optional<Scalar> setup(Tensor pose, Tensor speed, Tensor curve);
+
+  public abstract Scalar lookAhead();
 }

@@ -109,6 +109,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
     System.out.println("building table");
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 }

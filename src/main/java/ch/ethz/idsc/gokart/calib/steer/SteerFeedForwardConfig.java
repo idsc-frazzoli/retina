@@ -1,4 +1,4 @@
-// code by jph
+// code by am, jph
 package ch.ethz.idsc.gokart.calib.steer;
 
 import ch.ethz.idsc.retina.util.sys.AppResources;
@@ -9,14 +9,18 @@ import ch.ethz.idsc.tensor.alg.Series;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-public class SteerFeedForwardConfig {
+/** constants in this class were determined in experimentation */
+/* package */ class SteerFeedForwardConfig {
   public static final SteerFeedForwardConfig GLOBAL = AppResources.load(new SteerFeedForwardConfig());
   /***************************************************/
   /** https://github.com/idsc-frazzoli/retina/files/3265874/20190521_restoring_force_of_steering.pdf */
-  public Scalar linear = Quantity.of(+0.9581478188758055, "SCT*SCE^-1");
-  public Scalar cubic = Quantity.of(-0.9281077083540995, "SCT*SCE^-3");
+  public final Scalar linear = Quantity.of(+0.9581478188758055, "SCT*SCE^-1");
+  public final Scalar cubic = Quantity.of(-0.9281077083540995, "SCT*SCE^-3");
 
   /***************************************************/
+  /** TODO "function returns needed torque to compensate restoring force of steering"
+   * 
+   * @return function that maps quantities with unit "SCE" to quantities with unit "SCT" */
   public ScalarUnaryOperator series() {
     return Series.of(Tensors.of( //
         RealScalar.ZERO, //

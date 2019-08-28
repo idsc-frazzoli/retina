@@ -16,14 +16,17 @@ import java.util.Objects;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
+import ch.ethz.idsc.owl.gui.ren.LaneRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
+import ch.ethz.idsc.owl.math.lane.LaneInterface;
+import ch.ethz.idsc.owl.math.lane.StableLane;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.sophus.app.api.ClothoidDisplay;
 import ch.ethz.idsc.sophus.app.api.GeodesicDisplay;
-import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.app.curve.CurvatureDemo;
 import ch.ethz.idsc.sophus.app.misc.CurveCurvatureRender;
 import ch.ethz.idsc.sophus.app.util.LazyMouse;
@@ -31,12 +34,11 @@ import ch.ethz.idsc.sophus.app.util.LazyMouseListener;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
 import ch.ethz.idsc.sophus.crv.subdiv.LaneRiesenfeldCurveSubdivision;
-import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.sophus.lie.so2.So2;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Get;
 import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -45,8 +47,6 @@ import ch.ethz.idsc.tensor.sca.N;
 
 public class TrajectoryDesign extends CurvatureDemo {
   private static final Scalar COMB_SCALE = Quantity.of(-1.0, "m^2");
-  private static final Tensor OFS_L = Tensors.fromString("{0, +1[m], 0}").unmodifiable();
-  private static final Tensor OFS_R = Tensors.fromString("{0, -1[m], 0}").unmodifiable();
   // ---
   private final SpinnerLabel<Integer> spinnerLabelDegree = new SpinnerLabel<>();
   private final SpinnerLabel<Integer> spinnerLabelLevels = new SpinnerLabel<>();
@@ -55,8 +55,7 @@ public class TrajectoryDesign extends CurvatureDemo {
   private final SpinnerLabel<RenderPlugins> spinnerLabelPlugins = new SpinnerLabel<>();
   private RenderInterface renderInterface = EmptyRender.INSTANCE;
   private RenderPluginParameters renderPluginParameters = null;
-  private final PathRender pathRenderL = new PathRender(new Color(255, 128, 128, 192), 1);
-  private final PathRender pathRenderR = new PathRender(new Color(128, 192, 128, 192), 1);
+  private final LaneRender laneRender = new LaneRender();
   private final LazyMouseListener lazyMouseListener = new LazyMouseListener() {
     @Override
     public void lazyClicked(MouseEvent mouseEvent) {
@@ -145,14 +144,21 @@ public class TrajectoryDesign extends CurvatureDemo {
   public Tensor getRefinedCurve() {
     Tensor control = getControlPointsPose();
     int degree = spinnerLabelDegree.getValue();
-    CurveSubdivision curveSubdivision = new LaneRiesenfeldCurveSubdivision(geodesicDisplay().geodesicInterface(), degree);
+    CurveSubdivision curveSubdivision = LaneRiesenfeldCurveSubdivision.of(geodesicDisplay().geodesicInterface(), degree);
     int levels = spinnerLabelLevels.getValue();
     return Nest.of(curveSubdivision::cyclic, control, levels);
   }
 
+  private final FootprintRender footprintRender = new FootprintRender(new Color(0, 128, 128, 64));
+
   @Override // from CurvatureDemo
   public Tensor protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
     renderControlPoints(geometricLayer, graphics);
+    if (!jToggleButtonRepos.isSelected()) {
+      geometricLayer.pushMatrix(Se2Matrix.of(geometricLayer.getMouseSe2State()));
+      footprintRender.render(geometricLayer, graphics);
+      geometricLayer.popMatrix();
+    }
     GeodesicDisplay geodesicDisplay = geodesicDisplay();
     Tensor refined = getRefinedCurve();
     Tensor render = Tensor.of(refined.stream().map(geodesicDisplay::toPoint));
@@ -161,15 +167,13 @@ public class TrajectoryDesign extends CurvatureDemo {
     renderPluginParameters = new RenderPluginParameters( //
         refined, //
         PoseHelper.attachUnits(geometricLayer.getMouseSe2State()));
-    renderPluginParameters.laneBoundaryL = Tensor.of(refined.stream() //
-        .map(Se2GroupElement::new) //
-        .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));
-    renderPluginParameters.laneBoundaryR = Tensor.of(refined.stream() //
-        .map(Se2GroupElement::new) //
-        .map(se2GroupElement -> se2GroupElement.combine(OFS_R)));
+    LaneInterface laneInterface = //
+        StableLane.of(getControlPointsPose(), refined, HapticSteerConfig.GLOBAL.halfWidth);
+    renderPluginParameters.laneBoundaryL = laneInterface.leftBoundary();
+    renderPluginParameters.laneBoundaryR = laneInterface.rightBoundary();
     // ---
-    pathRenderL.setCurve(renderPluginParameters.laneBoundaryL, true).render(geometricLayer, graphics);
-    pathRenderR.setCurve(renderPluginParameters.laneBoundaryR, true).render(geometricLayer, graphics);
+    laneRender.setLane(laneInterface, true);
+    laneRender.render(geometricLayer, graphics);
     // ---
     if (jToggleButtonWaypoints.isSelected())
       WaypointsRenderPlugin.INSTANCE.renderInterface(renderPluginParameters).render(geometricLayer, graphics);

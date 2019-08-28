@@ -9,15 +9,14 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
+import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
@@ -33,12 +32,12 @@ import ch.ethz.idsc.tensor.sca.Round;
       // large value is a hack to get a solution
       clothoidPursuitConfig.turningRatioMax = Quantity.of(1000, SI.PER_METER);
       Optional<ClothoidPlan> optionalL = //
-          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, //
-              Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
+          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan( //
+              pose, VelocityHelper.ZERO, //
               renderPluginParameters.laneBoundaryL, true);
       Optional<ClothoidPlan> optionalR = //
-          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan(pose, //
-              Tensors.of(Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.VELOCITY), Quantity.of(0, SI.PER_SECOND)), //
+          new CurveClothoidPursuitPlanner(clothoidPursuitConfig).getPlan( //
+              pose, VelocityHelper.ZERO, //
               renderPluginParameters.laneBoundaryR, true);
       return new LaneConstraintsRender(pose, optionalL, optionalR);
     }
@@ -49,6 +48,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private static class LaneConstraintsRender implements RenderInterface {
     private static final Font FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
     // ---
+    private final FootprintRender footprintRender = new FootprintRender(new Color(128, 128, 128, 64));
     private final Tensor pose;
     private final Optional<ClothoidPlan> clothoidPlanL;
     private final Optional<ClothoidPlan> clothoidPlanR;
@@ -66,7 +66,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       // draw footprint of gokart
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(pose));
       graphics.setColor(new Color(128, 128, 128, 64));
-      graphics.fill(geometricLayer.toPath2D(RimoSinusIonModel.standard().footprint()));
+      footprintRender.render(geometricLayer, graphics);
       geometricLayer.popMatrix();
       // ---
       graphics.setFont(FONT);

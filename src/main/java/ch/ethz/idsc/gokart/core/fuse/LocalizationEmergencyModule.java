@@ -12,13 +12,13 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutProvider;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.retina.util.data.SoftWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.time.SoftWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 import ch.ethz.idsc.tensor.Scalars;
 
 /** prevents driving if pose is has insufficient quality for timeout duration */
-public class LocalizationEmergencyModule extends AbstractModule implements GokartPoseListener, RimoPutProvider {
+public final class LocalizationEmergencyModule extends AbstractModule implements GokartPoseListener, RimoPutProvider {
   /** timeout 0.3[s] */
   private final Watchdog watchdog = SoftWatchdog.barking(0.3);
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();

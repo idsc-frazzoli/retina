@@ -9,20 +9,22 @@ import java.util.TreeMap;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.LinearInterpolation;
 import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
+/** evaluation for values outside the domain the nearest control point is returned */
 public class PiecewiseLinearFunction implements ScalarTensorFunction {
   /** @param knots vector
-   * @param cp
+   * @param values
    * @return */
-  public static ScalarTensorFunction of(Tensor knots, Tensor cp) {
+  public static ScalarTensorFunction of(Tensor knots, Tensor values) {
     NavigableMap<Scalar, Tensor> navigableMap = new TreeMap<>();
     for (int index = 0; index < knots.length(); ++index)
-      navigableMap.put(knots.Get(index), cp.get(index));
+      navigableMap.put(knots.Get(index), values.get(index));
+    if (navigableMap.isEmpty())
+      throw new RuntimeException();
     return new PiecewiseLinearFunction(navigableMap);
   }
 
@@ -38,12 +40,10 @@ public class PiecewiseLinearFunction implements ScalarTensorFunction {
     Entry<Scalar, Tensor> floor = navigableMap.floorEntry(scalar);
     Entry<Scalar, Tensor> ceiling = navigableMap.ceilingEntry(scalar);
     if (Objects.isNull(floor))
-      return ceiling.getValue();
+      return ceiling.getValue().copy();
     if (Objects.isNull(ceiling))
-      return floor.getValue();
+      return floor.getValue().copy();
     Clip clip = Clips.interval(floor.getKey(), ceiling.getKey());
-    Scalar lambda = clip.rescale(scalar);
-    Interpolation interpolation = LinearInterpolation.of(Tensors.of(floor.getValue(), ceiling.getValue()));
-    return interpolation.at(lambda);
+    return LinearInterpolation.of(Tensors.of(floor.getValue(), ceiling.getValue())).at(clip.rescale(scalar));
   }
 }

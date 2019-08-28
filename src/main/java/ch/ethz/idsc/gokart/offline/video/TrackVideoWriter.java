@@ -19,6 +19,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 /** implementation renders a log file to a mp4 video */
 public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
   private final BackgroundImage backgroundImage;
+  private final TrackVideoConfig trackVideoConfig;
   private final String poseChannel;
   // ---
   private final Mp4AnimationWriter mp4AnimationWriter;
@@ -34,13 +35,14 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
   public TrackVideoWriter(BackgroundImage backgroundImage, TrackVideoConfig trackVideoConfig, File file) //
       throws Exception {
     this.backgroundImage = backgroundImage;
+    this.trackVideoConfig = trackVideoConfig;
     this.poseChannel = trackVideoConfig.poseChannel;
     Dimension dimension = backgroundImage.dimension();
     mp4AnimationWriter = new Mp4AnimationWriter( //
         file.toString(), //
         dimension, //
         Magnitude.PER_SECOND.toInt(trackVideoConfig.frameRate));
-    trackVideoRender = new TrackVideoRender(backgroundImage.model2pixel, poseChannel);
+    trackVideoRender = new TrackVideoRender(backgroundImage.model2pixel(), poseChannel);
     bufferedImage = new BufferedImage( //
         dimension.width, //
         dimension.height, //
@@ -52,14 +54,14 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     trackVideoRender.event(time, channel, byteBuffer);
     if (channel.equals(poseChannel)) {
-      graphics.drawImage(backgroundImage.bufferedImage, 0, 0, null);
-      trackVideoRender.render(GeometricLayer.of(backgroundImage.model2pixel), graphics);
+      graphics.drawImage(backgroundImage.bufferedImage(), 0, 0, null);
+      trackVideoRender.render(GeometricLayer.of(backgroundImage.model2pixel()), graphics);
       graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
       graphics.setColor(Color.GRAY);
       graphics.drawString(String.format("time :%9s", time.map(Round._2)), 0, 25);
-      mp4AnimationWriter.append(bufferedImage);
+      mp4AnimationWriter.write(bufferedImage);
       System.out.println(time.map(Round._3));
-      if (500_000 < ++frame)
+      if (trackVideoConfig.frameLimit < ++frame)
         throw new RuntimeException();
     }
   }

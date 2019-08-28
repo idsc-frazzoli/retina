@@ -2,6 +2,7 @@
 package ch.ethz.idsc.demo.jph.dvs;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import ch.ethz.idsc.retina.dvs.core.DvsAccumulate;
 import ch.ethz.idsc.retina.dvs.core.DvsEvent;
@@ -9,6 +10,7 @@ import ch.ethz.idsc.retina.dvs.digest.DvsEventBuffer;
 import ch.ethz.idsc.retina.dvs.digest.DvsEventStatistics;
 import ch.ethz.idsc.retina.dvs.supply.DvsEventSupplier;
 import ch.ethz.idsc.tensor.io.AnimationWriter;
+import ch.ethz.idsc.tensor.io.GifAnimationWriter;
 
 /* package */ enum AccumulateToGif {
   ;
@@ -24,7 +26,7 @@ import ch.ethz.idsc.tensor.io.AnimationWriter;
   @SuppressWarnings("deprecation")
   public static void of(DvsEventSupplier dvsEventSupplier, File gifFile, int window_us, int rate_us) throws Exception {
     DvsEventStatistics dvsEventStatistics = new DvsEventStatistics();
-    try (AnimationWriter animationWriter = AnimationWriter.of(gifFile, rate_us / 1000)) {
+    try (AnimationWriter animationWriter = new GifAnimationWriter(gifFile, rate_us, TimeUnit.MICROSECONDS)) {
       try {
         DvsEventBuffer dvsEventBuffer = new DvsEventBuffer(window_us);
         long next = rate_us;
@@ -33,7 +35,7 @@ import ch.ethz.idsc.tensor.io.AnimationWriter;
           dvsEventStatistics.digest(dvsEvent);
           long time = dvsEvent.time_us;
           while (next <= time) {
-            animationWriter.append(DvsAccumulate.of(dvsEventBuffer, dvsEventSupplier.dimension(), next));
+            animationWriter.write(DvsAccumulate.of(dvsEventBuffer, dvsEventSupplier.dimension(), next));
             next += rate_us;
           }
           dvsEventBuffer.digest(dvsEvent);

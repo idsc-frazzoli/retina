@@ -15,7 +15,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.VectorFloatBlob;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.sophus.lie.se2.Se2ParametricDistance;
+import ch.ethz.idsc.sophus.hs.r2.Se2ParametricDistance;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -74,10 +74,10 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
       final Scalar putTorque = HapticSteerConfig.GLOBAL.laneKeeping(currAngle.subtract(permittedRange.apply(currAngle)));
       System.out.println("putTorque: " + putTorque);
       final Scalar powerSteer = powerSteering.torque(currAngle, velocity, tsu);
-      if (optionalCurve.isPresent() && LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) && Objects.nonNull(steerGetEvent)) {
+      if (optionalCurve.isPresent() && LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) && Objects.nonNull(steerGetEvent) && optional.isPresent()) {
         binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of(//
             closestDistance(optionalCurve.get(), gokartPoseEvent.getPose()), //
-            HapticSteerConfig.GLOBAL.offsetL, //
+            HapticSteerConfig.GLOBAL.halfWidth, //
             steerGetEvent.tsuTrq(), //
             velocity, putTorque))));
       }

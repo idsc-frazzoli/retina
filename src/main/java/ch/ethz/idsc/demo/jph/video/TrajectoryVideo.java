@@ -35,7 +35,7 @@ import ch.ethz.idsc.sophus.flt.ga.GeodesicCenter;
 import ch.ethz.idsc.sophus.lie.LieDifferences;
 import ch.ethz.idsc.sophus.lie.se2.Se2Geodesic;
 import ch.ethz.idsc.sophus.lie.se2.Se2Group;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringExponential;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.sophus.math.win.SmoothingKernel;
@@ -106,7 +106,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         Graphics2D graphics = bufferedImage.createGraphics();
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-        Tensor tr = Se2Utils.toSE2Translation(reduceMin.negate());
+        Tensor tr = Se2Matrix.translation(reduceMin.negate());
         // System.out.println(extensions);
         Tensor sc = Tensors.fromString("{{30, 0, 1}, {0, -30," + (bufferedImage.getHeight() - 1) + "}, {0, 0, 1}}");
         GeometricLayer geometricLayer = GeometricLayer.of(sc.dot(tr));
@@ -114,7 +114,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         GraphicsUtil.setQualityHigh(graphics);
         graphics.setColor(COLOR_DATA_INDEXED.getColor(2));
         for (Tensor waypoint : waypoints) {
-          geometricLayer.pushMatrix(Se2Utils.toSE2Matrix(waypoint));
+          geometricLayer.pushMatrix(Se2Matrix.of(waypoint));
           Path2D path2d = geometricLayer.toPath2D(ARROW_HEAD);
           path2d.closePath();
           graphics.fill(path2d);
@@ -161,7 +161,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       TrajectoryVideo trajectoryImages = new TrajectoryVideo() {
         @Override
         public void image(BufferedImage bufferedImage) {
-          mp4.append(bufferedImage);
+          mp4.write(bufferedImage);
         }
       };
       OfflineLogPlayer.process(file, trajectoryImages);

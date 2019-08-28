@@ -39,7 +39,7 @@ import ch.ethz.idsc.tensor.pdf.BinCounts;
 
   @Override
   public Tensor getTable() {
-    Tensor tensor = tableBuilder.toTable().copy();
+    Tensor tensor = tableBuilder.getTable().copy();
     return Tensor.of(IntStream.range(0, 5) //
         .mapToObj(i -> PADRIGHT.apply(BinCounts.of(tensor.get(Tensor.ALL, i), BINSIZE))));
   }

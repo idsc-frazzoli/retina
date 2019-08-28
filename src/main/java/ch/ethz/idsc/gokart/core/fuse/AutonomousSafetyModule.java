@@ -21,17 +21,17 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
-import ch.ethz.idsc.retina.util.data.SoftWatchdog;
-import ch.ethz.idsc.retina.util.data.Watchdog;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
+import ch.ethz.idsc.retina.util.time.SoftWatchdog;
+import ch.ethz.idsc.retina.util.time.Watchdog;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** prevents driving if pose is has insufficient quality for timeout duration */
-public class AutonomousSafetyModule extends AbstractModule {
+public final class AutonomousSafetyModule extends AbstractModule {
   private static final ProviderRank PROVIDER_RANK = ProviderRank.SAFETY;
   // TODO JPH move to config file
   private static final Scalar BRAKING_THRESHOLD = Quantity.of(0.5, SI.VELOCITY);

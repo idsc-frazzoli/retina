@@ -107,7 +107,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
     gokartTrajectoryModule.last();
   }
 
-  public static void testFlows(GokartTrajectoryModule gokartTrajectoryModule) {
+  public static void testFlows(GlcTrajectoryModule gokartTrajectoryModule) {
     Collection<Flow> collection = gokartTrajectoryModule.getFlows(4);
     assertEquals(collection.size(), 5);
     for (Flow flow : collection) {

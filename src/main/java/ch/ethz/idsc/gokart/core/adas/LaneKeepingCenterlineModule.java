@@ -20,6 +20,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -102,7 +103,7 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
 
   @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
-    return HapticSteerConfig.GLOBAL.LKperiod;
+    return HapticSteerConfig.GLOBAL.laneKeepingPeriod;
   }
 
   @Override // from GokartPoseListener
@@ -114,8 +115,9 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
     optionalCurve = optional;
     LaneKeepingCenterlineModule.exportTensor(optionalCurve.get());
     if (optional.isPresent()) {
-      Tensor OFS_L = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.offsetL, Quantity.of(0, SI.METER)).unmodifiable();
-      Tensor OFS_R = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.offsetR, Quantity.of(0, SI.METER)).unmodifiable();
+      // TODO JPH OWL 053 use StableLane (without control points!)
+      Tensor OFS_L = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.halfWidth, RealScalar.ZERO).unmodifiable();
+      Tensor OFS_R = Tensors.of(Quantity.of(0, SI.METER), HapticSteerConfig.GLOBAL.halfWidth.negate(), RealScalar.ZERO).unmodifiable();
       laneBoundaryL = Tensor.of(optional.get().stream() //
           .map(Se2GroupElement::new) //
           .map(se2GroupElement -> se2GroupElement.combine(OFS_L)));

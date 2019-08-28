@@ -4,11 +4,7 @@ package ch.ethz.idsc.gokart.calib.power;
 /** non-linear */
 /* package */ class MotorFunctionV1 extends MotorFunctionBase {
   static final MotorFunctionBase INSTANCE = new MotorFunctionV1();
-
-  private MotorFunctionV1() {
-    // ---
-  }
-
+  // ---
   private static final CubicBiPolynomial SF_POS = new CubicBiPolynomial( //
       -0.321f, //
       0.1285f, 0.002162f, //
@@ -26,6 +22,11 @@ package ch.ethz.idsc.gokart.calib.power;
 
   /* package */ static float sfneg(float fspd, float fpow) {
     return SF_NEG.evaluate(fspd, fpow);
+  }
+
+  // ---
+  private MotorFunctionV1() {
+    // ---
   }
 
   @Override // from MotorFunctionBase

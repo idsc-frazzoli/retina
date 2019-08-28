@@ -1,11 +1,13 @@
 // code by jph
 package ch.ethz.idsc.retina.util.gps;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class Gprmc {
+public class Gprmc implements Serializable {
   /** $GPRMC,150038,A,4724.3422,N,00837.9060,E,000.0,052.3,260519,001.8,E,D*14
    * 
    * @param nmea

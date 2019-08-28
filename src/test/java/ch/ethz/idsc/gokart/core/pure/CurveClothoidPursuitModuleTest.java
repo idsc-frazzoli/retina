@@ -3,7 +3,7 @@ package ch.ethz.idsc.gokart.core.pure;
 
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.DubendorfCurve;
+import ch.ethz.idsc.gokart.core.OvalTrack;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
@@ -16,12 +16,12 @@ public class CurveClothoidPursuitModuleTest extends TestCase {
     curveClothoidPursuitModule.launch();
     curveClothoidPursuitModule.gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
     {
-      Optional<Scalar> ratio = curveClothoidPursuitModule.getRatio(DubendorfCurve.TRACK_OVAL_SE2.get(3));
+      Optional<Scalar> ratio = curveClothoidPursuitModule.getRatio(OvalTrack.SE2.get(3));
       assertFalse(ratio.isPresent());
     }
-    curveClothoidPursuitModule.setCurve(Optional.of(DubendorfCurve.TRACK_OVAL_SE2));
+    curveClothoidPursuitModule.setCurve(Optional.of(OvalTrack.SE2));
     {
-      Optional<Scalar> ratio = curveClothoidPursuitModule.getRatio(DubendorfCurve.TRACK_OVAL_SE2.get(3));
+      Optional<Scalar> ratio = curveClothoidPursuitModule.getRatio(OvalTrack.SE2.get(3));
       assertTrue(ratio.isPresent());
       Clips.interval(-0.03, -0.01).requireInside(Magnitude.PER_METER.apply(ratio.get()));
     }

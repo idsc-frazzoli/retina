@@ -1,9 +1,10 @@
 // code by jph
 package ch.ethz.idsc.retina.util.math;
 
-/** digests sequence of double values
+/** digests sequence of double values and
+ * tracks min and max of all values.
  * 
- * tracks min and max of all values */
+ * instances are not serializable */
 public class IntervalTracker {
   private double min = Double.POSITIVE_INFINITY;
   private double max = Double.NEGATIVE_INFINITY;

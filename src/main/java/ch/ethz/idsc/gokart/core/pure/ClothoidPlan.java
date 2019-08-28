@@ -13,9 +13,9 @@ import ch.ethz.idsc.tensor.Tensor;
 
 public class ClothoidPlan implements Serializable {
   // TODO JPH make configurable
-  private static final int REFINEMENT = 3;
+  private static final int REFINEMENT = 5;
 
-  /** @param lookAhead {x[m], y[m], angle}
+  /** @param lookAhead {x[m], y[m], angle} in vehicle coordinates
    * @param pose of vehicle {x[m], y[m], angle}
    * @param isForward driving direction, true when forward or stopped, false when driving backwards
    * @return ClothoidPlan */
@@ -49,7 +49,8 @@ public class ClothoidPlan implements Serializable {
     return ratio;
   }
 
-  // TODO GJOEL document function
+  /** @return clothoid curve in global coordinates
+   * in directional order (not equivalent to driving order when in reverse) */
   public Tensor curve() {
     return curve;
   }

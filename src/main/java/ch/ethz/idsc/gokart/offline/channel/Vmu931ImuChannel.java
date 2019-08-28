@@ -11,6 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Round;
 
+// TODO JPH document the difference between the VMU931 single channels!
 public enum Vmu931ImuChannel implements SingleChannelInterface {
   INSTANCE;
   // ---

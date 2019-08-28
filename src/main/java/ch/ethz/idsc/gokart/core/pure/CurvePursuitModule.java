@@ -77,7 +77,7 @@ public abstract class CurvePursuitModule extends PursuitModule implements Gokart
   }
 
   public synchronized final void setTrajectory(List<TrajectorySample> trajectory) {
-    setTrajectory(trajectory, true);
+    setTrajectory(trajectory, false);
   }
 
   public synchronized final void setTrajectory(List<TrajectorySample> trajectory, boolean closed) {

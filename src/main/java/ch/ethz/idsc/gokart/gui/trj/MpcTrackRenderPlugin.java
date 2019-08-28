@@ -36,9 +36,10 @@ import ch.ethz.idsc.tensor.Tensors;
       int resolution = 8;
       final int n = points_xy.length();
       Tensor domain = Tensors.vector(i -> RealScalar.of(i / (double) resolution), (cyclic ? n : n - 2) * resolution);
+      // TODO JPH use subdivision
       Tensor matrixD0 = domain.map(BSpline2Vector.of(n, 0, cyclic));
       // Tensor matrixD1 = domain.map(BSpline2Vector.of(n, 1, cyclic));
-      pathRender.setCurve(matrixD0.dot(points_xy), true);
+      pathRender.setCurve(matrixD0.dot(points_xy), cyclic);
     }
 
     @Override

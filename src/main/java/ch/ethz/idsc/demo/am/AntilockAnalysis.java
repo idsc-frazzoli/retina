@@ -1,4 +1,4 @@
-// code by jph
+// code by am, jph
 package ch.ethz.idsc.demo.am;
 
 import java.io.File;
@@ -30,14 +30,14 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 
   public static void main(String[] args) throws IOException {
     // String string = "20180427T125356_p2";
-    File file = HomeDirectory.Documents("01_6_Semester/Bachelorarbeit/lcm_files/20190729/20190729T105210_bbfb70a0.lcm.00");
+    File file = HomeDirectory.file("/gokartlogs/20190729/20190729T170004_e1fcde97.lcm.00");
     OfflineTableSupplier offlineTableSupplier = new AntilockAnalysis();
     OfflineLogPlayer.process(file, offlineTableSupplier);
-    Export.of(HomeDirectory.Documents("01_6_Semester/Bachelorarbeit/cuts1/20190729_lanekeeping1.csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file("Desktop", "lanekeeping1701.csv"), offlineTableSupplier.getTable().map(CsvFormat.strict()));
   }
 }

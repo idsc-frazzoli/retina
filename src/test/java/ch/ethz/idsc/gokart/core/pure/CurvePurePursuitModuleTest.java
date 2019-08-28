@@ -58,7 +58,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
 
   public void testClose() throws Exception {
     CurvePursuitModule purePursuitModule = new CurvePurePursuitModule(PurePursuitConfig.GLOBAL);
-    purePursuitModule.setCurve(Optional.of(DubendorfCurve2.OVAL));
+    purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.offlineV1(Tensors.fromString("{35.1[m], 44.9[m], 1}"), RealScalar.ONE);
@@ -111,7 +111,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
 
   public void testCloseOther() throws Exception {
     CurvePursuitModule purePursuitModule = new CurvePurePursuitModule(PurePursuitConfig.GLOBAL);
-    purePursuitModule.setCurve(Optional.of(DubendorfCurve2.OVAL));
+    purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.offlineV1(Tensors.fromString("{35.1[m], 44.9[m], 1.2}"), RealScalar.ONE);
@@ -131,7 +131,7 @@ public class CurvePurePursuitModuleTest extends TestCase {
 
   public void testCloseEnd() throws Exception {
     CurvePursuitModule purePursuitModule = new CurvePurePursuitModule(PurePursuitConfig.GLOBAL);
-    purePursuitModule.setCurve(Optional.of(DubendorfCurve2.OVAL));
+    purePursuitModule.setCurve(Optional.of(DubendorfCurve.OVAL));
     purePursuitModule.first();
     GokartPoseEvent gokartPoseEvent = //
         GokartPoseEvents.offlineV1(Tensors.fromString("{41.0[m], 37.4[m], -3.3}"), RealScalar.ONE);

@@ -26,7 +26,7 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
     mpcRequestPublisher.start();
     globalViewLcmModule.first();
     // 44.2575 51.6983
-    gokartState = new GokartState(//
+    gokartState = new GokartState( //
         11, //
         1f, //
         0, //

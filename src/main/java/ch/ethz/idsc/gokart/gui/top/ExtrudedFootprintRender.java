@@ -14,23 +14,21 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.owl.bot.se2.Se2CarIntegrator;
-import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
+import ch.ethz.idsc.owl.bot.se2.glc.Se2CarFlows;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
-import ch.ethz.idsc.owl.math.StateSpaceModels;
 import ch.ethz.idsc.owl.math.flow.Flow;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateIntegrator;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.N;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 /** draw blue lines of prediction of traces of gokart extruded footprint */
@@ -45,7 +43,7 @@ public class ExtrudedFootprintRender implements RenderInterface {
   public final SteerColumnListener steerColumnListener = getEvent -> steerColumnEvent = getEvent;
   // ---
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
-  public Color color = new Color(0, 0, 255, 128);
+  public Color color = new Color(64 + 32, 64 + 32, 255, 128 - 64);
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
@@ -67,14 +65,14 @@ public class ExtrudedFootprintRender implements RenderInterface {
       // center of rear axle
       StateTime CENTER = new StateTime(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
       {
-        final Flow flow_forward = singleton(RealScalar.ONE, Magnitude.PER_METER.apply(ratio));
+        final Flow flow_forward = Se2CarFlows.singleton(RealScalar.ONE, Magnitude.PER_METER.apply(ratio));
         final Tensor center_forward = //
             Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_forward) {
           // TODO JPH there should be something more efficient available!
-          Tensor pose = Se2Utils.toSE2Matrix(x);
+          Tensor pose = Se2Matrix.of(x);
           w1.append(pose.dot(p1));
           w2.append(pose.dot(p2));
         }
@@ -83,13 +81,13 @@ public class ExtrudedFootprintRender implements RenderInterface {
         graphics.draw(geometricLayer.toPath2D(w2));
       }
       {
-        final Flow flow_reverse = singleton(RealScalar.ONE.negate(), Magnitude.PER_METER.apply(ratio));
+        final Flow flow_reverse = Se2CarFlows.singleton(RealScalar.ONE.negate(), Magnitude.PER_METER.apply(ratio));
         final Tensor center_reverse = //
             Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_reverse).stream().map(StateTime::state));
         Tensor w1 = Tensors.empty();
         Tensor w2 = Tensors.empty();
         for (Tensor x : center_reverse) {
-          Tensor pose = Se2Utils.toSE2Matrix(x);
+          Tensor pose = Se2Matrix.of(x);
           w1.append(pose.dot(p1));
           w2.append(pose.dot(p2));
         }
@@ -99,13 +97,5 @@ public class ExtrudedFootprintRender implements RenderInterface {
       }
       geometricLayer.popMatrix();
     }
-  }
-
-  /** @param speed [m*s^-1]
-   * @param ratio [m^-1]
-   * @return */
-  /* package for testing */ static Flow singleton(Scalar speed, Tensor ratio) {
-    return StateSpaceModels.createFlow(Se2StateSpaceModel.INSTANCE, //
-        N.DOUBLE.of(Tensors.of(speed, speed.zero(), ratio.multiply(speed))));
   }
 }

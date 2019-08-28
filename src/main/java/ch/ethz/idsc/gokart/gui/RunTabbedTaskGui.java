@@ -7,17 +7,14 @@ import java.util.Properties;
 
 import ch.ethz.idsc.demo.jg.following.FigureClothoidModule;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
-import ch.ethz.idsc.gokart.core.adas.AntilockBrakeCheckConditions;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
-import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV2Module;
-import ch.ethz.idsc.gokart.core.adas.AntilockBrakeV3Module;
+import ch.ethz.idsc.gokart.core.adas.ConstantTorqueSteerModule;
 import ch.ethz.idsc.gokart.core.adas.LaneKeepingLimitedSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
 import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.SetVelSmartBrakingModule;
 import ch.ethz.idsc.gokart.core.adas.SpeedLimitPerSectionModule;
 import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
-import ch.ethz.idsc.gokart.core.adas.SteeringExperimentModule;
 import ch.ethz.idsc.gokart.core.fuse.AutonomousSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotCoolingModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
@@ -37,9 +34,13 @@ import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.PredictiveTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
+import ch.ethz.idsc.gokart.core.map.OccupancyMappingModule;
+import ch.ethz.idsc.gokart.core.map.OccupancyViewerModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
+import ch.ethz.idsc.gokart.core.plan.ClothoidRrtsTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.ClothoidTrajectoryModule;
+import ch.ethz.idsc.gokart.core.plan.PureRrtsTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.PureTrajectoryModule;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CenterLinePursuitModule;
@@ -127,11 +128,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       LaneKeepingLimitedSteeringModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //
-      SteeringExperimentModule.class, //
-      AntilockBrakeCheckConditions.class, //
+      ConstantTorqueSteerModule.class, //
       AntilockBrakeModule.class, //
-      AntilockBrakeV2Module.class, //
-      AntilockBrakeV3Module.class, //
       SetVelSmartBrakingModule.class, //
       SpeedLimitPerSectionModule.class, //
       AutomaticPowerTestModule.class, //
@@ -146,6 +144,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       MPCKinematicDrivingModule.class, //
       PureTrajectoryModule.class, //
       ClothoidTrajectoryModule.class, //
+      PureRrtsTrajectoryModule.class, //
+      ClothoidRrtsTrajectoryModule.class, //
       CenterLinePursuitModule.class, //
       DavisSlamLidarModule.class, //
       DavisSlamVisualModule.class, //
@@ -155,6 +155,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       SEyeSlamVisualModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
+      OccupancyMappingModule.class, //
+      OccupancyViewerModule.class, //
       SpeedLimitSafetyModule.class, //
       SteerBatteryWatchdog.class, //
       LinmotCoolingModule.class, //

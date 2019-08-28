@@ -6,7 +6,6 @@ import java.io.Serializable;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
 import ch.ethz.idsc.tensor.Tensor;
 
-// TODO JPH move to package gokart.X
 public class WheelConfiguration implements Serializable {
   private final Tensor xya;
   private final TireConfiguration tireConfiguration;

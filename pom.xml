@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
-			<version>0.4.8</version>
+			<version>0.5.3</version>
 		</dependency>
 
 		<dependency>
@@ -137,11 +137,6 @@
 			<classifier>natives-${platform}</classifier>
 		</dependency>
 
-		<dependency>
-			<groupId>org.bytedeco</groupId>
-			<artifactId>javacv-platform</artifactId>
-			<version>1.4.1</version>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

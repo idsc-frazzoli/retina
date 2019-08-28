@@ -47,11 +47,11 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   }
 
   public Tensor getTable1() { // pi
-    return tableBuilder1.toTable();
+    return tableBuilder1.getTable();
   }
 
   public Tensor getTable2() { // rimo
-    return tableBuilder2.toTable();
+    return tableBuilder2.getTable();
   }
 
   public static void main(String[] args) throws IOException {

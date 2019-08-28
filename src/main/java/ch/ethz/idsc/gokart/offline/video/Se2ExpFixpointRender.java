@@ -16,7 +16,7 @@ import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.hs.r2.Se2ExpFixpoint;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -41,7 +41,7 @@ import ch.ethz.idsc.tensor.red.Norm;
     if (optional.isPresent()) {
       Tensor fixpoint = optional.get().map(Magnitude.METER);
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
-      geometricLayer.pushMatrix(Se2Utils.toSE2Translation(fixpoint));
+      geometricLayer.pushMatrix(Se2Matrix.translation(fixpoint));
       {
         graphics.setColor(new Color(255, 0, 0, 192));
         Point2D point2d = geometricLayer.toPoint2D(0, 0);

@@ -12,7 +12,7 @@ import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.lidar.LidarRayBlockEvent;
-import ch.ethz.idsc.sophus.lie.se2.Se2Utils;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -56,7 +56,7 @@ public class LidarGyroOfflineLocalize extends OfflineLocalize {
     int sum = scattered.length(); // usually around 430
     if (MIN_POINTS < sum) {
       GeometricLayer geometricLayer = GeometricLayer.of(MODEL2PIXEL_INITIAL);
-      Tensor rotate = Se2Utils.toSE2Matrix(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate));
+      Tensor rotate = Se2Matrix.of(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, rate));
       model = model.dot(rotate);
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);

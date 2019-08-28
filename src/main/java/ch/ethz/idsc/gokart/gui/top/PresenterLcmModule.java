@@ -75,7 +75,7 @@ public class PresenterLcmModule extends AbstractModule {
   private final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
   private final GokartTrajectoryModule trajectoryModule = //
       ModuleAuto.INSTANCE.getExtensions(GokartTrajectoryModule.class).findFirst().orElse(null);
-  private final TrackReconModule gokartTrackReconModule = //
+  private final TrackReconModule trackReconModule = //
       ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   // ---
   // private final SightLinesMapping sightLineMapping = SightLinesMapping.defaultTrack();
@@ -95,13 +95,16 @@ public class PresenterLcmModule extends AbstractModule {
       ImageRegion imageRegion = LocalizationConfig.GLOBAL.getPredefinedMap().getImageRegion();
       timerFrame.geometricComponent.addRenderInterfaceBackground(RegionRenders.create(imageRegion));
     }
-    if (Objects.nonNull(trajectoryModule))
-      timerFrame.geometricComponent.addRenderInterface(trajectoryModule.obstacleMapping());
+    if (Objects.nonNull(trajectoryModule)) {
+      // TODO JPH enable rendering of eroded map
+      // timerFrame.geometricComponent.addRenderInterface(trajectoryModule.obstacleMapping());
+    }
     {
-      if (Objects.nonNull(gokartTrackReconModule)) {
-        timerFrame.geometricComponent.addRenderInterface(gokartTrackReconModule.trackMapping());
-        gokartTrackReconModule.listenersAdd(trackReconRender);
-      }
+      // TODO JPH enable rendering of eroded map
+      // if (Objects.nonNull(trackReconModule)) {
+      // timerFrame.geometricComponent.addRenderInterface(trackReconModule.trackMapping());
+      // trackReconModule.listenersAdd(trackReconRender);
+      // }
       timerFrame.geometricComponent.addRenderInterface(trackReconRender);
     }
     {
@@ -185,6 +188,8 @@ public class PresenterLcmModule extends AbstractModule {
       rimoGetLcmClient.addListener(gokartRender.rimoGetListener);
       rimoPutLcmClient.addListener(gokartRender.rimoPutListener);
       linmotGetLcmClient.addListener(gokartRender.linmotGetListener);
+      manualControlLcmClient.addListener(gokartRender.manualControlListener);
+      steerGetLcmClient.addListener(gokartRender.steerGetListener);
       steerColumnLcmClient.addListener(gokartRender.steerColumnListener);
       gokartPoseLcmClient.addListener(gokartRender.gokartPoseListener);
       timerFrame.geometricComponent.addRenderInterface(gokartRender);
@@ -270,8 +275,8 @@ public class PresenterLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void last() {
     timerFrame.close();
-    if (Objects.nonNull(gokartTrackReconModule))
-      gokartTrackReconModule.listenersRemove(trackReconRender);
+    if (Objects.nonNull(trackReconModule))
+      trackReconModule.listenersRemove(trackReconRender);
   }
 
   private void private_windowClosed() {

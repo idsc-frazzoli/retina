@@ -16,7 +16,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** the pose server publishes pose values even when the pose
  * is not initialized (in that case the quality == 0) */
-public class PoseLcmServerModule extends AbstractClockedModule {
+public final class PoseLcmServerModule extends AbstractClockedModule {
   /** rate of publishing pose on lcm */
   public static final Scalar RATE = Quantity.of(50, SI.PER_SECOND);
   // ---

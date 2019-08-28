@@ -66,6 +66,6 @@ public class Vlp16BlackoutTable implements OfflineTableSupplier, LidarRayDataLis
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 }
