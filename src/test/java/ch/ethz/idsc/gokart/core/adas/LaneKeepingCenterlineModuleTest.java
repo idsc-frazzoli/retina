@@ -31,5 +31,4 @@ public class LaneKeepingCenterlineModuleTest extends TestCase {
     laneKeepingCenterlineModule.runAlgo();
     laneKeepingCenterlineModule.terminate();
   }
-
 }

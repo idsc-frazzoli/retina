@@ -124,11 +124,11 @@ import ch.ethz.idsc.tensor.sca.Round;
                 spinnerLabelRate.getValue().reciprocal());
             map.put(simulation.identifier(), simulation);
             if (simulation.averageError().get().Get(0).number().doubleValue() < 100)
-              averaging.put(simulation.identifier(), averaging.getOrDefault(simulation.identifier(), Tensors.empty()).append(Tensors.of(
-                  simulation.averageError().get().Get(0), //
-                  simulation.maximumError().get().Get(0), //
-                  simulation.averageError().get().Get(1), //
-                  simulation.maximumError().get().Get(1) //
+              averaging.put(simulation.identifier(),
+                  averaging.getOrDefault(simulation.identifier(), Tensors.empty()).append(Tensors.of(simulation.averageError().get().Get(0), //
+                      simulation.maximumError().get().Get(0), //
+                      simulation.averageError().get().Get(1), //
+                      simulation.maximumError().get().Get(1) //
               )));
             System.out.println(simulation.getReport().get());
             export(simulation.trail().get(), simulation.name().toLowerCase());
@@ -166,8 +166,8 @@ import ch.ethz.idsc.tensor.sca.Round;
             else
               base = "&& " + (i == 2 ? 5 : 7) + " & %.4f & %.4f & %.4f & %.4f \\\\\n";
             latex += String.format(Locale.US, base, //
-                      avg.Get(0).number().doubleValue(), avg.Get(1).number().doubleValue(), //
-                      avg.Get(2).number().doubleValue(), avg.Get(3).number().doubleValue());
+                avg.Get(0).number().doubleValue(), avg.Get(1).number().doubleValue(), //
+                avg.Get(2).number().doubleValue(), avg.Get(3).number().doubleValue());
             i++;
           }
           System.out.println(latex + "\\hline");
@@ -211,16 +211,16 @@ import ch.ethz.idsc.tensor.sca.Round;
    * @param track
    * @return partial latex table code
    * before:
-   *  \begin{table}[H]
-   *  \begin{tabular}{@{\extracolsep{4pt}}ccccccc}
-   *  \hline
-   *  \multirow{2}{*}{\textbf{track (run)}} & \multirow{2}{*}{\textbf{controller}} & \multirow{2}{*}{\textbf{look ahead [m]}}
-   *  & \multicolumn{2}{c}{\textbf{position [m]}} & \multicolumn{2}{c}{\textbf{heading}} \\ \cline{4-5} \cline{6-7}
-   *  &&& \textbf{avg} & \textbf{max} & \textbf{avg} & \textbf{max} \\
-   *  \hline \hline
+   * \begin{table}[H]
+   * \begin{tabular}{@{\extracolsep{4pt}}ccccccc}
+   * \hline
+   * \multirow{2}{*}{\textbf{track (run)}} & \multirow{2}{*}{\textbf{controller}} & \multirow{2}{*}{\textbf{look ahead [m]}}
+   * & \multicolumn{2}{c}{\textbf{position [m]}} & \multicolumn{2}{c}{\textbf{heading}} \\ \cline{4-5} \cline{6-7}
+   * &&& \textbf{avg} & \textbf{max} & \textbf{avg} & \textbf{max} \\
+   * \hline \hline
    * after:
-   *  \end{tabular}
-   *  \end{table} */
+   * \end{tabular}
+   * \end{table} */
   private String latex(FollowingSimulations[] simulations, String track) {
     String latex = "";
     int i = 0;
