@@ -1,4 +1,4 @@
-function [ACCX,ACCY,ACCROTZ] = modelDx_NN_11(VELX,VELY,VELROTZ,BETA,AB,TV, param)
+function [ACCX,ACCY,ACCROTZ] = modelDx_NN_linear(VELX,VELY,VELROTZ,BETA,AB,TV, param)
     %param = [B1,C1,D1,B2,C2,D2,Ic];
     B1 = param(1);
     C1 = param(2);
