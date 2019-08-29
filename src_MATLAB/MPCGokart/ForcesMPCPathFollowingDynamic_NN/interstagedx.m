@@ -48,7 +48,7 @@ function dx = interstagedx(x,u,p)
    
     %(VELX,VELY,VELROTZ,BETA,AB,TV, param)
     %[ACCX,ACCY,ACCROTZ,frontabcorr] = modelDx(vx,vy,dottheta,ackermannAngle,ab,tv, param);
-    [ACCX,ACCY,ACCROTZ] = modelDx_NN_1(vx,vy,dottheta,ackermannAngle,ab,tv, param);
+    [ACCX,ACCY,ACCROTZ] = modelDx_NN_11(vx,vy,dottheta,ackermannAngle,ab,tv, param);
     
     
     import casadi.*
