@@ -14,6 +14,7 @@
 #include "idsc_BinaryBlob.c"
 #include "definitions.c"
 #include "helperFunctions.c"
+#include <unistd.h>
 
 //[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
 
@@ -226,6 +227,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		blob.data = (int8_t*)&cnsmsg;
 		//printf("lcm addr: %p\n",lcm);
 		//printf("blob addr: %p\n",&blob);
+		//sleep(0.2);
 		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
 			printf("published message: %lu\n",sizeof(struct ControlAndStateMsg));
 		else
