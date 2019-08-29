@@ -20,13 +20,13 @@ public abstract class AntilockBrakeBaseModule extends AbstractModule implements 
   protected RimoGetEvent rimoGetEvent = RimoGetEvents.motionless();
   protected final RimoGetListener rimoGetListener = getEvent -> rimoGetEvent = getEvent;
   // ---
-  protected final HapticSteerConfig hapticSteerConfig;
+  protected final AntilockConfig antilockConfig;
   /** velocity is higher than setVel -> full stop */
   protected Scalar brakePosition;
 
-  public AntilockBrakeBaseModule(HapticSteerConfig hapticSteerConfig) {
-    this.hapticSteerConfig = hapticSteerConfig;
-    brakePosition = hapticSteerConfig.fullBraking;
+  public AntilockBrakeBaseModule(AntilockConfig antilockConfig) {
+    this.antilockConfig = antilockConfig;
+    brakePosition = antilockConfig.fullBraking;
   }
 
   @Override // from LinmotPutProvider
