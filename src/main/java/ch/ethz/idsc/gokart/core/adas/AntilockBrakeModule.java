@@ -33,10 +33,10 @@ public class AntilockBrakeModule extends AntilockBrakeBaseModule implements Vmu9
   private Scalar currentAcceleration = Quantity.of(0, SI.ACCELERATION);
 
   public AntilockBrakeModule() {
-    super(HapticSteerConfig.GLOBAL);
+    super(AntilockConfig.GLOBAL);
   }
 
-  public AntilockBrakeModule(HapticSteerConfig hapticSteerConfig) {
+  public AntilockBrakeModule(AntilockConfig hapticSteerConfig) {
     super(hapticSteerConfig);
   }
 
@@ -64,7 +64,7 @@ public class AntilockBrakeModule extends AntilockBrakeBaseModule implements Vmu9
         return smartBraking(rimoGetEvent.getAngularRate_Y_pair(), lidarLocalizationModule.getVelocity());
       }
       // reset to full Braking value for next braking maneuvre
-      brakePosition = hapticSteerConfig.fullBraking;
+      brakePosition = antilockConfig.fullBraking;
     }
     return Optional.empty();
   }
@@ -84,11 +84,11 @@ public class AntilockBrakeModule extends AntilockBrakeBaseModule implements Vmu9
     // if the slip is outside this range, the position of the brake is increased/decreased
     // if (hapticSteerConfig.slipClip().isOutside(slip.Get(0)))
     for (int i = 0; i < 2; ++i) {
-      if (Scalars.lessThan(slip.Get(i), hapticSteerConfig.minSlipTheory.multiply(angularRate_Origin))) {
-        brakePosition = Clips.unit().apply(brakePosition.add(HapticSteerConfig.GLOBAL.incrBraking));
+      if (Scalars.lessThan(slip.Get(i), antilockConfig.minSlipTheory.multiply(angularRate_Origin))) {
+        brakePosition = Clips.unit().apply(brakePosition.add(antilockConfig.incrBraking));
       }
-      if (Scalars.lessThan(hapticSteerConfig.maxSlipTheory.multiply(angularRate_Origin), slip.Get(i))) {
-        brakePosition = Clips.unit().apply(brakePosition.subtract(HapticSteerConfig.GLOBAL.incrBraking));
+      if (Scalars.lessThan(antilockConfig.maxSlipTheory.multiply(angularRate_Origin), slip.Get(i))) {
+        brakePosition = Clips.unit().apply(brakePosition.subtract(antilockConfig.incrBraking));
       }
     }
     LinmotPutEvent relativePosition = LinmotPutOperation.INSTANCE.toRelativePosition(brakePosition);

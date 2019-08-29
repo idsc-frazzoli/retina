@@ -16,8 +16,7 @@ public class SteerVibrationModuleTest extends TestCase {
   }
 
   public void testTime2Torque() {
-    SteerVibrationModule steerVibrationModule = new SteerVibrationModule();
-    Scalar scalar = steerVibrationModule.time2torque(Quantity.of(0.3, SI.SECOND));
+    Scalar scalar = SteerVibrationModule.time2torque(Quantity.of(0.3, SI.SECOND));
     SteerPutEvent.RTORQUE.apply(scalar);
   }
 }

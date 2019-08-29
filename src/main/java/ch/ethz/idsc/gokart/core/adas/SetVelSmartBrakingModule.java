@@ -44,7 +44,7 @@ public class SetVelSmartBrakingModule extends AntilockBrakeBaseModule implements
   /* package */ final RimoPutProvider rimoPutProvider = new RimoPutProvider() {
     @Override
     public Optional<RimoPutEvent> putEvent() {
-      Scalar speed = hapticSteerConfig.setVel.add(Quantity.of(1.0, SI.VELOCITY));
+      Scalar speed = antilockConfig.setVel.add(Quantity.of(1.0, SI.VELOCITY));
       Optional<ManualControlInterface> optional = manualControlProvider.getManualControl();
       if (optional.isPresent()) {
         accelerate = true;
@@ -62,11 +62,11 @@ public class SetVelSmartBrakingModule extends AntilockBrakeBaseModule implements
   };
 
   public SetVelSmartBrakingModule() {
-    super(HapticSteerConfig.GLOBAL);
+    super(AntilockConfig.GLOBAL);
   }
 
-  public SetVelSmartBrakingModule(HapticSteerConfig hapticSteerConfig) {
-    super(hapticSteerConfig);
+  public SetVelSmartBrakingModule(AntilockConfig antilockConfig) {
+    super(antilockConfig);
   }
 
   @Override // from AbstractModule
@@ -99,7 +99,7 @@ public class SetVelSmartBrakingModule extends AntilockBrakeBaseModule implements
   public Optional<LinmotPutEvent> putEvent() {
     rimoPutProvider.putEvent();
     if (lidarLocalizationModule != null) {
-      if (Scalars.lessThan(hapticSteerConfig.setVel, lidarLocalizationModule.getVelocity().Get(0))) {
+      if (Scalars.lessThan(antilockConfig.setVel, lidarLocalizationModule.getVelocity().Get(0))) {
         accelerate = false;
         fullStopping = true;
       }
@@ -126,11 +126,11 @@ public class SetVelSmartBrakingModule extends AntilockBrakeBaseModule implements
     // if the slip is outside this range, the position of the brake is increased/decreased
     // if (hapticSteerConfig.slipClip().isOutside(slip.Get(0)))
     for (int i = 0; i < 2; i++) {
-      if (Scalars.lessThan(slip.Get(i), hapticSteerConfig.minSlipTheory.multiply(angularRate_Origin))) {
-        brakePosition = Clips.unit().apply(brakePosition.add(HapticSteerConfig.GLOBAL.incrBraking));
+      if (Scalars.lessThan(slip.Get(i), antilockConfig.minSlipTheory.multiply(angularRate_Origin))) {
+        brakePosition = Clips.unit().apply(brakePosition.add(antilockConfig.incrBraking));
       }
-      if (Scalars.lessThan(hapticSteerConfig.maxSlipTheory.multiply(angularRate_Origin), slip.Get(i))) {
-        brakePosition = Clips.unit().apply(brakePosition.subtract(HapticSteerConfig.GLOBAL.incrBraking));
+      if (Scalars.lessThan(antilockConfig.maxSlipTheory.multiply(angularRate_Origin), slip.Get(i))) {
+        brakePosition = Clips.unit().apply(brakePosition.subtract(antilockConfig.incrBraking));
       }
     }
     LinmotPutEvent relativePosition = LinmotPutOperation.INSTANCE.toRelativePosition(brakePosition);
