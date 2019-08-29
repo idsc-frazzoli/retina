@@ -26,30 +26,30 @@ import java.util.Objects;
   }
 
   void first() {
-    if (!externStart) {
-      String fullPath;
-      // TODO design, talk to jan
-      if (!test)
-        fullPath = MPCNative.lcmBinary().get().getAbsolutePath();
-      else
-        fullPath = MPCNative.lcmTestBinary().get().getAbsolutePath();
-      // start server
-      List<String> list = Arrays.asList(fullPath
-      // String.valueOf(MPCNative.TCP_SERVER_PORT)
-      );
-      ProcessBuilder processBuilder = new ProcessBuilder(list);
-      try {
-        process = processBuilder.start();
-        bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-          System.out.println(new Date() + " mpc-server: isAlive=" + process.isAlive());
-          process.destroy();
-        }));
-        System.out.println(new Date() + " mpc-server: started");
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
-    }
+//    if (!externStart) {
+//      String fullPath;
+//      // TODO design, talk to jan
+//      if (!test)
+//        fullPath = MPCNative.lcmBinary().get().getAbsolutePath();
+//      else
+//        fullPath = MPCNative.lcmTestBinary().get().getAbsolutePath();
+//      // start server
+//      List<String> list = Arrays.asList(fullPath
+//      // String.valueOf(MPCNative.TCP_SERVER_PORT)
+//      );
+//      ProcessBuilder processBuilder = new ProcessBuilder(list);
+//      try {
+//        process = processBuilder.start();
+//        bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+//          System.out.println(new Date() + " mpc-server: isAlive=" + process.isAlive());
+//          process.destroy();
+//        }));
+//        System.out.println(new Date() + " mpc-server: started");
+//      } catch (Exception exception) {
+//        exception.printStackTrace();
+//      }
+//    }
   }
 
   public String getNativeOutput() {
