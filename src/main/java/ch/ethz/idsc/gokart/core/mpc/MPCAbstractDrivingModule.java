@@ -45,11 +45,6 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   private boolean running = true;
   private Optional<MPCBSplineTrack> mpcBSplineTrack = Optional.empty();
 
-  /** switch to testing binary that send back test data has to be called before first */
-  public void switchToTest() {
-    mpcRequestPublisher.switchToTest();
-  }
-
   /** create Module with standard estimator */
   MPCAbstractDrivingModule(MPCRequestPublisher mpcRequestPublisher, Timing timing) {
     this(mpcRequestPublisher, //
@@ -120,7 +115,6 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     else
       System.err.println("did not subscribe to track info !!!");
     // ---
-    mpcRequestPublisher.start();
     mpcControlUpdateLcmClient.startSubscriptions();
     mpcStateEstimationProvider.first();
     // ---
@@ -149,7 +143,6 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     //
     mpcBraking.stop();
     // ---
-    mpcRequestPublisher.stop();
     mpcControlUpdateLcmClient.stopSubscriptions();
     mpcStateEstimationProvider.last();
     // ---

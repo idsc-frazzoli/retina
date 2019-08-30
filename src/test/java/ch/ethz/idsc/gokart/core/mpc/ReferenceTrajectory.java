@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public enum ReferenceTrajectory {
+/* package */ enum ReferenceTrajectory {
   ;
   public static Tensor of(String trackName, int steps, int skip) throws InterruptedException, IOException {
     Tensor trackData = Import.of(HomeDirectory.Documents("TrackID", trackName)).multiply(Quantity.of(1, SI.METER));
@@ -28,8 +28,7 @@ public enum ReferenceTrajectory {
     MPCControlUpdateCapture mpcControlUpdateCapture = new MPCControlUpdateCapture();
     mpcControlUpdateLcmClient.addListener(mpcControlUpdateCapture);
     mpcControlUpdateLcmClient.startSubscriptions();
-    mpcRequestPublisher.switchToExternalStart();
-    mpcRequestPublisher.start();
+    // mpcRequestPublisher.switchToExternalStart(); // TODO manage (external) process somewhere
     GokartState gokartState;
     Tensor pose = track.getStartPose();
     // 44.2575 51.6983
@@ -79,7 +78,7 @@ public enum ReferenceTrajectory {
       } else
         System.err.println("lastcns null");
     }
-    mpcRequestPublisher.stop();
+    // mpcRequestPublisher.stop(); // TODO manage (external) process somewhere
     return positions;
   }
 }
