@@ -227,7 +227,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		blob.data = (int8_t*)&cnsmsg;
 		//printf("lcm addr: %p\n",lcm);
 		//printf("blob addr: %p\n",&blob);
-		//sleep(0.2);
+		//printf("sleep...");	
+		//usleep(80000);
 		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
 			printf("published message: %lu\n",sizeof(struct ControlAndStateMsg));
 		else
