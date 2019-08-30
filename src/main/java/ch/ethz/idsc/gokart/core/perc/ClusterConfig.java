@@ -11,13 +11,16 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldIntegerQ;
 
 /**  */
 public class ClusterConfig {
   public static final ClusterConfig GLOBAL = AppResources.load(new ClusterConfig());
   /***************************************************/
   public Scalar epsilon = Quantity.of(0.035, SI.METER);
+  @FieldIntegerQ
   public Scalar minPoints = RealScalar.of(7);
+  @FieldIntegerQ
   public Scalar scanCount = RealScalar.of(6);
 
   /***************************************************/

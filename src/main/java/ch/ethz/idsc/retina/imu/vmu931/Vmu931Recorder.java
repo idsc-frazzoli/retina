@@ -33,7 +33,7 @@ public class Vmu931Recorder implements Vmu931Listener {
       try {
         flagA = false;
         System.out.println("EXPORTED ACC");
-        Export.of(HomeDirectory.file("vmu931acc.csv"), tableBuilderAcc.toTable());
+        Export.of(HomeDirectory.file("vmu931acc.csv"), tableBuilderAcc.getTable());
       } catch (Exception exception) {
         exception.printStackTrace();
       }
@@ -53,7 +53,7 @@ public class Vmu931Recorder implements Vmu931Listener {
       try {
         flagG = false;
         System.out.println("EXPORTED GYRO");
-        Export.of(HomeDirectory.file("vmu931gyro.csv"), tableBuilderGyr.toTable());
+        Export.of(HomeDirectory.file("vmu931gyro.csv"), tableBuilderGyr.getTable());
       } catch (Exception exception) {
         exception.printStackTrace();
       }

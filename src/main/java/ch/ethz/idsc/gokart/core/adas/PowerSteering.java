@@ -8,13 +8,14 @@ import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.sca.Round;
 
 /** implementation of manual power steering consisting of three terms:
  * {@link SteerFeedForward}
  * lateral force compensation
- * tsuTrq, i.e. torque by driver */
+ * tsuTrq, i.e. torque by driver
+ * 
+ * Reference:
+ * "Advanced Driver Assistance Systems on a Go-Kart" by A. Mosberger */
 /* package */ class PowerSteering {
   private final HapticSteerConfig hapticSteerConfig;
   private final GeodesicIIR1 velocityGeodesicIIR1; // 1 means unfiltered
@@ -48,8 +49,6 @@ import ch.ethz.idsc.tensor.sca.Round;
     // ---
     Scalar filteredTsu = tsuGeodesicIIR1.apply(tsu).Get();
     Scalar term2 = filteredTsu.multiply(hapticSteerConfig.tsuFactor);
-    if (hapticSteerConfig.printPower)
-      System.out.println(Tensors.of(term0, term1, term2).map(Round._3));
     return term0.add(term1).add(term2);
   }
 }

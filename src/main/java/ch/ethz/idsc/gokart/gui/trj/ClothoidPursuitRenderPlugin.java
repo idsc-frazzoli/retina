@@ -9,7 +9,6 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -40,6 +39,7 @@ import ch.ethz.idsc.tensor.lie.CirclePoints;
   private static class ClothoidPursuitRender implements RenderInterface {
     private static final Tensor CIRCLE_POINTS = CirclePoints.of(20).unmodifiable();
     // ---
+    private final FootprintRender footprintRender = new FootprintRender(new Color(128, 128, 128, 64));
     private final ClothoidPlan clothoidPlan;
     private final PathRender pathRender = new PathRender(new Color(255, 128, 0), 2f);
 
@@ -51,8 +51,7 @@ import ch.ethz.idsc.tensor.lie.CirclePoints;
     @Override
     public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(clothoidPlan.startPose()));
-      graphics.setColor(new Color(128, 128, 128, 64));
-      graphics.fill(geometricLayer.toPath2D(RimoSinusIonModel.standard().footprint()));
+      footprintRender.render(geometricLayer, graphics);
       {
         Path2D path2d = geometricLayer.toPath2D(CIRCLE_POINTS.multiply(ClothoidPursuitConfig.GLOBAL.lookAhead));
         path2d.closePath();

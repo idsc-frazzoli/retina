@@ -22,7 +22,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         @Override
         public void accept(BufferedImage bufferedImage) {
           try {
-            animationWriter.append(bufferedImage);
+            animationWriter.write(bufferedImage);
           } catch (Exception exception) {
             exception.printStackTrace();
             throw new RuntimeException();

@@ -23,4 +23,20 @@ public class PoseHelperTest extends TestCase {
     Tensor poseConv = PoseHelper.attachUnits(pose);
     assertEquals(Tensors.fromString("{6.2[m], 4.2[m], 1}"), poseConv);
   }
+
+  public void testRequire() {
+    PoseHelper.require(Tensors.fromString("{6.2[m], 4.2[m], 1}"));
+    try {
+      PoseHelper.require(Tensors.fromString("{6.2[m], 4.2, 1}"));
+      fail();
+    } catch (Exception exception) {
+      // ---
+    }
+    try {
+      PoseHelper.require(Tensors.fromString("{6.2[m], 4.2[m], 1, 2}"));
+      fail();
+    } catch (Exception exception) {
+      // ---
+    }
+  }
 }

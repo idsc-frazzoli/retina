@@ -137,6 +137,6 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 }

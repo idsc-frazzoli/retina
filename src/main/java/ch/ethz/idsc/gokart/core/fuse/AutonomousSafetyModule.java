@@ -31,7 +31,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** prevents driving if pose is has insufficient quality for timeout duration */
-public class AutonomousSafetyModule extends AbstractModule {
+public final class AutonomousSafetyModule extends AbstractModule {
   private static final ProviderRank PROVIDER_RANK = ProviderRank.SAFETY;
   // TODO JPH move to config file
   private static final Scalar BRAKING_THRESHOLD = Quantity.of(0.5, SI.VELOCITY);

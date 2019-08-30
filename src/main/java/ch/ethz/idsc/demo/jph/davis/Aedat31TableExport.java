@@ -60,11 +60,11 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     davisEventProvider.aedat31Imu6Listeners.add(aedat31TableExport);
     davisEventProvider.start();
     System.out.println("done");
-    Export.of(HomeDirectory.file("frames.csv"), aedat31TableExport.table_frame.toTable());
+    Export.of(HomeDirectory.file("frames.csv"), aedat31TableExport.table_frame.getTable());
     System.out.println("write frames done");
-    Export.of(HomeDirectory.file("imu6.csv"), aedat31TableExport.table_imu6.toTable());
+    Export.of(HomeDirectory.file("imu6.csv"), aedat31TableExport.table_imu6.getTable());
     System.out.println("write imu6 done");
-    Export.of(HomeDirectory.file("polarity.csv"), aedat31TableExport.table_polarity().toTable());
+    Export.of(HomeDirectory.file("polarity.csv"), aedat31TableExport.table_polarity().getTable());
     System.out.println("write polarity done");
   }
 }

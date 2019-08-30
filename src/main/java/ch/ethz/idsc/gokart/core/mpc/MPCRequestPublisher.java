@@ -6,14 +6,13 @@ import java.nio.ByteOrder;
 
 import ch.ethz.idsc.gokart.lcm.BinaryBlobPublisher;
 import ch.ethz.idsc.gokart.lcm.BinaryBlobs;
-import ch.ethz.idsc.retina.util.StartAndStoppable;
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 import idsc.BinaryBlob;
 
-/* package */ abstract class MPCRequestPublisher implements StartAndStoppable {
+/* package */ abstract class MPCRequestPublisher {
   public static MPCRequestPublisher kinematic() {
     return new MPCRequestPublisher("") {
-      @Override // from LcmMPCControlClient
+      @Override // from MPCRequestPublisher
       BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
         return new MPCOptimizationParameterMessageKinematic(mpcOptimizationParameter, mpcNativeSession);
       }
@@ -22,13 +21,14 @@ import idsc.BinaryBlob;
 
   public static MPCRequestPublisher dynamic() {
     return new MPCRequestPublisher(".d") {
-      @Override // from LcmMPCControlClient
+      @Override // from MPCRequestPublisher
       BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
         return new MPCOptimizationParameterMessageDynamic(mpcOptimizationParameter, mpcNativeSession);
       }
     };
   }
 
+  // ---
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher controlRequestPublisher;
   private final BinaryBlobPublisher optimizationParameterPublisher;
@@ -43,16 +43,6 @@ import idsc.BinaryBlob;
    * @return */
   abstract BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession);
 
-  @Override // from StartAndStoppable
-  public final void start() {
-    mpcNativeSession.first();
-  }
-
-  @Override // from StartAndStoppable
-  public final void stop() {
-    mpcNativeSession.last();
-  }
-
   /** send gokart state which starts the mpc optimization with the newest state
    * 
    * @param gokartState the newest available gokart state */
@@ -63,16 +53,6 @@ import idsc.BinaryBlob;
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
     gokartStateMessage.insert(byteBuffer);
     controlRequestPublisher.accept(binaryBlob);
-  }
-
-  /** switch to testing binary that send back test data has to be called before first */
-  public final void switchToTest() {
-    mpcNativeSession.switchToTest();
-  }
-
-  /** switch to mode where binary is no automatically starting */
-  public final void switchToExternalStart() {
-    mpcNativeSession.switchToExternalStart();
   }
 
   public final void publishOptimizationParameter(MPCOptimizationParameter mpcOptimizationParameter) {

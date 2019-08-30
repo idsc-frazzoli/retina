@@ -28,6 +28,18 @@ These guidelines are indented to ensure a safe operation of the gokart for human
 * clear rock debris from the track. Loose rocks may impact against the IMU, which deteriorates the state estimation.
 * after plugging in the USB cable to the gokart PC wait ~20 seconds before starting `QuickStartGui.java`. This delay is required for the system to detect the IMU at `/dev/ttyACM0`.
 
+### Charging the gokart battery
+
+* plug in charger to wall inlet (red CEE 16A plug). Charger starts up automatically
+* gokart must be switched on (switch on left hand side inside of cockpit)
+* emergency switch must be pressed
+* plug in gokart
+* charging is idicated on the charger by a non-zero current value and on the gokart by a single dot on the state-of-charge gauge
+* to interrupt charging simply unplug the gokart from the charger
+* the gokart is fully charged when the state-of-charge reaches 100%
+* unplug the gokart from the charger and unplug the charger from the wall-inlet. Charger turns off automatically
+* turn off gokart
+
 ### After
 
 * make sure that software is fully terminated after `QuickStartGui` is closed: Press STOP icon in Eclipse if necessary

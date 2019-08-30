@@ -1,12 +1,14 @@
 // code by mh, jph
 package ch.ethz.idsc.gokart.calib.power;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ abstract class MotorFunctionBase implements MotorFunction {
+/* package */ abstract class MotorFunctionBase implements MotorFunction, Serializable {
   @Override // from MotorFunction
   public final Scalar getAccelerationEstimation(Scalar power, Scalar speed) {
     float fspd = Magnitude.VELOCITY.toFloat(speed);

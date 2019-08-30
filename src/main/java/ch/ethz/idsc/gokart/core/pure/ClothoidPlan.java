@@ -13,7 +13,7 @@ import ch.ethz.idsc.tensor.Tensor;
 
 public class ClothoidPlan implements Serializable {
   // TODO JPH make configurable
-  private static final int REFINEMENT = 3;
+  private static final int REFINEMENT = 5;
 
   /** @param lookAhead {x[m], y[m], angle} in vehicle coordinates
    * @param pose of vehicle {x[m], y[m], angle}

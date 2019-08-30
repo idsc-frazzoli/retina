@@ -13,8 +13,10 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
+import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.red.Nest;
 
 /* package */ class LogFollowingError extends OfflineFollowingError {
   @Override // from OfflineLogListener
@@ -29,7 +31,8 @@ import ch.ethz.idsc.tensor.Tensor;
     // curve following
     if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2)) {
       Tensor reference = Se2CurveLcm.decode(byteBuffer);
-      setReference(reference);
+      Tensor refined = Nest.of(Clothoid3.CURVE_SUBDIVISION::cyclic, reference, 5); // better error approximation
+      setReference(refined);
     }
   }
 
@@ -40,7 +43,7 @@ import ch.ethz.idsc.tensor.Tensor;
       System.out.print("running... ");
       OfflineLogPlayer.process(file.get(), followingError);
       System.out.println("finished");
-      System.out.println(followingError.getReport());
+      followingError.getReport().ifPresent(System.out::println);
     }
   }
 }

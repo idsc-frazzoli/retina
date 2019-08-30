@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.tensor.io.UserName;
 
+/** deploys timestamps at start and end of operation on the gokart pc */
 public class GokartTimestampModule extends AbstractModule {
   private static final String GOKART = "gokart";
   private static final File ROOT = new File("resources/hardware");

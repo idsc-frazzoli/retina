@@ -11,7 +11,7 @@ import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 
 /** module ensures that VMU931 has carried out calibration procedure since startup of sensor
  * otherwise operation of the gokart motors is suppressed */
-public class Vmu931CalibrationWatchdog extends EmergencyModule<RimoPutEvent> {
+public final class Vmu931CalibrationWatchdog extends EmergencyModule<RimoPutEvent> {
   @Override // from AbstractModule
   protected void first() {
     RimoSocket.INSTANCE.addPutProvider(this);

@@ -115,6 +115,6 @@ public class LocalizationTable implements OfflineTableSupplier {
 
   @Override
   public Tensor getTable() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 }

@@ -9,7 +9,6 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitPlanner;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -49,6 +48,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private static class LaneConstraintsRender implements RenderInterface {
     private static final Font FONT = new Font(Font.MONOSPACED, Font.PLAIN, 14);
     // ---
+    private final FootprintRender footprintRender = new FootprintRender(new Color(128, 128, 128, 64));
     private final Tensor pose;
     private final Optional<ClothoidPlan> clothoidPlanL;
     private final Optional<ClothoidPlan> clothoidPlanR;
@@ -66,7 +66,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       // draw footprint of gokart
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(pose));
       graphics.setColor(new Color(128, 128, 128, 64));
-      graphics.fill(geometricLayer.toPath2D(RimoSinusIonModel.standard().footprint()));
+      footprintRender.render(geometricLayer, graphics);
       geometricLayer.popMatrix();
       // ---
       graphics.setFont(FONT);

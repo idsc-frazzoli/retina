@@ -67,8 +67,8 @@ import ch.ethz.idsc.tensor.Tensor;
       }
       {
         // side lines
-        LaneRender laneRender = new LaneRender(closed);
-        laneRender.setLane(lane);
+        LaneRender laneRender = new LaneRender();
+        laneRender.setLane(lane, closed);
         laneRender.render(geometricLayer, graphics);
       }
       GraphicsUtil.setQualityDefault(graphics);

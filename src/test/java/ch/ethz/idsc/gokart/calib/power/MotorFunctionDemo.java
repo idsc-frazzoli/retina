@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ enum MotorFunctionDemo {
   ;
-  private static final int RES = 500 - 1;
+  private static final int RES = 512 - 1;
 
   @SuppressWarnings("unchecked")
   static <T extends Tensor> Tensor build(BiFunction<T, T, ? extends Tensor> function, Tensor vi, Tensor vj) {

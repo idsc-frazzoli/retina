@@ -8,7 +8,7 @@ import ch.ethz.idsc.gokart.calib.ChassisGeometry;
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.brake.BrakeFunctionConfig;
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
-import ch.ethz.idsc.gokart.calib.steer.SteerFeedForwardConfig;
+import ch.ethz.idsc.gokart.core.adas.AntilockConfig;
 import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
@@ -33,8 +33,8 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPid;
       LinmotConfig.GLOBAL, //
       SteerConfig.GLOBAL, //
       SteerPid.GLOBAL, //
-      SteerFeedForwardConfig.GLOBAL, //
       HapticSteerConfig.GLOBAL, //
+      AntilockConfig.GLOBAL, //
       HighPowerSteerPid.GLOBAL, //
       RimoConfig.GLOBAL, //
       SafetyConfig.GLOBAL, //

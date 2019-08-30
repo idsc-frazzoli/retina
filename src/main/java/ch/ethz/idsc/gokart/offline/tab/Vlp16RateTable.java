@@ -72,6 +72,6 @@ public class Vlp16RateTable implements OfflineTableSupplier, LidarRayDataListene
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 }

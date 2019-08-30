@@ -2,18 +2,19 @@
 package ch.ethz.idsc.gokart.calib.steer;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
-public abstract class AbstractSteerMapping implements SteerMapping, Serializable {
+/* package */ abstract class AbstractSteerMapping implements SteerMapping, Serializable {
   private final ScalarUnaryOperator column2steer;
   private final ScalarUnaryOperator steer2column;
 
   protected AbstractSteerMapping(ScalarUnaryOperator column2steer, ScalarUnaryOperator steer2column) {
-    this.column2steer = column2steer;
-    this.steer2column = steer2column;
+    this.column2steer = Objects.requireNonNull(column2steer);
+    this.steer2column = Objects.requireNonNull(steer2column);
   }
 
   @Override // from SteerMapping

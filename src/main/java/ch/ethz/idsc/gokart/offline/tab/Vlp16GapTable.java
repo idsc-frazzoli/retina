@@ -66,6 +66,6 @@ public class Vlp16GapTable implements OfflineTableSupplier, LidarRayDataListener
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 }

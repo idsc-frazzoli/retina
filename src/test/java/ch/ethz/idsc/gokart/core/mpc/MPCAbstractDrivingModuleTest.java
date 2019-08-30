@@ -10,7 +10,7 @@ public class MPCAbstractDrivingModuleTest extends TestCase {
       Timing timing = Timing.started();
       MPCStateEstimationProvider estimationProvider = new FakeNewsEstimator(timing);
       MPCAbstractDrivingModule drivingModule = new MPCKinematicDrivingModule(estimationProvider, timing, DubendorfTrack.HYPERLOOP_EIGHT);
-      drivingModule.switchToTest();
+      // drivingModule.switchToTest(); // TODO manage (external) process somewhere
       drivingModule.first();
       Thread.sleep(3000);
       System.out.println("target linmot" + drivingModule.mpcLinmotProvider.putEvent().get().target_position);

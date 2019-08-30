@@ -24,7 +24,9 @@ public class OccupancyConfig {
   public static final OccupancyConfig GLOBAL = AppResources.load(new OccupancyConfig());
   /***************************************************/
   public final Scalar pixelWidth = Quantity.of(0.2, SI.METER);
-  /** dubendorf */
+  /** origin is of the form {px[m], py[m], angle}
+   * 
+   * dubendorf origin = {32[m], 20[m], pi/4} */
   public final Tensor origin = Tensors.of( //
       Quantity.of(32, SI.METER), //
       Quantity.of(20, SI.METER), //

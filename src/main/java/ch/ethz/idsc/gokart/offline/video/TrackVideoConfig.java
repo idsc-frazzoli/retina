@@ -6,6 +6,8 @@ import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.tensor.Scalar;
 
 public class TrackVideoConfig {
+  /** maximum number of frames */
+  public int frameLimit = Integer.MAX_VALUE;
   /** with unit s^-1 */
   public Scalar frameRate = PoseLcmServerModule.RATE;
   /** channel to extract pose from and trigger frame rendering */

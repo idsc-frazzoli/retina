@@ -6,26 +6,37 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public enum PoseHelper {
   ;
+  /** @param pose vector of the form {x[m], y[m], angle[]}
+   * @return given pose
+   * @throws Exception if given pose is not valid */
+  public static Tensor require(Tensor pose) {
+    Magnitude.METER.apply(pose.Get(0));
+    Magnitude.METER.apply(pose.Get(1));
+    Magnitude.ONE.apply(pose.Get(2));
+    return VectorQ.requireLength(pose, 3);
+  }
+
   /** Example:
    * PoseHelper.toSE2Matrix(gokartPoseEvent.getPose())
    * 
-   * @param state vector with units {x[m], y[m], angle[]}
+   * @param pose vector of the form {x[m], y[m], angle[]}
    * @return */
-  public static Tensor toSE2Matrix(Tensor state) {
-    return Se2Matrix.of(toUnitless(state));
+  public static Tensor toSE2Matrix(Tensor pose) {
+    return Se2Matrix.of(toUnitless(pose));
   }
 
-  /** @param state of the form {x[m], y[m], angle}
+  /** @param pose vector of the form {x[m], y[m], angle}
    * @return {x, y, angle} */
-  public static Tensor toUnitless(Tensor state) {
+  public static Tensor toUnitless(Tensor pose) {
     return Tensors.of( //
-        Magnitude.METER.apply(state.Get(0)), //
-        Magnitude.METER.apply(state.Get(1)), //
-        Magnitude.ONE.apply(state.Get(2)));
+        Magnitude.METER.apply(pose.Get(0)), //
+        Magnitude.METER.apply(pose.Get(1)), //
+        Magnitude.ONE.apply(pose.Get(2)));
   }
 
   /** @param vector {x, y, angle}

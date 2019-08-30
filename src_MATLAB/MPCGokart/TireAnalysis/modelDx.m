@@ -26,8 +26,6 @@ function [ACCX,ACCY,ACCROTZ] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV, param)
     simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1);
     %simpleaccy = @(VELY,VELX,taccx)magic(-VELY/(VELX+reg),B2,C2,D2);
 
-
-
     l = 1.19;
     l1 = 0.73;
     l2 = l-l1;

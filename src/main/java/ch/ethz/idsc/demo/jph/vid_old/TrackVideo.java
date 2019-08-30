@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Objects;
 
-import ch.ethz.idsc.demo.jph.video.RunVideoBackground;
+import ch.ethz.idsc.demo.VideoBackground;
 import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionSteps;
 import ch.ethz.idsc.gokart.gui.top.MPCPredictionRender;
 import ch.ethz.idsc.gokart.gui.top.MPCPredictionSequenceRender;
@@ -50,7 +50,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       // System.out.println(trackDriving.row(0));
       list.add(trackDriving);
     }
-    BackgroundImage backgroundImage = RunVideoBackground.get20190414();
+    BackgroundImage backgroundImage = VideoBackground.get20190414();
     final int max = list.stream().mapToInt(TrackDriving::maxIndex).max().getAsInt();
     BufferedImage bufferedImage = new BufferedImage( //
         backgroundImage.dimension().width, //
@@ -86,7 +86,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
         graphics.setColor(Color.LIGHT_GRAY);
         graphics.drawString(String.format("time:%7s[s]", time.map(Round._3)), 0, 25);
-        mp4AnimationWriter.append(bufferedImage);
+        mp4AnimationWriter.write(bufferedImage);
         if (index == 200)
           break;
       }

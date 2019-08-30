@@ -45,13 +45,13 @@ public class PngAnimationWriter implements AnimationWriter {
   }
 
   @Override // from AnimationWriter
-  public void append(BufferedImage bufferedImage) throws Exception {
+  public void write(BufferedImage bufferedImage) throws Exception {
     ImageIO.write(bufferedImage, "png", new File(directory, String.format(format, ++image_count)));
   }
 
   @Override // from AnimationWriter
-  public void append(Tensor tensor) throws Exception {
-    append(ImageFormat.of(tensor));
+  public void write(Tensor tensor) throws Exception {
+    write(ImageFormat.of(tensor));
   }
 
   @Override // from AnimationWriter

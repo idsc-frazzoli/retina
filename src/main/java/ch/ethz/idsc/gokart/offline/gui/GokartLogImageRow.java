@@ -14,7 +14,7 @@ abstract class GokartLogImageRow {
   }
 
   public final Tensor tensor() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 
   /** @return value in the interval [0, 1] */

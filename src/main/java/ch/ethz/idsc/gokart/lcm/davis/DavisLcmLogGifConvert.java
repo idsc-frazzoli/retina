@@ -63,7 +63,7 @@ public class DavisLcmLogGifConvert {
         System.out.println("total_frames" + davisGifImageWriter.total_frames());
       }
       davisEventStatistics.print();
-    } catch (IOException exception) {
+    } catch (Exception exception) {
       // ---
     }
     System.out.println("entries: " + count);

@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
           System.out.println(count);
           ++count;
           if (snaps * 10 < count) {
-            mp4.append(bufferedImage);
+            mp4.write(bufferedImage);
             if (snaps * (10 + 120) < count) {
               System.out.println("stop");
               aedat31FileSupplier.stop();

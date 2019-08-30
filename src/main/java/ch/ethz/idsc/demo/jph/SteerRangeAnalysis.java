@@ -51,6 +51,6 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
           exception.printStackTrace();
         }
       }
-    Export.of(HomeDirectory.file("steercolumntracker.csv"), tableBuilder.toTable().map(CsvFormat.strict()));
+    Export.of(HomeDirectory.file("steercolumntracker.csv"), tableBuilder.getTable().map(CsvFormat.strict()));
   }
 }

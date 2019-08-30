@@ -12,7 +12,7 @@ import ch.ethz.idsc.gokart.core.track.TrackLane;
 import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.owl.math.lane.LaneSegment;
-import ch.ethz.idsc.owl.math.lane.StableLane;
+import ch.ethz.idsc.owl.math.lane.StableLanes;
 import ch.ethz.idsc.owl.rrts.core.TransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -64,7 +64,7 @@ public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements
     Tensor shifted = RotateLeft.of(waypoints, rootIdx);
     Tensor segment = shifted.extract(0, locate(shifted, goal) + 1);
     final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth);
-    return Optional.of(StableLane.of(segment, Clothoid3.CURVE_SUBDIVISION::string, 3, r));
+    return Optional.of(StableLanes.of(segment, Clothoid3.CURVE_SUBDIVISION::string, 3, r));
   }
 
   @Override // from MPCBSplineTrackListener

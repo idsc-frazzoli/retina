@@ -7,6 +7,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
+/** the constants were obtained using the tool
+ * "pidtool" from MATLAB's control toolbox.
+ * 
+ * "pidtool" you will find in the older versions of MATLAB.
+ * The newer ones have the name changed to "pidtuner"
+ * 
+ * https://www.mathworks.com/help/control/ref/pidtuner.html */
 public class SteerPid {
   public static final SteerPid GLOBAL = AppResources.load(new SteerPid());
   /***************************************************/

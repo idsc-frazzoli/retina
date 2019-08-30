@@ -4,23 +4,25 @@ package ch.ethz.idsc.retina.davis.io;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
-import ch.ethz.idsc.tensor.io.AnimatedGifWriter;
+import ch.ethz.idsc.tensor.io.AnimationWriter;
+import ch.ethz.idsc.tensor.io.GifAnimationWriter;
 
 /**  */
 public class DavisGifImageWriter implements ColumnTimedImageListener, TimedImageListener, AutoCloseable {
-  private final AnimatedGifWriter animatedGifWriter;
+  private final AnimationWriter animationWriter;
   private final DavisExportControl davisExportControl;
   private int count = 0;
 
   /** @param directory base in which a sub directory "images" is created
    * @throws IOException */
   public DavisGifImageWriter(File file, int period, DavisExportControl davisExportControl) throws IOException {
-    animatedGifWriter = AnimatedGifWriter.of(file, period);
+    animationWriter = new GifAnimationWriter(file, period, TimeUnit.MILLISECONDS);
     this.davisExportControl = davisExportControl;
   }
 
@@ -37,7 +39,7 @@ public class DavisGifImageWriter implements ColumnTimedImageListener, TimedImage
   private void image(BufferedImage bufferedImage) {
     if (davisExportControl.isActive())
       try {
-        animatedGifWriter.append(bufferedImage);
+        animationWriter.write(bufferedImage);
         ++count;
       } catch (Exception exception) {
         exception.printStackTrace();
@@ -47,8 +49,8 @@ public class DavisGifImageWriter implements ColumnTimedImageListener, TimedImage
   }
 
   @Override
-  public void close() throws IOException {
-    animatedGifWriter.close();
+  public void close() throws Exception {
+    animationWriter.close();
   }
 
   public int total_frames() {

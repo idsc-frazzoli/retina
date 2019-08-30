@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** server to publish absolute steering column angle */
-public class SteerColumnLcmModule extends AbstractClockedModule {
+public final class SteerColumnLcmModule extends AbstractClockedModule {
   /** high rate in order to reconstruct steer angle in post processing */
   private static final Scalar PERIOD = Quantity.of(100, SI.PER_SECOND).reciprocal();
   // ---

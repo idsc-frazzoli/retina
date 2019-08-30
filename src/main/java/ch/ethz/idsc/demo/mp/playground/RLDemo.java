@@ -20,9 +20,9 @@ import ch.ethz.idsc.tensor.Tensors;
   public BaseFrame start() {
     OwlyAnimationFrame owlyAnimationFrame = new OwlyAnimationFrame();
     R2ImageRegionWrap r2ImageRegionWrap = R2ImageRegions._0F5C_2182;
-    Region<Tensor> imageRegion = r2ImageRegionWrap.imageRegion();
-    TrajectoryRegionQuery trajectoryRegionQuery = CatchyTrajectoryRegionQuery.timeInvariant(imageRegion);
-    owlyAnimationFrame.addBackground(RegionRenders.create(imageRegion));
+    Region<Tensor> region = r2ImageRegionWrap.region();
+    TrajectoryRegionQuery trajectoryRegionQuery = CatchyTrajectoryRegionQuery.timeInvariant(region);
+    owlyAnimationFrame.addBackground(RegionRenders.create(region));
     owlyAnimationFrame.addBackground(RegionRenders.create(trajectoryRegionQuery));
     Tensor startPos = Tensors.vector(5.117, 5.950, 0.000);
     CarPolicyEntity carPolicyEntity = //

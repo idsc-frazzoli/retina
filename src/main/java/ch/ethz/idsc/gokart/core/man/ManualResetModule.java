@@ -15,7 +15,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * when the button is pressed by the operator, the module schedules
  * the calibration procedure for the devices that are not calibrated.
  * the devices are: misc, linmot, and steer. */
-public class ManualResetModule extends AbstractClockedModule {
+public final class ManualResetModule extends AbstractClockedModule {
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
 
   @Override // from AbstractClockedModule

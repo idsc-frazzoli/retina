@@ -8,6 +8,8 @@ import ch.ethz.idsc.tensor.Tensor;
 public interface ErrorInterface {
   Optional<Tensor> averageError();
 
+  Optional<Tensor> maximumError();
+
   Optional<Tensor> accumulatedError();
 
   Optional<String> getReport();

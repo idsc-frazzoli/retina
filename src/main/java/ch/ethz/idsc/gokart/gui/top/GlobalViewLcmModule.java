@@ -72,7 +72,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   public final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
   private final PathRender pathRender = new PathRender(Color.YELLOW);
   private final PathRender planRender = new PathRender(Color.MAGENTA);
-  private final LaneRender laneRender = new LaneRender(false);
+  private final LaneRender laneRender = new LaneRender();
 
   /** @param curve may be null */
   public void setPlan(Tensor curve) {
@@ -86,7 +86,7 @@ public class GlobalViewLcmModule extends AbstractModule {
 
   /** @param laneInterface may be null */
   public void setLane(LaneInterface laneInterface) {
-    laneRender.setLane(laneInterface);
+    laneRender.setLane(laneInterface, false);
   }
 
   @Override // from AbstractModule

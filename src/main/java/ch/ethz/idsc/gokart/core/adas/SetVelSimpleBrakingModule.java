@@ -24,16 +24,16 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** class is used to develop and test anti lock brake logic */
-/* package */ class SetVelSimpleBrakingModule extends AntilockBrakeModule {
+/* package */ class SetVelSimpleBrakingModule extends AntilockBrakeBaseModule {
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
   private final RimoRateControllerWrap rimoRateControllerWrap = new RimoRateControllerUno();
 
   public SetVelSimpleBrakingModule() {
-    this(HapticSteerConfig.GLOBAL);
+    this(AntilockConfig.GLOBAL);
   }
 
-  public SetVelSimpleBrakingModule(HapticSteerConfig hapticSteerConfig) {
-    super(hapticSteerConfig);
+  public SetVelSimpleBrakingModule(AntilockConfig antilockConfig) {
+    super(antilockConfig);
   }
 
   @Override // from AbstractModule
@@ -54,7 +54,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   @Override
   public Optional<LinmotPutEvent> putEvent() {
     if (lidarLocalizationModule != null) {
-      if (Scalars.lessThan(hapticSteerConfig.setVel, lidarLocalizationModule.getVelocity().Get(0))) {
+      if (Scalars.lessThan(antilockConfig.setVel, lidarLocalizationModule.getVelocity().Get(0))) {
         fullStopping = true;
       }
       if (fullStopping) {
@@ -77,7 +77,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     binaryBlobPublisher.accept(VectorFloatBlob.encode(Flatten.of(Tensors.of( //
         slip, brakePosition, velocityOrigin.Get(0), angularRate_Origin))));
     System.out.println(slip.multiply(angularRate_Origin).map(Round._3) + " " + brakePosition + " " + velocityOrigin.Get(0).map(Round._3));
-    return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(hapticSteerConfig.fullBraking));
+    return Optional.of(LinmotPutOperation.INSTANCE.toRelativePosition(antilockConfig.fullBraking));
   }
 
   Optional<RimoPutEvent> setVelEvent(Scalar MaxVel) {

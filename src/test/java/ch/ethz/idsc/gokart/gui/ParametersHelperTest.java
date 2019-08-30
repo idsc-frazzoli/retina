@@ -13,7 +13,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TensorProperties;
 import ch.ethz.idsc.tensor.qty.KnownUnitQ;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
-import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.ref.TensorReflection;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -51,15 +50,6 @@ public class ParametersHelperTest extends TestCase {
 
   private static final KnownUnitQ KNOWN_UNIT_Q = KnownUnitQ.in(GokartUnitSystem.INSTANCE.unitSystem);
 
-  // TODO JPH TENSOR V078 obsolete
-  private static void require(Scalar scalar) {
-    Unit unit = QuantityUnit.of(scalar);
-    if (!KNOWN_UNIT_Q.of(unit)) {
-      System.err.println(unit);
-      fail();
-    }
-  }
-
   public void testUnitSystem() throws IllegalArgumentException, IllegalAccessException {
     for (Object object : ParametersHelper.OBJECTS) {
       List<Field> list = Stream.of(object.getClass().getFields()).collect(Collectors.toList());
@@ -67,11 +57,14 @@ public class ParametersHelperTest extends TestCase {
         Class<?> cls = field.getType();
         if (cls.equals(Tensor.class)) {
           Tensor tensor = (Tensor) field.get(object); // may throw Exception
-          tensor.flatten(-1).map(Scalar.class::cast).forEach(ParametersHelperTest::require);
+          tensor.flatten(-1) //
+              .map(Scalar.class::cast) //
+              .map(QuantityUnit::of) //
+              .forEach(KNOWN_UNIT_Q::require);
         }
         if (cls.equals(Scalar.class)) {
           Scalar scalar = (Scalar) field.get(object); // may throw Exception
-          require(scalar);
+          KNOWN_UNIT_Q.require(QuantityUnit.of(scalar));
         }
       }
     }

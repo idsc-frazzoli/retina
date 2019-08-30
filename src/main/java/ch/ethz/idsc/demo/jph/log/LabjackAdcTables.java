@@ -29,7 +29,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
   @Override
   public Tensor getTable() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 
   public static void main(String[] args) {

@@ -96,7 +96,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
       }
       geometricLayer.popMatrix();
       geometricLayer.popMatrix();
-      mp4AnimationWriter.append(frameImage);
+      mp4AnimationWriter.write(frameImage);
       // System.out.println("here");
       tensor = Tensors.empty();
     }

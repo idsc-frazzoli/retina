@@ -13,11 +13,11 @@ package ch.ethz.idsc.gokart.calib.power;
     return P0 + PPOWER * fpow + PVEL * fvel;
   }
 
-  // ---
   static final float POWER_THRESHOLD_HI = 1300f;
   static final float POWER_THRESHOLD_LO = -660f;
   static final float PTLRAMP = -10f;
 
+  // ---
   private MotorFunctionV2() {
     // ---
   }

@@ -5,12 +5,12 @@ import java.io.File;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.swing.JFileChooser;
+import ch.ethz.idsc.retina.util.io.DialogInput;
 
 public enum FileHelper {
   ;
   public static Optional<File> open(String[] args) {
-    return open(args.length > 0 ? args[0] : null);
+    return FileHelper.open(args.length > 0 ? args[0] : null);
   }
 
   public static Optional<File> open(String fileName) {
@@ -20,26 +20,9 @@ public enum FileHelper {
         System.out.println("INFO open " + file.getAbsolutePath());
         return Optional.of(file);
       } else if (file.isDirectory())
-        return choose(fileName);
+        return DialogInput.chooseFile(fileName);
       System.err.println("WARN unable to find/open " + file.getAbsolutePath());
     }
-    return choose();
-  }
-
-  public static Optional<File> choose() {
-    return choose("");
-  }
-
-  public static Optional<File> choose(String currentPath) {
-    JFileChooser fileChooser = new JFileChooser(currentPath);
-    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-    int returnVal = fileChooser.showOpenDialog(fileChooser);
-    if (returnVal == JFileChooser.APPROVE_OPTION)
-      try {
-        return Optional.of(fileChooser.getSelectedFile());
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
-    return Optional.empty();
+    return DialogInput.chooseFile();
   }
 }

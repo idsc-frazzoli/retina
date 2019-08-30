@@ -21,7 +21,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
 /** match the most recent lidar scan to static geometry of a pre-recorded map
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
-public class LidarLocalizationModule extends AbstractModule implements PoseVelocityInterface {
+public final class LidarLocalizationModule extends AbstractModule implements PoseVelocityInterface {
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
   private final LidarLocalizationCore lidarLocalizationCore = //
       new LidarLocalizationCore(LocalizationConfig.GLOBAL.getPredefinedMap());

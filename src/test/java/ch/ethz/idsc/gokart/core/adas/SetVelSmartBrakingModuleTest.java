@@ -17,8 +17,8 @@ public class SetVelSmartBrakingModuleTest extends TestCase {
   }
 
   public void testCustom() {
-    HapticSteerConfig hapticSteerConfig = new HapticSteerConfig();
-    SetVelSmartBrakingModule antilockBrakeModule = new SetVelSmartBrakingModule(hapticSteerConfig);
+    AntilockConfig antilockConfig = new AntilockConfig();
+    SetVelSmartBrakingModule antilockBrakeModule = new SetVelSmartBrakingModule(antilockConfig);
     antilockBrakeModule.first();
     assertFalse(antilockBrakeModule.putEvent().isPresent());
     antilockBrakeModule.last();

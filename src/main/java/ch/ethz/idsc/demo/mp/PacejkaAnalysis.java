@@ -91,7 +91,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 
   @Override // from OfflineTableSupplier
   public Tensor getTable() {
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 
   public static void main(String[] args) throws IOException {

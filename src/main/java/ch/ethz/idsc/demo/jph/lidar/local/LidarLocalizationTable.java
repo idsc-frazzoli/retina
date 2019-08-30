@@ -46,10 +46,10 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   }
 
   public Tensor tablePose() {
-    return tableBuilderPose.toTable();
+    return tableBuilderPose.getTable();
   }
 
   public Tensor tableOdom() {
-    return tableBuilderOdom.toTable();
+    return tableBuilderOdom.getTable();
   }
 }
