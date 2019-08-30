@@ -18,7 +18,6 @@ addpath('../ForcesMPCPathFollowingDynamic');
     
 clear model
 clear problem
-clear all
 close all
 
 %% Baseline params
@@ -34,8 +33,8 @@ B2 = 5.2;
 C2 = 1.1;     
 D2 = 20;
 
-pointsO = 10;
-pointsN = 16;
+pointsO = 10;    %10 params
+pointsN = 16;    %+6 points{x,y,tau}
 splinestart = 1;
 nextsplinepoints = 0;
 
@@ -60,7 +59,7 @@ index.beta = 13;
 index.s = 14;                   
 index.ns = 9;                   % Number of States
 index.nu = 5;                   % Number of Inputs
-index.nv = index.ns+index.nu;   %=14 Number of Variables
+index.nv = index.ns+index.nu;   % =14 Number of Variables
 index.sb = index.nu+1;          % = 6
 
 % parameter index
@@ -83,15 +82,13 @@ model.N = 31;
 model.nvar = index.nv; % 14
 model.neq = index.ns;  % 9
 model.eq = @(z,p) RK4( ...
-    z(index.sb:end), ...
+    z(x.sb:end), ...
     z(1:index.nu), ...
     @(x,u,p)interstagedx(x,u,p), ... 
     integrator_stepsize,...
     p);
 
 model.E = [zeros(index.ns,index.nu), eye(index.ns)];
-
-l = 1;
 
 %limit lateral acceleration
 model.nh = 5;                                   % number of inequalities
@@ -160,7 +157,7 @@ FORCES_NLP(model, codeoptions, output); % Needed FORCES License and Casadi 2.4.2
 %% Simulator
 tend = 100;
 eulersteps = 10;
-planintervall = 1
+planintervall = 1;
 fpoints = points(1:2,1:2);
 pdir = diff(fpoints);
 [pstartx,pstarty] = casadiDynamicBSPLINE(0.01,points);
