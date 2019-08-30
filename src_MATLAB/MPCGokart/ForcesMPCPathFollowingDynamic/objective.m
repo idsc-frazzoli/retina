@@ -1,6 +1,6 @@
 function f = objective(z,points,radii,vmax, maxxacc, steeringreg)
     global index
-%[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
+    %[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline
     l = 1.19;
     [splx,sply] = casadiDynamicBSPLINE(z(index.s),points);

@@ -5,6 +5,13 @@
 #include "../TestUKF/TestPacejkaUKF.h"
 #include "Model_first.h"
 
+#define NP 10
+#define NM 1
+#define NI 1000
+
+typedef UnscentedKalmanFilter<NP, NM, NI> UKF;
+
+
 // TODO not working due to template size
 void model_first()
 {

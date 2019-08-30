@@ -92,7 +92,7 @@ private:
 
         // Update
         JacobiHMat jacobiHMat = jacobiH(x);
-        // TODO Measurment noise are also taken into account as Jacobian (see Recursive Estimation Skript on HybridEKF)
+        // TODO MCP Measurement noise are also taken into account as Jacobian (see Recursive Estimation Skript on HybridEKF)
         CrossCorellationMat K =
                 Pk * jacobiHMat.transpose() * (jacobiHMat * Pk * jacobiHMat.transpose() + /** here **/ measurementNoise).inverse();
 

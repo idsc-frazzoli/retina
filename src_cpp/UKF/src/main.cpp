@@ -1,6 +1,8 @@
 //
 // Created by maximilien on 22.05.19.
 //
+
+
 #include <iostream>
 #include "TestUKF/TestUKF.h"
 #include "TestUKF/TestPacejkaUKF.h"
@@ -8,10 +10,7 @@
 #include "ModelMPC/ModelMPC.h"
 #include "ModelMPC/StaticTester.h"
 #include "ModelMPC/LogTester.h"
-
-
-
-typedef UnscentedKalmanFilter<NP, NM, NI> UKF;
+#include "PacejkaUKF/PacejkaUKFinterface.h"
 
 using namespace std;
 
@@ -46,13 +45,11 @@ int main(int, const char * const [])
     /*
     TestUKF testUkf;
     testUkf.test();
-    */
-
+     */
 
     // Testing model_first and UKF
     //*******************************************************************************
-    // model_first();
-
+    //model_first(); // TODO non functioning due to template size
 
     // Testing ModelMPC from code g en
     //*******************************************************************************
@@ -65,6 +62,12 @@ int main(int, const char * const [])
     // Testing ModelMPC from log data
     //*******************************************************************************
     call_modelDx_log();
+
+    // UKF for Pacejka
+    //*******************************************************************************
+    PacejkaUKFinterface ukf;
+    ukf.runSta();
+
 
 
 

@@ -39,7 +39,7 @@ void call_modelDx_static()
             &ACCY, // ACCY
             &ACCROTZ); // ACCROTZ
 
-    std::cout << "****Static tester****" << std::endl;
+    std::cout << "****Static Model tester****" << std::endl;
     std::cout << param[0] << std::endl;
     std::cout << ACCX << std::endl;
     std::cout << ACCY<< std::endl;

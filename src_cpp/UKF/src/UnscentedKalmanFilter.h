@@ -5,10 +5,6 @@
 
 #pragma once
 
-#define NP 3
-#define NM 1
-#define NI 1000
-
 #include <iostream>
 #include <Eigen/Dense>
 #include "functional"
@@ -165,8 +161,9 @@ private:
         MeasurementMat sVar = MeasurementMat::Zero();
         for (int i = 0; i<= 2*NParameter + 1; i++){
             MeasurementVec difS = zeta[i] - zPred;
-            MeasurementVec difStran = difS.transpose();
-            sVar += w_c[i]*difS*difStran;
+            // MeasurementVec difStran = difS.transpose();
+            MeasurementMat SStran = difS*difS.transpose();
+            sVar += w_c[i]*SStran;
         }
         sVar += measurementNoise;
 
@@ -174,8 +171,7 @@ private:
         for (int i = 0; i <= 2*NParameter; i++){
             ParameterVec chiMu = chi[i]-mu;
             MeasurementVec zetaZpred = zeta[i]-zPred;
-            MeasurementVec zetaZpredTran =zetaZpred.transpose();
-            T += w_c[i]*chiMu*zetaZpred;
+            T += w_c[i]*chiMu*zetaZpred.transpose();
         }
         if (debugUKF) {
             std::cout << "sVar:" << std::endl << sVar << std::endl;
