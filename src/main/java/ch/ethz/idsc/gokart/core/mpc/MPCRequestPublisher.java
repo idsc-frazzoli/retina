@@ -12,7 +12,7 @@ import idsc.BinaryBlob;
 /* package */ abstract class MPCRequestPublisher {
   public static MPCRequestPublisher kinematic() {
     return new MPCRequestPublisher("") {
-      @Override // from LcmMPCControlClient
+      @Override // from MPCRequestPublisher
       BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
         return new MPCOptimizationParameterMessageKinematic(mpcOptimizationParameter, mpcNativeSession);
       }
@@ -21,13 +21,14 @@ import idsc.BinaryBlob;
 
   public static MPCRequestPublisher dynamic() {
     return new MPCRequestPublisher(".d") {
-      @Override // from LcmMPCControlClient
+      @Override // from MPCRequestPublisher
       BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
         return new MPCOptimizationParameterMessageDynamic(mpcOptimizationParameter, mpcNativeSession);
       }
     };
   }
 
+  // ---
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();
   private final BinaryBlobPublisher controlRequestPublisher;
   private final BinaryBlobPublisher optimizationParameterPublisher;
