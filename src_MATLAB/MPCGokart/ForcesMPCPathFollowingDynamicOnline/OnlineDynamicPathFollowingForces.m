@@ -4,7 +4,8 @@
 % code by mh
 % annotation and adaptation for online estimation by mcp
 %
-% This script take about 10 min to create and compile 
+% This script take about 1 minute to compile and 10 minutes to run the
+% simulation
 %
 % Reference for nomenclature: https://www.embotech.com/wp-content/uploads/FORCESPro.pdf
 
@@ -82,7 +83,7 @@ model.N = 31;
 model.nvar = index.nv; % 14
 model.neq = index.ns;  % 9
 model.eq = @(z,p) RK4( ...
-    z(x.sb:end), ...
+    z(index.sb:end), ...
     z(1:index.nu), ...
     @(x,u,p)interstagedx(x,u,p), ... 
     integrator_stepsize,...
@@ -154,7 +155,7 @@ FORCES_NLP(model, codeoptions, output); % Needed FORCES License and Casadi 2.4.2
 
 
 
-%% Simulator
+%% Simulator  %% TODO MCP NOT WORKING CURRENTLY
 tend = 100;
 eulersteps = 10;
 planintervall = 1;
