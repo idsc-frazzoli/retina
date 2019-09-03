@@ -4,13 +4,15 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.nio.ByteBuffer;
 
 /* package */ class MPCOptimizationParameterMessageKinematic extends MPCOptimizationParameterMessage {
-  public MPCOptimizationParameterMessageKinematic(MPCNativeSession mpcNativeSession, MPCOptimizationParameter mpcOptimizationParameter) {
+  public MPCOptimizationParameterMessageKinematic( //
+      MPCNativeSession mpcNativeSession, //
+      MPCOptimizationParameterKinematic mpcOptimizationParameterKinematic) {
     super(mpcNativeSession);
-    this.mpcOptimizationParameter = mpcOptimizationParameter;
+    mpcOptimizationParameter = mpcOptimizationParameterKinematic;
   }
 
   public MPCOptimizationParameterMessageKinematic(ByteBuffer byteBuffer) {
-    super(byteBuffer);
+    super(byteBuffer); // constructor reads 8 bytes from byte buffer
     mpcOptimizationParameter = new MPCOptimizationParameterKinematic(byteBuffer);
   }
 

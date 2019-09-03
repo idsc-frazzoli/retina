@@ -4,9 +4,11 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.nio.ByteBuffer;
 
 /* package */ class MPCOptimizationParameterMessageDynamic extends MPCOptimizationParameterMessage {
-  public MPCOptimizationParameterMessageDynamic(MPCNativeSession mpcNativeSession, MPCOptimizationParameter mpcOptimizationParameter) {
+  public MPCOptimizationParameterMessageDynamic( //
+      MPCNativeSession mpcNativeSession, //
+      MPCOptimizationParameterDynamic mpcOptimizationParameterDynamic) {
     super(mpcNativeSession);
-    this.mpcOptimizationParameter = mpcOptimizationParameter;
+    mpcOptimizationParameter = mpcOptimizationParameterDynamic;
   }
 
   public MPCOptimizationParameterMessageDynamic(ByteBuffer byteBuffer) {
