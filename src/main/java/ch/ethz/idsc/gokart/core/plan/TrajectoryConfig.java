@@ -16,6 +16,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldIntegerQ;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
 public class TrajectoryConfig {
@@ -32,6 +33,7 @@ public class TrajectoryConfig {
   public Scalar proximityDistance = RealScalar.ONE;
   /** number of different steering angles for path planning
    * value has to be an integer */
+  @FieldIntegerQ
   public Scalar controlResolution = RealScalar.of(9);
   /** rotation per meter driven is at least 23[deg/m]
    * 20180429_minimum_turning_radius.pdf

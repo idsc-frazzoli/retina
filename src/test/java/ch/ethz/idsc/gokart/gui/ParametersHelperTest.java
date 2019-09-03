@@ -8,11 +8,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import ch.ethz.idsc.tensor.IntegerQ;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TensorProperties;
 import ch.ethz.idsc.tensor.qty.KnownUnitQ;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
+import ch.ethz.idsc.tensor.ref.FieldIntegerQ;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.ref.TensorReflection;
 import ch.ethz.idsc.tensor.sca.Clip;
@@ -46,6 +48,27 @@ public class ParametersHelperTest extends TestCase {
           }
       }
     }
+  }
+
+  public void testFieldIntegerQ() {
+    int checked = 0;
+    for (Object object : ParametersHelper.OBJECTS) {
+      TensorProperties tensorProperties = TensorProperties.wrap(object);
+      List<Field> list = tensorProperties.fields().collect(Collectors.toList());
+      for (Field field : list) {
+        FieldIntegerQ fieldIntegerQ = field.getAnnotation(FieldIntegerQ.class);
+        if (Objects.nonNull(fieldIntegerQ))
+          try {
+            Scalar scalar = (Scalar) field.get(object); // may throw Exception
+            IntegerQ.require(scalar);
+            ++checked;
+          } catch (Exception exception) {
+            System.err.println(field);
+            fail();
+          }
+      }
+    }
+    assertTrue(0 < checked);
   }
 
   private static final KnownUnitQ KNOWN_UNIT_Q = KnownUnitQ.in(GokartUnitSystem.INSTANCE.unitSystem);
