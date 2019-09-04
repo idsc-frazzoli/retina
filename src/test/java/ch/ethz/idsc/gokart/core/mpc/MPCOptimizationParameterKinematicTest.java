@@ -82,9 +82,9 @@ public class MPCOptimizationParameterKinematicTest extends TestCase {
       mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
       Thread.sleep(100);// should even work with 30ms
       System.out.println(mpcControlUpdateCapture.cns);
-      // FIXME reinstate on a PC with the binaries
+      // TODO MPC reinstate on a PC with the binaries
       // assertNotNull(mpcControlUpdateCapture.cns);
-      // mpcRequestPublisher.stop(); // TODO stop (external) process somewhere
+      // mpcRequestPublisher.stop(); // TODO MPC stop (external) process somewhere
       mpcControlUpdateLcmClient.stopSubscriptions();
     } catch (Exception exception) {
       exception.printStackTrace();
