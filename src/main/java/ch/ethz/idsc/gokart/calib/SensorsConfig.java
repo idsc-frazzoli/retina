@@ -13,9 +13,11 @@ import ch.ethz.idsc.retina.lidar.VelodyneDecoder;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16FromPolarCoordinates;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16SpacialProvider;
 import ch.ethz.idsc.retina.lidar.vlp16.Vlp16ToPolarCoordinates;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.sophus.lie.se2.Se2Matrix;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -107,6 +109,21 @@ public class SensorsConfig {
 
   public TensorUnaryOperator vlp16FromPolarCoordinates() {
     return new Vlp16FromPolarCoordinates(vlp16_twist);
+  }
+
+  /** @return offset of lidar along x-axis */
+  public Scalar vlp16_poseX_inMeter() {
+    return Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16_pose.Get(0));
+  }
+
+  /** @return */
+  public Tensor vlp16_sideMatrix() {
+    return Se2Matrix.of(Tensors.of( //
+        vlp16_poseX_inMeter(), // translation right (in pixel space)
+        Magnitude.METER.apply(vlp16Height), // translation up (in pixel space) to
+        /** negate incline for rotation in pixel space */
+        vlp16_incline.negate() // rotation is pixel space
+    ));
   }
 
   /***************************************************/

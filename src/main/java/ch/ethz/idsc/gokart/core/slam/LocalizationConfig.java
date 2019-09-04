@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldIntegerQ;
 
 /** parameters for lidar- and gyro-based localization algorithm */
 public class LocalizationConfig {
@@ -21,11 +22,14 @@ public class LocalizationConfig {
   /***************************************************/
   public final Scalar gridShift = Quantity.of(0.6, SI.METER);
   public final Scalar gridAngle = Quantity.of(3.3, NonSI.DEGREE_ANGLE);
+  @FieldIntegerQ
   public final Scalar gridFan = RealScalar.of(1);
+  @FieldIntegerQ
   public final Scalar gridLevels = RealScalar.of(4);
   /** positive integer 0, 1, 2, 4
    * smaller means better precision but larger memory footprint
    * value 1 is sufficient */
+  @FieldIntegerQ
   public final Scalar bitShift = RealScalar.of(1);
   /** inclination of rays to create cross section
    * a positive value means upwards */

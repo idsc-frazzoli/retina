@@ -32,6 +32,9 @@
 * [20181001_steering_measurement.pdf](https://github.com/idsc-frazzoli/retina/files/2440459/20181001_steering_measurement.pdf)
 * [20181006_filtering_signals_in_se2.pdf](https://github.com/idsc-frazzoli/retina/files/2453316/20181006_filtering_signals_in_se2.pdf)
 * [20190205_growth_of_repositories.pdf](https://github.com/idsc-frazzoli/retina/files/3012744/20190205_growth_of_repositories.pdf)
+* [20190417_heim_thesis_chapter_2.pdf](https://github.com/idsc-frazzoli/retina/files/3569662/20190417_heim_thesis_chapter_2.pdf)
+* [20190417_heim_thesis_chapter_3.pdf](https://github.com/idsc-frazzoli/retina/files/3569663/20190417_heim_thesis_chapter_3.pdf)
+* [20190417_heim_thesis_chapter_4.pdf](https://github.com/idsc-frazzoli/retina/files/3569664/20190417_heim_thesis_chapter_4.pdf)
 * [20190509_steering_turning_ratio.pdf](https://github.com/idsc-frazzoli/retina/files/3160474/20190509_steering_turning_ratio.pdf)
 * [20190521_restoring_force_of_steering.pdf](https://github.com/idsc-frazzoli/retina/files/3265874/20190521_restoring_force_of_steering.pdf)
 * [20190614_tracked_hardware_changes.pdf](https://github.com/idsc-frazzoli/retina/files/3290861/20190614_tracked_hardware_changes.pdf)
@@ -39,6 +42,8 @@
 * [20190629_tsutrq_autonomous_driving.pdf](https://github.com/idsc-frazzoli/retina/files/3342895/20190629_tsutrq_autonomous_driving.pdf)
 * [20190630_code_of_dubilab.pdf](https://github.com/idsc-frazzoli/retina/files/3342886/20190630_code_of_dubilab.pdf)
 * [20190812_autonomous_human_racing.pdf](https://github.com/idsc-frazzoli/retina/files/3492127/20190812_autonomous_human_racing.pdf)
+* [20190828_advanced_driver_assistance_systems_on_a_go-kart.pdf](https://github.com/idsc-frazzoli/retina/files/3568527/20190828_advanced_driver_assistance_systems_on_a_go-kart.pdf)
+* [20190903_appox_clothoids_with_ext_windings.pdf](https://github.com/idsc-frazzoli/retina/files/3568308/20190903_appox_clothoids_with_ext_windings.pdf)
 
 ## Bug Reports
 

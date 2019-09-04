@@ -47,10 +47,6 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     return selfCalibratingBrakeFunction.getRelativeBrakeActuation(braking);
   }
 
-  // @Override
-  // public void setStateEstimationProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
-  // // TODO MH is there every going to be actions here, or in any MPCBraking instances?
-  // }
   @Override
   public void start() {
     vmu931imuLcmClient.addListener(this);

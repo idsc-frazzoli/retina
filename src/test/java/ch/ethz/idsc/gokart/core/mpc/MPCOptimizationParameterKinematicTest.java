@@ -59,7 +59,7 @@ public class MPCOptimizationParameterKinematicTest extends TestCase {
     // uncomment if you want to start the server yourself (useful if you want to see output)
     // lcmMPCControlClient.switchToExternalStart();
     try {
-      // mpcRequestPublisher.start(); // TODO start (external) process somewhere
+      // mpcRequestPublisher.start(); // TODO MPC start (external) process somewhere
       GokartState gokartState = new GokartState(//
           11, //
           1, //
@@ -76,15 +76,15 @@ public class MPCOptimizationParameterKinematicTest extends TestCase {
       mpcRequestPublisher.publishOptimizationParameter(optimizationParameter);
       MPCControlUpdateCapture mpcControlUpdateCapture = new MPCControlUpdateCapture();
       mpcControlUpdateLcmClient.addListener(mpcControlUpdateCapture);
-      DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
+      MPCBSplineTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
       Tensor position = gokartState.getPositionXY();
       MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER));
       mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
       Thread.sleep(100);// should even work with 30ms
       System.out.println(mpcControlUpdateCapture.cns);
-      // FIXME reinstate on a PC with the binaries
+      // TODO MPC reinstate on a PC with the binaries
       // assertNotNull(mpcControlUpdateCapture.cns);
-      // mpcRequestPublisher.stop(); // TODO stop (external) process somewhere
+      // mpcRequestPublisher.stop(); // TODO MPC stop (external) process somewhere
       mpcControlUpdateLcmClient.stopSubscriptions();
     } catch (Exception exception) {
       exception.printStackTrace();

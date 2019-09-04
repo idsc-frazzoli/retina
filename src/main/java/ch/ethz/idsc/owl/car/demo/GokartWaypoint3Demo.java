@@ -35,7 +35,7 @@ class GokartWaypoint3Demo implements DemoInterface {
   public OwlyAnimationFrame start() {
     OwlyAnimationFrame owlyAnimationFrame = new OwlyAnimationFrame();
     final StateTime initial = new StateTime(Tensors.vector(33.6, 41.5, 0.6), RealScalar.ZERO);
-    final Tensor waypoints = ResourceData.of("/dubilab/controlpoints/tires/20190116.csv"); // FIXME replace placeholder waypoints
+    final Tensor waypoints = ResourceData.of("/dubilab/controlpoints/tires/20190116.csv"); // FIXME JPH replace placeholder waypoints
     // final CostFunction waypointCost = WaypointDistanceCost.linear(waypoints, Tensors.vector(85.33, 85.33), 10.0f, new Dimension(640, 640));
     GokartVecEntity gokartEntity = new GokartVecEntity(initial) {
       @Override

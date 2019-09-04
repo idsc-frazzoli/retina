@@ -5,10 +5,11 @@ import java.nio.ByteBuffer;
 
 import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
+/** it is the responsibility of the extender to initiate the payload! */
 /* package */ abstract class MPCNativeMessage implements BufferInsertable {
   private final int messageSequence;
 
-  /** it is the responsibility of the extender to initiate the payload! */
+  /** @param byteBuffer from which 8 bytes are read */
   public MPCNativeMessage(ByteBuffer byteBuffer) {
     int messageType = byteBuffer.getInt();
     if (getMessageType().ordinal() != messageType) {
@@ -20,7 +21,7 @@ import ch.ethz.idsc.retina.util.data.BufferInsertable;
 
   /** it is the responsibility of the extender to initiate the payload! */
   public MPCNativeMessage(MPCNativeSession mpcNativeSession) {
-    messageSequence = mpcNativeSession.getMessageId(this);
+    messageSequence = mpcNativeSession.nextMessageId(getMessageType());
   }
 
   public final int getMessageSequence() {

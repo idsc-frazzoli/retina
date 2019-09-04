@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class MPCControlUpdateCapture implements MPCControlUpdateListener {
   // TODO MH/JPH initialize cns with zero structure to avoid null checks
   /* package */ ControlAndPredictionSteps cns = null;
-  // TODO MH document that keeping istep outside the function is intended
+  /** istep is outside the function to reuse the value from the previous function call */
   private int istep = 0;
 
   /** get the last step before a point int time
@@ -60,8 +60,8 @@ public class MPCControlUpdateCapture implements MPCControlUpdateListener {
     return time.subtract(getStep(time).gokartState().getTime());
   }
 
-  private final static Scalar NO_ACCELERATION = Quantity.of(0, SI.ACCELERATION);
-  private final static Scalar NO_STEERING = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
+  private static final Scalar NO_ACCELERATION = Quantity.of(0.0, SI.ACCELERATION);
+  private static final Scalar NO_STEERING = Quantity.of(0.0, SteerPutEvent.UNIT_ENCODER);
 
   /** get the predicted positions
    * 
@@ -78,10 +78,6 @@ public class MPCControlUpdateCapture implements MPCControlUpdateListener {
     return Objects.isNull(cns) //
         ? Tensors.empty()
         : cns.toAccelerations();
-  }
-
-  public final boolean mpcAvailable() {
-    return Objects.nonNull(cns);
   }
 
   /** @return quantity with unit "m*s^-2" */

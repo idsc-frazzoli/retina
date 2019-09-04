@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-// TODO in the long run, we can start and stop the MPC process from java instead from the console
-// TODO the current design below is very bad
+// TODO JPH in the long run, we can start and stop the MPC process from java instead from the console
+// TODO JPH the current design below is very bad
 /* package */ class MPCNativeProcess {
   private Process process;
   private BufferedReader bufferedReader;

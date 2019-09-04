@@ -22,15 +22,17 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.N;
 
 public class MPCExpectationRender extends MPCControlUpdateCapture implements RenderInterface, RimoGetListener {
   private static final Tensor DIAGONAL = DiagonalMatrix.of(0.2, 0.1, 1);
-  private static final Tensor MPCLINE = Tensors.fromString("{{0, 0}, {0, 3}}");
-  private static final Tensor RIMOLINE = Tensors.fromString("{{0, -3}, {0, 0}}");
+  private static final Tensor MPC_LINE = Tensors.fromString("{{0, 0}, {0, 3}}").map(N.DOUBLE).unmodifiable();
+  private static final Tensor RIMO_LINE = Tensors.fromString("{{0, -3}, {0, 0}}").map(N.DOUBLE).unmodifiable();
   private final Tensor xya;
   private final IntervalClock intervalClock = new IntervalClock();
   /** acceleration filter */
   private final GeodesicIIR1 geodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, RealScalar.of(0.1));
+  // ---
   private Scalar lastTangentSpeed = Quantity.of(0, SI.VELOCITY);
   private Scalar currentRimoAcc = Quantity.of(-3, SI.ACCELERATION);
 
@@ -46,14 +48,14 @@ public class MPCExpectationRender extends MPCControlUpdateCapture implements Ren
     Tensor rimoAccXY = Tensors.of(Magnitude.ACCELERATION.apply(currentRimoAcc), RealScalar.ZERO);
     geometricLayer.pushMatrix(Se2Matrix.translation(rimoAccXY));
     graphics.setColor(Color.BLUE);
-    graphics.draw(geometricLayer.toPath2D(RIMOLINE));
+    graphics.draw(geometricLayer.toPath2D(RIMO_LINE));
     geometricLayer.popMatrix();
     // mpc line
     Scalar currentMPCAcc = getFirstWantedAcceleration();
     Tensor mpcAccXY = Tensors.of(Magnitude.ACCELERATION.apply(currentMPCAcc), RealScalar.ZERO);
     geometricLayer.pushMatrix(Se2Matrix.translation(mpcAccXY));
     graphics.setColor(Color.RED);
-    graphics.draw(geometricLayer.toPath2D(MPCLINE));
+    graphics.draw(geometricLayer.toPath2D(MPC_LINE));
     geometricLayer.popMatrix();
     //
     geometricLayer.popMatrix();
@@ -62,7 +64,8 @@ public class MPCExpectationRender extends MPCControlUpdateCapture implements Ren
 
   @Override // from RimoGetListener
   public void getEvent(RimoGetEvent getEvent) {
-    // TODO MH is the odometry-based acceleration estimate still useful?
+    /** odometry-based acceleration estimate is robust
+     * but could be replaced by acceleration value from IMU */
     Scalar currentTangentSpeed = RimoTwdOdometry.tangentSpeed(getEvent);
     Scalar acceleration = currentTangentSpeed //
         .subtract(lastTangentSpeed)//

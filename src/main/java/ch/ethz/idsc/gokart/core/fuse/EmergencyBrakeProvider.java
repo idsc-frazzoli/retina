@@ -11,7 +11,6 @@ import ch.ethz.idsc.gokart.dev.linmot.LinmotPutOperation;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetListener;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.time.SoftWatchdog;
 import ch.ethz.idsc.retina.util.time.Watchdog;
@@ -39,9 +38,7 @@ public final class EmergencyBrakeProvider extends AutoboxScheduledProvider<Linmo
   /** unit m*s^-1 */
   private final Scalar minVelocity = LinmotConfig.GLOBAL.minVelocity;
   /** without unit but with interpretation in meter */
-  // TODO JPH make function SensorsConfig.GLOBAL.vlp16.Get(0)
-  private final Scalar margin = ChassisGeometry.GLOBAL.xTipMeter().subtract( //
-      Magnitude.METER.apply(SensorsConfig.GLOBAL.vlp16_pose.Get(0)));
+  private final Scalar margin = ChassisGeometry.GLOBAL.xTipMeter().subtract(SensorsConfig.GLOBAL.vlp16_poseX_inMeter());
   private final Watchdog watchdog = SoftWatchdog.barking(0.1);
   private Scalar velocity = Quantity.of(0.0, SI.VELOCITY);
 
