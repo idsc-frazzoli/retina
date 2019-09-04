@@ -76,7 +76,7 @@ public class MPCOptimizationParameterKinematicTest extends TestCase {
       mpcRequestPublisher.publishOptimizationParameter(optimizationParameter);
       MPCControlUpdateCapture mpcControlUpdateCapture = new MPCControlUpdateCapture();
       mpcControlUpdateLcmClient.addListener(mpcControlUpdateCapture);
-      DubendorfTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
+      MPCBSplineTrack track = DubendorfTrack.HYPERLOOP_EIGHT;
       Tensor position = gokartState.getPositionXY();
       MPCPathParameter mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER));
       mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
