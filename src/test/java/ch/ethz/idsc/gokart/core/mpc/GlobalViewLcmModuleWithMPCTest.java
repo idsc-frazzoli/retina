@@ -22,7 +22,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
     mpcControlUpdateLcmClient.addListener(mpcControlUpdateCapture);
     mpcControlUpdateLcmClient.startSubscriptions();
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
-    // mpcRequestPublisher.switchToExternalStart(); // TODO manage (external) process somewhere
+    // mpcRequestPublisher.switchToExternalStart(); // TODO MPC manage (external) process somewhere
     globalViewLcmModule.first();
     // 44.2575 51.6983
     gokartState = new GokartState(//
@@ -85,7 +85,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
         System.err.println("lastcns null");
     }
     globalViewLcmModule.last();
-    // mpcRequestPublisher.stop(); // TODO manage (external) process somewhere
+    // mpcRequestPublisher.stop();
     mpcControlUpdateLcmClient.stopSubscriptions();
   }
 }

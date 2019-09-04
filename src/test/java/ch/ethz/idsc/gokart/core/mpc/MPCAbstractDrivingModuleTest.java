@@ -8,14 +8,13 @@ public class MPCAbstractDrivingModuleTest extends TestCase {
   public void testFakeData() throws Exception {
     if (MPCNative.lcmTestBinary().isPresent()) {
       Timing timing = Timing.started();
-      MPCStateEstimationProvider estimationProvider = new FakeNewsEstimator(timing);
-      MPCAbstractDrivingModule drivingModule = new MPCKinematicDrivingModule(estimationProvider, timing, DubendorfTrack.HYPERLOOP_EIGHT);
-      // drivingModule.switchToTest(); // TODO manage (external) process somewhere
-      drivingModule.first();
+      MPCStateEstimationProvider mpcStateEstimationProvider = new FakeNewsEstimator(timing);
+      MPCAbstractDrivingModule mpcAbstractDrivingModule = new MPCKinematicDrivingModule(mpcStateEstimationProvider, timing, DubendorfTrack.HYPERLOOP_EIGHT);
+      mpcAbstractDrivingModule.first();
       Thread.sleep(3000);
-      System.out.println("target linmot" + drivingModule.mpcLinmotProvider.putEvent().get().target_position);
-      System.out.println("target Left power" + drivingModule.mpcRimoProvider.putEvent().get().putTireL.getTorqueRaw());
-      drivingModule.last();
+      System.out.println("target linmot" + mpcAbstractDrivingModule.mpcLinmotProvider.putEvent().get().target_position);
+      System.out.println("target Left power" + mpcAbstractDrivingModule.mpcRimoProvider.putEvent().get().putTireL.getTorqueRaw());
+      mpcAbstractDrivingModule.last();
     }
   }
 }

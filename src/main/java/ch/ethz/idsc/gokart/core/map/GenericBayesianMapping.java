@@ -16,7 +16,10 @@ import ch.ethz.idsc.tensor.Tensor;
 
 /** class interprets sensor data from lidar */
 /* package */ class GenericBayesianMapping extends AbstractMapping<BayesianOccupancyGrid> {
-  // TODO document parameters
+  /** @param spacialXZObstaclePredicate
+   * @param waitMillis
+   * @param bayesianOccupancyGrid
+   * @param max_alt */
   public GenericBayesianMapping( //
       SpacialXZObstaclePredicate spacialXZObstaclePredicate, //
       int waitMillis, //

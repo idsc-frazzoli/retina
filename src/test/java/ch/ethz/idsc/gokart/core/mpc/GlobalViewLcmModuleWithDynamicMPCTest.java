@@ -89,7 +89,7 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
         System.err.println("lastcns null");
     }
     globalViewLcmModule.last();
-    // mpcRequestPublisher.stop(); // TODO manage (external) process somewhere
+    // mpcRequestPublisher.stop();
     mpcControlUpdateLcmClient.stopSubscriptions();
   }
 }
