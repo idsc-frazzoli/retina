@@ -59,7 +59,7 @@ public class MPCOptimizationParameterKinematicTest extends TestCase {
     // uncomment if you want to start the server yourself (useful if you want to see output)
     // lcmMPCControlClient.switchToExternalStart();
     try {
-      // mpcRequestPublisher.start(); // TODO start (external) process somewhere
+      // mpcRequestPublisher.start(); // TODO MPC start (external) process somewhere
       GokartState gokartState = new GokartState(//
           11, //
           1, //

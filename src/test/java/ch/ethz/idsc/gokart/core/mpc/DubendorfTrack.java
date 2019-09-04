@@ -7,6 +7,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.alg.Transpose;
+import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -25,11 +26,13 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   private static MPCBSplineTrack hyperloop_eight() {
     Tensor controlPoints = ResourceData.of("/dubilab/controlpoints/eight/20180603.csv").multiply(Quantity.of(1, SI.METER));
+    VectorQ.requireLength(controlPoints.get(0), 2);
     return new MPCBSplineTrack(Tensor.of(controlPoints.stream().map(row -> row.append(RADIUS_DEFAULT))), true);
   }
 
   private static MPCBSplineTrack hyperloop_eight_reverse() {
     Tensor controlPoints = Reverse.of(ResourceData.of("/dubilab/controlpoints/eight/20180603.csv")).multiply(Quantity.of(1, SI.METER));
+    VectorQ.requireLength(controlPoints.get(0), 2);
     return new MPCBSplineTrack(Tensor.of(controlPoints.stream().map(row -> row.append(RADIUS_DEFAULT))), true);
   }
 

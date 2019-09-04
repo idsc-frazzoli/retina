@@ -22,7 +22,7 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
     mpcControlUpdateLcmClient.addListener(mpcControlUpdateCapture);
     mpcControlUpdateLcmClient.startSubscriptions();
     GlobalViewLcmModule globalViewLcmModule = new GlobalViewLcmModule();
-    // mpcRequestPublisher.switchToExternalStart(); // TODO start (external) process somewhere
+    // mpcRequestPublisher.switchToExternalStart(); // TODO MPC start (external) process somewhere
     globalViewLcmModule.first();
     // 44.2575 51.6983
     gokartState = new GokartState( //

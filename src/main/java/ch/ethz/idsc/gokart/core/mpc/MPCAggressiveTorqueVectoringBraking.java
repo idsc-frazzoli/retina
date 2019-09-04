@@ -25,10 +25,6 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     return StaticBrakeFunction.INSTANCE.getRelativeBrakeActuation(braking);
   }
 
-  // @Override
-  // public void setStateEstimationProvider(MPCStateEstimationProvider mpcStateEstimationProvider) {
-  // // TODO MH is this function needed at all ?
-  // }
   @Override
   public void start() {
     // ---
