@@ -19,6 +19,7 @@ import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackLcmClient;
 import ch.ethz.idsc.gokart.core.track.MPCBSplineTrackRender;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -63,6 +64,9 @@ public class GlobalViewLcmModule extends AbstractModule {
       TrajectoryLcmClient.xyat(), //
       TrajectoryLcmClient.xyavt());
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
+  private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
+      BSplineTrackLcmClient.open(), //
+      BSplineTrackLcmClient.closed());
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
@@ -132,7 +136,10 @@ public class GlobalViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
-    viewLcmFrame.geometricComponent.addRenderInterface(trackReconRender);
+    {
+      bSplineTrackLcmClients.forEach(bSplineTrackLcmClient -> bSplineTrackLcmClient.addListener(trackReconRender));
+      viewLcmFrame.geometricComponent.addRenderInterface(trackReconRender);
+    }
     {
       mpcControlUpdateLcmClient.addListener(lcmMPCPredictionRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lcmMPCPredictionRender);
@@ -174,6 +181,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
     gokartPoseLcmClient.startSubscriptions();
     mpcControlUpdateLcmClient.startSubscriptions();
+    bSplineTrackLcmClients.forEach(BSplineTrackLcmClient::startSubscriptions);
     // ---
     windowConfiguration.attach(getClass(), viewLcmFrame.jFrame);
     viewLcmFrame.jFrame.addWindowListener(new WindowAdapter() {
@@ -197,6 +205,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     linmotGetLcmClient.stopSubscriptions();
     steerColumnLcmClient.stopSubscriptions();
     curveSe2PursuitLcmClient.stopSubscriptions();
+    bSplineTrackLcmClients.forEach(BSplineTrackLcmClient::stopSubscriptions);
     // ---
     vlp16LcmHandler.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();

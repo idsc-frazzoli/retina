@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.lcm.mod;
 
 import java.nio.ByteBuffer;
+import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.track.BSplineTrack;
 import ch.ethz.idsc.gokart.core.track.BSplineTrackCyclic;
@@ -11,12 +12,20 @@ import ch.ethz.idsc.gokart.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import idsc.BinaryBlob;
 import lcm.lcm.LCM;
 
 public enum BSplineTrackLcm {
   ;
+  public static void publish(Optional<BSplineTrack> optional) {
+    if (optional.isPresent())
+      publish(optional.get());
+    else
+      LCM.getSingleton().publish(GokartLcmChannel.XYR_TRACK_OPEN, ArrayFloatBlob.encode(Tensors.empty()));
+  }
+
   /** @param bSplineTrack */
   public static void publish(BSplineTrack bSplineTrack) {
     LCM.getSingleton().publish(bSplineTrack.isClosed() //
@@ -44,9 +53,12 @@ public enum BSplineTrackLcm {
     return ArrayFloatBlob.decode(byteBuffer).map(scalar -> Quantity.of(scalar, SI.METER));
   }
 
-  public static BSplineTrack decode(String channel, ByteBuffer byteBuffer) {
-    return channel.endsWith(".c") //
-        ? new BSplineTrackCyclic(decode(byteBuffer)) //
-        : new BSplineTrackString(decode(byteBuffer));
+  public static Optional<BSplineTrack> decode(String channel, ByteBuffer byteBuffer) {
+    Tensor xyr = decode(byteBuffer);
+    if (Tensors.isEmpty(xyr))
+      return Optional.empty();
+    return Optional.of(channel.endsWith(".c") //
+        ? new BSplineTrackCyclic(xyr) //
+        : new BSplineTrackString(xyr));
   }
 }

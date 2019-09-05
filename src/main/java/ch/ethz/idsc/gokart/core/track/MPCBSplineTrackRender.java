@@ -10,7 +10,7 @@ import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 
 /** receives MPCBSplineTrack and renders lane center line and boundaries using {@link TrackRender} */
-public class MPCBSplineTrackRender implements RenderInterface, MPCBSplineTrackListener {
+public class MPCBSplineTrackRender implements RenderInterface, BSplineTrackListener, MPCBSplineTrackListener {
   private final TrackRender trackRender = new TrackRender();
 
   @Override // from RenderInterface
@@ -22,5 +22,10 @@ public class MPCBSplineTrackRender implements RenderInterface, MPCBSplineTrackLi
   public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
     TrackInterface trackInterface = optional.map(MPCBSplineTrack::bSplineTrack).orElse(null);
     trackRender.setTrack(trackInterface);
+  }
+
+  @Override // from BSplineTrackListener
+  public void bSplineTrack(Optional<BSplineTrack> optional) {
+    trackRender.setTrack(optional.orElse(null));
   }
 }
