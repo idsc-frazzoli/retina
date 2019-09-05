@@ -181,6 +181,9 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		params.all_parameters[i*pl+1] = lastParaMsg.para.maxxacc;
 		params.all_parameters[i*pl+2] = lastParaMsg.para.steeringreg;
 		params.all_parameters[i*pl+3] = lastParaMsg.para.specificmoi;
+		hinihnihnihnihnihn
+		iujoujouj
+		FIXME
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[i*pl+4+ip]=lastCRMsg.path.controlPoints[ip].pex;
 		for (int ip=0; ip<POINTSN;ip++)

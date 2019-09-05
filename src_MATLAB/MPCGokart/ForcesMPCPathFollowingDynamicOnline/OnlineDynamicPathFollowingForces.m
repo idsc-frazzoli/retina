@@ -13,9 +13,10 @@
 %add force path (change that for yourself)
 userDir = getuserdir;
 addpath([userDir '/Documents/sp/FORCES_client']); % Location of FORCES PRO
+addpath('casadi');
 addpath([userDir '/Documents/sp/casadi-matlabR2014a-v2.4.2']);
-addpath('../ForcesMPCPathFollowingDynamic');
-
+%%rmpath('/home/maximilien/Documents/sp/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic');
+%%rmpath('/home/maximilien/Documents/sp/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic/casadi');
     
 clear model
 clear problem
@@ -34,8 +35,8 @@ B2 = 5.2;
 C2 = 1.1;     
 D2 = 20;
 
-pointsO = 10;    %10 params
-pointsN = 16;    %+6 points{x,y,tau}
+pointsO = 4;    %10 params
+pointsN = 10;    %+6 points{x,y,tau}
 splinestart = 1;
 nextsplinepoints = 0;
 
@@ -68,12 +69,12 @@ index.ps = 1;     % Max x speed
 index.pax = 2;    % Max x acc
 index.pbeta = 3;  % Steering regression
 index.pmoi = 4;   % Moment of inertia
-index.pB1 = 5;    %B1 = 9;       %B1 = 15;
-index.pC1 = 6;    %C1 = 1;       %C1 = 1.1;
-index.pD1 = 7;    %D1 = 10;      %D1 = 9.4;
-index.pB2 = 8;    %B2 = 5.2;     %B2 = 5.2;
-index.pC2 = 9;    %C2 = 1.1;     %C2 = 1.4;
-index.pD2 = 10;   %D2 = 10;      %D2 = 10.4;
+index.pB1 = 4 + 3*pointsN +1;    %B1 = 9;       %B1 = 15;
+index.pC1 = 4 + 3*pointsN +2;    %C1 = 1;       %C1 = 1.1;
+index.pD1 = 4 + 3*pointsN +3;    %D1 = 10;      %D1 = 9.4;
+index.pB2 = 4 + 3*pointsN +4;    %B2 = 5.2;     %B2 = 5.2;
+index.pC2 = 4 + 3*pointsN +5;    %C2 = 1.1;     %C2 = 1.4;
+index.pD2 = 4 + 3*pointsN +6;   %D2 = 10;      %D2 = 10.4;
 
 solvetimes = [];
 integrator_stepsize = 0.1;
@@ -101,11 +102,11 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 % Random control points for trajectory sampling
 points = [36.2,52,57.2,53,52,47,41.8;...          %x
           44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
-points(:,3)=points(:,3)-0.2;
+          1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %radius
+points(:,3)=points(:,3)-0.2;                      %"safety factor for border"
 
 trajectorytimestep = integrator_stepsize;
-model.npar = pointsO + 3*pointsN;
+model.npar = pointsO + 3*pointsN + 6; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i=1:model.N
    model.objective{i} = @(z,p)objective(...
        z,...
@@ -156,7 +157,7 @@ FORCES_NLP(model, codeoptions, output); % Needed FORCES License and Casadi 2.4.2
 
 
 %% Simulator  %% TODO MCP NOT WORKING CURRENTLY
-tend = 100;
+tend = 200;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);
@@ -209,7 +210,8 @@ for i =1:tend
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     
     
-    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,C1,D1,B2,C2,D2,nextSplinePoints) , model.N ,1);
+    %%problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,C1,D1,B2,C2,D2,nextSplinePoints) , model.N ,1);
+    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,nextSplinePoints) , model.N ,1);
     problem.x0 = x0(:);
     
     % solve mpc

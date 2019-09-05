@@ -4,24 +4,29 @@
 // compile with:
 //  $ g++ -o static_sender static_sender.cpp -llcm
 
-#include "static_sender.h"
-#include <lcm/lcm.h>
+#include <lcm/lcm-cpp.hpp>
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
+
 #include "/home/maximilien/Documents/sp/retina/src_cpp/LCM/idsc/BinaryBlob.hpp"
 #include "definitions.c"
 
-lcm_t * lcm;
+
+struct PacejkaParameter pacejkaParameter;
+
+idsc::BinaryBlob blob;
+
 
 int main(int argc, char **argv){
 
     printf("start lcm static sender\n");
-
-    lcm = lcm_create(NULL);
-    if (!lcm)
-        return 1;
-
+    lcm::LCM lcm;
     printf("about to send\n");
 
-    PacejkaParameter pacejkaParameter = {
+    pacejkaParameter = {
             .B1 = 9,
             .C1 = 1,
             .D1 = 10,
@@ -30,22 +35,32 @@ int main(int argc, char **argv){
             .D2 = 20,
     };
 
-    const PacjMsg my_msg = {
-            .messageType = 1,
-            .sequenceInt = 1,
-            .pacejkaParameter = pacejkaParameter,
-    };
+    blob.data_length = sizeof(struct PacejkaParameter);
+    blob.data[0] = pacejkaParameter.B1;
+    blob.data[3] = pacejkaParameter.C1;
+    blob.data[7] = pacejkaParameter.D2;
+    blob.data[11] = pacejkaParameter.B2;
+    blob.data[15] = pacejkaParameter.C2;
+    blob.data[19] = pacejkaParameter.D2;
 
-    struct idsc_BinaryBlob blob{};
-    blob.data_length = sizeof(struct PacjMsg);
-    blob.data = (int8_t*)&my_msg;
-    printf("lcm addr: %p\n",lcm);
+
+
+    /*idsc::BinaryBlob blob {
+        .data_length = sizeof(struct PacjMsg),
+        .data = {1,2,3} // TODO MAX
+    };*/
+
+
+
+    int size = sizeof(struct PacjMsg);
+
+    std::cout << "size of PacjMsg: " <<  size << std::endl;
+    printf("lcm addr: %p\n",&lcm);
+    printf("lcm addr: %p\n","HELLO");
     printf("blob addr: %p\n",&blob);
 
-    _idsc_BinaryBlob(lcm, "mpc.forces.pacj.d", &blob);
+    lcm.publish("mpc.forces.pacj,d", &blob);
 
-
-    lcm_destroy(lcm);
 
     return 0;
 }
