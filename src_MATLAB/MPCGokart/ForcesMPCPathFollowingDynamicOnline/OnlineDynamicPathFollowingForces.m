@@ -210,8 +210,8 @@ for i =1:tend
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     
     
-    %%problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,C1,D1,B2,C2,D2,nextSplinePoints) , model.N ,1);
-    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,nextSplinePoints) , model.N ,1);
+    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,C1,D1,B2,C2,D2,nextSplinePoints) , model.N ,1);
+    %%problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,nextSplinePoints) , model.N ,1);
     problem.x0 = x0(:);
     
     % solve mpc

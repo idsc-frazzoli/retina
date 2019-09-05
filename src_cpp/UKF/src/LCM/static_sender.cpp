@@ -16,14 +16,14 @@
 
 
 struct PacejkaParameter pacejkaParameter;
-
 idsc::BinaryBlob blob;
-
 
 int main(int argc, char **argv){
 
     printf("start lcm static sender\n");
     lcm::LCM lcm;
+    if(!lcm.good())
+        return 1;
     printf("about to send\n");
 
     pacejkaParameter = {
@@ -35,32 +35,14 @@ int main(int argc, char **argv){
             .D2 = 20,
     };
 
-    blob.data_length = sizeof(struct PacejkaParameter);
-    blob.data[0] = pacejkaParameter.B1;
-    blob.data[3] = pacejkaParameter.C1;
-    blob.data[7] = pacejkaParameter.D2;
-    blob.data[11] = pacejkaParameter.B2;
-    blob.data[15] = pacejkaParameter.C2;
-    blob.data[19] = pacejkaParameter.D2;
+    blob.data_length = 6*4;
+    blob.data.resize(blob.data_length);
+    memcpy(&blob.data[0],&pacejkaParameter,6*4);
 
-
-
-    /*idsc::BinaryBlob blob {
-        .data_length = sizeof(struct PacjMsg),
-        .data = {1,2,3} // TODO MAX
-    };*/
-
-
-
-    int size = sizeof(struct PacjMsg);
-
-    std::cout << "size of PacjMsg: " <<  size << std::endl;
+    printf("size of PacjMsg: %p\n", blob.data_length);
     printf("lcm addr: %p\n",&lcm);
-    printf("lcm addr: %p\n","HELLO");
     printf("blob addr: %p\n",&blob);
 
     lcm.publish("mpc.forces.pacj,d", &blob);
-
-
     return 0;
 }
