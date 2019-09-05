@@ -136,7 +136,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 1000;
+tend = 20;
 eulersteps = 10;
 planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]

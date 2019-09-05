@@ -1,5 +1,4 @@
 function dx = interstagedx(x,u,p)
-    addpath('../TireAnalysis');
     global index
     
     %just for the moment
