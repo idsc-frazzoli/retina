@@ -1,52 +1,48 @@
 // code by jph
 package ch.ethz.idsc.gokart.core.pure;
 
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.track.BSplineTrack;
-import ch.ethz.idsc.gokart.core.track.TrackReconModule;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackLcmClient;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackListener;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 
 /** module requires the TrackReconModule to provide the center line of an identified track */
-public class CenterLinePursuitModule extends AbstractModule implements MPCBSplineTrackListener {
+public class CenterLinePursuitModule extends AbstractModule implements BSplineTrackListener {
   /** in dubendorf resolution 100 yields points approx 0.5[m] apart.
    * resolution = 200 results in a spacing of ~0.25[m] */
   private static final int RESOLUTION = 200;
   // ---
-  private final TrackReconModule trackReconModule = ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
+  private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
+      BSplineTrackLcmClient.open(), //
+      BSplineTrackLcmClient.closed());
   private final CurvePursuitModule curvePurePursuitModule = new CurvePurePursuitModule(PurePursuitConfig.GLOBAL);
 
   @Override
   protected void first() {
-    if (Objects.nonNull(trackReconModule))
-      trackReconModule.listenersAdd(this);
-    else
-      System.err.println("did not subscribe to track info !!!");
-    // ---
+    bSplineTrackLcmClients.forEach(bSplineTrackLcmClient -> bSplineTrackLcmClient.addListener(this));
+    bSplineTrackLcmClients.forEach(BSplineTrackLcmClient::startSubscriptions);
     curvePurePursuitModule.launch();
   }
 
   @Override
   protected void last() {
     curvePurePursuitModule.terminate();
-    // ---
-    if (Objects.nonNull(trackReconModule))
-      trackReconModule.listenersRemove(this);
+    bSplineTrackLcmClients.forEach(BSplineTrackLcmClient::stopSubscriptions);
   }
 
-  @Override // from MPCBSplineTrackListener
-  public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
+  @Override // from BSplineTrackListener
+  public void bSplineTrack(Optional<BSplineTrack> optional) {
     Tensor curve = null;
     boolean closed = true;
     if (optional.isPresent()) {
-      BSplineTrack bSplineTrack = optional.get().bSplineTrack();
+      BSplineTrack bSplineTrack = optional.get();
       curve = bSplineTrack.getLineMiddle(RESOLUTION).map(Magnitude.METER);
       closed = bSplineTrack.isClosed();
       System.out.println("updated curve " + Dimensions.of(curve) + " closed=" + closed);

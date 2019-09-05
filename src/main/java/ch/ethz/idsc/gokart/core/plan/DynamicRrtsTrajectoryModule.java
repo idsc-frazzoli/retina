@@ -1,33 +1,30 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.core.plan;
 
-import java.util.Objects;
 import java.util.Optional;
 
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.pure.CurvePursuitModule;
 import ch.ethz.idsc.gokart.core.track.BSplineTrack;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackLcmClient;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackListener;
 import ch.ethz.idsc.gokart.core.track.TrackLane;
-import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.owl.math.lane.LaneSegment;
 import ch.ethz.idsc.owl.math.lane.StableLanes;
 import ch.ethz.idsc.owl.rrts.core.TransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.RotateLeft;
 
 // TODO make configurable as parameter
-public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements MPCBSplineTrackListener {
+public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements BSplineTrackListener {
   private static final int RESOLUTION = 25;
   // ---
+  private final BSplineTrackLcmClient bSplineTrackLcmClient = BSplineTrackLcmClient.closed();
   private Optional<LaneInterface> trackLane = Optional.empty();
-  private TrackReconModule trackReconModule = null;
 
   public DynamicRrtsTrajectoryModule(TrajectoryConfig trajectoryConfig, //
       CurvePursuitModule curvePursuitModule, //
@@ -37,28 +34,21 @@ public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements
   }
 
   @Override // from GokartTrajectoryModule
-  public void last() {
-    if (Objects.nonNull(trackReconModule))
-      trackReconModule.listenersRemove(this);
-    super.last();
+  public void first() {
+    super.first();
+    bSplineTrackLcmClient.addListener(this);
+    bSplineTrackLcmClient.startSubscriptions();
   }
 
   @Override // from GokartTrajectoryModule
-  protected synchronized void runAlgo() {
-    TrackReconModule trackReconModule = ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
-    if (this.trackReconModule != trackReconModule) {
-      this.trackReconModule = trackReconModule;
-      if (Objects.nonNull(this.trackReconModule))
-        this.trackReconModule.listenersAdd(this);
-      else
-        trackLane = Optional.empty();
-    }
-    super.runAlgo();
+  public void last() {
+    bSplineTrackLcmClient.stopSubscriptions();
+    super.last();
   }
 
   @Override // from RrtsTrajectoryModule
   protected Optional<LaneInterface> laneSegment(Tensor state, Tensor goal) {
-    if (Objects.nonNull(trackReconModule) && trackLane.isPresent())
+    if (/* Objects.nonNull(ModuleAuto.INSTANCE.getInstance(TrackReconModule.class)) && */ trackLane.isPresent())
       return trackLane.map(laneInterface -> LaneSegment.of(laneInterface, state, goal));
     int rootIdx = locate(waypoints, state);
     Tensor shifted = RotateLeft.of(waypoints, rootIdx);
@@ -67,9 +57,8 @@ public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements
     return Optional.of(StableLanes.of(segment, Clothoid3.CURVE_SUBDIVISION::string, 3, r));
   }
 
-  @Override // from MPCBSplineTrackListener
-  public void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
-    trackLane = optional.map(MPCBSplineTrack::bSplineTrack).filter(BSplineTrack::isClosed) //
-        .map(track -> track.getTrackBoundaries(RESOLUTION)).map(TrackLane::unitless);
+  @Override // from BSplineTrackListener
+  public void bSplineTrack(Optional<BSplineTrack> optional) {
+    trackLane = optional.map(track -> track.getTrackBoundaries(RESOLUTION)).map(TrackLane::unitless);
   }
 }

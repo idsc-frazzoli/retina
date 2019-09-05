@@ -52,7 +52,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
   private final List<MPCBSplineTrackListener> listeners = new CopyOnWriteArrayList<>(); // TODO remove
-  private final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
+  private final BSplineTrackRender trackReconRender = new BSplineTrackRender();
   // private final GlobalViewLcmModule globalViewLcmModule = //
   //     ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
   // ---
@@ -70,7 +70,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     {
       timerFrame.geometricComponent.addRenderInterfaceBackground(GRID_RENDER);
       timerFrame.geometricComponent.addRenderInterface(mapping.getMap());
-      listenersAdd(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(trackReconManagement.getTrackLayoutInitialGuess());
     }
@@ -111,8 +110,8 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
 
   private void private_windowClosed() {
     mapping.stop();
-    listenersRemove(trackReconRender);
     gokartPoseLcmClient.stopSubscriptions();
+    BSplineTrackLcm.publish(Optional.empty());
     terminate();
   }
 
@@ -134,7 +133,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
           System.out.println("no start set");
       }
       // ---
-      listeners.forEach(listener -> listener.mpcBSplineTrack(lastTrack)); // TODO remove
+      trackReconRender.bSplineTrack(lastTrack.map(MPCBSplineTrack::bSplineTrack));
       BSplineTrackLcm.publish(lastTrack.map(MPCBSplineTrack::bSplineTrack));
     } else
       System.out.println("no quality pose");
@@ -167,18 +166,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   /** export track */
   private void exportTrack() {
     trackReconManagement.exportTrack();
-  }
-
-  // TODO remove
-  public void listenersAdd(MPCBSplineTrackListener mpcBSplineTrackListener) {
-    listeners.add(mpcBSplineTrackListener);
-  }
-
-  // TODO remove
-  public void listenersRemove(MPCBSplineTrackListener mpcBSplineTrackListener) {
-    boolean remove = listeners.remove(mpcBSplineTrackListener);
-    if (!remove)
-      new RuntimeException("not removed").printStackTrace();
   }
 
   public static void main(String[] args) throws Exception {

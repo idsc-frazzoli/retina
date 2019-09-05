@@ -20,7 +20,7 @@ import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.core.track.BSplineTrackLcmClient;
-import ch.ethz.idsc.gokart.core.track.MPCBSplineTrackRender;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackRender;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
@@ -73,7 +73,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
-  public final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
+  public final BSplineTrackRender trackReconRender = new BSplineTrackRender();
   private final PathRender pathRender = new PathRender(Color.YELLOW);
   private final PathRender planRender = new PathRender(Color.MAGENTA);
   private final LaneRender laneRender = new LaneRender();

@@ -22,8 +22,8 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlanLcmClient;
 import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.track.MPCBSplineTrackRender;
-import ch.ethz.idsc.gokart.core.track.TrackReconModule;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackLcmClient;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackRender;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.ManualControlLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
@@ -69,14 +69,15 @@ public class PresenterLcmModule extends AbstractModule {
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final ClothoidPlanLcmClient clothoidPlanLcmClient = new ClothoidPlanLcmClient();
+  private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
+      BSplineTrackLcmClient.open(), //
+      BSplineTrackLcmClient.closed());
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
-  private final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
+  private final BSplineTrackRender trackReconRender = new BSplineTrackRender();
   private final GokartTrajectoryModule trajectoryModule = //
       ModuleAuto.INSTANCE.getExtensions(GokartTrajectoryModule.class).findFirst().orElse(null);
-  private final TrackReconModule trackReconModule = //
-      ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
   // ---
   // private final SightLinesMapping sightLineMapping = SightLinesMapping.defaultTrack();
   // private final SightLines sightLines = SightLines.defaultGokart();
@@ -105,6 +106,7 @@ public class PresenterLcmModule extends AbstractModule {
       // timerFrame.geometricComponent.addRenderInterface(trackReconModule.trackMapping());
       // trackReconModule.listenersAdd(trackReconRender);
       // }
+      bSplineTrackLcmClients.forEach(bSplineTrackLcmClient -> bSplineTrackLcmClient.addListener(trackReconRender));
       timerFrame.geometricComponent.addRenderInterface(trackReconRender);
     }
     {
@@ -248,6 +250,7 @@ public class PresenterLcmModule extends AbstractModule {
     mpcControlUpdateLcmClient.startSubscriptions();
     curveSe2PursuitLcmClient.startSubscriptions();
     clothoidPlanLcmClient.startSubscriptions();
+    bSplineTrackLcmClients.forEach(BSplineTrackLcmClient::startSubscriptions);
     // ---
     windowConfiguration.attach(getClass(), timerFrame.jFrame);
     timerFrame.configCoordinateOffset(400, 500);
@@ -275,8 +278,6 @@ public class PresenterLcmModule extends AbstractModule {
   @Override // from AbstractModule
   protected void last() {
     timerFrame.close();
-    if (Objects.nonNull(trackReconModule))
-      trackReconModule.listenersRemove(trackReconRender);
   }
 
   private void private_windowClosed() {
@@ -293,6 +294,7 @@ public class PresenterLcmModule extends AbstractModule {
     mpcControlUpdateLcmClient.stopSubscriptions();
     curveSe2PursuitLcmClient.stopSubscriptions();
     clothoidPlanLcmClient.stopSubscriptions();
+    bSplineTrackLcmClients.forEach(BSplineTrackLcmClient::stopSubscriptions);
     // sightLines.stop();
     // sightLineMapping.stop();
   }

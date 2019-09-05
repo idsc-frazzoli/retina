@@ -17,7 +17,7 @@ import ch.ethz.idsc.gokart.core.perc.SpacialXZObstaclePredicate;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
-import ch.ethz.idsc.gokart.core.track.MPCBSplineTrackRender;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackRender;
 import ch.ethz.idsc.gokart.core.track.TrackLayoutInitialGuess;
 import ch.ethz.idsc.gokart.core.track.TrackReconConfig;
 import ch.ethz.idsc.gokart.core.track.TrackReconManagement;
@@ -42,7 +42,7 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
   private final BayesianOccupancyGrid bayesianOccupancyGridThic;
   private final BayesianOccupancyGrid bayesianOccupancyGridThin;
   public final TrackReconManagement trackReconManagement;
-  private final MPCBSplineTrackRender mpcBSplineTrackRender = new MPCBSplineTrackRender();
+  private final BSplineTrackRender mpcBSplineTrackRender = new BSplineTrackRender();
   private final TrackLayoutInitialGuess trackLayoutInitialGuess;
   private final PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
   private final BufferedImage bufferedImage = new BufferedImage(640, 640, BufferedImage.TYPE_INT_ARGB);
@@ -81,7 +81,7 @@ public abstract class TrackReconOffline extends LidarProcessOffline implements C
       if (count++ > 1) {
         // TODO JPH more elegant
         Optional<MPCBSplineTrack> optional = trackReconManagement.update(gokartPoseEvent.getPose());
-        mpcBSplineTrackRender.mpcBSplineTrack(optional);
+        mpcBSplineTrackRender.bSplineTrack(optional.map(MPCBSplineTrack::bSplineTrack));
       }
       double zoom = 2;
       GeometricLayer geometricLayer = GeometricLayer.of(Tensors.matrix(new Number[][] { //
