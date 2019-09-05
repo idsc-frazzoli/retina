@@ -52,7 +52,14 @@ double timeTolerance = 1;
 OnlineMPCPathFollowing_float lastSolution [S*N];
 struct ControlRequestMsg lastCRMsg;
 struct ParaMsg lastParaMsg;
-struct PacejkaParameter lastPacjMsg;
+struct PacejkaParameter lastPacjMsg{
+        .B1 = 9,
+        .C1 = 1,
+        .D1 = 10,
+        .B2 = 5.2,
+        .C2 = 1.1,
+        .D2 = 20,
+        };
 
 extern void OnlineMPCPathFollowing_casadi2forces(OnlineMPCPathFollowing_float* x, OnlineMPCPathFollowing_float* y, OnlineMPCPathFollowing_float* lambda, OnlineMPCPathFollowing_float* params, OnlineMPCPathFollowing_float* pobj, OnlineMPCPathFollowing_float* g, OnlineMPCPathFollowing_float* c, OnlineMPCPathFollowing_float* Jeq, OnlineMPCPathFollowing_float* h, OnlineMPCPathFollowing_float* Jineq, OnlineMPCPathFollowing_float* H, solver_int32_default stage, solver_int32_default iterations);
 
@@ -273,7 +280,7 @@ int main(int argc, char *argv[]) {
     idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs.d", &state_handler, NULL);
     idsc_BinaryBlob_subscribe(lcm, "mpc.forces.op.d", &para_handler, NULL);
 	printf("starting main loop\n");
-	while(1) //TODO MCP find cleaner way
+	while(1)
 		lcm_handle(lcm);
 	
 	lcm_destroy(lcm);
