@@ -2,7 +2,8 @@
 package ch.ethz.idsc.gokart.dev.linmot;
 
 /** NTI AG / LinMot, User Manual Motion Control SW / 07.04.2017
- * Page 14/132 */
+ * Page 14/132
+ * https://polybox.ethz.ch/index.php/s/74ZoAvDCO9sauTA */
 public enum LinmotStateVarMain {
   /** Not Ready To Switch On */
   NOT_READY, //
