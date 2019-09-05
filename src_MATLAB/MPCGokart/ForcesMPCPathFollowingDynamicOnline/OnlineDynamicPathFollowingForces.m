@@ -4,19 +4,22 @@
 % code by mh
 % annotation and adaptation for online estimation by mcp
 %
-% This script take about 10 min to create and compile 
+% This script take about 1 minute to compile and 10 minutes to run the
+% simulation
+%
+% Reference for nomenclature: https://www.embotech.com/wp-content/uploads/FORCESPro.pdf
 
 
 %add force path (change that for yourself)
-addpath('..');
 userDir = getuserdir;
-addpath([userDir '/Forces']); % Location of FORCES PRO
+addpath([userDir '/Documents/sp/FORCES_client']); % Location of FORCES PRO
 addpath('casadi');
-
+addpath([userDir '/Documents/sp/casadi-matlabR2014a-v2.4.2']);
+%%rmpath('/home/maximilien/Documents/sp/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic');
+%%rmpath('/home/maximilien/Documents/sp/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic/casadi');
     
 clear model
 clear problem
-clear all
 close all
 
 %% Baseline params
@@ -25,15 +28,23 @@ maxSpeed = 10; % in [m/s]
 maxxacc = 5; % in [m/s^-1]
 steeringreg = 0.02;  
 specificmoi = 0.3;
-pointsO = 4;
-pointsN = 10;
+B1 = 9;  
+C1 = 1;     
+D1 = 10;   
+B2 = 5.2;
+C2 = 1.1;     
+D2 = 20;
+
+pointsO = 4;    %10 params
+pointsN = 10;    %+6 points{x,y,tau}
 splinestart = 1;
 nextsplinepoints = 0;
 
-
-
+  
 %% global parameters index
 global index
+
+% state index
 index.dotab = 1;
 index.dotbeta = 2;
 index.ds = 3;
@@ -47,51 +58,55 @@ index.v = 10;
 index.yv = 11;
 index.ab = 12;
 index.beta = 13;
-index.s = 14;
-index.ns = 9;
-index.nu = 5;
-index.nv = index.ns+index.nu;   % = 14
+index.s = 14;                   
+index.ns = 9;                   % Number of States
+index.nu = 5;                   % Number of Inputs
+index.nv = index.ns+index.nu;   % =14 Number of Variables
 index.sb = index.nu+1;          % = 6
-index.ps = 1;
-index.pax = 2;
-index.pbeta = 3;
-index.pmoi = 4;
+
+% parameter index
+index.ps = 1;     % Max x speed
+index.pax = 2;    % Max x acc
+index.pbeta = 3;  % Steering regression
+index.pmoi = 4;   % Moment of inertia
+index.pB1 = 4 + 3*pointsN +1;    %B1 = 9;       %B1 = 15;
+index.pC1 = 4 + 3*pointsN +2;    %C1 = 1;       %C1 = 1.1;
+index.pD1 = 4 + 3*pointsN +3;    %D1 = 10;      %D1 = 9.4;
+index.pB2 = 4 + 3*pointsN +4;    %B2 = 5.2;     %B2 = 5.2;
+index.pC2 = 4 + 3*pointsN +5;    %C2 = 1.1;     %C2 = 1.4;
+index.pD2 = 4 + 3*pointsN +6;   %D2 = 10;      %D2 = 10.4;
 
 solvetimes = [];
-
 integrator_stepsize = 0.1;
 
 %% model params
 model.N = 31;
-model.nvar = index.nv;
-model.neq = index.ns;
+model.nvar = index.nv; % 14
+model.neq = index.ns;  % 9
 model.eq = @(z,p) RK4( ...
     z(index.sb:end), ...
     z(1:index.nu), ...
-    @(x,u,p)interstagedx(x,u,p), ... %PACEJKA PARAMETERS
+    @(x,u,p)interstagedx(x,u,p), ... 
     integrator_stepsize,...
     p);
+
 model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 
-l = 1;
-
 %limit lateral acceleration
-model.nh = 5; 
-model.ineq = @(z,p) nlconst(z,p);
-model.hu = [0;0;1;0;0];
+model.nh = 5;                                   % number of inequalities
+model.ineq = @(z,p) nlconst(z,p);               % inequalities
+model.hu = [0;0;1;0;0];                         % hl <= h(z) <= hu
 model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 
 % Random control points for trajectory sampling
 points = [36.2,52,57.2,53,52,47,41.8;...          %x
           44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
-points(:,3)=points(:,3)-0.2;
-
-
+          1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %radius
+points(:,3)=points(:,3)-0.2;                      %"safety factor for border"
 
 trajectorytimestep = integrator_stepsize;
-model.npar = pointsO + 3*pointsN;
+model.npar = pointsO + 3*pointsN + 6; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i=1:model.N
    model.objective{i} = @(z,p)objective(...
        z,...
@@ -102,7 +117,11 @@ for i=1:model.N
        p(index.pbeta));
 end
 
+
+% Inital conditions
 model.xinitidx = index.sb:index.nv;
+
+% Nonlinear inequalites hl <= h(z) <= hu
 model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
 model.ub(index.ds)=5;
@@ -131,11 +150,16 @@ codeoptions.timing = 1;
 
 output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
+
 FORCES_NLP(model, codeoptions, output); % Needed FORCES License and Casadi 2.4.2 or above
 
-tend = 1000;
+
+
+
+%% Simulator  %% TODO MCP NOT WORKING CURRENTLY
+tend = 200;
 eulersteps = 10;
-planintervall = 1
+planintervall = 1;
 fpoints = points(1:2,1:2);
 pdir = diff(fpoints);
 [pstartx,pstarty] = casadiDynamicBSPLINE(0.01,points);
@@ -158,7 +182,7 @@ planc = 10;
 x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
 tstart = 1;
 for i =1:tend
-    tstart = i;
+    tstart = i
 
     %find bspline
     if(1)
@@ -186,7 +210,8 @@ for i =1:tend
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     
     
-    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints) , model.N ,1);
+    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,C1,D1,B2,C2,D2,nextSplinePoints) , model.N ,1);
+    %%problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,nextSplinePoints) , model.N ,1);
     problem.x0 = x0(:);
     
     % solve mpc
@@ -221,5 +246,4 @@ end
 
 %[t,ab,dotbeta,x,y,theta,v,beta,s]
 
-% draw %%TODO MH ttpos undefined
-
+draw 

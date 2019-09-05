@@ -21,6 +21,13 @@ add_executable(
         src/ModelMPC/modelDx.cpp
         src/ModelMPC/modelDx.h
         src/ModelMPC/StaticTester.cpp
-        src/ModelMPC/StaticTester.h src/ModelMPC/LogTester.cpp src/ModelMPC/LogTester.h)
+        src/ModelMPC/StaticTester.h
+        src/ModelMPC/LogTester.cpp
+        src/ModelMPC/LogTester.h
+        src/PacejkaUKF/PacejkaUKFinterface.cpp
+        src/PacejkaUKF/PacejkaUKFinterface.h
+        src/LCM/static_sender.cpp
+        src/LCM/static_sender.h
+        src/LCM/BinaryBlob.hpp)
 
 target_link_libraries (UKF Eigen3::Eigen)

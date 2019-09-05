@@ -92,8 +92,9 @@ private:
 
         // Update
         JacobiHMat jacobiHMat = jacobiH(x);
+        // TODO MCP Measurement noise are also taken into account as Jacobian (see Recursive Estimation Skript on HybridEKF)
         CrossCorellationMat K =
-                Pk * jacobiHMat.transpose() * (jacobiHMat * Pk * jacobiHMat.transpose() + measurementNoise).inverse();
+                Pk * jacobiHMat.transpose() * (jacobiHMat * Pk * jacobiHMat.transpose() + /** here **/ measurementNoise).inverse();
 
         ParameterVec x_pred = xk + K * (zMes - measureFunction(xk));
         ParameterMat P_pred = (ParameterMat::Identity() - K * jacobiHMat) * P;
