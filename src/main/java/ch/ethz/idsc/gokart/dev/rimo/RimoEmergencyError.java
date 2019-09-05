@@ -2,7 +2,8 @@
 package ch.ethz.idsc.gokart.dev.rimo;
 
 /** EA_12_001_e_06_13_ACD_Controller_Setting Up V1_5
- * page 27-28, Table 2 */
+ * page 27-28, Table 2
+ * https://polybox.ethz.ch/index.php/s/qmQghKQqa3IXwUZ */
 public enum RimoEmergencyError {
   /** Current, Voltage and Temperature Errors */
   AC_CURRENT_OVER_CURRENT(0x2310), //

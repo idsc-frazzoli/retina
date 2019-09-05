@@ -13,7 +13,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** LabjackAdcFrame holds an arbitrary number of ADC readings
  * 
- * immutable */
+ * immutable
+ * 
+ * code is tested with device Labjack U3
+ * Reference: "U3 Datasheet"
+ * https://polybox.ethz.ch/index.php/s/ewooaNkYdmM3EdQ */
 public final class LabjackAdcFrame extends DataEvent implements Serializable {
   private final float[] array;
 
