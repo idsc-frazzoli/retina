@@ -11,7 +11,7 @@
 
 #include "MPCPathFollowing/include/MPCPathFollowing.h"
 #include <lcm/lcm.h>
-#include "idsc_BinaryBlob.c"
+#include "../../../src_c/idsc/idsc_BinaryBlob.c"
 #include "definitions.c"
 #include "helperFunctions.c"
 #include <unistd.h>
