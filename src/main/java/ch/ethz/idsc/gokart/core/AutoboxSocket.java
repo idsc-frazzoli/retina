@@ -32,7 +32,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
  * fe80::9eeb:e8ff:fe14:3edb/64 Scope:Link UP BROADCAST RUNNING MULTICAST
  * MTU:1500 Metric:1 RX packets:466380 errors:0 dropped:0 overruns:0 frame:0 TX
  * packets:233412 errors:0 dropped:0 overruns:0 carrier:0 collisions:0
- * txqueuelen:1000 RX bytes:643249464 (643.2 MB) TX bytes:17275914 (17.2 MB) */
+ * txqueuelen:1000 RX bytes:643249464 (643.2 MB) TX bytes:17275914 (17.2 MB)
+ * 
+ * Reference: Datasheet of MicroAutoBox
+ * https://polybox.ethz.ch/index.php/s/SSi23V6Bo50iRw9 */
 public abstract class AutoboxSocket<GE extends DataEvent, PE extends DataEvent> implements StartAndStoppable {
   private final DatagramSocketManager datagramSocketManager;
   private final List<GetListener<GE>> getListeners = new CopyOnWriteArrayList<>();

@@ -12,6 +12,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.VectorQ;
+import ch.ethz.idsc.tensor.mat.Det;
 import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
 import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.NormalDistribution;
@@ -83,5 +84,11 @@ public class SensorsConfigTest extends TestCase {
       Tensor inv = fromPolar.apply(tensor);
       Chop._12.requireClose(xyz, inv);
     }
+  }
+
+  public void testVlp16Geometry() {
+    Sign.requirePositive(SensorsConfig.GLOBAL.vlp16_poseX_inMeter());
+    Tensor vlp16_sideMatrix = SensorsConfig.GLOBAL.vlp16_sideMatrix();
+    Chop._12.requireClose(Det.of(vlp16_sideMatrix), RealScalar.ONE);
   }
 }

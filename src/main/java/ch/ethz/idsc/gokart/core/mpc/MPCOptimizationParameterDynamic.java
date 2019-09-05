@@ -21,6 +21,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   /** moment of inertia (over mass) with unit "m" */
   private final Scalar specificMoI;
 
+  /** @param byteBuffer from which 4 * 4 == 16 bytes are read */
   public MPCOptimizationParameterDynamic(ByteBuffer byteBuffer) {
     speedLimit = Quantity.of(byteBuffer.getFloat(), SI.VELOCITY);
     xAccLimit = Quantity.of(byteBuffer.getFloat(), SI.ACCELERATION);

@@ -38,6 +38,8 @@ import ch.ethz.idsc.tensor.Tensors;
    * with the horizontal plane at height of the lidar */
   protected Tensor points_ferry = null;
 
+  /** @param spacialXZObstaclePredicate
+   * @param waitMillis */
   /* package */ AbstractLidarMapping(SpacialXZObstaclePredicate spacialXZObstaclePredicate, int waitMillis) {
     this.spacialXZObstaclePredicate = spacialXZObstaclePredicate;
     this.waitMillis = waitMillis;

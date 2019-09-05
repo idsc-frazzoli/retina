@@ -10,7 +10,7 @@ import ch.ethz.idsc.retina.davis._240c.DavisApsEvent;
 /** conceptual sequence aps 1151355 ( 194, 177) 563 aps 1151355 ( 194, 178) 538
  * aps 1151355 ( 194, 179) 538 aps 1151435 ( 195, 0) 612 aps 1151435 ( 195, 1)
  * 615 aps 1151435 ( 195, 2) 618 */
-// TODO code is not sufficiently generic due to the magic const
+// LONGTERM code is not sufficiently generic due to the magic const
 public class DavisApsColumnCompiler implements DavisApsListener {
   static final int LAST_Y = 179;
   static final int LENGTH = 4 + 180;

@@ -1,21 +1,21 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
 /** the session counts messages according to their IDs */
 /* package */ class MPCNativeSession {
-  private final Map<Integer, Integer> messageCounter = new HashMap<>();
+  private final Map<MessageType, Integer> map = new EnumMap<>(MessageType.class);
 
-  /** gets a unique ID for any object that inherits MPCNative */
-  int getMessageId(MPCNativeMessage mpcNativeMessage) {
-    int prefix = mpcNativeMessage.getMessageType().ordinal();
-    Integer current = messageCounter.get(prefix);
+  /** @param messageType
+   * @return unique ID for given messageType starting at 0 */
+  int nextMessageId(MessageType messageType) {
+    Integer current = map.get(messageType);
     if (Objects.isNull(current))
       current = 0;
-    messageCounter.put(prefix, current + 1);
+    map.put(messageType, current + 1);
     return current;
   }
 }

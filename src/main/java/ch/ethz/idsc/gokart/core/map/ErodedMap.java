@@ -49,12 +49,12 @@ import ch.ethz.idsc.tensor.Tensors;
     imageGraphics.fillRect(0, 0, obstacleImage.getWidth(), obstacleImage.getHeight());
     // ---
     if (Scalars.lessEquals(obsDilationRadius, cellDim))
-      // FIXME GJOEL/JPH very inefficient, does it make sense at all
+      // FIXME JPH very inefficient, does it make sense at all
       imageGrid.cells() //
           .filter(imageGrid::isCellOccupied) //
           .forEach(cell -> imagePixels[cellToIdx(cell)] = MASK_OCCUPIED);
     else {
-      // FIXME GJOEL/JPH draw and read on same object?! -> document
+      // FIXME JPH draw and read on same object?! -> document
       imageGraphics.setColor(COLOR_OCCUPIED);
       imageGrid.cells() //
           .filter(imageGrid::isCellOccupied).forEach(cell -> {

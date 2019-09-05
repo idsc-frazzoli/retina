@@ -3,29 +3,21 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.util.data.BufferInsertable;
-
-// TODO MH/JPH similar to MPCOptimizationParameterMessageKinematic 
-/* package */ class MPCOptimizationParameterMessageDynamic extends MPCNativeMessage {
-  private final MPCOptimizationParameter mpcOptimizationParameter;
-
-  public MPCOptimizationParameterMessageDynamic(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
+/* package */ class MPCOptimizationParameterMessageDynamic extends MPCOptimizationParameterMessage {
+  public MPCOptimizationParameterMessageDynamic( //
+      MPCNativeSession mpcNativeSession, //
+      MPCOptimizationParameterDynamic mpcOptimizationParameterDynamic) {
     super(mpcNativeSession);
-    this.mpcOptimizationParameter = mpcOptimizationParameter;
+    mpcOptimizationParameter = mpcOptimizationParameterDynamic;
   }
 
   public MPCOptimizationParameterMessageDynamic(ByteBuffer byteBuffer) {
-    super(byteBuffer);
+    super(byteBuffer); // constructor reads 8 bytes from byte buffer
     mpcOptimizationParameter = new MPCOptimizationParameterDynamic(byteBuffer);
   }
 
   @Override // from MPCNativeMessage
   MessageType getMessageType() {
     return MessageType.OPTIMIZATION_PARAMETER_DYNAMIC;
-  }
-
-  @Override // from MPCNativeMessage
-  BufferInsertable getPayload() {
-    return mpcOptimizationParameter;
   }
 }

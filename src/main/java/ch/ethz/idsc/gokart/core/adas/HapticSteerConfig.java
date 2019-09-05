@@ -40,7 +40,6 @@ public class HapticSteerConfig implements Serializable {
   public Scalar laneKeepingFactor = Quantity.of(-10.0, "SCT*SCE^-1");
   /** torque limit */
   public Scalar laneKeepingTorqueLimit = Quantity.of(0.8, "SCT");
-  public Boolean printLaneInfo = false;
   /** lane boundaries */
   public Scalar halfWidth = Quantity.of(0.5, SI.METER);
   /** planning period */
@@ -56,7 +55,7 @@ public class HapticSteerConfig implements Serializable {
   /***************************************************/
   // functions for lane keeping
   /** @return */
-  public Clip laneKeepingTorqueClip() {
+  /* package */ Clip laneKeepingTorqueClip() {
     return Clips.absolute(laneKeepingTorqueLimit);
   }
 

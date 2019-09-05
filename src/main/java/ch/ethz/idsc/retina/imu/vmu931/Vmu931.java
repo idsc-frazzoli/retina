@@ -14,7 +14,8 @@ import ch.ethz.idsc.retina.util.tty.SerialPorts;
 /** based on the document
  * Inertial Measurement Unit VMU931
  * User Guide
- * Version 1.3, March 2018, Variense inc. */
+ * Version 1.3, March 2018, Variense inc.
+ * https://polybox.ethz.ch/index.php/s/J6kOEoy7D4zBCbf */
 // TODO JPH prevent reissuing calibration or self-test while calibration or self-test is going on
 public class Vmu931 implements Runnable {
   private static final long SLEEP_MS_SHORT = 1;

@@ -43,8 +43,8 @@ run
 ### in the tab "cfg"
 
 activate the modules by enabling the toggle-buttons
-* Autobox Introspection
-* Autobox Compact
+* `Vmu931 Lcm Server`
+* `Ignition Module`
 
 *Info:* the Autobox Introspection module shows which module is commanding the actuators. The window can remain open throughout the operation of the gokart.
 
@@ -62,31 +62,28 @@ deactivate toggle-button "Autobox Compact"
 
 Confirm: all 4 fields in the Introspection window are gray and display "...PutFallback"
 
-### in the tab "joy" (only if driving by joystick)
-
-activate the module `JoystickGroupModule`
-
-Confirm: all the fields in the Introspection window are green except for "Misc"
-
-The gokart is now controllable by joystick.
-
-## Autonomous mode (pure pursuit trajectory following)
-### in the tab "cfg"
-
 activate
-* Global View Lcm
+* `Global View Lcm`
 
 Drag and rotate the live-map to almost match the preloaded one 
 
 Once the the maps almost overlap, click in sequence:
-* 1 set
-* 2 snap
-* 3 set
-* 4 track
+* 1 snap (until the lidar aligns with the map)
+* 2 track
 
-Leave the `Global View Lcm` open during operations
+`Global View Lcm` may be closed at this point
 
+### in the tab "joy" (only if driving by joystick)
+
+activate the modules `Predictive Torque Vectoring` and `Power Steering`.
+
+Confirm: all the fields in the Introspection window are green except for "Misc"
+
+The gokart is now controllable by the driver.
+
+## Autonomous mode (pure pursuit trajectory following)
 ### in the lab "aut"
+
 Activate the `pure pursuit`
 
 Now the go-kart is ready to operate in autonomous mode pressing A on the joystick

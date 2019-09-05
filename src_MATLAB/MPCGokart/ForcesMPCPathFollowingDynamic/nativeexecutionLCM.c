@@ -11,9 +11,9 @@
 
 #include "MPCPathFollowing/include/MPCPathFollowing.h"
 #include <lcm/lcm.h>
-#include "idsc_BinaryBlob.c"
-#include "definitions.c"
-#include "helperFunctions.c"
+#include "../../../src_c/idsc/idsc_BinaryBlob.c"
+#include "../shared_dynamic/c/definitions.c"
+#include "../shared_dynamic/c/helperFunctions.c"
 #include <unistd.h>
 
 //[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
@@ -228,7 +228,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		//printf("lcm addr: %p\n",lcm);
 		//printf("blob addr: %p\n",&blob);
 		//printf("sleep...");	
-		//usleep(80000);
+		//usleep(50000);
 		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
 			printf("published message: %lu\n",sizeof(struct ControlAndStateMsg));
 		else

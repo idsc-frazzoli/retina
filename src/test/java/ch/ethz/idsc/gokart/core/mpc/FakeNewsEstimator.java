@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import ch.ethz.idsc.tensor.io.Timing;
 
+/** class name inspired by politics */
 /* package */ class FakeNewsEstimator extends MPCStateEstimationProvider {
   protected FakeNewsEstimator(Timing timing) {
     super(timing);

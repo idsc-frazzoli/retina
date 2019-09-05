@@ -14,7 +14,8 @@ import idsc.BinaryBlob;
     return new MPCRequestPublisher("") {
       @Override // from MPCRequestPublisher
       BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
-        return new MPCOptimizationParameterMessageKinematic(mpcOptimizationParameter, mpcNativeSession);
+        return new MPCOptimizationParameterMessageKinematic( //
+            mpcNativeSession, (MPCOptimizationParameterKinematic) mpcOptimizationParameter);
       }
     };
   }
@@ -23,7 +24,8 @@ import idsc.BinaryBlob;
     return new MPCRequestPublisher(".d") {
       @Override // from MPCRequestPublisher
       BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
-        return new MPCOptimizationParameterMessageDynamic(mpcOptimizationParameter, mpcNativeSession);
+        return new MPCOptimizationParameterMessageDynamic( //
+            mpcNativeSession, (MPCOptimizationParameterDynamic) mpcOptimizationParameter);
       }
     };
   }

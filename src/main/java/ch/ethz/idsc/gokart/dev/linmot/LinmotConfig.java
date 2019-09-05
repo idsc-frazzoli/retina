@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldIntegerQ;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
@@ -38,6 +39,7 @@ public class LinmotConfig {
    * to be conservative, we assume a deceleration of -4.3[m*s^-2] */
   public final Scalar maxDeceleration = Quantity.of(-4.3, SI.ACCELERATION);
   /** steps defines the number of levels at which to test the brake */
+  @FieldIntegerQ
   public Scalar pressTestSteps = RealScalar.of(20);
   /** duration used in LinmotPressModule for calibration purpose */
   public Scalar pressTestDuration = Quantity.of(2.5, SI.SECOND);

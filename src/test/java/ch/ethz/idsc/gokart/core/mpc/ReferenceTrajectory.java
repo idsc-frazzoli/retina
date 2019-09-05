@@ -28,7 +28,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     MPCControlUpdateCapture mpcControlUpdateCapture = new MPCControlUpdateCapture();
     mpcControlUpdateLcmClient.addListener(mpcControlUpdateCapture);
     mpcControlUpdateLcmClient.startSubscriptions();
-    // mpcRequestPublisher.switchToExternalStart(); // TODO manage (external) process somewhere
+    // mpcRequestPublisher.switchToExternalStart(); // TODO MPC manage (external) process somewhere
     GokartState gokartState;
     Tensor pose = track.getStartPose();
     // 44.2575 51.6983
@@ -78,7 +78,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       } else
         System.err.println("lastcns null");
     }
-    // mpcRequestPublisher.stop(); // TODO manage (external) process somewhere
+    // mpcRequestPublisher.stop();
     return positions;
   }
 }

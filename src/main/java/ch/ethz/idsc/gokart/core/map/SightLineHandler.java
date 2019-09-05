@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.core.map;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
@@ -29,7 +30,7 @@ import ch.ethz.idsc.tensor.opt.TensorUnaryOperator;
    * @return Collection</Tensor> of closest points per azimuth in pointsPolar_ferry */
   public static Collection<Tensor> getClosestPoints( //
       Tensor points, SpacialXZObstaclePredicate predicate, BlindSpots blindSpots) {
-    TreeMap<Scalar, Tensor> freeSpace = new TreeMap<>();
+    Map<Scalar, Tensor> freeSpace = new TreeMap<>();
     if (Objects.nonNull(points))
       for (Tensor point : points) { // point azimuth, elevation, radius
         Scalar azimuth = point.Get(0);

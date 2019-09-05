@@ -72,9 +72,41 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 ### 2019
 
 * Michael von Büren (MT): simulation of gokart dynamics
-* Joel Gächter (MT): precise mapping, [clothoid pursuit](https://www.youtube.com/watch?v=nF43WfSGdls)
+* Joel Gächter (MT): precise mapping, clothoid pursuit
 * Antonia Mosberger (BT): power steering, anti-lock braking, lane keeping
 * Maximilien Picquet (SP): Pacejka parameter estimation using unscented Kalman filter
+
+
+## Gallery Rendering
+
+<table>
+<tr>
+<td>
+
+![velocity](https://user-images.githubusercontent.com/4012178/64156621-70a59880-ce35-11e9-8981-c33aa2149934.png)
+
+[Doughnuts](https://www.youtube.com/watch?v=DRjB3XNt4Vo)
+
+<td>
+
+![clothoid_pursuit](https://user-images.githubusercontent.com/4012178/64125542-9a65ad80-cdaa-11e9-9140-babb094e49b3.png)
+
+[Clothoid pursuit](https://www.youtube.com/watch?v=nF43WfSGdls)
+
+<td>
+
+![lane_keeping](https://user-images.githubusercontent.com/4012178/64124789-478af680-cda8-11e9-8d7a-55e739436138.png)
+
+[Lane keeping](https://www.youtube.com/watch?v=8L-lCSk10ig)
+
+<td>
+
+![mpc_lidar](https://user-images.githubusercontent.com/4012178/64124647-d0edf900-cda7-11e9-90ee-8363865adfa7.png)
+
+[MPC](https://www.youtube.com/watch?v=TZH3MWjp6PE)
+
+</tr>
+</table>
 
 ## Gallery Manual Driving
 
@@ -90,7 +122,7 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 
 ![doughnuts](https://user-images.githubusercontent.com/4012178/60753913-c5fe2e80-9fd9-11e9-9aa9-af307331b246.jpg)
 
-[Doughnuts](https://www.youtube.com/watch?v=zcBImlS0sE4), [pc view](https://www.youtube.com/watch?v=DRjB3XNt4Vo)
+[Doughnuts](https://www.youtube.com/watch?v=zcBImlS0sE4)
 
 </tr>
 </table>

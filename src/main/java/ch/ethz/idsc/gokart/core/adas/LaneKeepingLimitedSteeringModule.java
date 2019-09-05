@@ -65,12 +65,8 @@ public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModul
   Optional<SteerPutEvent> putEvent(SteerColumnInterface steerColumnInterface, SteerGetEvent steerGetEvent, Optional<Clip> optional) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar tsu = steerGetEvent.tsuTrq();
-    if (HapticSteerConfig.GLOBAL.printLaneInfo)
-      System.out.println("currAngle: " + currAngle);
     if (optional.isPresent()) {
       Clip permittedRange = optional.get();
-      if (HapticSteerConfig.GLOBAL.printLaneInfo)
-        System.out.println("permittedRange: " + permittedRange);
       final Scalar putTorque = HapticSteerConfig.GLOBAL.laneKeeping(currAngle.subtract(permittedRange.apply(currAngle)));
       System.out.println("putTorque: " + putTorque);
       final Scalar powerSteer = powerSteering.torque(currAngle, velocity, tsu);

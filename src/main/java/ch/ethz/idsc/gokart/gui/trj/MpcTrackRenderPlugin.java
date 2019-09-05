@@ -31,7 +31,7 @@ import ch.ethz.idsc.tensor.Tensors;
     private final PathRender pathRender = new PathRender(new Color(128, 128, 128), 1.5f);
 
     private MpcTrackRender(Tensor points_xy) {
-      // TODO code redundant to TrackRefinement
+      // TODO JPH code redundant to TrackRefinement
       boolean cyclic = true;
       int resolution = 8;
       final int n = points_xy.length();

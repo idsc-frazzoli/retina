@@ -18,7 +18,10 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   public final Scalar cubic = Quantity.of(-0.9281077083540995, "SCT*SCE^-3");
 
   /***************************************************/
-  /** TODO "function returns needed torque to compensate restoring force of steering"
+  /** function returns needed torque to compensate restoring force of steering.
+   * 
+   * In the power steering module, the return value contributes (by addition) to
+   * the total torque.
    * 
    * @return function that maps quantities with unit "SCE" to quantities with unit "SCT" */
   public ScalarUnaryOperator series() {

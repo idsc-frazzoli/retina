@@ -41,7 +41,6 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
   private final SteerMapping steerMapping = SteerConfig.GLOBAL.getSteerMapping();
   private final CurveClothoidPursuitPlanner curvePlannerL;
   private final CurveClothoidPursuitPlanner curvePlannerR;
-  private SteerConfig steerConfig = new SteerConfig();
   // ---
   public GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   public Optional<Tensor> optionalCurve = Optional.empty();
@@ -146,43 +145,21 @@ public class LaneKeepingCenterlineModule extends AbstractClockedModule implement
    * @param pose
    * @return clip values with unit "SCE" */
   Optional<Clip> getPermittedRange(Tensor curve, Tensor pose) {
-    // TODO AM/JPH perhaps choose different default/fallback values:
-    Scalar steerlimitL_SCE = Quantity.of(0, "SCE");
-    Scalar steerlimitR_SCE = Quantity.of(0, "SCE");
     if (1 < curve.length()) {
-      if (HapticSteerConfig.GLOBAL.printLaneInfo)
-        System.out.println("ifloop entered :)");
-      Optional<ClothoidPlan> optionalL = //
-          curvePlannerL.getPlan(pose, velocity, laneBoundaryL, true);
-      Optional<ClothoidPlan> optionalR = //
-          curvePlannerR.getPlan(pose, velocity, laneBoundaryR, true);
-      if (HapticSteerConfig.GLOBAL.printLaneInfo)
-        System.out.println(optionalL);
-      Clip ratioLimitClip = steerConfig.getRatioLimit(); // TODO JPH/AM clip obsolete
-      if (optionalL.isPresent()) {
-        Scalar steerlimitLratio = ratioLimitClip.apply(optionalL.get().ratio());
-        steerlimitL_SCE = steerMapping.getSCEfromRatio(steerlimitLratio);
-        if (HapticSteerConfig.GLOBAL.printLaneInfo)
-          System.out.println("Limit L: " + steerlimitL_SCE);
-      }
-      if (optionalR.isPresent()) {
-        Scalar steerlimitRratio = ratioLimitClip.apply(optionalR.get().ratio());
-        steerlimitR_SCE = steerMapping.getSCEfromRatio(steerlimitRratio);
-        if (HapticSteerConfig.GLOBAL.printLaneInfo)
-          System.out.println("Limit R: " + steerlimitR_SCE);
-      }
-      if (optionalL.isPresent() && optionalR.isPresent()) {
+      Optional<ClothoidPlan> optionalL = curvePlannerL.getPlan(pose, velocity, laneBoundaryL, true);
+      Optional<ClothoidPlan> optionalR = curvePlannerR.getPlan(pose, velocity, laneBoundaryR, true);
+      if (optionalL.isPresent() && //
+          optionalR.isPresent()) {
+        Scalar steerlimitL_SCE = steerMapping.getSCEfromRatio(optionalL.get().ratio());
+        Scalar steerlimitR_SCE = steerMapping.getSCEfromRatio(optionalR.get().ratio());
         try {
           return Optional.of(Clips.interval(steerlimitR_SCE, steerlimitL_SCE));
-        } catch (Exception e) {
-          System.out.println("bad clip");
+        } catch (Exception exception) {
+          System.err.println("bad clip " + steerlimitR_SCE + " " + steerlimitL_SCE);
         }
       }
     }
-    if (HapticSteerConfig.GLOBAL.printLaneInfo) {
-      System.out.println("no steer limit found");
-      System.out.println("ifloop not entered :(");
-    }
+    System.err.println("no steer limit found");
     return Optional.empty();
   }
 
