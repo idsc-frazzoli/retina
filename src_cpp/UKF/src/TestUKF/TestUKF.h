@@ -4,6 +4,9 @@
 
 #include "../UnscentedKalmanFilter.h"
 
+#define NP 10
+#define NM 1
+#define NI 1000
 
 class TestUKF {
 public:

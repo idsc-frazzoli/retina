@@ -5,4 +5,5 @@ CMakeCache.txt
 Makefile
 cmake_install.cmake
 paramsUKF.csv
+src/LCM/static_sender
 
