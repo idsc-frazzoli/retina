@@ -1,9 +1,9 @@
 %add force path (change that for yourself)
-addpath('..');
+addpath('../..');
 userDir = getuserdir;
 addpath([userDir '/Forces']);
 addpath('casadi');
-
+addpath('../../shared_dynamic')
     
 clear model
 clear problem
@@ -105,8 +105,8 @@ model.xinitidx = index.sb:index.nv;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
-model.ub(index.dotbeta)=5;
-model.lb(index.dotbeta)=-5;
+%model.ub(index.dotbeta)=5;
+%model.lb(index.dotbeta)=-5;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
 %model.ub(index.ab)=2;
@@ -136,9 +136,9 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 1000;
+tend = 0;
 eulersteps = 10;
-planintervall = 1;
+planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]
 %[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
 fpoints = points(1:2,1:2);

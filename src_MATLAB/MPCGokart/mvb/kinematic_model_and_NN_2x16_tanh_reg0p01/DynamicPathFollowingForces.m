@@ -1,9 +1,9 @@
 %add force path (change that for yourself)
-addpath('..');
+addpath('../..');
 userDir = getuserdir;
 addpath([userDir '/Forces']);
 addpath('casadi');
-addpath('../shared_dynamic')
+addpath('../../shared_dynamic')
     
 clear model
 clear problem
