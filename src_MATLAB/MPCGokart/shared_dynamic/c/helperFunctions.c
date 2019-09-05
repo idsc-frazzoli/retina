@@ -1,4 +1,3 @@
-#include "MPCPathFollowing/include/MPCPathFollowing.h"
 
 MPCPathFollowing_float cp(MPCPathFollowing_float v){
 	double cp0 = 1.9173276271;
