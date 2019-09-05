@@ -30,6 +30,8 @@ public enum GokartLcmChannel {
   public static final String PURSUIT_CURVE_SE2 = "pursuit.curve.se2";
   public static final String PURSUIT_PLAN = "pursuit.plan";
   // ---
+  public static final String XYR_TRACK_OPEN = "track.xyr.o";
+  public static final String XYR_TRACK_CLOSED = "track.xyr.c";
   public static final String MPC_FORCES_CNS = "mpc.forces.cns";
   // ---
   /** for debugging of rimo rate controller */
