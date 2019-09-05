@@ -52,7 +52,7 @@ double timeTolerance = 1;
 OnlineMPCPathFollowing_float lastSolution [S*N];
 struct ControlRequestMsg lastCRMsg;
 struct ParaMsg lastParaMsg;
-struct PacjMsg lastPacjMsg;
+struct PacejkaParameter lastPacjMsg;
 
 extern void OnlineMPCPathFollowing_casadi2forces(OnlineMPCPathFollowing_float* x, OnlineMPCPathFollowing_float* y, OnlineMPCPathFollowing_float* lambda, OnlineMPCPathFollowing_float* params, OnlineMPCPathFollowing_float* pobj, OnlineMPCPathFollowing_float* g, OnlineMPCPathFollowing_float* c, OnlineMPCPathFollowing_float* Jeq, OnlineMPCPathFollowing_float* h, OnlineMPCPathFollowing_float* Jineq, OnlineMPCPathFollowing_float* H, solver_int32_default stage, solver_int32_default iterations);
 
@@ -103,16 +103,13 @@ static void pacj_handler(const lcm_recv_buf_t *rbuf,
         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
 
     printf("received online parameter message\n");
-    /*
     memcpy((int8_t*)&lastPacjMsg, msg->data, msg->data_length);
-    printf("B1: %f\n",lastPacjMsg.pacejkaParameter.B1);
-    printf("C1: %f\n",lastPacjMsg.pacejkaParameter.C1);
-    printf("D1: %f\n",lastPacjMsg.pacejkaParameter.D1);
-    printf("B2: %f\n",lastPacjMsg.pacejkaParameter.B2);
-    printf("C2: %f\n",lastPacjMsg.pacejkaParameter.C2);
-    printf("D2: %f\n",lastPacjMsg.pacejkaParameter.D2);
-    printf("Cf: %f\n",lastPacjMsg.pacejkaParameter.Cf);
-    */
+    printf("B1: %f\n",lastPacjMsg.B1);
+    printf("C1: %f\n",lastPacjMsg.C1);
+    printf("D1: %f\n",lastPacjMsg.D1);
+    printf("B2: %f\n",lastPacjMsg.B2);
+    printf("C2: %f\n",lastPacjMsg.C2);
+    printf("D2: %f\n",lastPacjMsg.D2);
 
 }
 
@@ -181,16 +178,20 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		params.all_parameters[i*pl+1] = lastParaMsg.para.maxxacc;
 		params.all_parameters[i*pl+2] = lastParaMsg.para.steeringreg;
 		params.all_parameters[i*pl+3] = lastParaMsg.para.specificmoi;
-		hinihnihnihnihnihn
-		iujoujouj
-		FIXME
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[i*pl+4+ip]=lastCRMsg.path.controlPoints[ip].pex;
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[i*pl+4+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[i*pl+4+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
-	}
+        params.all_parameters[i*pl+3*POINTSN+4 + 1] = lastPacjMsg.B1;
+        params.all_parameters[i*pl+3*POINTSN+4 + 2] = lastPacjMsg.C1;
+        params.all_parameters[i*pl+3*POINTSN+4 + 3] = lastPacjMsg.D1;
+        params.all_parameters[i*pl+3*POINTSN+4 + 4] = lastPacjMsg.B1;
+        params.all_parameters[i*pl+3*POINTSN+4 + 5] = lastPacjMsg.C1;
+        params.all_parameters[i*pl+3*POINTSN+4 + 6] = lastPacjMsg.D1;
+
+    }
 	
 	//assume that this works
 	//for(int i = 0; i<31*20+1;i++)
@@ -268,9 +269,9 @@ int main(int argc, char *argv[]) {
 		return 1;
 	
 	printf("about to subscribe\n");
-	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs.d", &state_handler, NULL);
+	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.pacj.d", &pacj_handler, NULL);
+    idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs.d", &state_handler, NULL);
     idsc_BinaryBlob_subscribe(lcm, "mpc.forces.op.d", &para_handler, NULL);
-    idsc_BinaryBlob_subscribe(lcm, "mpc.forces.pacj.d", &pacj_handler, NULL);
 	printf("starting main loop\n");
 	while(1) //TODO MCP find cleaner way
 		lcm_handle(lcm);
