@@ -15,7 +15,8 @@ import ch.ethz.idsc.retina.lidar.VelodyneStatics;
  * intensity, etc.
  * 
  * implementation based on instructions in:
- * 63-9243 Rev B User Manual and Programming Guide,VLP-16.pdf */
+ * 63-9243 Rev B User Manual and Programming Guide,VLP-16.pdf
+ * https://polybox.ethz.ch/index.php/s/gyywm0eVtZAKPh9 */
 public class Vlp16Decoder implements VelodyneDecoder {
   private static final int FIRINGS = 12;
   private static final byte DUAL = 0x39;
