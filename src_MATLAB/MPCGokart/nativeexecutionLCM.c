@@ -9,11 +9,10 @@
 #include <byteswap.h>
 #include <math.h>
 
-#include "MPCPathFollowing/include/MPCPathFollowing.h"
 #include <lcm/lcm.h>
-#include "../../../src_c/idsc/idsc_BinaryBlob.c"
-#include "../shared_dynamic/c/definitions.c"
-#include "../shared_dynamic/c/helperFunctions.c"
+#include "../../src_c/idsc/idsc_BinaryBlob.c"
+#include "shared_dynamic/c/definitions.c"
+#include "shared_dynamic/c/helperFunctions.c"
 #include <unistd.h>
 
 //[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]

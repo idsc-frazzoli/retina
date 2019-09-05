@@ -1,16 +1,8 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Dynamic MPC Script
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% code by mh
-% annotation mcp
-
-
 %add force path (change that for yourself)
 addpath('..');
 userDir = getuserdir;
-addpath([userDir '/Forces']); % Location of FORCES PRO
+addpath([userDir '/Forces']);
 addpath('casadi');
-addpath('../shared_dynamic')
 
     
 clear model
@@ -18,11 +10,9 @@ clear problem
 clear all
 close all
 
-%% Baseline params
-
-maxSpeed = 10; % in [m/s]
-maxxacc = 5; % in [m/s^-1]
-steeringreg = 0.02;  
+maxSpeed = 10;
+maxxacc = 5;
+steeringreg = 0.02;
 specificmoi = 0.3;
 pointsO = 4;
 pointsN = 10;
@@ -31,9 +21,6 @@ nextsplinepoints = 0;
 %parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
 % variables z =
 % [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
-
-
-%% global parameters index
 global index
 index.dotab = 1;
 index.dotbeta = 2;
@@ -51,8 +38,8 @@ index.beta = 13;
 index.s = 14;
 index.ns = 9;
 index.nu = 5;
-index.nv = index.ns+index.nu;   % = 14
-index.sb = index.nu+1;          % = 6
+index.nv = index.ns+index.nu;
+index.sb = index.nu+1;
 index.ps = 1;
 index.pax = 2;
 index.pbeta = 3;
@@ -62,16 +49,11 @@ solvetimes = [];
 
 integrator_stepsize = 0.1;
 
-%% model params
-model.N = 31;                       % Forward horizon
-model.nvar = index.nv;              % = 14
-model.neq = index.ns;               % = 9
-model.eq = @(z,p) RK4( ...
-    z(index.sb:end), ...
-    z(1:index.nu), ...
-    @(x,u,p)interstagedx(x,u,p), ... %PACEJKA PARAMETERS
-    integrator_stepsize,...
-    p);
+model.N = 31;
+model.nvar = index.nv;
+model.neq = index.ns;
+
+model.eq = @(z,p) RK4( z(index.sb:end), z(1:index.nu), @(x,u,p)interstagedx(x,u,p), integrator_stepsize,p);
 model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 
 l = 1;
@@ -84,8 +66,6 @@ model.ineq = @(z,p) nlconst(z,p);
 model.hu = [0;0;1;0;0];
 model.hl = [-inf;-inf;-inf;-inf;-inf];
 
-
-% Random control points for trajectory sampling
 %points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
   %  controlPointsX.append(Quantity.of(36.2, SI.METER));
   %  controlPointsX.append(Quantity.of(52, SI.METER));
@@ -101,23 +81,18 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
   %  controlPointsY.append(Quantity.of(49, SI.METER));
   %  controlPointsY.append(Quantity.of(47, SI.METER));
   %  controlPointsY.append(Quantity.of(43, SI.METER));
-  %  controlPointsY.append(Quantity.of(38.333, SI.METER));  
-points = [36.2,52,57.2,53,52,47,41.8;...          %x
-          44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
+  %  controlPointsY.append(Quantity.of(38.333, SI.METER));
+    
+points = [36.2,52,57.2,53,52,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.5,0.5,0.5,1.8]';
 %points = getPoints('/wildpoints.csv');
 points(:,3)=points(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
 %points = [0,40,40,5,0;0,0,10,9,10]';
-
-
-
 trajectorytimestep = integrator_stepsize;
 %[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 model.npar = pointsO + 3*pointsN;
 for i=1:model.N
-   model.objective{i} = @(z,p)objective(...
-       z,...
+   model.objective{i} = @(z,p)objective(z,...
        getPointsFromParameters(p, pointsO, pointsN),...
        getRadiiFromParameters(p, pointsO, pointsN),...
        p(index.ps),...
@@ -130,8 +105,8 @@ model.xinitidx = index.sb:index.nv;
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
-%model.ub(index.dotbeta)=5;
-%model.lb(index.dotbeta)=-5;
+model.ub(index.dotbeta)=5;
+model.lb(index.dotbeta)=-5;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
 %model.ub(index.ab)=2;
@@ -150,11 +125,7 @@ model.lb(index.s)=0;
 
 %model.ub = [inf, +5, 1.6, +inf, +inf, +inf, +inf,0.45,pointsN-2,85];  % simple upper bounds 
 %model.lb = [-inf, -5, -0.1, -inf, -inf,  -inf, 0,-0.45,0,-inf];  % simple lower bounds 
-
-
-
-%% CodeOptions for FORCES solver
-codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
+codeoptions = getOptions('MPCPathFollowing');
 codeoptions.maxit = 200;    % Maximum number of iterations
 codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
@@ -163,11 +134,11 @@ codeoptions.timing = 1;
 
 output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
-FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
+FORCES_NLP(model, codeoptions,output);
 
-tend = 20;
+tend = 1000;
 eulersteps = 10;
-planintervall = 1
+planintervall = 1;
 %[...,x,y,theta,v,ab,beta,s,braketemp]
 %[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
 fpoints = points(1:2,1:2);
@@ -235,6 +206,7 @@ for i =1:tend
     %problem.x0 = rand(341,1);
     
     % solve mpc
+
     [output,exitflag,info] = MPCPathFollowing(problem);
     solvetimes(end+1)=info.solvetime;
     if(exitflag==0)
