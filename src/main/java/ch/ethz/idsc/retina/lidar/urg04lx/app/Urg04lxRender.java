@@ -24,6 +24,7 @@ import ch.ethz.idsc.retina.lidar.urg04lx.Urg04lxDevice;
 import ch.ethz.idsc.retina.lidar.urg04lx.Urg04lxRangeEvent;
 import ch.ethz.idsc.retina.lidar.urg04lx.Urg04lxRangeListener;
 import ch.ethz.idsc.retina.util.math.ParametricResample;
+import ch.ethz.idsc.sophus.lie.rn.RnCurveDecimation;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -33,7 +34,6 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Array;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.alg.Transpose;
-import ch.ethz.idsc.tensor.opt.RamerDouglasPeucker;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Cos;
@@ -44,7 +44,7 @@ import ch.ethz.idsc.tensor.sca.Sin;
 public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListener {
   /** points closer than 2[cm] == 0.02[m] are discarded */
   public static final Scalar THRESHOLD = RealScalar.of(0.02); // [m]
-  public static final Scalar RAMERDOUGLASPEUKER = RealScalar.of(0.05); // 5[cm] == 0.05[m]
+  public static final Scalar EPS = RealScalar.of(0.05); // 5[cm] == 0.05[m]
   /** red color in directions where no trusted information is available */
   private static final Color BLIND_SPOT = new Color(230, 30, 30, 64);
   private static final int INDEX_LAST = Urg04lxDevice.MAX_POINTS - 1;
@@ -123,7 +123,7 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
         // ---
         graphics.setColor(new Color(0, 128 + 64, 128, 64));
         try {
-          Tensor path = RamerDouglasPeucker.of(RAMERDOUGLASPEUKER).apply(contour);
+          Tensor path = RnCurveDecimation.of(2, EPS).apply(contour);
           graphics.draw(polygonToPath(path, this::toPoint));
         } catch (Exception exception) {
           System.err.println("nono");

@@ -22,6 +22,7 @@ import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.rrts.LaneRrtsPlannerServer;
 import ch.ethz.idsc.owl.rrts.RrtsNodeCollections;
+import ch.ethz.idsc.owl.rrts.adapter.LengthCostFunction;
 import ch.ethz.idsc.owl.rrts.adapter.SampledTransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.adapter.TransitionRegionQueryUnion;
 import ch.ethz.idsc.owl.rrts.core.RrtsNodeCollection;
@@ -68,7 +69,9 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
       transitionRegionQueries.addAll(this.transitionRegionQueries);
       TransitionRegionQuery transitionRegionQuery = TransitionRegionQueryUnion.wrap(transitionRegionQueries);
       LaneRrtsPlannerServer laneRrtsPlannerServer = //
-          new LaneRrtsPlannerServer(transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, trajectoryConfig.greedy) {
+          new LaneRrtsPlannerServer( //
+              transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, //
+              LengthCostFunction.INSTANCE, trajectoryConfig.greedy) {
             @Override
             protected RrtsNodeCollection rrtsNodeCollection() {
               Scalar r_2 = r.multiply(RationalScalar.HALF);
