@@ -11,10 +11,10 @@
 
 
 %add force path (change that for yourself)
-userDir = getuserdir;
-addpath([userDir '/Documents/sp/FORCES_client']); % Location of FORCES PRO
-addpath('casadi');
-addpath([userDir '/Documents/sp/casadi-matlabR2014a-v2.4.2']);
+% userDir = getuserdir;
+% % addpath([userDir '/Documents/sp/FORCES_client']); % Location of FORCES PRO
+% addpath('casadi');
+% addpath([userDir '/Documents/sp/casadi-matlabR2014a-v2.4.2']);
 %%rmpath('/home/maximilien/Documents/sp/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic');
 %%rmpath('/home/maximilien/Documents/sp/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic/casadi');
 addpath('..');

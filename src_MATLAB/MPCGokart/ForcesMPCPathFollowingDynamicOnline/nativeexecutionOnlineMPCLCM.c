@@ -178,8 +178,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	for(int i = 0; i<N;i++){
 	    int offset = i*pl;
 		params.all_parameters[offset] = lastParaMsg.para.speedLimit;
-		params.all_parameters[offset] = lastParaMsg.para.maxxacc;
-		params.all_parameters[offset] = lastParaMsg.para.steeringreg;
+		params.all_parameters[offset+1] = lastParaMsg.para.maxxacc;
+		params.all_parameters[offset+2] = lastParaMsg.para.steeringreg;
 		params.all_parameters[offset+3] = lastParaMsg.para.specificmoi;
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[offset+4+ip]=lastCRMsg.path.controlPoints[ip].pex;
@@ -187,12 +187,12 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			params.all_parameters[offset+4+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[offset+4+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
-		params.all_parameters[offset+4+3*POINTSN+1] = lastPacjMsg.B1;
+		params.all_parameters[offset+4+3*POINTSN+0] = lastPacjMsg.B1;
 	}
 	
 	//assume that this works
 	for(int i = 0; i<N*(4+POINTSN*3+1);i++)
-		printf("i=%d: %f\n",i,params.all_parameters[i]);
+		printf("param i=%d: %f\n",i,params.all_parameters[i]);
 
 	memcpy(params.x0, lastSolution,sizeof(OnlineMPCPathFollowing_float)*S*N);
 	// TODO MH fix for 2PI wrap around problem: change initial guess according

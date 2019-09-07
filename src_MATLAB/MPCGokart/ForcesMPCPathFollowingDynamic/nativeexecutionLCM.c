@@ -169,7 +169,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}
 	
 	//assume that this works
-	for(int i = 0; i<31*20+1;i++)
+	for(int i = 0; i<N*pl;i++)
 		printf("i=%d: %f\n",i,params.all_parameters[i]);
 
 	memcpy(params.x0, lastSolution,sizeof(MPCPathFollowing_float)*S*N);
