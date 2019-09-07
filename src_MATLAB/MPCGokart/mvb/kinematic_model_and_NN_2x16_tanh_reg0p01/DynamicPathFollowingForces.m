@@ -1,9 +1,9 @@
 %add force path (change that for yourself)
-addpath('..');
+addpath('../..');
 userDir = getuserdir;
 addpath([userDir '/Forces']);
 addpath('casadi');
-addpath('../shared_dynamic')
+addpath('../../shared_dynamic')
     
 clear model
 clear problem
@@ -136,7 +136,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output);
 
-tend = 0;
+tend = 100;
 eulersteps = 10;
 planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]
