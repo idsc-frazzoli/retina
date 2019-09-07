@@ -99,8 +99,7 @@ public class FollowingError implements ErrorInterface {
       return Optional.of("following error (" + this.getClass().getSimpleName() + ")\n" + //
           "\ttime:\t" + Round._2.apply(startTime) + " - " + Round._2.apply(endTime) + "\n" + //
           report);
-    else
-      return Optional.empty();
+    return Optional.empty();
   }
 
   public Tensor errors() {

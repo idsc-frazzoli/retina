@@ -47,6 +47,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
           Sign.isPositiveOrZero(speed.Get(0))).map(ClothoidPlan::ratio);
     }
 
+    @Override
     public Scalar lookAhead() {
       return Quantity.of(3.5, SI.METER);
     }

@@ -8,10 +8,12 @@ import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidTransitionSpace;
 import ch.ethz.idsc.owl.bot.se2.rrts.TransitionCurvatureQuery;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.Scalar;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class PureRrtsTrajectoryModule extends DynamicRrtsTrajectoryModule {
   private static final Scalar TURNING_RATIO_MAX = Magnitude.PER_METER.apply(ClothoidPursuitConfig.GLOBAL.turningRatioMax);
 
+  // ---
   public PureRrtsTrajectoryModule() {
     this(TrajectoryConfig.GLOBAL);
   }
@@ -20,6 +22,6 @@ public class PureRrtsTrajectoryModule extends DynamicRrtsTrajectoryModule {
     super(trajectoryConfig, //
         new CurvePurePursuitModule(PurePursuitConfig.GLOBAL), //
         ClothoidTransitionSpace.INSTANCE, //
-        new TransitionCurvatureQuery(TURNING_RATIO_MAX));
+        new TransitionCurvatureQuery(Clips.absolute(TURNING_RATIO_MAX)));
   }
 }

@@ -6,6 +6,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.VectorQ;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.MappedInterpolation;
+import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -20,7 +21,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   public VectorSignal(Tensor vector, Scalar width) {
     VectorQ.require(vector);
     Mod mod = Mod.function(vector.length());
-    interpolation = MappedInterpolation.of(vector, tensor -> mod.of(tensor.divide(width)));
+    interpolation = MappedInterpolation.of(vector, tensor -> Floor.of(mod.of(tensor.divide(width))));
   }
 
   @Override // from ScalarUnaryOperator
