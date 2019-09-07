@@ -169,8 +169,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}
 	
 	//assume that this works
-	//for(int i = 0; i<31*20+1;i++)
-	//	printf("i=%d: %f\n",i,params.all_parameters[i]);
+	for(int i = 0; i<31*20+1;i++)
+		printf("i=%d: %f\n",i,params.all_parameters[i]);
 
 	memcpy(params.x0, lastSolution,sizeof(MPCPathFollowing_float)*S*N);
 	// TODO MH fix for 2PI wrap around problem: change initial guess according
