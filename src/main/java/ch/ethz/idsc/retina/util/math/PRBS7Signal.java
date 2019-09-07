@@ -3,6 +3,7 @@ package ch.ethz.idsc.retina.util.math;
 
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.opt.MappedInterpolation;
+import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -13,6 +14,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
   /** @param width of single bit */
   public static ScalarUnaryOperator create(Scalar width) {
-    return MappedInterpolation.of(PRBS7.sequence(), tensor -> MOD.of(tensor.divide(width)))::At;
+    return MappedInterpolation.of(PRBS7.sequence(), tensor -> Floor.of(MOD.of(tensor.divide(width))))::At;
   }
 }

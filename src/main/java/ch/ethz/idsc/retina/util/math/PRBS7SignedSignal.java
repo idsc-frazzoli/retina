@@ -5,6 +5,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.opt.MappedInterpolation;
+import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -17,7 +18,7 @@ public enum PRBS7SignedSignal {
   /** @param width of single bit */
   public static ScalarUnaryOperator of(Scalar width) {
     Tensor vector = PRBS7.sequence().map(PRBS7SignedSignal::zeroToMinusOne);
-    return MappedInterpolation.of(vector, tensor -> MOD.of(tensor.divide(width)))::At;
+    return MappedInterpolation.of(vector, tensor -> Floor.of(MOD.of(tensor.divide(width))))::At;
   }
 
   private static Scalar zeroToMinusOne(Scalar bit) {
