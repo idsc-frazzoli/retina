@@ -13,4 +13,5 @@ OnlineMPCPathFollowing_py.py
 OnlineMPCPathFollowing_simulinkBlock.mexa64
 OnlineMPCPathFollowing_simulinkBlockcompact.mexa64
 stdout_temp
+nativeOnlineMPCLCM
 
