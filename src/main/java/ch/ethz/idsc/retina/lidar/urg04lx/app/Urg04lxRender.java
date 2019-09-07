@@ -123,7 +123,7 @@ public class Urg04lxRender implements Urg04lxRangeListener, LidarRayBlockListene
         // ---
         graphics.setColor(new Color(0, 128 + 64, 128, 64));
         try {
-          Tensor path = RnCurveDecimation.of(2, EPS).apply(contour);
+          Tensor path = RnCurveDecimation.of(EPS).apply(contour);
           graphics.draw(polygonToPath(path, this::toPoint));
         } catch (Exception exception) {
           System.err.println("nono");
