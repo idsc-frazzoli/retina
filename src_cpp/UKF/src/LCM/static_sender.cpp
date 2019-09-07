@@ -11,7 +11,7 @@
 #include <condition_variable>
 
 
-#include "/home/maximilien/Documents/sp/retina/src_cpp/LCM/idsc/BinaryBlob.hpp"
+#include "../retina/src_cpp/LCM/idsc/BinaryBlob.hpp"
 #include "definitions.c"
 
 
