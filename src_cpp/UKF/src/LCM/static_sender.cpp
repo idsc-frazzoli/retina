@@ -11,7 +11,7 @@
 #include <condition_variable>
 
 
-#include "../retina/src_cpp/LCM/idsc/BinaryBlob.hpp"
+#include "../../LCM/idsc/BinaryBlob.hpp"
 #include "definitions.c"
 
 
@@ -42,6 +42,6 @@ int main(int argc, char **argv){
     printf("lcm addr: %p\n",&lcm);
     printf("blob addr: %p\n",&blob);
 
-    lcm.publish("mpc.forces.pacj,d", &blob);
+    lcm.publish("mpc.forces.pacj.d", &blob);
     return 0;
 }
