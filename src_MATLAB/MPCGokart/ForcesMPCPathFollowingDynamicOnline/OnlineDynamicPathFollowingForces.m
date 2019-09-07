@@ -35,9 +35,9 @@ specificmoi = 0.3;
 B1 = 9;  
 C1 = 1;     
 D1 = 10;   
-B2 = 9 %5.2;
-C2 = 1 %1.1;     
-D2 = 10 %20;
+B2 = 5.2;
+C2 = 1.1;     
+D2 = 20;
 
 pointsO = 4;    %10 params
 pointsN = 10;    %+6 points{x,y,tau}
@@ -74,11 +74,11 @@ index.pax = 2;    % Max x acc
 index.pbeta = 3;  % Steering regression
 index.pmoi = 4;   % Moment of inertia
 index.pB1 = 4 + 3*pointsN +1;    %B1 = 9;       %B1 = 15;
-% index.pC1 = 4 + 3*pointsN +2;    %C1 = 1;       %C1 = 1.1;
-% index.pD1 = 4 + 3*pointsN +3;    %D1 = 10;      %D1 = 9.4;
-% index.pB2 = 4 + 3*pointsN +4;    %B2 = 5.2;     %B2 = 5.2;
-% index.pC2 = 4 + 3*pointsN +5;    %C2 = 1.1;     %C2 = 1.4;
-% index.pD2 = 4 + 3*pointsN +6;   %D2 = 10;      %D2 = 10.4;
+index.pC1 = 4 + 3*pointsN +2;    %C1 = 1;       %C1 = 1.1;
+index.pD1 = 4 + 3*pointsN +3;    %D1 = 10;      %D1 = 9.4;
+index.pB2 = 4 + 3*pointsN +4;    %B2 = 5.2;     %B2 = 5.2;
+index.pC2 = 4 + 3*pointsN +5;    %C2 = 1.1;     %C2 = 1.4;
+index.pD2 = 4 + 3*pointsN +6;   %D2 = 10;      %D2 = 10.4;
 
 solvetimes = [];
 integrator_stepsize = 0.1;
@@ -110,7 +110,7 @@ points = [36.2,52,57.2,53,52,47,41.8;...          %x
 points(:,3)=points(:,3)-0.2;                      %"safety factor for border"
 
 trajectorytimestep = integrator_stepsize;
-model.npar = pointsO + 3*pointsN + 1; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+model.npar = pointsO + 3*pointsN + 6; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i=1:model.N
    model.objective{i} = @(z,p)objective(...
        z,...
@@ -214,8 +214,8 @@ for i =1:tend
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     
     
-    %problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,C1,D1,B2,C2,D2,nextSplinePoints) , model.N ,1);
-    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,nextSplinePoints) , model.N ,1);
+    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,C1,D1,B2,C2,D2,nextSplinePoints) , model.N ,1);
+    %problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,nextSplinePoints) , model.N ,1);
     problem.x0 = x0(:);
     
     % solve mpc

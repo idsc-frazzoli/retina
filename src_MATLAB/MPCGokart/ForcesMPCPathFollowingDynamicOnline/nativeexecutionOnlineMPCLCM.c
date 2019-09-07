@@ -172,7 +172,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}*/
 
 	//gather parameter data
-	int pl = 3*POINTSN+4 + 1;
+	int pl = 3*POINTSN+4 + 6;
 	
 	printf("parameters\n");
 	for(int i = 0; i<N;i++){
@@ -187,11 +187,16 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			params.all_parameters[offset+4+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[offset+4+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
-		params.all_parameters[offset+4+3*POINTSN+0] = lastPacjMsg.B1;
+		params.all_parameters[offset+4+3*POINTSN+0] = lastPacjMsg.B1; 
+        params.all_parameters[offset+4+3*POINTSN+1] = lastPacjMsg.C1;
+        params.all_parameters[offset+4+3*POINTSN+2] = lastPacjMsg.D1;
+        params.all_parameters[offset+4+3*POINTSN+3] = lastPacjMsg.B2;        
+        params.all_parameters[offset+4+3*POINTSN+4] = lastPacjMsg.C2;        
+        params.all_parameters[offset+4+3*POINTSN+5] = lastPacjMsg.D2;
 	}
 	
 	//assume that this works
-	for(int i = 0; i<N*(4+POINTSN*3+1);i++)
+	for(int i = 0; i<N*(4+POINTSN*3+6);i++)
 		printf("param i=%d: %f\n",i,params.all_parameters[i]);
 
 	memcpy(params.x0, lastSolution,sizeof(OnlineMPCPathFollowing_float)*S*N);
