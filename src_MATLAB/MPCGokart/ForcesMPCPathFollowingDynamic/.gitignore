@@ -13,5 +13,6 @@ MPCPathFollowing_py.py
 MPCPathFollowing_simulinkBlock.mexa64
 MPCPathFollowing_simulinkBlockcompact.mexa64
 nativeMPCLCM
+nativeLCMtest
 stdout_temp
 
