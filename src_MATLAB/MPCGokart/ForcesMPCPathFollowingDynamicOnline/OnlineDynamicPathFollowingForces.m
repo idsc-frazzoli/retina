@@ -17,6 +17,10 @@ addpath('casadi');
 addpath([userDir '/Documents/sp/casadi-matlabR2014a-v2.4.2']);
 %%rmpath('/home/maximilien/Documents/sp/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic');
 %%rmpath('/home/maximilien/Documents/sp/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic/casadi');
+addpath('..');
+userDir = getuserdir;
+addpath([userDir '/Forces']);
+addpath('casadi');
     
 clear model
 clear problem

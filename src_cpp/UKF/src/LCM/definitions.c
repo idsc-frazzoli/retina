@@ -82,9 +82,3 @@ struct PacejkaParameter {
     float C2;
     float D2;
 };
-
-struct PacjMsg{
-    int messageType;
-    int sequenceInt;
-    struct PacejkaParameter pacejkaParameter;
-};

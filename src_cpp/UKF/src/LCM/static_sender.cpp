@@ -11,7 +11,7 @@
 #include <condition_variable>
 
 
-#include "/home/maximilien/Documents/sp/retina/src_cpp/LCM/idsc/BinaryBlob.hpp"
+#include "../retina/src_cpp/LCM/idsc/BinaryBlob.hpp"
 #include "definitions.c"
 
 
@@ -39,7 +39,6 @@ int main(int argc, char **argv){
     blob.data.resize(blob.data_length);
     memcpy(&blob.data[0],&pacejkaParameter,6*4);
 
-    printf("size of PacjMsg: %p\n", blob.data_length);
     printf("lcm addr: %p\n",&lcm);
     printf("blob addr: %p\n",&blob);
 
