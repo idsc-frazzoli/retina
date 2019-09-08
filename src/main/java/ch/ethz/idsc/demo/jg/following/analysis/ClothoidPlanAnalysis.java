@@ -16,7 +16,7 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
-import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
+import ch.ethz.idsc.sophus.crv.clothoid.Clothoids;
 import ch.ethz.idsc.sophus.math.Extract2D;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -51,7 +51,7 @@ import ch.ethz.idsc.tensor.sca.N;
       // test estimate
       estimationErrors.append(se2Error(clothoidPlan.curve().get(0), gokartPose));
       // test following
-      Tensor refined = Nest.of(Clothoid3.CURVE_SUBDIVISION::string, clothoidPlan.curve(), 5);
+      Tensor refined = Nest.of(Clothoids.CURVE_SUBDIVISION::string, clothoidPlan.curve(), 5);
       followingError = pose -> {
         int idx = ArgMin.of(Tensor.of(refined.stream().map(pose::subtract).map(Extract2D.FUNCTION).map(Norm._2::ofVector)));
         return se2Error(refined.get(idx), pose);

@@ -24,6 +24,6 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
   @Override
   public Scalar apply(Scalar y) {
-    return Chop._10.apply(Roots.of(Tensors.of(y.negate(), b, RealScalar.ZERO, d)).Get(2));
+    return Chop._10.apply(Roots.of(Tensors.of(y.negate(), b, RealScalar.ZERO, d)).Get(1));
   }
 }

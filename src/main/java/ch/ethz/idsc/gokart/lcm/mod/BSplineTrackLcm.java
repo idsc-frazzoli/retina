@@ -29,8 +29,8 @@ public enum BSplineTrackLcm {
   /** @param bSplineTrack */
   public static void publish(BSplineTrack bSplineTrack) {
     LCM.getSingleton().publish(bSplineTrack.isClosed() //
-          ? GokartLcmChannel.XYR_TRACK_CLOSED //
-          : GokartLcmChannel.XYR_TRACK_OPEN, //
+            ? GokartLcmChannel.XYR_TRACK_CLOSED //
+            : GokartLcmChannel.XYR_TRACK_OPEN, //
         encode(bSplineTrack));
   }
 

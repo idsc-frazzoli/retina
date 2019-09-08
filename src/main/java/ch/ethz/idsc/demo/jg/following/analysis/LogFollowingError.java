@@ -13,7 +13,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
-import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
+import ch.ethz.idsc.sophus.crv.clothoid.Clothoids;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.red.Nest;
@@ -31,7 +31,7 @@ import ch.ethz.idsc.tensor.red.Nest;
     // curve following
     if (channel.equals(GokartLcmChannel.PURSUIT_CURVE_SE2)) {
       Tensor reference = Se2CurveLcm.decode(byteBuffer);
-      Tensor refined = Nest.of(Clothoid3.CURVE_SUBDIVISION::cyclic, reference, 5); // better error approximation
+      Tensor refined = Nest.of(Clothoids.CURVE_SUBDIVISION::cyclic, reference, 5); // better error approximation
       setReference(refined);
     }
   }

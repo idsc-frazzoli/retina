@@ -3,9 +3,7 @@ package ch.ethz.idsc.gokart.core.track;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
@@ -15,7 +13,6 @@ import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
@@ -51,7 +48,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final TrackReconManagement trackReconManagement;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
-  private final List<MPCBSplineTrackListener> listeners = new CopyOnWriteArrayList<>(); // TODO remove
   private final BSplineTrackRender trackReconRender = new BSplineTrackRender();
   // private final GlobalViewLcmModule globalViewLcmModule = //
   //     ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
