@@ -1,7 +1,5 @@
 function [ACCX,ACCY,ACCROTZ] = kinematic_model_2x16_tanh_reg0p0001(VELX,VELY,VELROTZ,BETA,AB,TV,param)
-    c = 1.19/tan(BETA);
-
-    VELROTZ_T = VELX/c;
+    VELROTZ_T = VELX*tan(BETA)/1.19;
     k = 2.2;
 
     dVELROTZ = k * (VELROTZ_T - VELROTZ);
