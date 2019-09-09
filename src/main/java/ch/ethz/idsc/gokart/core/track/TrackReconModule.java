@@ -23,6 +23,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
+import ch.ethz.idsc.gokart.lcm.mod.BSplineTrackLcm;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.GridRender;
@@ -123,6 +124,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       globalViewLcmModule.trackReconRender.mpcBSplineTrack(Optional.empty());
     }
     gokartPoseLcmClient.stopSubscriptions();
+    BSplineTrackLcm.publish(Optional.empty());
     terminate();
   }
 
@@ -145,6 +147,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       }
       // ---
       listeners.forEach(listener -> listener.mpcBSplineTrack(lastTrack));
+      BSplineTrackLcm.publish(lastTrack.map(MPCBSplineTrack::bSplineTrack));
     } else
       System.out.println("no quality pose");
   }

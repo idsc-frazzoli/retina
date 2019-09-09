@@ -5,7 +5,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-/* package */ class BSplineTrackCyclic extends BSplineTrack {
+public class BSplineTrackCyclic extends BSplineTrack {
   //
   //
   public BSplineTrackCyclic(Tensor points_xyr) {
