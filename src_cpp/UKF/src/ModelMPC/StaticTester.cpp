@@ -9,7 +9,7 @@
 
 void call_modelDx_static()
 {
-    double const B1 = 9;
+    double B1 = 9;
     double C1 = 1;
     double D1 = 10;
     double B2 = 5.2;

@@ -86,7 +86,7 @@ void PacejkaUKFinterface::runStatic() {
                     double TV = 2;
                     double ACCX;
                     double ACCY;
-                    double ACCROTZ;
+                    double ACCROTZ = 9.81;
 
                     double paramIn[8] = {param(0),
                                          param(1),

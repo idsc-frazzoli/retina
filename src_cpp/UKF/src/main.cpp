@@ -66,7 +66,7 @@ int main(int, const char * const [])
     // UKF for Pacejka
     //*******************************************************************************
     PacejkaUKFinterface ukf;
-    ukf.runSta();
+    ukf.runStatic();
 
 
 

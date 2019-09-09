@@ -11,9 +11,8 @@
 #include <condition_variable>
 
 
-#include "../../LCM/idsc/BinaryBlob.hpp"
-#include "definitions.c"
-
+#include "../../../LCM/idsc/BinaryBlob.hpp"
+#include "../../../../src_MATLAB/MPCGokart/shared_dynamic/c/definitions.c"
 
 struct PacejkaParameter pacejkaParameter;
 idsc::BinaryBlob blob;

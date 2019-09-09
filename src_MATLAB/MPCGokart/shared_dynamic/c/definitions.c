@@ -82,3 +82,12 @@ struct PacejkaParameter {
     float C2;
     float D2;
 };
+
+struct OnlineParam {
+    float vx;
+    float vy;
+    float vpsi;
+    float beta;
+    float ab;
+    float tv;
+};

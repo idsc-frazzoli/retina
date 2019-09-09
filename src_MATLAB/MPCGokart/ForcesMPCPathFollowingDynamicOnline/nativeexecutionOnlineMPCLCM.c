@@ -77,8 +77,9 @@ static void getLastControls(
         OnlineMPCPathFollowing_float* dotab,
         OnlineMPCPathFollowing_float* beta,
         OnlineMPCPathFollowing_float* dotbeta,
-	double* dStepTime,
-	double time){
+	    double* dStepTime,
+	    double time){
+
 	double lastSolutionTime = timeOfLastSolution;
 	double dTime = time-lastSolutionTime;
 	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
@@ -210,6 +211,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	lastInitialPsi = lastCRMsg.state.Psi;
 
 
+
+
 	//do optimization
 	exitflag = OnlineMPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
 	//look at data
@@ -257,10 +260,29 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		//printf("sleep...");	
 		//usleep(50000);
 		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
-			printf("published message: %lu\n",sizeof(struct ControlAndStateMsg));
+			printf("published cns message: %lu\n",sizeof(struct ControlAndStateMsg));
 		else
 			printf("error while publishing message\n");
-	}else{
+
+
+        //prepare for online
+        struct OnlineParam onlineParam;
+        onlineParam.vx = lastCRMsg.state.Ux;
+        onlineParam.vy = lastCRMsg.state.Uy;
+        onlineParam.beta = initbeta;
+        onlineParam.ab = myoutput.alldata[11];
+        onlineParam.tv = myoutput.alldata[3];
+        struct _idsc_BinaryBlob blobOnline;
+        blobOnline.data_length = sizeof(struct OnlineParam);
+        blobOnline.data = (int8_t*)&blobOnline;
+        if(idsc_BinaryBlob_publish(lcm, "online.params.d", &blobOnline)==0)
+            printf("published online message: %lu\n",sizeof(struct OnlineParam));
+        else
+            printf("error while publishing message\n");
+
+
+
+    }else{
 		printf("exitflag: %d\n",exitflag);
 	}
 }

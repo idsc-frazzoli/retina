@@ -28,6 +28,7 @@ add_executable(
         src/PacejkaUKF/PacejkaUKFinterface.h
         src/LCM/static_sender.cpp
         src/LCM/static_sender.h
-        src/LCM/BinaryBlob.hpp)
+        src/LCM/mpcClient.cpp
+        src/LCM/mpcClient.h)
 
 target_link_libraries (UKF Eigen3::Eigen)
