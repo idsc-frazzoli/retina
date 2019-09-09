@@ -129,8 +129,8 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
           System.out.println("no start set");
       }
       // ---
-      trackReconRender.bSplineTrack(lastTrack.map(MPCBSplineTrack::bSplineTrack));
-      BSplineTrackLcm.publish(lastTrack.map(MPCBSplineTrack::bSplineTrack));
+      trackReconRender.bSplineTrack(bSplineTrack());
+      BSplineTrackLcm.publish(bSplineTrack());
     } else
       System.out.println("no quality pose");
   }
@@ -143,6 +143,10 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     this.gokartPoseEvent = gokartPoseEvent;
+  }
+
+  /* package */ Optional<BSplineTrack> bSplineTrack() {
+    return lastTrack.map(MPCBSplineTrack::bSplineTrack);
   }
 
   /** reset track and flag start at current pose */
