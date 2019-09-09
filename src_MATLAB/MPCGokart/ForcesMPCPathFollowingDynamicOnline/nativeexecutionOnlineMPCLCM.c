@@ -197,8 +197,9 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}
 	
 	//assume that this works
-	for(int i = 0; i<N*(4+POINTSN*3+6);i++)
+	/*for(int i = 0; i<N*(4+POINTSN*3+6);i++)
 		printf("param i=%d: %f\n",i,params.all_parameters[i]);
+	 */
 
 	memcpy(params.x0, lastSolution,sizeof(OnlineMPCPathFollowing_float)*S*N);
 	// TODO MH fix for 2PI wrap around problem: change initial guess according
@@ -265,7 +266,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			printf("error while publishing message\n");
 
 
-        //prepare for online
+        //msg for online
         struct OnlineParam onlineParam;
         onlineParam.vx = lastCRMsg.state.Ux;
         onlineParam.vy = lastCRMsg.state.Uy;
@@ -279,7 +280,6 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
             printf("published online message: %lu\n",sizeof(struct OnlineParam));
         else
             printf("error while publishing message\n");
-
 
 
     }else{

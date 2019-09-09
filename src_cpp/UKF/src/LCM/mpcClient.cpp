@@ -56,8 +56,15 @@ int main(int argc, char **argv)
         return 1;
 
     Handler handler;
+
+    printf("about to subscribe\n");
     lcm.subscribe("mpc.forces.gs.d", &Handler::handleState, &handler);
     lcm.subscribe("online.params.d", &Handler::handleOnline, &handler);
+    printf("starting main loop\n");
+
+    while(1) {
+        lcm.handle();
+    }
 
 
     return 0;
