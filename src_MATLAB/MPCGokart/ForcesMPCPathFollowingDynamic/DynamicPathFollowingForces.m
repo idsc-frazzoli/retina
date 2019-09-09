@@ -165,7 +165,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
-tend = 20;
+tend = 100;
 eulersteps = 10;
 planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]
