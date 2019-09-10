@@ -144,10 +144,6 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 * [`ELKI`](https://elki-project.github.io/) for DBSCAN
 * [`lwjgl`](https://www.lwjgl.org/) for joystick readout
 
-## Go-kart Operation
-
-![gokart_operation](https://user-images.githubusercontent.com/4012178/54883114-371e3980-4e62-11e9-9ffd-4d152ffe1609.png)
-
 ---
 
 ![ethz300](https://user-images.githubusercontent.com/4012178/45925071-bf9d3b00-bf0e-11e8-9d92-e30650fd6bf6.png)
