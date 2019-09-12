@@ -6,7 +6,7 @@
 #pragma once
 
 #include <iostream>
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 #include "functional"
 //#include <unsupported/Eigen/MatrixFunctions> /*sqrt*/  //TODO MCP FIX!!!!
 
