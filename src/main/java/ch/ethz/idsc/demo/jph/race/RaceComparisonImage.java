@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.race;
 
 import java.awt.Color;
 import java.awt.Font;
