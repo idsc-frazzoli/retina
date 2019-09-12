@@ -53,7 +53,6 @@ public class TrajectoryConfig {
    * false = spherical goal region */
   public Boolean conical = false;
   public Scalar mu_r = rrtsLaneWidth.multiply(RationalScalar.HALF);
-  public Scalar semi = Degree.of(17);
 
   /***************************************************/
   /** @param tangentSpeed with unit "m*s^-1"

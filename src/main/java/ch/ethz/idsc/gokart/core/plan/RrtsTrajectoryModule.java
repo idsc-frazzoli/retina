@@ -93,7 +93,7 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
       laneRrtsPlannerServer.setGoal(goal);
       laneRrtsPlannerServer.setConical(trajectoryConfig.conical);
       if (trajectoryConfig.conical) {
-        laneRrtsPlannerServer.setCone(trajectoryConfig.mu_r, trajectoryConfig.semi);
+        laneRrtsPlannerServer.setCone(trajectoryConfig.mu_r, trajectoryConfig.coneHalfAngle);
       }
       laneRrtsPlannerServer.accept(lane);
       if (Objects.nonNull(globalViewLcmModule))
