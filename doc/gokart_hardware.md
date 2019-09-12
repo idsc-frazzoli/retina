@@ -1,4 +1,5 @@
 # GoKart Hardware
+*About:* This is a short overview of the go-kart fleet. 
 
 ## GoKart 1 - K.I.T.T.
 * *About:* First autonomous vehilce, operational since 2017?, named after the fictional car K.I.T.T from the TV series "Knight Rider"
@@ -26,7 +27,7 @@
             * 12V, 50A rated, 90A peak
             * CAN (bare CAN) driven from laptop through MABX (microautobox)
             * separated steering battery needed
-        * Breaking: breakeing motor build in, manual brakeing still possible
+        * Breaking: breaking motor build in, manual brakeing still possible
             * LinMot 
             * 24V
             * CAN open controlled
@@ -39,6 +40,7 @@
  ## GoKart 2 - BumbleBee
 * *About:* Second autonomous vehilce, named after the fictional character bumblebee from the Transformers franchise
 * *Status:* in development
+* *Technical data:*   
     * “Difficult to see. Always in motion is the future…” - Yoda
 
 ## GoKart 3 - Herbie
@@ -46,7 +48,7 @@
 * *Status:* operational
 * *Technical data:*   
     * Vehicle: Rimo Sinus Ion
-    * unmodified vehicle, maybe some mounting points for sensors added later
+    * unmodified vehicle, maybe some hardpoints for sensors added later
     
     
 
