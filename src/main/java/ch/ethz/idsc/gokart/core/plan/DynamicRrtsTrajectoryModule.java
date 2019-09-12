@@ -14,7 +14,7 @@ import ch.ethz.idsc.owl.math.lane.StableLanes;
 import ch.ethz.idsc.owl.rrts.core.TransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.retina.util.math.Magnitude;
-import ch.ethz.idsc.sophus.crv.clothoid.Clothoid3;
+import ch.ethz.idsc.sophus.crv.clothoid.Clothoids;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.RotateLeft;
@@ -54,7 +54,7 @@ public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements
     Tensor shifted = RotateLeft.of(waypoints, rootIdx);
     Tensor segment = shifted.extract(0, locate(shifted, goal) + 1);
     final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth);
-    return Optional.of(StableLanes.of(segment, Clothoid3.CURVE_SUBDIVISION::string, 3, r));
+    return Optional.of(StableLanes.of(segment, Clothoids.CURVE_SUBDIVISION::string, 3, r));
   }
 
   @Override // from BSplineTrackListener

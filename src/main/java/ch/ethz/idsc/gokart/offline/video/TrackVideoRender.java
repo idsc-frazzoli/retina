@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.SteerColumnEvent;
 import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
@@ -16,6 +17,8 @@ import ch.ethz.idsc.gokart.core.mpc.ControlAndPredictionStepsMessage;
 import ch.ethz.idsc.gokart.core.plan.TrajectoryEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
+import ch.ethz.idsc.gokart.core.track.BSplineTrack;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackRender;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
@@ -38,6 +41,7 @@ import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
+import ch.ethz.idsc.gokart.lcm.mod.BSplineTrackLcm;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.channel.Vmu931ImuChannel;
@@ -84,6 +88,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private boolean hasDavis240c = false;
   private final ClothoidPlansRender clothoidPlansRender = new ClothoidPlansRender(5);
   private final ClothoidPlanRender clothoidPlanRender = new ClothoidPlanRender(Color.MAGENTA);
+  private final LaneRender trackRender = new LaneRender();
   private final String poseChannel;
   // ---
   private LinmotGetEvent linmotGetEvent;
@@ -177,12 +182,21 @@ import ch.ethz.idsc.tensor.sca.Round;
       clothoidPlansRender.planReceived(clothoidPlan);
       clothoidPlanRender.planReceived(clothoidPlan);
     }
+    if (channel.equals(GokartLcmChannel.XYR_TRACK_OPEN) || channel.equals(GokartLcmChannel.XYR_TRACK_CLOSED)) {
+      Optional<BSplineTrack> optional = BSplineTrackLcm.decode(channel, byteBuffer);
+      if (optional.isPresent()) {
+        laneRender.setLane(null, true);
+        BSplineTrack bSplineTrack = optional.get();
+        trackRender.setLane(bSplineTrack.getTrackBoundaries(100), bSplineTrack.isClosed());
+      }
+    }
   }
 
   @Override // from RenderInterface
   public void render(GeometricLayer geometricLayer, Graphics2D graphics) {
     // TODO JPH
-    // pathRender.render(geometricLayer, graphics);
+    pathRender.render(geometricLayer, graphics);
+    trackRender.render(geometricLayer, graphics);
     laneRender.render(geometricLayer, graphics);
     lidarPointsRender.render(geometricLayer, graphics);
     if (hasDavis240c)

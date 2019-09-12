@@ -20,7 +20,7 @@ public class InverseSteerCubicTest extends TestCase {
     ScalarUnaryOperator cubic = Series.of(coeffs);
     for (Tensor t : Subdivide.of(-0.75, 0.75, 1230)) {
       Scalar apply = cubic.apply(t.Get());
-      Scalar root = Chop._10.apply(Roots.of(Tensors.of(apply.negate(), b, RealScalar.ZERO, d)).Get(2));
+      Scalar root = Chop._10.apply(Roots.of(Tensors.of(apply.negate(), b, RealScalar.ZERO, d)).Get(1));
       Chop._13.requireClose(root, t.Get());
     }
   }

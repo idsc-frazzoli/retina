@@ -5,7 +5,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class BSplineTrackString extends BSplineTrack {
+/* package */ class BSplineTrackString extends BSplineTrack {
   private static final Scalar ZERO = RealScalar.of(0.0);
 
   public BSplineTrackString(Tensor points_xyr) {

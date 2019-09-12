@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.opt.Interpolation;
 import ch.ethz.idsc.tensor.opt.MappedInterpolation;
 import ch.ethz.idsc.tensor.sca.Clips;
+import ch.ethz.idsc.tensor.sca.Floor;
 import ch.ethz.idsc.tensor.sca.Mod;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
@@ -33,7 +34,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
    * @param amplitude */
   ToggleSignal(Scalar width, Scalar amplitude) {
     Tensor vector = SIGNAL.multiply(amplitude);
-    interpolation = MappedInterpolation.of(vector, tensor -> MOD.of(tensor.divide(width)));
+    interpolation = MappedInterpolation.of(vector, tensor -> Floor.of(MOD.of(tensor.divide(width))));
   }
 
   @Override // from ScalarUnaryOperator

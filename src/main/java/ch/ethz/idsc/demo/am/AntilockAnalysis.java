@@ -1,4 +1,4 @@
-// code by am, jph
+// code by am
 package ch.ethz.idsc.demo.am;
 
 import java.io.File;

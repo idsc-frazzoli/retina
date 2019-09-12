@@ -8,10 +8,11 @@
 #include <unistd.h>
 #include <byteswap.h>
 #include <lcm/lcm.h>
-#include "idsc_BinaryBlob.c"
-#include "definitions.c"
 
-#define N 30
+#include "../../../src_c/idsc/idsc_BinaryBlob.c"
+#include "../shared_dynamic/c/definitions.c"
+
+#define N 31
 /**
  * TCP Uses 2 types of sockets, the connection socket and the listen socket.
  * The Goal is to separate the connection phase from the data exchange phase.
@@ -25,7 +26,7 @@ bool running = true;
 lcm_t * lcm;
 
 #define DATASIZE 100
-struct ControlAndStateMsg cns [DATASIZE];
+struct ControlAndState cns [DATASIZE];
 
 /* declare FORCES variables and structures */
 /*
@@ -78,11 +79,11 @@ void sendEmptyControlAndStates(lcm_t * lcm){
 static void state_handler(const lcm_recv_buf_t *rbuf,
         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
 	printf("received state message\n");
-	struct StateMsg stateMsg;
+	struct State stateMsg;
 	memcpy((int8_t*)&stateMsg, msg->data, msg->data_length);
 
 	float *floats = (float*)msg->data+2;
-	int length = msg->data_length/4-2;
+	int length = msg->data_length/4-2;+
 	//integers are LITTLE ENDIAN in C
 	printf("message type: %hxx\n", msg->data[0]);
 	printf("message seq: %hxx\n", msg->data[4]);
@@ -96,7 +97,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}
 	printf("copied to state\n");
 
-	//sendEmptyControlAndStates(lcm);
+	sendEmptyControlAndStates(lcm);
 	
 	struct _idsc_BinaryBlob blob;
 	for (int i = 0; i<N; i++){
@@ -104,7 +105,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		cns[i].control.uR = 2;
 		cns[i].control.udotS = 1;
 		cns[i].control.uB = 4;
-		cns[i].state = stateMsg.state;
+		cns[i].state = stateMsg;
 	}
 	printf("prepared blob\n");
 	blob.data_length = sizeof(struct ControlAndStateMsg)*N;
@@ -112,7 +113,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	printf("linked data\n");
 	printf("lcm addr: %p\n",lcm);
 	printf("blob addr: %p\n",&blob);
-	printf("state Ux: %f\n",stateMsg.state.Ux);
+	printf("state Ux: %f\n",stateMsg.Ux);
 	if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
 		printf("published message: %zu\n",sizeof(struct ControlAndStateMsg)*N);
 	else
@@ -126,7 +127,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	
 	//return format [state]
-	//exitflag = MPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
+	exitflag = MPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
 	
 	//sendEmptyControlAndStates(lcm);
 	printf("about to subscribe\n");

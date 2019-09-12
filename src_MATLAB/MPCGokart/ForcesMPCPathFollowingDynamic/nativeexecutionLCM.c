@@ -173,7 +173,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	//	printf("i=%d: %f\n",i,params.all_parameters[i]);
 
 	memcpy(params.x0, lastSolution,sizeof(MPCPathFollowing_float)*S*N);
-	//fix for 2PI wrap around problem: change initial guess according
+	// TODO MH fix for 2PI wrap around problem: change initial guess according
 	//change amount:
 	MPCPathFollowing_float deltaPsi = lastCRMsg.state.Psi-lastInitialPsi;
 	//printf("deltaPsi %f", deltaPsi);
