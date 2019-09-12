@@ -5,10 +5,20 @@
 #ifndef UKF_MPCCLIENT_H
 #define UKF_MPCCLIENT_H
 
+#include "../UnscentedKalmanFilter.h"
 
-class mpcClient {
 
+enum {
+    NParam = 7,
+    NMes = 3,
+    NIter = 1000
 };
+typedef UnscentedKalmanFilter<NParam, NMes, NIter> UKF;
+
+enum {
+    print = false
+};
+
 
 
 #endif //UKF_MPCCLIENT_H

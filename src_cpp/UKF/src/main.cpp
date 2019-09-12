@@ -17,7 +17,7 @@ using namespace std;
 int main(int, const char * const [])
 {
 
-    // Testing for variance
+    // Testing for variance //TODO MCP Not working
     //*******************************************************************************
     /*UKF::ParameterVec groundTruth;
     groundTruth<< 10, 1.9, 1 ;
@@ -38,18 +38,20 @@ int main(int, const char * const [])
                 variance
         );
     }
-    */
+     */
 
     // Testing Simple UKF
-    //*******************************************************************************
+    //******************************************************************************
     /*
     TestUKF testUkf;
     testUkf.test();
      */
 
+
     // Testing model_first and UKF
     //*******************************************************************************
-    //model_first(); // TODO non functioning due to template size
+    // model_first();
+
 
     // Testing ModelMPC from code g en
     //*******************************************************************************
@@ -57,16 +59,16 @@ int main(int, const char * const [])
 
     // Testing ModelMPC from given static data
     //*******************************************************************************
-    call_modelDx_static();
+    //call_modelDx_static();
 
     // Testing ModelMPC from log data
     //*******************************************************************************
-    call_modelDx_log();
+    //call_modelDx_log();
 
     // UKF for Pacejka
     //*******************************************************************************
-    PacejkaUKFinterface ukf;
-    ukf.runStatic();
+    //PacejkaUKFinterface ukf;
+    //ukf.runStatic();
 
 
 

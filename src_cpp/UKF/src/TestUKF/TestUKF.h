@@ -24,7 +24,7 @@ public:
 
 private:
     bool print = false;
-    bool writeCSV = true;
+    bool writeCSV = false;
 
 };
 
