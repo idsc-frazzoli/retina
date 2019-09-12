@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.gokart.core.pure.CurvePursuitModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
@@ -63,7 +64,8 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
   protected final Optional<TransitionPlanner> setupTreePlanner(StateTime root, Tensor goal) {
     Optional<LaneInterface> optional = laneSegment(root.state(), goal);
     if (optional.isPresent()) {
-      final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth);
+      final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth).multiply(RationalScalar.HALF);
+      HapticSteerConfig.GLOBAL.halfWidth = r;
       List<TransitionRegionQuery> transitionRegionQueries = //
           new ArrayList<>(Collections.singletonList(new SampledTransitionRegionQuery(mapping.getMap(), RealScalar.of(0.05)))); // TODO magic constant
       transitionRegionQueries.addAll(this.transitionRegionQueries);
@@ -74,11 +76,10 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
               LengthCostFunction.INSTANCE, trajectoryConfig.greedy) {
             @Override
             protected RrtsNodeCollection rrtsNodeCollection() {
-              Scalar r_2 = r.multiply(RationalScalar.HALF);
               MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
               MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
-              Tensor lbounds_ = Tensors.of(minMaxX.min().subtract(r_2), minMaxY.min().subtract(r_2), RealScalar.ZERO);
-              Tensor ubounds_ = Tensors.of(minMaxX.max().add(r_2), minMaxY.max().add(r_2), Pi.TWO);
+              Tensor lbounds_ = Tensors.of(minMaxX.min().subtract(r), minMaxY.min().subtract(r), RealScalar.ZERO);
+              Tensor ubounds_ = Tensors.of(minMaxX.max().add(r), minMaxY.max().add(r), Pi.TWO);
               return new RrtsNodeCollections(ClothoidRrtsNdType.INSTANCE, lbounds_, ubounds_);
             }
 
@@ -90,6 +91,10 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
       LaneInterface lane = optional.get();
       laneRrtsPlannerServer.setState(root);
       laneRrtsPlannerServer.setGoal(goal);
+      laneRrtsPlannerServer.setConical(trajectoryConfig.conical);
+      if (trajectoryConfig.conical) {
+        laneRrtsPlannerServer.setCone(trajectoryConfig.mu_r, trajectoryConfig.semi);
+      }
       laneRrtsPlannerServer.accept(lane);
       if (Objects.nonNull(globalViewLcmModule))
         globalViewLcmModule.setLane(lane);

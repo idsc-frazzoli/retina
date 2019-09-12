@@ -49,6 +49,11 @@ public class TrajectoryConfig {
   public Boolean mapSightLines = true;
   /** preferred waypoint spacing */
   public Scalar waypointsSpacing = Quantity.of(2.5, SI.METER);
+  /** true = conical goal region
+   * false = spherical goal region */
+  public Boolean conical = false;
+  public Scalar mu_r = rrtsLaneWidth.multiply(RationalScalar.HALF);
+  public Scalar semi = Degree.of(17);
 
   /***************************************************/
   /** @param tangentSpeed with unit "m*s^-1"
