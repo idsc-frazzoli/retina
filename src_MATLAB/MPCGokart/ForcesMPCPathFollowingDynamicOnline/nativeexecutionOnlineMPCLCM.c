@@ -268,6 +268,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 
         //msg for online
         struct OnlineParam onlineParam;
+        onlineParam.time = lastCRMsg.state.time;
         onlineParam.vx = lastCRMsg.state.Ux;
         onlineParam.vy = lastCRMsg.state.Uy;
         onlineParam.beta = initbeta;

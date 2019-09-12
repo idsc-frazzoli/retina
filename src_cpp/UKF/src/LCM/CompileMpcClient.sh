@@ -1,3 +1,3 @@
 #!/bin/bash
 echo 'compiling sender'
-g++ -o mpc_client mpcClient.cpp -llcm
+g++ mpcClient.cpp -o mpc_client -llcm
