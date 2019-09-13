@@ -17,13 +17,20 @@ import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.ResourceData;
 
-enum RunRaceTableExport {
+/** used in analysis of race on 20190701 between human driver and dynamic mpc
+ * 
+ * https://github.com/idsc-frazzoli/retina/files/3492127/20190812_autonomous_human_racing.pdf */
+/* package */ enum RunRaceTableExport {
   ;
   public static void main(String[] args) throws IOException {
-    Tensor points_xyr = ResourceData.of("/dubilab/analysis/track/20190701.csv");
+    Tensor points_xyr = ResourceData.of("/dubilab/analysis/track/20190912.csv");
+    final int n = points_xyr.length();
+    System.out.println("n=" + n);
+    File dest = HomeDirectory.Documents("manual");
+    dest.mkdir();
     BSplineTrack bSplineTrack = BSplineTrack.of(points_xyr, true);
     // ---
-    File folder = new File("/media/datahaki/data/gokart/0701hum");
+    File folder = new File("/media/datahaki/data/gokart/racing/20190912");
     for (File file : folder.listFiles()) {
       OfflineTableSupplier offlineTableSupplier = new RaceTableExport();
       OfflineLogPlayer.process(new File(file, "log.lcm"), offlineTableSupplier);
@@ -38,9 +45,9 @@ enum RunRaceTableExport {
       for (int count = 1; count < tensor.length(); ++count) {
         Scalar prev = tensor.Get(count - 1);
         Scalar next = tensor.Get(count - 0);
-        if (Scalars.lessThan(RealScalar.of(14), prev) && //
+        if (Scalars.lessThan(RealScalar.of(n - 1), prev) && //
             Scalars.lessThan(next, RealScalar.of(1))) {
-          offset = offset.add(RealScalar.of(15));
+          offset = offset.add(RealScalar.of(n));
         }
         Scalar prog = next.add(offset);
         if (Scalars.lessThan(curr, prog)) {
@@ -50,7 +57,7 @@ enum RunRaceTableExport {
       }
       // Tensor result = Transpose.of(Transpose.of(table).append(monoto));
       System.out.println(Dimensions.of(monoto));
-      Export.of(HomeDirectory.Documents("racing", file.getName() + "_hum.csv"), monoto);
+      Export.of(new File(dest, file.getName() + ".csv"), monoto);
     }
   }
 }
