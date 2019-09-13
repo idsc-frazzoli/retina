@@ -68,7 +68,7 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
     Optional<LaneInterface> optional = laneSegment(root.state(), goal);
     if (optional.isPresent()) {
       final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth).multiply(RationalScalar.HALF);
-      HapticSteerConfig.GLOBAL.halfWidth = r;
+      HapticSteerConfig.GLOBAL.halfWidth = trajectoryConfig.rrtsLaneWidth.multiply(RationalScalar.HALF);
       List<TransitionRegionQuery> transitionRegionQueries = //
           new ArrayList<>(Collections.singletonList(new SampledTransitionRegionQuery(mapping.getMap(), RealScalar.of(0.05)))); // TODO magic constant
       transitionRegionQueries.addAll(this.transitionRegionQueries);
@@ -96,7 +96,7 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
       laneRrtsPlannerServer.setGoal(goal);
       laneRrtsPlannerServer.setConical(trajectoryConfig.conical);
       if (trajectoryConfig.conical) {
-        laneRrtsPlannerServer.setCone(trajectoryConfig.mu_r, trajectoryConfig.coneHalfAngle);
+        laneRrtsPlannerServer.setCone(Magnitude.METER.apply(trajectoryConfig.mu_r), trajectoryConfig.coneHalfAngle);
       }
       laneRrtsPlannerServer.accept(lane);
       if (Objects.nonNull(globalViewLcmModule))
