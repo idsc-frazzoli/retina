@@ -10,12 +10,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
+import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurvePursuitModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidRrtsNdType;
+import ch.ethz.idsc.owl.bot.se2.rrts.LimitedClothoidRrtsNdType;
 import ch.ethz.idsc.owl.bot.se2.rrts.Se2RrtsFlow;
 import ch.ethz.idsc.owl.data.tree.Nodes;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
@@ -24,6 +26,7 @@ import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.rrts.LaneRrtsPlannerServer;
+import ch.ethz.idsc.owl.rrts.RandomRrtsNodeCollection;
 import ch.ethz.idsc.owl.rrts.RrtsNodeCollections;
 import ch.ethz.idsc.owl.rrts.adapter.LengthCostFunction;
 import ch.ethz.idsc.owl.rrts.adapter.SampledTransitionRegionQuery;
@@ -83,7 +86,9 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
               MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
               Tensor lbounds_ = Tensors.of(minMaxX.min().subtract(r), minMaxY.min().subtract(r), RealScalar.ZERO);
               Tensor ubounds_ = Tensors.of(minMaxX.max().add(r), minMaxY.max().add(r), Pi.TWO);
-              return new RrtsNodeCollections(ClothoidRrtsNdType.INSTANCE, lbounds_, ubounds_);
+              // return new RrtsNodeCollections(ClothoidRrtsNdType.INSTANCE, lbounds_, ubounds_);
+              return new RrtsNodeCollections(LimitedClothoidRrtsNdType.with(Magnitude.PER_METER.apply(ClothoidPursuitConfig.GLOBAL.turningRatioMax)), lbounds_, ubounds_);
+              // return new RandomRrtsNodeCollection();
             }
 
             @Override
