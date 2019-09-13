@@ -11,10 +11,10 @@
 
 
 %add force path (change that for yourself)
-userDir = getuserdir;
-addpath([userDir '/Documents/sp/FORCES_client']); % Location of FORCES PRO
-addpath('casadi');
-addpath([userDir '/Documents/sp/casadi-matlabR2014a-v2.4.2']);
+% userDir = getuserdir;
+% % addpath([userDir '/Documents/sp/FORCES_client']); % Location of FORCES PRO
+% addpath('casadi');
+% addpath([userDir '/Documents/sp/casadi-matlabR2014a-v2.4.2']);
 %%rmpath('/home/maximilien/Documents/sp/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic');
 %%rmpath('/home/maximilien/Documents/sp/retina/src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic/casadi');
 addpath('..');
@@ -215,7 +215,7 @@ for i =1:tend
     
     
     problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,C1,D1,B2,C2,D2,nextSplinePoints) , model.N ,1);
-    %%problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,nextSplinePoints) , model.N ,1);
+    %problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,B1,nextSplinePoints) , model.N ,1);
     problem.x0 = x0(:);
     
     % solve mpc

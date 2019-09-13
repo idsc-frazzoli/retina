@@ -11,7 +11,7 @@ using namespace std;
 
 // extract data
 Eigen::MatrixXd data =
-        load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/pacejkaFull_20190708T114135_f3f46a8b.lcm.00.csv");
+        load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/pacejkaFull_20190708T114135_f3f46a8b.lcmObj.00.csv");
 
 //
 long k = 0;
@@ -86,7 +86,7 @@ void PacejkaUKFinterface::runStatic() {
                     double TV = 2;
                     double ACCX;
                     double ACCY;
-                    double ACCROTZ;
+                    double ACCROTZ = 9.81;
 
                     double paramIn[8] = {param(0),
                                          param(1),

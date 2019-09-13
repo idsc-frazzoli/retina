@@ -9,11 +9,11 @@
 #include <byteswap.h>
 #include <math.h>
 
-#include "MPCPathFollowing/include/MPCPathFollowing.h"
+#include "OnlineMPCPathFollowing/include/OnlineMPCPathFollowing.h"
 #include <lcm/lcm.h>
 #include "../../../src_c/idsc/idsc_BinaryBlob.c"
 #include "../shared_dynamic/c/definitions.c"
-#include "../shared_dynamic/c/helperFunctions.c"
+#include "helperFunctionsOnlineMPC.c"
 #include <unistd.h>
 
 //[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
@@ -40,37 +40,46 @@ struct ControlAndStateMsg cns [DATASIZE];
 
 /* declare FORCES variables and structures */
 int i, exitflag;
-MPCPathFollowing_output myoutput;
-MPCPathFollowing_info myinfo;
-MPCPathFollowing_float minusA_times_x0[2];
-MPCPathFollowing_float lastInitialPsi = 0;
+OnlineMPCPathFollowing_output myoutput;
+OnlineMPCPathFollowing_info myinfo;
+OnlineMPCPathFollowing_float minusA_times_x0[2];
+OnlineMPCPathFollowing_float lastInitialPsi = 0;
 
 int outC = 0;
 
 double timeOfLastSolution = -100;
 double timeTolerance = 1;
-MPCPathFollowing_float lastSolution [S*N];
+OnlineMPCPathFollowing_float lastSolution [S*N];
 struct ControlRequestMsg lastCRMsg;
 struct ParaMsg lastParaMsg;
+struct PacejkaParameter lastPacjMsg;
 
-/*
-extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, double *p,
-                                                double *f, double *nabla_f, double *c, double *nabla_c,
-                                                double *h, double *nabla_h, double *H, int stage);*/
+extern void OnlineMPCPathFollowing_casadi2forces(
+        OnlineMPCPathFollowing_float* x,
+        OnlineMPCPathFollowing_float* y,
+        OnlineMPCPathFollowing_float* lambda,
+        OnlineMPCPathFollowing_float* params,
+        OnlineMPCPathFollowing_float* pobj,
+        OnlineMPCPathFollowing_float* g,
+        OnlineMPCPathFollowing_float* c,
+        OnlineMPCPathFollowing_float* Jeq,
+        OnlineMPCPathFollowing_float* h,
+        OnlineMPCPathFollowing_float* Jineq,
+        OnlineMPCPathFollowing_float* H,
+        solver_int32_default stage,
+        solver_int32_default iterations);
 
-
-extern void MPCPathFollowing_casadi2forces(MPCPathFollowing_float* x, MPCPathFollowing_float* y, MPCPathFollowing_float* lambda, MPCPathFollowing_float* params, MPCPathFollowing_float* pobj, MPCPathFollowing_float* g, MPCPathFollowing_float* c, MPCPathFollowing_float* Jeq, MPCPathFollowing_float* h, MPCPathFollowing_float* Jineq, MPCPathFollowing_float* H, solver_int32_default stage, solver_int32_default iterations);
-
-MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
+OnlineMPCPathFollowing_extfunc pt2Function =&OnlineMPCPathFollowing_casadi2forces;
 
 //[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
 static void getLastControls(
-	MPCPathFollowing_float* ab,
-	MPCPathFollowing_float* dotab,
-	MPCPathFollowing_float* beta,
-	MPCPathFollowing_float* dotbeta,
-	double* dStepTime,
-	double time){
+        OnlineMPCPathFollowing_float* ab,
+        OnlineMPCPathFollowing_float* dotab,
+        OnlineMPCPathFollowing_float* beta,
+        OnlineMPCPathFollowing_float* dotbeta,
+	    double* dStepTime,
+	    double time){
+
 	double lastSolutionTime = timeOfLastSolution;
 	double dTime = time-lastSolutionTime;
 	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
@@ -84,16 +93,28 @@ static void getLastControls(
 }
 
 static void para_handler(const lcm_recv_buf_t *rbuf,
-        const char *channel, const idsc_BinaryBlob *msg, void *userdata){
-	printf("received path message\n");
-	memcpy((int8_t*)&lastParaMsg, msg->data, msg->data_length);
-	//printf("max speed: %f\n",lastParaMsg.para.speedLimit);
-	//printf("max X-acc: %f\n",lastParaMsg.para.maxxacc);
-	//printf("max Y-acc: %f\n",lastParaMsg.para.maxyacc);
-	//printf("max front lat acc: %f\n",lastParaMsg.para.latacclim);
-	//printf("max rot acc: %f\n",lastParaMsg.para.rotacceffect);
-	//printf("torque vec effect: %f\n",lastParaMsg.para.torqueveceffect);
-	//printf("brake effect: %f\n",lastParaMsg.para.brakeeffect);
+                         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
+    printf("received path message\n");
+    memcpy((int8_t*)&lastParaMsg, msg->data, msg->data_length);
+    //printf("max speed: %f\n",lastParaMsg.para.speedLimit);
+    //printf("max X-acc: %f\n",lastParaMsg.para.maxxacc);
+    //printf("max Y-acc: %f\n",lastParaMsg.para.maxyacc);
+    //printf("max front lat acc: %f\n",lastParaMsg.para.latacclim);
+    //printf("max rot acc: %f\n",lastParaMsg.para.rotacceffect);
+    //printf("torque vec effect: %f\n",lastParaMsg.para.torqueveceffect);
+    //printf("brake effect: %f\n",lastParaMsg.para.brakeeffect);
+}
+
+static void pacj_handler(const lcm_recv_buf_t *rbuf,
+                         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
+    printf("received pacj message\n");
+    memcpy((int8_t*)&lastPacjMsg, msg->data, msg->data_length);
+    printf("B1: %f\n",lastPacjMsg.B1);
+    printf("C1: %f\n",lastPacjMsg.C1);
+    printf("D1: %f\n",lastPacjMsg.D1);
+    printf("B2: %f\n",lastPacjMsg.B2);
+    printf("C2: %f\n",lastPacjMsg.C2);
+    printf("D2: %f\n",lastPacjMsg.D2);
 }
 
 static void state_handler(const lcm_recv_buf_t *rbuf,
@@ -108,16 +129,16 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		printf("i=%d: pointR:%f\n",i,pe.per);
 	}*/
 
-	MPCPathFollowing_params params;
+    OnlineMPCPathFollowing_params params;
 
-	MPCPathFollowing_float lab;
-	MPCPathFollowing_float ldotab;
-	MPCPathFollowing_float lbeta;
-	MPCPathFollowing_float ldotbeta;
+    OnlineMPCPathFollowing_float lab;
+    OnlineMPCPathFollowing_float ldotab;
+    OnlineMPCPathFollowing_float lbeta;
+    OnlineMPCPathFollowing_float ldotbeta;
 	double dTime;
 
-	MPCPathFollowing_float initab;
-	MPCPathFollowing_float initbeta;
+    OnlineMPCPathFollowing_float initab;
+    OnlineMPCPathFollowing_float initbeta;
 
 	if(lastCRMsg.state.time-timeOfLastSolution<timeTolerance){
 		getLastControls(
@@ -152,30 +173,38 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}*/
 
 	//gather parameter data
-	int pl = 3*POINTSN+4;
+	int pl = 3*POINTSN+4 + 6;
 	
 	printf("parameters\n");
 	for(int i = 0; i<N;i++){
-		params.all_parameters[i*pl] = lastParaMsg.para.speedLimit;
-		params.all_parameters[i*pl+1] = lastParaMsg.para.maxxacc;
-		params.all_parameters[i*pl+2] = lastParaMsg.para.steeringreg;
-		params.all_parameters[i*pl+3] = lastParaMsg.para.specificmoi;
+	    int offset = i*pl;
+		params.all_parameters[offset] = lastParaMsg.para.speedLimit;
+		params.all_parameters[offset+1] = lastParaMsg.para.maxxacc;
+		params.all_parameters[offset+2] = lastParaMsg.para.steeringreg;
+		params.all_parameters[offset+3] = lastParaMsg.para.specificmoi;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+4+ip]=lastCRMsg.path.controlPoints[ip].pex;
+			params.all_parameters[offset+4+ip]=lastCRMsg.path.controlPoints[ip].pex;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+4+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
+			params.all_parameters[offset+4+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
 		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[i*pl+4+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
+			params.all_parameters[offset+4+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
+		params.all_parameters[offset+4+3*POINTSN+0] = lastPacjMsg.B1; 
+        params.all_parameters[offset+4+3*POINTSN+1] = lastPacjMsg.C1;
+        params.all_parameters[offset+4+3*POINTSN+2] = lastPacjMsg.D1;
+        params.all_parameters[offset+4+3*POINTSN+3] = lastPacjMsg.B2;        
+        params.all_parameters[offset+4+3*POINTSN+4] = lastPacjMsg.C2;        
+        params.all_parameters[offset+4+3*POINTSN+5] = lastPacjMsg.D2;
 	}
 	
 	//assume that this works
-	for(int i = 0; i<N*pl;i++)
-		printf("i=%d: %f\n",i,params.all_parameters[i]);
+	/*for(int i = 0; i<N*(4+POINTSN*3+6);i++)
+		printf("param i=%d: %f\n",i,params.all_parameters[i]);
+	 */
 
-	memcpy(params.x0, lastSolution,sizeof(MPCPathFollowing_float)*S*N);
+	memcpy(params.x0, lastSolution,sizeof(OnlineMPCPathFollowing_float)*S*N);
 	// TODO MH fix for 2PI wrap around problem: change initial guess according
 	//change amount:
-	MPCPathFollowing_float deltaPsi = lastCRMsg.state.Psi-lastInitialPsi;
+    OnlineMPCPathFollowing_float deltaPsi = lastCRMsg.state.Psi-lastInitialPsi;
 	//printf("deltaPsi %f", deltaPsi);
 	for(int i = 0; i<N;i++){
 		params.x0[i*S+7]+=deltaPsi;
@@ -183,12 +212,14 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	lastInitialPsi = lastCRMsg.state.Psi;
 
 
+
+
 	//do optimization
-	exitflag = MPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
+	exitflag = OnlineMPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
 	//look at data
 	//optimal or maxit (maxit is ok in most cases)
 	if(exitflag == 1 || exitflag == 0){
-		memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*S*N);
+		memcpy(lastSolution, myoutput.alldata,sizeof(OnlineMPCPathFollowing_float)*S*N);
 		//printf("lastSolution: %f\n", lastSolution[341]);
 		timeOfLastSolution = lastCRMsg.state.time;
 
@@ -198,10 +229,10 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		cnsmsg.messageType = 3;
 		cnsmsg.sequenceInt = outC++;
 		for(int i = 0; i<N; i++){
-			MPCPathFollowing_float ab = myoutput.alldata[i*S+11];
-			MPCPathFollowing_float tv = myoutput.alldata[i*S+3];
-			MPCPathFollowing_float psi = myoutput.alldata[i*S+7];
-			MPCPathFollowing_float dotPsi = myoutput.alldata[i*S+8];
+            OnlineMPCPathFollowing_float ab = myoutput.alldata[i*S+11];
+            OnlineMPCPathFollowing_float tv = myoutput.alldata[i*S+3];
+            OnlineMPCPathFollowing_float psi = myoutput.alldata[i*S+7];
+            OnlineMPCPathFollowing_float dotPsi = myoutput.alldata[i*S+8];
 			cnsmsg.cns[i].control.uL = ab-tv;
 			cnsmsg.cns[i].control.uR = ab+tv;
 			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
@@ -230,36 +261,54 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		//printf("sleep...");	
 		//usleep(50000);
 		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
-			printf("published message: %lu\n",sizeof(struct ControlAndStateMsg));
+			printf("published cns message: %lu\n",sizeof(struct ControlAndStateMsg));
 		else
 			printf("error while publishing message\n");
-	}else{
+
+
+        //msg for online
+        struct OnlineParam onlineParam;
+        onlineParam.time = lastCRMsg.state.time;
+        onlineParam.vx = lastCRMsg.state.Ux;
+        onlineParam.vy = lastCRMsg.state.Uy;
+        onlineParam.beta = initbeta;
+        onlineParam.ab = myoutput.alldata[11];
+        onlineParam.tv = myoutput.alldata[3];
+        struct _idsc_BinaryBlob blobOnline;
+        blobOnline.data_length = sizeof(struct OnlineParam);
+        blobOnline.data = (int8_t*)&blobOnline;
+        if(idsc_BinaryBlob_publish(lcm, "online.params.d", &blobOnline)==0)
+            printf("published online message: %lu\n",sizeof(struct OnlineParam));
+        else
+            printf("error while publishing message\n");
+
+
+    }else{
 		printf("exitflag: %d\n",exitflag);
 	}
 }
 
 int main(int argc, char *argv[]) {
 	printf("start lcm server\n");
-	
-	/*
-	//for testing
-	for(int i = -100; i<100; i++){
-		double v = i/100.0;
-		double maxacc = getMaxAcc(v);
-		printf("%f: %f\n", v, maxacc);
-	}*/
+
+    lastPacjMsg.B1 = 9;
+    lastPacjMsg.C1 = 1;
+    lastPacjMsg.D1 = 10;
+    lastPacjMsg.B2 = 5.2;
+    lastPacjMsg.C2 = 1.1;
+    lastPacjMsg.D2 = 20;
 	
 	lcm = lcm_create(NULL);
 	if(!lcm)
 		return 1;
 	
 	//return format [state]
-	//exitflag = MPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
+	//exitflag = OnlineMPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
 	
 	//sendEmptyControlAndStates(lcm);
 	printf("about to subscribe\n");
-	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs.d", &state_handler, NULL);
-	//idsc_BinaryBlob_subscribe(lcm, "mpc.forces.pp", &path_handler, NULL);
+    idsc_BinaryBlob_subscribe(lcm, "mpc.forces.pacj.d", &pacj_handler, NULL);
+    idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs.d", &state_handler, NULL);
 	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.op.d", &para_handler, NULL);
 	printf("starting main loop\n");
 	while(1)

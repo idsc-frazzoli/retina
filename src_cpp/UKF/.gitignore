@@ -6,4 +6,6 @@ Makefile
 cmake_install.cmake
 paramsUKF.csv
 src/LCM/static_sender
+src/LCM/mpc_client
+
 

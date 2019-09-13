@@ -11,12 +11,12 @@ function dx = interstagedx(x,u,p)
     C2 = p(index.pC2);
     D2 = p(index.pD2);
     
-    %B1 = 9;  
-    C1 = 1;     
-    D1 = 10;   
-    B2 = 5.2;
-    C2 = 1.1;     
-    D2 = 20;
+%     B1 = 9;  
+%     C1 = 1;     
+%     D1 = 10;   
+%     B2 = 5.2;
+%     C2 = 1.1;     
+%     D2 = 20;
 
 
     param = [B1,C1,D1,B2,C2,D2,Cf];

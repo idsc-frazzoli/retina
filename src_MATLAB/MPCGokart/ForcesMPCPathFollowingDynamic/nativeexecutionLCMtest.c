@@ -83,7 +83,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	memcpy((int8_t*)&stateMsg, msg->data, msg->data_length);
 
 	float *floats = (float*)msg->data+2;
-	int length = msg->data_length/4-2;+
+	int length = msg->data_length/4-2;
 	//integers are LITTLE ENDIAN in C
 	printf("message type: %hxx\n", msg->data[0]);
 	printf("message seq: %hxx\n", msg->data[4]);

@@ -35,7 +35,7 @@ void TestPacejkaUKF::test(
 
     // extract slip
     Eigen::MatrixXd slip =
-            load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/slip_20190708T114135_f3f46a8b.lcm.00.csv");
+            load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/slip_20190708T114135_f3f46a8b.lcmObj.00.csv");
 
     // slip filter
     /*
