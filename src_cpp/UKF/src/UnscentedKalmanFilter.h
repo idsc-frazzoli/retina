@@ -6,9 +6,9 @@
 #pragma once
 
 #include <iostream>
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 #include "functional"
-#include <unsupported/Eigen/MatrixFunctions> /*sqrt*/
+//#include <unsupported/Eigen/MatrixFunctions> /*sqrt*/  //TODO MCP FIX!!!!
 
 template <int NParameter, int NMeasurements, int NIterations>
 class UnscentedKalmanFilter{
@@ -75,7 +75,7 @@ private:
         if (debugUKF){
             std::cout << "covTermSquared " << std::endl << covTermSquared << std::endl;
         }
-        ParameterMat covTerm = covTermSquared.sqrt();
+        ParameterMat covTerm = covTermSquared;//.sqrt(); //TODO MCP FIX !!
         if (debugUKF){
             std::cout << "covTerm " << std::endl << covTerm << std::endl;
         }
@@ -117,8 +117,8 @@ private:
         // Prediction: Approximate gaussian
         ParameterVec mu = ParameterVec::Zero();
         for (int i = 0; i<= 2*NParameter; i++){
-            ParameterVec predFunChi = predictionFunction(chi[i]);
-            mu += w_m[i]*predFunChi;
+            ParameterVec predFunChi = w_m[i]*predictionFunction(chi[i]);
+            mu += predFunChi;
             if(debugUKF){
                 std::cout << "predFunChi:" << i << "\n" << predFunChi << std::endl;
             }

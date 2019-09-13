@@ -68,9 +68,27 @@ struct ControlRequestMsg{
 	struct PathParameter path;
 };
 
-
 struct ParaMsg{
 	int messageType;
 	int sequenceInt;
 	struct OptimizationParameter para;
+};
+
+struct PacejkaParameter {
+    float B1;
+    float C1;
+    float D1;
+    float B2;
+    float C2;
+    float D2;
+};
+
+struct OnlineParam {
+    float time;
+    float vx;
+    float vy;
+    float vpsi;
+    float beta;
+    float ab;
+    float tv;
 };

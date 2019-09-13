@@ -3,10 +3,12 @@
 // https://stackoverflow.com/questions/34247057/how-to-read-csv-file-and-assign-to-eigen-matrix
 //
 
+
 #include <string>
 #include <vector>
 #include <fstream>
 #include <Eigen/Dense>
+#include <iostream>
 
 using namespace Eigen;
 
@@ -16,7 +18,7 @@ M load_csv (const std::string & path) {
     std::ifstream indata;
     indata.open(path);
     if (indata.fail()){
-        std::cout << "File non existing, manually create it" << std::endl;
+        std::cout << "Maximilien: File non existing, manually create it or add to path" << std::endl;
     }
     std::string line;
     std::vector<double> values;
@@ -33,5 +35,5 @@ M load_csv (const std::string & path) {
             M::Scalar,
             M::RowsAtCompileTime,
             M::ColsAtCompileTime,
-            RowMajor>>(values.data(),rows, values.size()/rows);}
-
+            RowMajor>>(values.data(),rows, values.size()/rows);
+}

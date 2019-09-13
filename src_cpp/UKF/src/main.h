@@ -5,7 +5,5 @@
 #ifndef UKF_MAIN_H
 #define UKF_MAIN_H
 
-#include "UnscentedKalmanFilter.h"
-
 
 #endif //UKF_MAIN_H

@@ -11,16 +11,15 @@
 #include <condition_variable>
 
 
-#include "../retina/src_cpp/LCM/idsc/BinaryBlob.hpp"
-#include "definitions.c"
-
+#include "../../../LCM/idsc/BinaryBlob.hpp"
+#include "../../../../src_MATLAB/MPCGokart/shared_dynamic/c/definitions.c"
 
 struct PacejkaParameter pacejkaParameter;
 idsc::BinaryBlob blob;
 
 int main(int argc, char **argv){
 
-    printf("start lcm static sender\n");
+    printf("start lcmObj static sender\n");
     lcm::LCM lcm;
     if(!lcm.good())
         return 1;
@@ -39,9 +38,9 @@ int main(int argc, char **argv){
     blob.data.resize(blob.data_length);
     memcpy(&blob.data[0],&pacejkaParameter,6*4);
 
-    printf("lcm addr: %p\n",&lcm);
+    printf("lcmObj addr: %p\n",&lcm);
     printf("blob addr: %p\n",&blob);
 
-    lcm.publish("mpc.forces.pacj,d", &blob);
+    lcm.publish("mpc.forces.pacj.d", &blob);
     return 0;
 }

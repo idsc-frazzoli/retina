@@ -44,6 +44,7 @@
 * [20190812_autonomous_human_racing.pdf](https://github.com/idsc-frazzoli/retina/files/3492127/20190812_autonomous_human_racing.pdf)
 * [20190828_advanced_driver_assistance_systems_on_a_go-kart.pdf](https://github.com/idsc-frazzoli/retina/files/3568527/20190828_advanced_driver_assistance_systems_on_a_go-kart.pdf)
 * [20190903_appox_clothoids_with_ext_windings.pdf](https://github.com/idsc-frazzoli/retina/files/3568308/20190903_appox_clothoids_with_ext_windings.pdf)
+* [20190908_curve_decimation_in_se2_and_se3.pdf](https://github.com/idsc-frazzoli/retina/files/3587971/20190908_curve_decimation_in_se2_and_se3.pdf)
 
 ## Bug Reports
 

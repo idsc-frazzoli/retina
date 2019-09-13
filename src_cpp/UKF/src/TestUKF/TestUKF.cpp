@@ -16,13 +16,24 @@ void TestUKF::test() {
 
     // init
     // *******************************************************************
-    double q = 0.1; //std of process
-    double r = 0.1; //std of measurement
+    double q = 1; //std of process
+    double r = 1; //std of measurement
     UKF::ParameterMat processCov = UKF::ParameterMat::Identity() * q; // cov of process
     UKF::MeasurementMat measureCov = UKF::MeasurementMat::Identity() * r; // cov of measurement
 
     UKF::ParameterVec x; //initial state
-    x <<  10, 1.9, 1,  10, 1.9, 1,  10, 1.9, 1 , 300;
+    x(0,0) = 10;
+    x(1,0) = 10;
+    x(2,0) = 10;
+    x(3,0) = 10;
+    x(4,0) = 10;
+    x(5,0) = 10;
+    x(6,0) = 10;
+    x(7,0) = 10;
+    x(8,0) = 10;
+    x(9,0) = 300;
+
+
     UKF::ParameterMat P = UKF::ParameterMat::Identity(); //inital state cov
     if(print){
         cout << "initial state" << endl << x << endl;
@@ -31,7 +42,7 @@ void TestUKF::test() {
 
     // extract slip
     Eigen::MatrixXd data =
-            load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/pacejkaFull_20190708T114135_f3f46a8b.lcm.00.csv");
+            load_csv<Eigen::MatrixXd>("/home/maximilien/Documents/sp/logs/pacejkaFull_20190708T114135_f3f46a8b.lcmObj.00.csv");
 
     //UKF
     UKF ukf = UKF(x, P);
@@ -143,9 +154,11 @@ void TestUKF::test() {
 
     // export for plot
     // *******************************************************************
+    /*
     if(writeCSV) {
         WriterUKF writerUkf;
         writerUkf.writeToCSV("mes.csv", mes.transpose());
         writerUkf.writeToCSV("paramsFull.csv", params.transpose());
     }
+     */
 }
