@@ -15,6 +15,7 @@ import ch.ethz.idsc.owl.rrts.core.TransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.sophus.crv.clothoid.Clothoids;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.RotateLeft;
@@ -31,6 +32,7 @@ public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements
       TransitionSpace transitionSpace, //
       TransitionRegionQuery... transitionRegionQueries) {
     super(trajectoryConfig, curvePursuitModule, transitionSpace, transitionRegionQueries);
+    // DefaultRrtsPlanner.K_NEAREST = 25;
   }
 
   @Override // from GokartTrajectoryModule
@@ -53,7 +55,7 @@ public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements
     int rootIdx = StaticHelper.locate(waypoints, state);
     Tensor shifted = RotateLeft.of(waypoints, rootIdx);
     Tensor segment = shifted.extract(0, StaticHelper.locate(shifted, goal) + 1);
-    final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth);
+    final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth).multiply(RationalScalar.HALF);
     return Optional.of(StableLanes.of(segment, Clothoids.CURVE_SUBDIVISION::string, 3, r));
   }
 

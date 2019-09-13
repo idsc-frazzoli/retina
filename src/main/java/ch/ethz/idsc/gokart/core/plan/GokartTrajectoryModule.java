@@ -198,7 +198,12 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
     return trajectoryConfig.planningPeriod;
   }
 
+  /** @param root
+   * @param goal
+   * @return */
   protected abstract Optional<T> setupTreePlanner(StateTime root, Tensor goal);
 
+  /** @param head
+   * @param treePlanner */
   protected abstract void expandResult(List<TrajectorySample> head, T treePlanner);
 }
