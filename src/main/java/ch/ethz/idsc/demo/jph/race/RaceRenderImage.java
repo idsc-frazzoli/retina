@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph;
+package ch.ethz.idsc.demo.jph.race;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -20,6 +20,9 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
+/** used in analysis of race on 20190701 between human driver and dynamic mpc
+ * 
+ * https://github.com/idsc-frazzoli/retina/files/3492127/20190812_autonomous_human_racing.pdf */
 /* package */ class RaceRenderImage implements OfflineLogListener, RenderInterface {
   private static final Scalar MARGIN = Quantity.of(0.1, SI.SECOND);
   // ---
