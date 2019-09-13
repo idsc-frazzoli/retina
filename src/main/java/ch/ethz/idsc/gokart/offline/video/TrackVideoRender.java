@@ -18,7 +18,6 @@ import ch.ethz.idsc.gokart.core.plan.TrajectoryEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.track.BSplineTrack;
-import ch.ethz.idsc.gokart.core.track.BSplineTrackRender;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;

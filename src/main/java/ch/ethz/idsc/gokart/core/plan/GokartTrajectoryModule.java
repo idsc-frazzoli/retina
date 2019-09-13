@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.plan;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.AbstractMapping;
@@ -47,11 +45,9 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.TensorRuntimeException;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.RotateLeft;
 import ch.ethz.idsc.tensor.alg.Subdivide;
-import ch.ethz.idsc.tensor.red.ArgMin;
 import ch.ethz.idsc.tensor.red.Norm;
 import ch.ethz.idsc.tensor.sca.Sign;
 
@@ -121,7 +117,7 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
   }
 
   @Override // from AbstractClockedModule
-  protected synchronized void runAlgo() {
+  protected final synchronized void runAlgo() {
     System.out.println("entering...");
     if (Objects.nonNull(gokartPoseEvent)) {
       if (Objects.nonNull(waypoints) && Tensors.nonEmpty(waypoints)) {
@@ -154,7 +150,7 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
         } else {
           Predicate<Tensor> conflicts = goal -> //
           Scalars.lessEquals(Norm._2.ofVector(SE2WRAP.difference(xya, goal)), trajectoryConfig.horizonDistance) || unionRegion.isMember(goal);
-          Iterator<Tensor> iterator = RotateLeft.of(waypoints, locate(waypoints, xya)).iterator();
+          Iterator<Tensor> iterator = RotateLeft.of(waypoints, StaticHelper.locate(waypoints, xya)).iterator();
           Tensor goal = iterator.next();
           // TODO GJOEL/JPH criterion is too primitive
           while (iterator.hasNext() && conflicts.test(goal))
@@ -185,7 +181,7 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
    * @return
    * @throws Exception if cutoffDistHead is negative, or no waypoints are present */
   private Optional<List<TrajectorySample>> getTrajectoryUntil(Tensor pose, Scalar cutoffDistHead) {
-    int closestIdx = locate(trajectory, pose);
+    int closestIdx = StaticHelper.locate(trajectory, pose);
     Tensor closest = trajectory.get(closestIdx).stateTime().state();
     if (Scalars.lessThan(Norm._2.ofVector(SE2WRAP.difference(pose, closest)), trajectoryConfig.proximityDistance)) {
       return Optional.of(trajectory.stream() //
@@ -197,32 +193,9 @@ public abstract class GokartTrajectoryModule<T extends TreePlanner> extends Abst
     return Optional.empty();
   }
 
-  protected static int locate(Collection<TrajectorySample> trajectory, Tensor state) {
-    if (Objects.isNull(trajectory) || trajectory.isEmpty()) {
-      trajectory.forEach(System.err::println);
-      throw TensorRuntimeException.of(state);
-    }
-    return locate(trajectory.stream().map(TrajectorySample::stateTime).map(StateTime::state), state);
-  }
-
-  protected static int locate(Tensor waypoints, Tensor state) {
-    if (Objects.isNull(waypoints) || Tensors.isEmpty(waypoints))
-      throw TensorRuntimeException.of(state, waypoints);
-    return locate(waypoints.stream(), state);
-  }
-
-  private static int locate(Stream<Tensor> stream, Tensor state) {
-    Tensor distances = Tensor.of(stream.map(wp -> Norm._2.ofVector(SE2WRAP.difference(wp, state))));
-    return ArgMin.of(distances); // find closest waypoint to current position, exists since waypoints is non-null/-empty
-  }
-
   @Override // from AbstractClockedModule
   protected final Scalar getPeriod() {
     return trajectoryConfig.planningPeriod;
-  }
-
-  public List<TrajectorySample> currentTrajectory() {
-    return Collections.unmodifiableList(trajectory);
   }
 
   protected abstract Optional<T> setupTreePlanner(StateTime root, Tensor goal);

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
@@ -99,7 +100,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   }
 
   public void setTree(TransitionSpace transitionSpace, Collection<? extends RrtsNode> collection) {
-    if(Objects.isNull(transitionRender)) {
+    if (Objects.isNull(transitionRender)) {
       transitionRender = new TransitionRender(transitionSpace);
       viewLcmFrame.geometricComponent.addRenderInterface(transitionRender);
     }

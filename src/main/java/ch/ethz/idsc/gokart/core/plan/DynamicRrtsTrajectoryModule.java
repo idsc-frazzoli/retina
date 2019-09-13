@@ -50,9 +50,9 @@ public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements
   protected Optional<LaneInterface> laneSegment(Tensor state, Tensor goal) {
     if (/* Objects.nonNull(ModuleAuto.INSTANCE.getInstance(TrackReconModule.class)) && */ trackLane.isPresent())
       return trackLane.map(laneInterface -> LaneSegment.of(laneInterface, state, goal));
-    int rootIdx = locate(waypoints, state);
+    int rootIdx = StaticHelper.locate(waypoints, state);
     Tensor shifted = RotateLeft.of(waypoints, rootIdx);
-    Tensor segment = shifted.extract(0, locate(shifted, goal) + 1);
+    Tensor segment = shifted.extract(0, StaticHelper.locate(shifted, goal) + 1);
     final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth);
     return Optional.of(StableLanes.of(segment, Clothoids.CURVE_SUBDIVISION::string, 3, r));
   }

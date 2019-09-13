@@ -50,7 +50,7 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final IntervalClock intervalClock = new IntervalClock();
   private final BSplineTrackRender trackReconRender = new BSplineTrackRender();
   // private final GlobalViewLcmModule globalViewLcmModule = //
-  //     ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
+  // ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
   // ---
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   private boolean isActive = true;

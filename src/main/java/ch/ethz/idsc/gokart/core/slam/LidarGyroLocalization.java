@@ -42,9 +42,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
     this.slamDunk = slamDunk;
   }
 
-  /** call {@link #setState(Tensor)} before invoking {@link #handle(Tensor)}
-   * 
-   * @param pose {x[m], y[m], angle}
+  /** @param pose {x[m], y[m], angle}
    * @param velocity {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]}
    * @param points
    * @return */
