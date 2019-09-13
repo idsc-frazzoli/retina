@@ -12,10 +12,12 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.gokart.core.pure.CurvePursuitModule;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
 import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidRrtsNdType;
 import ch.ethz.idsc.owl.bot.se2.rrts.Se2RrtsFlow;
+import ch.ethz.idsc.owl.data.tree.Nodes;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
@@ -31,6 +33,7 @@ import ch.ethz.idsc.owl.rrts.core.TransitionPlanner;
 import ch.ethz.idsc.owl.rrts.core.TransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -105,6 +108,9 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
 
   @Override // from GokartTrajectoryModule
   protected void expandResult(List<TrajectorySample> head, TransitionPlanner transitionPlanner) {
+    if (trajectoryConfig.showTree)
+      showTree((LaneRrtsPlannerServer) transitionPlanner);
+    // ---
     Optional<List<TrajectorySample>> optional = ((LaneRrtsPlannerServer) transitionPlanner).getTrajectory();
     if (optional.isPresent()) {
       trajectory = Trajectories.glue(head, optional.get());
@@ -116,6 +122,12 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
       // post 20181025: keep old trajectory
       System.err.println("use old trajectory");
     }
+  }
+
+  private void showTree(LaneRrtsPlannerServer server) {
+    GlobalViewLcmModule globalViewLcmModule = ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
+    if (Objects.nonNull(globalViewLcmModule))
+      globalViewLcmModule.setTree(transitionSpace, server.getRoot().map(Nodes::ofSubtree).orElse(null));
   }
 
   protected abstract Optional<LaneInterface> laneSegment(Tensor state, Tensor goal);

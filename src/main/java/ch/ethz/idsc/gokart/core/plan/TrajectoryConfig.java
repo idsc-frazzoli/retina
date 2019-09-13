@@ -44,6 +44,7 @@ public class TrajectoryConfig {
   public Scalar coneHalfAngle = Degree.of(18);
   public Scalar rrtsLaneWidth = Quantity.of(5, SI.METER);
   public Boolean greedy = true;
+  public Boolean showTree = false;
   /** true = SightLinesMapping
    * false = GenericBayesianMapping */
   public Boolean mapSightLines = true;
