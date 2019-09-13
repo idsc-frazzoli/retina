@@ -1,12 +1,16 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.mpc;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 //Not in use yet
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
-import ch.ethz.idsc.gokart.core.track.TrackReconModule;
+import ch.ethz.idsc.gokart.core.track.BSplineTrack;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackLcmClient;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
@@ -14,15 +18,15 @@ import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 
 public abstract class MPCAbstractDrivingModule extends AbstractModule implements //
-    MPCBSplineTrackListener, Runnable {
-  private final TrackReconModule trackReconModule = //
-      ModuleAuto.INSTANCE.getInstance(TrackReconModule.class);
+    BSplineTrackListener, Runnable {
+  private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
+      BSplineTrackLcmClient.open(), //
+      BSplineTrackLcmClient.closed());
   private final MPCRequestPublisher mpcRequestPublisher;
   private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
@@ -43,7 +47,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   final MPCLinmotProvider mpcLinmotProvider;
   // ---
   private boolean running = true;
-  private Optional<MPCBSplineTrack> mpcBSplineTrack = Optional.empty();
+  private Optional<BSplineTrack> mpcBSplineTrack = Optional.empty();
 
   /** create Module with standard estimator */
   MPCAbstractDrivingModule(MPCRequestPublisher mpcRequestPublisher, Timing timing) {
@@ -93,7 +97,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     GokartState state = mpcStateEstimationProvider.getState();
     Tensor safetyRadiusPosition = state.getCenterPosition();
     MPCPathParameter mpcPathParameter = null;
-    MPCPreviewableTrack liveTrack = mpcBSplineTrack.orElse(null);
+    MPCPreviewableTrack liveTrack = mpcBSplineTrack.map(MPCBSplineTrack::new).orElse(null);
     Scalar padding = MPCOptimizationConfig.GLOBAL.padding;
     Scalar qpFactor = MPCOptimizationConfig.GLOBAL.qpFactor;
     Scalar qpLimit = MPCOptimizationConfig.GLOBAL.qpLimit;
@@ -110,10 +114,8 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
 
   @Override // from AbstractModule
   protected final void first() {
-    if (Objects.nonNull(trackReconModule))
-      trackReconModule.listenersAdd(this);
-    else
-      System.err.println("did not subscribe to track info !!!");
+    bSplineTrackLcmClients.forEach(bSplineTrackLcmClient -> bSplineTrackLcmClient.addListener(this));
+    bSplineTrackLcmClients.forEach(BSplineTrackLcmClient::startSubscriptions);
     // ---
     mpcControlUpdateLcmClient.startSubscriptions();
     mpcStateEstimationProvider.first();
@@ -146,13 +148,12 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     mpcControlUpdateLcmClient.stopSubscriptions();
     mpcStateEstimationProvider.last();
     // ---
-    if (Objects.nonNull(trackReconModule))
-      trackReconModule.listenersRemove(this);
+    bSplineTrackLcmClients.forEach(BSplineTrackLcmClient::stopSubscriptions);
   }
 
   /***************************************************/
-  @Override // from MPCBSplineTrackListener
-  public final void mpcBSplineTrack(Optional<MPCBSplineTrack> optional) {
+  @Override // from BSplineTrackListener
+  public final void bSplineTrack(Optional<BSplineTrack> optional) {
     System.out.println("kinematic mpc bspline track, present=" + optional.isPresent());
     this.mpcBSplineTrack = optional;
   }

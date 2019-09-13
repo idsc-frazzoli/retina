@@ -33,7 +33,12 @@ public class MPCBSplineTrack implements MPCPreviewableTrack {
   /** @param points_xyr matrix with dimension n x 3
    * @param closed */
   public MPCBSplineTrack(Tensor points_xyr, boolean closed) {
-    bSplineTrack = BSplineTrack.of(points_xyr, closed); //
+    this(BSplineTrack.of(points_xyr, closed));
+  }
+
+  /** @param bSplineTrack */
+  public MPCBSplineTrack(BSplineTrack bSplineTrack) {
+    this.bSplineTrack = bSplineTrack;
   }
 
   // TODO JPH optimize

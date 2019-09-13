@@ -3,10 +3,7 @@ package ch.ethz.idsc.gokart.core.track;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
@@ -16,13 +13,11 @@ import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
-import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrackListener;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvents;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
-import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.BSplineTrackLcm;
 import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.owl.gui.RenderInterface;
@@ -31,7 +26,6 @@ import ch.ethz.idsc.owl.gui.win.TimerFrame;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
-import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -54,10 +48,9 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   private final TrackReconManagement trackReconManagement;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final IntervalClock intervalClock = new IntervalClock();
-  private final List<MPCBSplineTrackListener> listeners = new CopyOnWriteArrayList<>();
-  private final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
-  private final GlobalViewLcmModule globalViewLcmModule = //
-      ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
+  private final BSplineTrackRender trackReconRender = new BSplineTrackRender();
+  // private final GlobalViewLcmModule globalViewLcmModule = //
+  // ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
   // ---
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   private boolean isActive = true;
@@ -73,13 +66,8 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
     {
       timerFrame.geometricComponent.addRenderInterfaceBackground(GRID_RENDER);
       timerFrame.geometricComponent.addRenderInterface(mapping.getMap());
-      listenersAdd(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(trackReconRender);
       timerFrame.geometricComponent.addRenderInterface(trackReconManagement.getTrackLayoutInitialGuess());
-    }
-    {
-      if (Objects.nonNull(globalViewLcmModule))
-        listenersAdd(globalViewLcmModule.trackReconRender);
     }
     {
       JButton jButton = new JButton("set start");
@@ -118,11 +106,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
 
   private void private_windowClosed() {
     mapping.stop();
-    listenersRemove(trackReconRender);
-    if (Objects.nonNull(globalViewLcmModule)) {
-      listenersRemove(globalViewLcmModule.trackReconRender);
-      globalViewLcmModule.trackReconRender.mpcBSplineTrack(Optional.empty());
-    }
     gokartPoseLcmClient.stopSubscriptions();
     BSplineTrackLcm.publish(Optional.empty());
     terminate();
@@ -146,8 +129,8 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
           System.out.println("no start set");
       }
       // ---
-      listeners.forEach(listener -> listener.mpcBSplineTrack(lastTrack));
-      BSplineTrackLcm.publish(lastTrack.map(MPCBSplineTrack::bSplineTrack));
+      trackReconRender.bSplineTrack(bSplineTrack());
+      BSplineTrackLcm.publish(bSplineTrack());
     } else
       System.out.println("no quality pose");
   }
@@ -160,6 +143,10 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     this.gokartPoseEvent = gokartPoseEvent;
+  }
+
+  /* package */ Optional<BSplineTrack> bSplineTrack() {
+    return lastTrack.map(MPCBSplineTrack::bSplineTrack);
   }
 
   /** reset track and flag start at current pose */
@@ -179,16 +166,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   /** export track */
   private void exportTrack() {
     trackReconManagement.exportTrack();
-  }
-
-  public void listenersAdd(MPCBSplineTrackListener mpcBSplineTrackListener) {
-    listeners.add(mpcBSplineTrackListener);
-  }
-
-  public void listenersRemove(MPCBSplineTrackListener mpcBSplineTrackListener) {
-    boolean remove = listeners.remove(mpcBSplineTrackListener);
-    if (!remove)
-      new RuntimeException("not removed").printStackTrace();
   }
 
   public static void main(String[] args) throws Exception {

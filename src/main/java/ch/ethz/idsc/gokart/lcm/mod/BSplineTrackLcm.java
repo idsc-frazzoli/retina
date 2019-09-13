@@ -5,8 +5,6 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.track.BSplineTrack;
-import ch.ethz.idsc.gokart.core.track.BSplineTrackCyclic;
-import ch.ethz.idsc.gokart.core.track.BSplineTrackString;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.ArrayFloatBlob;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -57,8 +55,6 @@ public enum BSplineTrackLcm {
     Tensor xyr = decode(byteBuffer);
     if (Tensors.isEmpty(xyr))
       return Optional.empty();
-    return Optional.of(channel.endsWith(".c") //
-        ? new BSplineTrackCyclic(xyr) //
-        : new BSplineTrackString(xyr));
+    return Optional.of(BSplineTrack.of(xyr, channel.endsWith(".c")));
   }
 }
