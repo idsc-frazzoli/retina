@@ -5,7 +5,13 @@ import ch.ethz.idsc.gokart.core.map.AbstractMapping;
 import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
+import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidRrtsNodeCollections;
+import ch.ethz.idsc.owl.math.MinMax;
+import ch.ethz.idsc.owl.rrts.RandomRrtsNodeCollection;
+import ch.ethz.idsc.owl.rrts.core.RrtsNodeCollection;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
@@ -14,6 +20,7 @@ import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Degree;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.ref.FieldIntegerQ;
@@ -54,6 +61,8 @@ public class TrajectoryConfig {
    * false = spherical goal region */
   public Boolean conical = false;
   public Scalar mu_r = rrtsLaneWidth.multiply(RationalScalar.HALF);
+  public Boolean randomCollection = false;
+  public Boolean limitedCollection = true;
 
   /***************************************************/
   /** @param tangentSpeed with unit "m*s^-1"
@@ -77,6 +86,18 @@ public class TrajectoryConfig {
     return mapSightLines //
         ? SightLinesMapping.defaultObstacle()
         : MappingConfig.GLOBAL.createObstacleMapping();
+  }
+
+  public RrtsNodeCollection rrtsNodeCollection(Tensor waypoints, Scalar margin) {
+    if (randomCollection)
+      return new RandomRrtsNodeCollection();
+    MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
+    MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
+    Tensor bottomLeft = Tensors.of(minMaxX.min().subtract(margin), minMaxY.min().subtract(margin));
+    Tensor topRight = Tensors.of(minMaxX.max().add(margin), minMaxY.max().add(margin));
+    if (limitedCollection)
+      return ClothoidRrtsNodeCollections.of(Magnitude.PER_METER.apply(ClothoidPursuitConfig.GLOBAL.turningRatioMax), bottomLeft, topRight);
+    return ClothoidRrtsNodeCollections.of(bottomLeft, topRight);
   }
 
   /***************************************************/
