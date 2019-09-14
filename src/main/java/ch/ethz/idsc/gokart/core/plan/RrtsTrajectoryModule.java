@@ -72,12 +72,12 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
           new LaneRrtsPlannerServer( //
               transitionSpace, transitionRegionQuery, resolution, Se2StateSpaceModel.INSTANCE, //
               LengthCostFunction.INSTANCE, trajectoryConfig.greedy) {
-            @Override
+            @Override // from DefaultRrtsPlannerServer
             protected RrtsNodeCollection rrtsNodeCollection() {
-              return trajectoryConfig.rrtsNodeCollection(waypoints, r);
+              return trajectoryConfig.rrtsNodeCollection(transitionSpace, waypoints, r);
             }
 
-            @Override
+            @Override // from RrtsPlannerServer
             protected Tensor uBetween(StateTime orig, StateTime dest) {
               return Se2RrtsFlow.uBetween(orig, dest);
             }

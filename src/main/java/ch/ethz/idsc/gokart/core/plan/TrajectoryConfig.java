@@ -8,12 +8,16 @@ import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidRrtsNodeCollections;
+import ch.ethz.idsc.owl.bot.se2.rrts.DubinsTransitionSpace;
+import ch.ethz.idsc.owl.bot.se2.rrts.Se2TransitionRrtsNodeCollections;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.rrts.RandomRrtsNodeCollection;
 import ch.ethz.idsc.owl.rrts.core.RrtsNodeCollection;
+import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.sophus.crv.dubins.DubinsPathComparator;
 import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
 import ch.ethz.idsc.sophus.hs.r2.Se2UniformResample;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -45,7 +49,7 @@ public class TrajectoryConfig {
   /** rotation per meter driven is at least 23[deg/m]
    * 20180429_minimum_turning_radius.pdf
    * 20180517: reduced value to 20[deg/m] to be more conservative and avoid extreme steering
-   * 20181025: reduced value to 15[deg/m] */
+   * 20181025: reduced value to 15[deg/m] corresponds to a turning radius == 3.819[m] */
   public Scalar maxRotation = Quantity.of(15, "deg*m^-1");
   /** half angle of conic goal region */
   public Scalar coneHalfAngle = Degree.of(18);
@@ -88,7 +92,7 @@ public class TrajectoryConfig {
         : MappingConfig.GLOBAL.createObstacleMapping();
   }
 
-  public RrtsNodeCollection rrtsNodeCollection(Tensor waypoints, Scalar margin) {
+  public RrtsNodeCollection rrtsNodeCollection(TransitionSpace transitionSpace, Tensor waypoints, Scalar margin) {
     if (randomCollection)
       return new RandomRrtsNodeCollection();
     MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
@@ -97,7 +101,7 @@ public class TrajectoryConfig {
     Tensor topRight = Tensors.of(minMaxX.max().add(margin), minMaxY.max().add(margin));
     if (limitedCollection)
       return ClothoidRrtsNodeCollections.of(Magnitude.PER_METER.apply(ClothoidPursuitConfig.GLOBAL.turningRatioMax), bottomLeft, topRight);
-    return ClothoidRrtsNodeCollections.of(bottomLeft, topRight);
+    return Se2TransitionRrtsNodeCollections.of(transitionSpace, bottomLeft, topRight);
   }
 
   /***************************************************/
@@ -109,5 +113,10 @@ public class TrajectoryConfig {
     return cyclic //
         ? curveSubdivision.cyclic(se2curve)
         : curveSubdivision.string(se2curve);
+  }
+
+  public TransitionSpace dubinsTransitionSpace() {
+    Scalar radius = Magnitude.METER.apply(maxRotation.reciprocal());
+    return DubinsTransitionSpace.of(radius, DubinsPathComparator.LENGTH);
   }
 }

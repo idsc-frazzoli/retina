@@ -68,4 +68,8 @@ public class TrajectoryConfigTest extends TestCase {
     MatrixQ.require(waypoints);
     PoseHelper.toUnitless(waypoints.get(0));
   }
+
+  public void testDubins() {
+    TrajectoryConfig.GLOBAL.dubinsTransitionSpace();
+  }
 }
