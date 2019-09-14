@@ -24,8 +24,7 @@ import ch.ethz.idsc.tensor.red.Norm;
   static int locate(Collection<TrajectorySample> trajectory, Tensor state) {
     if (Objects.isNull(trajectory) || //
         trajectory.isEmpty()) {
-      // FIXME GJOEL null pointer
-      trajectory.forEach(System.err::println);
+      System.err.println("trajectory=" + trajectory);
       throw TensorRuntimeException.of(state);
     }
     return locate(trajectory.stream().map(TrajectorySample::stateTime).map(StateTime::state), state);
