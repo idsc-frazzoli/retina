@@ -1,4 +1,4 @@
-// code by jph, gjoel
+// code by gjoel
 package ch.ethz.idsc.gokart.core.track;
 
 import java.nio.ByteBuffer;

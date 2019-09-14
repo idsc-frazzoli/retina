@@ -16,7 +16,9 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
-import ch.ethz.idsc.owl.bot.se2.rrts.LimitedClothoidRrtsNdType;
+import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidRrtsNodeCollections;
+import ch.ethz.idsc.owl.bot.se2.rrts.LaneRrtsPlannerServer;
+import ch.ethz.idsc.owl.bot.se2.rrts.LimitedClothoidNdType;
 import ch.ethz.idsc.owl.bot.se2.rrts.Se2RrtsFlow;
 import ch.ethz.idsc.owl.data.tree.Nodes;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
@@ -24,8 +26,6 @@ import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
-import ch.ethz.idsc.owl.rrts.LaneRrtsPlannerServer;
-import ch.ethz.idsc.owl.rrts.RrtsNodeCollections;
 import ch.ethz.idsc.owl.rrts.adapter.LengthCostFunction;
 import ch.ethz.idsc.owl.rrts.adapter.SampledTransitionRegionQuery;
 import ch.ethz.idsc.owl.rrts.adapter.TransitionRegionQueryUnion;
@@ -40,7 +40,6 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.opt.Pi;
 
 // TODO make configurable as parameter
 public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<TransitionPlanner> {
@@ -82,11 +81,11 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
             protected RrtsNodeCollection rrtsNodeCollection() {
               MinMax minMaxX = MinMax.of(waypoints.get(Tensor.ALL, 0));
               MinMax minMaxY = MinMax.of(waypoints.get(Tensor.ALL, 1));
-              Tensor lbounds_ = Tensors.of(minMaxX.min().subtract(r), minMaxY.min().subtract(r), RealScalar.ZERO);
-              Tensor ubounds_ = Tensors.of(minMaxX.max().add(r), minMaxY.max().add(r), Pi.TWO);
-              // return new RrtsNodeCollections(ClothoidRrtsNdType.INSTANCE, lbounds_, ubounds_);
-              return new RrtsNodeCollections(LimitedClothoidRrtsNdType.with(Magnitude.PER_METER.apply(ClothoidPursuitConfig.GLOBAL.turningRatioMax)), lbounds_,
-                  ubounds_);
+              // TODO move creation to config
+              return ClothoidRrtsNodeCollections.of( //
+                  LimitedClothoidNdType.with(Magnitude.PER_METER.apply(ClothoidPursuitConfig.GLOBAL.turningRatioMax)), //
+                  Tensors.of(minMaxX.min().subtract(r), minMaxY.min().subtract(r)), //
+                  Tensors.of(minMaxX.max().add(r), minMaxY.max().add(r)));
               // return new RandomRrtsNodeCollection();
             }
 

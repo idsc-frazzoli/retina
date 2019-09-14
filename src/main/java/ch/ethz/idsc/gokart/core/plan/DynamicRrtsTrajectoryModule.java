@@ -55,8 +55,8 @@ public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements
     int rootIdx = StaticHelper.locate(waypoints, state);
     Tensor shifted = RotateLeft.of(waypoints, rootIdx);
     Tensor segment = shifted.extract(0, StaticHelper.locate(shifted, goal) + 1);
-    final Scalar r = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth).multiply(RationalScalar.HALF);
-    return Optional.of(StableLanes.of(segment, Clothoids.CURVE_SUBDIVISION::string, 3, r));
+    Scalar halfWidth = Magnitude.METER.apply(trajectoryConfig.rrtsLaneWidth).multiply(RationalScalar.HALF);
+    return Optional.of(StableLanes.of(segment, Clothoids.CURVE_SUBDIVISION::string, 3, halfWidth));
   }
 
   @Override // from BSplineTrackListener
