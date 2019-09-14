@@ -30,7 +30,7 @@ import ch.ethz.idsc.owl.glc.core.StateTimeRaster;
 import ch.ethz.idsc.owl.glc.core.TrajectoryPlanner;
 import ch.ethz.idsc.owl.glc.std.StandardTrajectoryPlanner;
 import ch.ethz.idsc.owl.gui.region.ImageRender;
-import ch.ethz.idsc.owl.gui.ren.SphericalRegionRender;
+import ch.ethz.idsc.owl.gui.ren.BallRegionRender;
 import ch.ethz.idsc.owl.gui.ren.TrajectoryRender;
 import ch.ethz.idsc.owl.gui.ren.TreeRender;
 import ch.ethz.idsc.owl.gui.win.OwlyAnimationFrame;
@@ -39,8 +39,8 @@ import ch.ethz.idsc.owl.mapping.ShadowMapDirected;
 import ch.ethz.idsc.owl.mapping.ShadowMapSpherical;
 import ch.ethz.idsc.owl.math.StateTimeTensorFunction;
 import ch.ethz.idsc.owl.math.flow.Flow;
+import ch.ethz.idsc.owl.math.region.BallRegion;
 import ch.ethz.idsc.owl.math.region.ImageRegion;
-import ch.ethz.idsc.owl.math.region.SphericalRegion;
 import ch.ethz.idsc.owl.math.state.FixedStateIntegrator;
 import ch.ethz.idsc.owl.math.state.SimpleTrajectoryRegionQuery;
 import ch.ethz.idsc.owl.math.state.StateTime;
@@ -166,7 +166,7 @@ public class PlanningEvaluation0 extends Se2Demo {
     // Tse2MinTimeGoalManager tse2MinTimeGoalManager = new Tse2MinTimeGoalManager(tse2ComboRegion, controls, MAX_SPEED);
     Tse2ForwardMinTimeGoalManager tse2MinTimeGoalManager = new Tse2ForwardMinTimeGoalManager(tse2ComboRegion, controls);
     GoalInterface goalInterface = MultiCostGoalAdapter.of(tse2MinTimeGoalManager.getGoalInterface(), extraCosts);
-    owlyAnimationFrame.addBackground(new SphericalRegionRender(new SphericalRegion(GOAL, goalRadius.Get(0))));
+    owlyAnimationFrame.addBackground(new BallRegionRender(new BallRegion(GOAL, goalRadius.Get(0))));
     TrajectoryPlanner tp = new StandardTrajectoryPlanner( //
         stateTimeRaster(), FIXEDSTATEINTEGRATOR, controls, plannerConstraints, goalInterface);
     // SETUP CALLBACKS
