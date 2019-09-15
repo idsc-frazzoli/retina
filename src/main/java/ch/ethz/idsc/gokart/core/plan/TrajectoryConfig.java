@@ -115,8 +115,9 @@ public class TrajectoryConfig {
         : curveSubdivision.string(se2curve);
   }
 
-  public TransitionSpace dubinsTransitionSpace() {
-    Scalar radius = Magnitude.METER.apply(maxRotation.reciprocal());
-    return DubinsTransitionSpace.of(radius, DubinsPathComparator.LENGTH);
+  /* package */ TransitionSpace dubinsTransitionSpace() {
+    return DubinsTransitionSpace.of( //
+        Magnitude.METER.apply(maxRotation.reciprocal()), // radius
+        DubinsPathComparator.LENGTH);
   }
 }
