@@ -10,7 +10,7 @@ addpath('..');
 userDir = getuserdir;
 addpath([userDir '/Forces']); % Location of FORCES PRO
 addpath('casadi');
-
+addpath('../shared_dynamic')
     
 clear model
 clear problem
