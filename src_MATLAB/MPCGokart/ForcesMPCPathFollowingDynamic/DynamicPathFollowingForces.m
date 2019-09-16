@@ -8,15 +8,14 @@
 %add force path (change that for yourself)
 addpath('..');
 userDir = getuserdir;
-addpath([userDir '/Forces']); % Location of FORCES PRO
+addpath([userDir '\Documents\FORCES_client']); % Location of FORCES PRO
 addpath('casadi');
-addpath('../shared_dynamic')
 
     
 clear model
 clear problem
 clear all
-close all
+%close all
 
 %% Baseline params
 
@@ -24,13 +23,12 @@ maxSpeed = 10; % in [m/s]
 maxxacc = 5; % in [m/s^-1]
 steeringreg = 0.02;  
 specificmoi = 0.3;
-pointsO = 4;
-pointsN = 10;
+pointsO = 4; % number of Parameters
+pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
 nextsplinepoints = 0;
 %parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
-% variables z =
-% [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
+% variables z = [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
 
 
 %% global parameters index
@@ -110,8 +108,6 @@ points(:,3)=points(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
 %points = [0,40,40,5,0;0,0,10,9,10]';
 
-
-
 trajectorytimestep = integrator_stepsize;
 %[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 model.npar = pointsO + 3*pointsN;
@@ -135,16 +131,20 @@ model.lb = -ones(1,index.nv)*inf;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
 %model.ub(index.ab)=2;
-model.lb(index.ab)=-4.5;
+%model.lb(index.ab)=-4.5;
 model.lb(index.ab)=-inf;
+
 model.ub(index.tv)=1.7;
 model.lb(index.tv)=-1.7;
 %model.ub(index.tv)=0.1;
 %model.lb(index.tv)=-0.1;
 model.lb(index.slack)=0;
+
 model.lb(index.v)=0;
+
 model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
+
 model.ub(index.s)=pointsN-2;
 model.lb(index.s)=0;
 
@@ -165,7 +165,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
-tend = 100;
+tend = 300;
 eulersteps = 10;
 planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]
@@ -218,11 +218,11 @@ for i =1:tend
     ip = splinestart;
     [nkp, ~] = size(points);
     nextSplinePoints = zeros(pointsN,3);
-    for i=1:pointsN
+    for jj=1:pointsN
        while ip>nkp
             ip = ip -nkp;
        end
-       nextSplinePoints(i,:)=points(ip,:);
+       nextSplinePoints(jj,:)=points(ip,:);
        ip = ip + 1;
     end
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
