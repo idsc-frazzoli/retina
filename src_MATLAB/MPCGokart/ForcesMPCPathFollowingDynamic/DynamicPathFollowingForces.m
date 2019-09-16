@@ -8,14 +8,14 @@
 %add force path (change that for yourself)
 addpath('..');
 userDir = getuserdir;
-addpath([userDir '\Documents\FORCES_client']); % Location of FORCES PRO
+addpath([userDir '/Forces']); % Location of FORCES PRO
 addpath('casadi');
 
     
 clear model
 clear problem
 clear all
-%close all
+close all
 
 %% Baseline params
 
