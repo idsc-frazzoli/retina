@@ -19,7 +19,6 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseLcmClient;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.lcm.mod.BSplineTrackLcm;
-import ch.ethz.idsc.owl.data.IntervalClock;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.GridRender;
 import ch.ethz.idsc.owl.gui.win.TimerFrame;
@@ -34,6 +33,7 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO does not shut down properly in TaskTabbedGui when not closed separately
+// TODO "set start" causes GUI to freeze briefly
 public final class TrackReconModule extends AbstractClockedModule implements GokartPoseListener {
   /** TODO JPH magic const */
   private static final Scalar PERIOD = Quantity.of(0.1, SI.SECOND);
@@ -47,7 +47,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       MappingConfig.GLOBAL.createTrackMapping();
   private final TrackReconManagement trackReconManagement;
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
-  private final IntervalClock intervalClock = new IntervalClock();
   private final BSplineTrackRender trackReconRender = new BSplineTrackRender();
   // private final GlobalViewLcmModule globalViewLcmModule = //
   // ModuleAuto.INSTANCE.getInstance(GlobalViewLcmModule.class);
@@ -120,7 +119,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
   protected void runAlgo() {
     GokartPoseEvent _gokartPoseEvent = gokartPoseEvent;
     if (LocalizationConfig.GLOBAL.isQualityOk(_gokartPoseEvent)) {
-      double seconds = intervalClock.seconds(); // reset
       if (isActive) {
         if (trackReconManagement.isStartSet()) {
           mapping.prepareMap();

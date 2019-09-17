@@ -22,24 +22,24 @@ import ch.ethz.idsc.sophus.util.BoundedLinkedList;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-class CombinedEvent {
-  final GokartPoseEvent gokartPoseEvent;
-  final Tensor matrix;
-  final SteerColumnEvent steerColumnEvent;
-
-  CombinedEvent(GokartPoseEvent gokartPoseEvent, SteerColumnEvent steerColumnEvent) {
-    this.gokartPoseEvent = gokartPoseEvent;
-    matrix = PoseHelper.toSE2Matrix(gokartPoseEvent.getPose());
-    this.steerColumnEvent = steerColumnEvent;
-  }
-}
-
 /** draws brief history of rear axle center with orientation
  * to indicate drift in video playback */
 /* package */ class SlipLinesRender implements GokartPoseListener, RenderInterface {
   private static final AxisAlignedBox AXIS_ALIGNED_BOX = //
       new AxisAlignedBox(RimoTireConfiguration._REAR.halfWidth().multiply(RealScalar.of(0.4)));
-  // ---
+
+  private static class CombinedEvent {
+    final GokartPoseEvent gokartPoseEvent;
+    final Tensor matrix;
+    final SteerColumnEvent steerColumnEvent;
+
+    CombinedEvent(GokartPoseEvent gokartPoseEvent, SteerColumnEvent steerColumnEvent) {
+      this.gokartPoseEvent = gokartPoseEvent;
+      matrix = PoseHelper.toSE2Matrix(gokartPoseEvent.getPose());
+      this.steerColumnEvent = steerColumnEvent;
+    }
+  }
+
   private final BoundedLinkedList<CombinedEvent> boundedLinkedList;
   SteerColumnEvent steerColumnEvent = SteerColumnEvents.UNKNOWN;
   SteerColumnListener steerColumnListener = getEvent -> steerColumnEvent = getEvent;
