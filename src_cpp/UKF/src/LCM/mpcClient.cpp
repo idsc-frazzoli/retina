@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 #include <lcm/lcm-cpp.hpp>
+#include <functional>
+#include <bits/stdc++.h>
 
 #include "mpcClient.h"
 #include "../../../LCM/idsc/BinaryBlob.hpp"
@@ -11,7 +13,8 @@
 #include "../ModelMPC/modelDx.cpp"
 #include "ModelObject.cpp"
 #include "../UnscentedKalmanFilter.h"
-#include <functional>
+
+using namespace std;
 
 lcm::LCM lcmObj;
 
@@ -19,7 +22,8 @@ struct ControlRequestMsg lastCRMsg;
 struct OnlineParam lastOnlineParam;
 
 const int lookback = 10;
-std::array<OnlineParam, lookback> arrOnlineParams;
+OnlineParam oParam[lookback];
+int counter = 0;
 
 struct PacejkaParameter pacejkaParameter;
 idsc::BinaryBlob blob;
@@ -27,6 +31,9 @@ idsc::BinaryBlob blob;
 double ACCXmod;
 double ACCYmod;
 double ACCROTZmod;
+double ACCXtrue;
+double ACCYtrue;
+double ACCROTZtrue;
 
 class Handler {
 public:
@@ -60,38 +67,39 @@ public:
         printf("Uy: %f\n", lastOnlineParam.ab);
         printf("dotPsi: %f\n", lastOnlineParam.tv);
 
-        /* TODO REPLACE COMPUTATION WITH LIST
-        arrOnlineParams.push_front(lastOnlineParam);
-        int size = arrOnlineParams.size();
+
+        oParam[counter] = lastOnlineParam;
+        ++counter;
+        int size = (sizeof(oParam)/sizeof(*oParam));
         if (size >= lookback) {
             printf("starting to compute acc\n");
-            ACCX = 0;
-            ACCY = 0;
-            OnlineParam prevOp;
-            OnlineParam op;
-            for (int i = 1; i < size; ++i) {
-                prevOp = arrOnlineParams[i-1];
-                double deltaT = op.time - op.time;
+            ACCXtrue = 0;
+            ACCYtrue = 0;
+            for (int i = 0; i<size-1; ++i ) {
+                OnlineParam prevOp = oParam[i];
+                OnlineParam op = oParam[i+1];
+                double deltaT = op.time - prevOp.time;
                 double dvx = op.vx - prevOp.vx;
                 double dvy = op.vy - prevOp.vy;
-                ACCX += dvx / deltaT;
-                ACCY += dvy / deltaT;
+                ACCXtrue += dvx / deltaT;
+                ACCYtrue += dvy / deltaT;
             }
-            ACCX = ACCX/(double)size;
-            ACCY = ACCY/(double)size;
+            ACCXtrue = ACCXtrue/(double)size;
+            ACCYtrue = ACCYtrue/(double)size;
         }
 
-        printf("ACCX: %f\n", ACCX);
-        printf("ACCY: %f\n", ACCY);
-        printf("ACCROTZ: %f\n", ACCROTZ);
-        */
+        printf("ACCX: %f\n", ACCXtrue);
+        printf("ACCY: %f\n", ACCYtrue);
+        printf("ACCROTZ: %f\n", ACCROTZtrue);
 
+        UKF::MeasurementVec z;
+        z << ACCXtrue, ACCYtrue, ACCROTZtrue;
 
         //UKF
-        printf("starting ukf\n");
+        printf("starting ukf............\n");
 
         // inital guess
-        double const B1 = 9;
+        double B1 = 9;
         double C1 = 1;
         double D1 = 10;
         double B2 = 5.2;
@@ -146,14 +154,14 @@ public:
                     double BETA = lastOnlineParam.beta;
                     double AB = lastOnlineParam.ab;
                     double TV = lastOnlineParam.tv;
-                    const double paramIn[8] = {param(0),
-                                         param(1),
-                                         param(2),
-                                         param(3),
-                                         param(4),
-                                         param(5),
-                                         param(6),
-                                         0};
+                    const double paramIn[8] = {param[0],
+                                         param[1],
+                                         param[2],
+                                         param[3],
+                                         param[4],
+                                         param[5],
+                                         param[6],
+                                         param[7]};
 
                     modelDx(velx,
                             vely,
@@ -172,16 +180,30 @@ public:
                     return measurementVec;
                 };
 
-        std::cout << "pacj param " << std::endl;
+        ukf.update(
+                measureFunction,
+                predictionFunction,
+                measureCov,
+                processCov,
+                z);
 
         pacejkaParameter = {
-                .B1 = (float) 9.0,
-                .C1 = (float) 1.0,
-                .D1 = (float) 10.0,
-                .B2 = (float) 9.0,
-                .C2 = (float) 1.0,
-                .D2 = (float) 10.0,
+                .B1 = (float) ukf.mean(0),
+                .C1 = (float) ukf.mean(1),
+                .D1 = (float) ukf.mean(0),
+                .B2 = (float) ukf.mean(3),
+                .C2 = (float) ukf.mean(4),
+                .D2 = (float) ukf.mean(5),
         };
+
+
+        printf("pacj param \n");
+        printf("B1: %f\n", pacejkaParameter.B1);
+        printf("C1: %f\n", pacejkaParameter.C1);
+        printf("D1: %f\n", pacejkaParameter.D1);
+        printf("B2: %f\n", pacejkaParameter.B2);
+        printf("C2: %f\n", pacejkaParameter.C2);
+        printf("D2: %f\n", pacejkaParameter.D2);
 
         blob.data_length = 6*4;
         blob.data.resize(blob.data_length);
