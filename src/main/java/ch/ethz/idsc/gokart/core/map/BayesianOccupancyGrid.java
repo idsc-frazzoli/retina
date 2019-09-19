@@ -100,7 +100,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
       Arrays.fill(logOdds, BayesianOccupancyGrid.pToLogOdd(P_M));
     else {
       Arrays.fill(logOdds, BayesianOccupancyGrid.pToLogOdd(0.99));
-      setHset();
+      updateHset();
     }
   }
 
@@ -229,7 +229,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
     }
   }
 
-  private void setHset() {
+  private void updateHset() {
     synchronized (hset) {
       hset.clear();
       for (int i = 0; i < dimX(); i++)
@@ -263,7 +263,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
     Tensor rotation = RotationMatrix.of(orientation);
     int fromy = (int) (-cellDimInv.number().doubleValue() * 3 * 2.0f);
     int endy = -fromy;
-    for (int ix = -1; ix < cellDimInv.number().doubleValue() * 12 * 2.0f; ix++) {
+    for (int ix = -1; ix < cellDimInv.number().doubleValue() * 12 * 2.0f; ix++)
       for (int iy = fromy; iy <= endy; iy++) {
         Tensor posVec = Tensors.vector(ix, iy);
         Tensor rotPos = rotation.dot(posVec);
@@ -272,8 +272,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
         if (isCellInGrid(posX, posY))
           logOdds[cellToIdx(posX, posY)] = 0;
       }
-      setHset();
-    }
+    updateHset();
   }
 
   /** @param p from the open interval (0, 1)
