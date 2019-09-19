@@ -56,6 +56,7 @@ import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
+import ch.ethz.idsc.gokart.gui.lab.SteerSignalModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -167,6 +168,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   static final List<Class<? extends AbstractModule>> MODULES_LAB = Arrays.asList( //
       SpyModule.class, //
       AutoboxTestingModule.class, //
+      SteerSignalModule.class, //
       LinmotPressTestModule.class, //
       LinmotConstantPressTestModule.class, //
       // LocalViewLcmModule.class, //
