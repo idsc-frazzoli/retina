@@ -12,7 +12,7 @@ import lcm.lcm.LCMSubscriber;
 import lcm.lcm.SubscriptionRecord;
 
 public abstract class BinaryLcmClient implements LcmClientInterface, LCMSubscriber {
-  private final String channel;
+  protected final String channel;
   private SubscriptionRecord subscriptionRecord = null;
 
   public BinaryLcmClient(String channel) {

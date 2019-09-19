@@ -7,6 +7,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.sca.Sign;
 
+// TODO JPH class design, see where Limit is used, possibly hide more
 /* package */ class Limit {
   Scalar lo;
   Scalar hi;

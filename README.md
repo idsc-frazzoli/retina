@@ -71,8 +71,8 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 
 ### 2019
 
-* Michael von Büren (MT): simulation of gokart dynamics
-* Joel Gächter (MT): precise mapping, clothoid pursuit
+* Michael von Büren (MT): simulation of gokart dynamics, neural network as model for MPC
+* Joel Gächter (MT): sight-lines mapping, clothoid pursuit, planning with clothoids
 * Antonia Mosberger (BT): power steering, anti-lock braking, lane keeping
 * Maximilien Picquet (SP): Pacejka parameter estimation using unscented Kalman filter
 
@@ -143,10 +143,6 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 * [`jSerialComm`](http://fazecast.github.io/jSerialComm/) platform-independent serial port access
 * [`ELKI`](https://elki-project.github.io/) for DBSCAN
 * [`lwjgl`](https://www.lwjgl.org/) for joystick readout
-
-## Go-kart Operation
-
-![gokart_operation](https://user-images.githubusercontent.com/4012178/54883114-371e3980-4e62-11e9-9ffd-4d152ffe1609.png)
 
 ---
 

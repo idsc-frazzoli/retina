@@ -25,6 +25,7 @@ public class HapticSteerConfig implements Serializable {
   public Scalar velocityFilter = RealScalar.of(0.2);
   public Scalar latForceCompensation = Quantity.of(0.2, "SCT*s*m^-1");
   public Scalar latForceCompensationBoundary = Quantity.of(0.5, "SCT");
+  public Scalar prbs7AmplitudeTorque = Quantity.of(0.2, "SCT");
   /** tsuFactor in the interval [0, 1] */
   public Scalar tsuFactor = RealScalar.of(0.8);
   /***************************************************/

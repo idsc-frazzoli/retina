@@ -10,26 +10,21 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.EmptyRender;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.time.SystemTimestamp;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.img.ArrayPlot;
 import ch.ethz.idsc.tensor.img.ColorDataGradient;
@@ -39,14 +34,16 @@ import ch.ethz.idsc.tensor.img.Hue;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.ImageFormat;
-import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.mat.Inverse;
 import ch.ethz.idsc.tensor.opt.ScalarTensorFunction;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/* package */ class ManualTrackLayoutDemo extends BSplineTrackDemo {
+/** used in analysis of race on 20190701 between human driver and dynamic mpc
+ * 
+ * https://github.com/idsc-frazzoli/retina/files/3492127/20190812_autonomous_human_racing.pdf */
+public class ManualTrackLayoutDemo extends BSplineTrackDemo {
   private static final List<Integer> DEGREES = Arrays.asList(1, 2, 3, 4, 5);
   private static final ColorDataGradient COLOR_DATA_GRADIENT_STRING = //
       ColorDataGradients.CLASSIC.deriveWithOpacity(RealScalar.of(0.5));
@@ -92,19 +89,18 @@ import ch.ethz.idsc.tensor.sca.Round;
         Tensor points_xya = getControlPointsSe2().copy();
         points_xya.set(Ramp.FUNCTION, Tensor.ALL, 2);
         try {
-          Export.of(HomeDirectory.file("thetrackctrl.csv"), points_xya.map(Round._3));
+          File file = HomeDirectory.file(SystemTimestamp.asString() + ".csv");
+          Export.of(file, points_xya.map(Round._3));
+          System.out.println("exported: " + file);
         } catch (Exception exception) {
           exception.printStackTrace();
         }
       }
     });
     timerFrame.jToolBar.add(jButtonExport);
-    Tensor points = ResourceData.of("/dubilab/analysis/track/20190701.csv");
-    if (Objects.nonNull(points))
-      setControlPointsSe2(points);
   }
 
-  private void setCurveR2(Tensor curve) {
+  public void setCurveR2(Tensor curve) {
     renderInterface = new PathRender(Color.BLUE).setCurve(curve, false);
   }
 
@@ -116,7 +112,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     points_xya.set(Ramp.FUNCTION, Tensor.ALL, 2);
     if (1 < points_xya.length() && jButtonRender.isSelected()) {
       Tensor points_xyr = points_xya.map(s -> Quantity.of(s, SI.METER));
-      BSplineTrack bSplineTrack = BSplineTrack.of(points_xyr, jToggleClosed.isSelected());
+      BSplineTrack bSplineTrack = BSplineTrack.of(points_xyr, jToggleOpen.isSelected());
       Dimension dimension = timerFrame.geometricComponent.jComponent.getSize();
       Tensor pixel2model = Inverse.of(timerFrame.geometricComponent.getModel2Pixel());
       GeometricLayer gl = GeometricLayer.of(pixel2model);
@@ -131,7 +127,7 @@ import ch.ethz.idsc.tensor.sca.Round;
         // row.append(bSplineTrack.getNearestPathProgress(gl.toVector(x, y)));
         raster.append(row);
       }
-      ColorDataGradient colorDataGradient = jToggleClosed.isSelected() //
+      ColorDataGradient colorDataGradient = jToggleOpen.isSelected() //
           ? this.colorDataGradient
           : COLOR_DATA_GRADIENT_STRING;
       Tensor tensor = ArrayPlot.of(raster, colorDataGradient);
@@ -141,16 +137,5 @@ import ch.ethz.idsc.tensor.sca.Round;
           bufferedImage.getHeight() * step, null);
     }
     super.render(geometricLayer, graphics);
-  }
-
-  public static void main(String[] args) throws Exception {
-    OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
-    OfflineLogPlayer.process(new File("/media/datahaki/data/gokart/0701hum/20190701T170957_00/log.lcm"), offlineTableSupplier);
-    Tensor tensor = offlineTableSupplier.getTable();
-    System.out.println(Dimensions.of(tensor));
-    ManualTrackLayoutDemo manualTrackLayoutDemo = new ManualTrackLayoutDemo();
-    manualTrackLayoutDemo.setCurveR2(Tensor.of(tensor.stream().map(row -> row.extract(1, 3))));
-    manualTrackLayoutDemo.timerFrame.jFrame.setBounds(100, 100, 600, 600);
-    manualTrackLayoutDemo.timerFrame.jFrame.setVisible(true);
   }
 }
