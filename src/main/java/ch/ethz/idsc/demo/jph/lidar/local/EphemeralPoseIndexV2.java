@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import ch.ethz.idsc.sophus.app.api.GokartPoseDataV2;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
@@ -17,8 +16,11 @@ import ch.ethz.idsc.tensor.io.StringScalar;
 /** produces the file "tpqv50.vector" that lists all csv files of pose tables V2 */
 /* package */ enum EphemeralPoseIndexV2 {
   ;
+  // TODO JPH OWL
+  public static final String PATH_FOLDER = "/dubilab/app/tpqv50";
+
   public static void main(String[] args) throws IOException {
-    String suffix = GokartPoseDataV2.PATH_FOLDER;
+    String suffix = PATH_FOLDER;
     File folder = HomeDirectory.file("Projects/ephemeral/src/main/resources" + suffix);
     // ---
     List<File> files = Arrays.asList(folder.listFiles());

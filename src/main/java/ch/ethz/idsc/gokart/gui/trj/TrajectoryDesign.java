@@ -135,8 +135,8 @@ public class TrajectoryDesign extends CurvatureDemo {
         .map(TrajectoryDesign::se2CtoSe2WithUnits));
   }
 
-  @Override
-  public Tensor getControlPointShape() {
+  @Override // from ControlPointsDemo
+  protected Tensor getControlPointShape() {
     return geodesicDisplay().shape().multiply(RealScalar.of(2));
   }
 

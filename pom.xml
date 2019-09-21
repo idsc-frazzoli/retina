@@ -83,7 +83,7 @@
 		<dependency>
 			<groupId>ch.ethz.idsc</groupId>
 			<artifactId>owl</artifactId>
-			<version>0.5.4</version>
+			<version>0.5.6</version>
 		</dependency>
 
 		<dependency>
@@ -101,7 +101,24 @@
 			<artifactId>humble-video-all</artifactId>
 			<version>0.2.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.bytedeco</groupId>
+			<artifactId>javacv-platform</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bytedeco.javacpp-presets</groupId>
+			<artifactId>opencv</artifactId>
+			<version>3.4.1-1.4.1</version>
+			<classifier>linux-x86_64-gpu</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.bytedeco.javacpp-presets</groupId>
+			<artifactId>opencv</artifactId>
+			<version>3.4.1-1.4.1</version>
+			<classifier>macosx-x86_64-gpu</classifier>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.lwjgl</groupId>
 			<artifactId>lwjgl</artifactId>

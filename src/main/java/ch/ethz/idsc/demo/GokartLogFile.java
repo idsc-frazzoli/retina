@@ -2425,6 +2425,74 @@ public enum GokartLogFile implements LogFile {
   /** mpc original, mpc new */
   _20190902T174135_8a985b06,
   /***************************************************/
+  /* 2019-09-05 */
+  /** manual driving */
+  _20190905T105815_642c658b,
+  /** mpc */
+  _20190905T163857_3f9c39ee,
+  /** manual driving */
+  _20190905T170859_f38c508e,
+  /** slow manual driving */
+  _20190905T171344_f38c508e,
+  /** slow manual driving */
+  _20190905T172123_f38c508e,
+  /** slow manual driving */
+  _20190905T173208_9f1a1d98,
+  /** slow manual driving */
+  _20190905T173549_f38c508e,
+  /** manual driving */
+  _20190905T175057_8e26ec74,
+  /** various mpc */
+  _20190905T191253_2579f005,
+  /** brief operations */
+  _20190905T200625_aa443cf0,
+  /** brief operations */
+  _20190905T204957_aa443cf0,
+  /***************************************************/
+  /* 2019-09-07 */
+  /** brief operations */
+  _20190907T125722_0334f295,
+  /** brief operations */
+  _20190907T131317_0334f295,
+  /** mpc */
+  _20190907T155844_8b130c53,
+  /***************************************************/
+  /* 2019-09-09 */
+  /** manual driving */
+  _20190909T105903_bf838cf4,
+  /** manual driving */
+  _20190909T120828_93505972,
+  /** manual driving */
+  _20190909T122711_27bc9c7e,
+  /** manual driving */
+  _20190909T123749_27bc9c7e,
+  /** manual driving */
+  _20190909T141603_4458a300,
+  /** manual driving */
+  _20190909T142512_4458a300,
+  /** brief mpc */
+  _20190909T143924_6b5daae6,
+  /** various mpc, manual driving */
+  _20190909T145158_6b5daae6,
+  /** various mpc */
+  _20190909T152506_6b5daae6,
+  /** brief operations */
+  _20190909T161046_1af5d05c,
+  /** manual driving */
+  _20190909T163524_d9c2be2b,
+  /** driving with mpc on(?) */
+  _20190909T164822_d9c2be2b,
+  /** various mpc */
+  _20190909T174744_d60c1e1d,
+  /***************************************************/
+  /* 2019-09-09 */
+  /** various mpc */
+  _20190912T165653_0f95cdcc, //
+  /** manual driving racing
+   * mb, jh, jg, mp */
+  _20190912T173521_0f95cdcc, //
+  /** slow mpc */
+  _20190912T194352_6983d345, //
   ;
   // ---
   @Override // from LogFile

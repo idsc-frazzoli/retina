@@ -6,7 +6,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.WindowConstants;
 
@@ -19,7 +21,8 @@ import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
-import ch.ethz.idsc.gokart.core.track.MPCBSplineTrackRender;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackLcmClient;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackRender;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotGetLcmClient;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoGetLcmClient;
@@ -29,8 +32,11 @@ import ch.ethz.idsc.gokart.lcm.davis.DavisImuLcmClient;
 import ch.ethz.idsc.gokart.lcm.lidar.Vlp16LcmHandler;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.LaneRender;
+import ch.ethz.idsc.owl.gui.ren.TransitionRender;
 import ch.ethz.idsc.owl.gui.ren.WaypointRender;
 import ch.ethz.idsc.owl.math.lane.LaneInterface;
+import ch.ethz.idsc.owl.rrts.core.RrtsNode;
+import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.retina.lidar.LidarAngularFiringCollector;
 import ch.ethz.idsc.retina.lidar.LidarRotationProvider;
 import ch.ethz.idsc.retina.lidar.LidarSpacialProvider;
@@ -63,16 +69,20 @@ public class GlobalViewLcmModule extends AbstractModule {
       TrajectoryLcmClient.xyat(), //
       TrajectoryLcmClient.xyavt());
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
+  private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
+      BSplineTrackLcmClient.open(), //
+      BSplineTrackLcmClient.closed());
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();
-  public final MPCBSplineTrackRender trackReconRender = new MPCBSplineTrackRender();
+  public final BSplineTrackRender trackReconRender = new BSplineTrackRender();
   private final PathRender pathRender = new PathRender(Color.YELLOW);
   private final PathRender planRender = new PathRender(Color.MAGENTA);
   private final LaneRender laneRender = new LaneRender();
+  private TransitionRender transitionRender = null;
 
   /** @param curve may be null */
   public void setPlan(Tensor curve) {
@@ -87,6 +97,14 @@ public class GlobalViewLcmModule extends AbstractModule {
   /** @param laneInterface may be null */
   public void setLane(LaneInterface laneInterface) {
     laneRender.setLane(laneInterface, false);
+  }
+
+  public void setTree(TransitionSpace transitionSpace, Collection<? extends RrtsNode> collection) {
+    if (Objects.isNull(transitionRender)) {
+      transitionRender = new TransitionRender(transitionSpace);
+      viewLcmFrame.geometricComponent.addRenderInterface(transitionRender);
+    }
+    transitionRender.setCollection(collection);
   }
 
   @Override // from AbstractModule
@@ -132,7 +150,10 @@ public class GlobalViewLcmModule extends AbstractModule {
       vlp16LcmHandler.velodyneDecoder.addRayListener(lidarRotationProvider);
       viewLcmFrame.geometricComponent.addRenderInterface(resampledLidarRender);
     }
-    viewLcmFrame.geometricComponent.addRenderInterface(trackReconRender);
+    {
+      bSplineTrackLcmClients.forEach(bSplineTrackLcmClient -> bSplineTrackLcmClient.addListener(trackReconRender));
+      viewLcmFrame.geometricComponent.addRenderInterface(trackReconRender);
+    }
     {
       mpcControlUpdateLcmClient.addListener(lcmMPCPredictionRender);
       viewLcmFrame.geometricComponent.addRenderInterface(lcmMPCPredictionRender);
@@ -174,6 +195,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     trajectoryLcmClients.forEach(TrajectoryLcmClient::startSubscriptions);
     gokartPoseLcmClient.startSubscriptions();
     mpcControlUpdateLcmClient.startSubscriptions();
+    bSplineTrackLcmClients.forEach(BSplineTrackLcmClient::startSubscriptions);
     // ---
     windowConfiguration.attach(getClass(), viewLcmFrame.jFrame);
     viewLcmFrame.jFrame.addWindowListener(new WindowAdapter() {
@@ -197,6 +219,7 @@ public class GlobalViewLcmModule extends AbstractModule {
     linmotGetLcmClient.stopSubscriptions();
     steerColumnLcmClient.stopSubscriptions();
     curveSe2PursuitLcmClient.stopSubscriptions();
+    bSplineTrackLcmClients.forEach(BSplineTrackLcmClient::stopSubscriptions);
     // ---
     vlp16LcmHandler.stopSubscriptions();
     davisImuLcmClient.stopSubscriptions();

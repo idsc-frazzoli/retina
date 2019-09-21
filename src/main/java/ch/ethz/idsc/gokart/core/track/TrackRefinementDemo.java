@@ -58,7 +58,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       points_xyr = points_xyr.map(s -> Quantity.of(s, SI.METER));
       TrackRefinement trackRefinement = new TrackRefinement(imageRegion);
       Optional<Tensor> optional = //
-          Optional.ofNullable(trackRefinement.getRefinedTrack(points_xyr, 2, 1, jToggleClosed.isSelected()));
+          Optional.ofNullable(trackRefinement.getRefinedTrack(points_xyr, 2, 1, jToggleOpen.isSelected()));
       if (optional.isPresent()) {
         Tensor tensor_xyr = optional.get();
         tensor_xyr = tensor_xyr.map(Magnitude.METER);

@@ -1,0 +1,17 @@
+*.forces
+MPCPathFollowing.m
+MPCPathFollowing.mexa64
+MPCPathFollowing/
+MPCPathFollowing_casadi2forces.c
+MPCPathFollowing_casadi2forces.o
+MPCPathFollowing_mex_compiler_warnings.txt
+MPCPathFollowing_model_1.c
+MPCPathFollowing_model_1.o
+MPCPathFollowing_model_31.c
+MPCPathFollowing_model_31.o
+MPCPathFollowing_py.py
+MPCPathFollowing_simulinkBlock.mexa64
+MPCPathFollowing_simulinkBlockcompact.mexa64
+nativeMPCLCM
+stdout_temp
+
