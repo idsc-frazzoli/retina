@@ -277,7 +277,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
         struct _idsc_BinaryBlob blobOnline;
         blobOnline.data_length = sizeof(struct OnlineParam);
         blobOnline.data = (int8_t*)&onlineParam;
-        if(idsc_BinaryBlob_publish(lcm, "online.params.d", &blobOnline)==0)
+        if(idsc_BinaryBlob_publish(lcm, "mpc.online.params.d", &blobOnline)==0)
             printf("published online message: %lu\n",sizeof(struct OnlineParam));
         else
             printf("error while publishing 'online' message\n");
