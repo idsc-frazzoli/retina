@@ -1,4 +1,4 @@
-// code by edo and jph
+// code by edo, mh, and jph
 package ch.ethz.idsc.gokart.dev.steer;
 
 import ch.ethz.idsc.tensor.Scalar;
