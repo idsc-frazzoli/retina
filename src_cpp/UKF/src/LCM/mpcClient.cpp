@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <lcm/lcm-cpp.hpp>
 #include <functional>
-#include <bits/stdc++.h>
+#include <iostream>
 
 #include "mpcClient.h"
 #include "../../../LCM/idsc/BinaryBlob.hpp"
@@ -38,26 +38,29 @@ double ACCROTZtrue;
 class Handler {
 public:
     ~Handler(){}
+
     void handleState(const lcm::ReceiveBuffer *rbug, const std::string &chan, const idsc::BinaryBlob *msg){
 
         printf("Received CNS message on channel \"%s\":\n", chan.c_str());
-        memcpy(&lastCRMsg, &msg, msg->data_length);
 
+        memcpy(&lastCRMsg, &msg->data, msg->data_length);
+
+        printf("data length: %i\n", msg->data_length);
         printf("time: %f\n", lastCRMsg.state.time);
         printf("X: %f\n", lastCRMsg.state.X);
         printf("Y: %f\n", lastCRMsg.state.Y);
         printf("Psi: %f\n", lastCRMsg.state.Psi);
-
         printf("Ux: %f\n", lastCRMsg.state.Ux);
         printf("Uy: %f\n", lastCRMsg.state.Uy);
         printf("dotPsi: %f\n", lastCRMsg.state.dotPsi);
+
     }
 
 
     void handleOnline(const lcm::ReceiveBuffer *rbug, const std::string &chan, const idsc::BinaryBlob *msg) {
 
         printf("Received Online message on channel \"%s\":\n", chan.c_str());
-        memcpy(&lastOnlineParam, &msg, msg->data_length);
+        memcpy(&lastOnlineParam, &msg->data, msg->data_length);
 
         printf("time: %f\n", lastOnlineParam.time);
         printf("VX: %f\n", lastOnlineParam.vx);
