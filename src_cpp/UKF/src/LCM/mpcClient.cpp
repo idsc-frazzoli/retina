@@ -231,7 +231,7 @@ int main(int argc, char **argv)
 
     printf("about to subscribe\n");
     lcmObj.subscribe("mpc.forces.gs.d", &Handler::handleState, &handler);
-    lcmObj.subscribe("online.params.d", &Handler::handleOnline, &handler);
+    lcmObj.subscribe("mpc.online.params.d", &Handler::handleOnline, &handler);
     printf("starting main loop\n");
 
     while(1) {

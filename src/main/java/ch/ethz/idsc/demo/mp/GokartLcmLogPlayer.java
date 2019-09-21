@@ -24,8 +24,9 @@ import lcm.logging.LogPlayerConfig;
     // file = new File("/home/maximilien/Downloads/20190921T142531_fa3ec462.lcm.00");
     // file = new File("/home/maximilien/Documents/sp/logs/20190921/20190921T142531_00/log.lcm");
     // file = new File("/home/maximilien/Downloads/20190921T175315_b27ad38d.lcm.00");
-    file = new File("/home/maximilien/Documents/sp/logs/20190921/20190921T175315_00/log.lcm");
-
+    // file = new File("/home/maximilien/Documents/sp/logs/20190921/20190921T175315_00/log.lcm");
+    // file = new File("/home/maximilien/Downloads/20190921T185455_ca093807.lcm.00");
+    file = new File("/home/maximilien/Documents/sp/logs/20190921/20190921T185455_00/log.lcm");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
     logPlayerConfig.speed_denominator = 1;
