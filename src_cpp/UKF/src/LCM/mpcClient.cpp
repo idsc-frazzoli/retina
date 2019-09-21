@@ -41,11 +41,12 @@ public:
 
     void handleState(const lcm::ReceiveBuffer *rbug, const std::string &chan, const idsc::BinaryBlob *msg){
 
-        printf("Received CNS message on channel \"%s\":\n", chan.c_str());
+        printf("---Received CNS message on channel \"%s\"[%i]:\n", chan.c_str(), msg->data_length);
 
-        memcpy(&lastCRMsg, &msg->data, msg->data_length);
+        memcpy(&lastCRMsg, msg->data.data(), msg->data_length);
 
-        printf("data length: %i\n", msg->data_length);
+        printf("msg type: %i\n", lastCRMsg.messageType);
+
         printf("time: %f\n", lastCRMsg.state.time);
         printf("X: %f\n", lastCRMsg.state.X);
         printf("Y: %f\n", lastCRMsg.state.Y);
@@ -60,7 +61,7 @@ public:
     void handleOnline(const lcm::ReceiveBuffer *rbug, const std::string &chan, const idsc::BinaryBlob *msg) {
 
         printf("Received Online message on channel \"%s\":\n", chan.c_str());
-        memcpy(&lastOnlineParam, &msg->data, msg->data_length);
+        memcpy(&lastOnlineParam, msg->data.data(), msg->data_length);
 
         printf("time: %f\n", lastOnlineParam.time);
         printf("VX: %f\n", lastOnlineParam.vx);
