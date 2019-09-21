@@ -216,7 +216,7 @@ public:
         //printf("lcmObj addr: %p\n",&lcmObj);
         //printf("blob addr: %p\n",&blob);
 
-        lcmObj.publish("mpc.forces.pacj.d", &blob);
+        lcmObj.publish("mpc.online.pacj.d", &blob);
 
     }
 };
