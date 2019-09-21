@@ -109,7 +109,7 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 <tr>
 <td>
 
-![clothoid_pursuit](https://user-images.githubusercontent.com/4012178/64125542-9a65ad80-cdaa-11e9-9140-babb094e49b3.png)
+![clothoid_rrts](https://user-images.githubusercontent.com/4012178/65374679-e2327300-dc8c-11e9-9a9e-d26d673d8176.png)
 
 [Clothoid RRT*](https://www.youtube.com/watch?v=xbSG7XggDE0)
 
