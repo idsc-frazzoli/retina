@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <lcm/lcm-cpp.hpp>
 #include <functional>
-#include <iostream>
 
 #include "mpcClient.h"
 #include "../../../LCM/idsc/BinaryBlob.hpp"
@@ -31,9 +30,9 @@ idsc::BinaryBlob blob;
 double ACCXmod;
 double ACCYmod;
 double ACCROTZmod;
-double ACCXtrue;
-double ACCYtrue;
-double ACCROTZtrue;
+double ACCXtrue = 0;
+double ACCYtrue = 0;
+double ACCROTZtrue = 9.81;
 
 class Handler {
 public:
@@ -41,12 +40,11 @@ public:
 
     void handleState(const lcm::ReceiveBuffer *rbug, const std::string &chan, const idsc::BinaryBlob *msg){
 
-        printf("---Received CNS message on channel \"%s\"[%i]:\n", chan.c_str(), msg->data_length);
+        //printf("---Received CNS message on channel \"%s\"[%i]:\n", chan.c_str(), msg->data_length);
 
         memcpy(&lastCRMsg, msg->data.data(), msg->data_length);
 
-        printf("msg type: %i\n", lastCRMsg.messageType);
-
+        /*
         printf("time: %f\n", lastCRMsg.state.time);
         printf("X: %f\n", lastCRMsg.state.X);
         printf("Y: %f\n", lastCRMsg.state.Y);
@@ -54,24 +52,25 @@ public:
         printf("Ux: %f\n", lastCRMsg.state.Ux);
         printf("Uy: %f\n", lastCRMsg.state.Uy);
         printf("dotPsi: %f\n", lastCRMsg.state.dotPsi);
-
+        */
     }
 
 
     void handleOnline(const lcm::ReceiveBuffer *rbug, const std::string &chan, const idsc::BinaryBlob *msg) {
 
         printf("Received Online message on channel \"%s\":\n", chan.c_str());
+
         memcpy(&lastOnlineParam, msg->data.data(), msg->data_length);
 
         printf("time: %f\n", lastOnlineParam.time);
         printf("VX: %f\n", lastOnlineParam.vx);
         printf("VY: %f\n", lastOnlineParam.vy);
-        printf("VPsi: %f\n", lastOnlineParam.vpsi);
-        printf("Ux: %f\n", lastOnlineParam.beta);
-        printf("Uy: %f\n", lastOnlineParam.ab);
-        printf("dotPsi: %f\n", lastOnlineParam.tv);
+        printf("VROTZ: %f\n", lastOnlineParam.vrotz);
+        printf("Beta: %f\n", lastOnlineParam.beta);
+        printf("AB: %f\n", lastOnlineParam.ab);
+        printf("TV: %f\n", lastOnlineParam.tv);
 
-
+        /* //TODO MCP CHECK THIS CODE
         oParam[counter] = lastOnlineParam;
         ++counter;
         int size = (sizeof(oParam)/sizeof(*oParam));
@@ -90,7 +89,14 @@ public:
             }
             ACCXtrue = ACCXtrue/(double)size;
             ACCYtrue = ACCYtrue/(double)size;
+        } else {
+            ACCXtrue = 0;
+            ACCYtrue = 0;
         }
+        */
+
+        ACCXtrue = 0.13;
+        ACCYtrue = 0.4;
 
         printf("ACCX: %f\n", ACCXtrue);
         printf("ACCY: %f\n", ACCYtrue);
@@ -98,9 +104,6 @@ public:
 
         UKF::MeasurementVec z;
         z << ACCXtrue, ACCYtrue, ACCROTZtrue;
-
-        //UKF
-        printf("starting ukf............\n");
 
         // inital guess
         double B1 = 9;
@@ -110,15 +113,17 @@ public:
         double C2 = 1.1;
         double D2 = 10;
         double Cf = 0.3;
-        double param[8] = {B1, C1, D1, B2, C2, D2, Cf};
+        double param[7] = {B1, C1, D1, B2, C2, D2, Cf};
 
+        //UKF
+        printf("starting ukf............\n");
 
         // init
         // *******************************************************************
         double q = 0.1; //std of process
         double r = 0.1; //std of measurement
-        UKF::ParameterMat processCov = UKF::ParameterMat::Identity() * q; // cov of process
-        UKF::MeasurementMat measureCov = UKF::MeasurementMat::Identity() * r; // cov of measurement
+        UKF::ParameterMat processCov = UKF::ParameterMat::Identity(); // cov of process
+        UKF::MeasurementMat measureCov = UKF::MeasurementMat::Identity(); // cov of measurement
 
         UKF::ParameterVec x; //initial state
         x <<  B1, C1, D1,  B2, C2, D2,  Cf;
@@ -139,34 +144,29 @@ public:
 
         // measurement
         std::function<UKF::MeasurementVec(UKF::ParameterVec)> measureFunction
-                = [](UKF::ParameterVec param) {
+                = [](UKF::ParameterVec paramVec) {
                     UKF::MeasurementVec measurementVec;
 
                     double velx = lastOnlineParam.vx;
                     double vely = lastOnlineParam.vy;
-                    double velrotz = lastOnlineParam.vpsi;
-
-                    printf("Ux: %f\n", lastOnlineParam.beta);
-                    printf("Uy: %f\n", lastOnlineParam.ab);
-                    printf("dotPsi: %f\n", lastOnlineParam.tv);
+                    double velrotz = lastOnlineParam.vrotz;
+                    double BETA = lastOnlineParam.beta;
+                    double AB = lastOnlineParam.ab;
+                    double TV = lastOnlineParam.tv;
 
                     double ACCXmod;
                     double ACCYmod;
                     double ACCROTZmod;
 
-                    //assume these are constant
-                    double BETA = lastOnlineParam.beta;
-                    double AB = lastOnlineParam.ab;
-                    double TV = lastOnlineParam.tv;
-                    const double paramIn[8] = {param[0],
-                                         param[1],
-                                         param[2],
-                                         param[3],
-                                         param[4],
-                                         param[5],
-                                         param[6],
-                                         param[7]};
 
+                    const double paramIn[8] = {
+                                         paramVec(0),
+                                         paramVec(1),
+                                         paramVec(2),
+                                         paramVec(3),
+                                         paramVec(4),
+                                         paramVec(5),
+                                         paramVec(6)};
                     modelDx(velx,
                             vely,
                             velrotz,
@@ -177,12 +177,12 @@ public:
                             &ACCXmod,
                             &ACCYmod,
                             &ACCROTZmod);
+                    measurementVec(0) = ACCXmod;
+                    measurementVec(1) = ACCYmod;
+                    measurementVec(2) = ACCROTZmod;
 
-                    measurementVec(0,0) = ACCXmod;
-                    measurementVec(1,0) = ACCYmod;
-                    measurementVec(2, 0) = ACCROTZmod;
                     return measurementVec;
-                };
+        };
 
         ukf.update(
                 measureFunction,
@@ -194,7 +194,7 @@ public:
         pacejkaParameter = {
                 .B1 = (float) ukf.mean(0),
                 .C1 = (float) ukf.mean(1),
-                .D1 = (float) ukf.mean(0),
+                .D1 = (float) ukf.mean(2),
                 .B2 = (float) ukf.mean(3),
                 .C2 = (float) ukf.mean(4),
                 .D2 = (float) ukf.mean(5),
@@ -209,12 +209,12 @@ public:
         printf("C2: %f\n", pacejkaParameter.C2);
         printf("D2: %f\n", pacejkaParameter.D2);
 
-        blob.data_length = 6*4;
+        blob.data_length = sizeof(pacejkaParameter);
         blob.data.resize(blob.data_length);
-        memcpy(&blob.data[0],&pacejkaParameter,6*4);
+        memcpy(blob.data.data(),&pacejkaParameter, blob.data_length);
 
-        printf("lcmObj addr: %p\n",&lcmObj);
-        printf("blob addr: %p\n",&blob);
+        //printf("lcmObj addr: %p\n",&lcmObj);
+        //printf("blob addr: %p\n",&blob);
 
         lcmObj.publish("mpc.forces.pacj.d", &blob);
 

@@ -211,9 +211,6 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	}
 	lastInitialPsi = lastCRMsg.state.Psi;
 
-
-
-
 	//do optimization
 	exitflag = OnlineMPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
 	//look at data
@@ -271,6 +268,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
         onlineParam.time = lastCRMsg.state.time;
         onlineParam.vx = lastCRMsg.state.Ux;
         onlineParam.vy = lastCRMsg.state.Uy;
+        onlineParam.vrotz = lastCRMsg.state.dotPsi;
         onlineParam.beta = initbeta;
         onlineParam.ab = myoutput.alldata[11];
         onlineParam.tv = myoutput.alldata[3];
@@ -280,7 +278,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
         if(idsc_BinaryBlob_publish(lcm, "online.params.d", &blobOnline)==0)
             printf("published online message: %lu\n",sizeof(struct OnlineParam));
         else
-            printf("error while publishing message\n");
+            printf("error while publishing 'online' message\n");
 
 
     }else{

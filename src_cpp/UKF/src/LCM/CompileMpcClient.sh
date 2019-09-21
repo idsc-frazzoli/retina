@@ -1,3 +1,3 @@
 #!/bin/bash
-echo 'compiling sender'
+echo 'compiling online server'
 g++ mpcClient.cpp -o mpc_client -llcm
