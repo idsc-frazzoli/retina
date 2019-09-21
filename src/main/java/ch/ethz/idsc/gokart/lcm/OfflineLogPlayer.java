@@ -37,7 +37,7 @@ public enum OfflineLogPlayer {
     set.add(GokartLcmChannel.LCM_SELF_TEST);
     Log log = new Log(file.toString(), "r");
     Long tic = null;
-    int count = 0;
+    // int count = 0;
     try {
       while (true) {
         Event event = log.readNext();
@@ -52,11 +52,11 @@ public enum OfflineLogPlayer {
         }
         if (Objects.nonNull(binaryBlob)) {
           Scalar time = UnitSystem.SI().apply(Quantity.of(event.utime - tic, NonSI.MICRO_SECOND));
-          ++count;
           for (OfflineLogListener offlineLogListener : offlineLogListeners)
             offlineLogListener.event(time, event.channel, ByteBuffer.wrap(binaryBlob.data).order(ByteOrder.LITTLE_ENDIAN));
-          if (count%10_000==0)
-            System.out.println(count);
+          // ++count;
+          // if (count%10_000==0)
+          // System.out.println(count);
         }
       }
     } catch (Exception exception) {
