@@ -6,11 +6,9 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import ch.ethz.idsc.owl.bot.se2.rrts.TransitionNdContainer;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.noise.SimplexContinuousNoise;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
-import ch.ethz.idsc.sophus.app.api.ClothoidDisplay;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Subdivide;
@@ -21,7 +19,8 @@ public enum TransitionNdVideo {
   public static void main(String[] args) throws InterruptedException, Exception {
     Tensor lbounds = Tensors.vector(0, 0).unmodifiable();
     Tensor ubounds = Tensors.vector(12.8, 7.2).unmodifiable();
-    TransitionNdContainer transitionNdDemo = new TransitionNdContainer(lbounds, ubounds, 500, 50);
+    // TODO JPH OWL 057
+    // TransitionNdContainer transitionNdDemo = new TransitionNdContainer(lbounds, ubounds, 500, 50);
     GeometricLayer geometricLayer = GeometricLayer.of(Tensors.fromString("{{150, 0, 0}, {0, -150, 1080}, {0, 0, 1}}"));
     BufferedImage bufferedImage = new BufferedImage(1920, 1080, BufferedImage.TYPE_3BYTE_BGR);
     Graphics2D graphics = bufferedImage.createGraphics();
@@ -38,11 +37,12 @@ public enum TransitionNdVideo {
             angle);
         graphics.setColor(Color.WHITE);
         graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-        transitionNdDemo.render( //
-            ClothoidDisplay.INSTANCE, //
-            geometricLayer, //
-            graphics, //
-            mouse);
+        // TODO JPH OWL 057
+        // transitionNdDemo.render( //
+        // ClothoidDisplay.INSTANCE, //
+        // geometricLayer, //
+        // graphics, //
+        // mouse);
         animationWriter.write(bufferedImage);
       }
     }
