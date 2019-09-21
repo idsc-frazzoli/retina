@@ -17,6 +17,7 @@ import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPlanListener;
+import ch.ethz.idsc.gokart.core.track.BSplineTrackListener;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
@@ -61,6 +62,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogFileIndexer.addRow(new MpcCountRow());
     gokartLogFileIndexer.addRow(new CurveMessageRow());
     gokartLogFileIndexer.addRow(new ClothoidPlanRow());
+    gokartLogFileIndexer.addRow(new BSplineTrackRow());
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -87,6 +89,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private final List<MPCControlUpdateListener> mpcControlUpdateListeners = new LinkedList<>();
   private final List<TensorListener> tensorListeners = new LinkedList<>();
   private final List<ClothoidPlanListener> clothoidPlanListeners = new LinkedList<>();
+  private final List<BSplineTrackListener> bsplineTrackListeners = new LinkedList<>();
   // ---
   private int event_count;
 
@@ -116,6 +119,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       tensorListeners.add((TensorListener) gokartLogImageRow);
     if (gokartLogImageRow instanceof ClothoidPlanListener)
       clothoidPlanListeners.add((ClothoidPlanListener) gokartLogImageRow);
+    if (gokartLogImageRow instanceof BSplineTrackListener)
+      bsplineTrackListeners.add((BSplineTrackListener) gokartLogImageRow);
   }
 
   private void append(int count) {
@@ -168,6 +173,12 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     if (channel.equals(GokartLcmChannel.PURSUIT_PLAN)) {
       ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer);
       clothoidPlanListeners.forEach(listener -> listener.planReceived(clothoidPlan));
+    } else //
+    // for now, only closed tracks are relevant
+    if (channel.equals(GokartLcmChannel.XYR_TRACK_CLOSED)) {
+      // TODO include again, once publishing rate is reduced
+      // Optional<BSplineTrack> optional = BSplineTrackLcm.decode(channel, byteBuffer);
+      // bsplineTrackListeners.forEach(listener -> listener.bSplineTrack(optional));
     }
     ++event_count;
   }

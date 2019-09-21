@@ -74,7 +74,7 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 * Michael von Büren (MT): simulation of gokart dynamics, neural network as model for MPC
 * Joel Gächter (MT): sight-lines mapping, clothoid pursuit, planning with clothoids
 * Antonia Mosberger (BT): power steering, anti-lock braking, lane keeping
-* Maximilien Picquet (SP): Pacejka parameter estimation using unscented Kalman filter
+* Maximilien Picquet (SP): Pacejka parameter estimation using an unscented Kalman filter
 
 
 ## Gallery Rendering
@@ -104,6 +104,14 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 ![mpc_lidar](https://user-images.githubusercontent.com/4012178/64124647-d0edf900-cda7-11e9-90ee-8363865adfa7.png)
 
 [MPC](https://www.youtube.com/watch?v=TZH3MWjp6PE)
+
+</tr>
+<tr>
+<td>
+
+![clothoid_rrts](https://user-images.githubusercontent.com/4012178/65374679-e2327300-dc8c-11e9-9a9e-d26d673d8176.png)
+
+[Clothoid RRT*](https://www.youtube.com/watch?v=xbSG7XggDE0)
 
 </tr>
 </table>
