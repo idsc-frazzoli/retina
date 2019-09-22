@@ -19,10 +19,14 @@ lcm::LCM lcmObj;
 
 struct ControlRequestMsg lastCRMsg;
 struct OnlineParam lastOnlineParam;
-
-const int lookback = 10;
-OnlineParam oParam[lookback];
+struct OnlineParam lastlastOnlineParam;
 int counter = 0;
+
+/* TODO MCP make for longer horizon
+const int lookback = 10;
+OnlineParam oParam[lookback+1];
+int counter = 0;
+*/
 
 struct PacejkaParameter pacejkaParameter;
 idsc::BinaryBlob blob;
@@ -30,9 +34,9 @@ idsc::BinaryBlob blob;
 double ACCXmod;
 double ACCYmod;
 double ACCROTZmod;
-double ACCXtrue = 0;
-double ACCYtrue = 0;
-double ACCROTZtrue = 9.81;
+double ACCXtrue;
+double ACCYtrue;
+double ACCROTZtrue;
 
 class Handler {
 public:
@@ -62,6 +66,7 @@ public:
 
         memcpy(&lastOnlineParam, msg->data.data(), msg->data_length);
 
+        /*
         printf("time: %f\n", lastOnlineParam.time);
         printf("VX: %f\n", lastOnlineParam.vx);
         printf("VY: %f\n", lastOnlineParam.vy);
@@ -69,34 +74,57 @@ public:
         printf("Beta: %f\n", lastOnlineParam.beta);
         printf("AB: %f\n", lastOnlineParam.ab);
         printf("TV: %f\n", lastOnlineParam.tv);
+        */
 
-        /* //TODO MCP CHECK THIS CODE
+        /* TODO MCP make for longer horizon
         oParam[counter] = lastOnlineParam;
-        ++counter;
-        int size = (sizeof(oParam)/sizeof(*oParam));
-        if (size >= lookback) {
+        if (counter >= lookback){
+            counter = lookback;
+        } else {
+            ++counter;
+        }
+        printf("counter: %i\n", counter);
+
+        if (counter >= lookback) {
             printf("starting to compute acc\n");
             ACCXtrue = 0;
             ACCYtrue = 0;
-            for (int i = 0; i<size-1; ++i ) {
+            ACCROTZtrue = 0;
+            for (int i = 0; i<lookback; ++i ) {
                 OnlineParam prevOp = oParam[i];
                 OnlineParam op = oParam[i+1];
                 double deltaT = op.time - prevOp.time;
                 double dvx = op.vx - prevOp.vx;
                 double dvy = op.vy - prevOp.vy;
+                double dvphi = op.vrotz - prevOp.vrotz;
                 ACCXtrue += dvx / deltaT;
                 ACCYtrue += dvy / deltaT;
+                ACCROTZtrue += dvphi / deltaT;
             }
-            ACCXtrue = ACCXtrue/(double)size;
-            ACCYtrue = ACCYtrue/(double)size;
+            ACCXtrue = ACCXtrue/(double)lookback;
+            ACCYtrue = ACCYtrue/(double)lookback;
+            ACCROTZtrue = ACCROTZtrue/(double)lookback;
+
+            // remove first and shift to front
+            for (int i = 0; i<lookback-1; ++i){
+                oParam[i] = oParam[i+1];
+            }
         } else {
             ACCXtrue = 0;
             ACCYtrue = 0;
+            ACCROTZtrue = 0;
         }
-        */
+         */
+        counter++;
 
-        ACCXtrue = 0.13;
-        ACCYtrue = 0.4;
+        if(counter>1){
+            double dtime = lastlastOnlineParam.time - lastOnlineParam.time;
+            ACCXtrue = (lastlastOnlineParam.vx - lastOnlineParam.vx)/ dtime;
+            ACCYtrue = (lastlastOnlineParam.vy - lastOnlineParam.vy)/ dtime;
+            ACCROTZtrue = (lastlastOnlineParam.vrotz - lastOnlineParam.vrotz)/ dtime;
+        }
+        lastlastOnlineParam = lastOnlineParam;
+
 
         printf("ACCX: %f\n", ACCXtrue);
         printf("ACCY: %f\n", ACCYtrue);
