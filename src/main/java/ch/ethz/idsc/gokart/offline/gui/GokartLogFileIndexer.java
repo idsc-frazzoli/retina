@@ -31,11 +31,16 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
+import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlListener;
+import ch.ethz.idsc.retina.lidar.VelodyneModel;
+import ch.ethz.idsc.retina.lidar.VelodynePosEvent;
+import ch.ethz.idsc.retina.util.gps.Gprmc;
+import ch.ethz.idsc.retina.util.gps.GprmcListener;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -63,6 +68,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogFileIndexer.addRow(new CurveMessageRow());
     gokartLogFileIndexer.addRow(new ClothoidPlanRow());
     gokartLogFileIndexer.addRow(new BSplineTrackRow());
+    gokartLogFileIndexer.addRow(new GprmcRow());
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -74,6 +80,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   // ---
   private static final Scalar RESOLUTION = Quantity.of(0.25, SI.SECOND);
+  private static final String VLP16_CENTER_POS = VelodyneLcmChannels.pos(VelodyneModel.VLP16, "center");
   // ---
   private final File file;
   private final List<Integer> raster2event = new ArrayList<>();
@@ -90,6 +97,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private final List<TensorListener> tensorListeners = new LinkedList<>();
   private final List<ClothoidPlanListener> clothoidPlanListeners = new LinkedList<>();
   private final List<BSplineTrackListener> bsplineTrackListeners = new LinkedList<>();
+  private final List<GprmcListener> gprmcListeners = new LinkedList<>();
   // ---
   private int event_count;
 
@@ -121,6 +129,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       clothoidPlanListeners.add((ClothoidPlanListener) gokartLogImageRow);
     if (gokartLogImageRow instanceof BSplineTrackListener)
       bsplineTrackListeners.add((BSplineTrackListener) gokartLogImageRow);
+    if (gokartLogImageRow instanceof GprmcListener)
+      gprmcListeners.add((GprmcListener) gokartLogImageRow);
   }
 
   private void append(int count) {
@@ -179,6 +189,11 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       // TODO include again, once publishing rate is reduced
       // Optional<BSplineTrack> optional = BSplineTrackLcm.decode(channel, byteBuffer);
       // bsplineTrackListeners.forEach(listener -> listener.bSplineTrack(optional));
+    } else //
+    if (channel.equals(VLP16_CENTER_POS)) {
+      VelodynePosEvent velodynePosEvent = VelodynePosEvent.vlp16(byteBuffer);
+      Gprmc gprmc = velodynePosEvent.gprmc();
+      gprmcListeners.forEach(listener -> listener.gprmcReceived(gprmc));
     }
     ++event_count;
   }

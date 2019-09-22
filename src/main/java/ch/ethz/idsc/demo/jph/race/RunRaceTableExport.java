@@ -15,7 +15,9 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.Import;
 import ch.ethz.idsc.tensor.io.ResourceData;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 /** used in analysis of race on 20190701 between human driver and dynamic mpc
  * 
@@ -24,13 +26,14 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   ;
   public static void main(String[] args) throws IOException {
     Tensor points_xyr = ResourceData.of("/dubilab/analysis/track/20190912.csv");
+    points_xyr = Import.of(HomeDirectory.file("20190921T124329_track", "controlpoints.csv")).map(s -> Quantity.of(s, "m"));
     final int n = points_xyr.length();
     System.out.println("n=" + n);
-    File dest = HomeDirectory.Documents("manual");
+    File dest = HomeDirectory.Documents("20190921");
     dest.mkdir();
     BSplineTrack bSplineTrack = BSplineTrack.of(points_xyr, true);
     // ---
-    File folder = new File("/media/datahaki/data/gokart/racing/20190912");
+    File folder = new File("/media/datahaki/data/gokart/ultimate/20190921");
     for (File file : folder.listFiles()) {
       OfflineTableSupplier offlineTableSupplier = new RaceTableExport();
       OfflineLogPlayer.process(new File(file, "log.lcm"), offlineTableSupplier);

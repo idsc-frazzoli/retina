@@ -17,7 +17,8 @@ import ch.ethz.idsc.tensor.sca.Clips;
 public class HapticSteerConfig implements Serializable {
   public static final HapticSteerConfig GLOBAL = AppResources.load(new HapticSteerConfig());
   /***************************************************/
-  /** values for steering */
+  // TODO extract fields until tsuFactor to separate config: PowerSteerConfig
+  /** values for PowerSteering */
   /** value to amplify the input in the PowerSteeringModule */
   public Boolean feedForward = true;
   // ---
@@ -25,7 +26,6 @@ public class HapticSteerConfig implements Serializable {
   public Scalar velocityFilter = RealScalar.of(0.2);
   public Scalar latForceCompensation = Quantity.of(0.2, "SCT*s*m^-1");
   public Scalar latForceCompensationBoundary = Quantity.of(0.5, "SCT");
-  public Scalar prbs7AmplitudeTorque = Quantity.of(0.2, "SCT");
   /** tsuFactor in the interval [0, 1] */
   public Scalar tsuFactor = RealScalar.of(0.8);
   /***************************************************/
@@ -45,6 +45,8 @@ public class HapticSteerConfig implements Serializable {
   public Scalar halfWidth = Quantity.of(0.5, SI.METER);
   /** planning period */
   public Scalar laneKeepingPeriod = Quantity.of(0.2, SI.SECOND);
+  /***************************************************/
+  public Scalar prbs7AmplitudeTorque = Quantity.of(0.2, "SCT");
 
   /***************************************************/
   // functions for power steering

@@ -1,3 +1,4 @@
+// code by em
 package ch.ethz.idsc.gokart.gui.lab;
 
 import java.util.Optional;
@@ -23,28 +24,28 @@ public class SteerSignalModule extends AbstractModule implements SteerPutProvide
 
   public SteerSignalModule() {
     signal = PRBS7SignedSignal.of(RealScalar.of(0.2));
-    safety = Clips.absolute(SteerConfig.GLOBAL.calibration);    
+    safety = Clips.absolute(SteerConfig.GLOBAL.calibration);
   }
 
-  @Override
+  @Override // from SteerPutProvider
   public ProviderRank getProviderRank() {
     return ProviderRank.TESTING;
   }
 
-  @Override
+  @Override // from SteerPutProvider
   public Optional<SteerPutEvent> putEvent() {
     return Optional.of(SteerPutEvent.createOn(//
         safety.apply(signal.apply(RealScalar.of(timing.seconds())) //
             .multiply(HapticSteerConfig.GLOBAL.prbs7AmplitudeTorque))));
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void first() {
     timing.start();
     SteerSocket.INSTANCE.addPutProvider(this);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     timing.stop();
     SteerSocket.INSTANCE.removePutProvider(this);
