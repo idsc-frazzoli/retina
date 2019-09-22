@@ -22,11 +22,10 @@ struct OnlineParam lastOnlineParam;
 struct OnlineParam lastlastOnlineParam;
 int counter = 0;
 
-/* TODO MCP make for longer horizon
+// TODO MCP make for longer horizon
 const int lookback = 10;
 OnlineParam oParam[lookback+1];
-int counter = 0;
-*/
+
 
 struct PacejkaParameter pacejkaParameter;
 idsc::BinaryBlob blob;
@@ -76,7 +75,7 @@ public:
         printf("TV: %f\n", lastOnlineParam.tv);
         */
 
-        /* TODO MCP make for longer horizon
+        /*// TODO MCP make for longer horizon
         oParam[counter] = lastOnlineParam;
         if (counter >= lookback){
             counter = lookback;
@@ -114,8 +113,11 @@ public:
             ACCYtrue = 0;
             ACCROTZtrue = 0;
         }
-         */
+
+        */
+
         counter++;
+
 
         if(counter>1){
             double dtime = lastlastOnlineParam.time - lastOnlineParam.time;
@@ -139,7 +141,7 @@ public:
         double D1 = 10;
         double B2 = 5.2;
         double C2 = 1.1;
-        double D2 = 10;
+        double D2 = 20;
         double Cf = 0.3;
         double param[7] = {B1, C1, D1, B2, C2, D2, Cf};
 
@@ -148,10 +150,10 @@ public:
 
         // init
         // *******************************************************************
-        double q = 0.1; //std of process
-        double r = 0.1; //std of measurement
-        UKF::ParameterMat processCov = UKF::ParameterMat::Identity(); // cov of process
-        UKF::MeasurementMat measureCov = UKF::MeasurementMat::Identity(); // cov of measurement
+        double q = 0.001; //std of process
+        double r = 1; //std of measurement
+        UKF::ParameterMat processCov = UKF::ParameterMat::Identity() * q; // cov of process
+        UKF::MeasurementMat measureCov = UKF::MeasurementMat::Identity() * r; // cov of measurement
 
         UKF::ParameterVec x; //initial state
         x <<  B1, C1, D1,  B2, C2, D2,  Cf;
@@ -181,12 +183,9 @@ public:
                     double BETA = lastOnlineParam.beta;
                     double AB = lastOnlineParam.ab;
                     double TV = lastOnlineParam.tv;
-
                     double ACCXmod;
                     double ACCYmod;
                     double ACCROTZmod;
-
-
                     const double paramIn[8] = {
                                          paramVec(0),
                                          paramVec(1),
@@ -208,7 +207,6 @@ public:
                     measurementVec(0) = ACCXmod;
                     measurementVec(1) = ACCYmod;
                     measurementVec(2) = ACCROTZmod;
-
                     return measurementVec;
         };
 

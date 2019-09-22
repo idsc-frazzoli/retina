@@ -28,8 +28,8 @@ import lcm.logging.LogPlayerConfig;
     // file = new File("/home/maximilien/Downloads/20190921T185455_ca093807.lcm.00");
     // file = new File("/home/maximilien/Documents/sp/logs/20190921/20190921T185455_00/log.lcm");
     // file = new File("/home/maximilien/Downloads/20190921T192845_566c941e.lcm.00");
-    file = new File("/home/maximilien/Documents/sp/logs/20190921/20190921T192845_00/log.lcm");
-
+    // file = new File("/home/maximilien/Documents/sp/logs/20190921/20190921T192845_00/log.lcm");
+    file = new File("/home/maximilien/Downloads/20190922T122847_aab4f94a.lcm.00");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
     logPlayerConfig.speed_denominator = 1;

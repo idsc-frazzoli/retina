@@ -7,15 +7,14 @@
 #include "TestUKF/TestUKF.h"
 #include "TestUKF/TestPacejkaUKF.h"
 #include "ModelSimple/Model_first.h"
-#include "ModelMPC/ModelMPC.h"
+//#include "ModelMPC/ModelMPC.h"
 #include "ModelMPC/StaticTester.h"
 #include "ModelMPC/LogTester.h"
 #include "PacejkaUKF/PacejkaUKFinterface.h"
 
 using namespace std;
 
-int main(int, const char * const [])
-{
+int main(int, const char * const []){
 
     // Testing for variance //TODO MCP Not working
     //*******************************************************************************
@@ -47,15 +46,9 @@ int main(int, const char * const [])
     testUkf.test();
      */
 
-
     // Testing model_first and UKF
     //*******************************************************************************
     // model_first();
-
-
-    // Testing ModelMPC from code g en
-    //*******************************************************************************
-    call_modelDx();
 
     // Testing ModelMPC from given static data
     //*******************************************************************************
@@ -69,6 +62,7 @@ int main(int, const char * const [])
     //*******************************************************************************
     //PacejkaUKFinterface ukf;
     //ukf.runStatic();
+
 
 
 

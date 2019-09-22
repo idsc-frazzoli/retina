@@ -11,7 +11,7 @@
 enum {
     NParam = 7,
     NMes = 3,
-    NIter = 500
+    NIter = 250
 };
 typedef UnscentedKalmanFilter<NParam, NMes, NIter> UKF;
 

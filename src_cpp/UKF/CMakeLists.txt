@@ -20,16 +20,14 @@ add_executable(
         src/ModelMPC/modelDx.h
         src/ModelSimple/Model_first.cpp
         src/ModelSimple/Model_first.h
-        src/ModelMPC/ModelMPC.cpp
-        src/ModelMPC/ModelMPC.h
         src/ModelMPC/StaticTester.cpp
         src/ModelMPC/StaticTester.h
         src/ModelMPC/LogTester.cpp
         src/ModelMPC/LogTester.h
         src/PacejkaUKF/PacejkaUKFinterface.cpp
         src/PacejkaUKF/PacejkaUKFinterface.h
-        src/LCM/mpcClient.cpp
-        src/LCM/ModelObject.cpp)
+        src/LCM/ModelObject.cpp
+        src/IIR/IIRFilter.cpp)
 
 target_link_libraries (UKF Eigen3::Eigen)
 target_link_libraries (UKF lcm)
