@@ -94,8 +94,8 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
         createOptimizationParameter(mpcOptimizationConfig, manualControlProvider.getManualControl());
     mpcRequestPublisher.publishOptimizationParameter(mpcOptimizationParameter);
     // send the newest state and start the update state
-    GokartState state = mpcStateEstimationProvider.getState();
-    Tensor safetyRadiusPosition = state.getCenterPosition();
+    GokartState gokartState = mpcStateEstimationProvider.getState();
+    Tensor safetyRadiusPosition = gokartState.getCenterPosition();
     MPCPathParameter mpcPathParameter = null;
     MPCPreviewableTrack liveTrack = mpcBSplineTrack.map(MPCBSplineTrack::new).orElse(null);
     Scalar padding = MPCOptimizationConfig.GLOBAL.padding;
@@ -107,7 +107,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     if (Objects.nonNull(liveTrack))
       mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor, qpLimit);
     if (Objects.nonNull(mpcPathParameter))
-      mpcRequestPublisher.publishControlRequest(state, mpcPathParameter);
+      mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
     else
       System.out.println("no Track to drive on! :O");
   }

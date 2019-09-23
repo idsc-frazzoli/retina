@@ -29,6 +29,7 @@ public class MPCDynamicDrivingModule extends MPCAbstractDrivingModule {
     return optimizationParameter(mpcOptimizationConfig, optional);
   }
 
+  // package for testing
   static MPCOptimizationParameterDynamic optimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
     final Scalar maxSpeed = mpcOptimizationConfig.maxSpeed;
