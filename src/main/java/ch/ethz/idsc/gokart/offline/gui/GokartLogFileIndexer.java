@@ -62,6 +62,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogFileIndexer.addRow(new LinmotPositionRow());
     gokartLogFileIndexer.addRow(new LinmotOperationalRow());
     gokartLogFileIndexer.addRow(new ResetButtonRow());
+    gokartLogFileIndexer.addRow(new Vmu931RateRow());
     gokartLogFileIndexer.addRow(new Vmu931AccRow(0));
     gokartLogFileIndexer.addRow(new Vmu931AccRow(1));
     gokartLogFileIndexer.addRow(new MpcCountRow());

@@ -37,8 +37,7 @@ import ch.ethz.idsc.tensor.sca.Ramp;
     ControlAndPredictionStep cnsStep = getStep(controlTime);
     if (Objects.isNull(cnsStep))
       return RealScalar.ZERO;
-    Scalar braking = Ramp.FUNCTION.apply(cnsStep.gokartControl().getaB().negate()) //
-        .multiply(MPCOptimizationConfig.GLOBAL.brakeMultiplicator);
+    Scalar braking = Ramp.FUNCTION.apply(cnsStep.gokartControl().getaB().negate());
     // self calibration
     Scalar gokartSpeed = lidarLocalizationModule.getVelocity().Get(0);
     Scalar realBraking = currentAcceleration.negate();

@@ -81,9 +81,9 @@ public class GokartLcmLogCutter {
           int x0 = entry.getKey();
           int width = Math.max(0, entry.getValue() - x0);
           graphics.setColor(new Color(0, 0, 255, 128));
-          graphics.fillRect(x0, ofsy, width, 64);
+          graphics.fillRect(x0, ofsy, width, 64 + 32);
           graphics.setColor(new Color(255, 255, 255, 128));
-          graphics.drawRect(x0, ofsy, width, 64);
+          graphics.drawRect(x0, ofsy, width, 64 + 32);
         }
       }
     }
@@ -140,6 +140,7 @@ public class GokartLcmLogCutter {
         }
         // ---
         System.out.println(navigableMap);
+        // TODO JPH extract functionality below to separate class and write test
         try {
           final File date = new File(export_root, String.format("%s", title.substring(0, 8)));
           date.mkdir();

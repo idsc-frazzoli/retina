@@ -30,8 +30,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   private final MPCRequestPublisher mpcRequestPublisher;
   private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
-  // private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
-  private final MPCSteering mpcSteering = new MPCCorrectedOpenLoopSteering();
+  private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
   // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
   private final MPCAggressiveCorrectedTorqueVectoringBraking mpcBraking = new MPCAggressiveCorrectedTorqueVectoringBraking();
