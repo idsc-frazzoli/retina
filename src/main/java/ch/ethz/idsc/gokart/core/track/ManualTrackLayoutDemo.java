@@ -112,7 +112,7 @@ public class ManualTrackLayoutDemo extends BSplineTrackDemo {
     points_xya.set(Ramp.FUNCTION, Tensor.ALL, 2);
     if (1 < points_xya.length() && jButtonRender.isSelected()) {
       Tensor points_xyr = points_xya.map(s -> Quantity.of(s, SI.METER));
-      BSplineTrack bSplineTrack = BSplineTrack.of(points_xyr, jToggleOpen.isSelected());
+      BSplineTrack bSplineTrack = BSplineTrack.of(points_xyr, !jToggleOpen.isSelected());
       Dimension dimension = timerFrame.geometricComponent.jComponent.getSize();
       Tensor pixel2model = Inverse.of(timerFrame.geometricComponent.getModel2Pixel());
       GeometricLayer gl = GeometricLayer.of(pixel2model);
@@ -128,8 +128,8 @@ public class ManualTrackLayoutDemo extends BSplineTrackDemo {
         raster.append(row);
       }
       ColorDataGradient colorDataGradient = jToggleOpen.isSelected() //
-          ? this.colorDataGradient
-          : COLOR_DATA_GRADIENT_STRING;
+          ? COLOR_DATA_GRADIENT_STRING
+          : this.colorDataGradient;
       Tensor tensor = ArrayPlot.of(raster, colorDataGradient);
       BufferedImage bufferedImage = ImageFormat.of(tensor);
       graphics.drawImage(bufferedImage, 0, 0, //

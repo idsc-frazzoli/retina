@@ -86,16 +86,17 @@ xlabel('[s]')
 
 subplot(m,n,3)
 hold on
-yyaxis left
-stairs(lhistory(:,1), lhistory(:,index.ab+1))
-stairs(lhistory(:,1), lhistory(:,index.tv+1))
-ylabel('acceleration [m/s²]')
-axis([-inf inf -8 8])
-yyaxis right
-plot(lhistory(:,1),lhistory(:,index.v+1))
-ylabel('speed [m/s]')
-axis([-inf inf -12 12])
-title('Acceleration/Speed');
+%yyaxis left
+plot(lhistory(:,1), lhistory(:,index.ab+1),'g')
+plot(lhistory(:,1), lhistory(:,index.tv+1),'b')
+ylabel('acceleration [m/s^2]')
+axis([-inf inf -1 3])
+%yyaxis right
+%plot(lhistory(:,1),lhistory(:,index.v+1))
+%ylabel('speed [m/s]')
+%axis([-inf inf -12 12])
+title('Accelerations');
+legend('AB','TV')
 xlabel('[s]')
 hold off
 %legend('Acceleration','Speed')
@@ -113,12 +114,13 @@ la = tan(ackermannAngle).*tangentspeed.^2/l;
 lra =1./(cos(ackermannAngle).^2).*dAckermannAngle.*tangentspeed./l;
 fa = lhistory(:,index.ab+1);
 na = (fa.^2+la.^2).^0.5;
-title('accelerations')
-axis([-inf inf -10 10])
-ylabel('[m/s²]')
+title('velocity')
+axis([-inf inf -10 40])
+ylabel('[km/h]')
 xlabel('[s]')
-plot(lhistory(:,1),lhistory(:,index.yv+1));
-legend show
+plot(lhistory(:,1),lhistory(:,index.v+1)*3.6);
+plot(lhistory(:,1),lhistory(:,index.yv+1)*3.6);
+legend('v_x','v_y')
 
 subplot(m,n,5)
 hold on
@@ -127,18 +129,18 @@ braking = zeros(numel(lhistory(:,1)),1);
 c = 0;
 for sp=lhistory(:,index.v+1)'
     c = c+1;
-    braking(c) = max(0,-lhistory(c,index.ab+1)+casadiGetMaxNegAcc(sp));
+    braking(c) = min(0,-lhistory(c,index.ab+1)+casadiGetMaxNegAcc(sp));
     %braking(c) = max(0,-lhistory(c,2));
 end
 title('braking')
 yyaxis left
-axis([-inf inf -0.1 3.1])
-ylabel('braking [m/s²]')
+axis([-inf inf -5 0])
+ylabel('braking [m/s^2]')
 plot(lhistory(:,1),braking);
 
 yyaxis right
 ylabel('slack')
-axis([-inf inf -1 10])
+axis([-inf inf -0.1 0.1])
 plot(lhistory(:,1), lhistory(:,index.slack+1));
 
 subplot(m,n,6)
@@ -146,7 +148,7 @@ subplot(m,n,6)
 hold on
 title('path progress')
 yyaxis left
-axis([-inf inf 0 1])
+axis([-inf inf 0 3])
 ylabel('progress rate [1/s]')
 plot(lhistory(:,1),lhistory(:,index.ds+1));
 
@@ -155,4 +157,64 @@ ylabel('progress [1]')
 axis([-inf inf 0 2])
 xlabel('[s]')
 plot(lhistory(:,1), lhistory(:,index.s+1));
+B1 = 9;
+C1 = 1;
+D1 = 10; % gravity acceleration considered
 
+B2 = 5.2;
+C2 = 1.1;
+D2 = 10; % gravity acceleration considered
+Cf=0.3;
+param = [B1,C1,D1,B2,C2,D2,Cf];
+
+for ii=1:length(lhistory(:,index.v+1))
+    [ACCX(ii),ACCY(ii),ACCROTZ(ii)] = modelDx(lhistory(ii,index.v+1),lhistory(ii,index.yv+1),lhistory(ii,index.dottheta+1),ackermannAngle(ii),lhistory(ii,index.ab+1),lhistory(ii,index.tv+1), param);
+end
+
+figure
+plot(lhistory(:,1),ACCX,'b')
+hold on
+plot(lhistory(:,1),ACCY,'r')
+plot(lhistory(:,1),zeros(length(ACCX),1),'g')
+legend('AccX','AccY')
+
+figure
+hold on
+plot(lhistory(:,1),(lhistory(:,index.tv+1)/2+lhistory(:,index.ab+1))/0.73*1.19,'b')
+plot(lhistory(:,1),(-lhistory(:,index.tv+1)/2+lhistory(:,index.ab+1))/0.73*1.19,'r')
+legend('+','-')
+
+reg=0.5;
+% Pacejka's magic formula
+magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
+% Equation for the lateral force in tire frame
+simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1);
+%simpleaccy = @(VELY,VELX,taccx)magic(-VELY/(VELX+reg),B2,C2,D2);
+    
+% go-kart length between axles
+l = 1.19;
+    
+% distance from the front axle to the center of mass
+l1 = 0.73;
+    
+% distance from the back axle to the center of mass
+l2 = l-l1;
+    
+% normal forces ( g is in D)
+f1n = l2/l;
+f2n = l1/l;
+    
+% Rotation Matrix
+rotmat = @(beta)[cos(beta),sin(beta);-sin(beta),cos(beta)];
+vel1=zeros(2,length(lhistory(:,index.v+1)));
+
+for ii=1:length(lhistory(:,index.v+1))
+    vel1(:,ii) = (rotmat(lhistory(ii,index.beta+1))*[lhistory(ii,index.v+1);lhistory(ii,index.yv+1)+l1*lhistory(ii,index.dottheta+1)])';
+    f1y(ii)= simplefaccy(vel1(2,ii),vel1(1,ii));
+    F1(:,ii) = rotmat(-lhistory(ii,index.beta+1))*[0;f1y(ii)]*f1n;
+end
+
+figure
+plot(lhistory(:,1),F1(1,:)'+lhistory(:,index.ab+1),'r')
+hold on
+plot(lhistory(:,1),ACCX,'b')

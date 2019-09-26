@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-public class ClothoidPlanRow extends GokartLogImageRow implements ClothoidPlanListener {
+/* package */ class ClothoidPlanRow extends GokartLogImageRow implements ClothoidPlanListener {
   private static final Clip CLIP = Clips.positive(10);
   // ---
   private Scalar scalar = RealScalar.ZERO;

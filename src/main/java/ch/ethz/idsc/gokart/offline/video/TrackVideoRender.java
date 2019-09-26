@@ -180,7 +180,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       ClothoidPlan clothoidPlan = ClothoidPlanLcm.decode(byteBuffer);
       clothoidPlansRender.planReceived(clothoidPlan);
       clothoidPlanRender.planReceived(clothoidPlan);
-    }
+    } else //
     if (channel.equals(GokartLcmChannel.XYR_TRACK_OPEN) || channel.equals(GokartLcmChannel.XYR_TRACK_CLOSED)) {
       Optional<BSplineTrack> optional = BSplineTrackLcm.decode(channel, byteBuffer);
       if (optional.isPresent()) {
