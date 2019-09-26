@@ -261,7 +261,7 @@ public class BayesianOccupancyGrid extends ImageGrid {
   @Override // from OccupancyGrid
   public void clearStart(int startX, int startY, double orientation) {
     Tensor rotation = RotationMatrix.of(orientation);
-    List<Tensor> toBeRemoved= new ArrayList<>();
+    List<Tensor> toBeRemoved = new ArrayList<>();
     int fromy = (int) (-cellDimInv.number().doubleValue() * 3 * 2.0f);
     int endy = -fromy;
     for (int ix = -1; ix < cellDimInv.number().doubleValue() * 12 * 2.0f; ix++)

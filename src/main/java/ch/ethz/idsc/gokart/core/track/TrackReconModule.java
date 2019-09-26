@@ -88,6 +88,12 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       jToggleButton.addActionListener(actionEvent -> isActive = jToggleButton.isSelected());
       timerFrame.jToolBar.add(jToggleButton);
     }
+    {
+      JButton jButton = new JButton("publish");
+      jButton.setToolTipText("publish current b-spline track");
+      jButton.addActionListener(actionEvent -> BSplineTrackLcm.publish(bSplineTrack()));
+      timerFrame.jToolBar.add(jButton);
+    }
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();
     mapping.start();
