@@ -2,14 +2,13 @@
 package ch.ethz.idsc.demo.jph.race;
 
 import java.io.File;
+import java.util.Objects;
 
 import ch.ethz.idsc.gokart.core.track.ManualTrackLayoutDemo;
-import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.offline.api.OfflineTableSupplier;
-import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
-import ch.ethz.idsc.gokart.offline.tab.SingleChannelTable;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.alg.Dimensions;
+import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.Import;
 
 /** used in analysis of race on 20190701 between human driver and dynamic mpc
  * 
@@ -17,15 +16,19 @@ import ch.ethz.idsc.tensor.alg.Dimensions;
 /* package */ enum RunManualTrackLayoutDemo {
   ;
   public static void main(String[] args) throws Exception {
-    OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
-    OfflineLogPlayer.process(new File("/media/datahaki/data/gokart/mpccmp/20190909/20190909T174744_00/log.lcm"), offlineTableSupplier);
-    Tensor tensor = offlineTableSupplier.getTable();
-    System.out.println(Dimensions.of(tensor));
+    // OfflineTableSupplier offlineTableSupplier = SingleChannelTable.of(GokartPoseChannel.INSTANCE);
+    // OfflineLogPlayer.process(new File("/media/datahaki/data/gokart/mpccmp/20190909/20190909T174744_00/log.lcm"), offlineTableSupplier);
+    // Tensor tensor = offlineTableSupplier.getTable();
+    // System.out.println(Dimensions.of(tensor));
     ManualTrackLayoutDemo manualTrackLayoutDemo = new ManualTrackLayoutDemo();
-    // Tensor points = ResourceData.of("/dubilab/analysis/track/20190701.csv");
-    // if (Objects.nonNull(points))
-    // manualTrackLayoutDemo.setControlPointsSe2(points);
-    manualTrackLayoutDemo.setCurveR2(Tensor.of(tensor.stream().map(row -> row.extract(1, 3))));
+    File file = HomeDirectory.file("20190921T124329_track/controlpoints.csv");
+    if (file.isFile()) {
+      Tensor points = Import.of(file);
+      System.out.println(Dimensions.of(points));
+      if (Objects.nonNull(points))
+        manualTrackLayoutDemo.setControlPointsSe2(points);
+    }
+    // manualTrackLayoutDemo.setCurveR2(Tensor.of(tensor.stream().map(row -> row.extract(1, 3))));
     manualTrackLayoutDemo.timerFrame.jFrame.setBounds(100, 100, 600, 600);
     manualTrackLayoutDemo.timerFrame.jFrame.setVisible(true);
   }

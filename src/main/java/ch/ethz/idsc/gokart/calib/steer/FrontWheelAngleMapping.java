@@ -15,7 +15,10 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
  * is based on report
  * https://github.com/idsc-frazzoli/retina/files/2440459/20181001_steering_measurement.pdf
  * 
- * the mapping is not bijective, therefore the inverse mapping is not supported */
+ * the mapping is not bijective, therefore the inverse mapping is not supported
+ * 
+ * Reference: Marc Heim Thesis p.11, equations (2.12) and (2.13)
+ * https://github.com/idsc-frazzoli/retina/files/3569662/20190417_heim_thesis_chapter_2.pdf */
 public enum FrontWheelAngleMapping implements AngleMapping {
   _LEFT(RealScalar.of(0.0), Quantity.of(0.939002, "SCE^-1"), Quantity.of(+0.302693, "SCE^-2"), Quantity.of(-0.624484, "SCE^-3")), //
   RIGHT(RealScalar.of(0.0), Quantity.of(0.939002, "SCE^-1"), Quantity.of(-0.302693, "SCE^-2"), Quantity.of(-0.624484, "SCE^-3")), //

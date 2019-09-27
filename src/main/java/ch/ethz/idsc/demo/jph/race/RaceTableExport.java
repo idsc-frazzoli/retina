@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private Scalar scec = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
   private Scalar brakePos = Quantity.of(0, SI.METER);
 
-  @Override
+  @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(GokartPoseChannel.INSTANCE.channel())) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
@@ -44,7 +44,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     }
   }
 
-  @Override
+  @Override // from OfflineTableSupplier
   public Tensor getTable() {
     return tableBuilder.getTable();
   }

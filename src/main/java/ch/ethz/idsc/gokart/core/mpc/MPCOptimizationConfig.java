@@ -55,14 +55,8 @@ public class MPCOptimizationConfig {
   public Scalar qpFactor = RealScalar.of(-0.56);
   @FieldSubdivide(start = "0f", end = "1", intervals = 10)
   public Scalar qpLimit = RealScalar.of(0.7);
-  /** How much does mpc underestimate the braking */
-  public Scalar brakeMultiplicator = RealScalar.of(1);
-  /** How much does mpc underestimate the steering */
-  public Scalar steerMultiplicator = RealScalar.of(1);
   /** steering regularization in MPC optimization */
   public Scalar steeringReg = RealScalar.of(0.02);
-  /** steering damping factor */
-  public Scalar steerDamp = RealScalar.of(1);
   /** specific MoI in "m" */
   public Scalar specificMoI = Quantity.of(0.3, SI.METER);
 }

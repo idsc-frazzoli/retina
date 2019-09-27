@@ -22,7 +22,11 @@ public class SteerPutEvent extends DataEvent {
   private static final Word MOT_TRQ_1 = Word.createByte("ON", (byte) 1);
   /** imaginary unit that encodes angular/rotational position of steer column */
   public static final Unit UNIT_ENCODER = Unit.of("SCE");
-  public static final Unit UNIT_RTORQUE = Unit.of("SCT"); // relative torque, not quite N*m but stronger
+  /** torque of steer column 1[SCT] == 9.5638[N*m]
+   * 
+   * Reference: A. Mosberger Thesis p. 9
+   * https://github.com/idsc-frazzoli/retina/files/3568527/20190828_advanced_driver_assistance_systems_on_a_go-kart.pdf */
+  public static final Unit UNIT_RTORQUE = Unit.of("SCT");
   public static final ScalarUnaryOperator ENCODER = QuantityMagnitude.singleton(UNIT_ENCODER);
   public static final ScalarUnaryOperator RTORQUE = QuantityMagnitude.singleton(UNIT_RTORQUE);
   public static final List<Word> COMMANDS = Arrays.asList(MOT_TRQ_0, MOT_TRQ_1);

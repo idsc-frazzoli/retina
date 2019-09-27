@@ -21,8 +21,13 @@ public enum GokartLcmImage {
     Timing timing = Timing.started();
     Tensor tensor = Tensors.empty();
     for (GokartLogImageRow gokartLogImageRow : gokartLogFileIndexer.gokartLogImageRows) {
-      Tensor stact = Transpose.of(gokartLogImageRow.tensor());
-      tensor.append(ImageResize.nearest(stact.map(gokartLogImageRow.getColorDataGradient()), FX, 1));
+      try {
+        Tensor stact = Transpose.of(gokartLogImageRow.tensor());
+        Tensor nearest = ImageResize.nearest(stact.map(gokartLogImageRow.getColorDataGradient()), FX, 1);
+        tensor.append(nearest);
+      } catch (Exception exception) {
+        System.err.println(gokartLogImageRow.getClass().getSimpleName());
+      }
     }
     BufferedImage bufferedImage = ImageFormat.of(Flatten.of(tensor, 1));
     System.out.println("image gen: " + timing.seconds());
