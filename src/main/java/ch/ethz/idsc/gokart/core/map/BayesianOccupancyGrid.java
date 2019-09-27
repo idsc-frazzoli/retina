@@ -4,11 +4,13 @@ package ch.ethz.idsc.gokart.core.map;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.retina.util.GlobalAssert;
@@ -96,12 +98,14 @@ public class BayesianOccupancyGrid extends ImageGrid {
     // ---
     // PREDEFINED_P
     logOdds = new double[dimX() * dimY()];
-    if (!fillMap)
+    if (fillMap) {
+      double logOdd = BayesianOccupancyGrid.pToLogOdd(0.99);
+      Arrays.fill(logOdds, logOdd);
+      if (logOdd > L_THRESH)
+        // updateHset();
+        IntStream.range(0, dimX()).boxed().flatMap(i -> IntStream.range(0, dimY()).mapToObj(j -> Tensors.vector(i, j))).forEach(hset::add);
+    } else
       Arrays.fill(logOdds, BayesianOccupancyGrid.pToLogOdd(P_M));
-    else {
-      Arrays.fill(logOdds, BayesianOccupancyGrid.pToLogOdd(0.99));
-      setHset();
-    }
   }
 
   /** process a new lidar observation and update the occupancy map
@@ -229,17 +233,13 @@ public class BayesianOccupancyGrid extends ImageGrid {
     }
   }
 
-  private void setHset() {
-    synchronized (hset) {
-      hset.clear();
-      for (int i = 0; i < dimX(); i++)
-        for (int j = 0; j < dimY(); j++) {
-          double logOdd = logOdds[cellToIdx(i, j)];
-          if (logOdd > L_THRESH)
-            hset.add(Tensors.vector(i, j));
-        }
-    }
-  }
+  // private void updateHset() {
+  //   synchronized (hset) {
+  //     IntStream.range(0, dimX()).boxed().flatMap(i -> //
+  //         IntStream.range(0, dimY()).filter(j -> //
+  //             logOdds[cellToIdx(i, j)] > L_THRESH).mapToObj(j -> Tensors.vector(i, j))).forEach(hset::add);
+  //   }
+  // }
 
   /** Update the log odds of a cell using the probability of occupation given a new observation.
    * l_t = l_{t-1} + log[ p(m|z_t) / (1 - p(m|z_t)) ] + log[ (1-p(m)) / p(m) ]
@@ -261,18 +261,23 @@ public class BayesianOccupancyGrid extends ImageGrid {
   @Override // from OccupancyGrid
   public void clearStart(int startX, int startY, double orientation) {
     Tensor rotation = RotationMatrix.of(orientation);
+    List<Tensor> toBeRemoved = new ArrayList<>();
     int fromy = (int) (-cellDimInv.number().doubleValue() * 3 * 2.0f);
     int endy = -fromy;
-    for (int ix = -1; ix < cellDimInv.number().doubleValue() * 12 * 2.0f; ix++) {
+    for (int ix = -1; ix < cellDimInv.number().doubleValue() * 12 * 2.0f; ix++)
       for (int iy = fromy; iy <= endy; iy++) {
         Tensor posVec = Tensors.vector(ix, iy);
         Tensor rotPos = rotation.dot(posVec);
         int posX = (int) (startX + rotPos.Get(0).number().intValue() / 2.0);
         int posY = (int) (startY + rotPos.Get(1).number().intValue() / 2.0);
-        if (isCellInGrid(posX, posY))
+        if (isCellInGrid(posX, posY)) {
           logOdds[cellToIdx(posX, posY)] = 0;
+          toBeRemoved.add(Tensors.vector(posX, posY));
+        }
       }
-      setHset();
+    // updateHset();
+    synchronized (hset) {
+      hset.removeAll(toBeRemoved);
     }
   }
 

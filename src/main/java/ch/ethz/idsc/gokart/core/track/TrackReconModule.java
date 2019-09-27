@@ -33,7 +33,6 @@ import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 // TODO does not shut down properly in TaskTabbedGui when not closed separately
-// TODO "set start" causes GUI to freeze briefly
 public final class TrackReconModule extends AbstractClockedModule implements GokartPoseListener {
   /** TODO JPH magic const */
   private static final Scalar PERIOD = Quantity.of(0.1, SI.SECOND);
@@ -88,6 +87,12 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
       jToggleButton.setSelected(isActive);
       jToggleButton.addActionListener(actionEvent -> isActive = jToggleButton.isSelected());
       timerFrame.jToolBar.add(jToggleButton);
+    }
+    {
+      JButton jButton = new JButton("publish");
+      jButton.setToolTipText("publish current b-spline track");
+      jButton.addActionListener(actionEvent -> BSplineTrackLcm.publish(bSplineTrack()));
+      timerFrame.jToolBar.add(jButton);
     }
     gokartPoseLcmClient.addListener(this);
     gokartPoseLcmClient.startSubscriptions();

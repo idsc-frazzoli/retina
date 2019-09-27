@@ -7,9 +7,13 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.core.map.OccupancyGrid;
 import ch.ethz.idsc.gokart.core.mpc.MPCBSplineTrack;
+import ch.ethz.idsc.owl.math.region.BoundedBoxRegion;
+import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.time.SystemTimestamp;
+import ch.ethz.idsc.sophus.math.Extract2D;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -31,10 +35,12 @@ public class TrackReconManagement {
   private final TrackRefinement trackRefinement;
   // ---
   private Tensor trackDataXYR = null;
-  private int startX = -1;
-  private int startY = -1;
-  private int width = 0;
-  private int height = 0;
+  // private int startX = -1;
+  // private int startY = -1;
+  private Tensor start = null;
+  // private int width = 0;
+  // private int height = 0;
+  private Region<Tensor> region;
   private int count = 0;
   private double startOrientation = 0;
   private boolean closedTrack = false;
@@ -44,9 +50,11 @@ public class TrackReconManagement {
     this.occupancyGrid = occupancyGrid;
     this.trackLayoutInitialGuess = new TrackLayoutInitialGuess(occupancyGrid);
     this.trackRefinement = new TrackRefinement(occupancyGrid);
-    Tensor gridSize = occupancyGrid.getGridSize();
-    width = gridSize.Get(0).number().intValue();
-    height = gridSize.Get(1).number().intValue();
+    // Tensor gridSize = occupancyGrid.getGridSize();
+    // width = gridSize.Get(0).number().intValue();
+    // height = gridSize.Get(1).number().intValue();
+    Tensor halfSize = occupancyGrid.getGridSize().multiply(RationalScalar.HALF);
+    region = BoundedBoxRegion.fromCenterAndRadius(halfSize, halfSize);
   }
 
   /** clears track data: center line, boundaries, ...
@@ -68,10 +76,11 @@ public class TrackReconManagement {
 
   public boolean isStartSet() {
     // TODO JPH design bad
-    return startX >= 0 //
-        && startX < width //
-        && startY >= 0 //
-        && startY < height;
+    // return startX >= 0 //
+    //     && startX < width //
+    //     && startY >= 0 //
+    //     && startY < height;
+    return Objects.nonNull(start) && region.isMember(Extract2D.FUNCTION.apply(start).map(Magnitude.METER));
   }
 
   /** set start position
@@ -80,19 +89,23 @@ public class TrackReconManagement {
   public void setStart(Tensor pose) {
     Tensor transform = occupancyGrid.getTransform();
     Tensor hpos = Tensors.of(pose.Get(0), pose.Get(1), Quantity.of(1, SI.METER));
-    Tensor pixelPos = LinearSolve.of(transform, hpos);
-    System.out.println("pixelPos=" + pixelPos);
-    startX = pixelPos.Get(0).number().intValue();
-    startY = pixelPos.Get(1).number().intValue();
+    // Tensor pixelPos = LinearSolve.of(transform, hpos);
+    // System.out.println("pixelPos=" + pixelPos);
+    start = LinearSolve.of(transform, hpos);
+    System.out.println("pixelPos=" + start);
+    // startX = pixelPos.Get(0).number().intValue();
+    // startY = pixelPos.Get(1).number().intValue();
     startOrientation = pose.Get(2).number().doubleValue();
-    occupancyGrid.clearStart(startX, startY, startOrientation);
+    // occupancyGrid.clearStart(startX, startY, startOrientation);
+    occupancyGrid.clearStart(start.Get(0).number().intValue(), start.Get(1).number().intValue(), startOrientation);
   }
 
   public Optional<MPCBSplineTrack> update(Tensor pose) {
     // System.out.println("update called: " + timeSinceLastTrackUpdate);
     MPCBSplineTrack lastTrack = null;
     if (!closedTrack || newSolutionNeeded) {
-      trackLayoutInitialGuess.update(startX, startY, startOrientation, pose);
+      // trackLayoutInitialGuess.update(startX, startY, startOrientation, pose);
+      trackLayoutInitialGuess.update(start.Get(0).number().intValue(), start.Get(1).number().intValue(), startOrientation, pose);
       if (trackLayoutInitialGuess.getRouteLength() > 0) {
         closedTrack = trackLayoutInitialGuess.isClosed();
         if (closedTrack) {

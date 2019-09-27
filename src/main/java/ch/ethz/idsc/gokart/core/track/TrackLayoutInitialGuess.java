@@ -461,8 +461,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
     // ---
     graphics.setColor(new Color(255, 200, 0, 128));
-    // TODO JPH not thread safe
-    for (Tensor xy : positionalSupports) {
+    // TODO JPH not thread safe (solved?)
+    for (Tensor xy : new ArrayList<>(positionalSupports)) {
       geometricLayer.pushMatrix(Se2Matrix.translation(xy));
       Path2D path2d = geometricLayer.toPath2D(CIRCLE_POINTS);
       path2d.closePath();
