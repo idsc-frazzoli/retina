@@ -77,9 +77,9 @@ public class TrackReconManagement {
   public boolean isStartSet() {
     // TODO JPH design bad
     // return startX >= 0 //
-    //     && startX < width //
-    //     && startY >= 0 //
-    //     && startY < height;
+    // && startX < width //
+    // && startY >= 0 //
+    // && startY < height;
     return Objects.nonNull(start) && region.isMember(Extract2D.FUNCTION.apply(start).map(Magnitude.METER));
   }
 

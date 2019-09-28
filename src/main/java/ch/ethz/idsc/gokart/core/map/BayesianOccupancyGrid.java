@@ -234,13 +234,12 @@ public class BayesianOccupancyGrid extends ImageGrid {
   }
 
   // private void updateHset() {
-  //   synchronized (hset) {
-  //     IntStream.range(0, dimX()).boxed().flatMap(i -> //
-  //         IntStream.range(0, dimY()).filter(j -> //
-  //             logOdds[cellToIdx(i, j)] > L_THRESH).mapToObj(j -> Tensors.vector(i, j))).forEach(hset::add);
-  //   }
+  // synchronized (hset) {
+  // IntStream.range(0, dimX()).boxed().flatMap(i -> //
+  // IntStream.range(0, dimY()).filter(j -> //
+  // logOdds[cellToIdx(i, j)] > L_THRESH).mapToObj(j -> Tensors.vector(i, j))).forEach(hset::add);
   // }
-
+  // }
   /** Update the log odds of a cell using the probability of occupation given a new observation.
    * l_t = l_{t-1} + log[ p(m|z_t) / (1 - p(m|z_t)) ] + log[ (1-p(m)) / p(m) ]
    * @param pix of cell to be updated

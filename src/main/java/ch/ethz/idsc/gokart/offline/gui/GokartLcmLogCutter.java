@@ -142,14 +142,10 @@ public class GokartLcmLogCutter {
         System.out.println(navigableMap);
         // TODO JPH extract functionality below to separate class and write test
         try {
-          String id = title.substring(0, Math.min(title.length(), 8));
-          final File date = new File(export_root, String.format("%s", id));
-          date.mkdir();
-          // ---
           LcmLogFileCutter lcmLogFileCutter = new LcmLogFileCutter(gokartLogFileIndexer.file(), navigableMap) {
             @Override // from LcmLogFileCutter
             public File filename(int count) {
-              File folder = new File(date, String.format("%s_%02d", title, count));
+              File folder = new File(export_root, String.format("%s_%02d", title, count));
               folder.mkdir();
               return new File(folder, LCM_FILE);
             }

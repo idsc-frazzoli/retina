@@ -2538,7 +2538,7 @@ public enum GokartLogFile implements LogFile {
   /** various mpc */
   _20190922T173223_9ae72245,
   /***************************************************/
-  /* 2019-09-23 */
+  /* 2019-09-23 with new tires on rear wheels */
   /** manual driving, mpc */
   _20190923T160419_fa3ec462,
   /** various mpc */

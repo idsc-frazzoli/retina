@@ -11,10 +11,13 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.tensor.Scalar;
 
-/**
- * 
- */
+/** Remark:
+ * functionality was motivated to extract last bspline track message from log file */
 public class LastLogMessage implements OfflineLogListener {
+  /** @param file
+   * @param channel
+   * @return
+   * @throws IOException */
   public static Optional<ByteBuffer> of(File file, String channel) throws IOException {
     LastLogMessage lastLogMessage = new LastLogMessage(channel);
     OfflineLogPlayer.process(file, lastLogMessage);
