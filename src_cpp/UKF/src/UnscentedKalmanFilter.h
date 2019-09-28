@@ -75,7 +75,7 @@ private:
         if (debugUKF){
             std::cout << "covTermSquared " << std::endl << covTermSquared << std::endl;
         }
-        ParameterMat covTerm = covTermSquared;//.sqrt(); //TODO MCP FIX !!
+        ParameterMat covTerm = covTermSquared; //.sqrt(); //TODO MCP FIX !!
         if (debugUKF){
             std::cout << "covTerm " << std::endl << covTerm << std::endl;
         }
@@ -139,18 +139,22 @@ private:
         }
 
         // Update step, time update
+        if (debugUKF) {
+            std::cout << "update step....." << std::endl;
+        }
         MeasurementVec zeta[2*NParameter+1];
         for (int i = 0; i< 2*NParameter + 1; i++){
             zeta[i] = measureFunction(chi[i]);
         }
-        MeasurementVec zPred = MeasurementVec::Zero();
+
+        MeasurementVec zPred;
         for (int i = 0; i< 2*NParameter + 1; i++){
             zPred += w_m[i]*zeta[i];
         }
 
         // debugUKF
         if (debugUKF){
-            for (int i = 0; i<= 2*NParameter+1; i++){
+            for (int i = 0; i< 2*NParameter+1; i++){
                 std::cout << "chi" << i << ":" << std::endl << chi[i] << std::endl;
                 std::cout << "zeta" << i << ":" << std::endl << zeta[i] << std::endl;
             }

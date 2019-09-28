@@ -87,7 +87,7 @@ struct OnlineParam {
     float time;
     float vx;
     float vy;
-    float vpsi;
+    float vrotz;
     float beta;
     float ab;
     float tv;
