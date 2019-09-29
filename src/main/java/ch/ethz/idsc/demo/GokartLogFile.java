@@ -2517,7 +2517,16 @@ public enum GokartLogFile implements LogFile {
   _20190916T175046_98aa5fb0,
   /***************************************************/
   /* 2019-09-21 */
-  /** various mpc */
+  /** various mpc with old tires. order of tested models: 
+   * MPC normal
+   * dyn_NN_0x6_None_reg0p01
+   * dyn_NN_0x6_None_reg0p01_symmetric
+   * kin_NN_1x16_tanh_reg0p0
+   * kin_NN_1x16_softplus_reg0p0_symmetric
+   * nomodel_1x16_softplus_reg0p0_symmetric
+   * nomodel_1x16_tanh_reg0p0_symmetric
+   * nomodel_1x16_tanh_reg0p0_symmetric
+   * nomodel_1x16_softplus_reg0p0_symmetric */
   _20190921T124329_fa3ec462,
   /** various mpc */
   _20190921T142531_fa3ec462,
@@ -2541,7 +2550,11 @@ public enum GokartLogFile implements LogFile {
   /* 2019-09-23 */
   /** manual driving, mpc */
   _20190923T160419_fa3ec462,
-  /** various mpc */
+  /** various mpc new rear tires. order of models tested:
+   * MPC normal warmup (10 laps)
+   * nomodel_1x16_tanh_reg0p0_symmetric
+   * nomodel_1x16_softplus_reg0p0_symmetric
+   * kin_1x16_softplus_reg0p0_symmetric (miscwatchdog)*/
   _20190923T161636_fa3ec462,
   /** mpc */
   _20190923T170345_fa3ec462,
@@ -2553,7 +2566,13 @@ public enum GokartLogFile implements LogFile {
   _20190926T103013_4f7fc194,
   /** slow manual driving */
   _20190926T114542_4f7fc194,
-  /** various mpc */
+  /** various mpc new rear tires. order of tested models:
+   * dyn_0x6_None_reg0p01
+   * MPC normal bad map
+   * MPC normal
+   * dyn_0x6_None_reg0p01_symmetric
+   * kin_1x16_tanh_reg0p0
+   * kin_1x16_softplus_reg0p0_symmetric_detailed*/
   _20190926T121623_4f7fc194,
   /** various mpc */
   _20190926T142839_4f7fc194,
