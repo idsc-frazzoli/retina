@@ -14,11 +14,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.nio.ByteBuffer;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
@@ -33,17 +31,12 @@ import javax.swing.JViewport;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.demo.VideoBackground;
 import ch.ethz.idsc.gokart.lcm.LcmLogFileCutter;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
-import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
-import ch.ethz.idsc.gokart.offline.api.GokartLogConfig;
-import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
-import ch.ethz.idsc.tensor.io.TensorProperties;
-import ch.ethz.idsc.tensor.sca.Round;
 
 /** GUI to inspect a log, and select and extract parts into new log files */
 public class GokartLcmLogCutter {
@@ -122,6 +115,7 @@ public class GokartLcmLogCutter {
   };
   boolean csv = false;
   boolean htm = false;
+  boolean gnd = false;
   boolean mpc = false;
   private final ActionListener actionListener = new ActionListener() {
     @Override
@@ -142,56 +136,38 @@ public class GokartLcmLogCutter {
         System.out.println(navigableMap);
         // TODO JPH extract functionality below to separate class and write test
         try {
-          String id = title.substring(0, Math.min(title.length(), 8));
-          final File date = new File(export_root, String.format("%s", id));
-          date.mkdir();
-          // ---
           LcmLogFileCutter lcmLogFileCutter = new LcmLogFileCutter(gokartLogFileIndexer.file(), navigableMap) {
             @Override // from LcmLogFileCutter
             public File filename(int count) {
-              File folder = new File(date, String.format("%s_%02d", title, count));
+              File folder = new File(export_root, String.format("%s_%02d", title, count));
               folder.mkdir();
               return new File(folder, LCM_FILE);
             }
           };
-          for (File file : lcmLogFileCutter.files())
-            try {
-              File config = new File(file.getParentFile(), GOKART_LOG_CONFIG);
-              System.out.println(file);
-              Optional<ByteBuffer> optional = FirstLogMessage.of(file, GokartPoseChannel.INSTANCE.channel());
-              if (optional.isPresent()) {
-                GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(optional.get());
-                GokartLogConfig gokartLogConfig = new GokartLogConfig();
-                gokartLogConfig.pose = gokartPoseEvent.getPose().map(Round._7);
-                boolean save = TensorProperties.wrap(gokartLogConfig).trySave(config);
-                if (!save)
-                  System.err.println("did not save properties");
-              } else
-                config.createNewFile();
-            } catch (Exception exception) {
-              exception.printStackTrace();
-            }
           // ---
           if (csv)
             for (File file : lcmLogFileCutter.files()) {
               File dest_folder = new File(file.getParentFile(), "csv");
               dest_folder.mkdir();
-              File lcmFile = new File(file.getParentFile(), "log.lcm");
-              ChannelCsvExport.of(new GokartLcmMap(lcmFile), dest_folder);
+              ChannelCsvExport.of(new GokartLcmMap(file), dest_folder);
             }
           if (htm)
             for (File file : lcmLogFileCutter.files()) {
               File dest_folder = new File(file.getParentFile(), "htm");
               dest_folder.mkdir();
-              File lcmFile = new File(file.getParentFile(), "log.lcm");
-              new HtmlLogReport(new GokartLcmMap(lcmFile), file.getParentFile().getName(), dest_folder);
+              new HtmlLogReport(new GokartLcmMap(file), file.getParentFile().getName(), dest_folder);
             }
+          if (gnd)
+            for (File file : lcmLogFileCutter.files())
+              VideoBackground.render( //
+                  file, //
+                  VideoBackground._20190401, // dubilab specific
+                  new File(file.getParentFile(), "background.png"));
           if (mpc)
             for (File file : lcmLogFileCutter.files()) {
               File dest_folder = new File(file.getParentFile(), "mpc");
               dest_folder.mkdir();
-              File lcmFile = new File(file.getParentFile(), "log.lcm");
-              OfflineLogPlayer.process(lcmFile, new MpcControlAndPredictionTables(dest_folder));
+              OfflineLogPlayer.process(file, new MpcControlAndPredictionTables(dest_folder));
             }
         } catch (Exception exception) {
           exception.printStackTrace();
@@ -244,6 +220,13 @@ public class GokartLcmLogCutter {
         JCheckBox jCheckBox = new JCheckBox("htm");
         jCheckBox.setSelected(htm);
         jCheckBox.addActionListener(actionEvent -> htm = jCheckBox.isSelected());
+        jToolBar.add(jCheckBox);
+      }
+      {
+        JCheckBox jCheckBox = new JCheckBox("gnd");
+        jCheckBox.setToolTipText("video background");
+        jCheckBox.setSelected(gnd);
+        jCheckBox.addActionListener(actionEvent -> gnd = jCheckBox.isSelected());
         jToolBar.add(jCheckBox);
       }
       {

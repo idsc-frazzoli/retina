@@ -43,6 +43,8 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
         dimension, //
         Magnitude.PER_SECOND.toInt(trackVideoConfig.frameRate));
     trackVideoRender = new TrackVideoRender(backgroundImage.model2pixel(), poseChannel);
+    if (0 < trackVideoConfig.lidarPoints)
+      trackVideoRender.lidarPointsRender(backgroundImage.model2pixel(), trackVideoConfig.lidarPoints);
     bufferedImage = new BufferedImage( //
         dimension.width, //
         dimension.height, //

@@ -12,4 +12,6 @@ public class TrackVideoConfig {
   public Scalar frameRate = PoseLcmServerModule.RATE;
   /** channel to extract pose from and trigger frame rendering */
   public String poseChannel = GokartPoseChannel.INSTANCE.channel();
+  /** set lidarPoints to 0 to omit rendering */
+  public int lidarPoints = 30_000;
 }

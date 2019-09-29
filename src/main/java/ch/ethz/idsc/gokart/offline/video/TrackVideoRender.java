@@ -69,7 +69,7 @@ import ch.ethz.idsc.tensor.sca.Round;
       new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] { 3 }, 0);
   private final PathRender pathRender = new PathRender(new Color(128, 128, 0), STROKE);
   private final LaneRender laneRender = new LaneRender();
-  private final LidarPointsRender lidarPointsRender;
+  private LidarPointsRender lidarPointsRender = VoidLidarPointsRender.INSTANCE;
   private final MPCPredictionSequenceRender mpcPredictionSequenceRender = new MPCPredictionSequenceRender(20);
   private final MPCPredictionRender mpcPredictionRender = new MPCPredictionRender();
   private final DriftLinesRender driftLinesRender = new DriftLinesRender(250);
@@ -88,13 +88,13 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final ClothoidPlansRender clothoidPlansRender = new ClothoidPlansRender(5);
   private final ClothoidPlanRender clothoidPlanRender = new ClothoidPlanRender(Color.MAGENTA);
   private final LaneRender trackRender = new LaneRender();
+  private LaptimeRender laptimeRender = null;
   private final String poseChannel;
   // ---
   private LinmotGetEvent linmotGetEvent;
 
   public TrackVideoRender(Tensor model2pixel, String poseChannel) {
     this.poseChannel = poseChannel;
-    lidarPointsRender = new LidarPointsRender(model2pixel, 30_000);
     accelerationRender = new AccelerationRender(50, //
         Inverse.of(model2pixel) //
             .dot(Se2Matrix.of(Tensors.vector(960 + 250, 140, 0))) //
@@ -109,10 +109,14 @@ import ch.ethz.idsc.tensor.sca.Round;
     tachometerMustangDash = new TachometerMustangDash(matrix); //
   }
 
+  public void lidarPointsRender(Tensor model2pixel, int maxSize) {
+    lidarPointsRender = new ColoredLidarPointsRender(model2pixel, maxSize);
+  }
+
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     if (channel.equals(CHANNEL_LIDAR)) {
-      lidarPointsRender.velodyneDecoder.lasers(byteBuffer);
+      lidarPointsRender.lasers(byteBuffer);
     } else //
     if (channel.equals(GokartLcmChannel.STATUS)) {
       SteerColumnEvent steerColumnEvent = new SteerColumnEvent(byteBuffer);
@@ -160,8 +164,10 @@ import ch.ethz.idsc.tensor.sca.Round;
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
       se2ExpFixpointRender.getEvent(gokartPoseEvent);
+      if (Objects.nonNull(laptimeRender))
+        laptimeRender.setPose(time, gokartPoseEvent.getPose());
     } else //
-    if (channel.equals("davis240c.overview.dvs")) { // TODO JPH
+    if (channel.equals("davis240c.overview.dvs")) { // TODO JPH get string from elsewhere
       hasDavis240c = true;
       accumulatedImageRender.davisDvsDatagramDecoder.decode(byteBuffer);
     } else //
@@ -181,12 +187,14 @@ import ch.ethz.idsc.tensor.sca.Round;
       clothoidPlansRender.planReceived(clothoidPlan);
       clothoidPlanRender.planReceived(clothoidPlan);
     } else //
-    if (channel.equals(GokartLcmChannel.XYR_TRACK_OPEN) || channel.equals(GokartLcmChannel.XYR_TRACK_CLOSED)) {
+    if (channel.equals(GokartLcmChannel.XYR_TRACK_OPEN) || //
+        channel.equals(GokartLcmChannel.XYR_TRACK_CLOSED)) {
       Optional<BSplineTrack> optional = BSplineTrackLcm.decode(channel, byteBuffer);
       if (optional.isPresent()) {
         laneRender.setLane(null, true);
         BSplineTrack bSplineTrack = optional.get();
-        trackRender.setLane(bSplineTrack.getTrackBoundaries(100), bSplineTrack.isClosed());
+        trackRender.setLane(bSplineTrack.getTrackBoundaries(200), bSplineTrack.isClosed());
+        laptimeRender = new LaptimeRender(bSplineTrack);
       }
     }
   }
@@ -214,6 +222,8 @@ import ch.ethz.idsc.tensor.sca.Round;
     se2ExpFixpointRender.render(geometricLayer, graphics);
     clothoidPlansRender.render(geometricLayer, graphics);
     clothoidPlanRender.render(geometricLayer, graphics);
+    if (Objects.nonNull(laptimeRender))
+      laptimeRender.render(geometricLayer, graphics);
     // ---
     graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
     graphics.setColor(Color.GRAY);
