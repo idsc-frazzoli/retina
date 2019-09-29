@@ -2518,6 +2518,8 @@ public enum GokartLogFile implements LogFile {
   /***************************************************/
   /* 2019-09-21 */
   /** various mpc with old tires. order of tested models: 
+   * MPC normal warm up
+   * MPC normal warm up
    * MPC normal
    * dyn_NN_0x6_None_reg0p01
    * dyn_NN_0x6_None_reg0p01_symmetric
