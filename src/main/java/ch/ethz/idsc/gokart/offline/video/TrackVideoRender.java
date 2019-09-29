@@ -164,6 +164,8 @@ import ch.ethz.idsc.tensor.sca.Round;
       gokartRender.gokartPoseListener.getEvent(gokartPoseEvent);
       extrudedFootprintRender.gokartPoseListener.getEvent(gokartPoseEvent);
       se2ExpFixpointRender.getEvent(gokartPoseEvent);
+      if (Objects.nonNull(laptimeRender))
+        laptimeRender.setPose(time, gokartPoseEvent.getPose());
     } else //
     if (channel.equals("davis240c.overview.dvs")) { // TODO JPH get string from elsewhere
       hasDavis240c = true;
