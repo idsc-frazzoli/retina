@@ -2517,7 +2517,7 @@ public enum GokartLogFile implements LogFile {
   _20190916T175046_98aa5fb0,
   /***************************************************/
   /* 2019-09-21 */
-  /** various mpc with old tires. order of tested models: 
+  /** various mpc with old tires. order of tested models:
    * MPC normal warm up
    * MPC normal warm up
    * MPC normal
@@ -2556,7 +2556,7 @@ public enum GokartLogFile implements LogFile {
    * MPC normal warmup (10 laps)
    * nomodel_1x16_tanh_reg0p0_symmetric
    * nomodel_1x16_softplus_reg0p0_symmetric
-   * kin_1x16_softplus_reg0p0_symmetric (miscwatchdog)*/
+   * kin_1x16_softplus_reg0p0_symmetric (misc-watchdog) */
   _20190923T161636_fa3ec462,
   /** mpc */
   _20190923T170345_fa3ec462,
@@ -2574,7 +2574,7 @@ public enum GokartLogFile implements LogFile {
    * MPC normal
    * dyn_0x6_None_reg0p01_symmetric
    * kin_1x16_tanh_reg0p0
-   * kin_1x16_softplus_reg0p0_symmetric_detailed*/
+   * kin_1x16_softplus_reg0p0_symmetric_detailed */
   _20190926T121623_4f7fc194,
   /** various mpc */
   _20190926T142839_4f7fc194,

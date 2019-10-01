@@ -190,7 +190,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (channel.equals(GokartLcmChannel.XYR_TRACK_OPEN) || //
         channel.equals(GokartLcmChannel.XYR_TRACK_CLOSED)) {
       Optional<BSplineTrack> optional = BSplineTrackLcm.decode(channel, byteBuffer);
-      if (optional.isPresent()) {
+      if (optional.isPresent() && Objects.isNull(laptimeRender)) {
         laneRender.setLane(null, true);
         BSplineTrack bSplineTrack = optional.get();
         trackRender.setLane(bSplineTrack.getTrackBoundaries(200), bSplineTrack.isClosed());
