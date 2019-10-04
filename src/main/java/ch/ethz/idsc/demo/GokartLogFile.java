@@ -1713,7 +1713,7 @@ public enum GokartLogFile implements LogFile {
   /** mpc with challenging track */
   _20190408T103556_eb6eadfe,
   /** mh thesis benchmarking: dynamic kinematic */
-  _20190408T104821_eb6eadfe, //
+  _20190408T104821_eb6eadfe,
   /** slow manual driving with localization failure */
   _20190408T111457_eb6eadfe,
   /** fast manual driving with localization failure */
@@ -1933,7 +1933,7 @@ public enum GokartLogFile implements LogFile {
    * slow mpc */
   _20190521T105301_2055cb1b,
   /** imu installed rot90 */
-  _20190521T150634_d2699045, //
+  _20190521T150634_d2699045,
   /** driving */
   _20190521T155549_ade0cc11,
   /** driving */
@@ -2043,17 +2043,17 @@ public enum GokartLogFile implements LogFile {
   /** various clothoid pursuits */
   _20190603T114129_d0660300,
   /** mpc */
-  _20190603T144056_d0660300, //
+  _20190603T144056_d0660300,
   /***************************************************/
   /* 2019-06-04 */
   /** slow manual driving */
-  _20190604T105606_d0660300, //
+  _20190604T105606_d0660300,
   /** mpc */
-  _20190604T110921_d0660300, //
+  _20190604T110921_d0660300,
   /** demo of mpc for large audience */
-  _20190604T115206_d0660300, //
+  _20190604T115206_d0660300,
   /** mpc */
-  _20190604T134008_d0660300, //
+  _20190604T134008_d0660300,
   /***************************************************/
   /* 2019-06-06 */
   /** mpc */
@@ -2077,9 +2077,9 @@ public enum GokartLogFile implements LogFile {
   /** clothoid pursuit */
   _20190606T164035_468077d8,
   /** slow manual driving */
-  _20190606T170039_50106f37, //
+  _20190606T170039_50106f37,
   /** clothoid pursuit */
-  _20190606T171341_a312fcd6, //
+  _20190606T171341_a312fcd6,
   /***************************************************/
   /* 2019-06-10 */
   /** mpc with localization failure */
@@ -2206,7 +2206,7 @@ public enum GokartLogFile implements LogFile {
   /* 2019-06-27 */
   /** manual driving with bad state estimation
    * and several localization failures */
-  _20190627T095640_12dcbfa8, //
+  _20190627T095640_12dcbfa8,
   /** mpc */
   _20190627T103924_12dcbfa8,
   /** mpc */
@@ -2277,6 +2277,8 @@ public enum GokartLogFile implements LogFile {
    * mapping active then localization failure
    * otherwise flawless */
   _20190715T153458_908ca07d,
+  /** slow brief driving */
+  _20190715T164714_212a34b9,
   /***************************************************/
   /* 2019-07-18 */
   /** brief, slow manual driving */
@@ -2322,28 +2324,178 @@ public enum GokartLogFile implements LogFile {
   /* 2019-07-25 */
   /** TEST OK: MANUAL, PURSUIT, MPC */
   _20190725T114335_95923bcb,
+  /** slow driving */
+  _20190725T150553_2cf89552,
+  /** slow driving */
+  _20190725T160813_27ab5f6b,
+  /** driving at various speeds */
+  _20190725T163227_65a9bd78,
+  /** driving at various speeds */
+  _20190725T164326_65a9bd78,
+  /** driving with clothoid plans */
+  _20190725T165117_65a9bd78,
   /***************************************************/
   /* 2019-07-29 */
+  /** slow driving */
+  _20190729T101411_4b481382,
+  /** mpc functional test */
+  _20190729T105210_bbfb70a0,
+  /** moderate mpc */
+  _20190729T112933_354aa961,
+  /** slow manual driving */
+  _20190729T114944_23a2aa6f,
   /** lane keeping */
   _20190729T115559_23a2aa6f,
+  /** moderate mpc */
+  _20190729T134801_23a2aa6f,
   /** lane keeping */
   _20190729T140711_23a2aa6f,
+  /** brief mpc */
+  _20190729T142659_7a066ab9,
+  /** brief mpc */
+  _20190729T142929_7a066ab9,
+  /** mpc */
+  _20190729T145053_de65fefc,
+  /** mpc */
+  _20190729T150256_01963e83,
+  /** brief mpc */
+  _20190729T162034_c871b8d1,
+  /** mpc */
+  _20190729T163256_26b4ebb8,
+  /** mpc */
+  _20190729T164249_c871b8d1,
+  /** mpc */
+  _20190729T170004_e1fcde97,
+  /** mpc */
+  _20190729T170730_e1fcde97,
+  /***************************************************/
+  /* 2019-07-31 */
+  /** slow manual driving */
+  _20190731T105819_58391110,
+  /** slow manual driving and mpc */
+  _20190731T113537_58391110,
+  /** manual driving */
+  _20190731T135249_58391110,
+  /** manual driving at various speeds */
+  _20190731T141353_58391110,
+  /** manual driving */
+  _20190731T144331_58391110,
+  /** slow brief driving */
+  _20190731T155204_9a0e0b14,
+  /** slow brief driving */
+  _20190731T161802_9a0e0b14,
+  /** brief mpc */
+  _20190731T170215_9a0e0b14,
+  /** manual driving with localization loss */
+  _20190731T171022_9a0e0b14,
+  /** manual driving, mpc with localization loss */
+  _20190731T172319_9a0e0b14,
+  /** slow manual driving */
+  _20190731T183311_6b97f820,
+  /** manual driving with localization loss */
+  _20190731T184817_6b97f820,
+  /** fast manual driving and mpc */
+  _20190731T191505_6b97f820,
   /***************************************************/
   /* 2019-08-05 */
+  /** slow manual driving and mpc */
+  _20190805T100419_5e09290a,
+  /** slow manual driving */
+  _20190805T105003_5e09290a,
+  /** slow mpc */
+  _20190805T113417_c2c6257b,
+  /** slow manual driving */
+  _20190805T115137_c2c6257b,
+  /** slow mpc */
+  _20190805T134742_c2c6257b,
+  /** slow brief mpc */
+  _20190805T141344_c2c6257b,
+  /** slow brief manual driving */
+  _20190805T143604_438eecec,
+  /** slow mpc */
+  _20190805T144142_38167cf9,
+  /** slow brief mpc */
+  _20190805T150417_38167cf9,
+  /** slow brief mpc */
+  _20190805T150719_38167cf9,
+  /** slow mpc */
+  _20190805T152305_38167cf9,
   /** lane keeping */
   _20190805T153837_38167cf9,
+  /** manual driving at various speeds */
+  _20190805T160833_38167cf9,
+  /***************************************************/
+  /* 2019-08-08 */
+  /** slow mpc */
+  _20190808T111530_6276c895,
+  /** slow mpc */
+  _20190808T112328_6276c895,
+  /** slow mpc */
+  _20190808T125712_6276c895,
+  /** slow brief mpc */
+  _20190808T132826_6276c895,
+  /** slow mpc */
+  _20190808T150428_6276c895,
+  /** slow mpc */
+  _20190808T151435_6276c895,
+  /** manual driving and mpc, localization loss */
+  _20190808T164104_6276c895,
   /***************************************************/
   /* 2019-08-12 */
+  /** manual driving at various speeds */
+  _20190812T094455_7480175f,
+  /** slow manual driving */
+  _20190812T095342_7480175f,
+  /** slow manual driving */
+  _20190812T132202_7480175f,
+  /** slow mpc */
+  _20190812T133306_7480175f,
   /** lane keeping */
   _20190812T134244_7480175f,
   /** lane keeping */
   _20190812T135418_7480175f,
   /** lane keeping */
   _20190812T140242_7480175f,
+  /** brief slow manual driving, localization issues */
+  _20190812T142330_e7716566,
+  /** slow manual driving */
+  _20190812T142915_e7716566,
+  /** slow mpc */
+  _20190812T143852_e7716566,
+  /** slow manual driving */
+  _20190812T151342_388cea64,
+  /** slow brief manual driving */
+  _20190812T152417_388cea64,
   /** lane keeping */
   _20190812T155500_388cea64,
+  /** slow brief manual driving */
+  _20190812T161837_388cea64,
+  /** slow mpc */
+  _20190812T172334_e7716566,
+  /***************************************************/
+  /* 2019-08-15 */
+  /** slow mpc */
+  _20190815T125702_0a1f4b59,
+  /** slow mpc */
+  _20190815T131258_0a1f4b59,
+  /** slow mpc */
+  _20190815T132403_0a1f4b59,
+  /** manual driving and mpc */
+  _20190815T134506_0a1f4b59,
+  /** manual driving and mpc */
+  _20190815T140911_0a1f4b59,
+  /** manual driving and mpc */
+  _20190815T142725_0a1f4b59,
   /***************************************************/
   /* 2019-08-19 */
+  /** manual driving and mpc */
+  _20190819T103301_c21b2aba,
+  /** manual driving and mpc */
+  _20190819T105214_c21b2aba,
+  /** manual driving and mpc */
+  _20190819T111632_c21b2aba,
+  /** manual driving and mpc */
+  _20190819T112855_c21b2aba,
   /** 5-minute operation (IMU issues?) */
   _20190819T120821_c21b2aba,
   /** lane keeping */
@@ -2368,6 +2520,8 @@ public enum GokartLogFile implements LogFile {
   _20190826T111055_04d58fea,
   /** mpc brief */
   _20190826T132830_7d99aec3,
+  /** slow brief manual driving */
+  _20190826T134608_7d99aec3,
   /** mpc */
   _20190826T175846_65643995,
   /** manual driving */
@@ -2486,13 +2640,35 @@ public enum GokartLogFile implements LogFile {
   _20190909T174744_d60c1e1d,
   /***************************************************/
   /* 2019-09-12 */
+  /** slow mpc */
+  _20190912T104741_8f45391f,
+  /** slow mpc */
+  _20190912T141140_8f45391f,
+  /** slow mpc */
+  _20190912T141411_8f45391f,
+  /** fast manual driving */
+  _20190912T154911_0f95cdcc,
+  /** fast mpc */
+  _20190912T155751_0f95cdcc,
+  /** fast mpc, localization loss */
+  _20190912T162356_0f95cdcc,
   /** various mpc */
-  _20190912T165653_0f95cdcc, //
+  _20190912T165653_0f95cdcc,
   /** manual driving racing
    * mb, jh, jg, mp */
-  _20190912T173521_0f95cdcc, //
+  _20190912T173521_0f95cdcc,
+  /** slow brief manual driving */
+  _20190912T182526_44ff4610,
+  /** slow brief manual driving */
+  _20190912T183541_44ff4610,
   /** slow mpc */
-  _20190912T194352_6983d345, //
+  _20190912T184423_44ff4610,
+  /** slow mpc, localization loss */
+  _20190912T185915_6983d345,
+  /** slow mpc, manual driving */
+  _20190912T191147_6983d345,
+  /** slow mpc */
+  _20190912T194352_6983d345,
   /** */
   _20190912T211056_4a3be8c4,
   /***************************************************/
@@ -2506,6 +2682,8 @@ public enum GokartLogFile implements LogFile {
   /** various mpc */
   _20190916T111105_811a91ac,
   /** various mpc */
+  _20190916T115616_811a91ac,
+  /** various mpc */
   _20190916T123233_811a91ac,
   /** various mpc */
   _20190916T143705_811a91ac,
@@ -2516,7 +2694,32 @@ public enum GokartLogFile implements LogFile {
   /** various mpc */
   _20190916T175046_98aa5fb0,
   /***************************************************/
+  /* 2019-09-19 */
+  /** fast manual driving */
+  _20190919T110124_cc13f26a,
+  /** various mpc */
+  _20190919T112000_344048de,
+  /** manual driving, brief mpc */
+  _20190919T134659_29a07230,
+  /** various mpc */
+  _20190919T140820_29a07230,
+  /** various mpc */
+  _20190919T145248_cef7cba3,
+  /** various mpc */
+  _20190919T151513_cef7cba3,
+  /** STEERING EXPERIMENT */
+  /** various mpc */
+  _20190919T165414_cc5197ad,
+  /** various mpc, manual driving, localization loss */
+  _20190919T194305_9ae72245,
+  /***************************************************/
   /* 2019-09-21 */
+  /** fast manual driving */
+  _20190921T102100_fa3ec462,
+  /** various mpc, localization loss */
+  _20190921T105947_fa3ec462,
+  /** manual driving, mpc */
+  _20190921T112425_fa3ec462,
   /** various mpc with old tires. order of tested models:
    * MPC normal warm up
    * MPC normal warm up
@@ -2549,6 +2752,8 @@ public enum GokartLogFile implements LogFile {
   /** various mpc */
   _20190922T173223_9ae72245,
   /***************************************************/
+  /** manual driving, cable/freeze */
+  _20190923T155759_fa3ec462,
   /* 2019-09-23 with new tires on rear wheels */
   /** manual driving, mpc */
   _20190923T160419_fa3ec462,
@@ -2560,12 +2765,20 @@ public enum GokartLogFile implements LogFile {
   _20190923T161636_fa3ec462,
   /** mpc */
   _20190923T170345_fa3ec462,
+  /** slow manual driving */
+  _20190923T171915_4f7fc194,
   /***************************************************/
   /* 2019-09-26 */
   /** manual driving */
   _20190926T102245_4f7fc194,
   /** various mpc */
   _20190926T103013_4f7fc194,
+  /** slow manual driving */
+  _20190926T110810_4f7fc194,
+  /** slow manual driving */
+  _20190926T111843_4f7fc194,
+  /** slow manual driving */
+  _20190926T112703_4f7fc194,
   /** slow manual driving */
   _20190926T114542_4f7fc194,
   /** various mpc new rear tires. order of tested models:
