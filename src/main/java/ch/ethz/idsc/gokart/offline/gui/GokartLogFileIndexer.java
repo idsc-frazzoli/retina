@@ -53,30 +53,6 @@ import ch.ethz.idsc.tensor.sca.Round;
 public class GokartLogFileIndexer implements OfflineLogListener {
   public static GokartLogFileIndexer create(File file) throws IOException {
     GokartLogFileIndexer gokartLogFileIndexer = new GokartLogFileIndexer(file);
-    // actuators
-    gokartLogFileIndexer.addRow(new SteerActiveRow());
-    gokartLogFileIndexer.addRow(new SteerRefTorRow());
-    gokartLogFileIndexer.addRow(new SteerAngleRow());
-    gokartLogFileIndexer.addRow(new RimoRateRow(0));
-    gokartLogFileIndexer.addRow(new RimoRateRow(1));
-    gokartLogFileIndexer.addRow(new LinmotPositionRow());
-    gokartLogFileIndexer.addRow(new LinmotTemperatureRow());
-    gokartLogFileIndexer.addRow(new LinmotOperationalRow());
-    // sensors
-    gokartLogFileIndexer.addRow(new Vmu931RateRow());
-    gokartLogFileIndexer.addRow(gokartLogFileIndexer.dvsCountRow);
-    gokartLogFileIndexer.addRow(new GprmcRow());
-    // user
-    gokartLogFileIndexer.addRow(new AutonomousButtonRow());
-    gokartLogFileIndexer.addRow(new ResetButtonRow());
-    // state estimation
-    gokartLogFileIndexer.addRow(new PoseQualityRow());
-    // planning
-    gokartLogFileIndexer.addRow(gokartLogFileIndexer.trajectoryCountRow);
-    gokartLogFileIndexer.addRow(new BSplineTrackRow());
-    gokartLogFileIndexer.addRow(new MpcCountRow());
-    gokartLogFileIndexer.addRow(new CurveMessageRow());
-    gokartLogFileIndexer.addRow(new ClothoidPlanRow());
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -84,6 +60,10 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     OfflineLogPlayer.process(file, gokartLogFileIndexer);
     System.out.println("done.");
     return gokartLogFileIndexer;
+  }
+
+  public static GokartLogFileIndexer empty() {
+    return new GokartLogFileIndexer(null);
   }
 
   // ---
@@ -116,6 +96,30 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   private GokartLogFileIndexer(File file) {
     this.file = file;
+    // actuators
+    addRow(new SteerActiveRow());
+    addRow(new SteerRefTorRow());
+    addRow(new SteerAngleRow());
+    addRow(new RimoRateRow(0));
+    addRow(new RimoRateRow(1));
+    addRow(new LinmotPositionRow());
+    addRow(new LinmotTemperatureRow());
+    addRow(new LinmotOperationalRow());
+    // sensors
+    addRow(new Vmu931RateRow());
+    addRow(dvsCountRow);
+    addRow(new GprmcRow());
+    // user
+    addRow(new AutonomousButtonRow());
+    addRow(new ResetButtonRow());
+    // state estimation
+    addRow(new PoseQualityRow());
+    // planning
+    addRow(trajectoryCountRow);
+    addRow(new BSplineTrackRow());
+    addRow(new MpcCountRow());
+    addRow(new CurveMessageRow());
+    addRow(new ClothoidPlanRow());
   }
 
   private void addRow(GokartLogImageRow gokartLogImageRow) {
