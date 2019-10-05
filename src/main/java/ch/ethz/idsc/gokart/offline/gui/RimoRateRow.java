@@ -13,7 +13,8 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ class RimoRateRow extends GokartLogImageRow implements RimoGetListener {
-  private static final Clip CLIP = Clips.positive(Quantity.of(40, SI.PER_SECOND));
+  private static final Clip CLIP = Clips.positive(Quantity.of(75, SI.PER_SECOND));
+  // ---
   private final int index;
   private Scalar scalar = RealScalar.ZERO;
 

@@ -31,6 +31,7 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
+import ch.ethz.idsc.gokart.lcm.davis.DavisDvsBlockPublisher;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
@@ -52,8 +53,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 public class GokartLogFileIndexer implements OfflineLogListener {
   public static GokartLogFileIndexer create(File file) throws IOException {
     GokartLogFileIndexer gokartLogFileIndexer = new GokartLogFileIndexer(file);
-    gokartLogFileIndexer.addRow(new AutonomousButtonRow());
-    gokartLogFileIndexer.addRow(new PoseQualityRow());
+    // actuators
     gokartLogFileIndexer.addRow(new SteerActiveRow());
     gokartLogFileIndexer.addRow(new SteerRefTorRow());
     gokartLogFileIndexer.addRow(new SteerAngleRow());
@@ -62,15 +62,21 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     gokartLogFileIndexer.addRow(new LinmotPositionRow());
     gokartLogFileIndexer.addRow(new LinmotTemperatureRow());
     gokartLogFileIndexer.addRow(new LinmotOperationalRow());
-    gokartLogFileIndexer.addRow(new ResetButtonRow());
+    // sensors
     gokartLogFileIndexer.addRow(new Vmu931RateRow());
-    gokartLogFileIndexer.addRow(new Vmu931AccRow(0));
-    gokartLogFileIndexer.addRow(new Vmu931AccRow(1));
+    gokartLogFileIndexer.addRow(gokartLogFileIndexer.dvsCountRow);
+    gokartLogFileIndexer.addRow(new GprmcRow());
+    // user
+    gokartLogFileIndexer.addRow(new AutonomousButtonRow());
+    gokartLogFileIndexer.addRow(new ResetButtonRow());
+    // state estimation
+    gokartLogFileIndexer.addRow(new PoseQualityRow());
+    // planning
+    gokartLogFileIndexer.addRow(gokartLogFileIndexer.trajectoryCountRow);
+    gokartLogFileIndexer.addRow(new BSplineTrackRow());
     gokartLogFileIndexer.addRow(new MpcCountRow());
     gokartLogFileIndexer.addRow(new CurveMessageRow());
     gokartLogFileIndexer.addRow(new ClothoidPlanRow());
-    gokartLogFileIndexer.addRow(new BSplineTrackRow());
-    gokartLogFileIndexer.addRow(new GprmcRow());
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -83,6 +89,11 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   // ---
   private static final Scalar RESOLUTION = Quantity.of(0.25, SI.SECOND);
   private static final String VLP16_CENTER_POS = VelodyneLcmChannels.pos(VelodyneModel.VLP16, "center");
+  private static final String DVS_CHANNEL = DavisDvsBlockPublisher.channel("overview");
+  // ---
+  private final DvsCountRow dvsCountRow = new DvsCountRow();
+  private final TrajectoryCountRow trajectoryCountRow = new TrajectoryCountRow();
+  // private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   // ---
   private final File file;
   private final List<Integer> raster2event = new ArrayList<>();
@@ -173,6 +184,10 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       Vmu931ImuFrame vmu931ImuFrame = new Vmu931ImuFrame(byteBuffer);
       vmu931ImuFrameListeners.forEach(listener -> listener.vmu931ImuFrame(vmu931ImuFrame));
     } else //
+    if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME) || //
+        channel.equals(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME)) {
+      trajectoryCountRow.increment();
+    } else //
     if (channel.equals(GokartLcmChannel.MPC_FORCES_CNS)) {
       ControlAndPredictionSteps controlAndPredictionSteps = //
           new ControlAndPredictionStepsMessage(byteBuffer).getPayload();
@@ -196,6 +211,9 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       VelodynePosEvent velodynePosEvent = VelodynePosEvent.vlp16(byteBuffer);
       Gprmc gprmc = velodynePosEvent.gprmc();
       gprmcListeners.forEach(listener -> listener.gprmcReceived(gprmc));
+    } else //
+    if (channel.equals(DVS_CHANNEL)) {
+      dvsCountRow.increment();
     }
     ++event_count;
   }

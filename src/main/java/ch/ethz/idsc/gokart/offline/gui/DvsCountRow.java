@@ -1,8 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.gui;
 
-import ch.ethz.idsc.gokart.core.pure.ClothoidPlan;
-import ch.ethz.idsc.gokart.core.pure.ClothoidPlanListener;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.img.ColorDataGradient;
@@ -10,13 +8,12 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class ClothoidPlanRow extends GokartLogImageRow implements ClothoidPlanListener {
-  private static final Clip CLIP = Clips.positive(10);
+/* package */ class DvsCountRow extends GokartLogImageRow {
+  private static final Clip CLIP = Clips.positive(200);
   // ---
   private Scalar scalar = RealScalar.ZERO;
 
-  @Override // from ClothoidPlanListener
-  public void planReceived(ClothoidPlan clothoidPlan) {
+  public void increment() {
     scalar = scalar.add(RealScalar.ONE);
   }
 
@@ -29,11 +26,11 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   @Override // from GokartLogImageRow
   public ColorDataGradient getColorDataGradient() {
-    return ColorDataGradients.SUNSET;
+    return ColorDataGradients.COPPER;
   }
 
   @Override // from GokartLogImageRow
   public String getName() {
-    return "clothoid plans";
+    return "dvs packets";
   }
 }
