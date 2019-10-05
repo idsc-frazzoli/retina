@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.gui;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlListener;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -10,7 +13,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.qty.Boole;
 import ch.ethz.idsc.tensor.red.Max;
 
-/* package */ class ResetButtonRow extends GokartLogImageRow implements ManualControlListener {
+/* package */ class ResetButtonRow extends MappedLogImageRow implements ManualControlListener {
   private Scalar scalar = RealScalar.ZERO;
 
   @Override // from GokartLogImageRow
@@ -33,5 +36,13 @@ import ch.ethz.idsc.tensor.red.Max;
   @Override // from GokartLogImageRow
   public String getName() {
     return "reset button";
+  }
+
+  @Override // from DiscreteLogImageRow
+  public Map<Scalar, String> legend() {
+    LinkedHashMap<Scalar, String> linkedHashMap = new LinkedHashMap<>();
+    linkedHashMap.put(Boole.of(false), "not pressed");
+    linkedHashMap.put(Boole.of(true), "pressed");
+    return linkedHashMap;
   }
 }

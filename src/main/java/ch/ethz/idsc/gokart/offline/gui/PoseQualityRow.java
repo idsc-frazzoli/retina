@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class PoseQualityRow extends GokartLogImageRow implements GokartPoseListener {
+/* package */ class PoseQualityRow extends ClipLogImageRow implements GokartPoseListener {
   private static final Clip CLIP = Clips.interval(0.5, 1);
   private Scalar scalar = RealScalar.ZERO;
 
@@ -32,5 +32,10 @@ import ch.ethz.idsc.tensor.sca.Clips;
   @Override // from GokartLogImageRow
   public String getName() {
     return "pose quality";
+  }
+
+  @Override
+  public Clip clip() {
+    return CLIP;
   }
 }

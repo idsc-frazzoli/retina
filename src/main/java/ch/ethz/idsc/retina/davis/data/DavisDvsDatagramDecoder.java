@@ -58,4 +58,11 @@ public class DavisDvsDatagramDecoder {
     }
     pacid_next = ++pacid;
   }
+
+  /** @param byteBuffer
+   * @return number of events in packet */
+  public static int eventCount(ByteBuffer byteBuffer) {
+    byteBuffer.position(0);
+    return byteBuffer.getShort();
+  }
 }

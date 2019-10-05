@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class LinmotPositionRow extends GokartLogImageRow implements LinmotGetListener {
+/* package */ class LinmotPositionRow extends ClipLogImageRow implements LinmotGetListener {
   private static final Clip CLIP = Clips.interval(Quantity.of(-0.05, SI.METER), Quantity.of(0.0, SI.METER));
   private Scalar scalar = RealScalar.ZERO;
 
@@ -34,5 +34,10 @@ import ch.ethz.idsc.tensor.sca.Clips;
   @Override // from GokartLogImageRow
   public String getName() {
     return "linmot position";
+  }
+
+  @Override
+  public Clip clip() {
+    return CLIP;
   }
 }

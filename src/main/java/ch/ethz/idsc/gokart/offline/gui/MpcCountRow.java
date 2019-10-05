@@ -10,7 +10,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class MpcCountRow extends GokartLogImageRow implements MPCControlUpdateListener {
+/* package */ class MpcCountRow extends ClipLogImageRow implements MPCControlUpdateListener {
   private static final Clip CLIP = Clips.positive(15);
   // ---
   private Scalar scalar = RealScalar.ZERO;
@@ -35,5 +35,10 @@ import ch.ethz.idsc.tensor.sca.Clips;
   @Override // from GokartLogImageRow
   public String getName() {
     return "mpc count";
+  }
+
+  @Override
+  public Clip clip() {
+    return CLIP;
   }
 }

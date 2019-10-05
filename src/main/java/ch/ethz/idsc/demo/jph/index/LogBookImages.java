@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.jph.index;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -29,7 +29,9 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     if (Objects.nonNull(file) && //
         file.isFile()) {
       String name = file.getName().substring(0, 24);
-      File target = new File(FOLDER, name + ".png");
+      String year = name.substring(0, 4);
+      String mnth = name.substring(4, 6);
+      File target = new File(FOLDER, year + "/" + mnth + "/" + name + ".png");
       if (!target.isFile())
         try {
           BufferedImage bufferedImage = GokartLcmImage.of(GokartLogFileIndexer.create(file));
@@ -42,17 +44,20 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   }
 
   public static void main(String[] args) {
-    List<GokartLogFile> gokartLogFiles = Arrays.asList( //
-        GokartLogFile._20180503T094457_ce8724ba, //
-        GokartLogFile._20180514T155248_767e5417, //
-        GokartLogFile._20180517T152605_c1876fc4, //
-        GokartLogFile._20190701T170957_12dcbfa8, //
-        GokartLogFile._20190701T174938_12dcbfa8, //
-        GokartLogFile._20190912T173521_0f95cdcc, //
-        GokartLogFile._20190914T113023_11a994fa, //
-        GokartLogFile._20190927T110429_e9728d8b //
-    );
-    List<File> list = gokartLogFiles.stream().map(DatahakiLogFileLocator::file).collect(Collectors.toList());
-    LogBookImages.all(list);
+    // List<GokartLogFile> gokartLogFiles = Arrays.asList( //
+    // GokartLogFile._20180503T094457_ce8724ba, //
+    // GokartLogFile._20180514T155248_767e5417, //
+    // GokartLogFile._20180517T152605_c1876fc4, //
+    // GokartLogFile._20190701T170957_12dcbfa8, //
+    // GokartLogFile._20190701T174938_12dcbfa8, //
+    // GokartLogFile._20190912T173521_0f95cdcc, //
+    // GokartLogFile._20190914T113023_11a994fa, //
+    // GokartLogFile._20190927T110429_e9728d8b //
+    // );
+    List<GokartLogFile> list = new LinkedList<>();
+    for (GokartLogFile gokartLogFile : GokartLogFile.values())
+      if (GokartLogFile._20190805T100419_5e09290a.compareTo(gokartLogFile) <= 0)
+        list.add(gokartLogFile);
+    LogBookImages.all(list.stream().map(DatahakiLogFileLocator::file).collect(Collectors.toList()));
   }
 }

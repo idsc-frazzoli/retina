@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class TrajectoryCountRow extends GokartLogImageRow {
+/* package */ class TrajectoryCountRow extends ClipLogImageRow {
   private static final Clip CLIP = Clips.positive(2);
   // ---
   private Scalar scalar = RealScalar.ZERO;
@@ -31,6 +31,11 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   @Override // from GokartLogImageRow
   public String getName() {
-    return "trajectory count";
+    return "trajectory plans";
+  }
+
+  @Override
+  public Clip clip() {
+    return CLIP;
   }
 }

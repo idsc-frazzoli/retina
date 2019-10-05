@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class LinmotTemperatureRow extends GokartLogImageRow implements LinmotGetListener {
+/* package */ class LinmotTemperatureRow extends ClipLogImageRow implements LinmotGetListener {
   private static final Clip CLIP = Clips.interval( //
       Quantity.of(040, NonSI.DEGREE_CELSIUS), //
       Quantity.of(100, NonSI.DEGREE_CELSIUS));
@@ -36,5 +36,10 @@ import ch.ethz.idsc.tensor.sca.Clips;
   @Override // from GokartLogImageRow
   public String getName() {
     return "linmot temperature";
+  }
+
+  @Override
+  public Clip clip() {
+    return CLIP;
   }
 }

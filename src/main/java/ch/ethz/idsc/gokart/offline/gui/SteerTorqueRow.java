@@ -12,9 +12,10 @@ import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class SteerRefTorRow extends GokartLogImageRow implements SteerGetListener {
+/* package */ class SteerTorqueRow extends ClipLogImageRow implements SteerGetListener {
   private final Scalar limit = SteerPutEvent.RTORQUE.apply(SteerConfig.GLOBAL.calibration);
   private final Clip clip = Clips.absolute(limit.number().doubleValue());
+  // ---
   private Scalar scalar = RealScalar.ZERO;
 
   @Override // from SteerGetListener
@@ -34,6 +35,11 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   @Override // from GokartLogImageRow
   public String getName() {
-    return "steer ref tor";
+    return "steer torque";
+  }
+
+  @Override
+  public Clip clip() {
+    return clip;
   }
 }

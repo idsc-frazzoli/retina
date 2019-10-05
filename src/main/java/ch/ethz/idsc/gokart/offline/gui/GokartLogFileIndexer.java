@@ -35,6 +35,7 @@ import ch.ethz.idsc.gokart.lcm.davis.DavisDvsBlockPublisher;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
+import ch.ethz.idsc.retina.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlListener;
@@ -97,8 +98,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private GokartLogFileIndexer(File file) {
     this.file = file;
     // actuators
-    addRow(new SteerActiveRow());
-    addRow(new SteerRefTorRow());
+    addRow(new SteerStatusRow());
+    addRow(new SteerTorqueRow());
     addRow(new SteerAngleRow());
     addRow(new RimoRateRow(0));
     addRow(new RimoRateRow(1));
@@ -116,7 +117,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     addRow(new PoseQualityRow());
     // planning
     addRow(trajectoryCountRow);
-    addRow(new BSplineTrackRow());
+    // addRow(new BSplineTrackRow());
     addRow(new MpcCountRow());
     addRow(new CurveMessageRow());
     addRow(new ClothoidPlanRow());
@@ -217,7 +218,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       gprmcListeners.forEach(listener -> listener.gprmcReceived(gprmc));
     } else //
     if (channel.equals(DVS_CHANNEL)) {
-      dvsCountRow.increment();
+      int eventCount = DavisDvsDatagramDecoder.eventCount(byteBuffer);
+      dvsCountRow.increment(eventCount);
     }
     ++event_count;
   }
