@@ -13,24 +13,24 @@ import ch.ethz.idsc.tensor.red.Max;
 /* package */ class ResetButtonRow extends GokartLogImageRow implements ManualControlListener {
   private Scalar scalar = RealScalar.ZERO;
 
-  @Override
+  @Override // from GokartLogImageRow
   public void manualControl(ManualControlInterface manualControlInterface) {
     scalar = Max.of(scalar, Boole.of(manualControlInterface.isResetPressed()));
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public Scalar getScalar() {
     Scalar value = scalar;
     scalar = RealScalar.ZERO;
     return value;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public ColorDataGradient getColorDataGradient() {
     return ColorDataGradients.AVOCADO;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public String getName() {
     return "reset button";
   }

@@ -14,22 +14,22 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private static final Clip CLIP = Clips.interval(0.5, 1);
   private Scalar scalar = RealScalar.ZERO;
 
-  @Override
+  @Override // from GokartPoseListener
   public void getEvent(GokartPoseEvent gokartPoseEvent) {
     scalar = CLIP.rescale(gokartPoseEvent.getQuality());
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public Scalar getScalar() {
     return scalar;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public ColorDataGradient getColorDataGradient() {
     return ColorDataGradients.AVOCADO;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public String getName() {
     return "pose quality";
   }

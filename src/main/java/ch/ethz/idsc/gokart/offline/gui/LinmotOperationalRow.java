@@ -17,17 +17,17 @@ import ch.ethz.idsc.tensor.qty.Boole;
     scalar = Boole.of(linmotGetEvent.isOperational());
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public Scalar getScalar() {
     return scalar;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public ColorDataGradient getColorDataGradient() {
     return ColorDataGradients.AURORA;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public String getName() {
     return "linmot operational";
   }

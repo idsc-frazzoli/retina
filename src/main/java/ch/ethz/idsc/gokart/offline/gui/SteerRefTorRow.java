@@ -17,22 +17,22 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private final Clip clip = Clips.absolute(limit.number().doubleValue());
   private Scalar scalar = RealScalar.ZERO;
 
-  @Override
+  @Override // from SteerGetListener
   public void getEvent(SteerGetEvent steerGetEvent) {
     scalar = clip.rescale(SteerPutEvent.RTORQUE.apply(steerGetEvent.refMotTrq()));
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public Scalar getScalar() {
     return scalar;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public ColorDataGradient getColorDataGradient() {
     return ColorDataGradients.THERMOMETER;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public String getName() {
     return "steer ref tor";
   }

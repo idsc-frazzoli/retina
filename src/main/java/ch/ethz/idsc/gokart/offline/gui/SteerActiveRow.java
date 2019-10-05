@@ -12,22 +12,22 @@ import ch.ethz.idsc.tensor.qty.Boole;
 /* package */ class SteerActiveRow extends GokartLogImageRow implements SteerGetListener {
   private Scalar scalar = RealScalar.ZERO;
 
-  @Override
+  @Override // from SteerGetListener
   public void getEvent(SteerGetEvent steerGetEvent) {
     scalar = Boole.of(steerGetEvent.isActive());
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public Scalar getScalar() {
     return scalar;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public ColorDataGradient getColorDataGradient() {
     return ColorDataGradients.COPPER;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public String getName() {
     return "steer active";
   }

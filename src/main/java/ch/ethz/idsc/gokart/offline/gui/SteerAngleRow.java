@@ -17,24 +17,24 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private final Clip clip = Clips.absolute(limit.number().doubleValue());
   private Scalar scalar = RealScalar.ZERO;
 
-  @Override
+  @Override // from SteerColumnListener
   public void getEvent(SteerColumnEvent steerColumnInterface) {
     scalar = steerColumnInterface.isSteerColumnCalibrated() //
         ? clip.rescale(SteerPutEvent.ENCODER.apply(steerColumnInterface.getSteerColumnEncoderCentered()))
         : RealScalar.ZERO;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public Scalar getScalar() {
     return scalar;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public ColorDataGradient getColorDataGradient() {
     return ColorDataGradients.THERMOMETER;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public String getName() {
     return "steer angle";
   }

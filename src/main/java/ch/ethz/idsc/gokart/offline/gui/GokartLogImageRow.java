@@ -6,7 +6,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.img.ColorDataGradient;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-abstract class GokartLogImageRow {
+/* package */ abstract class GokartLogImageRow {
   protected final TableBuilder tableBuilder = new TableBuilder();
 
   public final void append() {

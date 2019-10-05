@@ -21,17 +21,17 @@ import ch.ethz.idsc.tensor.sca.Clips;
     scalar = RealScalar.ONE.subtract(CLIP.rescale(linmotGetEvent.getActualPosition()));
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public Scalar getScalar() {
     return scalar;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public ColorDataGradient getColorDataGradient() {
     return ColorDataGradients.ROSE;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public String getName() {
     return "linmot position";
   }
