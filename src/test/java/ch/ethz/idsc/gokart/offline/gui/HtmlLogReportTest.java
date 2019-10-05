@@ -2,6 +2,7 @@
 package ch.ethz.idsc.gokart.offline.gui;
 
 import java.io.File;
+import java.io.IOException;
 
 import ch.ethz.idsc.gokart.offline.cache.CachedLog;
 import ch.ethz.idsc.gokart.offline.cache.CachedLogs;
@@ -30,6 +31,15 @@ public class HtmlLogReportTest extends TestCase {
     File target = new File(root, cachedLog.title());
     target.mkdirs();
     new HtmlLogReport(gokartLcmMap, cachedLog.title(), target);
+    DeleteDirectory.of(root, 3, 60);
+  }
+
+  public void testEmpty() throws IOException {
+    GokartLcmMap gokartLcmMap = new GokartLcmMap();
+    File root = HomeDirectory.Downloads(getClass().getSimpleName());
+    File target = new File(root, "emptylog");
+    target.mkdirs();
+    new HtmlLogReport(gokartLcmMap, "emptylog", target);
     DeleteDirectory.of(root, 3, 60);
   }
 }

@@ -21,6 +21,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   private static final int MIN_SIZE = 100_000_000;
 
   public static void main(String[] args) {
+    File export = HomeDirectory.Pictures("logimages");
+    export.mkdir();
     Set<String> set = Stream.of(GokartLogFile.values()) //
         .map(GokartLogFile::name) //
         .map(s -> s.substring(1)) //
@@ -28,8 +30,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     List<File> folders = Stream.of(DatahakiLogFileLocator.ARCHIVE.listFiles()).sorted().collect(Collectors.toList());
     int count = 0;
     for (File folder : folders) {
-      int compareTo = "20190110".compareTo(folder.getName());
-      if (compareTo <= 0) {
+      int compareTo = "20190919".compareTo(folder.getName());
+      if (compareTo == 0) {
         List<File> files = Stream.of(folder.listFiles()).sorted().collect(Collectors.toList());
         for (File file : files) {
           String name = file.getName();
@@ -41,7 +43,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
               try {
                 GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
                 BufferedImage bufferedImage = GokartLcmImage.of(gokartLogFileIndexer);
-                ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("logimages", tag + ".png"));
+                ImageIO.write(bufferedImage, "png", new File(export, tag + ".png"));
               } catch (Exception exception) {
                 // ---
               }

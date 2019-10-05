@@ -318,6 +318,8 @@ public enum GokartLogFile implements LogFile {
   _20180522T114650_6806b8fd,
   /** trajectory planning with moving obstacles */
   _20180522T135700_2da7e1f5,
+  /** slow brief manual driving */
+  _20180522T140459_2da7e1f5,
   /** trajectory planning with moving obstacles */
   _20180522T140901_2da7e1f5,
   /** joystick driving with 1000[ARMS] */
@@ -369,6 +371,8 @@ public enum GokartLogFile implements LogFile {
   /* 2018-05-31 */
   /** autonomous figure eight */
   _20180531T144153_701d9748,
+  /** slow brief manual driving */
+  _20180531T150742_701d9748,
   /** joystick driving with stops for map building
    * with two large tents and bus tent in place */
   _20180531T162851_701d9748,
@@ -544,6 +548,8 @@ public enum GokartLogFile implements LogFile {
   _20180709T151010_c3f2f23c,
   /** autonomous driving */
   _20180709T160438_c3f2f23c,
+  /** brief driving, abrupt log termination */
+  _20180709T161428_c3f2f23c,
   /** autonomous driving */
   _20180709T162136_c3f2f23c,
   /***************************************************/
@@ -624,6 +630,8 @@ public enum GokartLogFile implements LogFile {
   /** track red, [jh mg yn jh mg yn]
    * last driving stopped early */
   _20180820T143852_568f9954,
+  /** fast manual driving */
+  _20180820T164812_568f9954,
   /** track red, [jh mg yn jh yn] */
   _20180820T165637_568f9954,
   /***************************************************/
@@ -731,8 +739,12 @@ public enum GokartLogFile implements LogFile {
   _20180912T174110_c2615078,
   /** planning a xyavt trajectory, driving along */
   _20180912T175114_c2615078,
+  /** brief driving */
+  _20180912T180011_c2615078,
   /** planning a xyavt trajectory, driving along */
   _20180912T180817_c2615078,
+  /** brief manual driving */
+  _20180912T181257_c2615078,
   /***************************************************/
   /* 2018-09-13 */
   /** testing if linmot maintains position even when in non-operational mode */
@@ -1063,8 +1075,12 @@ public enum GokartLogFile implements LogFile {
   _20181109T155803_c04d20dd,
   /** mpc oval track */
   _20181109T160019_c04d20dd,
+  /** brief manual driving */
+  _20181109T162210_c04d20dd,
   /***************************************************/
   /* 2018-11-12 */
+  /** brief driving */
+  _20181112T140056_6e6f094b,
   /** slow manual driving */
   _20181112T140527_6e6f094b,
   /** slow manual driving */
@@ -2707,7 +2723,8 @@ public enum GokartLogFile implements LogFile {
   _20190919T145248_cef7cba3,
   /** various mpc */
   _20190919T151513_cef7cba3,
-  /** STEERING EXPERIMENT */
+  /** steering system identification */
+  _20190919T154811_14cb9b8a,
   /** various mpc */
   _20190919T165414_cc5197ad,
   /** various mpc, manual driving, localization loss */
