@@ -68,7 +68,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   }
 
   // ---
-  private static final Scalar RESOLUTION = Quantity.of(0.25, SI.SECOND);
+  static final Scalar RESOLUTION = Quantity.of(0.25, SI.SECOND);
   private static final String VLP16_CENTER_POS = VelodyneLcmChannels.pos(VelodyneModel.VLP16, "center");
   private static final String DVS_CHANNEL = DavisDvsBlockPublisher.channel("overview");
   // ---
@@ -98,9 +98,10 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private GokartLogFileIndexer(File file) {
     this.file = file;
     // actuators
-    addRow(new SteerStatusRow());
-    addRow(new SteerTorqueRow());
     addRow(new SteerAngleRow());
+    addRow(new SteerTsuTrqRow());
+    addRow(new SteerRefMotTrqRow());
+    addRow(new SteerStatusRow());
     addRow(new RimoRateRow(0));
     addRow(new RimoRateRow(1));
     addRow(new LinmotPositionRow());

@@ -1,26 +1,24 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.gui;
 
-import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerGetListener;
-import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.img.ColorDataGradient;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class SteerTorqueRow extends ClipLogImageRow implements SteerGetListener {
-  private final Scalar limit = SteerPutEvent.RTORQUE.apply(SteerConfig.GLOBAL.calibration);
-  private final Clip clip = Clips.absolute(limit.number().doubleValue());
+/* package */ class SteerTsuTrqRow extends ClipLogImageRow implements SteerGetListener {
+  private static final Clip CLIP = Clips.absolute(Quantity.of(1, "SCT"));
   // ---
   private Scalar scalar = RealScalar.ZERO;
 
   @Override // from SteerGetListener
   public void getEvent(SteerGetEvent steerGetEvent) {
-    scalar = clip.rescale(SteerPutEvent.RTORQUE.apply(steerGetEvent.refMotTrq()));
+    scalar = CLIP.rescale(steerGetEvent.tsuTrq());
   }
 
   @Override // from GokartLogImageRow
@@ -35,11 +33,11 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   @Override // from GokartLogImageRow
   public String getName() {
-    return "steer torque";
+    return "steer tsu torque";
   }
 
   @Override
   public Clip clip() {
-    return clip;
+    return CLIP;
   }
 }

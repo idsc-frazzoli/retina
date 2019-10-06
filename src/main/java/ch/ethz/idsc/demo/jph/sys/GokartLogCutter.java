@@ -14,7 +14,7 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
   ;
   public static void main(String[] args) throws IOException {
     SensorsConfig.GLOBAL.planarVmu931Type = PlanarVmu931Type.ROT90.name();
-    GokartLogFile gokartLogFile = GokartLogFile._20190905T204957_aa443cf0;
+    GokartLogFile gokartLogFile = GokartLogFile._20190926T103013_4f7fc194;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
     // file = new File("/media/datahaki/media/ethz/gokartlogs/20190401", "20190401T115537_411917b6.lcm.00");
     // file = new File("/media/datahaki/media/ethz/gokart/topic/racing2r", "20180820T143852_1.lcm");

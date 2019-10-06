@@ -1,16 +1,18 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.gui;
 
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Integers;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.img.ColorDataGradient;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ class DvsCountRow extends ClipLogImageRow {
-  private static final Clip CLIP = Clips.positive(800_000);
+  private static final Clip CLIP = Clips.positive(Quantity.of(3_200_000, SI.PER_SECOND));
   // ---
   private int total;
 
@@ -20,7 +22,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   @Override // from GokartLogImageRow
   public Scalar getScalar() {
-    Scalar value = CLIP.rescale(RealScalar.of(total));
+    Scalar value = CLIP.rescale(RealScalar.of(total).divide(GokartLogFileIndexer.RESOLUTION));
     total = 0;
     return value;
   }

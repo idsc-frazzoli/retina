@@ -40,7 +40,7 @@ import ch.ethz.idsc.tensor.img.LinearColorDataGradient;
 
   @Override // from GokartLogImageRow
   public String getName() {
-    return "gprmc";
+    return "gps gprmc";
   }
 
   @Override

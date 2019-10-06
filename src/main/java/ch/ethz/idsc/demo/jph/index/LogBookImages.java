@@ -31,7 +31,9 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
       String name = file.getName().substring(0, 24);
       String year = name.substring(0, 4);
       String mnth = name.substring(4, 6);
-      File target = new File(FOLDER, year + "/" + mnth + "/" + name + ".png");
+      File folder = new File(FOLDER, year + "_" + mnth);
+      folder.mkdir();
+      File target = new File(folder, name + ".png");
       if (!target.isFile())
         try {
           BufferedImage bufferedImage = GokartLcmImage.of(GokartLogFileIndexer.create(file));
