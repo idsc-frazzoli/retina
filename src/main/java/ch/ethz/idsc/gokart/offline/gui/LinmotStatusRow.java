@@ -12,7 +12,7 @@ import ch.ethz.idsc.tensor.img.ColorDataGradient;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.qty.Boole;
 
-/* package */ class LinmotOperationalRow extends MappedLogImageRow implements LinmotGetListener {
+/* package */ class LinmotStatusRow extends MappedLogImageRow implements LinmotGetListener {
   private Scalar scalar = RealScalar.ZERO;
 
   @Override // from LinmotGetListener
@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.qty.Boole;
 
   @Override // from GokartLogImageRow
   public String getName() {
-    return "linmot operational";
+    return "linmot status";
   }
 
   @Override // from DiscreteLogImageRow

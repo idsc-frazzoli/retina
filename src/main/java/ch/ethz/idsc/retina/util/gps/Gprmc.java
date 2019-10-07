@@ -2,6 +2,7 @@
 package ch.ethz.idsc.retina.util.gps;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.Scalar;
@@ -22,7 +23,7 @@ public class Gprmc implements Serializable {
   private Gprmc(String[] split) {
     this.split = split;
     if (!split[0].equals("$GPRMC"))
-      throw new IllegalArgumentException();
+      throw new IllegalArgumentException(Arrays.asList(split).toString());
   }
 
   public String timestamp() {

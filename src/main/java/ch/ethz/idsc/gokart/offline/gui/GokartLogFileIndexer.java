@@ -106,7 +106,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     addRow(new RimoRateRow(1));
     addRow(new LinmotPositionRow());
     addRow(new LinmotTemperatureRow());
-    addRow(new LinmotOperationalRow());
+    addRow(new LinmotStatusRow());
     // sensors
     addRow(new Vmu931RateRow());
     addRow(dvsCountRow);
@@ -215,8 +215,12 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     } else //
     if (channel.equals(VLP16_CENTER_POS)) {
       VelodynePosEvent velodynePosEvent = VelodynePosEvent.vlp16(byteBuffer);
-      Gprmc gprmc = velodynePosEvent.gprmc();
-      gprmcListeners.forEach(listener -> listener.gprmcReceived(gprmc));
+      try {
+        Gprmc gprmc = velodynePosEvent.gprmc();
+        gprmcListeners.forEach(listener -> listener.gprmcReceived(gprmc));
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
     } else //
     if (channel.equals(DVS_CHANNEL)) {
       int eventCount = DavisDvsDatagramDecoder.eventCount(byteBuffer);
