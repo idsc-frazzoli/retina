@@ -461,7 +461,8 @@ public class TrackLayoutInitialGuess implements RenderInterface {
     }
     // ---
     graphics.setColor(new Color(255, 200, 0, 128));
-    // TODO JPH not thread safe (solved?)
+    // TODO JPH not thread safe: positionalSupports is modified in runAlgo thread and drawing thread
+    // ... synchronized is not strictly necessary -> rather use better class design
     for (Tensor xy : new ArrayList<>(positionalSupports)) {
       geometricLayer.pushMatrix(Se2Matrix.translation(xy));
       Path2D path2d = geometricLayer.toPath2D(CIRCLE_POINTS);
