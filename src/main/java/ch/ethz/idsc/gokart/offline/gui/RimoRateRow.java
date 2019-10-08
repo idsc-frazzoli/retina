@@ -12,8 +12,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class RimoRateRow extends GokartLogImageRow implements RimoGetListener {
-  private static final Clip CLIP = Clips.positive(Quantity.of(40, SI.PER_SECOND));
+/* package */ class RimoRateRow extends ClipLogImageRow implements RimoGetListener {
+  private static final Clip CLIP = Clips.positive(Quantity.of(75, SI.PER_SECOND));
+  private static final String[] STRINGS = { "L", "R" };
+  // ---
   private final int index;
   private Scalar scalar = RealScalar.ZERO;
 
@@ -21,23 +23,28 @@ import ch.ethz.idsc.tensor.sca.Clips;
     this.index = index;
   }
 
-  @Override
+  @Override // from RimoGetListener
   public void getEvent(RimoGetEvent rimoGetEvent) {
     scalar = CLIP.rescale(rimoGetEvent.getAngularRate_Y_pair().Get(index).abs());
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public Scalar getScalar() {
     return scalar;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public ColorDataGradient getColorDataGradient() {
     return ColorDataGradients.CLASSIC;
   }
 
-  @Override
+  @Override // from GokartLogImageRow
   public String getName() {
-    return "rimo rate " + index;
+    return "rimo rate " + STRINGS[index];
+  }
+
+  @Override
+  public Clip clip() {
+    return CLIP;
   }
 }

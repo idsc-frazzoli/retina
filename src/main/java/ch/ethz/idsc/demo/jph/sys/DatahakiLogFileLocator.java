@@ -14,7 +14,7 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
   INSTANCE;
   // ---
   /** the archive of all log files is kept on an external hard-drive */
-  private static final File ARCHIVE = new File("/media/datahaki/backup/gokartlogs");
+  public static final File ARCHIVE = new File("/media/datahaki/backup/gokartlogs");
   private static final List<File> LOG_ROOT = Arrays.asList( //
       new File("/media/datahaki/media/ethz/gokartlogs"), //
       ARCHIVE);

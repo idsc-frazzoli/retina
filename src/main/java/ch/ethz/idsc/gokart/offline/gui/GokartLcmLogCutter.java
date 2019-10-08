@@ -5,7 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -42,8 +41,6 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 public class GokartLcmLogCutter {
   public static final String LCM_FILE = "log.lcm";
   public static final String GOKART_LOG_CONFIG = "GokartLogConfig.properties";
-  private static final Font FONT = //
-      new Font(Font.DIALOG, Font.PLAIN, GokartLcmImage.FX + 2);
   // ---
   public final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
@@ -60,13 +57,7 @@ public class GokartLcmLogCutter {
       graphics.drawImage(bufferedImage, 0, 0, null);
       {
         JViewport jViewport = jScrollPane.getViewport();
-        final int pix = jViewport.getViewPosition().x;
-        graphics.setFont(FONT);
-        graphics.setColor(Color.WHITE);
-        int piy = -1;
-        int fx = GokartLcmImage.FX;
-        for (GokartLogImageRow gokartLogImageRow : gokartLogFileIndexer.gokartLogImageRows)
-          graphics.drawString(gokartLogImageRow.getName(), pix, piy += fx);
+        LogImageLabel.of(graphics, jViewport.getViewPosition().x, gokartLogFileIndexer);
       }
       int ofsy = 28 - 16;
       synchronized (map) {

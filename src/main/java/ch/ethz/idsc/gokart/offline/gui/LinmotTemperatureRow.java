@@ -1,9 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.gui;
 
-import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
-import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
-import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetEvent;
+import ch.ethz.idsc.gokart.dev.linmot.LinmotGetListener;
+import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.img.ColorDataGradient;
@@ -12,31 +12,30 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
-/* package */ class Vmu931RateRow extends ClipLogImageRow implements Vmu931ImuFrameListener {
-  private static final Clip CLIP = Clips.positive(Quantity.of(1_000, SI.PER_SECOND));
-  // ---
+/* package */ class LinmotTemperatureRow extends ClipLogImageRow implements LinmotGetListener {
+  private static final Clip CLIP = Clips.interval( //
+      Quantity.of(040, NonSI.DEGREE_CELSIUS), //
+      Quantity.of(100, NonSI.DEGREE_CELSIUS));
   private Scalar scalar = RealScalar.ZERO;
 
-  @Override // from Vmu931ImuFrameListener
-  public void vmu931ImuFrame(Vmu931ImuFrame vmu931ImuFrame) {
-    scalar = scalar.add(RealScalar.ONE);
+  @Override // from LinmotGetListener
+  public void getEvent(LinmotGetEvent linmotGetEvent) {
+    scalar = CLIP.rescale(linmotGetEvent.getWindingTemperatureMax());
   }
 
   @Override // from GokartLogImageRow
   public Scalar getScalar() {
-    Scalar value = scalar;
-    scalar = RealScalar.ZERO;
-    return CLIP.rescale(value.divide(GokartLogFileIndexer.RESOLUTION));
+    return scalar;
   }
 
   @Override // from GokartLogImageRow
   public ColorDataGradient getColorDataGradient() {
-    return ColorDataGradients.STARRYNIGHT;
+    return ColorDataGradients.TEMPERATURE;
   }
 
   @Override // from GokartLogImageRow
   public String getName() {
-    return "vmu931 rate";
+    return "linmot temperature";
   }
 
   @Override

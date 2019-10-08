@@ -31,9 +31,11 @@ import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.lcm.autobox.LinmotLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.RimoLcmServer;
 import ch.ethz.idsc.gokart.lcm.autobox.SteerLcmServer;
+import ch.ethz.idsc.gokart.lcm.davis.DavisDvsBlockPublisher;
 import ch.ethz.idsc.gokart.lcm.lidar.VelodyneLcmChannels;
 import ch.ethz.idsc.gokart.lcm.mod.ClothoidPlanLcm;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
+import ch.ethz.idsc.retina.davis.data.DavisDvsDatagramDecoder;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlListener;
@@ -52,24 +54,6 @@ import ch.ethz.idsc.tensor.sca.Round;
 public class GokartLogFileIndexer implements OfflineLogListener {
   public static GokartLogFileIndexer create(File file) throws IOException {
     GokartLogFileIndexer gokartLogFileIndexer = new GokartLogFileIndexer(file);
-    gokartLogFileIndexer.addRow(new AutonomousButtonRow());
-    gokartLogFileIndexer.addRow(new PoseQualityRow());
-    gokartLogFileIndexer.addRow(new SteerActiveRow());
-    gokartLogFileIndexer.addRow(new SteerRefTorRow());
-    gokartLogFileIndexer.addRow(new SteerAngleRow());
-    gokartLogFileIndexer.addRow(new RimoRateRow(0));
-    gokartLogFileIndexer.addRow(new RimoRateRow(1));
-    gokartLogFileIndexer.addRow(new LinmotPositionRow());
-    gokartLogFileIndexer.addRow(new LinmotOperationalRow());
-    gokartLogFileIndexer.addRow(new ResetButtonRow());
-    gokartLogFileIndexer.addRow(new Vmu931RateRow());
-    gokartLogFileIndexer.addRow(new Vmu931AccRow(0));
-    gokartLogFileIndexer.addRow(new Vmu931AccRow(1));
-    gokartLogFileIndexer.addRow(new MpcCountRow());
-    gokartLogFileIndexer.addRow(new CurveMessageRow());
-    gokartLogFileIndexer.addRow(new ClothoidPlanRow());
-    gokartLogFileIndexer.addRow(new BSplineTrackRow());
-    gokartLogFileIndexer.addRow(new GprmcRow());
     // ---
     gokartLogFileIndexer.append(0);
     Scalar mb = RationalScalar.of(file.length(), 1000_000_000);
@@ -79,9 +63,18 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     return gokartLogFileIndexer;
   }
 
+  public static GokartLogFileIndexer empty() {
+    return new GokartLogFileIndexer(null);
+  }
+
   // ---
-  private static final Scalar RESOLUTION = Quantity.of(0.25, SI.SECOND);
+  static final Scalar RESOLUTION = Quantity.of(0.25, SI.SECOND);
   private static final String VLP16_CENTER_POS = VelodyneLcmChannels.pos(VelodyneModel.VLP16, "center");
+  private static final String DVS_CHANNEL = DavisDvsBlockPublisher.channel("overview");
+  // ---
+  private final DvsCountRow dvsCountRow = new DvsCountRow();
+  private final TrajectoryCountRow trajectoryCountRow = new TrajectoryCountRow();
+  // private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
   // ---
   private final File file;
   private final List<Integer> raster2event = new ArrayList<>();
@@ -104,6 +97,31 @@ public class GokartLogFileIndexer implements OfflineLogListener {
 
   private GokartLogFileIndexer(File file) {
     this.file = file;
+    // actuators
+    addRow(new SteerAngleRow());
+    addRow(new SteerTsuTrqRow());
+    addRow(new SteerRefMotTrqRow());
+    addRow(new SteerStatusRow());
+    addRow(new RimoRateRow(0));
+    addRow(new RimoRateRow(1));
+    addRow(new LinmotPositionRow());
+    addRow(new LinmotTemperatureRow());
+    addRow(new LinmotStatusRow());
+    // sensors
+    addRow(new Vmu931RateRow());
+    addRow(dvsCountRow);
+    addRow(new GprmcRow());
+    // user
+    addRow(new AutonomousButtonRow());
+    addRow(new ResetButtonRow());
+    // state estimation
+    addRow(new PoseQualityRow());
+    // planning
+    addRow(trajectoryCountRow);
+    // addRow(new BSplineTrackRow());
+    addRow(new MpcCountRow());
+    addRow(new CurveMessageRow());
+    addRow(new ClothoidPlanRow());
   }
 
   private void addRow(GokartLogImageRow gokartLogImageRow) {
@@ -172,6 +190,10 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       Vmu931ImuFrame vmu931ImuFrame = new Vmu931ImuFrame(byteBuffer);
       vmu931ImuFrameListeners.forEach(listener -> listener.vmu931ImuFrame(vmu931ImuFrame));
     } else //
+    if (channel.equals(GokartLcmChannel.TRAJECTORY_XYAT_STATETIME) || //
+        channel.equals(GokartLcmChannel.TRAJECTORY_XYAVT_STATETIME)) {
+      trajectoryCountRow.increment();
+    } else //
     if (channel.equals(GokartLcmChannel.MPC_FORCES_CNS)) {
       ControlAndPredictionSteps controlAndPredictionSteps = //
           new ControlAndPredictionStepsMessage(byteBuffer).getPayload();
@@ -193,8 +215,16 @@ public class GokartLogFileIndexer implements OfflineLogListener {
     } else //
     if (channel.equals(VLP16_CENTER_POS)) {
       VelodynePosEvent velodynePosEvent = VelodynePosEvent.vlp16(byteBuffer);
-      Gprmc gprmc = velodynePosEvent.gprmc();
-      gprmcListeners.forEach(listener -> listener.gprmcReceived(gprmc));
+      try {
+        Gprmc gprmc = velodynePosEvent.gprmc();
+        gprmcListeners.forEach(listener -> listener.gprmcReceived(gprmc));
+      } catch (Exception exception) {
+        exception.printStackTrace();
+      }
+    } else //
+    if (channel.equals(DVS_CHANNEL)) {
+      int eventCount = DavisDvsDatagramDecoder.eventCount(byteBuffer);
+      dvsCountRow.increment(eventCount);
     }
     ++event_count;
   }

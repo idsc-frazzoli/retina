@@ -12,14 +12,18 @@ import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
  * a single packet may contain up to ~300 events
  * each event in the packet is passed to each listener */
 public class DavisDvsDatagramDecoder {
-  private final List<DavisDvsListener> listeners = new CopyOnWriteArrayList<>();
+  private final List<DavisDvsListener> list = new CopyOnWriteArrayList<>();
 
-  public void addDvsListener(DavisDvsListener listener) {
-    listeners.add(listener);
+  public void addDvsListener(DavisDvsListener davisDvsListener) {
+    list.add(davisDvsListener);
+  }
+
+  public void removeDvsListener(DavisDvsListener davisDvsListener) {
+    list.remove(davisDvsListener);
   }
 
   public boolean hasListeners() {
-    return !listeners.isEmpty();
+    return !list.isEmpty();
   }
 
   private short pacid_next = -1;
@@ -44,7 +48,7 @@ public class DavisDvsDatagramDecoder {
       final int y = byteBuffer.get() & 0xff;
       final int i = misc & 1;
       DavisDvsEvent davisDvsEvent = new DavisDvsEvent(time, x, y, i);
-      listeners.forEach(listener -> listener.davisDvs(davisDvsEvent));
+      list.forEach(listener -> listener.davisDvs(davisDvsEvent));
     }
     ++total;
     if (total % 1000 == 0 && missed_print != missed) {
@@ -55,7 +59,10 @@ public class DavisDvsDatagramDecoder {
     pacid_next = ++pacid;
   }
 
-  public void removeDvsListener(DavisDvsListener davisDvsListener) {
-    listeners.remove(davisDvsListener);
+  /** @param byteBuffer
+   * @return number of events in packet */
+  public static int eventCount(ByteBuffer byteBuffer) {
+    byteBuffer.position(0);
+    return byteBuffer.getShort();
   }
 }

@@ -49,6 +49,9 @@ public class VelodynePosEvent {
     return nmea;
   }
 
+  /** @return
+   * @throws Exception in rare cases when the nmea string from velodyne
+   * does not start with "$GPRMC" and is not a valid positioning string */
   public Gprmc gprmc() {
     return Gprmc.of(nmea);
   }

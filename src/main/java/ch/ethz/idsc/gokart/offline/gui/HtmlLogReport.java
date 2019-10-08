@@ -251,8 +251,8 @@ public class HtmlLogReport {
     visualSet.setPlotLabel("Smoothed Acceleration from VMU931");
     visualSet.setAxesLabelX("time [s]");
     visualSet.setAxesLabelY("acceleration [m*s^-2]");
-    {
-      Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
+    Tensor tensor = map.get(Vmu931ImuVehicleChannel.INSTANCE);
+    if (0 < tensor.length()) {
       Tensor domain = tensor.get(Tensor.ALL, 0);
       Tensor mask = UniformWindowSampler.of(GaussianWindow.FUNCTION).apply(100 * 2 + 1);
       Tensor smoothX = ListConvolve.of(mask, tensor.get(Tensor.ALL, 2));
@@ -279,7 +279,8 @@ public class HtmlLogReport {
 
   public void exportVelocity() throws IOException {
     Tensor tensor = map.get(GokartPoseChannel.INSTANCE);
-    if (5 < Unprotect.dimension1(tensor)) {
+    if (0 < tensor.length() && //
+        5 < Unprotect.dimension1(tensor)) {
       Tensor speeds = Tensor.of(tensor.stream().map(row -> row.extract(5, 8)));
       Tensor domain = tensor.get(Tensor.ALL, 0);
       {

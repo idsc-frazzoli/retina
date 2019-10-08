@@ -128,8 +128,6 @@ public final class TrackReconModule extends AbstractClockedModule implements Gok
         if (trackReconManagement.isStartSet()) {
           mapping.prepareMap();
           lastTrack = trackReconManagement.update(_gokartPoseEvent.getPose());
-          // TODO GJOEL Jan has moved the publishing of the track here
-          // this should be sufficient, or not?
           trackReconRender.bSplineTrack(bSplineTrack());
           BSplineTrackLcm.publish(bSplineTrack());
         } else

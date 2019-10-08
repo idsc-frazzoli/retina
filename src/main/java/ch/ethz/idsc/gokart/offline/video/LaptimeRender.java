@@ -20,12 +20,15 @@ import ch.ethz.idsc.tensor.NumberQ;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.lie.CirclePoints;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.sca.Round;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 /* package */ class LaptimeRender implements RenderInterface {
+  private static final Tensor CIRCLE = CirclePoints.of(13).multiply(RealScalar.of(0.1));
+  // ---
   private final BSplineTrack bSplineTrack;
   private final List<LaptimePoint> list = new LinkedList<>();
   private Scalar ever = Quantity.of(DoubleScalar.POSITIVE_INFINITY, SI.SECOND);
