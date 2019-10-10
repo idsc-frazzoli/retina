@@ -14,7 +14,6 @@ import ch.ethz.idsc.gokart.offline.video.TrackVideoConfig;
 import ch.ethz.idsc.gokart.offline.video.TrackVideoWriter;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-// TODO JPH test coverage
 /* package */ enum RunTrackVideoWriter {
   ;
   public static void main(String[] args) throws Exception {

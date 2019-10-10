@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.mat.Inverse;
  * 
  * the localization algorithm is described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
-/* package */ class LidarGyroLocalization {
+public class LidarGyroLocalization {
   public static LidarGyroLocalization of(PredefinedMap predefinedMap) {
     return new LidarGyroLocalization(predefinedMap.getModel2Pixel(), new SlamDunk( //
         LocalizationConfig.GLOBAL.createSe2MultiresGrids(), //
@@ -43,10 +43,10 @@ import ch.ethz.idsc.tensor.mat.Inverse;
   }
 
   /** @param pose {x[m], y[m], angle}
-   * @param velocity {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]}
+   * @param velocity {vx[m*s^-1], vy[m*s^-1], gyroZ[s^-1]} of which only the last entry is considered
    * @param points
    * @return */
-  Optional<GokartPoseEvent> handle(Tensor pose, Tensor velocity, Tensor points) {
+  public Optional<GokartPoseEvent> handle(Tensor pose, Tensor velocity, Tensor points) {
     Tensor model = PoseHelper.toSE2Matrix(pose);
     Tensor rate = velocity.divide(lidarRate);
     List<Tensor> list = LocalizationConfig.GLOBAL.getResample() //

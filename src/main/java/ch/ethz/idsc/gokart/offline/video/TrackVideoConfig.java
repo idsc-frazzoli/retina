@@ -1,6 +1,9 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.video;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
 import ch.ethz.idsc.tensor.Scalar;
@@ -14,4 +17,5 @@ public class TrackVideoConfig {
   public String poseChannel = GokartPoseChannel.INSTANCE.channel();
   /** set lidarPoints to 0 to omit rendering */
   public int lidarPoints = 30_000;
+  public final List<OfflineVideoRender> offlineVideoRenders = new LinkedList<>();
 }
