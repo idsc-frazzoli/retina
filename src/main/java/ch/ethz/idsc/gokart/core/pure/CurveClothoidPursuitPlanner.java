@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.mod.PursuitPlanLcm;
-import ch.ethz.idsc.owl.math.pursuit.AssistedCurveIntersection;
+import ch.ethz.idsc.owl.math.pursuit.AssistedCurveIntersectionInterface;
 import ch.ethz.idsc.owl.math.pursuit.CurvePoint;
 import ch.ethz.idsc.sophus.crv.clothoid.ClothoidTerminalRatios;
 import ch.ethz.idsc.sophus.lie.se2.Se2GroupElement;
@@ -51,14 +51,16 @@ public class CurveClothoidPursuitPlanner {
     Predicate<Scalar> isCompliant = clothoidPursuitConfig.ratioLimits()::isInside;
     Scalar lookAhead = clothoidPursuitConfig.lookAhead;
     do {
-      AssistedCurveIntersection assistedCurveIntersection = clothoidPursuitConfig.getAssistedCurveIntersection(lookAhead);
+      AssistedCurveIntersectionInterface assistedCurveIntersection = //
+          clothoidPursuitConfig.getAssistedCurveIntersection(lookAhead);
       Optional<CurvePoint> curvePoint = closed //
           ? assistedCurveIntersection.cyclic(tensor, prevIndex) //
           : assistedCurveIntersection.string(tensor, prevIndex);
       if (curvePoint.isPresent()) {
         Tensor xya = curvePoint.get().getTensor();
-        HeadTailInterface clothoidTerminalRatio = ClothoidTerminalRatios.of(xya.map(Scalar::zero), xya);
-        if (isCompliant.test(clothoidTerminalRatio.head()) && isCompliant.test(clothoidTerminalRatio.tail())) {
+        HeadTailInterface headTailInterface = ClothoidTerminalRatios.of(xya.map(Scalar::zero), xya);
+        if (isCompliant.test(headTailInterface.head()) && // 
+            isCompliant.test(headTailInterface.tail())) {
           Optional<ClothoidPlan> optional = ClothoidPlan.from(xya, pose, isForward);
           if (optional.isPresent()) {
             prevIndex = curvePoint.get().getIndex();

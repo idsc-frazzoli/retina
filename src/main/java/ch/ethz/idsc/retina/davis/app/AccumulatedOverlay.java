@@ -10,11 +10,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import ch.ethz.idsc.retina.davis.DavisDevice;
 import ch.ethz.idsc.retina.davis.DavisDvsListener;
 import ch.ethz.idsc.retina.davis._240c.DavisDvsEvent;
-import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.img.ColumnTimedImage;
 import ch.ethz.idsc.retina.util.img.ColumnTimedImageListener;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;
+import ch.ethz.idsc.tensor.Integers;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -55,8 +55,7 @@ public class AccumulatedOverlay implements DavisDvsListener {
   /** @param interval
    * [us] */
   public AccumulatedOverlay(DavisDevice davisDevice, int interval) {
-    this.interval = interval;
-    GlobalAssert.that(0 < interval);
+    this.interval = Integers.requirePositive(interval);
   }
 
   public void addListener(TimedImageListener timedImageListener) {

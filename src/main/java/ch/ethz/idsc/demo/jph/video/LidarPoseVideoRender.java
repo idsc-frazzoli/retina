@@ -54,6 +54,7 @@ class LidarPoseVideoRender implements OfflineVideoRender {
           geometricLayer.pushMatrix(Se2Matrix.of(gp));
           {
             graphics.setColor(new Color(255, 0, 255, 255));
+            // TODO JPH OWL V057
             graphics.draw(geometricLayer.toLine2D(Array.zeros(2), UnitVector.of(2, 0).multiply(RADIUS)));
             graphics.setColor(new Color(0, 255, 255, 255));
             graphics.draw(geometricLayer.toLine2D(Array.zeros(2), UnitVector.of(2, 1).multiply(RADIUS)));
@@ -71,6 +72,7 @@ class LidarPoseVideoRender implements OfflineVideoRender {
           graphics.draw(geometricLayer.toPath2D(CirclePoints.of(20).multiply(RealScalar.of(0.1)), true));
           {
             graphics.setColor(new Color(255, 0, 0, 255));
+            // TODO JPH OWL V057
             graphics.draw(geometricLayer.toLine2D(Array.zeros(2), UnitVector.of(2, 0).multiply(RADIUS)));
             graphics.setColor(new Color(0, 255, 0, 255));
             graphics.draw(geometricLayer.toLine2D(Array.zeros(2), UnitVector.of(2, 1).multiply(RADIUS)));

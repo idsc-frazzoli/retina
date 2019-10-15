@@ -6,26 +6,23 @@ import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
-import ch.ethz.idsc.retina.util.GlobalAssert;
-
 /** collects a lidar scan of a single packet */
 public class LidarPacketCollector implements LidarSpacialListener, LidarRayDataListener {
+  private final List<LidarRayBlockListener> listeners = new LinkedList<>();
+  private final int limit;
+  private final int dimensions;
   private final FloatBuffer floatBuffer;
   private final ByteBuffer byteBuffer;
-  private final int limit;
-  private final List<LidarRayBlockListener> listeners = new LinkedList<>();
-  private final int dimensions;
 
   /** the highway scene has 2304 * 32 * 3 == 221184 coordinates
    * 
    * @param limit
    * @param dimensions */
   public LidarPacketCollector(int limit, int dimensions) {
-    this.floatBuffer = FloatBuffer.wrap(new float[limit * dimensions]); // 2 because of x y;
-    this.byteBuffer = ByteBuffer.wrap(new byte[limit]);
     this.limit = limit;
     this.dimensions = dimensions;
-    GlobalAssert.that(floatBuffer.limit() == limit * dimensions);
+    this.floatBuffer = FloatBuffer.wrap(new float[limit * dimensions]);
+    this.byteBuffer = ByteBuffer.wrap(new byte[limit]);
   }
 
   public void addListener(LidarRayBlockListener listener) {
