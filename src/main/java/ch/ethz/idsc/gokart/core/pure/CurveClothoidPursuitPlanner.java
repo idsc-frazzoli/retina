@@ -59,7 +59,7 @@ public class CurveClothoidPursuitPlanner {
       if (curvePoint.isPresent()) {
         Tensor xya = curvePoint.get().getTensor();
         HeadTailInterface headTailInterface = ClothoidTerminalRatios.of(xya.map(Scalar::zero), xya);
-        if (isCompliant.test(headTailInterface.head()) && // 
+        if (isCompliant.test(headTailInterface.head()) && //
             isCompliant.test(headTailInterface.tail())) {
           Optional<ClothoidPlan> optional = ClothoidPlan.from(xya, pose, isForward);
           if (optional.isPresent()) {

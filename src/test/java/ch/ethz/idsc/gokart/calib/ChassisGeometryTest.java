@@ -8,8 +8,10 @@ import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvent;
 import ch.ethz.idsc.gokart.dev.rimo.RimoGetEvents;
 import ch.ethz.idsc.owl.bot.se2.AckermannSteering;
 import ch.ethz.idsc.owl.bot.se2.DifferentialSpeed;
+import ch.ethz.idsc.retina.app.clear.CircleClearanceTracker;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -100,5 +102,18 @@ public class ChassisGeometryTest extends TestCase {
     AckermannSteering ackermannSteering = RimoAxleConstants.ackermannSteering();
     Tensor pair = ackermannSteering.pair(RealScalar.of(0.3));
     assertTrue(Chop._10.close(pair, Tensors.vector(0.3397325320025735, 0.2683854870479421)));
+  }
+
+  public void testQuantity() {
+    CircleClearanceTracker circleClearanceTracker = //
+        new CircleClearanceTracker(Quantity.of(2, SI.VELOCITY), ChassisGeometry.GLOBAL.yHalfWidth, //
+            Quantity.of(0.2, SI.PER_METER), PoseHelper.attachUnits(Tensors.vector(0.1, 0.01, 0.01)), //
+            Clips.interval(Quantity.of(0.1, SI.SECOND), Quantity.of(+1.0, SI.SECOND)));
+    assertFalse(circleClearanceTracker.contact().isPresent());
+    boolean obstructed = circleClearanceTracker.isObstructed(PoseHelper.attachUnits(Tensors.vector(0.6, 0.1, 0.05)));
+    assertTrue(obstructed);
+    Scalar time = circleClearanceTracker.contact().get();
+    Clips.interval(Quantity.of(0.3, "s"), Quantity.of(0.4, SI.SECOND)).requireInside(time);
+    PoseHelper.toUnitless(circleClearanceTracker.violation().get());
   }
 }

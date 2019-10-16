@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.owl.car.shop;
 
+import ch.ethz.idsc.gokart.calib.RimoSinusIonModel;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.tensor.Tensor;

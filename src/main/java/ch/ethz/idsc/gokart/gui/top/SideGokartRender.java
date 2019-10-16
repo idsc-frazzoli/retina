@@ -7,10 +7,10 @@ import java.awt.Graphics2D;
 import java.awt.geom.Path2D;
 
 import ch.ethz.idsc.gokart.calib.ChassisGeometry;
+import ch.ethz.idsc.gokart.calib.RimoSinusIonModel;
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConstants;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
-import ch.ethz.idsc.owl.car.shop.RimoSinusIonModel;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.owl.math.MinMax;
 import ch.ethz.idsc.retina.util.math.Magnitude;
