@@ -15,6 +15,7 @@ import java.util.Optional;
 import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.demo.VideoBackground;
+import ch.ethz.idsc.gokart.core.map.DubendorfFrame;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
@@ -42,7 +43,7 @@ import ch.ethz.idsc.tensor.alg.Array;
     // ---
     OfflineLogListener offlineLogListener = new OfflineLogListener() {
       final PathRender pathRender = new PathRender(COLOR, STROKE);
-      final GeometricLayer geometricLayer = new GeometricLayer(VideoBackground._20190401, Array.zeros(3));
+      final GeometricLayer geometricLayer = new GeometricLayer(DubendorfFrame._20190401, Array.zeros(3));
 
       @Override
       public void event(Scalar time, String channel, ByteBuffer byteBuffer) {

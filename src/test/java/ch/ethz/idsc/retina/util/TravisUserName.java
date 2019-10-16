@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.travis;
+package ch.ethz.idsc.retina.util;
 
 import ch.ethz.idsc.tensor.io.UserName;
 

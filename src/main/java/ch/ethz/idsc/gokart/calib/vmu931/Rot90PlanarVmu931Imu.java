@@ -1,14 +1,13 @@
 // code by jph
 package ch.ethz.idsc.gokart.calib.vmu931;
 
-import ch.ethz.idsc.demo.GokartLogFile;
 import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrame;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.Cross;
 
-/** post 20190521 since {@link GokartLogFile#_20190521T150634_d2699045} */
+/** post 20190521 since GokartLogFile _20190521T150634_d2699045 */
 /* package */ enum Rot90PlanarVmu931Imu implements PlanarVmu931Imu {
   INSTANCE;
   // ---

@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.demo.jph.davis;
+package ch.ethz.idsc.retina.davis.app;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

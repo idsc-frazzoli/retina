@@ -30,9 +30,10 @@ import javax.swing.JViewport;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.demo.VideoBackground;
+import ch.ethz.idsc.gokart.core.map.DubendorfFrame;
 import ch.ethz.idsc.gokart.lcm.LcmLogFileCutter;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
+import ch.ethz.idsc.gokart.offline.map.BackgroundRender;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
@@ -150,9 +151,10 @@ public class GokartLcmLogCutter {
             }
           if (gnd)
             for (File file : lcmLogFileCutter.files())
-              VideoBackground.render( //
+              BackgroundRender.render( //
                   file, //
-                  VideoBackground._20190401, // dubilab specific
+                  new Dimension(1920, 1080), //
+                  DubendorfFrame._20190401, // dubilab specific
                   new File(file.getParentFile(), "background.png"));
           if (mpc)
             for (File file : lcmLogFileCutter.files()) {

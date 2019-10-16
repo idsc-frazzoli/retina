@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.jph.davis;
 import java.awt.Color;
 import java.util.concurrent.TimeUnit;
 
+import ch.ethz.idsc.retina.davis.app.Aedat31PolarityImage;
 import ch.ethz.idsc.retina.davis.io.Aedat31FileSupplier;
 import ch.ethz.idsc.retina.util.img.TimedImageEvent;
 import ch.ethz.idsc.retina.util.img.TimedImageListener;

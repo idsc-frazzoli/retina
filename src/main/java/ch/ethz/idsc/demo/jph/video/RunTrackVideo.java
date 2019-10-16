@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.jph.video;
 
 import java.io.File;
 
-import ch.ethz.idsc.demo.VideoBackground;
+import ch.ethz.idsc.gokart.core.map.DubendorfFrame;
 import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
@@ -25,7 +25,7 @@ import ch.ethz.idsc.tensor.sca.win.GaussianWindow;
   public static void main(String[] args) throws Exception {
     final BackgroundImage backgroundImage = BackgroundImage.from( //
         HomeDirectory.Pictures("20190701.png"), //
-        VideoBackground._20190401);
+        DubendorfFrame._20190401);
     final String imageName = "20190701T175650_01";
     Tensor table = Import.of(HomeDirectory.Documents("lidarpose", imageName + ".csv.gz"));
     TensorUnaryOperator tensorUnaryOperator = CenterFilter.of(GeodesicCenter.of(Se2Geodesic.INSTANCE, GaussianWindow.FUNCTION), 3);
