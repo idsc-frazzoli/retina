@@ -2,7 +2,7 @@
 package ch.ethz.idsc.gokart.calib;
 
 import ch.ethz.idsc.owl.car.core.VehicleModel;
-import ch.ethz.idsc.owl.math.MinMax;
+import ch.ethz.idsc.sophus.math.MinMax;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Dimensions;

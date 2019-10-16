@@ -1,6 +1,6 @@
 package ch.ethz.idsc.gokart.core.track;
 
-import ch.ethz.idsc.owl.math.lane.LaneInterface;
+import ch.ethz.idsc.owl.lane.LaneInterface;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.sophus.math.ArcTan2D;

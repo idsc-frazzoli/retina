@@ -3,8 +3,8 @@ package ch.ethz.idsc.gokart.core.plan;
 
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.pure.CurveClothoidPursuitModule;
+import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidCurvatureQuery;
 import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidTransitionSpace;
-import ch.ethz.idsc.owl.bot.se2.rrts.TransitionCurvatureQuery;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.sca.Clips;
 
@@ -17,6 +17,6 @@ public class ClothoidRrtsTrajectoryModule extends DynamicRrtsTrajectoryModule {
     super(trajectoryConfig, //
         new CurveClothoidPursuitModule(ClothoidPursuitConfig.GLOBAL), //
         ClothoidTransitionSpace.INSTANCE, //
-        new TransitionCurvatureQuery(Clips.absolute(Magnitude.PER_METER.apply(ClothoidPursuitConfig.GLOBAL.turningRatioMax))));
+        new ClothoidCurvatureQuery(Clips.absolute(Magnitude.PER_METER.apply(ClothoidPursuitConfig.GLOBAL.turningRatioMax))));
   }
 }

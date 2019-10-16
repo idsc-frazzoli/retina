@@ -15,11 +15,11 @@ import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.lcm.mod.PlannerPublish;
 import ch.ethz.idsc.owl.bot.se2.Se2StateSpaceModel;
+import ch.ethz.idsc.owl.bot.se2.rrts.CarRrtsFlow;
 import ch.ethz.idsc.owl.bot.se2.rrts.LaneRrtsPlannerServer;
-import ch.ethz.idsc.owl.bot.se2.rrts.Se2RrtsFlow;
 import ch.ethz.idsc.owl.data.tree.Nodes;
 import ch.ethz.idsc.owl.glc.adapter.Trajectories;
-import ch.ethz.idsc.owl.math.lane.LaneInterface;
+import ch.ethz.idsc.owl.lane.LaneInterface;
 import ch.ethz.idsc.owl.math.state.StateTime;
 import ch.ethz.idsc.owl.math.state.TrajectorySample;
 import ch.ethz.idsc.owl.rrts.adapter.LengthCostFunction;
@@ -79,7 +79,7 @@ public abstract class RrtsTrajectoryModule extends GokartTrajectoryModule<Transi
 
             @Override // from RrtsPlannerServer
             protected Tensor uBetween(StateTime orig, StateTime dest) {
-              return Se2RrtsFlow.uBetween(orig, dest);
+              return CarRrtsFlow.uBetween(orig, dest);
             }
           };
       LaneInterface lane = optional.get();
