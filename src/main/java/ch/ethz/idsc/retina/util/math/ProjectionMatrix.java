@@ -33,7 +33,7 @@ public enum ProjectionMatrix {
   public static Tensor of(Scalar fovy, Scalar aspect, Clip clip) {
     Scalar zNear = Sign.requirePositive(clip.min());
     Scalar zFar = clip.max();
-    Scalar f = Cot.of(fovy.multiply(RationalScalar.of(1, 2)));
+    Scalar f = Cot.of(fovy.multiply(RationalScalar.HALF));
     Tensor matrix = Array.zeros(4, 4);
     matrix.set(f.divide(aspect), 0, 0);
     matrix.set(f, 1, 1);

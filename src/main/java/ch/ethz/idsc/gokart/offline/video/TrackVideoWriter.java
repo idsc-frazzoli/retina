@@ -55,9 +55,14 @@ public class TrackVideoWriter implements OfflineLogListener, AutoCloseable {
   @Override // from OfflineLogListener
   public void event(Scalar time, String channel, ByteBuffer byteBuffer) {
     trackVideoRender.event(time, channel, byteBuffer);
+    trackVideoConfig.offlineVideoRenders //
+        .forEach(renderInterface -> renderInterface.event(time, channel, byteBuffer));
     if (channel.equals(poseChannel)) {
       graphics.drawImage(backgroundImage.bufferedImage(), 0, 0, null);
-      trackVideoRender.render(GeometricLayer.of(backgroundImage.model2pixel()), graphics);
+      GeometricLayer geometricLayer = GeometricLayer.of(backgroundImage.model2pixel());
+      trackVideoRender.render(geometricLayer, graphics);
+      trackVideoConfig.offlineVideoRenders //
+          .forEach(renderInterface -> renderInterface.render(geometricLayer, graphics));
       graphics.setFont(new Font(Font.MONOSPACED, Font.BOLD, 30));
       graphics.setColor(Color.GRAY);
       graphics.drawString(String.format("time :%9s", time.map(Round._2)), 0, 25);

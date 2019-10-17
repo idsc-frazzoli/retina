@@ -14,7 +14,7 @@ import ch.ethz.idsc.tensor.opt.ConvexHull;
 import ch.ethz.idsc.tensor.red.Mean;
 import ch.ethz.idsc.tensor.sca.Sign;
 
-/* package */ abstract class DefaultCarModel implements VehicleModel {
+public abstract class DefaultCarModel implements VehicleModel {
   @Override
   public final int wheels() {
     return 4;

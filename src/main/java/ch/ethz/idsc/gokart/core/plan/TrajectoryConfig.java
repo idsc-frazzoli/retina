@@ -9,9 +9,8 @@ import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidRrtsNodeCollections;
 import ch.ethz.idsc.owl.bot.se2.rrts.DubinsTransitionSpace;
-import ch.ethz.idsc.owl.bot.se2.rrts.Se2TransitionRrtsNodeCollections;
-import ch.ethz.idsc.owl.math.MinMax;
-import ch.ethz.idsc.owl.rrts.RandomRrtsNodeCollection;
+import ch.ethz.idsc.owl.bot.se2.rrts.Se2RrtsNodeCollections;
+import ch.ethz.idsc.owl.rrts.adapter.RandomRrtsNodeCollection;
 import ch.ethz.idsc.owl.rrts.core.RrtsNodeCollection;
 import ch.ethz.idsc.owl.rrts.core.TransitionSpace;
 import ch.ethz.idsc.retina.util.math.Magnitude;
@@ -20,6 +19,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.sophus.crv.dubins.DubinsPathComparator;
 import ch.ethz.idsc.sophus.crv.subdiv.CurveSubdivision;
 import ch.ethz.idsc.sophus.hs.r2.Se2UniformResample;
+import ch.ethz.idsc.sophus.math.MinMax;
 import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -101,7 +101,7 @@ public class TrajectoryConfig {
     Tensor topRight = Tensors.of(minMaxX.max().add(margin), minMaxY.max().add(margin));
     if (limitedCollection)
       return ClothoidRrtsNodeCollections.of(Magnitude.PER_METER.apply(ClothoidPursuitConfig.GLOBAL.turningRatioMax), bottomLeft, topRight);
-    return Se2TransitionRrtsNodeCollections.of(transitionSpace, bottomLeft, topRight);
+    return Se2RrtsNodeCollections.of(transitionSpace, bottomLeft, topRight);
   }
 
   /***************************************************/

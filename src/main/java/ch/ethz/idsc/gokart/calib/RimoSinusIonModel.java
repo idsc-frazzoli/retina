@@ -1,16 +1,18 @@
 // code by jph
-package ch.ethz.idsc.owl.car.shop;
+package ch.ethz.idsc.gokart.calib;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ethz.idsc.gokart.calib.ChassisGeometry;
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.RimoTireConfiguration;
 import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
 import ch.ethz.idsc.owl.car.model.CarControl;
 import ch.ethz.idsc.owl.car.model.CarSteering;
+import ch.ethz.idsc.owl.car.shop.DefaultCarModel;
+import ch.ethz.idsc.owl.car.shop.DefaultWheelConstant;
+import ch.ethz.idsc.owl.car.shop.MotorTorques;
 import ch.ethz.idsc.owl.car.slip.Pacejka3;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;

@@ -1,7 +1,7 @@
 // code by mh
 package ch.ethz.idsc.gokart.core.track;
 
-import ch.ethz.idsc.owl.math.lane.LaneInterface;
+import ch.ethz.idsc.owl.lane.LaneInterface;
 import ch.ethz.idsc.tensor.Tensor;
 
 public interface TrackInterface {

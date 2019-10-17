@@ -2,7 +2,7 @@
 package ch.ethz.idsc.gokart.core.pure;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerConfig;
-import ch.ethz.idsc.owl.math.pursuit.AssistedCurveIntersection;
+import ch.ethz.idsc.owl.math.pursuit.AssistedCurveIntersectionInterface;
 import ch.ethz.idsc.owl.math.pursuit.PseudoSe2CurveIntersection;
 import ch.ethz.idsc.owl.math.pursuit.SphereSe2CurveIntersection;
 import ch.ethz.idsc.retina.util.math.SI;
@@ -29,11 +29,11 @@ public class ClothoidPursuitConfig extends PursuitConfig {
     lookAhead = Quantity.of(5, SI.METER);
   }
 
-  public AssistedCurveIntersection getAssistedCurveIntersection() {
+  public AssistedCurveIntersectionInterface getAssistedCurveIntersection() {
     return getAssistedCurveIntersection(lookAhead);
   }
 
-  public AssistedCurveIntersection getAssistedCurveIntersection(Scalar lookAhead) {
+  public AssistedCurveIntersectionInterface getAssistedCurveIntersection(Scalar lookAhead) {
     return se2distance //
         ? new PseudoSe2CurveIntersection(lookAhead) //
         : new SphereSe2CurveIntersection(lookAhead);

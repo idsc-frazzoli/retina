@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.function.Consumer;
 
+import ch.ethz.idsc.retina.davis.app.Aedat31PolarityImage;
 import ch.ethz.idsc.retina.davis.io.Aedat31FileSupplier;
 import ch.ethz.idsc.retina.util.io.Mp4AnimationWriter;
 import ch.ethz.idsc.tensor.io.HomeDirectory;

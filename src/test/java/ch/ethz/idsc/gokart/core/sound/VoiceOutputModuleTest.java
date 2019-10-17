@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import ch.ethz.idsc.demo.travis.TravisUserName;
+import ch.ethz.idsc.retina.util.TravisUserName;
 import ch.ethz.idsc.tensor.io.ResourceData;
 import junit.framework.TestCase;
 

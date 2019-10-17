@@ -5,7 +5,7 @@ import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import ch.ethz.idsc.demo.VideoBackground;
+import ch.ethz.idsc.gokart.core.map.DubendorfFrame;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.LastLogMessage;
@@ -14,13 +14,12 @@ import ch.ethz.idsc.gokart.offline.video.TrackVideoConfig;
 import ch.ethz.idsc.gokart.offline.video.TrackVideoWriter;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
-// TODO JPH test coverage
 /* package */ enum RunTrackVideoWriter {
   ;
   public static void main(String[] args) throws Exception {
     final BackgroundImage backgroundImage = BackgroundImage.from( //
         new File("/media/datahaki/data/gokart/mvb_gnd/20190926T121623_00/background.png"), //
-        VideoBackground._20190401);
+        DubendorfFrame._20190401);
     File folder = new File("/media/datahaki/data/gokart/mvb_mpc/03");
     for (File id : folder.listFiles()) {
       final String imageName = id.getName();

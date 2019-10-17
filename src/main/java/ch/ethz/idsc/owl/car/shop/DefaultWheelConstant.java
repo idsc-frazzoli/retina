@@ -7,7 +7,7 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
 /** class holds invariant parameters of wheel */
-/* package */ class DefaultWheelConstant implements WheelInterface {
+public class DefaultWheelConstant implements WheelInterface {
   private final Scalar radius;
   private final Scalar width;
   private final Scalar iw_invert;

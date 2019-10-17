@@ -63,8 +63,7 @@ public class AngularSlip {
     return wantedRotationRate.subtract(gyroZ);
   }
 
-  /** @return toString Function return gyroZ */
-  @Override
+  @Override // from Object
   public String toString() {
     return Tensors.of( //
         tangentSpeed, //
