@@ -54,10 +54,8 @@ frontaxlelatacc = latacc+rotacc*rotacceffect;
 accbudget = (1.8-forwardacc)/1.6;
 torquevectoringcapability = accbudget*torqueveceffect;
 %understeerright
-%v6 = frontaxlelatacc - latacclim-torquevectoringcapability-slack;
 v6 = frontaxlelatacc -torquevectoringcapability- latacclim-slack;
 %understeerleft
-%v7 = -frontaxlelatacc - latacclim-torquevectoringcapability-slack;
 v7 = -frontaxlelatacc -torquevectoringcapability - latacclim-slack;
 
 

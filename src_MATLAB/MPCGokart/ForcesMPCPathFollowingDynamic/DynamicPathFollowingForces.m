@@ -128,19 +128,21 @@ model.lb = -ones(1,index.nv)*inf;
 %model.lb(index.dotbeta)=-5;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
+
 %model.ub(index.ab)=2;
 %model.lb(index.ab)=-4.5;
-model.lb(index.ab)=-inf;
+model.lb(index.ab)=-inf;%Max Breaking/Acceleration
 
-model.ub(index.tv)=1.7;
+model.ub(index.tv)=1.7;%Maximum torque vectoring
 model.lb(index.tv)=-1.7;
 %model.ub(index.tv)=0.1;
 %model.lb(index.tv)=-0.1;
+
 model.lb(index.slack)=0;
 
-model.lb(index.v)=0;
+model.lb(index.v)=0;%No reversing constraint
 
-model.ub(index.beta)=0.5;
+model.ub(index.beta)=0.5;%Steering Angle constraint
 model.lb(index.beta)=-0.5;
 
 model.ub(index.s)=pointsN-2;

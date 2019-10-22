@@ -15,11 +15,11 @@ function [ACCX,ACCY,ACCROTZ] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV, param)
 
 
     %% Model Parameters
-    %Front Tire Params (see magic formula)
+    %Front Tire Params (for magic formula)
     B1 = param(1);
     C1 = param(2);
     D1 = param(3);
-    %Rear Tire Params (see magic formula)
+    %Rear Tire Params (for magic formula)
     B2 = param(4);
     C2 = param(5);
     D2 = param(6);
