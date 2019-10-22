@@ -33,22 +33,22 @@ nextsplinepoints = 0;
 
 %% global parameters index
 global index
-index.dotab = 1;
-index.dotbeta = 2;
+index.dotab = 1;            %rate of change of Acceleration of rear axle
+index.dotbeta = 2;         %rate of change of Angle of wheels
 index.ds = 3;
-index.tv = 4;
+index.tv = 4;                %Acceleration offset of Right axle from mean(AB)
 index.slack = 5;
-index.x = 6;
-index.y = 7;
-index.theta = 8;
-index.dottheta = 9;
-index.v = 10;
-index.yv = 11;
-index.ab = 12;
-index.beta = 13;
+index.x = 6;                  %X pos in w.r.f
+index.y = 7;                  %Y pos in w.r.f
+index.theta = 8;            %Angle of cart in. w.r.f measured from +Y toward +X
+index.dottheta = 9;        %rate of change of Angle of cart in w.r.f
+index.v = 10;                %forward Velocity of cart (v in x direction w.r.t cart ref frame) 
+index.yv = 11;              %Sideways Velocity of cart (v in y direction w.r.t cart ref frame) 
+index.ab = 12;              %Acceleration of rear axle (Fr = AB+TV, Fl = AB-TV)
+index.beta = 13;            %Angle of front wheels
 index.s = 14;
-index.ns = 9;
-index.nu = 5;
+index.ns = 9;       %number of state variables
+index.nu = 5;       %number of non-state variables
 index.nv = index.ns+index.nu;   % = 14
 index.sb = index.nu+1;          % = 6
 index.ps = 1;
@@ -77,8 +77,6 @@ l = 1;
 %limit lateral acceleration
 model.nh = 5; 
 model.ineq = @(z,p) nlconst(z,p);
-%model.hu = [36,0];
-%model.hl = [-inf,-inf];
 model.hu = [0;0;1;0;0];
 model.hl = [-inf;-inf;-inf;-inf;-inf];
 
@@ -130,19 +128,21 @@ model.lb = -ones(1,index.nv)*inf;
 %model.lb(index.dotbeta)=-5;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
+
 %model.ub(index.ab)=2;
 %model.lb(index.ab)=-4.5;
-model.lb(index.ab)=-inf;
+model.lb(index.ab)=-inf;%Max Breaking/Acceleration
 
-model.ub(index.tv)=1.7;
+model.ub(index.tv)=1.7;%Maximum torque vectoring
 model.lb(index.tv)=-1.7;
 %model.ub(index.tv)=0.1;
 %model.lb(index.tv)=-0.1;
+
 model.lb(index.slack)=0;
 
-model.lb(index.v)=0;
+model.lb(index.v)=0;%No reversing constraint
 
-model.ub(index.beta)=0.5;
+model.ub(index.beta)=0.5;%Steering Angle constraint
 model.lb(index.beta)=-0.5;
 
 model.ub(index.s)=pointsN-2;
