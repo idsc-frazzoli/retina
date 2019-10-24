@@ -11,6 +11,7 @@ import ch.ethz.idsc.tensor.alg.Join;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
+/** TODO since when do we include velocity? */
 /* package */ class GokartPoseEventV2 extends GokartPoseEventV1 {
   static final int LENGTH = GokartPoseEventV1.LENGTH + Float.BYTES * 3;
   // ---

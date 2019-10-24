@@ -57,7 +57,7 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
     // );
     List<GokartLogFile> list = new LinkedList<>();
     for (GokartLogFile gokartLogFile : GokartLogFile.values())
-      if (GokartLogFile._20180503T094457_ce8724ba.compareTo(gokartLogFile) <= 0)
+      if (GokartLogFile._20180503T094457_ce8724ba.compareTo(gokartLogFile) > 0)
         list.add(gokartLogFile);
     LogBookImages.all(list.stream().map(DatahakiLogFileLocator::file).collect(Collectors.toList()));
   }

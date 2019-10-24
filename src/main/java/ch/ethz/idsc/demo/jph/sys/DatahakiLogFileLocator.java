@@ -14,10 +14,13 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
   INSTANCE;
   // ---
   /** the archive of all log files is kept on an external hard-drive */
-  public static final File ARCHIVE = new File("/media/datahaki/backup/gokartlogs");
+  // TODO fields should be private
+  public static final File EXT_HD1 = new File("/media/datahaki/backup/gokartlogs");
+  public static final File EXT_HD2 = new File("/media/datahaki/gokart/gokartlogs");
   private static final List<File> LOG_ROOT = Arrays.asList( //
       new File("/media/datahaki/media/ethz/gokartlogs"), //
-      ARCHIVE);
+      EXT_HD1, //
+      EXT_HD2);
 
   @Override // from LogFileLocator
   public File getAbsoluteFile(LogFile logFile) {
@@ -39,6 +42,7 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
 
   /** @return */
   public static Collection<LogFile> all() {
-    return GokartLogFiles.all(ARCHIVE);
+    // TODO this is not implemented correctly
+    return GokartLogFiles.all(EXT_HD1);
   }
 }
