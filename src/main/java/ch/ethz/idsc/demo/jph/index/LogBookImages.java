@@ -45,16 +45,6 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
   }
 
   public static void main(String[] args) {
-    // List<GokartLogFile> gokartLogFiles = Arrays.asList( //
-    // GokartLogFile._20180503T094457_ce8724ba, //
-    // GokartLogFile._20180514T155248_767e5417, //
-    // GokartLogFile._20180517T152605_c1876fc4, //
-    // GokartLogFile._20190701T170957_12dcbfa8, //
-    // GokartLogFile._20190701T174938_12dcbfa8, //
-    // GokartLogFile._20190912T173521_0f95cdcc, //
-    // GokartLogFile._20190914T113023_11a994fa, //
-    // GokartLogFile._20190927T110429_e9728d8b //
-    // );
     List<GokartLogFile> list = new LinkedList<>();
     for (GokartLogFile gokartLogFile : GokartLogFile.values())
       if (GokartLogFile._20180503T094457_ce8724ba.compareTo(gokartLogFile) > 0)

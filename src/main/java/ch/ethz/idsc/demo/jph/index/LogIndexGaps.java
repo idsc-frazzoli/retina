@@ -27,7 +27,9 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
         .map(GokartLogFile::name) //
         .map(s -> s.substring(1)) //
         .collect(Collectors.toSet());
-    List<File> folders = Stream.of(DatahakiLogFileLocator.ARCHIVE.listFiles()).sorted().collect(Collectors.toList());
+    List<File> folders = DatahakiLogFileLocator.all().stream() //
+        .map(DatahakiLogFileLocator::file) //
+        .collect(Collectors.toList());
     int count = 0;
     for (File folder : folders) {
       int compareTo = "20190919".compareTo(folder.getName());
