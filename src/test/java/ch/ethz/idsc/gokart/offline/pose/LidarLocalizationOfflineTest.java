@@ -8,7 +8,7 @@ import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Type;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.core.slam.LocalizationMaps;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
 import ch.ethz.idsc.gokart.offline.cache.CachedLog;
@@ -29,7 +29,10 @@ public class LidarLocalizationOfflineTest extends TestCase {
     SensorsConfig.GLOBAL.planarVmu931Type = PlanarVmu931Type.FLIPPED.name();
     File file = cachedLog.file();
     GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(FirstLogMessage.of(file, GokartPoseChannel.INSTANCE.channel()).get());
-    LidarLocalizationOffline lidarLocalizationOffline = new LidarLocalizationOffline(PredefinedMap.DUBILAB_LOCALIZATION_20190314, gokartPoseEvent.getPose());
+    LocalizationConfig localizationConfig = new LocalizationConfig();
+    localizationConfig.predefinedMap = LocalizationMaps.DUBILAB_20190314.name();
+    LidarLocalizationOffline lidarLocalizationOffline = new LidarLocalizationOffline( //
+        localizationConfig, gokartPoseEvent.getPose());
     Tensor quality = Tensors.empty();
     GokartPoseListener gokartPoseListener = new GokartPoseListener() {
       @Override

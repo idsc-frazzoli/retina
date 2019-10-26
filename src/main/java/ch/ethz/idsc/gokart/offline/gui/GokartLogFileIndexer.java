@@ -72,6 +72,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private static final String VLP16_CENTER_POS = VelodyneLcmChannels.pos(VelodyneModel.VLP16, "center");
   private static final String DVS_CHANNEL = DavisDvsBlockPublisher.channel("overview");
   // ---
+  private int gprmc_errors = 0;
   private final DvsCountRow dvsCountRow = new DvsCountRow();
   private final TrajectoryCountRow trajectoryCountRow = new TrajectoryCountRow();
   // private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
@@ -219,7 +220,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
         Gprmc gprmc = velodynePosEvent.gprmc();
         gprmcListeners.forEach(listener -> listener.gprmcReceived(gprmc));
       } catch (Exception exception) {
-        exception.printStackTrace();
+        if (++gprmc_errors <= 3)
+          exception.printStackTrace();
       }
     } else //
     if (channel.equals(DVS_CHANNEL)) {

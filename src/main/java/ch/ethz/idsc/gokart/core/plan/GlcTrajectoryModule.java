@@ -87,6 +87,7 @@ public class GlcTrajectoryModule extends GokartTrajectoryModule<TrajectoryPlanne
         true, // 1 round of refinement
         RealScalar.of(1), // width of virtual lane in model coordinates
         RealScalar.of(7.5), // model2pixel conversion factor
+        // TODO size is not universal to all maps
         new Dimension(640, 640)); // resolution of image
   }
 

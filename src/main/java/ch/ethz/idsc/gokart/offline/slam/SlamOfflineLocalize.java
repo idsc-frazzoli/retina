@@ -1,13 +1,11 @@
 // code by jph
 package ch.ethz.idsc.gokart.offline.slam;
 
-import java.awt.image.BufferedImage;
 import java.nio.FloatBuffer;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
-import ch.ethz.idsc.gokart.core.slam.Se2MultiresGrids;
 import ch.ethz.idsc.gokart.core.slam.SlamDunk;
 import ch.ethz.idsc.gokart.core.slam.SlamResult;
 import ch.ethz.idsc.owl.gui.win.GeometricLayer;
@@ -22,20 +20,19 @@ import ch.ethz.idsc.tensor.sca.N;
 
 /** localization using only lidar */
 public class SlamOfflineLocalize extends OfflineLocalize {
-  private static final Tensor MODEL2PIXEL_INITIAL = LocalizationConfig.GLOBAL.getPredefinedMap().getModel2Pixel();
-  private static final Se2MultiresGrids SE2_MULTIRES_GRIDS = LocalizationConfig.GLOBAL.createSe2MultiresGrids();
-  // ---
+  private final Tensor model2pixel;
   private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final ScatterImage scatterImage;
   private final SlamDunk slamDunk;
 
-  /** @param map_image
+  /** @param extrudedImage
    * @param pose {x[m], y[m], angle}
    * @param scatterImage */
-  public SlamOfflineLocalize(BufferedImage map_image, Tensor pose, ScatterImage scatterImage) {
-    super(map_image, pose);
-    slamDunk = new SlamDunk(SE2_MULTIRES_GRIDS, slamScore);
+  public SlamOfflineLocalize(LocalizationConfig localizationConfig, Tensor pose, ScatterImage scatterImage) {
+    super(localizationConfig.getPredefinedMap().getImageExtruded(), pose);
+    model2pixel = localizationConfig.getPredefinedMap().getModel2Pixel();
+    slamDunk = new SlamDunk(localizationConfig.createSe2MultiresGrids(), slamScore);
     this.scatterImage = scatterImage;
   }
 
@@ -49,7 +46,7 @@ public class SlamOfflineLocalize extends OfflineLocalize {
     Tensor scattered = Tensor.of(list.stream().flatMap(Tensor::stream));
     int sum = scattered.length(); // usually around 430
     if (min_points < sum) {
-      GeometricLayer geometricLayer = GeometricLayer.of(MODEL2PIXEL_INITIAL);
+      GeometricLayer geometricLayer = GeometricLayer.of(model2pixel);
       geometricLayer.pushMatrix(model);
       geometricLayer.pushMatrix(lidar);
       Timing timing = Timing.started();

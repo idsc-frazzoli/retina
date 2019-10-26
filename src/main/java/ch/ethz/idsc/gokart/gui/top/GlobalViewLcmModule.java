@@ -20,6 +20,7 @@ import ch.ethz.idsc.gokart.core.pos.PoseLcmServerModule;
 import ch.ethz.idsc.gokart.core.pure.CurveSe2PursuitLcmClient;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationMaps;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.core.track.BSplineTrackLcmClient;
 import ch.ethz.idsc.gokart.core.track.BSplineTrackRender;
@@ -131,11 +132,11 @@ public class GlobalViewLcmModule extends AbstractModule {
     // ---
     {
       ResampledLidarRender resampledLidarRender = new ResampledLidarRender();
-      resampledLidarRender.updatedMap.setCrop(CROP_REGION);
+      // resampledLidarRender.updatedMap.setCrop(CROP_REGION);
       viewLcmFrame.jButtonMapCreate.addActionListener(resampledLidarRender.action_mapCreate);
       viewLcmFrame.jButtonMapCreate.setEnabled(false);
       viewLcmFrame.jButtonMapUpdate.addActionListener(resampledLidarRender.action_mapUpdate);
-      viewLcmFrame.jButtonMapUpdate.setEnabled(resampledLidarRender.updatedMap.nonEmpty());
+      // viewLcmFrame.jButtonMapUpdate.setEnabled(resampledLidarRender.updatedMap.nonEmpty());
       resampledLidarRender.setPointSize(2);
       resampledLidarRender.setReference(() -> PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
       resampledLidarRender.setColor(new Color(255, 0, 128, 128));
@@ -247,7 +248,7 @@ public class GlobalViewLcmModule extends AbstractModule {
   }
 
   public static void main(String[] args) throws Exception {
-    LocalizationConfig.GLOBAL.predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190708.name();
+    LocalizationConfig.GLOBAL.predefinedMap = LocalizationMaps.RIETER_20191022.name();
     standalone();
   }
 }

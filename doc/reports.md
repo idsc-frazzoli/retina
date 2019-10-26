@@ -46,6 +46,8 @@
 * [20190903_appox_clothoids_with_ext_windings.pdf](https://github.com/idsc-frazzoli/retina/files/3568308/20190903_appox_clothoids_with_ext_windings.pdf)
 * [20190908_curve_decimation_in_se2_and_se3.pdf](https://github.com/idsc-frazzoli/retina/files/3587971/20190908_curve_decimation_in_se2_and_se3.pdf)
 * [20190916_subdivision-based_clothoids_autonomous_driving.pdf](https://github.com/idsc-frazzoli/retina/files/3638364/20190916_subdivision-based_clothoids_autonomous_driving.pdf)
+* [20191026_hermite_subdivision_se2.pdf](https://github.com/idsc-frazzoli/retina/files/3774613/20191026_hermite_subdivision_se2.pdf)
+
 
 ## Bug Reports
 

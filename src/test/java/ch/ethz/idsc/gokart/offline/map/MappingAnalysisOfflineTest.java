@@ -5,6 +5,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationMaps;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.cache.CachedLog;
 import ch.ethz.idsc.retina.util.io.PngAnimationWriter;
@@ -16,11 +18,13 @@ import junit.framework.TestCase;
 
 public class MappingAnalysisOfflineTest extends TestCase {
   public void testSimple() throws Exception {
+    LocalizationConfig localizationConfig = new LocalizationConfig();
+    localizationConfig.predefinedMap = LocalizationMaps.DUBILAB_20190314.name();
     try (AnimationWriter animationWriter = new PngAnimationWriter(HomeDirectory.Pictures("20190701T174152_00"))) {
       MappingConfig mappingConfig = new MappingConfig();
       mappingConfig.obsRadius = Quantity.of(0.8, SI.METER);
       File file = CachedLog._20190701T174152_00.file();
-      OfflineLogPlayer.process(file, new MappingAnalysisOffline(mappingConfig, Quantity.of(2, SI.SECOND)) {
+      OfflineLogPlayer.process(file, new MappingAnalysisOffline(localizationConfig, mappingConfig, Quantity.of(2, SI.SECOND)) {
         @Override
         public void accept(BufferedImage bufferedImage) {
           try {

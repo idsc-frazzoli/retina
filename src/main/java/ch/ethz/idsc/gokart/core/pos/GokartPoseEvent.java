@@ -18,9 +18,11 @@ public interface GokartPoseEvent extends DataEventInterface, PoseVelocityInterfa
    * 
    * @return */
   static GokartPoseEvent of(ByteBuffer byteBuffer) {
+    if (byteBuffer.remaining() == GokartPoseEventV2.LENGTH)
+      return new GokartPoseEventV2(byteBuffer);
     return byteBuffer.remaining() == GokartPoseEventV1.LENGTH //
         ? new GokartPoseEventV1(byteBuffer)
-        : new GokartPoseEventV2(byteBuffer);
+        : new GokartPoseEventV0(byteBuffer);
   }
 
   /** @return value in the interval [0, 1] where

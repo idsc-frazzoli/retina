@@ -50,6 +50,12 @@ Kin. MPC [outside](https://www.youtube.com/watch?v=B0QmMS1Dp8E), [inside](https:
 
 Dyn. MPC [outside](https://www.youtube.com/watch?v=59E95E_RkH8), [inside](https://www.youtube.com/watch?v=t42Yd-1C9iM)
 
+<td>
+
+![mpc_ann](https://user-images.githubusercontent.com/4012178/67439187-da505080-f5f5-11e9-8d55-c1abb5afe41c.jpg)
+
+[ANN MPC](https://www.youtube.com/watch?v=YwqjDYcEqpM)
+
 </tr>
 </table>
 

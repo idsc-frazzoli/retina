@@ -3,39 +3,27 @@ package ch.ethz.idsc.gokart.core.pos;
 
 import java.nio.ByteBuffer;
 
-import ch.ethz.idsc.retina.util.data.DataEvent;
-import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.retina.util.pose.VelocityHelper;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Round;
 
-/* package */ class GokartPoseEventV1 extends DataEvent implements GokartPoseEvent {
-  static final int LENGTH = Double.BYTES * 3 + Float.BYTES;
-  private static final Scalar GYROZ_ZERO = Quantity.of(0.0, SI.PER_SECOND);
+/** from 2018-01-08 the pose is published with pose-quality */
+/* package */ class GokartPoseEventV1 extends GokartPoseEventV0 {
+  static final int LENGTH = GokartPoseEventV0.LENGTH + Float.BYTES;
   // ---
-  private final double x;
-  private final double y;
-  private final double angle;
   private final float quality;
 
   /** @param byteBuffer */
   GokartPoseEventV1(ByteBuffer byteBuffer) {
-    x = byteBuffer.getDouble();
-    y = byteBuffer.getDouble();
-    angle = byteBuffer.getDouble();
+    super(byteBuffer);
     quality = byteBuffer.getFloat();
   }
 
   @Override // from BufferInsertable
   public void insert(ByteBuffer byteBuffer) {
-    byteBuffer.putDouble(x);
-    byteBuffer.putDouble(y);
-    byteBuffer.putDouble(angle);
+    super.insert(byteBuffer);
     byteBuffer.putFloat(quality);
   }
 
@@ -44,36 +32,13 @@ import ch.ethz.idsc.tensor.sca.Round;
     return LENGTH;
   }
 
-  @Override // from GokartPoseInterface
-  public final Tensor getPose() {
-    return Tensors.of( //
-        Quantity.of(x, SI.METER), //
-        Quantity.of(y, SI.METER), //
-        DoubleScalar.of(angle));
-  }
-
   @Override // from GokartPoseEvent
   public final Scalar getQuality() {
     return DoubleScalar.of(quality);
   }
 
-  @Override // from GokartPoseEvent
-  public final boolean hasVelocity() {
-    return this instanceof GokartPoseEventV2;
-  }
-
-  @Override // from PoseVelocityInterface
-  public Tensor getVelocity() {
-    return VelocityHelper.ZERO;
-  }
-
-  @Override // from PoseVelocityInterface
-  public Scalar getGyroZ() {
-    return GYROZ_ZERO;
-  }
-
   @Override // from OfflineVectorInterface
   public Tensor asVector() {
-    return Tensors.vector(x, y, angle).map(Round._6).append(RealScalar.of(quality).map(Round._3));
+    return super.asVector().append(RealScalar.of(quality).map(Round._3));
   }
 }

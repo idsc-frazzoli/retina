@@ -20,9 +20,10 @@ import ch.ethz.idsc.tensor.mat.Inverse;
  * the localization algorithm is described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class LidarGyroLocalization {
-  public static LidarGyroLocalization of(PredefinedMap predefinedMap) {
+  public static LidarGyroLocalization of(LocalizationConfig localizationConfig) {
+    PredefinedMap predefinedMap = localizationConfig.getPredefinedMap();
     return new LidarGyroLocalization(predefinedMap.getModel2Pixel(), new SlamDunk( //
-        LocalizationConfig.GLOBAL.createSe2MultiresGrids(), //
+        localizationConfig.createSe2MultiresGrids(), //
         ImageScore.of(predefinedMap.getImageExtruded())));
   }
 

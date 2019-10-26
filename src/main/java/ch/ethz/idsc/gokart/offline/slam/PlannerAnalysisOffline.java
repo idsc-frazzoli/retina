@@ -59,7 +59,7 @@ public class PlannerAnalysisOffline implements OfflineLogListener {
       time_next = time.add(delta);
       System.out.print("Extracting log at " + time.map(Round._2) + "\n");
       PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
-      scatterImage = new WallScatterImage(predefinedMap);
+      scatterImage = WallScatterImage.of(predefinedMap, Color.WHITE);
       // ---
       GeometricLayer geometricLayer = GeometricLayer.of(predefinedMap.getModel2Pixel());
       BufferedImage image = scatterImage.getImage();

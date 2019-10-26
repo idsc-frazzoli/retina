@@ -29,7 +29,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
 /** demo to simulate dubendorf hangar */
 // TODO JPH what does this demo do?
 class GokartWaypoint3Demo implements DemoInterface {
-  private static final Tensor MODEL2PIXEL = Tensors.matrixDouble(new double[][] { { 7.5, 0, 0 }, { 0, -7.5, 640 }, { 0, 0, 1 } });
+  private static final Tensor MODEL2PIXEL = Tensors.matrixDouble(new double[][] { //
+      { 7.5, 0, 0 }, { 0, -7.5, 640 }, { 0, 0, 1 } });
 
   @Override
   public OwlyAnimationFrame start() {
