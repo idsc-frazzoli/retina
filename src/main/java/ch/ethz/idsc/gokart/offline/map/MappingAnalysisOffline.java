@@ -1,6 +1,7 @@
 // code by ynager
 package ch.ethz.idsc.gokart.offline.map;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
@@ -57,7 +58,7 @@ public abstract class MappingAnalysisOffline extends LidarProcessOffline impleme
     if (Scalars.lessThan(time_next, time) && //
         Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(delta);
-      ScatterImage scatterImage = new WallScatterImage(predefinedMap);
+      ScatterImage scatterImage = WallScatterImage.of(predefinedMap, Color.WHITE);
       BufferedImage bufferedImage = scatterImage.getImage();
       GeometricLayer geometricLayer = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
       Graphics2D graphics = bufferedImage.createGraphics();

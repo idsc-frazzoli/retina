@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.demo.jph.lidar.local;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import ch.ethz.idsc.gokart.offline.slam.OfflineLocalizeWrap;
 import ch.ethz.idsc.gokart.offline.slam.PoseScatterImage;
 import ch.ethz.idsc.gokart.offline.slam.ScatterImage;
 import ch.ethz.idsc.gokart.offline.slam.WallScatterImage;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.io.CsvFormat;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
@@ -31,17 +33,20 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /* package */ enum SlamComparison {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
+    LocalizationConfig localizationConfig = new LocalizationConfig();
+    localizationConfig.gridFan = RealScalar.of(4);
+    localizationConfig.gridLevels = RealScalar.of(4);
+    PredefinedMap predefinedMap = localizationConfig.getPredefinedMap();
     for (File folder : OfflineIndex.folders(new File("/media/datahaki/media/ethz/gokart/topic", "track_azure.properties"))) {
       System.out.println(folder);
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // System.out.println(olr.model());
       // ---
       ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
-      scatterImage = new WallScatterImage(predefinedMap);
+      scatterImage = WallScatterImage.of(predefinedMap, Color.WHITE);
       OfflineLocalize offlineLocalize = new LidarGyroOfflineLocalize( //
           predefinedMap.getImageExtruded(), gokartLogInterface.pose(), //
-          StaticHelper.offlineSe2MultiresGrids(4), //
+          localizationConfig.createSe2MultiresGrids(), //
           scatterImage);
       OfflineTableSupplier offlineTableSupplier = new OfflineLocalizeWrap(offlineLocalize);
       OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);

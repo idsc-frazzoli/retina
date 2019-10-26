@@ -31,13 +31,14 @@ import ch.ethz.idsc.tensor.Tensors;
   public static void main(String[] args) throws Exception {
     // SensorsConfig.GLOBAL.planarVmu931Type = PlanarVmu931Type.FLIPPED.name();
     // GokartLogInterface gokartLogInterface = GokartLogAdapter.of(new File("/media/datahaki/data/gokart/cuts/20190328/20190328T164433_01"));
-    File source = new File("/media/datahaki/data/gokart/localize/20191022T120450_00", "log.lcm");
+    File source = new File("/media/datahaki/data/gokart/localize/20191022T120450_01", "log.lcm");
     // new File("/media/datahaki/data/gokart/tokio/20190310/20190310T220933_00", "log.lcm");
     // Optional<ByteBuffer> optional = FirstLogMessage.of(source, GokartPoseChannel.INSTANCE.channel());
     of( //
         source, //
         // DatahakiLogFileLocator.file(GokartLogFile._20190418T145229_b6a70baf), //
-        Tensors.fromString("{52.87219[m], 58.71351[m], -2.48135}"), //
+        // Tensors.fromString("{52.87219[m], 58.71351[m], -2.48135}"), // cut 0
+        Tensors.fromString("{28.19444[m], 57.56746[m], 1.75896}"), // cut 1
         // GokartPoseEvent.of(optional.get()).getPose(), //
         new File(source.getParentFile(), "post.lcm"));
   }

@@ -77,6 +77,7 @@ public class OfflineLocalizeWrap implements OfflineTableSupplier, LocalizationRe
     this.offlineLocalize = offlineLocalize;
     lidarAngularFiringCollector.addListener(offlineLocalize);
     offlineLocalize.addListener(this);
+    // TODO JPH cylic reference - buh!
   }
 
   @Override // from OfflineLogListener
