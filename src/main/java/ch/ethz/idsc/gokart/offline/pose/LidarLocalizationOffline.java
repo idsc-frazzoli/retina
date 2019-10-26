@@ -29,12 +29,13 @@ public class LidarLocalizationOffline implements OfflineLogListener, LidarRayBlo
   private final LidarLocalizationCore lidarLocalizationCore;
   public final List<GokartPoseListener> gokartPoseListeners = new LinkedList<>();
 
-  /** @param pose {x[m], y[m], heading} at start of log */
-  public LidarLocalizationOffline(LocalizationConfig localizationConfig, Tensor pose) {
+  /** @param localizationConfig
+   * @param resetPose {x[m], y[m], heading} at start of log */
+  public LidarLocalizationOffline(LocalizationConfig localizationConfig, Tensor resetPose) {
     lidarLocalizationCore = new LidarLocalizationCore(localizationConfig);
     lidarLocalizationCore.lidarAngularFiringCollector.addListener(this);
     lidarLocalizationCore.setTracking(true);
-    lidarLocalizationCore.resetPose(pose);
+    lidarLocalizationCore.resetPose(resetPose);
   }
 
   @Override // from OfflineLogListener

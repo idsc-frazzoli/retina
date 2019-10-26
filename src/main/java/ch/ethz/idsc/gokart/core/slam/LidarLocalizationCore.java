@@ -20,10 +20,8 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
-import ch.ethz.idsc.sophus.lie.LieDifferences;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
-import ch.ethz.idsc.sophus.lie.se2.Se2Group;
-import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringExponential;
+import ch.ethz.idsc.sophus.lie.se2.Se2Differences;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -48,8 +46,6 @@ public class LidarLocalizationCore implements //
   private static final Scalar BLEND_VELOCITY = RealScalar.of(0.04);
   // ---
   private static final Scalar _1 = DoubleScalar.of(1);
-  private static final LieDifferences LIE_DIFFERENCES = //
-      new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   // ---
   public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   public final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
@@ -156,7 +152,7 @@ public class LidarLocalizationCore implements //
         vmu931Odometry.blendPose(slamResult.getPose(), blend);
         if (Objects.nonNull(prevResult)) {
           // blend velocity
-          Tensor velXY = LIE_DIFFERENCES.pair( //
+          Tensor velXY = Se2Differences.INSTANCE.pair( //
               prevResult.getPose(), //
               slamResult.getPose()) //
               .extract(0, 2).multiply(SensorsConfig.GLOBAL.vlp16_rate);
