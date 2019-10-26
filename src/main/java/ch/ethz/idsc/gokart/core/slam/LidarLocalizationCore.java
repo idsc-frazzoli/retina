@@ -53,6 +53,7 @@ public class LidarLocalizationCore implements //
   // ---
   public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   public final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
+  private final LocalizationConfig localizationConfig;
   private final LidarSpacialProvider lidarSpacialProvider;
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.GLOBAL.getPlanarVmu931Imu());
@@ -74,6 +75,7 @@ public class LidarLocalizationCore implements //
   final Thread thread = new Thread(this);
 
   public LidarLocalizationCore(LocalizationConfig localizationConfig) {
+    this.localizationConfig = localizationConfig;
     lidarGyroLocalization = LidarGyroLocalization.of(localizationConfig);
     lidarSpacialProvider = localizationConfig.planarEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -147,7 +149,7 @@ public class LidarLocalizationCore implements //
     if (optional.isPresent()) {
       GokartPoseEvent slamResult = optional.get();
       quality = slamResult.getQuality();
-      boolean matchOk = LocalizationConfig.GLOBAL.isQualityOk(quality);
+      boolean matchOk = localizationConfig.isQualityOk(quality);
       if (matchOk || flagSnap) {
         // blend pose
         Scalar blend = flagSnap ? _1 : BLEND_POSE;

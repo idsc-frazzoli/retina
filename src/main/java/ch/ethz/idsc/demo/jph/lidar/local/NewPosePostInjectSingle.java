@@ -7,6 +7,7 @@ import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.pose.LidarLocalizationOffline;
 import ch.ethz.idsc.gokart.offline.pose.LogPosePostInject;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
@@ -19,8 +20,10 @@ import ch.ethz.idsc.tensor.Tensors;
 
   public static void in(File origin, Tensor pose, File target) throws Exception {
     // final File post_lcm = HomeDirectory.file(StaticHelper.POST_LCM);
-    LidarLocalizationOffline lidarLocalizationOffline = new LidarLocalizationOffline( //
-        LocalizationConfig.GLOBAL, pose);
+    LocalizationConfig localizationConfig = new LocalizationConfig();
+    localizationConfig.qualityMin = RealScalar.ZERO;
+    LidarLocalizationOffline lidarLocalizationOffline = //
+        new LidarLocalizationOffline(localizationConfig, pose);
     LogPosePostInject logPosePostInject = new LogPosePostInject();
     lidarLocalizationOffline.gokartPoseListeners.add(logPosePostInject);
     logPosePostInject.process(origin, target, lidarLocalizationOffline);

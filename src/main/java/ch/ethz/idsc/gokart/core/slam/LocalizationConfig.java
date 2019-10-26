@@ -41,7 +41,7 @@ public class LocalizationConfig {
   /** distance for equidistant resampling */
   public final Scalar resampleDs = Quantity.of(0.4, SI.METER);
   /** threshold below which the pose estimate should not be trusted */
-  public final Scalar qualityMin = RealScalar.of(0.55);
+  public Scalar qualityMin = RealScalar.of(0.55);
   /**
    * 
    */
