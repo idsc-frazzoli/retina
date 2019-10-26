@@ -42,6 +42,9 @@ public class LocalizationConfig {
   public final Scalar resampleDs = Quantity.of(0.4, SI.METER);
   /** threshold below which the pose estimate should not be trusted */
   public final Scalar qualityMin = RealScalar.of(0.55);
+  /**
+   * 
+   */
   public String predefinedMap = LocalizationMaps.RIETER_20191022.name();
 
   /***************************************************/

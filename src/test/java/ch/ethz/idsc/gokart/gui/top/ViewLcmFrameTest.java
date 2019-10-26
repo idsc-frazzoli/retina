@@ -1,7 +1,7 @@
 // code by jph
 package ch.ethz.idsc.gokart.gui.top;
 
-import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationMaps;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Chop;
@@ -13,6 +13,9 @@ public class ViewLcmFrameTest extends TestCase {
         { 7.5, 0, 0 }, //
         { 0, -7.5, 640 }, //
         { 0, 0, 1 } });
-    Chop._12.requireClose(LocalizationConfig.GLOBAL.getPredefinedMap().getModel2Pixel(), model2pixel);
+    for (LocalizationMaps lm : LocalizationMaps.values()) {
+      if (lm.name().startsWith("DUBILAB_"))
+        Chop._12.requireClose(lm.getPredefinedMap().getModel2Pixel(), model2pixel);
+    }
   }
 }

@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.offline.tab;
 import java.io.IOException;
 import java.util.Arrays;
 
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapterTest;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
@@ -17,7 +18,7 @@ public class BrakeDistanceTableTest extends TestCase {
   public void testSimple() throws IOException {
     GokartLogInterface gokartLogInterface = GokartLogAdapterTest.FULL;
     // ---
-    OfflineTableSupplier offlineTableSupplier = new BrakeDistanceTable(gokartLogInterface.pose());
+    OfflineTableSupplier offlineTableSupplier = new BrakeDistanceTable(LocalizationConfig.GLOBAL, gokartLogInterface.pose());
     OfflineLogPlayer.process(gokartLogInterface.file(), offlineTableSupplier);
     Tensor tensor = offlineTableSupplier.getTable().map(CsvFormat.strict());
     assertEquals(Dimensions.of(tensor), Arrays.asList(179, 9));

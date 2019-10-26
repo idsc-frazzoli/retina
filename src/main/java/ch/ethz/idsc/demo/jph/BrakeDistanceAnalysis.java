@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
@@ -30,7 +31,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       System.out.println(folder);
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder);
       // ---
-      BrakeDistanceTable brakeDistanceAnalysis = new BrakeDistanceTable(gokartLogInterface.pose());
+      BrakeDistanceTable brakeDistanceAnalysis = //
+          new BrakeDistanceTable(LocalizationConfig.GLOBAL, gokartLogInterface.pose());
       OfflineLogPlayer.process(gokartLogInterface.file(), brakeDistanceAnalysis);
       Export.of(HomeDirectory.file(folder.getName() + ".csv"), brakeDistanceAnalysis.getTable().map(CsvFormat.strict()));
     }

@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 /** the test matches 3 consecutive lidar scans to the dubendorf hangar map
  * the matching qualities are 51255, 43605, 44115 */
 public class SlamDunkTest extends TestCase {
-  private static void _checkSimple(LidarSpacialProvider lidarSpacialProvider) throws Exception {
+  private static void _checkSimple(LocalizationConfig localizationConfig, LidarSpacialProvider lidarSpacialProvider) throws Exception {
     VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -36,10 +36,9 @@ public class SlamDunkTest extends TestCase {
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
-    PredefinedMap predefinedMap = LocalizationMaps.DUBILAB_20190708.getPredefinedMap();
-    // LocalizationConfig.GLOBAL.getPredefinedMap();
+    PredefinedMap predefinedMap = localizationConfig.getPredefinedMap();
     ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
-    OfflineLocalize offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), GokartLogAdapterTest.SIMPLE.pose(), scatterImage);
+    OfflineLocalize offlineLocalize = new SlamOfflineLocalize(localizationConfig, GokartLogAdapterTest.SIMPLE.pose(), scatterImage);
     TableBuilder tableBuilder = new TableBuilder();
     LocalizationResultListener localizationResultListener = new LocalizationResultListener() {
       @Override
@@ -61,21 +60,24 @@ public class SlamDunkTest extends TestCase {
     assertEquals(offlineLocalize.skipped.length(), 1);
     Clip clip = Clips.interval(0.35, 1);
     Tensor table = tableBuilder.getTable();
-    // FIXME
-    // assertEquals(table.map(clip), table);
     System.out.println(table);
+    assertEquals(table.map(clip), table);
     // System.out.println(offlineLocalize.getTable().get(Tensor.ALL, 7));
     // assertTrue(offlineLocalize.getTable().get(Tensor.ALL, 7).stream().map(Scalar.class::cast).allMatch(clip::isInside));
   }
 
   public void testSimple() throws Exception {
-    _checkSimple(LocalizationConfig.GLOBAL.planarEmulatorVlp16());
+    LocalizationConfig localizationConfig = new LocalizationConfig();
+    localizationConfig.predefinedMap = LocalizationMaps.DUBILAB_20180901.name();
+    _checkSimple(localizationConfig, LocalizationConfig.GLOBAL.planarEmulatorVlp16());
   }
 
   public void testBlub() throws Exception {
+    LocalizationConfig localizationConfig = new LocalizationConfig();
+    localizationConfig.predefinedMap = LocalizationMaps.DUBILAB_20180901.name();
     double angle_offset = SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue();
     LidarSpacialProvider lidarSpacialProvider = //
         VelodynePlanarEmulator.vlp16_p01deg(angle_offset);
-    _checkSimple(lidarSpacialProvider);
+    _checkSimple(localizationConfig, lidarSpacialProvider);
   }
 }
