@@ -18,7 +18,9 @@ import ch.ethz.idsc.gokart.offline.api.LogFile;
  * 20180614T092856 \--> 20.875161[s]
  * 20180614T092944 \--> 0.00161[s]
  * 20180614T122925 \--> 28.178607[s]
- * 20180614T142228 \--> 57.514723[s] */
+ * 20180614T142228 \--> 57.514723[s]
+ * 
+ * https://github.com/idsc-frazzoli/retina/files/2108415/20180616_power_steering_breakdown.pdf */
 /* package */ enum SteerFailures {
   ;
   static final List<LogFile> LOG_FILES = Arrays.asList( //

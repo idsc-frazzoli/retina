@@ -29,6 +29,7 @@ import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
+/** map obstacles */
 public abstract class MappingAnalysisOffline extends LidarProcessOffline implements Consumer<BufferedImage> {
   private final SpacialXZObstaclePredicate spacialXZObstaclePredicate = //
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
