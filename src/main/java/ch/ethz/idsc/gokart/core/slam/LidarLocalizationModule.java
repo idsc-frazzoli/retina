@@ -91,8 +91,9 @@ public final class LidarLocalizationModule extends AbstractModule implements Pos
   }
 
   /***************************************************/
-  /** localization map uses 640 pixels which corresponds to 86[m] */
-  private static final Clip CLIP = Clips.positive(Quantity.of(86, SI.METER));
+  /** localization map uses 640 pixels which corresponds to 86[m]
+   * localization map uses 720 pixels which corresponds to 96[m] */
+  private static final Clip CLIP = Clips.positive(Quantity.of(96, SI.METER));
   private static final File CACHE_LAST = new File("resources/cache/last.pose");
 
   private void loadPose() {

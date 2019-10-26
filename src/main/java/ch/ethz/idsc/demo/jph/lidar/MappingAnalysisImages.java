@@ -5,6 +5,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationConfig;
+import ch.ethz.idsc.gokart.core.slam.LocalizationMaps;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.map.MappingAnalysisOffline;
 import ch.ethz.idsc.retina.util.io.PngAnimationWriter;
@@ -19,8 +21,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     File file = new File("/media/datahaki/media/ethz/gokart/topic/mapping/20180827T155655_1/log.lcm");
     File folder = HomeDirectory.Pictures("log/mapping");
     folder.mkdirs();
+    LocalizationConfig localizationConfig = new LocalizationConfig();
+    localizationConfig.predefinedMap = LocalizationMaps.DUBILAB_20190314.name();
     try (AnimationWriter animationWriter = new PngAnimationWriter(folder)) {
-      OfflineLogPlayer.process(file, new MappingAnalysisOffline(MappingConfig.GLOBAL, Quantity.of(1, SI.SECOND)) {
+      OfflineLogPlayer.process(file, new MappingAnalysisOffline(localizationConfig, MappingConfig.GLOBAL, Quantity.of(1, SI.SECOND)) {
         @Override
         public void accept(BufferedImage bufferedImage) {
           try {

@@ -21,8 +21,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 
 /** demo to simulate dubendorf hangar */
-class GokartManualDemo implements DemoInterface {
-  private static final Tensor MODEL2PIXEL = Tensors.matrixDouble(new double[][] { { 7.5, 0, 0 }, { 0, -7.5, 640 }, { 0, 0, 1 } });
+/* package */ class GokartManualDemo implements DemoInterface {
+  private static final Tensor MODEL2PIXEL = Tensors.matrixDouble(new double[][] { //
+      { 7.5, 0, 0 }, { 0, -7.5, 640 }, { 0, 0, 1 } });
 
   @Override
   public OwlyAnimationFrame start() {

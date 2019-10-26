@@ -34,12 +34,14 @@ public abstract class MappingAnalysisOffline extends LidarProcessOffline impleme
       SafetyConfig.GLOBAL.createSpacialXZObstaclePredicate();
   private final BayesianOccupancyGrid bayesianOccupancyGrid;
   // ---
+  private final PredefinedMap predefinedMap;
   private final Scalar delta;
   private Scalar time_next = Quantity.of(0, SI.SECOND);
   private GokartPoseEvent gokartPoseEvent;
 
-  public MappingAnalysisOffline(MappingConfig mappingConfig, Scalar delta) {
+  public MappingAnalysisOffline(LocalizationConfig localizationConfig, MappingConfig mappingConfig, Scalar delta) {
     super(new Vlp16SegmentProvider(SensorsConfig.GLOBAL.vlp16_twist.number().doubleValue(), -1));
+    predefinedMap = localizationConfig.getPredefinedMap();
     this.delta = delta;
     bayesianOccupancyGrid = mappingConfig.createBayesianOccupancyGrid();
   }
@@ -54,7 +56,6 @@ public abstract class MappingAnalysisOffline extends LidarProcessOffline impleme
     if (Scalars.lessThan(time_next, time) && //
         Objects.nonNull(gokartPoseEvent)) {
       time_next = time.add(delta);
-      PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
       ScatterImage scatterImage = new WallScatterImage(predefinedMap);
       BufferedImage bufferedImage = scatterImage.getImage();
       GeometricLayer geometricLayer = new GeometricLayer(predefinedMap.getModel2Pixel(), Tensors.vector(0, 0, 0));
