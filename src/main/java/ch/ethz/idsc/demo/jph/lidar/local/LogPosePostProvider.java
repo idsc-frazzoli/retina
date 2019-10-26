@@ -28,11 +28,13 @@ import ch.ethz.idsc.tensor.Scalar;
         .skip(1) //
         .limit(1) //
         .collect(Collectors.toList());
+    LocalizationConfig localizationConfig = new LocalizationConfig();
+    localizationConfig.predefinedMap = LocalizationMaps.DUBILAB_20190314.name();
     for (File folder : list) {
       System.out.println(folder.getName());
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder, "log.lcm");
       LidarLocalizationOffline lidarLocalizationOffline = new LidarLocalizationOffline( //
-          LocalizationMaps.DUBILAB_20190314.getPredefinedMap(), gokartLogInterface.pose());
+          localizationConfig, gokartLogInterface.pose());
       lidarLocalizationOffline.gokartPoseListeners.add(new GokartPoseListener() {
         @Override
         public void getEvent(GokartPoseEvent gokartPoseEvent) {

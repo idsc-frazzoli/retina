@@ -43,8 +43,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   private final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
   private final LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
-  private final LidarGyroLocalization lidarGyroLocalization = //
-      LidarGyroLocalization.of(LocalizationConfig.GLOBAL.getPredefinedMap());
+  private final LidarGyroLocalization lidarGyroLocalization = LidarGyroLocalization.of(LocalizationConfig.GLOBAL);
   // ---
   private Scalar time;
   private GokartPoseEvent gokartPoseEvent = null;

@@ -29,8 +29,10 @@ public class LidarLocalizationOfflineTest extends TestCase {
     SensorsConfig.GLOBAL.planarVmu931Type = PlanarVmu931Type.FLIPPED.name();
     File file = cachedLog.file();
     GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(FirstLogMessage.of(file, GokartPoseChannel.INSTANCE.channel()).get());
+    LocalizationConfig localizationConfig = new LocalizationConfig();
+    localizationConfig.predefinedMap = LocalizationMaps.DUBILAB_20190314.name();
     LidarLocalizationOffline lidarLocalizationOffline = new LidarLocalizationOffline( //
-        LocalizationMaps.DUBILAB_20190314.getPredefinedMap(), gokartPoseEvent.getPose());
+        localizationConfig, gokartPoseEvent.getPose());
     Tensor quality = Tensors.empty();
     GokartPoseListener gokartPoseListener = new GokartPoseListener() {
       @Override
