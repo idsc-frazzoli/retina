@@ -48,7 +48,8 @@ public class UpdatedMap {
       for (Tensor x : pnts) {
         Point2D point2D = geometricLayer.toPoint2D(x);
         Tensor vector = Tensors.vector(point2D.getX(), point2D.getY());
-        if (Polygons.isInside(polygon, vector))
+        if (Tensors.isEmpty(polygon) || //
+            Polygons.isInside(polygon, vector))
           graphics.fillRect((int) point2D.getX(), (int) point2D.getY(), 1, 1);
       }
   }

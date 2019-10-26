@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseListener;
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.core.slam.LocalizationMaps;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.GokartLogAdapter;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
@@ -32,8 +32,8 @@ import ch.ethz.idsc.tensor.io.Export;
     for (File folder : list) {
       System.out.println(folder.getName());
       GokartLogInterface gokartLogInterface = GokartLogAdapter.of(folder, "log.lcm");
-      LidarLocalizationOffline lidarLocalizationOffline = //
-          new LidarLocalizationOffline(PredefinedMap.DUBILAB_LOCALIZATION_20190309, gokartLogInterface.pose());
+      LidarLocalizationOffline lidarLocalizationOffline = new LidarLocalizationOffline( //
+          LocalizationMaps.DUBILAB_20190309.getPredefinedMap(), gokartLogInterface.pose());
       lidarLocalizationOffline.gokartPoseListeners.add(new GokartPoseListener() {
         @Override
         public void getEvent(GokartPoseEvent gokartPoseEvent) {

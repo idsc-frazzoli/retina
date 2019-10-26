@@ -8,7 +8,7 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.calib.vmu931.PlanarVmu931Type;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.core.slam.LocalizationMaps;
 import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
 import ch.ethz.idsc.gokart.offline.api.GokartLogInterface;
 import ch.ethz.idsc.gokart.offline.channel.GokartPoseChannel;
@@ -25,8 +25,8 @@ import ch.ethz.idsc.tensor.Tensor;
 
   public static void in(File origin, Tensor pose, File target) throws Exception {
     // final File post_lcm = HomeDirectory.file(StaticHelper.POST_LCM);
-    LidarLocalizationOffline lidarLocalizationOffline = //
-        new LidarLocalizationOffline(PredefinedMap.DUBILAB_LOCALIZATION_20190309, pose);
+    LidarLocalizationOffline lidarLocalizationOffline = new LidarLocalizationOffline( //
+        LocalizationMaps.DUBILAB_20190309.getPredefinedMap(), pose);
     LogPosePostInject logPosePostInject = new LogPosePostInject();
     lidarLocalizationOffline.gokartPoseListeners.add(logPosePostInject);
     logPosePostInject.process(origin, target, lidarLocalizationOffline);

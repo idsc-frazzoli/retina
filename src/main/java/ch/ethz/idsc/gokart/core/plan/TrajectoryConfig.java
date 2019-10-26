@@ -6,6 +6,7 @@ import ch.ethz.idsc.gokart.core.map.ImageGrid;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.map.SightLinesMapping;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
+import ch.ethz.idsc.gokart.core.slam.ObstaclesMaps;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.owl.bot.se2.rrts.ClothoidRrtsNodeCollections;
 import ch.ethz.idsc.owl.bot.se2.rrts.DubinsTransitionSpace;
@@ -83,7 +84,7 @@ public class TrajectoryConfig {
 
   /** @return */
   public static PredefinedMap getPredefinedMapObstacles() {
-    return PredefinedMap.DUBILAB_OBSTACLES_20190314;
+    return ObstaclesMaps.DUBILAB_20190314.getPredefinedMap();
   }
 
   public AbstractMapping<? extends ImageGrid> getAbstractMapping() {

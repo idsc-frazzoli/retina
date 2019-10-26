@@ -13,7 +13,7 @@ import ch.ethz.idsc.gokart.calib.RimoSinusIonModel;
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.perc.GokartSegmentProjection;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.core.slam.LocalizationMaps;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
@@ -49,7 +49,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   private Tensor tensor = Tensors.empty();
   private final BufferedImage mapImage = new BufferedImage(640, 640, BufferedImage.TYPE_4BYTE_ABGR);
   private final Graphics2D mapGraphics = mapImage.createGraphics();
-  private final Tensor model2Pixel = PredefinedMap.DUBILAB_LOCALIZATION_20190314.getModel2Pixel();
+  private final Tensor model2Pixel = LocalizationMaps.DUBILAB_20190314.getPredefinedMap().getModel2Pixel();
 
   public FreeSpaceVideo() throws InterruptedException, IOException {
     velodyneDecoder.addRayListener(gokartSegmentProjection);
