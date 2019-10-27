@@ -49,15 +49,9 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.sophus.app.api.PathRender;
 import ch.ethz.idsc.sophus.ply.Arrowhead;
 import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.io.ResourceData;
 import ch.ethz.idsc.tensor.ref.TensorListener;
 
 public class GlobalViewLcmModule extends AbstractModule {
-  private static final Tensor CROP_REGION = ResourceData.of( //
-      "/dubilab/polygonregion/aerotain/20190309.csv" //
-  // "/dubilab/polygonregion/walkable/20190307.csv" //
-  );
-  // ---
   private final ViewLcmFrame viewLcmFrame = new ViewLcmFrame();
   private final Vlp16LcmHandler vlp16LcmHandler = SensorsConfig.GLOBAL.vlp16LcmHandler();
   private final DavisImuLcmClient davisImuLcmClient = new DavisImuLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
@@ -132,11 +126,6 @@ public class GlobalViewLcmModule extends AbstractModule {
     // ---
     {
       ResampledLidarRender resampledLidarRender = new ResampledLidarRender();
-      // resampledLidarRender.updatedMap.setCrop(CROP_REGION);
-      viewLcmFrame.jButtonMapCreate.addActionListener(resampledLidarRender.action_mapCreate);
-      viewLcmFrame.jButtonMapCreate.setEnabled(false);
-      viewLcmFrame.jButtonMapUpdate.addActionListener(resampledLidarRender.action_mapUpdate);
-      // viewLcmFrame.jButtonMapUpdate.setEnabled(resampledLidarRender.updatedMap.nonEmpty());
       resampledLidarRender.setPointSize(2);
       resampledLidarRender.setReference(() -> PoseHelper.toUnitless(SensorsConfig.GLOBAL.vlp16_pose));
       resampledLidarRender.setColor(new Color(255, 0, 128, 128));

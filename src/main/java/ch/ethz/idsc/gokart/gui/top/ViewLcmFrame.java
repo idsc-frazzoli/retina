@@ -23,8 +23,6 @@ import ch.ethz.idsc.tensor.sca.Round;
   // ---
   private final LidarLocalizationModule lidarLocalizationModule = //
       ModuleAuto.INSTANCE.getInstance(LidarLocalizationModule.class);
-  final JButton jButtonMapCreate = GuiConfig.GLOBAL.createButton("map create");
-  final JButton jButtonMapUpdate = GuiConfig.GLOBAL.createButton("map update");
 
   public ViewLcmFrame() {
     if (Objects.nonNull(lidarLocalizationModule)) {
@@ -48,8 +46,6 @@ import ch.ethz.idsc.tensor.sca.Round;
         jButton.addActionListener(e -> System.out.println("pose=" + lidarLocalizationModule.getPose().map(Round._5)));
         jToolBar.add(jButton);
       }
-      jToolBar.add(jButtonMapCreate);
-      jToolBar.add(jButtonMapUpdate);
     }
     geometricComponent.setModel2Pixel(MODEL2PIXEL_INITIAL);
   }
