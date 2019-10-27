@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.gui.top;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
@@ -20,8 +19,6 @@ import ch.ethz.idsc.tensor.Tensors;
 
 public class ResampledLidarRender extends LidarRender {
   private boolean flagMapCreate = false;
-  private boolean flagMapUpdate = false;
-  public final UpdatedMap updatedMap = new UpdatedMap();
 
   @Override // from AbstractGokartRender
   public void protected_render(GeometricLayer geometricLayer, Graphics2D graphics) {
@@ -65,14 +62,6 @@ public class ResampledLidarRender extends LidarRender {
       System.err.println("action not supported");
       // map_image = StoreMapUtil.createNew(geometricLayer, list);
     }
-    if (flagMapUpdate) {
-      flagMapUpdate = false;
-      updatedMap.intake(geometricLayer.getMatrix(), list);
-      updatedMap.store();
-    }
     geometricLayer.popMatrix();
   }
-
-  public final ActionListener action_mapCreate = e -> flagMapCreate = true;
-  public final ActionListener action_mapUpdate = e -> flagMapUpdate = true;
 }

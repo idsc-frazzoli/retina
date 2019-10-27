@@ -15,7 +15,7 @@ import lcm.logging.LogPlayerConfig;
     LogPlayerConfig logPlayerConfig = new LogPlayerConfig();
     File file = null;
     // file = DatahakiLogFileLocator.file(GokartLogFile._20191022T120450_e9728d8b);
-    file = new File("/media/datahaki/data/gokart/localize/20191022T120450_01", "log.lcm");
+    file = new File("/media/datahaki/data/gokart/localize/20191022T120450_00", "post.lcm");
     logPlayerConfig.logFile = file.toString();
     logPlayerConfig.speed_numerator = 1;
     logPlayerConfig.speed_denominator = 1;

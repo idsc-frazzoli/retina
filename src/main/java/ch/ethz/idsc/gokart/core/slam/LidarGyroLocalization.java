@@ -20,15 +20,21 @@ import ch.ethz.idsc.tensor.mat.Inverse;
  * the localization algorithm is described in
  * https://github.com/idsc-frazzoli/retina/files/1801718/20180221_2nd_gen_localization.pdf */
 public class LidarGyroLocalization {
+  /** @param localizationConfig
+   * @return */
   public static LidarGyroLocalization of(LocalizationConfig localizationConfig) {
     PredefinedMap predefinedMap = localizationConfig.getPredefinedMap();
-    return new LidarGyroLocalization(predefinedMap.getModel2Pixel(), new SlamDunk( //
+    SlamDunk slamDunk = new SlamDunk( //
         localizationConfig.createSe2MultiresGrids(), //
-        ImageScore.of(predefinedMap.getImageExtruded())));
+        ImageScore.of(predefinedMap.getImageExtruded()));
+    return new LidarGyroLocalization( //
+        localizationConfig.min_points.number().intValue(), //
+        predefinedMap.getModel2Pixel(), //
+        slamDunk);
   }
 
   // ---
-  private final int min_points = LocalizationConfig.GLOBAL.min_points.number().intValue();
+  private final int min_points;
   /** 3x3 transformation matrix of lidar to center of rear axle */
   private final Tensor lidar = SensorsConfig.GLOBAL.vlp16Gokart();
   private final Tensor inverseLidar = Inverse.of(lidar).unmodifiable();
@@ -38,7 +44,8 @@ public class LidarGyroLocalization {
   private final Tensor model2pixel;
   private final SlamDunk slamDunk;
 
-  public LidarGyroLocalization(Tensor model2pixel, SlamDunk slamDunk) {
+  public LidarGyroLocalization(int min_points, Tensor model2pixel, SlamDunk slamDunk) {
+    this.min_points = min_points;
     this.model2pixel = model2pixel;
     this.slamDunk = slamDunk;
   }

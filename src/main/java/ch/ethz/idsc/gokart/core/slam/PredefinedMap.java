@@ -27,4 +27,9 @@ public interface PredefinedMap extends LocalizationImage {
 
   /** @return meter to pixel */
   Scalar scale();
+  // public static void main(String[] args) throws IOException {
+  // Tensor tensor = ImageRegions.grayscale(Import.of(HomeDirectory.Pictures("rieter_hall_bw_crop.png")));
+  // BufferedImage bufferedImage = ImageFormat.of(tensor);
+  // ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures("20191022.png"));
+  // }
 }

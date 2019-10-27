@@ -37,7 +37,7 @@ public enum LocalizationMaps {
   DUBILAB_20190314(7.5), //
   /** dust proof wall */
   DUBILAB_20190708(7.5), //
-  /** empty space */
+  /** rieter hall */
   RIETER_20191022(7.5), //
   ;
   private final PredefinedMap predefinedMap;
@@ -67,7 +67,4 @@ public enum LocalizationMaps {
   public PredefinedMap getPredefinedMap() {
     return predefinedMap;
   }
-  // public static void main(String[] args) throws IOException {
-  // ImageIO.write(DUBILAB_LOCALIZATION_20190708.predefinedMap.bufferedImage, "png", HomeDirectory.Pictures("20190708.png"));
-  // }
 }
