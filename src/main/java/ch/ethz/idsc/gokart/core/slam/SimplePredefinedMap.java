@@ -22,8 +22,8 @@ public class SimplePredefinedMap implements PredefinedMap {
   /** meter to pixel */
   private final Scalar scale;
   private final BufferedImage bufferedImage;
-  /** size == width == height of square bufferedImage */
-  private final int size;
+  private final int width;
+  private final int height;
   private final BufferedImage extrudedImage;
   private final ImageRegion imageRegion;
   private final Tensor model2pixel;
@@ -33,11 +33,10 @@ public class SimplePredefinedMap implements PredefinedMap {
     this.scale = DoubleScalar.of(meter_to_pixel);
     this.bufferedImage = bufferedImage;
     this.extrudedImage = extrudedImage;
-    this.size = bufferedImage.getWidth();
+    this.width = bufferedImage.getWidth();
+    this.height = bufferedImage.getHeight();
     // ---
     imageRegion = new ImageRegion(tensor, range(), false);
-    if (bufferedImage.getHeight() != size)
-      new RuntimeException("map image not squared").printStackTrace();
     double s = scale.number().doubleValue();
     double h = bufferedImage.getHeight();
     model2pixel = Tensors.matrix(new Number[][] { //
@@ -69,9 +68,9 @@ public class SimplePredefinedMap implements PredefinedMap {
   public int getRGB(Point2D point2d) {
     // LONGTERM refactor: bufferedImage, size, color lookup can go in wrapper class?
     int pix = (int) point2d.getX();
-    if (0 <= pix && pix < size) {
+    if (0 <= pix && pix < width) {
       int piy = (int) point2d.getY();
-      if (0 <= piy && piy < size)
+      if (0 <= piy && piy < height)
         return bufferedImage.getRGB(pix, piy);
     }
     return RGBA_VOID;
@@ -89,11 +88,10 @@ public class SimplePredefinedMap implements PredefinedMap {
    * @return */
   @Override
   public Tensor range() {
-    return Tensors.vector(size, size).divide(scale);
+    return Tensors.vector(width, height).divide(scale);
   }
 
-  /** @return 3x3 matrix */
-  @Override
+  @Override // from LocalizationImage
   public Tensor getModel2Pixel() {
     return model2pixel;
   }

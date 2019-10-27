@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldClip;
 import ch.ethz.idsc.tensor.ref.FieldIntegerQ;
 
 /** parameters for lidar- and gyro-based localization algorithm */
@@ -36,11 +37,13 @@ public class LocalizationConfig {
   public final Scalar horizon = Quantity.of(1, NonSI.DEGREE_ANGLE);
   /** minimum number of lidar points below which a matching of lidar with
    * static geometry will not be executed and localization will not update */
+  @FieldIntegerQ
   public final Scalar min_points = RealScalar.of(220);
   public final Scalar threshold = RealScalar.of(33.0);
   /** distance for equidistant resampling */
   public final Scalar resampleDs = Quantity.of(0.4, SI.METER);
   /** threshold below which the pose estimate should not be trusted */
+  @FieldClip(min = "0", max = "1")
   public Scalar qualityMin = RealScalar.of(0.55);
   /**
    * 
