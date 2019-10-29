@@ -8,6 +8,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.red.Times;
+import ch.ethz.idsc.tensor.ref.FieldClip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Sign;
 
@@ -29,6 +30,7 @@ public class TorqueVectoringConfig {
    * 0 means 100% old value
    * 1 means 100% new value
    * 0.5 means average */
+  @FieldClip(min = "0", max = "1")
   public Scalar rollingAverageRatio = RealScalar.of(0.1);
 
   /***************************************************/

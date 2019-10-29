@@ -8,6 +8,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldClip;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
@@ -27,6 +28,7 @@ public class HapticSteerConfig implements Serializable {
   public Scalar latForceCompensation = Quantity.of(0.2, "SCT*s*m^-1");
   public Scalar latForceCompensationBoundary = Quantity.of(0.5, "SCT");
   /** tsuFactor in the interval [0, 1] */
+  @FieldClip(min = "0", max = "1")
   public Scalar tsuFactor = RealScalar.of(0.8);
   /***************************************************/
   /** Constant Torque for Experiment */
