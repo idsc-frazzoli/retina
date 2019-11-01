@@ -17,9 +17,12 @@ nativeLCMtest
 stdout_temp
 
 /MPCPathFollowing.mexw64
-/bim.mat
+/CompileNativeMPC.sh
+/CompileNativeMPCtest.sh
 /MPCPathFollowing_casadi2forces.obj
 /MPCPathFollowing_model_1.obj
 /MPCPathFollowing_model_31.obj
 /MPCPathFollowing_simulinkBlock.mexw64
 /MPCPathFollowing_simulinkBlockcompact.mexw64
+/nativeexecutionLCM.c
+/nativeexecutionLCMtest.c
