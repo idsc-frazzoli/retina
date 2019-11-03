@@ -65,8 +65,8 @@ public class GlobalViewLcmModule extends AbstractModule {
       TrajectoryLcmClient.xyavt());
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
-      BSplineTrackLcmClient.open(), //
-      BSplineTrackLcmClient.closed());
+      BSplineTrackLcmClient.string(), //
+      BSplineTrackLcmClient.cyclic());
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private final WaypointRender waypointRender = new WaypointRender(Arrowhead.of(0.9), new Color(64, 192, 64, 255));

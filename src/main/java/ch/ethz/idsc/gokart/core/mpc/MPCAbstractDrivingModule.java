@@ -22,11 +22,14 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 
+/** super class of
+ * {@link MPCDynamicDrivingModule}
+ * {@link MPCKinematicDrivingModule} */
 public abstract class MPCAbstractDrivingModule extends AbstractModule implements //
     BSplineTrackListener, Runnable {
   private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
-      BSplineTrackLcmClient.open(), //
-      BSplineTrackLcmClient.closed());
+      BSplineTrackLcmClient.string(), //
+      BSplineTrackLcmClient.cyclic());
   private final MPCRequestPublisher mpcRequestPublisher;
   private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;

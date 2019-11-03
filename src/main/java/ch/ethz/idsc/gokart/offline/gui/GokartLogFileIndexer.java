@@ -209,7 +209,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       clothoidPlanListeners.forEach(listener -> listener.planReceived(clothoidPlan));
     } else //
     // for now, only closed tracks are relevant
-    if (channel.equals(GokartLcmChannel.XYR_TRACK_CLOSED)) {
+    if (channel.equals(GokartLcmChannel.XYR_TRACK_CYCLIC)) {
       // TODO include again, once publishing rate is reduced
       // Optional<BSplineTrack> optional = BSplineTrackLcm.decode(channel, byteBuffer);
       // bsplineTrackListeners.forEach(listener -> listener.bSplineTrack(optional));

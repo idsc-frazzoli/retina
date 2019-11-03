@@ -32,7 +32,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
       try (TrackVideoWriter trackVideoWriter = new TrackVideoWriter(backgroundImage, trackVideoConfig, dest)) {
         {
           File mapFile = new File("/media/datahaki/data/gokart/mvb_map/20190926T121623_00/log.lcm");
-          String channel = GokartLcmChannel.XYR_TRACK_CLOSED;
+          String channel = GokartLcmChannel.XYR_TRACK_CYCLIC;
           Optional<ByteBuffer> optional = LastLogMessage.of(mapFile, channel);
           if (optional.isPresent()) {
             System.out.println("bspline track");

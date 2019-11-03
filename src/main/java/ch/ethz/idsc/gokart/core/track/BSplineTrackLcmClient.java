@@ -11,12 +11,14 @@ import ch.ethz.idsc.gokart.lcm.mod.BSplineTrackLcm;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 
 public class BSplineTrackLcmClient extends SimpleLcmClient<BSplineTrackListener> {
-  public static BSplineTrackLcmClient open() {
-    return new BSplineTrackLcmClient(GokartLcmChannel.XYR_TRACK_OPEN);
+  /** @return */
+  public static BSplineTrackLcmClient string() {
+    return new BSplineTrackLcmClient(GokartLcmChannel.XYR_TRACK_STRING);
   }
 
-  public static BSplineTrackLcmClient closed() {
-    return new BSplineTrackLcmClient(GokartLcmChannel.XYR_TRACK_CLOSED);
+  /** @return */
+  public static BSplineTrackLcmClient cyclic() {
+    return new BSplineTrackLcmClient(GokartLcmChannel.XYR_TRACK_CYCLIC);
   }
 
   // ---
