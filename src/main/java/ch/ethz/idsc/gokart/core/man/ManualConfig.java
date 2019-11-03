@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldClip;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
@@ -18,6 +19,7 @@ public class ManualConfig {
   /***************************************************/
   /** the physical maximum torque limit is 2316[ARMS]
    * the torque limit is used in {@link RimoThrustManualModule} */
+  @FieldClip(min = "0[ARMS]", max = "2315[ARMS]")
   public final Scalar torqueLimit = Quantity.of(2315, NonSI.ARMS);
   public final Scalar timeout = Quantity.of(0.2, SI.SECOND);
   /** torquePerGyro factor is used in {@link DriftThrustManualModule} */
