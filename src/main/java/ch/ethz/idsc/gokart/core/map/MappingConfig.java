@@ -47,7 +47,7 @@ public class MappingConfig {
    * only relevant when alongLine == true */
   public final Scalar minObsHeight = Quantity.of(0, SI.METER);
   /** lower bounds coordinates with interpretation meter */
-  public Tensor lBounds = Tensors.vector(20, 20);
+  public Tensor lBounds = Tensors.vector(16, 20);
   /** range of map with interpretation meter */
   public Tensor range = Tensors.vector(40, 40);
 

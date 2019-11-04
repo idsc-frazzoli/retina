@@ -17,6 +17,7 @@ import ch.ethz.idsc.gokart.core.plan.TrajectoryConfig;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.top.Dubilab;
 import ch.ethz.idsc.gokart.gui.top.GeneralImageRender;
+import ch.ethz.idsc.gokart.gui.top.Rieter;
 import ch.ethz.idsc.gokart.lcm.mod.Se2CurveLcm;
 import ch.ethz.idsc.gokart.offline.video.BackgroundImage;
 import ch.ethz.idsc.retina.util.pose.PoseHelper;
@@ -113,7 +114,7 @@ public class TrajectoryDesignModule extends AbstractModule {
       //
     }
     try {
-      BackgroundImage backgroundImage = Dubilab.backgroundImage20190408();
+      BackgroundImage backgroundImage = Rieter.backgroundImage20191104();
       GeneralImageRender generalImageRender = new GeneralImageRender(backgroundImage.bufferedImage(), Inverse.of(backgroundImage.model2pixel()));
       trajectoryDesign.timerFrame.geometricComponent.addRenderInterfaceBackground(generalImageRender);
     } catch (Exception exception) {
