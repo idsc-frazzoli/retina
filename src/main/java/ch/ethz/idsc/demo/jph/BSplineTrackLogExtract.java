@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 /* package */ enum BSplineTrackLogExtract {
   ;
   public static void main(String[] args) throws IOException {
-    String channel = GokartLcmChannel.XYR_TRACK_CLOSED;
+    String channel = GokartLcmChannel.XYR_TRACK_CYCLIC;
     Optional<ByteBuffer> optional = LastLogMessage.of( //
         new File("/media/datahaki/data/gokart/ultimate/20190921/20190921T124329_00", "log.lcm"), //
         channel);

@@ -188,8 +188,8 @@ import ch.ethz.idsc.tensor.sca.Round;
       clothoidPlansRender.planReceived(clothoidPlan);
       clothoidPlanRender.planReceived(clothoidPlan);
     } else //
-    if (channel.equals(GokartLcmChannel.XYR_TRACK_OPEN) || //
-        channel.equals(GokartLcmChannel.XYR_TRACK_CLOSED)) {
+    if (channel.equals(GokartLcmChannel.XYR_TRACK_STRING) || //
+        channel.equals(GokartLcmChannel.XYR_TRACK_CYCLIC)) {
       Optional<BSplineTrack> optional = BSplineTrackLcm.decode(channel, byteBuffer);
       if (optional.isPresent() && Objects.isNull(laptimeRender)) {
         laneRender.setLane(null, true);

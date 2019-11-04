@@ -22,18 +22,22 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 
+/** super class of
+ * {@link MPCDynamicDrivingModule}
+ * {@link MPCKinematicDrivingModule} */
 public abstract class MPCAbstractDrivingModule extends AbstractModule implements //
     BSplineTrackListener, Runnable {
   private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
-      BSplineTrackLcmClient.open(), //
-      BSplineTrackLcmClient.closed());
+      BSplineTrackLcmClient.string(), //
+      BSplineTrackLcmClient.cyclic());
   private final MPCRequestPublisher mpcRequestPublisher;
   private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
   private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
   // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
-  private final MPCAggressiveCorrectedTorqueVectoringBraking mpcBraking = new MPCAggressiveCorrectedTorqueVectoringBraking();
+  private final MPCAggressiveCorrectedTorqueVectoringBraking mpcBraking = //
+      new MPCAggressiveCorrectedTorqueVectoringBraking();
   private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final Thread thread = new Thread(this);
@@ -48,7 +52,10 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   private boolean running = true;
   private Optional<BSplineTrack> mpcBSplineTrack = Optional.empty();
 
-  /** create Module with standard estimator */
+  /** create Module with standard estimator
+   * 
+   * @param mpcRequestPublisher
+   * @param timing */
   MPCAbstractDrivingModule(MPCRequestPublisher mpcRequestPublisher, Timing timing) {
     this(mpcRequestPublisher, //
         new SimpleDynamicMPCStateEstimationProvider(timing), // the use of "dynamic" is intended
@@ -58,8 +65,10 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
   /** Hint: constructor only for testing
    * create Module with custom estimator
    * 
+   * @param mpcRequestPublisher
    * @param mpcStateEstimationProvider the custom estimator
-   * @param timing that shows the same time that also was used for the custom estimator */
+   * @param timing that shows the same time that also was used for the custom estimator
+   * @param track */
   MPCAbstractDrivingModule( //
       MPCRequestPublisher mpcRequestPublisher, //
       MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
@@ -72,20 +81,10 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
     mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
-    initModules();
-  }
-
-  private final void initModules() {
     // link mpc steering
     mpcControlUpdateLcmClient.addListener(mpcSteering);
     mpcControlUpdateLcmClient.addListener(mpcPower);
     mpcControlUpdateLcmClient.addListener(mpcBraking);
-    // lcmMPCControlClient.addControlUpdateListener(MPCInformationProvider.getInstance());
-    // lcmMPCPathFollowingClient.registerControlUpdateLister(MPCActiveCompensationLearning.getInstance());
-    // state estimation provider
-    // mpcBraking.setStateEstimationProvider(mpcStateEstimationProvider);
-    // mpcPower.setStateEstimationProvider(mpcStateEstimationProvider);
-    // mpcSteering.setStateEstimationProvider(mpcStateEstimationProvider);
   }
 
   private final void requestControl() {
@@ -175,7 +174,8 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
    * @param optional
    * @return */
   abstract MPCOptimizationParameter createOptimizationParameter( //
-      MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional);
+      MPCOptimizationConfig mpcOptimizationConfig, //
+      Optional<ManualControlInterface> optional);
 
   /** @param mpcStateEstimationProvider
    * @param mpcSteering
