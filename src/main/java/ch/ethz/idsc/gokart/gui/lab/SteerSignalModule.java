@@ -9,6 +9,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutProvider;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.PRBS7SignedSignal;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -23,7 +24,7 @@ public class SteerSignalModule extends AbstractModule implements SteerPutProvide
   private final Clip safety;
 
   public SteerSignalModule() {
-    signal = PRBS7SignedSignal.of(RealScalar.of(0.2));
+    signal = PRBS7SignedSignal.of(Magnitude.SECOND.apply(HapticSteerConfig.GLOBAL.prbs7BitWidth));
     safety = Clips.absolute(SteerConfig.GLOBAL.calibration);
   }
 
@@ -36,7 +37,7 @@ public class SteerSignalModule extends AbstractModule implements SteerPutProvide
   public Optional<SteerPutEvent> putEvent() {
     return Optional.of(SteerPutEvent.createOn(//
         safety.apply(signal.apply(RealScalar.of(timing.seconds())) //
-            .multiply(HapticSteerConfig.GLOBAL.prbs7AmplitudeTorque))));
+            .multiply(HapticSteerConfig.GLOBAL.prbs7Amplitude))));
   }
 
   @Override // from AbstractModule

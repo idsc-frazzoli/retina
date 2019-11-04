@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
+import ch.ethz.idsc.tensor.RationalScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -48,7 +49,13 @@ public class HapticSteerConfig implements Serializable {
   /** planning period */
   public Scalar laneKeepingPeriod = Quantity.of(0.2, SI.SECOND);
   /***************************************************/
-  public Scalar prbs7AmplitudeTorque = Quantity.of(0.2, "SCT");
+  @FieldSubdivide(start = "0.2 [s]", end = "2 [s]", intervals = 18)
+  public Scalar prbs7BitWidth = Quantity.of(0.2, "s");
+  /**
+   * 
+   */
+  @FieldSubdivide(start = "0[SCT]", end = "1[SCT]", intervals = 20)
+  public Scalar prbs7Amplitude = Quantity.of(RationalScalar.of(2, 10), "SCT");
 
   /***************************************************/
   // functions for power steering
