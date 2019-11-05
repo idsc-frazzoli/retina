@@ -8,7 +8,11 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import ch.ethz.idsc.gokart.gui.top.GeneralImageRender;
+import ch.ethz.idsc.gokart.gui.top.Rieter;
+import ch.ethz.idsc.owl.gui.win.GeometricLayer;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.mat.Inverse;
 
 public class BackgroundImage {
   /** @param file of image
@@ -17,6 +21,12 @@ public class BackgroundImage {
    * @throws IOException if file does not exist */
   public static BackgroundImage from(File file, Tensor model2pixel) throws IOException {
     BufferedImage bufferedImage = ImageIO.read(file);
+    {
+      // TODO JPH specific
+      BackgroundImage backgroundImage = Rieter.backgroundImage20191104();
+      GeneralImageRender generalImageRender = new GeneralImageRender(backgroundImage.bufferedImage(), Inverse.of(backgroundImage.model2pixel()));
+      generalImageRender.render(GeometricLayer.of(model2pixel), bufferedImage.createGraphics());
+    }
     FadeTop.of(bufferedImage);
     return new BackgroundImage(bufferedImage, model2pixel);
   }
