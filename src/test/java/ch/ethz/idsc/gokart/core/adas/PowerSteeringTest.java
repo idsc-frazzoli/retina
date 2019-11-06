@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 
 public class PowerSteeringTest extends TestCase {
   public void testNonNull() {
-    PowerSteering powerSteeringModule = new PowerSteering(HapticSteerConfig.GLOBAL);
+    PowerSteering powerSteeringModule = new NaivePowerSteering(HapticSteerConfig.GLOBAL);
     Scalar scalar = powerSteeringModule.torque(Quantity.of(0.2, "SCE"), Tensors.of( //
         Quantity.of(2, SI.VELOCITY), //
         Quantity.of(0.3, SI.VELOCITY), //
@@ -22,7 +22,7 @@ public class PowerSteeringTest extends TestCase {
 
   public void testNullFail() {
     try {
-      new PowerSteering(null);
+      new NaivePowerSteering(null);
       fail();
     } catch (Exception exception) {
       // ---

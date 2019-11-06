@@ -1,4 +1,4 @@
-// code by jph
+// code by jph, set up for Toms laptop
 package ch.ethz.idsc.demo.ta;
 
 import java.io.File;
@@ -14,12 +14,11 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
   public static void main(String[] args) throws IOException {
     SensorsConfig.GLOBAL.planarVmu931Type = PlanarVmu931Type.ROT90.name();
     
-    File file =  new File("C:\\Users\\me\\Documents\\2019\\ETH\\Sem proj\\20191022\\20191022T135214_e9728d8b.lcm.00");
-    // file = new File("/media/datahaki/media/ethz/gokart/topic/racing2r", "20180820T143852_1.lcm");
+    File file =  new File("C:\\Users\\me\\Documents\\2019\\ETH\\Sem proj\\20191104\\20191104T134346_5edf85b5.lcm.00");
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //
         gokartLogFileIndexer, //
         new File("C:\\Users\\me\\Documents\\2019\\ETH\\Sem proj\\cut"), //
-        "20191022T135214_e9728d8b");
+        "cut4");
   }
 }
