@@ -13,7 +13,6 @@ class NaivePowerSteering extends PowerSteering {
   public NaivePowerSteering(HapticSteerConfig hapticSteerConfig) {
     super(hapticSteerConfig);
     velocityGeodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
-    // TODO Auto-generated constructor stub
   }
 
   @Override
