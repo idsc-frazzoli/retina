@@ -2831,6 +2831,19 @@ public enum GokartLogFile implements LogFile {
    * around obstacles at various distances */
   _20191022T150613_e9728d8b,
   /***************************************************/
+  /* 2019-11-04 */
+  /** test rieter map, including davis240c capture
+   * gokart following other gokart */
+  _20191104T105613_825efe9d,
+  /** slow manual driving */
+  _20191104T113218_825efe9d,
+  /** mpc around oval shape */
+  _20191104T115120_825efe9d,
+  /** steering experiment with stationary gokart */
+  _20191104T134346_5edf85b5,
+  /** drift thrust control driving doughnuts */
+  _20191104T150512_5edf85b5,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile
