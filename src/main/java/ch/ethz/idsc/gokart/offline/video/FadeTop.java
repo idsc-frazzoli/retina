@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 
 /* package */ enum FadeTop {
   ;
+  /** @param bufferedImage */
   public static void of(BufferedImage bufferedImage) {
     int width = bufferedImage.getWidth();
     int height = AccumulatedImageRender.HEIGHT;
