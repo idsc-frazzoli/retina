@@ -70,8 +70,8 @@ public class PresenterLcmModule extends AbstractModule {
   private final CurveSe2PursuitLcmClient curveSe2PursuitLcmClient = new CurveSe2PursuitLcmClient();
   private final ClothoidPlanLcmClient clothoidPlanLcmClient = new ClothoidPlanLcmClient();
   private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
-      BSplineTrackLcmClient.open(), //
-      BSplineTrackLcmClient.closed());
+      BSplineTrackLcmClient.string(), //
+      BSplineTrackLcmClient.cyclic());
   private final PoseTrailRender poseTrailRender = new PoseTrailRender();
   private final DavisLcmClient davisLcmClient = new DavisLcmClient(GokartLcmChannel.DAVIS_OVERVIEW);
   private final MPCPredictionRender lcmMPCPredictionRender = new MPCPredictionRender();

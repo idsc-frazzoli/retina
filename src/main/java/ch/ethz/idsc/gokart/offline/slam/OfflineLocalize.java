@@ -36,14 +36,14 @@ public abstract class OfflineLocalize implements LidarRayBlockListener, DavisImu
   protected Tensor model;
   private Scalar time;
 
-  /** @param map_image
+  /** @param extrudedImage
    * @param pose {x[m], y[m], angle} */
-  public OfflineLocalize(BufferedImage map_image, Tensor pose) {
+  public OfflineLocalize(BufferedImage extrudedImage, Tensor pose) {
     this.model = PoseHelper.toSE2Matrix(pose);
     // ---
-    if (map_image.getType() != BufferedImage.TYPE_BYTE_GRAY)
+    if (extrudedImage.getType() != BufferedImage.TYPE_BYTE_GRAY)
       throw new RuntimeException();
-    slamScore = ImageScore.of(map_image);
+    slamScore = ImageScore.of(extrudedImage);
   }
 
   public final void addListener(LocalizationResultListener localizationResultListener) {

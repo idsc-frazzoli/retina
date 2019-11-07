@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class ImageScoreTest extends TestCase {
   public void testSimple() {
-    BufferedImage bufferedImage = PredefinedMap.DUBILAB_LOCALIZATION_20180901.getImage();
+    BufferedImage bufferedImage = LocalizationMaps.DUBILAB_20180901.getPredefinedMap().getImage();
     SlamScore slamScore = ImageScore.of(bufferedImage);
     assertEquals(slamScore.evaluate(new Point2D.Double(-1, -1)), 0);
     assertEquals(slamScore.evaluate(new Point2D.Double(605, 124.9)), 0);
@@ -18,7 +18,7 @@ public class ImageScoreTest extends TestCase {
   }
 
   public void testSimple3() {
-    BufferedImage bufferedImage = PredefinedMap.DUBILAB_LOCALIZATION_20180901.getImageExtruded();
+    BufferedImage bufferedImage = LocalizationMaps.DUBILAB_20180901.getPredefinedMap().getImageExtruded();
     SlamScore slamScore = ImageScore.of(bufferedImage);
     assertEquals(slamScore.evaluate(new Point2D.Double(-1, -1)), 0);
     assertEquals(slamScore.evaluate(new Point2D.Double(605, 124.9)), 192);

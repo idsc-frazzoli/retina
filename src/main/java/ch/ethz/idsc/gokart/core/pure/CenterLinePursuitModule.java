@@ -20,8 +20,8 @@ public class CenterLinePursuitModule extends AbstractModule implements BSplineTr
   private static final int RESOLUTION = 200;
   // ---
   private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
-      BSplineTrackLcmClient.open(), //
-      BSplineTrackLcmClient.closed());
+      BSplineTrackLcmClient.string(), //
+      BSplineTrackLcmClient.cyclic());
   private final CurvePursuitModule curvePurePursuitModule = new CurvePurePursuitModule(PurePursuitConfig.GLOBAL);
 
   @Override

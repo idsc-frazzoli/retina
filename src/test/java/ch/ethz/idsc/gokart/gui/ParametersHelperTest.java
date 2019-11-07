@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.TensorProperties;
 import ch.ethz.idsc.tensor.qty.KnownUnitQ;
 import ch.ethz.idsc.tensor.qty.QuantityUnit;
+import ch.ethz.idsc.tensor.ref.FieldClip;
 import ch.ethz.idsc.tensor.ref.FieldIntegerQ;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.ref.TensorReflection;
@@ -69,6 +70,26 @@ public class ParametersHelperTest extends TestCase {
       }
     }
     assertTrue(0 < checked);
+  }
+
+  public void testFieldClip() {
+    for (Object object : ParametersHelper.OBJECTS) {
+      TensorProperties tensorProperties = TensorProperties.wrap(object);
+      List<Field> list = tensorProperties.fields().collect(Collectors.toList());
+      for (Field field : list) {
+        FieldClip fieldClip = field.getAnnotation(FieldClip.class);
+        if (Objects.nonNull(fieldClip))
+          try {
+            Clip clip = TensorReflection.clip(fieldClip);
+            Scalar scalar = (Scalar) field.get(object); // may throw Exception
+            clip.requireInside(scalar);
+          } catch (Exception exception) {
+            System.err.println(object.getClass().getName());
+            System.err.println(field);
+            fail();
+          }
+      }
+    }
   }
 
   private static final KnownUnitQ KNOWN_UNIT_Q = KnownUnitQ.in(GokartUnitSystem.INSTANCE.unitSystem);

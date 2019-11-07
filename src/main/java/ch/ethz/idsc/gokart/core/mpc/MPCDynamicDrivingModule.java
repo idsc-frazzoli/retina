@@ -32,13 +32,12 @@ public class MPCDynamicDrivingModule extends MPCAbstractDrivingModule {
   // package for testing
   static MPCOptimizationParameterDynamic optimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
-    final Scalar maxSpeed = mpcOptimizationConfig.maxSpeed;
     final Scalar minSpeed = mpcOptimizationConfig.minSpeed;
     final Scalar mpcMaxSpeed;
     if (optional.isPresent()) {
       ManualControlInterface manualControlInterface = optional.get();
       Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
-      mpcMaxSpeed = Max.of(minSpeed, maxSpeed.multiply(forward));
+      mpcMaxSpeed = Max.of(minSpeed, mpcOptimizationConfig.maxSpeed.multiply(forward));
     } else
       mpcMaxSpeed = minSpeed; // fallback speed value
     return new MPCOptimizationParameterDynamic( //

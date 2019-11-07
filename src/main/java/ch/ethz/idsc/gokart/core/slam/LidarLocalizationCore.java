@@ -20,10 +20,8 @@ import ch.ethz.idsc.retina.lidar.vlp16.Vlp16Decoder;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.pose.PoseVelocityInterface;
 import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
-import ch.ethz.idsc.sophus.lie.LieDifferences;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
-import ch.ethz.idsc.sophus.lie.se2.Se2Group;
-import ch.ethz.idsc.sophus.lie.se2c.Se2CoveringExponential;
+import ch.ethz.idsc.sophus.lie.se2.Se2Differences;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -48,12 +46,11 @@ public class LidarLocalizationCore implements //
   private static final Scalar BLEND_VELOCITY = RealScalar.of(0.04);
   // ---
   private static final Scalar _1 = DoubleScalar.of(1);
-  private static final LieDifferences LIE_DIFFERENCES = //
-      new LieDifferences(Se2Group.INSTANCE, Se2CoveringExponential.INSTANCE);
   // ---
   public final VelodyneDecoder velodyneDecoder = new Vlp16Decoder();
   public final LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
-  private final LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
+  private final LocalizationConfig localizationConfig;
+  private final LidarSpacialProvider lidarSpacialProvider;
   private final LidarRotationProvider lidarRotationProvider = new LidarRotationProvider();
   private final Vmu931Odometry vmu931Odometry = new Vmu931Odometry(SensorsConfig.GLOBAL.getPlanarVmu931Imu());
   private final LidarGyroLocalization lidarGyroLocalization;
@@ -73,8 +70,10 @@ public class LidarLocalizationCore implements //
   /** thread is not started when in offline mode */
   final Thread thread = new Thread(this);
 
-  public LidarLocalizationCore(PredefinedMap predefinedMap) {
-    lidarGyroLocalization = LidarGyroLocalization.of(predefinedMap);
+  public LidarLocalizationCore(LocalizationConfig localizationConfig) {
+    this.localizationConfig = localizationConfig;
+    lidarGyroLocalization = LidarGyroLocalization.of(localizationConfig);
+    lidarSpacialProvider = localizationConfig.planarEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     lidarAngularFiringCollector.addListener(this);
@@ -146,14 +145,14 @@ public class LidarLocalizationCore implements //
     if (optional.isPresent()) {
       GokartPoseEvent slamResult = optional.get();
       quality = slamResult.getQuality();
-      boolean matchOk = LocalizationConfig.GLOBAL.isQualityOk(quality);
+      boolean matchOk = localizationConfig.isQualityOk(quality);
       if (matchOk || flagSnap) {
         // blend pose
         Scalar blend = flagSnap ? _1 : BLEND_POSE;
         vmu931Odometry.blendPose(slamResult.getPose(), blend);
         if (Objects.nonNull(prevResult)) {
           // blend velocity
-          Tensor velXY = LIE_DIFFERENCES.pair( //
+          Tensor velXY = Se2Differences.INSTANCE.pair( //
               prevResult.getPose(), //
               slamResult.getPose()) //
               .extract(0, 2).multiply(SensorsConfig.GLOBAL.vlp16_rate);

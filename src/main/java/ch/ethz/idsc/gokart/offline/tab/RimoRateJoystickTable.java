@@ -29,6 +29,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Ramp;
 
 public class RimoRateJoystickTable implements OfflineTableSupplier {
+  /** for debugging of rimo rate controller */
+  private static final String RIMO_CONTROLLER_PI = "rimo.controller.pi";
+  // ---
   private final TableBuilder tableBuilder = new TableBuilder();
   private final Scalar delta;
   private final ByteOrder byteOrder;
@@ -61,7 +64,7 @@ public class RimoRateJoystickTable implements OfflineTableSupplier {
       JoystickEvent joystickEvent = JoystickDecoder.decode(byteBuffer);
       manualControlInterface = (ManualControlInterface) joystickEvent;
     } else //
-    if (channel.equals(GokartLcmChannel.RIMO_CONTROLLER_PI)) {
+    if (channel.equals(RIMO_CONTROLLER_PI)) {
       byteBuffer.order(byteOrder);
       VectorFloatBlob.decode(byteBuffer);
     }

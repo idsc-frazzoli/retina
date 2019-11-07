@@ -97,6 +97,16 @@ import ch.ethz.idsc.tensor.sca.Ceiling;
         name.substring(13, 15));
   }
 
+  public static void book1() throws IOException {
+    try (LogBookSplits logBookSplits = new LogBookSplits()) {
+      logBookSplits.add("201712");
+      logBookSplits.add("201801");
+      logBookSplits.add("201802");
+      logBookSplits.add("201803");
+      logBookSplits.add("201804");
+    }
+  }
+
   public static void book2() throws IOException {
     try (LogBookSplits logBookSplits = new LogBookSplits()) {
       logBookSplits.add("201805");
@@ -142,6 +152,6 @@ import ch.ethz.idsc.tensor.sca.Ceiling;
       LogImageLegend.of(bufferedImage.createGraphics(), GokartLogFileIndexer.empty());
       ImageIO.write(bufferedImage, "png", file);
     }
-    book5();
+    book1();
   }
 }

@@ -29,6 +29,7 @@ public class MPCKinematicDrivingModule extends MPCAbstractDrivingModule {
     return optimizationParameter(mpcOptimizationConfig, optional);
   }
 
+  // package for testing
   static MPCOptimizationParameterKinematic optimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
     final Scalar minSpeed = mpcOptimizationConfig.minSpeed;

@@ -2821,6 +2821,16 @@ public enum GokartLogFile implements LogFile {
   /** mpc */
   _20190927T110429_e9728d8b,
   /***************************************************/
+  /* 2019-10-22 */
+  /** slow driving with stops for mapping
+   * while manual gokart is driven around */
+  _20191022T120450_e9728d8b,
+  /** steering column experiment */
+  _20191022T135214_e9728d8b,
+  /** stationary gokart while manual gokart is driven
+   * around obstacles at various distances */
+  _20191022T150613_e9728d8b,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

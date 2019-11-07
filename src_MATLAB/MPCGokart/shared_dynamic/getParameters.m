@@ -1,6 +1,6 @@
 function p = getParameters(maxspeed, xmaxacc,steeringreg,specificmoi,points)
 [np,~]=size(points);
-p = zeros(3*np+3,1);
+p = zeros(3*np+4,1);
 p(1)=maxspeed;
 p(2)=xmaxacc;
 p(3)=steeringreg;

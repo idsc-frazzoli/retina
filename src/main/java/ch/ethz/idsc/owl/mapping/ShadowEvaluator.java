@@ -160,10 +160,10 @@ public class ShadowEvaluator {
       final int cols = shape.cols();
       final int rows = shape.rows();
       //
-      boolean clear = !ray.stream().parallel() //
+      boolean clear = ray.stream().parallel() //
           .map(se2Bijection.forward()) //
           .map(shadowMap::state2pixel) //
-          .anyMatch(local -> isMember(indexer, local, cols, rows));
+          .noneMatch(local -> isMember(indexer, local, cols, rows));
       // -
       Scalar timeToReact = RealScalar.of(-1);
       if (clear) {
@@ -179,10 +179,10 @@ public class ShadowEvaluator {
           range = Subdivide.of(0, dBrake.number(), RESOLUTION);
           ray = TensorProduct.of(range, dir);
           Indexer newindexer = shape.createIndexer();
-          clear = !ray.stream() //
+          clear = ray.stream() //
               .map(se2Bijection.forward()) //
               .map(shadowMap::state2pixel) //
-              .anyMatch(local -> isMember(newindexer, local, cols, rows));
+              .noneMatch(local -> isMember(newindexer, local, cols, rows));
           if (!clear)
             break;
           timeToReact = tReact.Get();

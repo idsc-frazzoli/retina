@@ -15,6 +15,11 @@ import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
 public class LocalizationConfigTest extends TestCase {
+  public void testGridParams() {
+    assertEquals(LocalizationConfig.GLOBAL.gridFan, RealScalar.of(1));
+    assertEquals(LocalizationConfig.GLOBAL.gridLevels, RealScalar.of(4));
+  }
+
   public void testHorizon() {
     Scalar emulation_deg = //
         Magnitude.DEGREE_ANGLE.apply(LocalizationConfig.GLOBAL.horizon);

@@ -72,6 +72,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
   private static final String VLP16_CENTER_POS = VelodyneLcmChannels.pos(VelodyneModel.VLP16, "center");
   private static final String DVS_CHANNEL = DavisDvsBlockPublisher.channel("overview");
   // ---
+  private int gprmc_errors = 0;
   private final DvsCountRow dvsCountRow = new DvsCountRow();
   private final TrajectoryCountRow trajectoryCountRow = new TrajectoryCountRow();
   // private final DavisDvsDatagramDecoder davisDvsDatagramDecoder = new DavisDvsDatagramDecoder();
@@ -208,7 +209,7 @@ public class GokartLogFileIndexer implements OfflineLogListener {
       clothoidPlanListeners.forEach(listener -> listener.planReceived(clothoidPlan));
     } else //
     // for now, only closed tracks are relevant
-    if (channel.equals(GokartLcmChannel.XYR_TRACK_CLOSED)) {
+    if (channel.equals(GokartLcmChannel.XYR_TRACK_CYCLIC)) {
       // TODO include again, once publishing rate is reduced
       // Optional<BSplineTrack> optional = BSplineTrackLcm.decode(channel, byteBuffer);
       // bsplineTrackListeners.forEach(listener -> listener.bSplineTrack(optional));
@@ -219,7 +220,8 @@ public class GokartLogFileIndexer implements OfflineLogListener {
         Gprmc gprmc = velodynePosEvent.gprmc();
         gprmcListeners.forEach(listener -> listener.gprmcReceived(gprmc));
       } catch (Exception exception) {
-        exception.printStackTrace();
+        if (++gprmc_errors <= 3)
+          exception.printStackTrace();
       }
     } else //
     if (channel.equals(DVS_CHANNEL)) {

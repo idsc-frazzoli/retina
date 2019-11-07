@@ -40,7 +40,7 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
   private RimoGetEvent rimoGetEvent;
   private LinmotGetEvent linmotGetEvent;
 
-  public BrakeDistanceTable(Tensor pose) {
+  public BrakeDistanceTable(LocalizationConfig localizationConfig, Tensor pose) {
     LidarAngularFiringCollector lidarAngularFiringCollector = new LidarAngularFiringCollector(2304, 2);
     LidarSpacialProvider lidarSpacialProvider = LocalizationConfig.GLOBAL.planarEmulatorVlp16();
     lidarSpacialProvider.addListener(lidarAngularFiringCollector);
@@ -48,9 +48,9 @@ public class BrakeDistanceTable implements OfflineTableSupplier {
     lidarRotationProvider.addListener(lidarAngularFiringCollector);
     velodyneDecoder.addRayListener(lidarSpacialProvider);
     velodyneDecoder.addRayListener(lidarRotationProvider);
-    PredefinedMap predefinedMap = LocalizationConfig.GLOBAL.getPredefinedMap();
+    PredefinedMap predefinedMap = localizationConfig.getPredefinedMap();
     ScatterImage scatterImage = new PoseScatterImage(predefinedMap);
-    offlineLocalize = new SlamOfflineLocalize(predefinedMap.getImageExtruded(), pose, scatterImage);
+    offlineLocalize = new SlamOfflineLocalize(localizationConfig, pose, scatterImage);
     lidarAngularFiringCollector.addListener(offlineLocalize);
   }
 

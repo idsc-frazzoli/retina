@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.alg.RotateLeft;
 public class DynamicRrtsTrajectoryModule extends RrtsTrajectoryModule implements BSplineTrackListener {
   private static final int RESOLUTION = 25;
   // ---
-  private final BSplineTrackLcmClient bSplineTrackLcmClient = BSplineTrackLcmClient.closed();
+  private final BSplineTrackLcmClient bSplineTrackLcmClient = BSplineTrackLcmClient.cyclic();
   private Optional<LaneInterface> trackLane = Optional.empty();
 
   public DynamicRrtsTrajectoryModule(TrajectoryConfig trajectoryConfig, //

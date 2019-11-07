@@ -32,9 +32,9 @@ public class SimpleShadowConstraintCV extends AbstractShadowConstraint {
     simShadowArea = shadowMap.getShape(simShadowArea, carRad);
     //
     Indexer indexer = simShadowArea.createIndexer();
-    return !ray.stream().parallel() //
+    return ray.stream().parallel() //
         .map(forward) //
-        .anyMatch(local -> isMember(indexer, shadowMap.state2pixel(local))); // || obsRegion.isMember(local));
+        .noneMatch(local -> isMember(indexer, shadowMap.state2pixel(local))); // || obsRegion.isMember(local));
   }
 
   private boolean isMember(Indexer indexer, Point pixel) {

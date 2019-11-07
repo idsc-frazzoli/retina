@@ -23,8 +23,7 @@ import ch.ethz.idsc.tensor.sca.Round;
  * the module runs a separate thread. on a standard pc the matching takes 0.017[s] on average */
 public final class LidarLocalizationModule extends AbstractModule implements PoseVelocityInterface {
   private final Vmu931ImuLcmClient vmu931ImuLcmClient = new Vmu931ImuLcmClient();
-  private final LidarLocalizationCore lidarLocalizationCore = //
-      new LidarLocalizationCore(LocalizationConfig.GLOBAL.getPredefinedMap());
+  private final LidarLocalizationCore lidarLocalizationCore = new LidarLocalizationCore(LocalizationConfig.GLOBAL);
   private final Vlp16LcmClient vlp16LcmClient = //
       SensorsConfig.GLOBAL.vlp16LcmClient(lidarLocalizationCore.velodyneDecoder);
 
@@ -91,8 +90,9 @@ public final class LidarLocalizationModule extends AbstractModule implements Pos
   }
 
   /***************************************************/
-  /** localization map uses 640 pixels which corresponds to 86[m] */
-  private static final Clip CLIP = Clips.positive(Quantity.of(86, SI.METER));
+  /** localization map uses 640 pixels which corresponds to 86[m]
+   * localization map uses 720 pixels which corresponds to 96[m] */
+  private static final Clip CLIP = Clips.positive(Quantity.of(96, SI.METER));
   private static final File CACHE_LAST = new File("resources/cache/last.pose");
 
   private void loadPose() {

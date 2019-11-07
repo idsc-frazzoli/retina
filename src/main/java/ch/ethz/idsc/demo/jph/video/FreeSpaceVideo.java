@@ -13,6 +13,7 @@ import ch.ethz.idsc.gokart.calib.RimoSinusIonModel;
 import ch.ethz.idsc.gokart.calib.SensorsConfig;
 import ch.ethz.idsc.gokart.core.perc.GokartSegmentProjection;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
+import ch.ethz.idsc.gokart.core.slam.LocalizationMaps;
 import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.OfflineLogListener;
@@ -47,16 +48,20 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   };
   private final Mp4AnimationWriter mp4AnimationWriter;
   private Tensor tensor = Tensors.empty();
-  private final BufferedImage mapImage = new BufferedImage(640, 640, BufferedImage.TYPE_4BYTE_ABGR);
-  private final Graphics2D mapGraphics = mapImage.createGraphics();
-  private final Tensor model2Pixel = PredefinedMap.DUBILAB_LOCALIZATION_20190314.getModel2Pixel();
+  private final BufferedImage mapImage;
+  private final Graphics2D mapGraphics;
+  private final Tensor model2Pixel;
+  private final Dimension dimension;
 
-  public FreeSpaceVideo() throws InterruptedException, IOException {
+  public FreeSpaceVideo(PredefinedMap predefinedMap) throws InterruptedException, IOException {
+    model2Pixel = predefinedMap.getModel2Pixel();
+    BufferedImage bufferedImage = predefinedMap.getImage();
+    dimension = new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight());
+    mapImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_4BYTE_ABGR);
+    mapGraphics = mapImage.createGraphics();
     velodyneDecoder.addRayListener(gokartSegmentProjection);
     mp4AnimationWriter = new Mp4AnimationWriter( //
-        HomeDirectory.file("some2.mp4").toString(), //
-        new Dimension(640, 640), //
-        5);
+        HomeDirectory.file("some2.mp4").toString(), dimension, 5);
   }
 
   @Override // from OfflineLogListener
@@ -66,7 +71,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
     else //
     if (channel.equals(GokartPoseChannel.INSTANCE.channel())) {
       GokartPoseEvent gokartPoseEvent = GokartPoseEvent.of(byteBuffer);
-      BufferedImage frameImage = new BufferedImage(640, 640, BufferedImage.TYPE_3BYTE_BGR);
+      BufferedImage frameImage = new BufferedImage(dimension.width, dimension.height, BufferedImage.TYPE_3BYTE_BGR);
       Graphics2D frameGraphics = frameImage.createGraphics();
       GeometricLayer geometricLayer = GeometricLayer.of(model2Pixel);
       geometricLayer.pushMatrix(PoseHelper.toSE2Matrix(gokartPoseEvent.getPose()));
@@ -108,7 +113,8 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
   }
 
   public static void main(String[] args) throws InterruptedException, IOException, Exception {
-    try (FreeSpaceVideo freeSpaceVideo = new FreeSpaceVideo()) {
+    PredefinedMap predefinedMap = LocalizationMaps.DUBILAB_20190314.getPredefinedMap();
+    try (FreeSpaceVideo freeSpaceVideo = new FreeSpaceVideo(predefinedMap)) {
       OfflineLogPlayer.process(HomeDirectory.file("ensemblelaps", "dynamic", "m13.lcm"), freeSpaceVideo);
     }
   }

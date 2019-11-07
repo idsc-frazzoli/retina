@@ -90,6 +90,7 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final LaneRender trackRender = new LaneRender();
   private LaptimeRender laptimeRender = null;
   private final String poseChannel;
+  boolean isHudShown = true;
   // ---
   private LinmotGetEvent linmotGetEvent;
 
@@ -187,8 +188,8 @@ import ch.ethz.idsc.tensor.sca.Round;
       clothoidPlansRender.planReceived(clothoidPlan);
       clothoidPlanRender.planReceived(clothoidPlan);
     } else //
-    if (channel.equals(GokartLcmChannel.XYR_TRACK_OPEN) || //
-        channel.equals(GokartLcmChannel.XYR_TRACK_CLOSED)) {
+    if (channel.equals(GokartLcmChannel.XYR_TRACK_STRING) || //
+        channel.equals(GokartLcmChannel.XYR_TRACK_CYCLIC)) {
       Optional<BSplineTrack> optional = BSplineTrackLcm.decode(channel, byteBuffer);
       if (optional.isPresent() && Objects.isNull(laptimeRender)) {
         laneRender.setLane(null, true);
@@ -215,10 +216,12 @@ import ch.ethz.idsc.tensor.sca.Round;
     gokartRender.render(geometricLayer, graphics);
     trajectoryRender.render(geometricLayer, graphics);
     extrudedFootprintRender.render(geometricLayer, graphics);
-    accelerationRender.render(geometricLayer, graphics);
-    groundSpeedRender.render(geometricLayer, graphics);
-    angularSlipRender.render(geometricLayer, graphics);
-    tachometerMustangDash.render(geometricLayer, graphics);
+    if (isHudShown) {
+      accelerationRender.render(geometricLayer, graphics);
+      groundSpeedRender.render(geometricLayer, graphics);
+      angularSlipRender.render(geometricLayer, graphics);
+      tachometerMustangDash.render(geometricLayer, graphics);
+    }
     se2ExpFixpointRender.render(geometricLayer, graphics);
     clothoidPlansRender.render(geometricLayer, graphics);
     clothoidPlanRender.render(geometricLayer, graphics);
@@ -230,7 +233,9 @@ import ch.ethz.idsc.tensor.sca.Round;
     if (Objects.nonNull(linmotGetEvent))
       graphics.drawString(String.format("brake:%12s", linmotGetEvent.getWindingTemperatureMax().map(Round._2)), 0, 25 + 30);
     // ---
-    graphics.drawString("vel", 960 - 250 - 140, 25);
-    graphics.drawString("acc", 960 + 250 - 140, 25);
+    if (isHudShown) {
+      graphics.drawString("vel", 960 - 250 - 140, 25);
+      graphics.drawString("acc", 960 + 250 - 140, 25);
+    }
   }
 }

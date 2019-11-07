@@ -9,6 +9,7 @@ import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldClip;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
@@ -32,6 +33,7 @@ public class SteerConfig {
   public final Scalar voltageHi = Quantity.of(4.2 * 3, SI.VOLT); // 4.2 * 3 == 12.9[V]
   // ---
   /** amplitude of signal during calibration procedure */
+  @FieldClip(min = "0.5[SCT]", max = "1.5[SCT]")
   public final Scalar calibration = Quantity.of(1.5, "SCT");
   // ---
   /** .

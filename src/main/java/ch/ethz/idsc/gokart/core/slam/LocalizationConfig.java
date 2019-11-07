@@ -14,6 +14,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.ref.FieldClip;
 import ch.ethz.idsc.tensor.ref.FieldIntegerQ;
 
 /** parameters for lidar- and gyro-based localization algorithm */
@@ -23,9 +24,9 @@ public class LocalizationConfig {
   public final Scalar gridShift = Quantity.of(0.6, SI.METER);
   public final Scalar gridAngle = Quantity.of(3.3, NonSI.DEGREE_ANGLE);
   @FieldIntegerQ
-  public final Scalar gridFan = RealScalar.of(1);
+  public Scalar gridFan = RealScalar.of(1);
   @FieldIntegerQ
-  public final Scalar gridLevels = RealScalar.of(4);
+  public Scalar gridLevels = RealScalar.of(4);
   /** positive integer 0, 1, 2, 4
    * smaller means better precision but larger memory footprint
    * value 1 is sufficient */
@@ -36,13 +37,18 @@ public class LocalizationConfig {
   public final Scalar horizon = Quantity.of(1, NonSI.DEGREE_ANGLE);
   /** minimum number of lidar points below which a matching of lidar with
    * static geometry will not be executed and localization will not update */
+  @FieldIntegerQ
   public final Scalar min_points = RealScalar.of(220);
   public final Scalar threshold = RealScalar.of(33.0);
   /** distance for equidistant resampling */
   public final Scalar resampleDs = Quantity.of(0.4, SI.METER);
   /** threshold below which the pose estimate should not be trusted */
-  public final Scalar qualityMin = RealScalar.of(0.55);
-  public String predefinedMap = PredefinedMap.DUBILAB_LOCALIZATION_20190708.name();
+  @FieldClip(min = "0", max = "1")
+  public Scalar qualityMin = RealScalar.of(0.55);
+  /**
+   * 
+   */
+  public String predefinedMap = LocalizationMaps.RIETER_20191022.name();
 
   /***************************************************/
   /** @return grid for localization in real-time */
@@ -88,6 +94,6 @@ public class LocalizationConfig {
   /***************************************************/
   /** @return predefined map with static geometry for lidar based localization */
   public PredefinedMap getPredefinedMap() {
-    return PredefinedMap.valueOf(predefinedMap);
+    return LocalizationMaps.valueOf(predefinedMap).getPredefinedMap();
   }
 }

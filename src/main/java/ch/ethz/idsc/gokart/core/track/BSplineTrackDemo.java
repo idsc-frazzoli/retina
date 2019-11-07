@@ -11,7 +11,7 @@ import java.awt.geom.Point2D;
 import javax.swing.JButton;
 import javax.swing.JToggleButton;
 
-import ch.ethz.idsc.gokart.core.slam.PredefinedMap;
+import ch.ethz.idsc.gokart.core.slam.LocalizationMaps;
 import ch.ethz.idsc.owl.gui.RenderInterface;
 import ch.ethz.idsc.owl.gui.ren.AxesRender;
 import ch.ethz.idsc.owl.gui.ren.GridRender;
@@ -55,7 +55,7 @@ import ch.ethz.idsc.tensor.sca.Round;
     // ---
     timerFrame.geometricComponent.addRenderInterfaceBackground(AxesRender.INSTANCE);
     jToggleView.addActionListener(e -> setPositioningEnabled(!jToggleView.isSelected()));
-    timerFrame.geometricComponent.setModel2Pixel(PredefinedMap.DUBILAB_LOCALIZATION_20190708.getModel2Pixel());
+    timerFrame.geometricComponent.setModel2Pixel(LocalizationMaps.DUBILAB_20190708.getPredefinedMap().getModel2Pixel());
     // ---
     timerFrame.jToolBar.addSeparator();
     jTogglePrint.addActionListener(e -> {
