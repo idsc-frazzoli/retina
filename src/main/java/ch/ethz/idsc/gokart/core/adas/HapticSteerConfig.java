@@ -21,6 +21,8 @@ public class HapticSteerConfig implements Serializable {
   /***************************************************/
   // TODO extract fields until tsuFactor to separate config: PowerSteerConfig
   /** values for PowerSteering */
+  /** Select model to use between Naive or Pacejka */
+  public Boolean usePacejka = false;
   /** value to amplify the input in the PowerSteeringModule */
   public Boolean feedForward = true;
   // ---
@@ -59,6 +61,12 @@ public class HapticSteerConfig implements Serializable {
 
   /***************************************************/
   // functions for power steering
+  public PowerSteering createPowerSteering() {
+    return usePacejka //
+        ? new PacejkaPowerSteering(this)
+        : new NaivePowerSteering(this);
+  }
+
   /** @return */
   public Clip latForceCompensationBoundaryClip() {
     return Clips.absolute(latForceCompensationBoundary);

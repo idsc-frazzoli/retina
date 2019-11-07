@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 public class LaneKeepingLimitedSteeringModule extends LaneKeepingCenterlineModule implements SteerPutProvider {
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final BinaryBlobPublisher binaryBlobPublisher = new BinaryBlobPublisher(GokartLcmChannel.LINMOT_ANTILOCK);
-  private final PowerSteering powerSteering = new PowerSteering(HapticSteerConfig.GLOBAL);
+  private final PowerSteering powerSteering = new NaivePowerSteering(HapticSteerConfig.GLOBAL);
   // ---
   private SteerGetEvent steerGetEvent;
   private final SteerGetListener steerGetListener = new SteerGetListener() {

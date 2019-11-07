@@ -41,7 +41,7 @@ public class LaneKeepingLimitedSteeringModuleTest extends TestCase {
     System.out.println(clip);
     laneKeepingLimitedSteeringModule.runAlgo();
     {
-      PowerSteering powerSteering = new PowerSteering(HapticSteerConfig.GLOBAL);
+      PowerSteering powerSteering = new NaivePowerSteering(HapticSteerConfig.GLOBAL);
       Scalar currangle = Quantity.of(0.1, "SCE");
       Scalar powerSteeringTorque = powerSteering.torque(currangle, GokartPoseEvents.motionlessUninitialized().getVelocity(), Quantity.of(0, "SCT"));
       Optional<SteerPutEvent> optional = laneKeepingLimitedSteeringModule.putEvent( //
@@ -52,7 +52,7 @@ public class LaneKeepingLimitedSteeringModuleTest extends TestCase {
       // Chop._05.requireClose(powerSteeringTorque, steerPutEvent.getTorque());
     }
     {
-      PowerSteering powerSteering = new PowerSteering(HapticSteerConfig.GLOBAL);
+      PowerSteering powerSteering = new NaivePowerSteering(HapticSteerConfig.GLOBAL);
       Scalar currangle = Quantity.of(0.4, "SCE");
       Scalar powerSteeringTorque = powerSteering.torque(currangle, GokartPoseEvents.motionlessUninitialized().getVelocity(), Quantity.of(0, "SCT"));
       System.out.println("power steer=" + powerSteeringTorque);
@@ -64,7 +64,7 @@ public class LaneKeepingLimitedSteeringModuleTest extends TestCase {
       assertTrue(Scalars.lessThan(steerPutEvent.getTorque(), powerSteeringTorque));
     }
     {
-      PowerSteering powerSteering = new PowerSteering(HapticSteerConfig.GLOBAL);
+      PowerSteering powerSteering = new NaivePowerSteering(HapticSteerConfig.GLOBAL);
       Scalar currangle = Quantity.of(-0.4, "SCE");
       Scalar powerSteeringTorque = powerSteering.torque(currangle, GokartPoseEvents.motionlessUninitialized().getVelocity(), Quantity.of(0, "SCT"));
       System.out.println("power steer=" + powerSteeringTorque);

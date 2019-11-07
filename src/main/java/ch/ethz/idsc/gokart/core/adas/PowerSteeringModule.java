@@ -33,7 +33,7 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
   }
 
   /* package */ PowerSteeringModule(HapticSteerConfig hapticSteerConfig) {
-    powerSteering = new PowerSteering(hapticSteerConfig);
+    powerSteering = hapticSteerConfig.createPowerSteering();
   }
 
   @Override // from AbstractModule
