@@ -1,3 +1,5 @@
+// code from https://github.com/mccdaq/uldaq
+
 /*
 	This file contains some of the functions used get the device and
 	subsystem capabilities.  To assist in displaying values from
@@ -1278,8 +1280,7 @@ void flush_stdin(void)
     } while (c != '\n' && c != EOF);
 }
 
-int enter_press()
-{
+int enter_press() {
 	int stdin_value = 0;
     struct timeval tv;
     fd_set fds;

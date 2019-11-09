@@ -1,150 +1,138 @@
-/*
-    UL call demonstrated:        	  ulDIn()
-
-    Purpose:                          Reads the value of the first supported
-    								  digital port
-
-    Demonstration:                    Displays the value of the first digital
-    								  port
-
-    Steps:
-    1. Call ulGetDaqDeviceInventory() to get the list of available DAQ devices
-    2. Call ulCreateDaqDevice() to to get a handle for the first DAQ device
-    3. Verify the DAQ device has an digital input subsystem
-    4. Call ulConnectDaqDevice() to establish a UL connection to the DAQ device
-    5. Get the first supported digital port
-    7. Call ulDConfigPort to configure the port for input
-    8. Call ulDIn() to read a value from the digital port
-    9. Display the data for the port
-    10. Call ulDisconnectDaqDevice() and ulReleaseDaqDevice() before exiting the process.
-*/
+// code derived from https://github.com/mccdaq/uldaq
+// adapted by jph
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "uldaq.h"
 #include "utility.h"
 
+#include "../../src_MATLAB/MPCGokart/ForcesMPCPathFollowing/idsc_BinaryBlob.c"
+
 #define MAX_DEV_COUNT  100
 #define MAX_STR_LENGTH 64
 
-int main(void)
+lcm_t * lcm;
 
-{
-	int descriptorIndex = 0;
-	DaqDeviceDescriptor devDescriptors[MAX_DEV_COUNT];
-	DaqDeviceInterface interfaceType = ANY_IFC;
-	DaqDeviceHandle daqDeviceHandle = 0;
-	unsigned int numDevs = MAX_DEV_COUNT;
+int main(void) {
+  lcm = lcm_create(NULL);
+  if (!lcm)
+    return 1;
 
-	int hasDIO = 0;
-	DigitalPortType portType;
-	DigitalPortIoType portIoType;
+  int descriptorIndex = 0;
+  DaqDeviceDescriptor devDescriptors[MAX_DEV_COUNT];
+  DaqDeviceInterface interfaceType = ANY_IFC;
+  DaqDeviceHandle daqDeviceHandle = 0;
+  unsigned int numDevs = MAX_DEV_COUNT;
 
-	char portTypeStr[MAX_STR_LENGTH];
-	char portIoTypeStr[MAX_STR_LENGTH];
+  int hasDIO = 0;
+  DigitalPortType portType;
+  DigitalPortIoType portIoType;
 
-	unsigned long long data = 0;
-	UlError err = ERR_NO_ERROR;
+  char portTypeStr[MAX_STR_LENGTH];
+  char portIoTypeStr[MAX_STR_LENGTH];
 
-	int i = 0;
-	int __attribute__((unused)) ret;
-	char c;
+  unsigned long long data = 0;
+  UlError err = ERR_NO_ERROR;
 
-	// Get descriptors for all of the available DAQ devices
-	err = ulGetDaqDeviceInventory(interfaceType, devDescriptors, &numDevs);
+  //int i = 0;
+  int __attribute__((unused)) ret;
+  //char c;
 
-	if (err != ERR_NO_ERROR)
-		goto end;
+  // Get descriptors for all of the available DAQ devices
+  err = ulGetDaqDeviceInventory(interfaceType, devDescriptors, &numDevs);
 
-	// verify at least one DAQ device is detected
-	if (numDevs == 0)
-	{
-		printf("No DAQ device is detected\n");
-		goto end;
-	}
+  if (err != ERR_NO_ERROR)
+    goto end;
 
-	printf("Found %d DAQ device(s)\n", numDevs);
-	for (i = 0; i < (int) numDevs; i++)
-		printf("  %s: (%s)\n", devDescriptors[i].productName, devDescriptors[i].uniqueId);
+  // verify at least one DAQ device is detected
+  if (numDevs == 0)
+  {
+    printf("No DAQ device is detected\n");
+    goto end;
+  }
 
-	// get a handle to the DAQ device associated with the first descriptor
-	daqDeviceHandle = ulCreateDaqDevice(devDescriptors[descriptorIndex]);
+  //printf("Found %d DAQ device(s)\n", numDevs);
+  //for (i = 0; i < (int) numDevs; i++)
+  //  printf("  %s: (%s)\n", devDescriptors[i].productName, devDescriptors[i].uniqueId);
 
-	if (daqDeviceHandle == 0)
-	{
-		printf ("\nUnable to create a handle to the specified DAQ device\n");
-		goto end;
-	}
+  // get a handle to the DAQ device associated with the first descriptor
+  daqDeviceHandle = ulCreateDaqDevice(devDescriptors[descriptorIndex]);
 
-	// verify the device supports digital input
-	err = getDevInfoHasDio(daqDeviceHandle, &hasDIO);
-	if (!hasDIO)
-	{
-		printf("\nThe specified DAQ device does not support digital I/O\n");
-		goto end;
-	}
+  if (daqDeviceHandle == 0)
+  {
+    printf ("Unable to create a handle to the specified DAQ device\n");
+    goto end;
+  }
 
-	printf("\nConnecting to device %s - please wait ...\n", devDescriptors[descriptorIndex].devString);
+  // verify the device supports digital input
+  err = getDevInfoHasDio(daqDeviceHandle, &hasDIO);
+  if (!hasDIO)
+  {
+    printf("The specified DAQ device does not support digital I/O\n");
+    goto end;
+  }
 
-	// establish a connection to the DAQ device
-	err = ulConnectDaqDevice(daqDeviceHandle);
+  //printf("\nConnecting to device %s - please wait ...\n", devDescriptors[descriptorIndex].devString);
 
-	if (err != ERR_NO_ERROR)
-		goto end;
+  // establish a connection to the DAQ device
+  err = ulConnectDaqDevice(daqDeviceHandle);
 
-	// get the first port type (AUXPORT0, FIRSTPORTA, ...)
-	err = getDioInfoFirstSupportedPortType(daqDeviceHandle, &portType, portTypeStr);
+  if (err != ERR_NO_ERROR)
+    goto end;
 
-	// get the I/O type for the fisrt port
-	err = getDioInfoFirstSupportedPortIoType(daqDeviceHandle, &portIoType, portIoTypeStr);
+  // get the first port type (AUXPORT0, FIRSTPORTA, ...)
+  err = getDioInfoFirstSupportedPortType(daqDeviceHandle, &portType, portTypeStr);
 
-	if(portIoType == DPIOT_IO || portIoType == DPIOT_BITIO)
-	{
-		// configure the first port for input
-		err = ulDConfigPort(daqDeviceHandle, portType, DD_INPUT);
-	}
+  // get the I/O type for the fisrt port
+  err = getDioInfoFirstSupportedPortIoType(daqDeviceHandle, &portIoType, portIoTypeStr);
 
-	printf("\n%s ready\n", devDescriptors[descriptorIndex].devString);
-	printf("    Function demonstrated: ulDIn()\n");
-	printf("    Port: %s\n", portTypeStr);
-	printf("    Port I/O type: %s\n", portIoTypeStr);
-	printf("\nHit ENTER to continue\n");
+  if(portIoType == DPIOT_IO || portIoType == DPIOT_BITIO)
+  {
+    // configure the first port for input
+    err = ulDConfigPort(daqDeviceHandle, portType, DD_INPUT);
+  }
 
-	ret = scanf("%c", &c);
+  //printf("\n%s ready\n", devDescriptors[descriptorIndex].devString);
+  //printf("    Port: %s\n", portTypeStr);
+  //printf("    Port I/O type: %s\n", portIoTypeStr);
+  //printf("\nHit ENTER to continue\n");
 
-	ret = system("clear");
+  //ret = scanf("%c", &c);
+  //ret = system("clear");
 
-	while(err == ERR_NO_ERROR && !enter_press())
-	{
-		// read the port
-		err = ulDIn(daqDeviceHandle, portType, &data);
+  while (err == ERR_NO_ERROR && !enter_press()) {
+    // read the port
+    err = ulDIn(daqDeviceHandle, portType, &data);
 
-		resetCursor();
-		printf("Hit 'Enter' to terminate the process\n\n");
-		printf("Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
+    //resetCursor();
+    //printf("LCM pub 'Enter' to terminate the process\n\n");
+    //printf("LCM pub Active DAQ device: %s (%s)\n\n", devDescriptors[descriptorIndex].productName, devDescriptors[descriptorIndex].uniqueId);
 
-		clearEOL();
-		printf("Data: %lld (0x%llx)\n", data, data);
+    //clearEOL();
+    //printf("Data: %lld (0x%llx)\n", data, data);
+    idsc_BinaryBlob binaryBlob;
+    binaryBlob.data_length = 1;
+    binaryBlob.data = (int8_t*) &data;
+    idsc_BinaryBlob_publish(lcm, "mcusb.din", &binaryBlob);
 
-		usleep(100000);
-	}
+    usleep(100000);
+  }
 
-	// disconnect from the DAQ device
-	ulDisconnectDaqDevice(daqDeviceHandle);
+  // disconnect from the DAQ device
+  ulDisconnectDaqDevice(daqDeviceHandle);
 
 end:
 
-	// release the handle to the DAQ device
-	ulReleaseDaqDevice(daqDeviceHandle);
+  // release the handle to the DAQ device
+  ulReleaseDaqDevice(daqDeviceHandle);
 
-	if(err != ERR_NO_ERROR)
-	{
-		char errMsg[ERR_MSG_LEN];
-		ulGetErrMsg(err, errMsg);
-		printf("Error Code: %d \n", err);
-		printf("Error Message: %s \n", errMsg);
-	}
+  if(err != ERR_NO_ERROR) {
+    char errMsg[ERR_MSG_LEN];
+    ulGetErrMsg(err, errMsg);
+    printf("Error Code: %d \n", err);
+    printf("Error Message: %s \n", errMsg);
+  }
 
-	return 0;
+  return 0;
 }
 

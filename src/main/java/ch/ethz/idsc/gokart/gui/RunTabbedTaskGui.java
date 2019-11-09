@@ -51,6 +51,7 @@ import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
 import ch.ethz.idsc.gokart.core.sound.VoiceOutputModule;
 import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
+import ch.ethz.idsc.gokart.dev.mcusb.McUsbModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
@@ -113,6 +114,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       Vmu931LcmServerModule.class, // vmu931 imu
+      McUsbModule.class, //
       // Vmu932LcmServerModule.class, // vmu932 imu
       IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
