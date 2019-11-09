@@ -19,7 +19,7 @@ import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class PowerSteeringModule extends AbstractModule implements SteerGetListener, SteerPutProvider {
+/* package */ abstract class PowerSteeringModule extends AbstractModule implements SteerGetListener, SteerPutProvider {
   private final SteerColumnTracker steerColumnTracker = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final GokartPoseLcmClient gokartPoseLcmClient = new GokartPoseLcmClient();
   private final GokartPoseListener gokartPoseListener = gokartPoseEvent -> this.gokartPoseEvent = gokartPoseEvent;
@@ -28,12 +28,8 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
   private GokartPoseEvent gokartPoseEvent = GokartPoseEvents.motionlessUninitialized();
   private SteerGetEvent steerGetEvent;
 
-  public PowerSteeringModule() {
-    this(HapticSteerConfig.GLOBAL);
-  }
-
-  /* package */ PowerSteeringModule(HapticSteerConfig hapticSteerConfig) {
-    powerSteering = hapticSteerConfig.createPowerSteering();
+  /* package */ PowerSteeringModule(PowerSteering powerSteering) {
+    this.powerSteering = powerSteering;
   }
 
   @Override // from AbstractModule
@@ -52,12 +48,12 @@ public class PowerSteeringModule extends AbstractModule implements SteerGetListe
   }
 
   @Override // from SteerGetListener
-  public void getEvent(SteerGetEvent steerGetEvent) {
+  public final void getEvent(SteerGetEvent steerGetEvent) {
     this.steerGetEvent = steerGetEvent;
   }
 
   @Override // from SteerPutProvider
-  public Optional<SteerPutEvent> putEvent() {
+  public final Optional<SteerPutEvent> putEvent() {
     Tensor velocity = LocalizationConfig.GLOBAL.isQualityOk(gokartPoseEvent) //
         ? gokartPoseEvent.getVelocity()
         : GokartPoseEvents.motionlessUninitialized().getVelocity();

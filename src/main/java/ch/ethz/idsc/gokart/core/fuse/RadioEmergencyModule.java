@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.dev.rimo.RimoPutEvent;
+import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.lcm.BinaryLcmClient;
 
@@ -19,12 +20,14 @@ public class RadioEmergencyModule extends EmergencyModule<RimoPutEvent> {
 
   @Override
   protected void first() {
+    RimoSocket.INSTANCE.addPutProvider(this);
     binaryLcmClient.startSubscriptions();
   }
 
   @Override
   protected void last() {
     binaryLcmClient.stopSubscriptions();
+    RimoSocket.INSTANCE.removePutProvider(this);
   }
 
   @Override

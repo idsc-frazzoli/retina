@@ -1,3 +1,4 @@
+// code by ta, em, jph
 package ch.ethz.idsc.gokart.core.adas;
 
 import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
@@ -6,8 +7,8 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-class PacejkaPowerSteering extends PowerSteering {
-  private final GeodesicIIR1 velocityGeodesicIIR1; // 1 means unfiltered
+/* package */ class PacejkaPowerSteering extends PowerSteering {
+  private final GeodesicIIR1 velocityGeodesicIIR1;
 
   public PacejkaPowerSteering(HapticSteerConfig hapticSteerConfig) {
     super(hapticSteerConfig);

@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 public class PowerSteeringModuleTest extends TestCase {
   public void testSimple() {
-    PowerSteeringModule powerSteeringModule = new PowerSteeringModule();
+    PowerSteeringModule powerSteeringModule = new NaivePowerSteeringModule();
     powerSteeringModule.first();
     assertFalse(powerSteeringModule.putEvent().isPresent());
     powerSteeringModule.last();
@@ -15,7 +15,7 @@ public class PowerSteeringModuleTest extends TestCase {
 
   public void testWithLocalization() throws Exception {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);
-    PowerSteeringModule powerSteeringModule = new PowerSteeringModule();
+    PowerSteeringModule powerSteeringModule = new NaivePowerSteeringModule();
     powerSteeringModule.first();
     assertFalse(powerSteeringModule.putEvent().isPresent());
     powerSteeringModule.last();
