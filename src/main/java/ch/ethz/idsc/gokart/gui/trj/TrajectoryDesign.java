@@ -28,7 +28,7 @@ import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.sophus.app.api.ClothoidDisplay;
 import ch.ethz.idsc.sophus.app.api.GeodesicDisplay;
 import ch.ethz.idsc.sophus.app.curve.CurvatureDemo;
-import ch.ethz.idsc.sophus.app.misc.CurveCurvatureRender;
+import ch.ethz.idsc.sophus.app.misc.Curvature2DRender;
 import ch.ethz.idsc.sophus.app.util.LazyMouse;
 import ch.ethz.idsc.sophus.app.util.LazyMouseListener;
 import ch.ethz.idsc.sophus.app.util.SpinnerLabel;
@@ -162,7 +162,7 @@ public class TrajectoryDesign extends CurvatureDemo {
     GeodesicDisplay geodesicDisplay = geodesicDisplay();
     Tensor refined = getRefinedCurve();
     Tensor render = Tensor.of(refined.stream().map(geodesicDisplay::toPoint));
-    CurveCurvatureRender.of(render, true, COMB_SCALE, geometricLayer, graphics);
+    Curvature2DRender.of(render, true, COMB_SCALE, geometricLayer, graphics);
     // ---
     renderPluginParameters = new RenderPluginParameters( //
         refined, //

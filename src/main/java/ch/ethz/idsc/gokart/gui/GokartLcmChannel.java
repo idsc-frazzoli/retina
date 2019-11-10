@@ -11,6 +11,8 @@ public enum GokartLcmChannel {
   public static final String SEYE_OVERVIEW = "overview";
   /** the labjack u3 substitutes the joystick */
   public static final String LABJACK_U3_ADC = "labjack.u3.adc";
+  /** MC USB-1208FS-Plus */
+  public static final String MCUSB_DIN = "mcusb.din";
   /** primary imu */
   public static final String VMU931_AG = "vmu931.ag";
   /** backup imu */

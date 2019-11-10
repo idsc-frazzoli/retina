@@ -52,9 +52,8 @@ public enum DavisLcmLogUzhConvert {
           // davisLcmClient.davisDvsDatagramDecoder.addDvsListener(accumulateDvsImage);
           // }
           // ---
-          Log log = new Log(file.toString(), "r");
           Set<String> set = new HashSet<>();
-          try {
+          try (Log log = new Log(file.toString(), "r")) {
             while (true) {
               Event event = log.readNext();
               ++count;

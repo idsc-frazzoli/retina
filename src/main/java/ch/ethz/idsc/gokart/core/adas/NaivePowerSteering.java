@@ -1,3 +1,4 @@
+// code by ta, em, jph
 package ch.ethz.idsc.gokart.core.adas;
 
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
@@ -7,8 +8,8 @@ import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-class NaivePowerSteering extends PowerSteering {
-  private final GeodesicIIR1 velocityGeodesicIIR1; // 1 means unfiltered
+/* package */ class NaivePowerSteering extends PowerSteering {
+  private final GeodesicIIR1 velocityGeodesicIIR1;
 
   public NaivePowerSteering(HapticSteerConfig hapticSteerConfig) {
     super(hapticSteerConfig);

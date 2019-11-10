@@ -15,9 +15,8 @@ import lcm.logging.Log.Event;
   public static void main(String[] args) throws IOException {
     GokartLogFile gokartLogFile = GokartLogFile._20190215T152744_380160a9;
     File file = DatahakiLogFileLocator.file(gokartLogFile);
-    Log log = new Log(file.toString(), "r");
-    Long tic = null;
-    try {
+    try (Log log = new Log(file.toString(), "r")) {
+      Long tic = null;
       while (true) {
         Event event = log.readNext();
         if (Objects.isNull(tic))
@@ -32,8 +31,6 @@ import lcm.logging.Log.Event;
           exception.printStackTrace();
         }
       }
-    } catch (Exception exception) {
-      log.close();
     }
   }
 }

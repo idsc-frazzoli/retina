@@ -9,8 +9,9 @@ import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.adas.AntilockBrakeModule;
 import ch.ethz.idsc.gokart.core.adas.ConstantTorqueSteerModule;
 import ch.ethz.idsc.gokart.core.adas.LaneKeepingLimitedSteeringModule;
+import ch.ethz.idsc.gokart.core.adas.NaivePowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.NoFrictionExperiment;
-import ch.ethz.idsc.gokart.core.adas.PowerSteeringModule;
+import ch.ethz.idsc.gokart.core.adas.PacejkaPowerSteeringModule;
 import ch.ethz.idsc.gokart.core.adas.SetVelSmartBrakingModule;
 import ch.ethz.idsc.gokart.core.adas.SpeedLimitPerSectionModule;
 import ch.ethz.idsc.gokart.core.adas.SteerVibrationModule;
@@ -20,6 +21,7 @@ import ch.ethz.idsc.gokart.core.fuse.LinmotSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.LinmotTakeoverModule;
 import ch.ethz.idsc.gokart.core.fuse.LocalizationEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.MiscEmergencyWatchdog;
+import ch.ethz.idsc.gokart.core.fuse.RadioEmergencyModule;
 import ch.ethz.idsc.gokart.core.fuse.SpeedLimitSafetyModule;
 import ch.ethz.idsc.gokart.core.fuse.SteerBatteryWatchdog;
 import ch.ethz.idsc.gokart.core.fuse.SteerCalibrationWatchdog;
@@ -51,6 +53,7 @@ import ch.ethz.idsc.gokart.core.sound.GokartSoundLcmModule;
 import ch.ethz.idsc.gokart.core.sound.VoiceOutputModule;
 import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
+import ch.ethz.idsc.gokart.dev.mcusb.McUsbModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.gui.lab.AutoboxTestingModule;
 import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
@@ -113,6 +116,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   );
   static final List<Class<? extends AbstractModule>> MODULES_CFG = Arrays.asList( //
       Vmu931LcmServerModule.class, // vmu931 imu
+      McUsbModule.class, //
       // Vmu932LcmServerModule.class, // vmu932 imu
       IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
@@ -126,7 +130,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   );
   static final List<Class<? extends AbstractModule>> MODULES_MAN = Arrays.asList( //
       PredictiveTorqueVectoringModule.class, //
-      PowerSteeringModule.class, //
+      NaivePowerSteeringModule.class, //
+      PacejkaPowerSteeringModule.class, //
       LaneKeepingLimitedSteeringModule.class, //
       NoFrictionExperiment.class, //
       SteerVibrationModule.class, //
@@ -158,6 +163,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       SEyeSlamVisualModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_FUSE = Arrays.asList( //
+      RadioEmergencyModule.class, //
       OccupancyMappingModule.class, //
       OccupancyViewerModule.class, //
       SpeedLimitSafetyModule.class, //
