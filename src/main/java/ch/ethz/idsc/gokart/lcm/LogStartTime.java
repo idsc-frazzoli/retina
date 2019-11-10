@@ -12,9 +12,9 @@ public enum LogStartTime {
    * @return
    * @throws IOException */
   public static long utime(File file) throws IOException {
-    Log log = new Log(file.toString(), "r");
-    long utime = log.readNext().utime;
-    log.close();
-    return utime;
+    try (Log log = new Log(file.toString(), "r")) {
+      long utime = log.readNext().utime;
+      return utime;
+    }
   }
 }

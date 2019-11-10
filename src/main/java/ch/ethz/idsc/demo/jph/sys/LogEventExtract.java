@@ -29,9 +29,8 @@ import lcm.logging.LogEventWriter;
     int lo = 3715260;
     int hi = 3986070;
     // ---
-    Log log = new Log(src.toString(), "r");
     LogEventWriter logWriter = new LogEventWriter(dst);
-    try {
+    try (Log log = new Log(src.toString(), "r")) {
       // int count = 0;
       while (true) {
         Event event = log.readNext();

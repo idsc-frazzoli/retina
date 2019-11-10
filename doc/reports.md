@@ -48,6 +48,8 @@
 * [20190916_subdivision-based_clothoids_autonomous_driving.pdf](https://github.com/idsc-frazzoli/retina/files/3638364/20190916_subdivision-based_clothoids_autonomous_driving.pdf)
 * [20191026_hermite_subdivision_se2.pdf](https://github.com/idsc-frazzoli/retina/files/3774613/20191026_hermite_subdivision_se2.pdf)
 * [20191029_constant_growth_software_development.pdf](https://github.com/idsc-frazzoli/retina/files/3783471/20191029_constant_growth_software_development.pdf)
+* [20191110_data_driven_vehicle_dynamics_modeling.pdf](https://github.com/idsc-frazzoli/retina/files/3828205/20191110_data_driven_vehicle_dynamics_modeling.pdf)
+
 
 ## Bug Reports
 

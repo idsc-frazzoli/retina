@@ -48,7 +48,7 @@ import ch.ethz.idsc.tensor.mat.DiagonalMatrix;
       LazyMouseListener lazyMouseListener = new LazyMouseListener() {
         @Override
         public void lazyClicked(MouseEvent mouseEvent) {
-          Tensor tensor = timerFrame1.geometricComponent.getMouseSe2State();
+          Tensor tensor = timerFrame1.geometricComponent.getMouseSe2CState();
           System.out.println(tensor);
           eroMap.setPixel(tensor, mouseEvent.getButton() <= 1);
         }

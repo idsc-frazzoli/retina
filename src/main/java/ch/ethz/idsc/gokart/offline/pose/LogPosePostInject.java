@@ -32,13 +32,12 @@ public class LogPosePostInject implements GokartPoseListener {
   private GokartPoseEvent gokartPoseEvent = null;
 
   public void process(File source, File target, OfflineLogListener offlineLogListener) throws Exception {
-    Log log = new Log(source.toString(), "r");
     target.delete(); // delete is mandatory with the current lcm-java library implementation
     LogEventWriter logEventWriter = new LogEventWriter(target);
     Set<String> set = new HashSet<>();
     Long tic = null;
     System.out.println("start");
-    try {
+    try (Log log = new Log(source.toString(), "r")) {
       while (true) {
         // TODO JPH code redundant to OfflineLogPlayer
         Event event = log.readNext();

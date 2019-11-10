@@ -35,10 +35,9 @@ public enum OfflineLogPlayer {
   public static void process(File file, Collection<? extends OfflineLogListener> offlineLogListeners) throws IOException {
     Set<String> set = new HashSet<>();
     set.add(GokartLcmChannel.LCM_SELF_TEST);
-    Log log = new Log(file.toString(), "r");
-    Long tic = null;
-    // int count = 0;
-    try {
+    try (Log log = new Log(file.toString(), "r")) {
+      Long tic = null;
+      // int count = 0;
       while (true) {
         Event event = log.readNext();
         if (Objects.isNull(tic))
@@ -60,7 +59,6 @@ public enum OfflineLogPlayer {
         }
       }
     } catch (Exception exception) {
-      log.close();
       if (!END_OF_FILE.equals(exception.getMessage()))
         throw exception;
     }
