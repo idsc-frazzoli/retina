@@ -26,3 +26,10 @@ stdout_temp
 /MPCPathFollowing_simulinkBlockcompact.mexw64
 /nativeexecutionLCM.c
 /nativeexecutionLCMtest.c
+/drawAnimation.asv
+/DynamicPathFollowingForces.asv
+/MPCPathFollowing_model_21.c
+/MPCPathFollowing_model_21.obj
+/MPCPathFollowing_model_25.c
+/MPCPathFollowing_model_25.obj
+/testineq.asv
