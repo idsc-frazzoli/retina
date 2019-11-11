@@ -29,6 +29,16 @@ import idsc.BinaryBlob;
       }
     };
   }
+  
+  public static MPCRequestPublisher ludic() {
+    return new MPCRequestPublisher(".l") {
+      @Override // from MPCRequestPublisher
+      BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
+        return new MPCOptimizationParameterMessageLudic( //
+            mpcNativeSession, (MPCOptimizationParameterLudic) mpcOptimizationParameter);
+      }
+    };
+  }
 
   // ---
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();

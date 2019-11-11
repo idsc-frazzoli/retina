@@ -12,5 +12,7 @@ package ch.ethz.idsc.gokart.core.mpc;
   CONTROL_PREDICTION, // 3
   /** parameter update: send new parameters */
   OPTIMIZATION_PARAMETER_DYNAMIC, // 4
+  /** parameter update: send new parameters */
+  OPTIMIZATION_PARAMETER_LUDIC, // 5
   ;
 }

@@ -1,4 +1,4 @@
-function f = objective2(z,points,radii,vmax, maxxacc, steeringreg)
+function f = objectiveHC(z,points,radii,vmax, maxxacc, steeringreg)
     global index
 %[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline

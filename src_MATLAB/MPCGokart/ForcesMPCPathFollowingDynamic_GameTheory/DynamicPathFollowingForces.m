@@ -64,7 +64,7 @@ solvetimes2 = [];
 integrator_stepsize = 0.1;
 
 %% model params
-model.N = 31;                       % Forward horizon
+model.N = 25;                       % Forward horizon
 model.nvar = index.nv;              % = 14
 model.neq = index.ns;               % = 9
 model.eq = @(z,p) RK4( ...
@@ -103,16 +103,16 @@ model.hl = [-inf;-inf;-inf;-inf;-inf;0];
   %  controlPointsY.append(Quantity.of(47, SI.METER));
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));  
-points = [36.2,52,57.2,53,52,47,41.8;...          %x
-          44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          2,2,2,1.8,1.8,1.8,2]';          %phi      
+points = [28,35,42,55.2,56,51,42,40;...          %x
+          41,60,53,56,43,40,44,31; ...    %y
+          2.3,2,2,2,2,2,2,2.3]';          %phi      
 %points = getPoints('/wildpoints.csv');
 points(:,3)=points(:,3)-0.2;
 
 %GoKart2
-points2 = flip([36.2,52,57.2,53,52,47,41.8;...          %x
-          44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          2,2,2,1.8,1.8,1.8,2]');          %phi
+points2 = flip([28,35,42,55.2,56,51,42,40;...          %x
+          41,60,53,56,43,40,44,31; ...    %y
+          2.3,2,2,2,2,2,2,2.3]');          %phi
 %points = getPoints('/wildpoints.csv');
 points2(:,3)=points2(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
@@ -121,7 +121,7 @@ points2(:,3)=points2(:,3)-0.2;
 trajectorytimestep = integrator_stepsize;
 %[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 
-model.npar = pointsO + 3*pointsN+9;
+model.npar = pointsO + 3*pointsN+2;
 
 for i=1:model.N
    model.objective{i} = @(z,p)objective_GT(...
@@ -168,7 +168,7 @@ model.lb(index.s)=0;
 
 %% CodeOptions for FORCES solver
 codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
-codeoptions.maxit = 300;    % Maximum number of iterations
+codeoptions.maxit = 2000;    % Maximum number of iterations
 codeoptions.printlevel = 1; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
@@ -178,7 +178,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
-tend = 100;
+tend = 400;
 eulersteps = 10;
 eulersteps2 = 10;
 planintervall = 1;
@@ -230,7 +230,8 @@ planss2 = [];
 targets2 = [];
 planc2 = 10;
 x02 = [zeros(model.N,index.nu),repmat(xs2,model.N,1)]';
-
+Pos=repmat(pstart, model.N-1 ,1);
+Pos2=repmat(pstart2, model.N-1 ,1);
 %x0 = zeros(model.N*model.nvar,1); 
 tstart = 1;
 %paras = ttpos(tstart:tstart+model.N-1,2:3)';
@@ -292,14 +293,16 @@ for i =1:tend
     splinepointhist2(i,:)=[xs2(index.s-index.nu),nextSplinePoints2(:)'];
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-    problem.all_parameters = repmat (getParameters_v2(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints,xs) , model.N ,1);
-    %problem.all_parameters = zeros(22,1);
+    problem.all_parameters = repmat (getParameters_v2(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints,xs2(1:2)) , model.N ,1);
+    problem.all_parameters(35:36:end) = [xs2(1);Pos2(2:end,1);Pos2(end,1)];
+    problem.all_parameters(36:36:end) = [xs2(2);Pos2(2:end,2);Pos2(end,2)];
     problem.x0 = x0(:);
     %problem.x0 = rand(341,1);
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-    problem2.all_parameters = repmat (getParameters_v2(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints2,xs2) , model.N ,1);
-    %problem.all_parameters = zeros(22,1);
+    problem2.all_parameters = repmat (getParameters_v2(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints2,xs(1:2)) , model.N ,1);
+    problem2.all_parameters(35:36:end) = [xs(1);Pos(2:end,1);Pos(end,1)];
+    problem2.all_parameters(36:36:end) = [xs(2);Pos(2:end,2);Pos(end,2)];
     problem2.x0 = x02(:);
     %problem.x0 = rand(341,1);
     
@@ -311,6 +314,7 @@ for i =1:tend
        a = 1; 
     end
     if(exitflag~=1 && exitflag ~=0)
+        testineq
         draw2
        return 
     end
@@ -322,6 +326,7 @@ for i =1:tend
        a2 = 1; 
     end
     if(exitflag2~=1 && exitflag2 ~=0)
+        testineq
         draw2
        return 
     end
@@ -345,7 +350,7 @@ for i =1:tend
        [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s),nextSplinePoints);
        targets = [targets;tx,ty];
     end
-    
+    Pos1=[plansx(i,2:end);plansy(i,2:end)]';
 %     %nextSplinePoints
 %     %get output
 %     outputM2 = reshape(output2.alldata,[model.nvar,model.N])';
@@ -380,15 +385,16 @@ for i =1:tend
        [tx2,ty2]=casadiDynamicBSPLINE(outputM2(end,index.s),nextSplinePoints2);
        targets2 = [targets2;tx2,ty2];
     end
+    Pos2=[plansx2(i,2:end);plansy2(i,2:end)]';
     distanceX=xs(1)-xs2(1);
     distanceY=xs(2)-xs2(2);
    
     squared_distance_array   = distanceX.^2 + distanceY.^2;
-    if squared_distance_array<=0.7^2
+    if squared_distance_array<=0.9^2
         squared_distance_array
-        keyboard
     end
 end
 %[t,ab,dotbeta,x,y,theta,v,beta,s]
 draw2
 
+ULP=(plansx-plansx2).^2+(plansy-plansy2).^2;

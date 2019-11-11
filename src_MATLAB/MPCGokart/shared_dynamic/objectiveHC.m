@@ -1,4 +1,4 @@
-function f = objective_GT(z,points,radii,vmax, maxxacc, steeringreg)
+function f = objectiveHC(z,points,radii,vmax, maxxacc, steeringreg,plag,plat,pprog,pab,pspeedcost,pslack,ptv)
     global index
 %[ab,dotbeta,ds, x,y,theta,v,beta,s,braketemp]
     %get the fancy spline
@@ -21,17 +21,16 @@ function f = objective_GT(z,points,radii,vmax, maxxacc, steeringreg)
     error = centerPos-wantedpos;
     lagerror = forward'*error;
     laterror = sidewards'*error;
-    speedcost = speedPunisher(z(index.v),vmax)*0.04;
+    speedcost = speedPunisher(z(index.v),vmax)*pspeedcost;
     slack = z(index.slack);
-    slack2=z(index.slack2);
     tv = z(index.tv);
     %accviolation = max(0,accnorm-1)^2;
-    lagcost = lagerror^2;
-    latcost = laterror^2;
-    prog = -0.2*z(index.ds);
-    reg = z(index.dotab).^2*0.0004+z(index.dotbeta).^2*steeringreg;
+    lagcost = plag*lagerror^2;
+    latcost = plat*laterror^2;
+    prog = -pprog*z(index.ds);
+    reg = z(index.dotab).^2*pab+z(index.dotbeta).^2*steeringreg;
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
     %f = lagcost+latcost+reg+prog+over75d*over75d*0.001+speedcost+accviolation+trackViolation;
-    f = lagcost+latcost*0.01+reg+prog+5*slack+20000*slack2+speedcost+0.01*tv^2;%-0.01*sidewardsspeed^2;
+    f = lagcost+latcost+reg+prog+pslack*slack+speedcost+ptv*tv^2;%-0.01*sidewardsspeed^2;
 end
