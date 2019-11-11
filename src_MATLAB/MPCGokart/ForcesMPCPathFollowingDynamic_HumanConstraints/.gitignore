@@ -18,19 +18,9 @@ stdout_temp
 
 /MPCPathFollowing.mexw64
 /.mexw64
-/CompileNativeMPC.sh
-/CompileNativeMPCtest.sh
 /MPCPathFollowing_casadi2forces.obj
 /MPCPathFollowing_model_1.obj
 /MPCPathFollowing_model_31.obj
 /MPCPathFollowing_simulinkBlock.mexw64
 /MPCPathFollowing_simulinkBlockcompact.mexw64
-/MPCPathFollowing_stop.m
-/MPCPathFollowing_stop.mexw64
-/MPCPathFollowing_stop_mex_compiler_warnings.txt
-/MPCPathFollowing_stop_py.py
-/MPCPathFollowing_stop_simulinkBlock.mexw64
-/MPCPathFollowing_stop_simulinkBlockcompact.mexw64
-/nativeexecutionLCM.c
-/nativeexecutionLCMtest.c
 /interstagedx_HC.asv
