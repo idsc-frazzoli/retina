@@ -29,7 +29,7 @@ import idsc.BinaryBlob;
       }
     };
   }
-  
+
   public static MPCRequestPublisher ludic() {
     return new MPCRequestPublisher(".l") {
       @Override // from MPCRequestPublisher

@@ -37,9 +37,9 @@ import ch.ethz.idsc.gokart.core.man.PredictiveTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.map.OccupancyMappingModule;
 import ch.ethz.idsc.gokart.core.map.OccupancyViewerModule;
-import ch.ethz.idsc.gokart.core.mpc.MPCDynamicDrivingModule;
-import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
-import ch.ethz.idsc.gokart.core.mpc.MPCLudicDrivingModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCDrivingDynamicModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCDrivingKinematicModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCDrivingLudicModule;
 import ch.ethz.idsc.gokart.core.plan.ClothoidRrtsTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.ClothoidTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.DubinsRrtsTrajectoryModule;
@@ -148,9 +148,9 @@ import ch.ethz.idsc.tensor.io.ResourceData;
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       FigureClothoidModule.class, //
       FigurePureModule.class, //
-      MPCDynamicDrivingModule.class, //
-      MPCLudicDrivingModule.class, //
-      MPCKinematicDrivingModule.class, //
+      MPCDrivingDynamicModule.class, //
+      MPCDrivingLudicModule.class, //
+      MPCDrivingKinematicModule.class, //
       PureTrajectoryModule.class, //
       ClothoidTrajectoryModule.class, //
       PureRrtsTrajectoryModule.class, //
