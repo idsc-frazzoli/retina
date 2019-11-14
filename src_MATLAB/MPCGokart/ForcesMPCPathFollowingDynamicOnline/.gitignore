@@ -15,3 +15,9 @@ OnlineMPCPathFollowing_simulinkBlockcompact.mexa64
 stdout_temp
 nativeOnlineMPCLCM
 
+/OnlineMPCPathFollowing.mexw64
+/OnlineMPCPathFollowing_casadi2forces.obj
+/OnlineMPCPathFollowing_model_1.obj
+/OnlineMPCPathFollowing_model_31.obj
+/OnlineMPCPathFollowing_simulinkBlock.mexw64
+/OnlineMPCPathFollowing_simulinkBlockcompact.mexw64

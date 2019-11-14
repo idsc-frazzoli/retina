@@ -33,5 +33,5 @@ function f = objective_GT(z,points,radii,vmax, maxxacc, steeringreg)
     
     %f = error'*Q*error+reg+speedcost+over75d*over75d*0.001+1*trackViolation;
     %f = lagcost+latcost+reg+prog+over75d*over75d*0.001+speedcost+accviolation+trackViolation;
-    f = lagcost+latcost*0.01+reg+prog+5*slack+20000*slack2+speedcost+0.01*tv^2;%-0.01*sidewardsspeed^2;
+    f = lagcost+latcost*0.01+reg+prog+5*slack+10*slack2+speedcost+0.01*tv^2;%-0.01*sidewardsspeed^2;
 end
