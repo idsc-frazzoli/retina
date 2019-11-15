@@ -103,19 +103,16 @@ model.hl = [-inf;-inf;-inf;-inf;-inf;0];
   %  controlPointsY.append(Quantity.of(47, SI.METER));
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));  
-% points = [28,35,42,55.2,56,51,42,40;...          %x
-%           41,60,53,56,43,40,44,31; ...    %y
-%           2.3,2,2,2,2,2,2,2.3]';          %phi  
-points = [36.2,52,57.2,53,52,47,41.8;...          %x
-          44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          2,2,2,2,2,2,2]';
+points = [28,35,42,55.2,56,51,42,40;...          %x
+          41,60,53,56,43,40,44,31; ...    %y
+          2.3,2,2,2,2,2,2,2.3]';          %phi      
 %points = getPoints('/wildpoints.csv');
 points(:,3)=points(:,3)-0.2;
 
 %GoKart2
-points2 = flip([36.2,52,57.2,53,52,47,41.8;...          %x
-          44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          2,2,2,2,2,2,2]');          %phi
+points2 = flip([28,35,42,55.2,56,51,42,40;...          %x
+          41,60,53,56,43,40,44,31; ...    %y
+          2.3,2,2,2,2,2,2,2.3]');          %phi
 %points = getPoints('/wildpoints.csv');
 points2(:,3)=points2(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
@@ -166,11 +163,26 @@ model.lb(index.s)=0;
 
 %model.ub = [inf, +5, 1.6, +inf, +inf, +inf, +inf,0.45,pointsN-2,85];  % simple upper bounds 
 %model.lb = [-inf, -5, -0.1, -inf, -inf,  -inf, 0,-0.45,0,-inf];  % simple lower bounds 
-
-
-
+model1=model;
+model1.npar = pointsO + 3*pointsN;
+%limit lateral acceleration
+model1.nh = 5; 
+model1.ineq = @(z,p) nlconst(z,p);
+%model.hu = [36,0];
+%model.hl = [-inf,-inf];
+model1.hu = [0;0;1;0;0];
+model1.hl = [-inf;-inf;-inf;-inf;-inf];
+for i=1:model1.N
+   model1.objective{i} = @(z,p)objective(...
+       z,...
+       getPointsFromParameters(p, pointsO, pointsN),...
+       getRadiiFromParameters(p, pointsO, pointsN),...
+       p(index.ps),...
+       p(index.pax),...
+       p(index.pbeta));
+end
 %% CodeOptions for FORCES solver
-codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
+codeoptions = getOptions('MPCPathFollowing_GT'); % Need FORCES License to run
 codeoptions.maxit = 2000;    % Maximum number of iterations
 codeoptions.printlevel = 1; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
@@ -181,7 +193,19 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
-tend = 300;
+%% CodeOptions for FORCES solver
+codeoptions1 = getOptions('MPCPathFollowing'); % Need FORCES License to run
+codeoptions1.maxit = 2000;    % Maximum number of iterations
+codeoptions1.printlevel = 1; % Use printlevel = 2 to print progress (but not for timings)
+codeoptions1.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions1.cleanup = false;
+codeoptions1.timing = 1;
+
+output1 = newOutput('alldata', 1:model1.N, 1:model1.nvar);
+
+FORCES_NLP(model1, codeoptions1,output1); % Need FORCES License to run
+
+tend = 100;
 eulersteps = 10;
 eulersteps2 = 10;
 planintervall = 1;
@@ -237,7 +261,10 @@ Pos1=repmat(pstart, model.N-1 ,1);
 Pos2=repmat(pstart2, model.N-1 ,1);
 %x0 = zeros(model.N*model.nvar,1); 
 tstart = 1;
+a=0;
+a=1;
 ARGH=0;
+ARGH2=0;
 %paras = ttpos(tstart:tstart+model.N-1,2:3)';
 for i =1:tend
     tstart = i;
@@ -298,39 +325,38 @@ for i =1:tend
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
     problem.all_parameters = repmat (getParameters_v2(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints,xs2(1:2)) , model.N ,1);
-    problem.all_parameters(35:36:end) = [Pos2(:,1);Pos2(end,1)];
-    problem.all_parameters(36:36:end) = [Pos2(:,2);Pos2(end,2)];
+    problem.all_parameters(35:36:end) = [xs2(1);Pos2(2:end,1);Pos2(end,1)];
+    problem.all_parameters(36:36:end) = [xs2(2);Pos2(2:end,2);Pos2(end,2)];
     problem.x0 = x0(:);
     %problem.x0 = rand(341,1);
     
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-    problem2.all_parameters = repmat (getParameters_v2(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints2,xs(1:2)) , model.N ,1);
-    problem2.all_parameters(35:36:end) = [Pos1(:,1);Pos1(end,1)];
-    problem2.all_parameters(36:36:end) = [Pos1(:,2);Pos1(end,2)];
+    problem2.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints2) , model1.N ,1);
+%     problem2.all_parameters(35:36:end) = [xs(1);Pos1(2:end,1);Pos1(end,1)];
+%     problem2.all_parameters(36:36:end) = [xs(2);Pos1(2:end,2);Pos1(end,2)];
     problem2.x0 = x02(:);
     %problem.x0 = rand(341,1);
     
     
     % solve mpc
-    [output,exitflag,info] = MPCPathFollowing(problem);
+    [output,exitflag,info] = MPCPathFollowing_GT(problem);
     solvetimes(end+1)=info.solvetime;
     if(exitflag==0)
-       a = 1; 
+       a = a+1; 
     end
     if(exitflag~=1 && exitflag ~=0)
-       i
-       return 
+       draw2
+       ARGH=ARGH+1;
     end
     
     %solve mpc
     [output2,exitflag2,info2] = MPCPathFollowing(problem2);
     solvetimes2(end+1)=info2.solvetime;
     if(exitflag2==0)
-       a2 = 1; 
+       a2 = a2+1; 
     end
     if(exitflag2~=1 && exitflag2 ~=0)
-       i
-       return 
+       ARGH2=ARGH2+1; 
     end
     
     
@@ -341,7 +367,7 @@ for i =1:tend
     u = repmat(outputM(1,1:index.nu),eulersteps,1);
     [xhist,time] = euler(@(x,u)interstagedx(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
     xs = xhist(end,:);
-    %xs
+    xs
     history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
     planc = planc + 1;
     if(planc>planintervall)
@@ -391,8 +417,8 @@ for i =1:tend
     distanceX=xs(1)-xs2(1);
     distanceY=xs(2)-xs2(2);
    
-    squared_distance_array   = sqrt(distanceX.^2 + distanceY.^2);
-    if squared_distance_array<=1
+    squared_distance_array   = distanceX.^2 + distanceY.^2;
+    if squared_distance_array<=0.7^2
         squared_distance_array
     end
 end

@@ -8,39 +8,29 @@
 %add force path (change that for yourself)
 addpath('..');
 userDir = getuserdir;
-addpath([userDir '/Forces']); % Location of FORCES PRO
+%addpath([userDir '/Forces']); % Location of FORCES PRO
 addpath('casadi');
 addpath('../shared_dynamic')
     
 clear model
 clear problem
 clear all
-close all
+%close all
 
+behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 %% Baseline params
-
-maxSpeed = 10; % in [m/s]
-maxxacc = 5; % in [m/s^-1]
-steeringreg = 0.2;  
-specificmoi = 0.3;
-plag=1;
-plat=0.01;
-pprog=0.2;
-pab=0.0004;
-pspeedcost=0.04;
-pslack=5;
-ptv=0.01;
+[maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
+    plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
 FB = 9;
 FC = 1;
 FD = 10; % gravity acceleration considered
 RB = 5.2;
 RC = 1.1;
 RD = 10;
-
 J_steer=0.8875;
 b_steer=0.1625;
 k_steer=0.0125;
-
+    
 pointsO = 20; % number of Parameters
 pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
@@ -204,7 +194,7 @@ model.lb(index.s)=0;
 %% CodeOptions for FORCES solver
 codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
 codeoptions.maxit = 200;    % Maximum number of iterations
-codeoptions.printlevel = 0; % Use printlevel = 2 to print progress (but not for timings)
+codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
@@ -214,26 +204,6 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
 %% CodeOptions for FORCES solver
-% codeoptions_stop = getOptions('MPCPathFollowing_stop'); % Need FORCES License to run
-% codeoptions_stop.maxit = 200;    % Maximum number of iterations
-% codeoptions_stop.printlevel = 0; % Use printlevel = 2 to print progress (but not for timings)
-% codeoptions_stop.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
-% codeoptions_stop.cleanup = 0;
-% codeoptions_stop.timing = 1;
-% model_stop=model;
-% for i=1:model_stop.N
-%    model_stop.objective{i} = @(z,p)objective2(...
-%        z,...
-%        getPointsFromParameters(p, pointsO, pointsN),...
-%        getRadiiFromParameters(p, pointsO, pointsN),...
-%        p(index.ps),...
-%        p(index.pax),...
-%        p(index.pbeta));
-% end
-% output_stop = newOutput('alldata', 1:model.N, 1:model.nvar);
-% 
-% FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
-
 tend = 100;
 eulersteps = 10;
 planintervall = 1;
@@ -296,9 +266,9 @@ for i =1:tend
     end
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     if i<=30 || i>=60
-        maxSpeed=10;
-        plat=0.01;
-        pspeedcost=0.04;
+        behaviour='aggressive';
+        [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
+        plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
         %paras = ttpos(tstart:tstart+model.N-1,2:3)';
         problem.all_parameters = repmat (getParametersHC(maxSpeed,maxxacc,...
             steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
@@ -337,9 +307,9 @@ for i =1:tend
             targets = [targets;tx,ty];
         end
     else
-        maxSpeed=3;
-        plat=1;
-        pspeedcost=1;
+        behaviour='aggressive';
+        [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
+        plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
             %paras = ttpos(tstart:tstart+model.N-1,2:3)';
         problem.all_parameters = repmat (getParametersHC(maxSpeed,maxxacc,...
             steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
