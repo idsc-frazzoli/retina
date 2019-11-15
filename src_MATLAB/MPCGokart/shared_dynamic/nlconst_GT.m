@@ -36,7 +36,7 @@ lagerror = forward'*error;
 laterror = sidewards'*error;
 distance_X=(z(index.x)-PosVehicle2(1));
 distance_Y=(z(index.y)-PosVehicle2(2));
-squared_distance_array   = distance_X.^2+distance_Y.^2;
+squared_distance_array   = sqrt(distance_X.^2+distance_Y.^2);
 %parameters
 vmax =  p(index.ps);
 
@@ -63,7 +63,7 @@ v2 = z(index.ab)-z(index.tv)-casadiGetSmoothMaxAcc(z(index.v));
 v3 = acclim(VELY,VELX,forwardacc)-slack;
 v4 = laterror-r-0.5*slack;
 v5 = -laterror-r-0.5*slack;
-v6 = squared_distance_array-0.9^2+slack2;
+v6 = squared_distance_array-1+slack2;
 %v4 = error'*error;
 %v2 = -1;
 %v = [v1;v2;v3];

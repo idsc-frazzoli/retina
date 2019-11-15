@@ -8,30 +8,22 @@
 %add force path (change that for yourself)
 addpath('..');
 userDir = getuserdir;
-%addpath([userDir '/Forces']); % Location of FORCES PRO
+addpath([userDir '/Forces']); % Location of FORCES PRO
 addpath('casadi');
 addpath('../shared_dynamic')
     
 clear model
 clear problem
 clear all
-%close all
+close all
 
-behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 %% Baseline params
-[maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
-    plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
-FB = 9;
-FC = 1;
-FD = 10; % gravity acceleration considered
-RB = 5.2;
-RC = 1.1;
-RD = 10;
-J_steer=0.8875;
-b_steer=0.1625;
-k_steer=0.0125;
-    
-pointsO = 20; % number of Parameters
+
+maxSpeed = 10; % in [m/s]
+maxxacc = 5; % in [m/s^-1]
+steeringreg = 0.02;  
+specificmoi = 0.3;
+pointsO = 4; % number of Parameters
 pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
 nextsplinepoints = 0;
@@ -63,23 +55,6 @@ index.ps = 1;
 index.pax = 2;
 index.pbeta = 3;
 index.pmoi = 4;
-% Cost function parameters
-index.pacFB = 5;
-index.pacFC = 6;
-index.pacFD = 7;
-index.pacRB = 8;
-index.pacRC = 9;
-index.pacRD = 10;
-index.steerStiff=11;
-index.steerDamp=12;
-index.steerInertia=13;
-index.plag = 14;
-index.plat = 15;
-index.pprog = 16;
-index.pab = 17;
-index.pspeedcost = 18;
-index.pslack = 19;
-index.ptv = 20;
 
 solvetimes = [];
 
@@ -92,7 +67,7 @@ model.neq = index.ns;               % = 9
 model.eq = @(z,p) RK4( ...
     z(index.sb:end), ...
     z(1:index.nu), ...
-    @(x,u,p)interstagedx_HC(x,u,p), ... %PACEJKA PARAMETERS
+    @(x,u,p)interstagedx(x,u,p), ... %PACEJKA PARAMETERS
     integrator_stepsize,...
     p);
 model.E = [zeros(index.ns,index.nu), eye(index.ns)];
@@ -101,7 +76,7 @@ l = 1;
 
 %limit lateral acceleration
 model.nh = 5; 
-model.ineq = @(z,p) nlconst_HC(z,p);
+model.ineq = @(z,p) nlconst(z,p);
 %model.hu = [36,0];
 %model.hl = [-inf,-inf];
 model.hu = [0;0;1;0;0];
@@ -141,23 +116,14 @@ trajectorytimestep = integrator_stepsize;
 %[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 model.npar = pointsO + 3*pointsN;
 for i=1:model.N
-   model.objective{i} = @(z,p)objectiveHC(...
+   model.objective{i} = @(z,p)objective(...
        z,...
        getPointsFromParameters(p, pointsO, pointsN),...
        getRadiiFromParameters(p, pointsO, pointsN),...
        p(index.ps),...
        p(index.pax),...
-       p(index.pbeta),...
-       p(index.plag),...
-       p(index.plat),...
-       p(index.pprog),...
-       p(index.pab),...
-       p(index.pspeedcost),...
-       p(index.pslack),...
-       p(index.ptv));
+       p(index.pbeta));
 end
-
-
 %model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
 
 model.xinitidx = index.sb:index.nv;
@@ -194,7 +160,7 @@ model.lb(index.s)=0;
 %% CodeOptions for FORCES solver
 codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
 codeoptions.maxit = 200;    % Maximum number of iterations
-codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
+codeoptions.printlevel = 0; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
@@ -204,6 +170,26 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
 %% CodeOptions for FORCES solver
+codeoptions_stop = getOptions('MPCPathFollowing_stop'); % Need FORCES License to run
+codeoptions_stop.maxit = 200;    % Maximum number of iterations
+codeoptions_stop.printlevel = 0; % Use printlevel = 2 to print progress (but not for timings)
+codeoptions_stop.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+codeoptions_stop.cleanup = 1;
+codeoptions_stop.timing = 1;
+model_stop=model;
+for i=1:model_stop.N
+   model_stop.objective{i} = @(z,p)objective2(...
+       z,...
+       getPointsFromParameters(p, pointsO, pointsN),...
+       getRadiiFromParameters(p, pointsO, pointsN),...
+       p(index.ps),...
+       p(index.pax),...
+       p(index.pbeta));
+end
+output_stop = newOutput('alldata', 1:model.N, 1:model.nvar);
+
+FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
+%%
 tend = 100;
 eulersteps = 10;
 planintervall = 1;
@@ -266,14 +252,9 @@ for i =1:tend
     end
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     if i<=30 || i>=60
-        behaviour='aggressive';
-        [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
-        plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
+    
         %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-        problem.all_parameters = repmat (getParametersHC(maxSpeed,maxxacc,...
-            steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
-            plag,plat,pprog,pab,pspeedcost,...
-            pslack,ptv,nextSplinePoints) , model.N ,1);
+        problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints) , model.N ,1);
         %problem.all_parameters = zeros(22,1);
         problem.x0 = x0(:);
         %problem.x0 = rand(341,1);
@@ -307,46 +288,40 @@ for i =1:tend
             targets = [targets;tx,ty];
         end
     else
-        behaviour='aggressive';
-        [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
-        plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
             %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-        problem.all_parameters = repmat (getParametersHC(maxSpeed,maxxacc,...
-            steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
-            plag,plat,pprog,pab,pspeedcost,pslack,...
-            ptv,nextSplinePoints) , model.N ,1);
-        %problem.all_parameters = zeros(22,1);
-        problem.x0 = x0(:);
-        %problem.x0 = rand(341,1);
+    problem.all_parameters = repmat (getParameters(maxSpeed,maxxacc,steeringreg,specificmoi,nextSplinePoints) , model.N ,1);
+    %problem.all_parameters = zeros(22,1);
+    problem.x0 = x0(:);
+    %problem.x0 = rand(341,1);
     
-        % solve mpc
-        [output,exitflag,info] = MPCPathFollowing(problem);
-        solvetimes(end+1)=info.solvetime;
-        if(exitflag==0)
-            a = 1; 
-        end
-        if(exitflag~=1 && exitflag ~=0)
-            draw
-        return 
-        end
-        %nextSplinePoints
-        %get output
-        outputM = reshape(output.alldata,[model.nvar,model.N])';
-        x0 = outputM';
-        u = repmat(outputM(1,1:index.nu),eulersteps,1);
-        [xhist,time] = euler(@(x,u)interstagedx(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
-        xs = xhist(end,:);
-        xs
-        history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
-        planc = planc + 1;
-        if(planc>planintervall)
-            planc = 1; 
-        	plansx = [plansx; outputM(:,index.x)'];
-            plansy = [plansy; outputM(:,index.y)'];
-            planss = [planss; outputM(:,index.s)'];
-            [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s),nextSplinePoints);
-            targets = [targets;tx,ty];
-        end
+    % solve mpc
+    [output,exitflag,info] = MPCPathFollowing_stop(problem);
+    solvetimes(end+1)=info.solvetime;
+    if(exitflag==0)
+       a = 1; 
+    end
+    if(exitflag~=1 && exitflag ~=0)
+        draw
+       return 
+    end
+    %nextSplinePoints
+    %get output
+    outputM = reshape(output.alldata,[model.nvar,model.N])';
+    x0 = outputM';
+    u = repmat(outputM(1,1:index.nu),eulersteps,1);
+    [xhist,time] = euler(@(x,u)interstagedx(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
+    xs = xhist(end,:);
+    xs
+    history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
+    planc = planc + 1;
+    if(planc>planintervall)
+       planc = 1; 
+       plansx = [plansx; outputM(:,index.x)'];
+       plansy = [plansy; outputM(:,index.y)'];
+       planss = [planss; outputM(:,index.s)'];
+       [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s),nextSplinePoints);
+       targets = [targets;tx,ty];
+    end
     end
 end
 %[t,ab,dotbeta,x,y,theta,v,beta,s]
