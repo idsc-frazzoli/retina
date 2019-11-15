@@ -8,20 +8,14 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.red.Max;
 
-public class MPCLudicDrivingModule extends MPCAbstractDrivingModule {
-  public MPCLudicDrivingModule() {
+public class MPCDrivingLudicModule extends MPCDrivingCommonModule {
+  public MPCDrivingLudicModule() {
     super(MPCRequestPublisher.ludic(), Timing.started());
   }
 
   // for testing only
-  MPCLudicDrivingModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
+  MPCDrivingLudicModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
     super(MPCRequestPublisher.ludic(), mpcStateEstimationProvider, timing, track);
-  }
-
-  // TODO refactor with dynamic driving module
-  @Override // from MPCAbstractDrivingModule
-  MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering) {
-    return new MPCExplicitTorqueVectoringPower();
   }
 
   @Override // from MPCAbstractDrivingModule
@@ -46,7 +40,6 @@ public class MPCLudicDrivingModule extends MPCAbstractDrivingModule {
         mpcOptimizationConfig.maxLonAcc, //
         mpcOptimizationConfig.steeringReg, //
         mpcOptimizationConfig.specificMoI);
-    // mpcOptimizationParameterLudic.lagError=RealScalar.of(1);
     synchronized (MPCLudicConfig.GLOBAL) {
       mpcOptimizationParameterLudic.speedCost = MPCLudicConfig.GLOBAL.speedCost;
       mpcOptimizationParameterLudic.lagError = MPCLudicConfig.GLOBAL.lagError;

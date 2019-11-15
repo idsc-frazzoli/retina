@@ -24,11 +24,11 @@ public class MPCLudicConfig {
   // TODO Unit is SCT*s^2/SCE
   public Scalar steerInertia = RealScalar.of(0.0125);
   /** Parameters of the cost function (without unit of measure) */
-  /** Lag Error cost*/
+  /** Lag Error cost */
   public Scalar lagError = RealScalar.of(1);
-  /** Lateral Error cost*/
+  /** Lateral Error cost */
   public Scalar latError = RealScalar.of(0.01);
-  /** Path Progress cost*/
+  /** Path Progress cost */
   public Scalar progress = RealScalar.of(0.2);
   /** Regularizer for input AB */
   public Scalar regularizerAB = RealScalar.of(0.0004);
@@ -38,5 +38,4 @@ public class MPCLudicConfig {
   public Scalar slackSoftConstraint = RealScalar.of(5);
   /** Regularizer for input TV */
   public Scalar regularizerTV = RealScalar.of(0.01);
-
 }

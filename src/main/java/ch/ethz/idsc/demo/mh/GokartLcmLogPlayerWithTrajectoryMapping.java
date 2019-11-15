@@ -3,7 +3,7 @@ package ch.ethz.idsc.demo.mh;
 
 import java.io.File;
 
-import ch.ethz.idsc.gokart.core.mpc.MPCKinematicDrivingModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCDrivingKinematicModule;
 import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
@@ -27,6 +27,6 @@ import lcm.logging.LogPlayerConfig;
     // ModuleAuto.INSTANCE.runOne(GlobalViewLcmModule.class);
     ModuleAuto.INSTANCE.runOne(TrackReconModule.class);
     // ModuleAuto.INSTANCE.runOne(PresenterLcmModule.class);
-    ModuleAuto.INSTANCE.runOne(MPCKinematicDrivingModule.class);
+    ModuleAuto.INSTANCE.runOne(MPCDrivingKinematicModule.class);
   }
 }

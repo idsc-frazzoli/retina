@@ -2844,6 +2844,18 @@ public enum GokartLogFile implements LogFile {
   /** drift thrust control driving doughnuts */
   _20191104T150512_5edf85b5,
   /***************************************************/
+  /* 2019-11-11 */
+  /** system identification steering experiment */
+  _20191111T132253_ecc41d54,
+  /** slow mpc around s-shape obstacle track */
+  _20191111T134517_ecc41d54,
+  /** mpc with 2nd gokart in the scene */
+  _20191111T143129_ecc41d54,
+  /** testing mpc with ludic parameters */
+  _20191111T155817_7b4d8f7e,
+  /** system identification of pacejka constants */
+  _20191111T164952_7b4d8f7e,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

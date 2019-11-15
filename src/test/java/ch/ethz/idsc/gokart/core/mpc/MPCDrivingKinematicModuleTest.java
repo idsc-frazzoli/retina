@@ -11,12 +11,12 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.sca.Sign;
 import junit.framework.TestCase;
 
-public class MPCDynamicDrivingModuleTest extends TestCase {
+public class MPCDrivingKinematicModuleTest extends TestCase {
   public void testSimple() {
-    MPCOptimizationParameterDynamic op1 = MPCDynamicDrivingModule.optimizationParameter(MPCOptimizationConfig.GLOBAL, Optional.empty());
+    MPCOptimizationParameterKinematic op1 = MPCDrivingKinematicModule.optimizationParameter(MPCOptimizationConfig.GLOBAL, Optional.empty());
     ManualControlInterface manualControlInterface = new ManualControlAdapter( //
         RealScalar.ZERO, RealScalar.ZERO, RealScalar.ONE, Tensors.vector(0.3, 0.4), false, false);
-    MPCOptimizationParameterDynamic op2 = MPCDynamicDrivingModule.optimizationParameter(MPCOptimizationConfig.GLOBAL, Optional.of(manualControlInterface));
+    MPCOptimizationParameterKinematic op2 = MPCDrivingKinematicModule.optimizationParameter(MPCOptimizationConfig.GLOBAL, Optional.of(manualControlInterface));
     assertTrue(Scalars.lessThan(op1.speedLimit(), op2.speedLimit()));
     Sign.requirePositive(op1.xAccLimit());
     Sign.requirePositive(op2.xAccLimit());

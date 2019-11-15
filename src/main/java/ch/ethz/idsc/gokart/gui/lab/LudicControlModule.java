@@ -32,13 +32,13 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Beginner driving");
           synchronized (MPCLudicConfig.GLOBAL) {
-          MPCLudicConfig.GLOBAL.speedCost = RealScalar.of(0.4);
-          MPCLudicConfig.GLOBAL.lagError = RealScalar.of(1);
-          MPCLudicConfig.GLOBAL.latError = RealScalar.of(0.3);
-          MPCLudicConfig.GLOBAL.progress = RealScalar.of(0.4);
-          MPCLudicConfig.GLOBAL.regularizerAB = RealScalar.of(0.0004);
-          MPCLudicConfig.GLOBAL.regularizerTV = RealScalar.of(0.1);
-          MPCLudicConfig.GLOBAL.slackSoftConstraint = RealScalar.of(10);
+            MPCLudicConfig.GLOBAL.speedCost = RealScalar.of(0.4);
+            MPCLudicConfig.GLOBAL.lagError = RealScalar.of(1);
+            MPCLudicConfig.GLOBAL.latError = RealScalar.of(0.3);
+            MPCLudicConfig.GLOBAL.progress = RealScalar.of(0.4);
+            MPCLudicConfig.GLOBAL.regularizerAB = RealScalar.of(0.0004);
+            MPCLudicConfig.GLOBAL.regularizerTV = RealScalar.of(0.1);
+            MPCLudicConfig.GLOBAL.slackSoftConstraint = RealScalar.of(10);
           }
         });
         jPanel.add(jButton);
@@ -49,13 +49,13 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Moderate driving");
           synchronized (MPCLudicConfig.GLOBAL) {
-          MPCLudicConfig.GLOBAL.speedCost = RealScalar.of(0.08);
-          MPCLudicConfig.GLOBAL.lagError = RealScalar.of(1);
-          MPCLudicConfig.GLOBAL.latError = RealScalar.of(0.06);
-          MPCLudicConfig.GLOBAL.progress = RealScalar.of(0.15);
-          MPCLudicConfig.GLOBAL.regularizerAB = RealScalar.of(0.0008);
-          MPCLudicConfig.GLOBAL.regularizerTV = RealScalar.of(0.01);
-          MPCLudicConfig.GLOBAL.slackSoftConstraint = RealScalar.of(8);
+            MPCLudicConfig.GLOBAL.speedCost = RealScalar.of(0.08);
+            MPCLudicConfig.GLOBAL.lagError = RealScalar.of(1);
+            MPCLudicConfig.GLOBAL.latError = RealScalar.of(0.06);
+            MPCLudicConfig.GLOBAL.progress = RealScalar.of(0.15);
+            MPCLudicConfig.GLOBAL.regularizerAB = RealScalar.of(0.0008);
+            MPCLudicConfig.GLOBAL.regularizerTV = RealScalar.of(0.01);
+            MPCLudicConfig.GLOBAL.slackSoftConstraint = RealScalar.of(8);
           }
         });
         jPanel.add(jButton);
@@ -66,13 +66,13 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Advanced driving");
           synchronized (MPCLudicConfig.GLOBAL) {
-          MPCLudicConfig.GLOBAL.speedCost = RealScalar.of(0.04);
-          MPCLudicConfig.GLOBAL.lagError = RealScalar.of(1);
-          MPCLudicConfig.GLOBAL.latError = RealScalar.of(0.01);
-          MPCLudicConfig.GLOBAL.progress = RealScalar.of(0.2);
-          MPCLudicConfig.GLOBAL.regularizerAB = RealScalar.of(0.0004);         
-          MPCLudicConfig.GLOBAL.regularizerTV = RealScalar.of(0.01);
-          MPCLudicConfig.GLOBAL.slackSoftConstraint = RealScalar.of(5);
+            MPCLudicConfig.GLOBAL.speedCost = RealScalar.of(0.04);
+            MPCLudicConfig.GLOBAL.lagError = RealScalar.of(1);
+            MPCLudicConfig.GLOBAL.latError = RealScalar.of(0.01);
+            MPCLudicConfig.GLOBAL.progress = RealScalar.of(0.2);
+            MPCLudicConfig.GLOBAL.regularizerAB = RealScalar.of(0.0004);
+            MPCLudicConfig.GLOBAL.regularizerTV = RealScalar.of(0.01);
+            MPCLudicConfig.GLOBAL.slackSoftConstraint = RealScalar.of(5);
           }
         });
         jPanel.add(jButton);
@@ -83,13 +83,13 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Drifting mode");
           synchronized (MPCLudicConfig.GLOBAL) {
-          MPCLudicConfig.GLOBAL.speedCost = RealScalar.of(0.04);
-          MPCLudicConfig.GLOBAL.lagError = RealScalar.of(0.2);
-          MPCLudicConfig.GLOBAL.latError = RealScalar.of(0.01);
-          MPCLudicConfig.GLOBAL.progress = RealScalar.of(0.1);
-          MPCLudicConfig.GLOBAL.regularizerAB = RealScalar.of(0.0004);         
-          MPCLudicConfig.GLOBAL.regularizerTV = RealScalar.of(0.05);
-          MPCLudicConfig.GLOBAL.slackSoftConstraint = RealScalar.of(4);
+            MPCLudicConfig.GLOBAL.speedCost = RealScalar.of(0.04);
+            MPCLudicConfig.GLOBAL.lagError = RealScalar.of(0.2);
+            MPCLudicConfig.GLOBAL.latError = RealScalar.of(0.01);
+            MPCLudicConfig.GLOBAL.progress = RealScalar.of(0.1);
+            MPCLudicConfig.GLOBAL.regularizerAB = RealScalar.of(0.0004);
+            MPCLudicConfig.GLOBAL.regularizerTV = RealScalar.of(0.05);
+            MPCLudicConfig.GLOBAL.slackSoftConstraint = RealScalar.of(4);
           }
         });
         jPanel.add(jButton);

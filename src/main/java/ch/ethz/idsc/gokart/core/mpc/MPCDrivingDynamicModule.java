@@ -8,29 +8,24 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.red.Max;
 
-public class MPCKinematicDrivingModule extends MPCAbstractDrivingModule {
-  public MPCKinematicDrivingModule() {
-    super(MPCRequestPublisher.kinematic(), Timing.started());
+public class MPCDrivingDynamicModule extends MPCDrivingCommonModule {
+  public MPCDrivingDynamicModule() {
+    super(MPCRequestPublisher.dynamic(), Timing.started());
   }
 
   // for testing only
-  MPCKinematicDrivingModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
-    super(MPCRequestPublisher.kinematic(), mpcStateEstimationProvider, timing, track);
+  MPCDrivingDynamicModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
+    super(MPCRequestPublisher.dynamic(), mpcStateEstimationProvider, timing, track);
   }
 
   @Override // from MPCAbstractDrivingModule
-  MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering) {
-    return new MPCAggressiveTorqueVectoringPower(mpcStateEstimationProvider, mpcSteering);
-  }
-
-  @Override // from MPCAbstractDrivingModule
-  MPCOptimizationParameterKinematic createOptimizationParameter( //
+  MPCOptimizationParameterDynamic createOptimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
     return optimizationParameter(mpcOptimizationConfig, optional);
   }
 
   // package for testing
-  static MPCOptimizationParameterKinematic optimizationParameter( //
+  static MPCOptimizationParameterDynamic optimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
     final Scalar minSpeed = mpcOptimizationConfig.minSpeed;
     final Scalar mpcMaxSpeed;
@@ -40,13 +35,10 @@ public class MPCKinematicDrivingModule extends MPCAbstractDrivingModule {
       mpcMaxSpeed = Max.of(minSpeed, mpcOptimizationConfig.maxSpeed.multiply(forward));
     } else
       mpcMaxSpeed = minSpeed; // fallback speed value
-    return new MPCOptimizationParameterKinematic( //
+    return new MPCOptimizationParameterDynamic( //
         mpcMaxSpeed, //
         mpcOptimizationConfig.maxLonAcc, //
-        mpcOptimizationConfig.maxLatAcc, //
-        mpcOptimizationConfig.latAccLim, //
-        mpcOptimizationConfig.rotAccEffect, //
-        mpcOptimizationConfig.torqueVecEffect, //
-        mpcOptimizationConfig.brakeEffect);
+        mpcOptimizationConfig.steeringReg, //
+        mpcOptimizationConfig.specificMoI);
   }
 }
