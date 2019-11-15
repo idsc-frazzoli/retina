@@ -4,7 +4,6 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Optional;
 
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.red.Max;
@@ -18,7 +17,8 @@ public class MPCLudicDrivingModule extends MPCAbstractDrivingModule {
   MPCLudicDrivingModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
     super(MPCRequestPublisher.ludic(), mpcStateEstimationProvider, timing, track);
   }
-  //TODO refactor with dynamic driving module
+
+  // TODO refactor with dynamic driving module
   @Override // from MPCAbstractDrivingModule
   MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering) {
     return new MPCExplicitTorqueVectoringPower();
@@ -41,12 +41,15 @@ public class MPCLudicDrivingModule extends MPCAbstractDrivingModule {
       mpcMaxSpeed = Max.of(minSpeed, maxSpeed.multiply(forward));
     } else
       mpcMaxSpeed = minSpeed; // fallback speed value
-     MPCOptimizationParameterLudic mpcOptimizationParameterLudic = new MPCOptimizationParameterLudic( //
+    MPCOptimizationParameterLudic mpcOptimizationParameterLudic = new MPCOptimizationParameterLudic( //
         mpcMaxSpeed, //
         mpcOptimizationConfig.maxLonAcc, //
         mpcOptimizationConfig.steeringReg, //
         mpcOptimizationConfig.specificMoI);
-     //mpcOptimizationParameterLudic.lagError=RealScalar.of(1);
-     return mpcOptimizationParameterLudic;
+    // mpcOptimizationParameterLudic.lagError=RealScalar.of(1);
+    synchronized (MPCLudicConfig.GLOBAL) {
+      mpcOptimizationParameterLudic.speedCost = MPCLudicConfig.GLOBAL.speedCost;
+    }
+    return mpcOptimizationParameterLudic;
   }
 }
