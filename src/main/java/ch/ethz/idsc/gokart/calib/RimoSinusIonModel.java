@@ -13,7 +13,7 @@ import ch.ethz.idsc.owl.car.model.CarSteering;
 import ch.ethz.idsc.owl.car.shop.DefaultCarModel;
 import ch.ethz.idsc.owl.car.shop.DefaultWheelConstant;
 import ch.ethz.idsc.owl.car.shop.MotorTorques;
-import ch.ethz.idsc.owl.car.slip.Pacejka3;
+import ch.ethz.idsc.owl.car.slip.PacejkaMagic;
 import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
@@ -53,8 +53,8 @@ public class RimoSinusIonModel extends DefaultCarModel {
 
   /** coefficients for Pacejka's magic formula taken from
    * thesis report by MH, Section 5.1, p. 57 */
-  public final Pacejka3 PACEJKA_FRONT = new Pacejka3(15.0, 1.1, 0.96);
-  public final Pacejka3 PACEJKA__REAR = new Pacejka3(05.2, 1.4, 1.06);
+  public final PacejkaMagic PACEJKA_FRONT = new PacejkaMagic(15.0, 1.1, 0.96);
+  public final PacejkaMagic PACEJKA__REAR = new PacejkaMagic(05.2, 1.4, 1.06);
   // ---
   private final List<WheelInterface> list = new ArrayList<>();
   // private final List<WheelConfiguration> list = new ArrayList<>();

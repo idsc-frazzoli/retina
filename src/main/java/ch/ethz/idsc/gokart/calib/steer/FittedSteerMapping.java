@@ -1,7 +1,6 @@
 // code by jph
 package ch.ethz.idsc.gokart.calib.steer;
 
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Series;
@@ -30,7 +29,7 @@ public class FittedSteerMapping extends AbstractSteerMapping {
       Scalar column2steer1, Scalar column2steer3, //
       Scalar steer2column1, Scalar steer2column3, Scalar steer2column5) {
     super( //
-        Series.of(Tensors.of(RealScalar.ZERO, column2steer1, RealScalar.ZERO, column2steer3)), //
+        Series.of(Tensors.of(Quantity.of(0.0, "m^-1"), column2steer1, Quantity.of(0.0, "SCE^-2*m^-1"), column2steer3)), //
         new InverseSteerCubic(column2steer1, column2steer3));
   }
 }

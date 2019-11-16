@@ -65,6 +65,7 @@ public class ExtrudedFootprintRender implements RenderInterface {
       // center of rear axle
       StateTime CENTER = new StateTime(Tensors.of(RealScalar.ZERO, RealScalar.ZERO, RealScalar.ZERO), RealScalar.ZERO);
       {
+        // System.out.println(ratio);
         final Flow flow_forward = Se2CarFlows.singleton(RealScalar.ONE, Magnitude.PER_METER.apply(ratio));
         final Tensor center_forward = //
             Tensor.of(STATE_INTEGRATOR.trajectory(CENTER, flow_forward).stream().map(StateTime::state));
