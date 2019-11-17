@@ -1,6 +1,8 @@
 // code by jph, ta
 package ch.ethz.idsc.owl.car.slip;
 
+import java.io.Serializable;
+
 import ch.ethz.idsc.tensor.NumberQ;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -29,7 +31,7 @@ import ch.ethz.idsc.tensor.sca.Sin;
  * Important: {@link PacejkaMagic} is not continuous for several input
  * Tensors.vector(0, 1);
  * Tensors.vector(0, 0); */
-public class PacejkaMagic {
+public class PacejkaMagic implements Serializable {
   private final Scalar B;
   private final Scalar C;
   private final Scalar D;
