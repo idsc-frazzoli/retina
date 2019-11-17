@@ -28,8 +28,8 @@ public class CubicAngleMapping implements AngleMapping {
   private CubicAngleMapping( //
       Scalar column2steer1, Scalar column2steer3, //
       Scalar steer2column1, Scalar steer2column3) {
-    column2steer = Series.of(Tensors.of(RealScalar.ZERO, column2steer1, RealScalar.ZERO, column2steer3));
-    steer2column = Series.of(Tensors.of(RealScalar.ZERO, steer2column1, RealScalar.ZERO, steer2column3));
+    column2steer = Series.of(Tensors.of(RealScalar.ZERO, column2steer1, Quantity.of(0.0, "SCE^-2"), column2steer3));
+    steer2column = Series.of(Tensors.of(Quantity.of(0.0, "SCE"), steer2column1, Quantity.of(0.0, "SCE"), steer2column3));
   }
 
   @Override // from AngleMapping
