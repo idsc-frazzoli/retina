@@ -9,7 +9,7 @@ import ch.ethz.idsc.owl.car.core.VehicleModel;
 import ch.ethz.idsc.owl.car.core.WheelInterface;
 import ch.ethz.idsc.owl.car.model.CarControl;
 import ch.ethz.idsc.owl.car.model.CarSteering;
-import ch.ethz.idsc.owl.car.slip.Pacejka3;
+import ch.ethz.idsc.owl.car.slip.PacejkaMagic;
 import ch.ethz.idsc.tensor.DoubleScalar;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
@@ -36,8 +36,8 @@ public class CHatchbackModel extends DefaultCarModel {
     this.gammaM = gammaM;
     final Scalar radius = DoubleScalar.of(0.325); // wheel radius [m]
     final Scalar IW = DoubleScalar.of(0.9); // wheel inertia [kgm2]
-    final Pacejka3 PACEJKA1 = new Pacejka3(13.8509, 1.3670, 0.9622);
-    final Pacejka3 PACEJKA2 = new Pacejka3(14.1663, 1.3652, 0.9744);
+    final PacejkaMagic PACEJKA1 = new PacejkaMagic(13.8509, 1.3670, 0.9622);
+    final PacejkaMagic PACEJKA2 = new PacejkaMagic(14.1663, 1.3652, 0.9744);
     final Scalar LW = DoubleScalar.of(0.8375); // lateral distance of wheels from COG [m]
     final Scalar LF = DoubleScalar.of(1.015); // front axle distance from COG [m]
     final Scalar LR = DoubleScalar.of(1.895); // rear axle distance from COG [m]

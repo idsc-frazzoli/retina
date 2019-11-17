@@ -27,12 +27,12 @@ public class RobustSlip implements SlipInterface, Serializable {
    * @param pacejka3
    * @param U ground speed in coordinate system of tire
    * @param rtw == radius * rate of wheel */
-  public RobustSlip(Pacejka3 pacejka3, Tensor U, Scalar rtw) {
+  public RobustSlip(PacejkaMagic pacejka3, Tensor U, Scalar rtw) {
     final Scalar ux = U.Get(0).subtract(rtw); // effective speed of tire (longitude)
     final Scalar uy = U.Get(1);
     final Scalar total = Scalars.isZero(rtw) //
         ? pacejka3.limit()
-        : pacejka3.apply(Hypot.of(ux, uy).divide(rtw));
+        : pacejka3.new sin().apply(Hypot.of(ux, uy).divide(rtw));
     mu = NORMALIZE.apply(Tensors.of(ux, uy)).multiply(total.negate());
   }
 

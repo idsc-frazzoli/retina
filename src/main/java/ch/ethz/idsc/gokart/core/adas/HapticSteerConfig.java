@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.adas;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.owl.car.slip.PacejkaMagic;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RationalScalar;

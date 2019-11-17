@@ -25,13 +25,13 @@ class TextbookSlip implements SlipInterface, Serializable {
    * @param pacejka3
    * @param U ground speed in coordinate system of tire
    * @param rtw == radius * rate of wheel */
-  public TextbookSlip(Pacejka3 pacejka3, Tensor U, Scalar rtw) {
+  public TextbookSlip(PacejkaMagic pacejka3, Tensor U, Scalar rtw) {
     final Scalar vx = U.Get(0);
     final Scalar vy = U.Get(1);
     final Scalar sx = vx.subtract(rtw).divide(rtw); // division by 0 !
     final Scalar sy = RealScalar.ONE.add(sx).multiply(vy.divide(vx));
     final Scalar s = Hypot.of(sx, sy);
-    final Scalar mu = pacejka3.apply(s);
+    final Scalar mu = pacejka3.new sin().apply(s);
     mux = mu.multiply(robustDiv(sx, s, EPS)).negate(); // hack !
     muy = mu.multiply(robustDiv(sy, s, EPS)).negate(); // hack !
   }

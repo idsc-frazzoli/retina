@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.calib.brake;
 
 import ch.ethz.idsc.gokart.dev.linmot.LinmotPutHelper;
 import ch.ethz.idsc.retina.util.math.SI;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -22,7 +21,7 @@ public abstract class AbstractBrakeFunction {
   /** old value: -1.3735 * 10000.0 == -13735.0 */
   /** new data (measured with IMU) -0.0008 * 10000.0 == -8.0 */
   private static final Scalar QUADRATIC_FACTOR = Quantity.of(-8.0, SI.ACCELERATION.add(SI.METER.add(SI.METER).negate()));
-  private static final Tensor COEFFS = Tensors.of(RealScalar.ZERO, LINEAR_FACTOR, QUADRATIC_FACTOR).unmodifiable();
+  private static final Tensor COEFFS = Tensors.of(Quantity.of(0.0, SI.ACCELERATION), LINEAR_FACTOR, QUADRATIC_FACTOR);
   private static final ScalarUnaryOperator BRAKING_ACCELERATION = Series.of(COEFFS);
   /** point after which the brake is effective
    * 2.5 / 100.0 == 0.025 */
@@ -52,7 +51,7 @@ public abstract class AbstractBrakeFunction {
   static Scalar getNeededBrakeActuation(Scalar wantedDeceleration, Scalar factor) {
     if (Sign.isNegativeOrZero(wantedDeceleration))
       return LinmotPutHelper.scalePositive().min();
-    Tensor coeffs = COEFFS.copy().multiply(factor);
+    Tensor coeffs = COEFFS.multiply(factor);
     coeffs.set(scalar -> scalar.subtract(wantedDeceleration), 0); // poly(x) == y -> poly(x) - y == 0
     Tensor roots = Roots.of(coeffs);
     return Real.FUNCTION.apply(roots.Get(0)).add(BRAKE_START);

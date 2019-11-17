@@ -9,7 +9,7 @@ import ch.ethz.idsc.tensor.sca.Chop;
 import junit.framework.TestCase;
 
 public class RobustSlipTest extends TestCase {
-  private static void _isContinuous(Pacejka3 pacejka3, Tensor U) {
+  private static void _isContinuous(PacejkaMagic pacejka3, Tensor U) {
     final Tensor muLim = new RobustSlip(pacejka3, U, U.Get(0)).slip();
     final Scalar eps = RealScalar.of(1e-10);
     {
@@ -25,7 +25,7 @@ public class RobustSlipTest extends TestCase {
   }
 
   public void testSimple() {
-    final Pacejka3 pacejka3 = new Pacejka3(13.8509, 1.3670, 0.9622);
+    final PacejkaMagic pacejka3 = new PacejkaMagic(13.8509, 1.3670, 0.9622);
     _isContinuous(pacejka3, Tensors.vector(-1, -1));
     _isContinuous(pacejka3, Tensors.vector(1, -1));
     _isContinuous(pacejka3, Tensors.vector(-1, 1));
@@ -37,7 +37,7 @@ public class RobustSlipTest extends TestCase {
   }
 
   public void testSimple2() {
-    final Pacejka3 pacejka3 = new Pacejka3(13.8509, 1.3670, 0.9622);
+    final PacejkaMagic pacejka3 = new PacejkaMagic(13.8509, 1.3670, 0.9622);
     {
       SlipInterface rs = new RobustSlip(pacejka3, Tensors.vector(1, 0), RealScalar.of(1.1));
       rs.slip();

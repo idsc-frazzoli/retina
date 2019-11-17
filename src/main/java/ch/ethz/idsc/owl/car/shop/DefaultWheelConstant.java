@@ -2,7 +2,7 @@
 package ch.ethz.idsc.owl.car.shop;
 
 import ch.ethz.idsc.owl.car.core.WheelInterface;
-import ch.ethz.idsc.owl.car.slip.Pacejka3;
+import ch.ethz.idsc.owl.car.slip.PacejkaMagic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -11,10 +11,10 @@ public class DefaultWheelConstant implements WheelInterface {
   private final Scalar radius;
   private final Scalar width;
   private final Scalar iw_invert;
-  private final Pacejka3 pacejka3;
+  private final PacejkaMagic pacejka3;
   private final Tensor lever;
 
-  public DefaultWheelConstant(Scalar radius, Scalar width, Scalar iw, Pacejka3 pacejka3, Tensor lever) {
+  public DefaultWheelConstant(Scalar radius, Scalar width, Scalar iw, PacejkaMagic pacejka3, Tensor lever) {
     this.radius = radius;
     this.width = width;
     this.iw_invert = iw.reciprocal();
@@ -43,7 +43,7 @@ public class DefaultWheelConstant implements WheelInterface {
   }
 
   @Override
-  public Pacejka3 pacejka() {
+  public PacejkaMagic pacejka() {
     return pacejka3;
   }
 }
