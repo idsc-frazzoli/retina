@@ -39,16 +39,8 @@ public class MPCDrivingLudicModule extends MPCDrivingCommonModule {
         mpcMaxSpeed, //
         mpcOptimizationConfig.maxLonAcc, //
         mpcOptimizationConfig.steeringReg, //
-        mpcOptimizationConfig.specificMoI);
-    synchronized (MPCLudicConfig.GLOBAL) {
-      mpcOptimizationParameterLudic.speedCost = MPCLudicConfig.GLOBAL.speedCost;
-      mpcOptimizationParameterLudic.lagError = MPCLudicConfig.GLOBAL.lagError;
-      mpcOptimizationParameterLudic.latError = MPCLudicConfig.GLOBAL.latError;
-      mpcOptimizationParameterLudic.progress = MPCLudicConfig.GLOBAL.progress;
-      mpcOptimizationParameterLudic.regularizerAB = MPCLudicConfig.GLOBAL.regularizerAB;
-      mpcOptimizationParameterLudic.regularizerTV = MPCLudicConfig.GLOBAL.regularizerTV;
-      mpcOptimizationParameterLudic.slackSoftConstraint = MPCLudicConfig.GLOBAL.slackSoftConstraint;
-    }
+        mpcOptimizationConfig.specificMoI, //
+        MPCLudicConfig.FERRY);
     return mpcOptimizationParameterLudic;
   }
 }

@@ -26,19 +26,19 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
   public Scalar steerInertia = RealScalar.of(0.0125);
   /** Parameters of the cost function (without unit of measure) */
   /** Lag Error */
-  public Scalar lagError = RealScalar.of(1);
+  private final Scalar lagError;
   /** Lateral Error */
-  public Scalar latError = RealScalar.of(0.01);
+  private final Scalar latError;
   /** Path Progress */
-  public Scalar progress = RealScalar.of(0.2);
+  private final Scalar progress;
   /** Regularizer for input AB */
-  public Scalar regularizerAB = RealScalar.of(0.0004);
+  private final Scalar regularizerAB;
   /** Regularizer for speedCost */
-  public Scalar speedCost = RealScalar.of(0.04);
+  private final Scalar speedCost;
   /** Slack variable for soft constraint */
-  public Scalar slackSoftConstraint = RealScalar.of(5);
+  private final Scalar slackSoftConstraint;
   /** Regularizer for input TV */
-  public Scalar regularizerTV = RealScalar.of(0.01);
+  private final Scalar regularizerTV;
 
   public MPCOptimizationParameterLudic(ByteBuffer byteBuffer) {
     super(byteBuffer);
@@ -60,8 +60,15 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
     regularizerTV = RealScalar.of(byteBuffer.getFloat());
   }
 
-  public MPCOptimizationParameterLudic(Scalar mpcMaxSpeed, Scalar maxLonAcc, Scalar steeringReg, Scalar specificMoI) {
+  public MPCOptimizationParameterLudic(Scalar mpcMaxSpeed, Scalar maxLonAcc, Scalar steeringReg, Scalar specificMoI, MPCLudicConfig mpcLudicConfig) {
     super(mpcMaxSpeed, maxLonAcc, steeringReg, specificMoI);
+    speedCost = mpcLudicConfig.speedCost;
+    lagError = mpcLudicConfig.lagError;
+    latError = mpcLudicConfig.latError;
+    progress = mpcLudicConfig.progress;
+    regularizerAB = mpcLudicConfig.regularizerAB;
+    regularizerTV = mpcLudicConfig.regularizerTV;
+    slackSoftConstraint = mpcLudicConfig.slackSoftConstraint;
   }
 
   @Override // from BufferInsertable
