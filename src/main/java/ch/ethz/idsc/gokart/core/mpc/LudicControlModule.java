@@ -31,13 +31,16 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Beginner driving");
           MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.4);
+          mpcLudicConfig.speedCost = RealScalar.of(0.02);
           mpcLudicConfig.lagError = RealScalar.of(1);
           mpcLudicConfig.latError = RealScalar.of(0.3);
           mpcLudicConfig.progress = RealScalar.of(0.4);
           mpcLudicConfig.regularizerAB = RealScalar.of(0.0004);
           mpcLudicConfig.regularizerTV = RealScalar.of(0.1);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(10);
+          mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
+          mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
+          MPCLudicConfig.FERRY = mpcLudicConfig;
         });
         jPanel.add(jButton);
       }
@@ -47,13 +50,15 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Moderate driving");
           MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.08);
+          mpcLudicConfig.speedCost = RealScalar.of(0.03);
           mpcLudicConfig.lagError = RealScalar.of(1);
           mpcLudicConfig.latError = RealScalar.of(0.06);
           mpcLudicConfig.progress = RealScalar.of(0.15);
           mpcLudicConfig.regularizerAB = RealScalar.of(0.0008);
           mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(8);
+          mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
+          mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
           MPCLudicConfig.FERRY = mpcLudicConfig;
         });
         jPanel.add(jButton);
@@ -71,6 +76,8 @@ public class LudicControlModule extends AbstractModule {
           mpcLudicConfig.regularizerAB = RealScalar.of(0.0004);
           mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(5);
+          mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
+          mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
           MPCLudicConfig.FERRY = mpcLudicConfig;
         });
         jPanel.add(jButton);
@@ -88,6 +95,8 @@ public class LudicControlModule extends AbstractModule {
           mpcLudicConfig.regularizerAB = RealScalar.of(0.0004);
           mpcLudicConfig.regularizerTV = RealScalar.of(0.05);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(4);
+          mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
+          mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
           MPCLudicConfig.FERRY = mpcLudicConfig;
         });
         jPanel.add(jButton);

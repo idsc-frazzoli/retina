@@ -10,13 +10,13 @@ import ch.ethz.idsc.tensor.Scalar;
 class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
   private static final int LENGTH = (4 + 16) * 4;
   /** Pacejka's formula front wheels parameters */
-  public Scalar pacejkaFB = RealScalar.of(9);
-  public Scalar pacejkaFC = RealScalar.of(1);
-  public Scalar pacejkaFD = RealScalar.of(10);
+  private final Scalar pacejkaFB;
+  private final Scalar pacejkaFC;
+  private final Scalar pacejkaFD;
   /** Pacejka's formula rear wheels parameters */
-  public Scalar pacejkaRB = RealScalar.of(5.2);
-  public Scalar pacejkaRC = RealScalar.of(1.1);
-  public Scalar pacejkaRD = RealScalar.of(10);
+  private final Scalar pacejkaRB;
+  private final Scalar pacejkaRC;
+  private final Scalar pacejkaRD;
   /** stiffness, damping, inertia of the steering column */
   // TODO Unit is SCT/SCE
   public Scalar steerStiff = RealScalar.of(0.8875);
@@ -69,6 +69,12 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
     regularizerAB = mpcLudicConfig.regularizerAB;
     regularizerTV = mpcLudicConfig.regularizerTV;
     slackSoftConstraint = mpcLudicConfig.slackSoftConstraint;
+    pacejkaFB = mpcLudicConfig.pacejkaFB;
+    pacejkaFC = mpcLudicConfig.pacejkaFC;
+    pacejkaFD = mpcLudicConfig.pacejkaFD;
+    pacejkaRB = mpcLudicConfig.pacejkaRB;
+    pacejkaRC = mpcLudicConfig.pacejkaRC;
+    pacejkaRD = mpcLudicConfig.pacejkaRD;
   }
 
   @Override // from BufferInsertable
