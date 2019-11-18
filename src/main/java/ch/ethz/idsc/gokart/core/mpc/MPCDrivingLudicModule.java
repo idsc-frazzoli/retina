@@ -26,7 +26,7 @@ public class MPCDrivingLudicModule extends MPCDrivingCommonModule {
 
   static MPCOptimizationParameterLudic optimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
-    final Scalar maxSpeed = mpcOptimizationConfig.maxSpeed;
+    final Scalar maxSpeed = MPCLudicConfig.FERRY.maxSpeed;
     final Scalar minSpeed = mpcOptimizationConfig.minSpeed;
     final Scalar mpcMaxSpeed;
     if (optional.isPresent()) {
