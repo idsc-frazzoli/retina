@@ -33,10 +33,10 @@ public class LudicControlModule extends AbstractModule {
           MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
           mpcLudicConfig.speedCost = RealScalar.of(0.02);
           mpcLudicConfig.lagError = RealScalar.of(1);
-          mpcLudicConfig.latError = RealScalar.of(0.3);
-          mpcLudicConfig.progress = RealScalar.of(0.4);
-          mpcLudicConfig.regularizerAB = RealScalar.of(0.0004);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.1);
+          mpcLudicConfig.latError = RealScalar.of(0.12);
+          mpcLudicConfig.progress = RealScalar.of(0.1);
+          mpcLudicConfig.regularizerAB = RealScalar.of(0.0012);
+          mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(10);
           mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
           mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
