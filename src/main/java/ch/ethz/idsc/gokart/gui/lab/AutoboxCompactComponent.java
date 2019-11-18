@@ -38,21 +38,17 @@ import ch.ethz.idsc.retina.imu.vmu931.Vmu931ImuFrameListener;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.retina.joystick.ManualControlProvider;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.pose.PoseHelper;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
-import ch.ethz.idsc.tensor.Tensor;
-import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.img.ColorDataGradients;
 import ch.ethz.idsc.tensor.img.ColorFormat;
-import ch.ethz.idsc.tensor.io.Export;
-import ch.ethz.idsc.tensor.io.HomeDirectory;
-import ch.ethz.idsc.tensor.io.Put;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
+import idsc.BinaryBlob;
+import lcm.lcm.LCM;
 
 /* package */ class AutoboxCompactComponent extends ToolbarsComponent implements StartAndStoppable {
   private static final Clip CLIP_AHEAD = Clips.absoluteOne();
@@ -83,11 +79,11 @@ import ch.ethz.idsc.tensor.sca.Round;
   private final JTextField jTF_vmu931_gyr;
   // private final JTextField jTF_vmu932_acc;
   // private final JTextField jTF_vmu932_gyr;
-  private final JTextField jTF_localPose;
-  private final JButton jButtonAppend = new JButton("pose append");
+  // private final JTextField jTF_localPose;
+  // private final JButton jButtonAppend = new JButton("pose append");
   private final JTextField jTF_localQual;
   private JTextField jTF_uptime = new JTextField();
-  private final Tensor poseList = Tensors.empty();
+  // private final Tensor poseList = Tensors.empty();
   private final LoggerModule loggerModule = ModuleAuto.INSTANCE.getInstance(LoggerModule.class);
   // ---
   private GokartPoseEvent gokartPoseEvent;
@@ -141,10 +137,10 @@ import ch.ethz.idsc.tensor.sca.Round;
       jTF_davis240c.setText(text);
     }
     { // pose coordinates
-      String string = Objects.nonNull(gokartPoseEvent) //
-          ? gokartPoseEvent.getPose().map(Round._3).toString()
-          : ToolbarsComponent.UNKNOWN;
-      jTF_localPose.setText(string);
+      // String string = Objects.nonNull(gokartPoseEvent) //
+      // ? gokartPoseEvent.getPose().map(Round._3).toString()
+      // : ToolbarsComponent.UNKNOWN;
+      // jTF_localPose.setText(string);
     }
     {
       if (Objects.nonNull(vmu931ImuFrame)) {
@@ -212,29 +208,58 @@ import ch.ethz.idsc.tensor.sca.Round;
         }
       }
     }
-    jTF_localPose = createReading("Pose");
+    // jTF_localPose = createReading("Pose");
     jTF_localQual = createReading("Pose quality");
     if (Objects.nonNull(loggerModule))
       jTF_uptime = createReading("Uptime");
+    // if (false) {
+    // JToolBar jToolBar = createRow("store");
+    // jButtonAppend.addActionListener(actionEvent -> {
+    // if (Objects.nonNull(gokartPoseEvent)) {
+    // Tensor state = gokartPoseEvent.getPose();
+    // state = PoseHelper.toUnitless(state);
+    // state.set(Round._2, 0);
+    // state.set(Round._2, 1);
+    // state.set(Round._6, 2);
+    // poseList.append(state);
+    // try {
+    // Put.of(HomeDirectory.file("track.mathematica"), poseList);
+    // Export.of(HomeDirectory.file("track.csv"), poseList);
+    // } catch (Exception exception) {
+    // exception.printStackTrace();
+    // }
+    // }
+    // });
+    // jToolBar.add(jButtonAppend);
+    // }
     {
-      JToolBar jToolBar = createRow("store");
-      jButtonAppend.addActionListener(actionEvent -> {
-        if (Objects.nonNull(gokartPoseEvent)) {
-          Tensor state = gokartPoseEvent.getPose();
-          state = PoseHelper.toUnitless(state);
-          state.set(Round._2, 0);
-          state.set(Round._2, 1);
-          state.set(Round._6, 2);
-          poseList.append(state);
-          try {
-            Put.of(HomeDirectory.file("track.mathematica"), poseList);
-            Export.of(HomeDirectory.file("track.csv"), poseList);
-          } catch (Exception exception) {
-            exception.printStackTrace();
-          }
-        }
+      JTextField jTextField = createEditing("tag driver");
+      jTextField.setText("");
+      jTextField.addActionListener(e -> {
+        BinaryBlob binaryBlob = new BinaryBlob();
+        binaryBlob.data = jTextField.getText().getBytes();
+        binaryBlob.data_length = binaryBlob.data.length;
+        String string = new String(binaryBlob.data);
+        if (jTextField.getText().equals(string)) {
+          LCM.getSingleton().publish("gokart.driver", binaryBlob);
+          System.out.println("gokart.driver=" + string);
+          jTextField.setBackground(Color.GREEN);
+          jTextField.setEnabled(false);
+          new Thread(new Runnable() {
+            @Override
+            public void run() {
+              try {
+                Thread.sleep(500);
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+              jTextField.setBackground(null);
+              jTextField.setEnabled(true);
+            }
+          }).start();
+        } else
+          new RuntimeException("string encoding error").printStackTrace();
       });
-      jToolBar.add(jButtonAppend);
     }
   }
 
