@@ -14,6 +14,7 @@ import ch.ethz.idsc.gokart.core.fuse.SafetyConfig;
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.map.MappingConfig;
 import ch.ethz.idsc.gokart.core.map.OccupancyConfig;
+import ch.ethz.idsc.gokart.core.mpc.MPCLudicConfig;
 import ch.ethz.idsc.gokart.core.mpc.MPCOptimizationConfig;
 import ch.ethz.idsc.gokart.core.plan.TrajectoryConfig;
 import ch.ethz.idsc.gokart.core.pure.ClothoidPursuitConfig;
@@ -44,6 +45,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPid;
       PurePursuitConfig.GLOBAL, //
       TorqueVectoringConfig.GLOBAL, //
       MPCOptimizationConfig.GLOBAL, //
+      MPCLudicConfig.GLOBAL, //
       // ClusterConfig.GLOBAL, //
       TrajectoryConfig.GLOBAL, //
       // PlanSRConfig.GLOBAL, //
