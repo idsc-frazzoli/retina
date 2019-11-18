@@ -273,9 +273,9 @@ int main(int argc, char *argv[]) {
 
 	//sendEmptyControlAndStates(lcm);
 	printf("about to subscribe\n");
-	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs.d", &state_handler, NULL);
+	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs.l", &state_handler, NULL);
 	//idsc_BinaryBlob_subscribe(lcm, "mpc.forces.pp", &path_handler, NULL);
-	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.op.d", &para_handler, NULL);
+	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.op.l", &para_handler, NULL);
 	printf("starting main loop\n");
 	while(1)
 		lcm_handle(lcm);
