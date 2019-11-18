@@ -2,18 +2,18 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.awt.GridLayout;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class LudicControlModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
@@ -24,86 +24,85 @@ public class LudicControlModule extends AbstractModule {
   protected void first() {
     {
       JPanel jPanel = new JPanel(new GridLayout(4, 1));
-      List<JButton> list = new ArrayList<>();
       {
         JButton jButton = new JButton("Beginner");
-        list.add(jButton);
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Beginner driving");
           MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.02);
+          mpcLudicConfig.speedCost = RealScalar.of(0.005);
           mpcLudicConfig.lagError = RealScalar.of(1);
           mpcLudicConfig.latError = RealScalar.of(0.12);
           mpcLudicConfig.progress = RealScalar.of(0.1);
           mpcLudicConfig.regularizerAB = RealScalar.of(0.0012);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
+          mpcLudicConfig.regularizerTV = RealScalar.of(0.001);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(10);
           mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
           mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
+          mpcLudicConfig.maxSpeed = Quantity.of(5, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
         });
         jPanel.add(jButton);
       }
       {
         JButton jButton = new JButton("Moderate");
-        list.add(jButton);
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Moderate driving");
           MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.03);
+          mpcLudicConfig.speedCost = RealScalar.of(0.01);
           mpcLudicConfig.lagError = RealScalar.of(1);
           mpcLudicConfig.latError = RealScalar.of(0.06);
           mpcLudicConfig.progress = RealScalar.of(0.15);
           mpcLudicConfig.regularizerAB = RealScalar.of(0.0008);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
+          mpcLudicConfig.regularizerTV = RealScalar.of(0.001);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(8);
           mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
           mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
+          mpcLudicConfig.maxSpeed = Quantity.of(8, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
         });
         jPanel.add(jButton);
       }
       {
         JButton jButton = new JButton("Advanced");
-        list.add(jButton);
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Advanced driving");
           MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.04);
+          mpcLudicConfig.speedCost = RealScalar.of(0.015);
           mpcLudicConfig.lagError = RealScalar.of(1);
           mpcLudicConfig.latError = RealScalar.of(0.01);
           mpcLudicConfig.progress = RealScalar.of(0.2);
           mpcLudicConfig.regularizerAB = RealScalar.of(0.0004);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
+          mpcLudicConfig.regularizerTV = RealScalar.of(0.001);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(5);
           mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
           mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
+          mpcLudicConfig.maxSpeed = Quantity.of(10, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
         });
         jPanel.add(jButton);
       }
-      {
-        JButton jButton = new JButton("Drifting");
-        list.add(jButton);
-        jButton.addActionListener(actionEvent -> {
-          System.out.println("Swapped to Drifting mode");
-          MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.04);
-          mpcLudicConfig.lagError = RealScalar.of(0.2);
-          mpcLudicConfig.latError = RealScalar.of(0.01);
-          mpcLudicConfig.progress = RealScalar.of(0.1);
-          mpcLudicConfig.regularizerAB = RealScalar.of(0.0004);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.05);
-          mpcLudicConfig.slackSoftConstraint = RealScalar.of(4);
-          mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
-          mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
-          MPCLudicConfig.FERRY = mpcLudicConfig;
-        });
-        jPanel.add(jButton);
-      }
+      // {
+      // JButton jButton = new JButton("Drifting");
+      // list.add(jButton);
+      // jButton.addActionListener(actionEvent -> {
+      // System.out.println("Swapped to Drifting mode");
+      // MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
+      // mpcLudicConfig.speedCost = RealScalar.of(0.04);
+      // mpcLudicConfig.lagError = RealScalar.of(0.2);
+      // mpcLudicConfig.latError = RealScalar.of(0.01);
+      // mpcLudicConfig.progress = RealScalar.of(0.1);
+      // mpcLudicConfig.regularizerAB = RealScalar.of(0.0004);
+      // mpcLudicConfig.regularizerTV = RealScalar.of(0.05);
+      // mpcLudicConfig.slackSoftConstraint = RealScalar.of(4);
+      // mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
+      // mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
+      // mpcLudicConfig.maxSpeed= Quantity.of(8, SI.VELOCITY);
+      // MPCLudicConfig.FERRY = mpcLudicConfig;
+      // });
+      // jPanel.add(jButton);
+      // }
       {
         JButton jButton = new JButton("Custom");
-        list.add(jButton);
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Custom mode");
           MPCLudicConfig.FERRY = MPCLudicConfig.GLOBAL;
