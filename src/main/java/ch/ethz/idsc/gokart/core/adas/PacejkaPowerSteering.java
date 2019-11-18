@@ -29,6 +29,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Scalar alpha = Vy.divide(Vx.add(Quantity.of(0.5, "m*s^-1")));
     Scalar dist = hapticSteerConfig.getPacejkaDistance().apply(alpha);
     Scalar force = hapticSteerConfig.getPacejkaForce().apply(alpha);
-    return dist.multiply(force);
+    return hapticSteerConfig.latForceCompensationBoundaryClip().apply(dist.multiply(force));
   }
 }
