@@ -160,8 +160,7 @@ end
 
 
 model.xinitidx = index.sb:index.nv;
-
-%% Upper & Lower bounds
+% variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
 model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
 
@@ -238,7 +237,6 @@ xs(index.theta-index.nu)=pangle;
 xs(index.v-index.nu)=5;
 xs(index.ab-index.nu)=0;
 xs(index.beta-index.nu)=0;
-xs(index.tau-index.nu)=0;
 xs(index.s-index.nu)=0.01;
 %xs(index.braketemp-index.nu)=40;
 history = zeros(tend*eulersteps,model.nvar+1);
@@ -312,7 +310,7 @@ for i =1:tend
         outputM = reshape(output.alldata,[model.nvar,model.N])';
         x0 = outputM';
         u = repmat(outputM(1,1:index.nu),eulersteps,1);
-        [xhist,time] = euler(@(x,u)interstagedx_THC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
+        [xhist,time] = euler(@(x,u)interstagedx(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
         xs = xhist(end,:);
         xs
         history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
@@ -353,7 +351,7 @@ for i =1:tend
         outputM = reshape(output.alldata,[model.nvar,model.N])';
         x0 = outputM';
         u = repmat(outputM(1,1:index.nu),eulersteps,1);
-        [xhist,time] = euler(@(x,u)interstagedx_THC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
+        [xhist,time] = euler(@(x,u)interstagedx(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
         xs = xhist(end,:);
         xs
         history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];

@@ -6,7 +6,9 @@ function dx = interstagedx_THC(x,u,p)
     %just for the moment
     Cf = p(index.pmoi); % moment of inertia    
 
-
+    %B1 = 15;
+    %C1 = 1.1;
+    %D1 = 9.4;
     FB = p(index.pacFB);
     FC = p(index.pacFC);
     FD = p(index.pacFD); % gravity acceleration considered
@@ -19,6 +21,9 @@ function dx = interstagedx_THC(x,u,p)
     scK=p(index.steerStiff);
     scD=p(index.steerDamp);
     scJ=p(index.steerInertia);
+    %B2 = 5.2;
+    %C2 = 1.4;
+    %D2 = 10.4;
     param = [FB,FC,FD,RB,RC,RD,Cf,scK,scD,scJ];
 
     %Control vars
@@ -30,7 +35,7 @@ function dx = interstagedx_THC(x,u,p)
     
     %State vars
     ab = x(index.ab-index.nu);                              %AB               [m*s^-2]      [Global RF]
-    dotbeta = x(index.dotbeta-index.nu);                %Dot_Beta      [SCE*s^-1]  
+    dotbeta = u(index.dotbeta-index.nu);                %Dot_Beta      [SCE*s^-1]  
     theta = x(index.theta-index.nu);                      %Theta           [rad]            [Global RF]
     vx = x(index.v-index.nu);                                %X_Vel           [m*s^-1]      [Kart RF]
     vy = x(index.yv-index.nu);                              %Y_Vel           [m*s^-1]      [Kart RF]
