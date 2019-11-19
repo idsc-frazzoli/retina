@@ -56,3 +56,16 @@ stdout_temp
 /MPCPathFollowing_Nash_py.py
 /MPCPathFollowing_Nash_simulinkBlock.mexw64
 /MPCPathFollowing_Nash_simulinkBlockcompact.mexw64
+/MPCPathFollowing_GT.mexw64
+/MPCPathFollowing_Leader.m
+/MPCPathFollowing_Leader.mexw64
+/MPCPathFollowing_Leader_casadi2forces.c
+/MPCPathFollowing_Leader_casadi2forces.obj
+/MPCPathFollowing_Leader_mex_compiler_warnings.txt
+/MPCPathFollowing_Leader_model_1.c
+/MPCPathFollowing_Leader_model_1.obj
+/MPCPathFollowing_Leader_model_31.c
+/MPCPathFollowing_Leader_model_31.obj
+/MPCPathFollowing_Leader_py.py
+/MPCPathFollowing_Leader_simulinkBlock.mexw64
+/MPCPathFollowing_Leader_simulinkBlockcompact.mexw64
