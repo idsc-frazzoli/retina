@@ -2856,6 +2856,18 @@ public enum GokartLogFile implements LogFile {
   /** system identification of pacejka constants */
   _20191111T164952_7b4d8f7e,
   /***************************************************/
+  /* 2019-11-18 */
+  /** testing different power steering,
+   * mpc */
+  _20191118T122045_8afecee9,
+  /** different ludic mpc */
+  _20191118T141721_2005d1bd,
+  /** different ludic mpc with pacejka tuning
+   * manual driving */
+  _20191118T154242_1c0beec7,
+  /** different ludic mpc with pacejka tuning */
+  _20191118T164349_096b8481,
+  /***************************************************/
   ;
   // ---
   @Override // from LogFile

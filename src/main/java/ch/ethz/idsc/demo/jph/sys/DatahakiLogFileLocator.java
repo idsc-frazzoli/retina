@@ -4,6 +4,7 @@ package ch.ethz.idsc.demo.jph.sys;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import ch.ethz.idsc.demo.GokartLogFiles;
@@ -41,7 +42,13 @@ public enum DatahakiLogFileLocator implements LogFileLocator {
 
   /** @return */
   public static Collection<LogFile> all() {
-    // TODO this is not implemented correctly
-    return GokartLogFiles.all(EXT_HD1);
+    Collection<LogFile> collection = new LinkedList<>();
+    for (File root : LOG_ROOT)
+      try {
+        collection.addAll(GokartLogFiles.all(root));
+      } catch (Exception exception) {
+        // ---
+      }
+    return collection;
   }
 }
