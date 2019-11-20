@@ -88,3 +88,4 @@ mvninstall.sh
 
 /powerlookuptable.csv
 /inversepowerlookuptable.csv
+*.asv
