@@ -1,6 +1,6 @@
-function f = objectiveTHC(z,points,radii,vmax, maxxacc, steeringreg,plag,plat,pprog,pab,pspeedcost,pslack,ptv)
+function f = objectiveTHC(z,points,radii,vmax, maxxacc, steeringreg,plag,plat,pprog,pab,pspeedcost,pslack,ptv,ptau)
     global index
-    pTau =0.1;
+    %pTau =0.0;
     %get the fancy spline
     l = 1.19;
     [splx,sply] = casadiDynamicBSPLINE(z(index.s),points);
@@ -24,6 +24,6 @@ function f = objectiveTHC(z,points,radii,vmax, maxxacc, steeringreg,plag,plat,pp
     prog = -pprog*z(index.ds);
     regAB = (z(index.dotab).^2)*pab;
     regBeta=(z(index.dotbeta).^2)*steeringreg;
-    regTau =(z(index.dottau).^2)*pTau;
-    f = lagcost+latcost+regAB+regBeta+prog+pslack*slack+speedcost+ptv*tv^2;
+    regTau =(z(index.dottau).^2)*ptau;
+    f = lagcost+latcost+regAB+regBeta+regTau+prog+pslack*slack+speedcost+ptv*tv^2;
 end
