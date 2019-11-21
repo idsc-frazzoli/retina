@@ -1,8 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Dynamic MPC Script
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% code by mh
-% annotation mcp
+% code by mh,em,ta
+% annotation mcp,ta
 
 
 %add force path (change that for yourself)
@@ -22,6 +22,8 @@ close all
 
 maxSpeed = 10; % in [m/s]
 maxxacc = 5; % in [m/s^-1]
+
+%Costs for simulation, change the real values in Java 
 steeringreg = 0.1;
 specificmoi = 0.3;
 plag=1;
@@ -33,6 +35,7 @@ pslack=5;
 ptv=0.01;
 ptau=0.05;
 
+%Simulation Pacejka constants, real values changalbe in java 
 FB = 9;
 FC = 1;
 FD = 7;
@@ -40,16 +43,10 @@ RB = 5.2;
 RC = 1.1;
 RD = 7;
 
+%Steering column properties
 J_steer=0.8875;
 b_steer=0.1625;
 k_steer=0.0125;
-
-%pointsO = 21; % number of Parameters
-%pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
-splinestart = 1;
-nextsplinepoints = 0;
-%parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
-% variables z = [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
 
 
 %% global parameters index
@@ -100,9 +97,12 @@ index.ptv = 20;
 index.ptau = 21;
 
 index.pointsO = 21; % number of Parameters
-index.pointsN = 10;
-solvetimes = [];
+index.pointsN = 10;% number of Spline points to use
+splinestart = 1;
+nextsplinepoints = 0;
 
+
+solvetimes = [];
 integrator_stepsize = 0.1;
 
 %% model params
@@ -130,8 +130,8 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 % Random control points for trajectory sampling
 points = [36.2,52,57.2,53,52,47,41.8;...          %x
-    44.933,58.2,53.8,49,44,43,38.33; ...    %y
-    1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
+    44.933,58.2,53.8,49,44,43,38.33; ...           %y
+    1.8,1.8,1.8,0.5,0.5,0.5,1.8]';                      %phi
 
 % points = [28,35,42,55.2,56,51,42,40;...          %x
 %           41,60,43,56,43,40,44,31; ...    %y
@@ -144,7 +144,7 @@ points(:,3)=points(:,3)-0.2;
 trajectorytimestep = integrator_stepsize;
 model.npar = index.pointsO + 3*index.pointsN;
 
-
+%Model Cost function
 for i=1:model.N
     model.objective{i} = @(z,p)objectiveTHC(...
         z,...
@@ -174,27 +174,18 @@ model.lb = -ones(1,index.nv)*inf;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
 model.lb(index.ab)=-inf;
-
 model.ub(index.tv)=1.7;
 model.lb(index.tv)=-1.7;
-
 model.lb(index.slack)=0;
-
 model.lb(index.v)=0;
-
 model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
-
 model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
-
 model.ub(index.tau)=0.5;
 model.lb(index.tau)=-0.5;
-
 model.ub(index.dottau)=0.5;
 model.lb(index.dottau)=-0.5;
-%model.ub = [inf, +5, 1.6, +inf, +inf, +inf, +inf,0.45,pointsN-2,85];  % simple upper bounds
-%model.lb = [-inf, -5, -0.1, -inf, -inf,  -inf, 0,-0.45,0,-inf];  % simple lower bounds
 
 
 
@@ -231,11 +222,9 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 %
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-tend = 100;
+tend = 70;
 eulersteps = 10;
 planintervall = 1;
-%[...,x,y,theta,v,ab,beta,s,braketemp]
-%[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
 fpoints = points(1:2,1:2);
 pdir = diff(fpoints);
 [pstartx,pstarty] = casadiDynamicBSPLINE(0.01,points);
@@ -258,13 +247,11 @@ planss = [];
 targets = [];
 planc = 10;
 x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
-%x0 = zeros(model.N*model.nvar,1);
+
 tstart = 1;
-%paras = ttpos(tstart:tstart+model.N-1,2:3)';
+
 for i =1:tend
-    tstart = i;
-    %model.xinit = [0,5,0,0.1,0,0];
-    
+    tstart = i;    
     %find bspline
     if(1)
         if xs(index.s-index.nu)>1
@@ -277,7 +264,7 @@ for i =1:tend
             %end
         end
     end
-    %xs(6)=xs(6)+normrnd(0,0.04);
+    
     xs(index.ab-index.nu)=min(casadiGetMaxAcc(xs(index.v-index.nu))-0.0001,xs(index.ab-index.nu));
     problem.xinit = xs';
     %do it every time because we don't care about the performance of this
@@ -330,8 +317,8 @@ for i =1:tend
         [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s),nextSplinePoints);
         targets = [targets;tx,ty];
     end
-    i
+    Percentage_Complete = 100*i/tend
 end
-%[t,ab,dotbeta,x,y,theta,v,beta,s]
+
 drawT
 
