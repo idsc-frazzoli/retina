@@ -30,8 +30,8 @@ RD = 10;
 J_steer=0.8875;
 b_steer=0.1625;
 k_steer=0.0125;
-dist=1;
-pslack2=10;
+dist=1.5;
+pslack2=1;
 pointsO = 24; % number of Parameters
 pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
@@ -115,9 +115,12 @@ model.ineq = @(z,p) nlconst_GT(z,p);
 model.hu = [0;0;1;0;0;inf];
 model.hl = [-inf;-inf;-inf;-inf;-inf;0];
 
-points = [18,35,42,55.2,56,51,42,40;...          %x
-          41,55,57,56,43,40,45,31; ...    %y
-          2.5,2.5,2.5,2.5,2.5,2.5,2.3,2.5]';   %phi
+% points = [18,35,42,55.2,56,51,42,40;...          %x
+%           41,55,57,56,43,40,45,31; ...    %y
+%           2.5,2.5,2.5,2.5,2.5,2.5,2.3,2.5]';   %phi
+points = [18,35,42,55.2,60,51,42,40;...          %x
+          41,55,57,56,43,40,42,31; ...    %y
+          2.5,2.5,2.5,2.5,2.3,2.3,2.3,2.3]';
 % %points = getPoints('/wildpoints.csv');
 points2=flip(points);
 points(:,3)=points(:,3)-0.2;
@@ -338,7 +341,7 @@ for i =1:tend
         IND=[IND;i];
     end
     if(exitflag~=1 && exitflag ~=0)
-        draw2
+        keyboard
         
     end
     [output2,exitflag2,info2] = MPCPathFollowing(problem2);
@@ -348,7 +351,7 @@ for i =1:tend
         IND2=[IND2;i];
     end
     if(exitflag2~=1 && exitflag2 ~=0)
-        draw2
+        keyboard
         
     end
     
@@ -389,6 +392,13 @@ for i =1:tend
         targets2 = [targets2;tx2,ty2];
     end
     Pos2=[outputM2(2:end,index.x),outputM2(2:end,index.y)];
+    distanceX=xs(1)-xs2(1);
+    distanceY=xs(2)-xs2(2);
+   
+    squared_distance_array   = sqrt(distanceX.^2 + distanceY.^2);
+    if squared_distance_array<=dist
+        squared_distance_array
+    end
     
 end
 %[t,ab,dotbeta,x,y,theta,v,beta,s]

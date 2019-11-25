@@ -24,3 +24,5 @@ stdout_temp
 /MPCPathFollowing_simulinkBlock.mexw64
 /MPCPathFollowing_simulinkBlockcompact.mexw64
 /interstagedx_HC.asv
+/MPCPathFollowing_model_15.c
+/MPCPathFollowing_model_15.obj

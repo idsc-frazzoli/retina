@@ -23,10 +23,10 @@ behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
 FB = 9;
 FC = 1;
-FD = 10; % gravity acceleration considered
+FD = 7; % gravity acceleration considered
 RB = 5.2;
 RC = 1.1;
-RD = 10;
+RD = 7;
 J_steer=0.8875;
 b_steer=0.1625;
 k_steer=0.0125;
@@ -128,7 +128,9 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 points = [36.2,52,57.2,53,52,47,41.8;...          %x
           44.933,58.2,53.8,49,44,43,38.33; ...    %y
           1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
-  
+% points = [18,35,42,55.2,56,51,42,40;...          %x
+%           41,55,57,56,43,40,45,31; ...    %y
+%           2.5,2.5,2.5,2.5,2.5,1,1,2.5]';
 % points = [28,35,42,55.2,56,51,42,40;...          %x
 %           41,60,43,56,43,40,44,31; ...    %y
 %           2,1.5,1.2,1.6,0.6,0.8,1.2,1.6]';   %phi
@@ -204,7 +206,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
 %% CodeOptions for FORCES solver
-tend = 100;
+tend = 150;
 eulersteps = 10;
 planintervall = 1;
 %[...,x,y,theta,v,ab,beta,s,braketemp]
@@ -266,7 +268,7 @@ for i =1:tend
     end
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     if i<=30 || i>=60
-        behaviour='aggressive';
+       % behaviour='aggressive';
         [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
         plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
         %paras = ttpos(tstart:tstart+model.N-1,2:3)';
@@ -307,7 +309,7 @@ for i =1:tend
             targets = [targets;tx,ty];
         end
     else
-        behaviour='aggressive';
+       % behaviour='aggressive';
         [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
         plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
             %paras = ttpos(tstart:tstart+model.N-1,2:3)';
