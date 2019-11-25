@@ -50,3 +50,12 @@ MPCPathFollowing_float getInitSteer(MPCPathFollowing_float beta, MPCPathFollowin
 		nextvalue = 0.5;
 	return nextvalue;
 }
+
+MPCPathFollowing_float getInitTau(MPCPathFollowing_float tau, MPCPathFollowing_float dottau, double time){
+	MPCPathFollowing_float nextvalue=tau+dottau*time;
+	if(nextvalue<-0.5)
+		nextvalue = -0.5;
+	if(nextvalue>0.5)
+		nextvalue = 0.5;
+	return nextvalue;
+}
