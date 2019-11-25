@@ -135,7 +135,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 
 	}
 	//[x,y,theta,dottheta,v,yv,beta,dotbeta,ab,tau,s]
-	initbeta = lastCRMsg.state.s;
+	inittau = lastCRMsg.state.s;
 	params.xinit[0] = lastCRMsg.state.X+cos(lastCRMsg.state.Psi)*backToCoM;
 	params.xinit[1] = lastCRMsg.state.Y+sin(lastCRMsg.state.Psi)*backToCoM;
 	params.xinit[2] = lastCRMsg.state.Psi;
@@ -235,10 +235,10 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].state.Psi = psi;
 			cnsmsg.cns[i].state.w2L = 0;//not in use
 			cnsmsg.cns[i].state.w2R = 0;//not in use
-			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+13];
+			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+12];
 			cnsmsg.cns[i].state.bTemp = 60;
-			cmsmsg.cns[i].state.beta=myoutput.alldata[i*S+12];
-			cmsmsg.cns[i].state.dotbeta=myoutput.alldata[i*S+14];
+			cnsmsg.cns[i].state.beta=myoutput.alldata[i*S+12];
+			cnsmsg.cns[i].state.dotbeta=myoutput.alldata[i*S+14];
 		}
 
 		//printf("prepared blob\n");
