@@ -29,12 +29,12 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Beginner driving");
           MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.005);
+          mpcLudicConfig.speedCost = RealScalar.of(0.02);
           mpcLudicConfig.lagError = RealScalar.of(1);
           mpcLudicConfig.latError = RealScalar.of(0.12);
           mpcLudicConfig.progress = RealScalar.of(0.1);
           mpcLudicConfig.regularizerAB = RealScalar.of(0.0012);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.001);
+          mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(10);
           mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
           mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
@@ -48,12 +48,12 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Moderate driving");
           MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.01);
+          mpcLudicConfig.speedCost = RealScalar.of(0.02);
           mpcLudicConfig.lagError = RealScalar.of(1);
           mpcLudicConfig.latError = RealScalar.of(0.06);
           mpcLudicConfig.progress = RealScalar.of(0.15);
           mpcLudicConfig.regularizerAB = RealScalar.of(0.0008);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.001);
+          mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(8);
           mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
           mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
@@ -67,16 +67,16 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Advanced driving");
           MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.015);
+          mpcLudicConfig.speedCost = RealScalar.of(0.03);
           mpcLudicConfig.lagError = RealScalar.of(1);
           mpcLudicConfig.latError = RealScalar.of(0.01);
-          mpcLudicConfig.progress = RealScalar.of(0.2);
+          mpcLudicConfig.progress = RealScalar.of(0.3);
           mpcLudicConfig.regularizerAB = RealScalar.of(0.0004);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.001);
+          mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(5);
           mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
           mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
-          mpcLudicConfig.maxSpeed = Quantity.of(10, SI.VELOCITY);
+          mpcLudicConfig.maxSpeed = Quantity.of(12, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
         });
         jPanel.add(jButton);

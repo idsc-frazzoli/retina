@@ -47,8 +47,8 @@ function [ACCBETA] = modelDb(VELX,VELY,VELROTZ,BETA,DotB,TauC, param)
     F1m=simpleMaccy(vel1(2),vel1(1));                       %Rot accel of SC from the front tire pacejka moment                      
  
     %% Cart Accelerations
-    fSpring=(-(scK/scD)*BETA);
-    fDamp=(-(scK/scD)*DotB);
+    fSpring=(-(scK/scJ)*BETA);
+    fDamp=(-(scD/scJ)*DotB);
     fTau=TauC/scJ;
     ACCBETA = fSpring+fDamp+ fTau +F1m;      %Rotational Acceleration of Steering Column
 

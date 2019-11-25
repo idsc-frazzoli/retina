@@ -1,6 +1,6 @@
-function f = objectiveHC(z,points,radii,vmax, maxxacc, steeringreg,plag,plat,pprog,pab,pspeedcost,pslack,ptv)
+function f = objectiveTHC(z,points,radii,vmax, maxxacc, steeringreg,plag,plat,pprog,pab,pspeedcost,pslack,ptv,ptau)
     global index
-
+    %pTau =0.0;
     %get the fancy spline
     l = 1.19;
     [splx,sply] = casadiDynamicBSPLINE(z(index.s),points);
@@ -22,6 +22,8 @@ function f = objectiveHC(z,points,radii,vmax, maxxacc, steeringreg,plag,plat,ppr
     lagcost = plag*lagerror^2;
     latcost = plat*laterror^2;
     prog = -pprog*z(index.ds);
-    reg = z(index.dotab).^2*pab+z(index.dotbeta).^2*steeringreg;
-    f = lagcost+latcost+reg+prog+pslack*slack+speedcost+ptv*tv^2;
+    regAB = (z(index.dotab).^2)*pab;
+    regBeta=(z(index.dotbeta).^2)*steeringreg;
+    regTau =(z(index.dottau).^2)*ptau;
+    f = lagcost+latcost+regAB+regBeta+regTau+prog+pslack*slack+speedcost+ptv*tv^2;
 end
