@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-public class MPCControlUpdateCapture implements MPCControlUpdateListener {
+public class MPCControlUpdateCaptureTorque implements MPCControlUpdateListener {
   // TODO MH/JPH initialize cns with zero structure to avoid null checks
   /* package */ ControlAndPredictionSteps cns = null;
   /** istep is outside the function to reuse the value from the previous function call */
