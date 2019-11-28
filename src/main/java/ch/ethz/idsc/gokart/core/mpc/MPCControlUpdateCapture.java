@@ -17,7 +17,6 @@ public class MPCControlUpdateCapture implements MPCControlUpdateListener {
   /** istep is outside the function to reuse the value from the previous function call */
   private int istep = 0;
 
-  
   /** get the last step before a point int time
    * 
    * @param query time in Unit [s]

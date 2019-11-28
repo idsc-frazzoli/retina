@@ -33,7 +33,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   private final MPCRequestPublisher mpcRequestPublisher;
   private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
-  private final MPCSteering mpcSteering; //= new MPCOpenLoopSteering();
+  private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
   // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
   private final MPCAggressiveCorrectedTorqueVectoringBraking mpcBraking = //
@@ -57,25 +57,10 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
    * @param mpcRequestPublisher
    * @param timing */
   MPCDrivingAbstractModule(MPCRequestPublisher mpcRequestPublisher, Timing timing) {
-    
     this(mpcRequestPublisher, //
         new SimpleDynamicMPCStateEstimationProvider(timing), // the use of "dynamic" is intended
-        timing, null, new MPCOpenLoopTorqueSteering());
+        timing, null);
   }
-  
-MPCDrivingAbstractModule(MPCRequestPublisher mpcRequestPublisher, Timing timing,MPCSteering mpcSTeering) {
-    
-    this(mpcRequestPublisher, //
-        new SimpleDynamicMPCStateEstimationProvider(timing), // the use of "dynamic" is intended
-        timing, null, mpcSTeering);
-  }
-
-MPCDrivingAbstractModule(MPCRequestPublisher mpcRequestPublisher, //
-    MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
-  
-  this(mpcRequestPublisher,mpcStateEstimationProvider, //
-      timing, null, new MPCOpenLoopTorqueSteering());
-}
 
   /** Hint: constructor only for testing
    * create Module with custom estimator
@@ -86,14 +71,12 @@ MPCDrivingAbstractModule(MPCRequestPublisher mpcRequestPublisher, //
    * @param track */
   MPCDrivingAbstractModule( //
       MPCRequestPublisher mpcRequestPublisher, //
-      MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track,//
-      MPCSteering mpcSTeering) {
+      MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
     this.mpcRequestPublisher = mpcRequestPublisher;
     this.mpcStateEstimationProvider = mpcStateEstimationProvider;
     this.track = track;
     // link mpc steering
     // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
-    mpcSteering = mpcSTeering;
     mpcPower = createPower(mpcStateEstimationProvider, mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
