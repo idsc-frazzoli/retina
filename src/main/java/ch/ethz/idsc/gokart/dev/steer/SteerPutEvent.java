@@ -7,6 +7,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -32,6 +33,7 @@ public class SteerPutEvent extends DataEvent {
   public static final List<Word> COMMANDS = Arrays.asList(MOT_TRQ_0, MOT_TRQ_1);
   public static final SteerPutEvent PASSIVE_MOT_TRQ_0 = new SteerPutEvent(SteerPutEvent.MOT_TRQ_0, 0);
   public static final SteerPutEvent PASSIVE_MOT_TRQ_1 = new SteerPutEvent(SteerPutEvent.MOT_TRQ_1, 0);
+  public static final Unit UNIT_ENCODERDOT = Unit.of("SCE").add(SI.PER_SECOND);
 
   /** @param command
    * @param torque with unit "SCT"
