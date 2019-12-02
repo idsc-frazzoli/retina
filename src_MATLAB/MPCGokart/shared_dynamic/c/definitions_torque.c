@@ -16,7 +16,7 @@ struct State {
 	float w2R;
 	float s;
 	float bTemp;
-	float beta;
+	float tau;
 	float dotbeta;
 };
 
@@ -31,6 +31,8 @@ struct Control {
 	float uB;
 	//if we don't have direct motor control
 	float aB;
+	//send dotS as control input (use state value for actual control)
+	float udotT;
 };
 
 struct ControlAndState {
