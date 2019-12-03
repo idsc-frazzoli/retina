@@ -34,18 +34,18 @@ p = offset + po;
 acc = lhistory(:,index.ab+1);
 maxacc = max(abs(acc));
 [nu,~]=size(p);
-for i=1:nu-1
-    next = i+1;
-    x = [p(i,1),p(next,1)];
-   y = [p(i,2),p(next,2)];
-   vc = acc(i)/maxacc;
+for kk=1:nu-1
+    next = kk+1;
+    x = [p(kk,1),p(next,1)];
+   y = [p(kk,2),p(next,2)];
+   vc = acc(kk)/maxacc;
    line(x,y,'Color',[0.5-0.5*vc,0.5+0.5*vc,0]); %%TODO MH not working
    %draw angle
    spc = spc+1;
    if(spc>=spacing)
        spc = 1;
-       back = p(i,:) - forward(i,:)*l2;
-       front = p(i,:) + forward(i,:)*l1;
+       back = p(kk,:) - forward(kk,:)*l2;
+       front = p(kk,:) + forward(kk,:)*l1;
        plot([back(1),front(1)],[back(2),front(2)],'-k');
    end
 end
@@ -238,18 +238,18 @@ p2 = offset2 + po2;
 acc2 = lhistory2(:,index.ab+1);
 maxacc2 = max(abs(acc2));
 [nu,~]=size(p2);
-for i=1:nu-1
-    next2 = i+1;
-    x2 = [p2(i,1),p2(next2,1)];
-    y2 = [p2(i,2),p2(next2,2)];
-    vc2 = acc2(i)/maxacc2;
+for kk=1:nu-1
+    next2 = kk+1;
+    x2 = [p2(kk,1),p2(next2,1)];
+    y2 = [p2(kk,2),p2(next2,2)];
+    vc2 = acc2(kk)/maxacc2;
     line(x2,y2,'Color',[0.3-0.3*vc2,0.3+0.3*vc2,0.3]); %%TODO MH not working
     %draw angle
     spc2 = spc2+1;
     if(spc2>=spacing)
         spc2 = 1;
-        back2 = p2(i,:) - forward2(i,:)*l2;
-        front2 = p2(i,:) + forward2(i,:)*l1;
+        back2 = p2(kk,:) - forward2(kk,:)*l2;
+        front2 = p2(kk,:) + forward2(kk,:)*l1;
         plot([back2(1),front2(1)],[back2(2),front2(2)],'-m');
     end
 end
@@ -365,32 +365,32 @@ plot(lhistory2(:,1), lhistory2(:,index.s+1));
 
 figure
 hold on
-for i=1:nu-1
-    next = i+1;
-    x = [p(i,1),p(next,1)];
-    y = [p(i,2),p(next,2)];
-    vc = acc(i)/maxacc;
+for kk=1:nu-1
+    next = kk+1;
+    x = [p(kk,1),p(next,1)];
+    y = [p(kk,2),p(next,2)];
+    vc = acc(kk)/maxacc;
     line(x,y,'Color',[0.5-0.5*vc,0.5+0.5*vc,0]); %%TODO MH not working
     %draw angle
     spc = spc+1;
     if(spc>=spacing)
        spc = 1;
-       back = p(i,:) - forward(i,:)*l2;
-       front = p(i,:) + forward(i,:)*l1;
+       back = p(kk,:) - forward(kk,:)*l2;
+       front = p(kk,:) + forward(kk,:)*l1;
        plot([back(1),front(1)],[back(2),front(2)],'-k');
     end    
     
-    next2 = i+1;
-    x2 = [p2(i,1),p2(next2,1)];
-    y2 = [p2(i,2),p2(next2,2)];
-    vc2 = acc2(i)/maxacc2;
+    next2 = kk+1;
+    x2 = [p2(kk,1),p2(next2,1)];
+    y2 = [p2(kk,2),p2(next2,2)];
+    vc2 = acc2(kk)/maxacc2;
     line(x2,y2,'Color',[0.3-0.3*vc2,0.3+0.3*vc2,0.3]); %%TODO MH not working
     %draw angle
     spc2 = spc2+1;
     if(spc2>=spacing)
         spc2 = 1;
-        back2 = p2(i,:) - forward2(i,:)*l2;
-        front2 = p2(i,:) + forward2(i,:)*l1;
+        back2 = p2(kk,:) - forward2(kk,:)*l2;
+        front2 = p2(kk,:) + forward2(kk,:)*l1;
         plot([back2(1),front2(1)],[back2(2),front2(2)],'-m');
     end    
 end

@@ -1,5 +1,5 @@
 frames = tend;
-vidfile = VideoWriter('kinematic','Motion JPEG AVI');
+vidfile = VideoWriter('Nash','Motion JPEG AVI');
 vidfile.FrameRate = 10;
 open(vidfile);
 set(gcf,'position',[100,100,1000,800])
@@ -50,8 +50,8 @@ for iff = 1:frames-1
     plot(plansx(iff+1,:),plansy(iff+1,:),'-k','LineWidth',6);
     plot(plansx2(iff+1,:),plansy2(iff+1,:),'-k','LineWidth',6);
     
-    gklx = [-0.2,0.8,0.8,-0.2,-0.2];
-    gkly = [-0.3,-0.3,0.3,0.3,-0.3];
+    gklx = [-0.2,1.2,1.2,-0.2,-0.2];
+    gkly = [-0.5,-0.5,0.5,0.5,-0.5];
     gklp = [gklx;gkly];
     
     theta = atan2(plansy(iff+1,2)-plansy(iff+1,1),plansx(iff+1,2)-plansx(iff+1,1)); % to rotate 90 counterclockwise

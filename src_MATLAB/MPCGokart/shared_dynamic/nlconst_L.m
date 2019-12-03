@@ -1,21 +1,18 @@
-function v = nlconst_GT(z,p)
+function v = nlconst_L(z,p)
 global index
 %NLCONST Summary of this function goes here
 %   Detailed explanation goes here
 % variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
+l = 1.19;
 beta  = z(index.beta);
 dotbeta = z(index.dotbeta);
 forwardacc = z(index.ab);
 VELX = z(index.v);
 VELY = z(index.yv);
 slack = z(index.slack);
-slack2= z(index.slack2);
-dist=p(index.dist);
+
 pointsO = 24;
 pointsN = 10;
-xVehicle2=p(index.xComp);
-yVehicle2=p(index.yComp);
-
 points = getPointsFromParameters(p, pointsO, pointsN);
 radii = getRadiiFromParameters(p, pointsO, pointsN);
 
@@ -34,9 +31,7 @@ wantedpos = [splx;sply];
 error = centerPos-wantedpos;
 lagerror = forward'*error;
 laterror = sidewards'*error;
-distance_X=(z(index.x)-xVehicle2);
-distance_Y=(z(index.y)-yVehicle2);
-squared_distance_array   = sqrt(distance_X.^2+distance_Y.^2);
+
 %parameters
 vmax =  p(index.ps);
 
@@ -46,16 +41,15 @@ tangentspeed = z(index.v);
 maxA = p(index.pax);
 acclim = @(VELY,VELX, taccx)(VELX^2+VELY^2)*taccx^2-VELX^2*maxA^2;
 
-l = 1.19;
 l1 = 0.73;
 l2 = l-l1;
 f1n = l2/l;
 f2n = l1/l;
 
 wantedpos = [splx;sply];
+realPos = z([index.x,index.y]);
 %not yet used here
 error = realPos-wantedpos;
-l = 1.19;
 %v1 = (tan(z(index.beta))*z(index.v)^2/l)^2+z(index.ab)^2;
 %v1=(tan(z(8))*z(7)^2/l);
 v1 = z(index.ab)+z(index.tv)-casadiGetSmoothMaxAcc(z(index.v));
@@ -63,10 +57,10 @@ v2 = z(index.ab)-z(index.tv)-casadiGetSmoothMaxAcc(z(index.v));
 v3 = acclim(VELY,VELX,forwardacc)-slack;
 v4 = laterror-r-0.5*slack;
 v5 = -laterror-r-0.5*slack;
-v6 = squared_distance_array-dist+slack2;
+
 %v4 = error'*error;
 %v2 = -1;
 %v = [v1;v2;v3];
-v = [v1;v2;v3;v4;v5;v6];
+v = [v1;v2;v3;v4;v5];
 end
 
