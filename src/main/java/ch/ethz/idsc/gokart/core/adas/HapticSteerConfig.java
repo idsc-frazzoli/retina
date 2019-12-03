@@ -3,6 +3,7 @@ package ch.ethz.idsc.gokart.core.adas;
 
 import java.io.Serializable;
 
+import ch.ethz.idsc.owl.car.slip.PacejkaMagic;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AppResources;
 import ch.ethz.idsc.tensor.RationalScalar;
@@ -13,6 +14,7 @@ import ch.ethz.idsc.tensor.ref.FieldClip;
 import ch.ethz.idsc.tensor.ref.FieldSubdivide;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** Reference:
  * "Advanced Driver Assistance Systems on a Go-Kart" by A. Mosberger */
@@ -30,6 +32,13 @@ public class HapticSteerConfig implements Serializable {
   /** tsuFactor in the interval [0, 1] */
   @FieldClip(min = "0", max = "1")
   public Scalar tsuFactor = RealScalar.of(0.8);
+  public Scalar pacejkaB3 = RealScalar.of(1);
+  public Scalar pacejkaC3 = RealScalar.of(1);
+  public Scalar pacejkaD3 = Quantity.of(0, "SCT*N^-1");
+  // ---
+  public Scalar pacejkaFB = RealScalar.of(9);
+  public Scalar pacejkaFC = RealScalar.of(1);
+  public Scalar pacejkaFD = Quantity.of(10, "N");
   /***************************************************/
   /** Constant Torque for Experiment */
   @FieldSubdivide(start = "-7/10[SCT]", end = "7/10[SCT]", intervals = 14)
@@ -71,5 +80,17 @@ public class HapticSteerConfig implements Serializable {
 
   public Scalar laneKeeping(Scalar defect) {
     return laneKeepingTorqueClip().apply(defect.multiply(laneKeepingFactor));
+  }
+  /***************************************************/
+  // functions for power steering
+
+  /** @return */
+  public ScalarUnaryOperator getPacejkaDistance() {
+    return new PacejkaMagic(pacejkaB3, pacejkaC3, pacejkaD3).new cos();
+  }
+
+  /** @return */
+  public ScalarUnaryOperator getPacejkaForce() {
+    return new PacejkaMagic(pacejkaFB, pacejkaFC, pacejkaFD).new sin();
   }
 }

@@ -1,4 +1,4 @@
-// code by mh, jph
+// code by mh, jph, ta
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Optional;
@@ -8,42 +8,39 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.red.Max;
 
-public class MPCDynamicDrivingModule extends MPCAbstractDrivingModule {
-  public MPCDynamicDrivingModule() {
-    super(MPCRequestPublisher.dynamic(), Timing.started());
+public class MPCDrivingLudicModule extends MPCDrivingCommonModule {
+  public MPCDrivingLudicModule() {
+    super(MPCRequestPublisher.ludic(), Timing.started());
   }
 
   // for testing only
-  MPCDynamicDrivingModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
-    super(MPCRequestPublisher.dynamic(), mpcStateEstimationProvider, timing, track);
+  MPCDrivingLudicModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
+    super(MPCRequestPublisher.ludic(), mpcStateEstimationProvider, timing, track);
   }
 
   @Override // from MPCAbstractDrivingModule
-  MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering) {
-    return new MPCExplicitTorqueVectoringPower();
-  }
-
-  @Override // from MPCAbstractDrivingModule
-  MPCOptimizationParameterDynamic createOptimizationParameter( //
+  MPCOptimizationParameterLudic createOptimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
     return optimizationParameter(mpcOptimizationConfig, optional);
   }
 
-  // package for testing
-  static MPCOptimizationParameterDynamic optimizationParameter( //
+  static MPCOptimizationParameterLudic optimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
+    final Scalar maxSpeed = MPCLudicConfig.FERRY.maxSpeed;
     final Scalar minSpeed = mpcOptimizationConfig.minSpeed;
     final Scalar mpcMaxSpeed;
     if (optional.isPresent()) {
       ManualControlInterface manualControlInterface = optional.get();
       Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
-      mpcMaxSpeed = Max.of(minSpeed, mpcOptimizationConfig.maxSpeed.multiply(forward));
+      mpcMaxSpeed = Max.of(minSpeed, maxSpeed.multiply(forward));
     } else
       mpcMaxSpeed = minSpeed; // fallback speed value
-    return new MPCOptimizationParameterDynamic( //
+    MPCOptimizationParameterLudic mpcOptimizationParameterLudic = new MPCOptimizationParameterLudic( //
         mpcMaxSpeed, //
         mpcOptimizationConfig.maxLonAcc, //
         mpcOptimizationConfig.steeringReg, //
-        mpcOptimizationConfig.specificMoI);
+        mpcOptimizationConfig.specificMoI, //
+        MPCLudicConfig.FERRY);
+    return mpcOptimizationParameterLudic;
   }
 }

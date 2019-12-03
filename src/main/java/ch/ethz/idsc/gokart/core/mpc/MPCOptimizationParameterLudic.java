@@ -1,3 +1,4 @@
+// code by ta, em
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.nio.ByteBuffer;
@@ -9,13 +10,13 @@ import ch.ethz.idsc.tensor.Scalar;
 class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
   private static final int LENGTH = (4 + 16) * 4;
   /** Pacejka's formula front wheels parameters */
-  public Scalar pacejkaFB = RealScalar.of(9);
-  public Scalar pacejkaFC = RealScalar.of(1);
-  public Scalar pacejkaFD = RealScalar.of(10);
+  private final Scalar pacejkaFB;
+  private final Scalar pacejkaFC;
+  private final Scalar pacejkaFD;
   /** Pacejka's formula rear wheels parameters */
-  public Scalar pacejkaRB = RealScalar.of(5.2);
-  public Scalar pacejkaRC = RealScalar.of(1.1);
-  public Scalar pacejkaRD = RealScalar.of(10);
+  private final Scalar pacejkaRB;
+  private final Scalar pacejkaRC;
+  private final Scalar pacejkaRD;
   /** stiffness, damping, inertia of the steering column */
   // TODO Unit is SCT/SCE
   public Scalar steerStiff = RealScalar.of(0.8875);
@@ -25,19 +26,19 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
   public Scalar steerInertia = RealScalar.of(0.0125);
   /** Parameters of the cost function (without unit of measure) */
   /** Lag Error */
-  public Scalar lagError = RealScalar.of(1);
+  private final Scalar lagError;
   /** Lateral Error */
-  public Scalar latError = RealScalar.of(0.01);
+  private final Scalar latError;
   /** Path Progress */
-  public Scalar progress = RealScalar.of(0.2);
+  private final Scalar progress;
   /** Regularizer for input AB */
-  public Scalar regularizerAB = RealScalar.of(0.0004);
+  private final Scalar regularizerAB;
   /** Regularizer for speedCost */
-  public Scalar speedCost = RealScalar.of(0.04);
+  private final Scalar speedCost;
   /** Slack variable for soft constraint */
-  public Scalar slackSoftConstraint = RealScalar.of(5);
+  private final Scalar slackSoftConstraint;
   /** Regularizer for input TV */
-  public Scalar regularizerTV = RealScalar.of(0.01);
+  private final Scalar regularizerTV;
 
   public MPCOptimizationParameterLudic(ByteBuffer byteBuffer) {
     super(byteBuffer);
@@ -59,8 +60,21 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
     regularizerTV = RealScalar.of(byteBuffer.getFloat());
   }
 
-  public MPCOptimizationParameterLudic(Scalar mpcMaxSpeed, Scalar maxLonAcc, Scalar steeringReg, Scalar specificMoI) {
+  public MPCOptimizationParameterLudic(Scalar mpcMaxSpeed, Scalar maxLonAcc, Scalar steeringReg, Scalar specificMoI, MPCLudicConfig mpcLudicConfig) {
     super(mpcMaxSpeed, maxLonAcc, steeringReg, specificMoI);
+    speedCost = mpcLudicConfig.speedCost;
+    lagError = mpcLudicConfig.lagError;
+    latError = mpcLudicConfig.latError;
+    progress = mpcLudicConfig.progress;
+    regularizerAB = mpcLudicConfig.regularizerAB;
+    regularizerTV = mpcLudicConfig.regularizerTV;
+    slackSoftConstraint = mpcLudicConfig.slackSoftConstraint;
+    pacejkaFB = mpcLudicConfig.pacejkaFB;
+    pacejkaFC = mpcLudicConfig.pacejkaFC;
+    pacejkaFD = mpcLudicConfig.pacejkaFD;
+    pacejkaRB = mpcLudicConfig.pacejkaRB;
+    pacejkaRC = mpcLudicConfig.pacejkaRC;
+    pacejkaRD = mpcLudicConfig.pacejkaRD;
   }
 
   @Override // from BufferInsertable

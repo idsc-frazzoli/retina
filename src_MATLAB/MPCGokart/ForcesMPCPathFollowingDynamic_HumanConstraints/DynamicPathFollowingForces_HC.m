@@ -8,7 +8,7 @@
 %add force path (change that for yourself)
 addpath('..');
 userDir = getuserdir;
-%addpath([userDir '/Forces']); % Location of FORCES PRO
+addpath([userDir '/Forces']); % Location of FORCES PRO
 addpath('casadi');
 addpath('../shared_dynamic')
     

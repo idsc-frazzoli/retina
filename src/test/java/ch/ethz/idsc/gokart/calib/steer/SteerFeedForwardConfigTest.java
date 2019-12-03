@@ -22,6 +22,14 @@ public class SteerFeedForwardConfigTest extends TestCase {
     Clips.interval(0.2, 0.3).requireInside(SteerPutEvent.RTORQUE.apply(sct));
   }
 
+  public void testZero() throws ClassNotFoundException, IOException {
+    ScalarUnaryOperator series = Serialization.copy(SteerFeedForwardConfig.GLOBAL.series());
+    Scalar sct = series.apply(Quantity.of(0.0, "SCE"));
+    // System.out.println(sct);
+    SteerPutEvent.RTORQUE.apply(sct);
+    // Clips.interval(0.2, 0.3).requireInside(SteerPutEvent.RTORQUE.apply(sct));
+  }
+
   public void testOdd() {
     ScalarUnaryOperator series = SteerFeedForwardConfig.GLOBAL.series();
     Distribution distribution = UniformDistribution.of(Quantity.of(-0.2, "SCE"), Quantity.of(0.4, "SCE"));

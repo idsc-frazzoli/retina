@@ -4,12 +4,12 @@ package ch.ethz.idsc.gokart.core.mpc;
 import ch.ethz.idsc.tensor.io.Timing;
 import junit.framework.TestCase;
 
-public class MPCAbstractDrivingModuleTest extends TestCase {
+public class MPCDrivingAbstractModuleTest extends TestCase {
   public void testFakeData() throws Exception {
     if (MPCNative.lcmTestBinary().isPresent()) {
       Timing timing = Timing.started();
       MPCStateEstimationProvider mpcStateEstimationProvider = new FakeNewsEstimator(timing);
-      MPCAbstractDrivingModule mpcAbstractDrivingModule = new MPCKinematicDrivingModule(mpcStateEstimationProvider, timing, DubendorfTrack.HYPERLOOP_EIGHT);
+      MPCDrivingAbstractModule mpcAbstractDrivingModule = new MPCDrivingKinematicModule(mpcStateEstimationProvider, timing, DubendorfTrack.HYPERLOOP_EIGHT);
       mpcAbstractDrivingModule.first();
       Thread.sleep(3000);
       System.out.println("target linmot" + mpcAbstractDrivingModule.mpcLinmotProvider.putEvent().get().target_position);

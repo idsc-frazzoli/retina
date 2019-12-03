@@ -23,9 +23,9 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 
 /** super class of
- * {@link MPCDynamicDrivingModule}
- * {@link MPCKinematicDrivingModule} */
-public abstract class MPCAbstractDrivingModule extends AbstractModule implements //
+ * {@link MPCDrivingDynamicModule}
+ * {@link MPCDrivingKinematicModule} */
+public abstract class MPCDrivingAbstractModule extends AbstractModule implements //
     BSplineTrackListener, Runnable {
   private final List<BSplineTrackLcmClient> bSplineTrackLcmClients = Arrays.asList( //
       BSplineTrackLcmClient.string(), //
@@ -56,7 +56,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
    * 
    * @param mpcRequestPublisher
    * @param timing */
-  MPCAbstractDrivingModule(MPCRequestPublisher mpcRequestPublisher, Timing timing) {
+  MPCDrivingAbstractModule(MPCRequestPublisher mpcRequestPublisher, Timing timing) {
     this(mpcRequestPublisher, //
         new SimpleDynamicMPCStateEstimationProvider(timing), // the use of "dynamic" is intended
         timing, null);
@@ -69,7 +69,7 @@ public abstract class MPCAbstractDrivingModule extends AbstractModule implements
    * @param mpcStateEstimationProvider the custom estimator
    * @param timing that shows the same time that also was used for the custom estimator
    * @param track */
-  MPCAbstractDrivingModule( //
+  MPCDrivingAbstractModule( //
       MPCRequestPublisher mpcRequestPublisher, //
       MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
     this.mpcRequestPublisher = mpcRequestPublisher;

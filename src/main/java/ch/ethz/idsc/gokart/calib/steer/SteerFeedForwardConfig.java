@@ -2,7 +2,6 @@
 package ch.ethz.idsc.gokart.calib.steer;
 
 import ch.ethz.idsc.retina.util.sys.AppResources;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Series;
@@ -26,9 +25,9 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
    * @return function that maps quantities with unit "SCE" to quantities with unit "SCT" */
   public ScalarUnaryOperator series() {
     return Series.of(Tensors.of( //
-        RealScalar.ZERO, //
+        Quantity.of(0.0, "SCT"), //
         linear, //
-        RealScalar.ZERO, //
+        Quantity.of(0.0, "SCT*SCE^-2"), //
         cubic));
   }
 }
