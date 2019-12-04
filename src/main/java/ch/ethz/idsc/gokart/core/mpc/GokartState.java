@@ -78,10 +78,10 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       float Psi, //
       float w2L, //
       float w2R, //
-      float s,//
-      float tau,//
+      float s, //
+      float tau, //
       float uDotS) {
-    this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, 0f,tau,uDotS);
+    this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, 0f, tau, uDotS);
   }
 
   /** create GokartState
@@ -108,8 +108,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       float w2L, //
       float w2R, //
       float s, //
-      float bTemp,//
-      float tau,//
+      float bTemp, //
+      float tau, //
       float uDotS) {
     this.time = time;
     this.Ux = Ux;
@@ -122,8 +122,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     this.w2R = w2R;
     this.s = s;
     this.bTemp = bTemp;
-    this.tau=tau;
-    this.uDotS=uDotS;
+    this.tau = tau;
+    this.uDotS = uDotS;
   }
 
   /** create GokartState
@@ -148,10 +148,9 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       Scalar Psi, //
       Scalar w2L, //
       Scalar w2R, //
-      Scalar s,
-      Scalar tau,//
+      Scalar s, Scalar tau, //
       Scalar uDotS) {
-    this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, ZERO_DEGC,tau,uDotS);
+    this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, ZERO_DEGC, tau, uDotS);
   }
 
   /** create GokartState
@@ -178,8 +177,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       Scalar w2L, //
       Scalar w2R, //
       Scalar s, //
-      Scalar bTemp,//
-      Scalar tau,//
+      Scalar bTemp, //
+      Scalar tau, //
       Scalar uDotS) {
     this.time = Magnitude.SECOND.toFloat(time);
     this.Ux = Magnitude.VELOCITY.toFloat(Ux);
@@ -193,8 +192,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     this.s = SteerPutEvent.ENCODER.apply(s).number().floatValue();
     this.bTemp = Magnitude.DEGREE_CELSIUS.toFloat(bTemp);
     this.tau = SteerPutEvent.RTORQUE.apply(tau).number().floatValue();
-    this.uDotS= ENCODERDOT.apply(uDotS).number().floatValue();
-    
+    this.uDotS = ENCODERDOT.apply(uDotS).number().floatValue();
   }
 
   /** constructor for input stream
@@ -215,7 +213,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     s = byteBuffer.getFloat();
     bTemp = byteBuffer.getFloat();
     tau = byteBuffer.getFloat();
-    uDotS= byteBuffer.getFloat();
+    uDotS = byteBuffer.getFloat();
   }
 
   /** @return time in "s" */
@@ -268,6 +266,14 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     return Quantity.of(bTemp, NonSI.DEGREE_CELSIUS);
   }
 
+  public Scalar getTau() {
+    return Quantity.of(tau, SteerPutEvent.UNIT_RTORQUE);
+  }
+
+  public Scalar getUDotS() {
+    return Quantity.of(uDotS, SteerPutEvent.UNIT_ENCODERDOT);
+  }
+
   @Override // from PoseInterface
   public Tensor getPose() {
     return Tensors.of(getX(), getY(), getPsi());
@@ -305,6 +311,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     byteBuffer.putFloat(w2R); // 32
     byteBuffer.putFloat(s); // 36
     byteBuffer.putFloat(bTemp); // 40
+    byteBuffer.putFloat(tau); // 44
+    byteBuffer.putFloat(uDotS); // 48
   }
 
   @Override // from BufferInsertable
@@ -330,7 +338,9 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
         w2L, //
         w2R, //
         s, //
-        bTemp);
+        bTemp, //
+        tau, //
+        uDotS);
   }
 
   Tensor asVectorWithUnits() {
@@ -345,6 +355,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
         getw2L(), //
         getw2R(), //
         getS(), //
-        getBTemp());
+        getBTemp(),//
+        getTau(),//
+        getUDotS());
   }
 }

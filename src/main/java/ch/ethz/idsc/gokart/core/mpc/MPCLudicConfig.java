@@ -17,11 +17,11 @@ public class MPCLudicConfig {
   /** Pacejka's formula front wheels parameters */
   public Scalar pacejkaFB = RealScalar.of(9);
   public Scalar pacejkaFC = RealScalar.of(1);
-  public Scalar pacejkaFD = RealScalar.of(6);
+  public Scalar pacejkaFD = RealScalar.of(7);
   /** Pacejka's formula rear wheels parameters */
   public Scalar pacejkaRB = RealScalar.of(5.2);
   public Scalar pacejkaRC = RealScalar.of(1.1);
-  public Scalar pacejkaRD = RealScalar.of(6);
+  public Scalar pacejkaRD = RealScalar.of(6.5);
   // /** stiffness, damping, inertia of the steering column */
   // // TODO Unit is SCT/SCE
   // public Scalar steerStiff = RealScalar.of(0.8875);

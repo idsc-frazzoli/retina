@@ -127,8 +127,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			&dTime,
 			lastCRMsg.state.time);
 
-		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);
-		initbeta = getInitSteer(lbeta, ldotbeta, dTime);
+		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);// Limits AB
+		initbeta = getInitSteer(lbeta, ldotbeta, dTime);//Limits Beta
 	}else
 	{
 		initab = 0;
