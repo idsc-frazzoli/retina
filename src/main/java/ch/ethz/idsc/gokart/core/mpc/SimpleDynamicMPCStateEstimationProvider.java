@@ -31,6 +31,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private Scalar s = Quantity.of(0, SteerPutEvent.UNIT_ENCODER);
   private Scalar bTemp = Quantity.of(0, NonSI.DEGREE_CELSIUS);
   private Scalar lastUpdate = Quantity.of(0, SI.SECOND);
+  private Scalar tau = Quantity.of(0, SteerPutEvent.UNIT_RTORQUE);
+  private Scalar uDots = Quantity.of(0, SteerPutEvent.UNIT_ENCODERDOT);
   private GokartState lastGokartState = null;
   private final LinmotGetListener linmotGetListener = new LinmotGetListener() {
     @Override
@@ -80,7 +82,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
           w2L, //
           w2R, //
           s, //
-          bTemp);
+          bTemp,
+          tau,
+          uDots
+          );
     }
     return lastGokartState;
   }

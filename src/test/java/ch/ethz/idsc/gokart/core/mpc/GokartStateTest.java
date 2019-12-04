@@ -8,17 +8,18 @@ import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.Unit;
 import junit.framework.TestCase;
 
 public class GokartStateTest extends TestCase {
   public void testLength() {
-    GokartState gokartState = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-    assertEquals(gokartState.length(), 44);
+    GokartState gokartState = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,12,13);
+    assertEquals(gokartState.length(), 52);
   }
 
   public void testSerializationNoBrake() {
-    GokartState gokartState1 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-    assertEquals(gokartState1.asVector().length(), 11);
+    GokartState gokartState1 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,12,13);
+    assertEquals(gokartState1.asVector().length(), 13);
     byte[] array = new byte[gokartState1.length()];
     ByteBuffer byteBuffer = ByteBuffer.wrap(array);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -31,8 +32,8 @@ public class GokartStateTest extends TestCase {
   }
 
   public void testSerializationWithBrake() {
-    GokartState gokartState1 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
-    assertEquals(gokartState1.asVector().length(), 11);
+    GokartState gokartState1 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12,13);
+    assertEquals(gokartState1.asVector().length(), 13);
     byte[] array = new byte[gokartState1.length()];
     ByteBuffer byteBuffer = ByteBuffer.wrap(array);
     byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -45,8 +46,8 @@ public class GokartStateTest extends TestCase {
   }
 
   public void testSome() {
-    GokartState gokartState1 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-    GokartState gokartState2 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0);
+    GokartState gokartState1 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,12,13);
+    GokartState gokartState2 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0,12,13);
     assertEquals(gokartState1.asVector(), gokartState2.asVector());
     assertEquals(gokartState1.asVectorWithUnits(), gokartState2.asVectorWithUnits());
     assertEquals(gokartState1.asVector().length(), gokartState2.asVectorWithUnits().length());
@@ -64,8 +65,10 @@ public class GokartStateTest extends TestCase {
         Quantity.of(8, SI.PER_SECOND), //
         Quantity.of(9, SI.PER_SECOND), //
         Quantity.of(10, "SCE"), //
-        Quantity.of(11, NonSI.DEGREE_CELSIUS));
-    GokartState gokartState2 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+        Quantity.of(11, NonSI.DEGREE_CELSIUS),//
+        Quantity.of(12, "SCT"),//
+        Quantity.of(13, Unit.of("SCE").add(SI.PER_SECOND)));
+    GokartState gokartState2 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12,13);
     assertEquals(gokartState1.asVector(), gokartState2.asVector());
     assertEquals(gokartState1.asVectorWithUnits(), gokartState2.asVectorWithUnits());
     assertEquals(gokartState1.asVector().length(), gokartState2.asVectorWithUnits().length());
@@ -82,8 +85,10 @@ public class GokartStateTest extends TestCase {
         Quantity.of(7, SI.ONE), //
         Quantity.of(8, SI.PER_SECOND), //
         Quantity.of(9, SI.PER_SECOND), //
-        Quantity.of(10, "SCE"));
-    GokartState gokartState2 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        Quantity.of(10, "SCE"),//
+        Quantity.of(12, "SCT"),//
+        Quantity.of(13, Unit.of("SCE").add(SI.PER_SECOND)));
+    GokartState gokartState2 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,12,13);
     assertEquals(gokartState1.asVector(), gokartState2.asVector());
     assertEquals(gokartState1.asVectorWithUnits(), gokartState2.asVectorWithUnits());
     assertEquals(gokartState1.asVector().length(), gokartState2.asVectorWithUnits().length());

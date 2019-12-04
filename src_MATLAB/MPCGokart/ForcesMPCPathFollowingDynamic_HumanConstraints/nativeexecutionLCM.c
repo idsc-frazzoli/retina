@@ -12,7 +12,7 @@
 #include "MPCPathFollowing/include/MPCPathFollowing.h"
 #include <lcm/lcm.h>
 #include "../../../src_c/idsc/idsc_BinaryBlob.c"
-#include "../shared_dynamic/c/definitions_ludic.c"
+#include "../shared_dynamic/c/definitions_torque.c"
 #include "../shared_dynamic/c/helperFunctions.c"
 #include <unistd.h>
 
@@ -127,8 +127,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			&dTime,
 			lastCRMsg.state.time);
 
-		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);
-		initbeta = getInitSteer(lbeta, ldotbeta, dTime);
+		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);// Limits AB
+		initbeta = getInitSteer(lbeta, ldotbeta, dTime);//Limits Beta
 	}else
 	{
 		initab = 0;
@@ -222,6 +222,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
 			cnsmsg.cns[i].control.uB = 0;//not in use
 			cnsmsg.cns[i].control.aB = ab;
+			cnsmsg.cns[i].control.udotT = 0;
 			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
 			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+9];
 			cnsmsg.cns[i].state.Uy = myoutput.alldata[i*S+10]-lastCRMsg.state.dotPsi*backToCoM;
@@ -234,6 +235,9 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].state.w2R = 0;//not in use
 			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+12];
 			cnsmsg.cns[i].state.bTemp = 60;
+			cnsmsg.cns[i].state.tau =0;
+			cnsmsg.cns[i].state.dotbeta= myoutput.alldata[i*S+1];
+
 		}
 
 		//printf("prepared blob\n");
