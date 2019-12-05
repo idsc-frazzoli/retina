@@ -13,4 +13,11 @@ import ch.ethz.idsc.tensor.Tensor;
    * @return {wanted steering angle [SCE], wanted steering angle change rate [SCE*s^-1]},
    * or Optional.empty() if no steering is defined at given time */
   abstract Optional<Tensor> getSteering(Scalar time);
+  
+  /** get the needed steering angle and the change rate of the needed steering angle
+   * 
+   * @param time with unit [s]
+   * @return {wanted steering torque [SCE], wanted steering torque change rate [SCT*s^-1]},
+   * or Optional.empty() if no steering is defined at given time */
+  abstract Optional<Tensor> getSteeringT(Scalar time);
 }

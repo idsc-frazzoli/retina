@@ -24,6 +24,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
+  private boolean TorqueMode = false;
 
   public MPCSteerProvider(Timing timing, MPCSteering mpcSteering) {
     super(timing);
