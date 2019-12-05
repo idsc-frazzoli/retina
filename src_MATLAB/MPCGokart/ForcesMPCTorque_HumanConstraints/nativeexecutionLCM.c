@@ -135,18 +135,19 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 
 	}
 	//[x,y,theta,dottheta,v,yv,beta,dotbeta,ab,tau,s]
-	inittau = lastCRMsg.state.s;
+	inittau = lastCRMsg.state.tau;
 	params.xinit[0] = lastCRMsg.state.X+cos(lastCRMsg.state.Psi)*backToCoM;
 	params.xinit[1] = lastCRMsg.state.Y+sin(lastCRMsg.state.Psi)*backToCoM;
 	params.xinit[2] = lastCRMsg.state.Psi;
 	params.xinit[3] = lastCRMsg.state.dotPsi;
 	params.xinit[4] = lastCRMsg.state.Ux;
 	params.xinit[5] = lastCRMsg.state.Uy+lastCRMsg.state.dotPsi*backToCoM;
-	params.xinit[6] = lastCRMsg.state.beta;
-	params.xinit[7] = lastCRMsg.state.dotbeta;
-	params.xinit[8] = initab;
-	params.xinit[9] = inittau;
-	params.xinit[10] = lastCRMsg.path.startingProgress;
+	params.xinit[6] = initab;
+	params.xinit[7] = lastCRMsg.state.s;
+	params.xinit[8] = lastCRMsg.path.startingProgress;
+	params.xinit[9] = lastCRMsg.state.dotbeta;
+	params.xinit[10] = inittau;
+	
 
 	/*for(int i = 0; i<7;i++){
 		printf("%i: %f\n",i,params.xinit[i]);

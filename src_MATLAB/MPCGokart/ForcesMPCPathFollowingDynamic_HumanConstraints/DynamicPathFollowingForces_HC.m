@@ -9,6 +9,7 @@
 addpath('..');
 userDir = getuserdir;
 addpath([userDir '/Forces']); % Location of FORCES PRO
+addpath('C:\Users\me\Documents\FORCES_client');
 addpath('casadi');
 addpath('../shared_dynamic')
     
@@ -30,8 +31,8 @@ RD = 7;
 J_steer=0.8875;
 b_steer=0.1625;
 k_steer=0.0125;
-    
-pointsO = 20; % number of Parameters
+ptau=0.05;   
+pointsO = 21; % number of Parameters
 pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
 nextsplinepoints = 0;
@@ -80,6 +81,10 @@ index.pab = 17;
 index.pspeedcost = 18;
 index.pslack = 19;
 index.ptv = 20;
+index.ptau = 21;
+
+index.pointsO = 21; % number of Parameters
+index.pointsN = 10;% number of Spline points to use
 
 solvetimes = [];
 
@@ -272,10 +277,10 @@ for i =1:tend
         [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
         plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
         %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-        problem.all_parameters = repmat (getParametersHC(maxSpeed,maxxacc,...
-            steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
-            plag,plat,pprog,pab,pspeedcost,...
-            pslack,ptv,nextSplinePoints) , model.N ,1);
+        problem.all_parameters =repmat (getParametersTHC(maxSpeed,maxxacc,...
+        steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
+        plag,plat,pprog,pab,pspeedcost,...
+        pslack,ptv,ptau,nextSplinePoints) , model.N ,1);
         %problem.all_parameters = zeros(22,1);
         problem.x0 = x0(:);
         %problem.x0 = rand(341,1);
@@ -295,7 +300,7 @@ for i =1:tend
         outputM = reshape(output.alldata,[model.nvar,model.N])';
         x0 = outputM';
         u = repmat(outputM(1,1:index.nu),eulersteps,1);
-        [xhist,time] = euler(@(x,u)interstagedx(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
+        [xhist,time] = euler(@(x,u)interstagedx_HC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
         xs = xhist(end,:);
         xs
         history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
@@ -313,10 +318,10 @@ for i =1:tend
         [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
         plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
             %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-        problem.all_parameters = repmat (getParametersHC(maxSpeed,maxxacc,...
-            steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
-            plag,plat,pprog,pab,pspeedcost,pslack,...
-            ptv,nextSplinePoints) , model.N ,1);
+       problem.all_parameters =repmat (getParametersTHC(maxSpeed,maxxacc,...
+        steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
+        plag,plat,pprog,pab,pspeedcost,...
+        pslack,ptv,ptau,nextSplinePoints) , model.N ,1);
         %problem.all_parameters = zeros(22,1);
         problem.x0 = x0(:);
         %problem.x0 = rand(341,1);
@@ -336,7 +341,7 @@ for i =1:tend
         outputM = reshape(output.alldata,[model.nvar,model.N])';
         x0 = outputM';
         u = repmat(outputM(1,1:index.nu),eulersteps,1);
-        [xhist,time] = euler(@(x,u)interstagedx(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
+        [xhist,time] = euler(@(x,u)interstagedx_HC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
         xs = xhist(end,:);
         xs
         history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];

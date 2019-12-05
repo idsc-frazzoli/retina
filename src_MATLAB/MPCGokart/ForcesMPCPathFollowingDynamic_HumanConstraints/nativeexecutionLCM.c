@@ -175,6 +175,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		params.all_parameters[i*pl+17] = lastParaMsg.para.speedCost;
 		params.all_parameters[i*pl+18] = lastParaMsg.para.slackSoftConstraints;
 		params.all_parameters[i*pl+19] = lastParaMsg.para.regularizerTV;
+		params.all_parameters[i*pl+20] = lastParaMsg.para.regTorque;
 		for (int ip=0; ip<POINTSN;ip++)
 			params.all_parameters[i*pl+NUMPARAM+ip]=lastCRMsg.path.controlPoints[ip].pex;
 		for (int ip=0; ip<POINTSN;ip++)

@@ -2,7 +2,7 @@
 #define N 31
 
 #define POINTSN 10
-#define NUMPARAM 20
+#define NUMPARAM 21
 //note: not all values are necessarily known for every type of controller
 struct State {
 	float time;
@@ -14,10 +14,10 @@ struct State {
 	float Psi;
 	float w2L;
 	float w2R;
-	float s;
+	float s;//same as beta
 	float bTemp;
 	float tau;
-	float dotbeta;
+	float dotbeta; //same as uDotS
 };
 
 
@@ -74,7 +74,7 @@ struct OptimizationParameter {
 	float speedCost;
 	float slackSoftConstraints;
 	float regularizerTV;
-	//float regTorque;
+	float regTorque;
 };
 
 struct ControlAndStateMsg{
