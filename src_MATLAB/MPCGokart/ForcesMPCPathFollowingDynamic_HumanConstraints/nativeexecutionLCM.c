@@ -222,7 +222,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
 			cnsmsg.cns[i].control.uB = 0;//not in use
 			cnsmsg.cns[i].control.aB = ab;
-			cnsmsg.cns[i].control.udotT = 0;
+			cnsmsg.cns[i].control.udotT = 0;//not in use
 			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
 			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+9];
 			cnsmsg.cns[i].state.Uy = myoutput.alldata[i*S+10]-lastCRMsg.state.dotPsi*backToCoM;
@@ -235,7 +235,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].state.w2R = 0;//not in use
 			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+12];
 			cnsmsg.cns[i].state.bTemp = 60;
-			cnsmsg.cns[i].state.tau =0;
+			cnsmsg.cns[i].state.tau =0;//not in use
 			cnsmsg.cns[i].state.dotbeta= myoutput.alldata[i*S+1];
 
 		}
