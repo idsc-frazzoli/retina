@@ -83,8 +83,8 @@ index.pslack = 19;
 index.ptv = 20;
 index.ptau = 21;
 
-index.pointsO = 21; % number of Parameters
-index.pointsN = 10;% number of Spline points to use
+index.pointsO = pointsO; % number of Parameters
+index.pointsN = pointsN;% number of Spline points to use
 
 solvetimes = [];
 
@@ -240,6 +240,7 @@ x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
 %x0 = zeros(model.N*model.nvar,1); 
 tstart = 1;
 %paras = ttpos(tstart:tstart+model.N-1,2:3)';
+a=0;
 for i =1:tend
     tstart = i;
     %model.xinit = [0,5,0,0.1,0,0];
@@ -272,88 +273,42 @@ for i =1:tend
        ip = ip + 1;
     end
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
-    if i<=30 || i>=60
-       % behaviour='aggressive';
-        [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
-        plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
-        %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-        problem.all_parameters =repmat (getParametersTHC(maxSpeed,maxxacc,...
+    %paras = ttpos(tstart:tstart+model.N-1,2:3)';
+    problem.all_parameters =repmat (getParametersTHC(maxSpeed,maxxacc,...
         steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
         plag,plat,pprog,pab,pspeedcost,...
         pslack,ptv,ptau,nextSplinePoints) , model.N ,1);
-        %problem.all_parameters = zeros(22,1);
-        problem.x0 = x0(:);
-        %problem.x0 = rand(341,1);
+    %problem.all_parameters = zeros(22,1);
+    problem.x0 = x0(:);
+    %problem.x0 = rand(341,1);
     
-        % solve mpc
-        [output,exitflag,info] = MPCPathFollowing(problem);
-        solvetimes(end+1)=info.solvetime;
-        if(exitflag==0)
-            a = 1; 
-        end
-        if(exitflag~=1 && exitflag ~=0)
-            draw
-            return 
-        end
-        %nextSplinePoints
-        %get output
-        outputM = reshape(output.alldata,[model.nvar,model.N])';
-        x0 = outputM';
-        u = repmat(outputM(1,1:index.nu),eulersteps,1);
-        [xhist,time] = euler(@(x,u)interstagedx_HC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
-        xs = xhist(end,:);
-        xs
-        history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
-        planc = planc + 1;
-        if(planc>planintervall)
-            planc = 1; 
-            plansx = [plansx; outputM(:,index.x)'];
-            plansy = [plansy; outputM(:,index.y)'];
-            planss = [planss; outputM(:,index.s)'];
-            [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s),nextSplinePoints);
-            targets = [targets;tx,ty];
-        end
-    else
-       % behaviour='aggressive';
-        [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
-        plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
-            %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-       problem.all_parameters =repmat (getParametersTHC(maxSpeed,maxxacc,...
-        steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
-        plag,plat,pprog,pab,pspeedcost,...
-        pslack,ptv,ptau,nextSplinePoints) , model.N ,1);
-        %problem.all_parameters = zeros(22,1);
-        problem.x0 = x0(:);
-        %problem.x0 = rand(341,1);
-    
-        % solve mpc
-        [output,exitflag,info] = MPCPathFollowing(problem);
-        solvetimes(end+1)=info.solvetime;
-        if(exitflag==0)
-            a = 1; 
-        end
-        if(exitflag~=1 && exitflag ~=0)
-            draw
-        return 
-        end
-        %nextSplinePoints
-        %get output
-        outputM = reshape(output.alldata,[model.nvar,model.N])';
-        x0 = outputM';
-        u = repmat(outputM(1,1:index.nu),eulersteps,1);
-        [xhist,time] = euler(@(x,u)interstagedx_HC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
-        xs = xhist(end,:);
-        xs
-        history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
-        planc = planc + 1;
-        if(planc>planintervall)
-            planc = 1; 
-        	plansx = [plansx; outputM(:,index.x)'];
-            plansy = [plansy; outputM(:,index.y)'];
-            planss = [planss; outputM(:,index.s)'];
-            [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s),nextSplinePoints);
-            targets = [targets;tx,ty];
-        end
+    % solve mpc
+    [output,exitflag,info] = MPCPathFollowing(problem);
+    solvetimes(end+1)=info.solvetime;
+    if(exitflag==0)
+        a = a + 1;
+    end
+    if(exitflag~=1 && exitflag ~=0)
+        draw
+        return
+    end
+    %nextSplinePoints
+    %get output
+    outputM = reshape(output.alldata,[model.nvar,model.N])';
+    x0 = outputM';
+    u = repmat(outputM(1,1:index.nu),eulersteps,1);
+    [xhist,time] = euler(@(x,u)interstagedx_HC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
+    xs = xhist(end,:);
+    xs
+    history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
+    planc = planc + 1;
+    if(planc>planintervall)
+        planc = 1;
+        plansx = [plansx; outputM(:,index.x)'];
+        plansy = [plansy; outputM(:,index.y)'];
+        planss = [planss; outputM(:,index.s)'];
+        [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s),nextSplinePoints);
+        targets = [targets;tx,ty];
     end
 end
 %[t,ab,dotbeta,x,y,theta,v,beta,s]
