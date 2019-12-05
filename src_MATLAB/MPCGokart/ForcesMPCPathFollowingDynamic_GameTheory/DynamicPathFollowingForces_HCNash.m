@@ -90,7 +90,8 @@ index.yComp=23;
 index.dist=24;
 solvetimes = [];
 solvetimes2=[];
-
+index.pointsO=pointsO;
+index.pointsN=pointsN;
 integrator_stepsize = 0.1;
 
 %% model params
@@ -377,7 +378,7 @@ for i =1:tend
     outputM = reshape(output.alldata,[model.nvar,model.N])';
     x0 = outputM';
     u = repmat(outputM(1,1:index.nu),eulersteps,1);
-    [xhist,time] = euler(@(x,u)interstagedx(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
+    [xhist,time] = euler(@(x,u)interstagedx_HC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
     xs = xhist(end,:);
     xs
     history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
@@ -396,7 +397,7 @@ for i =1:tend
     outputM2 = reshape(output2.alldata,[model.nvar,model.N])';
     x02 = outputM2';
     u2 = repmat(outputM2(1,1:index.nu),eulersteps,1);
-    [xhist2,time2] = euler(@(x2,u2)interstagedx(x2,u2,problem2.all_parameters),xs2,u2,integrator_stepsize/eulersteps);
+    [xhist2,time2] = euler(@(x2,u2)interstagedx_HC(x2,u2,problem2.all_parameters),xs2,u2,integrator_stepsize/eulersteps);
     xs2 = xhist2(end,:);
     xs2
     history2((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time2(1:end-1)+(tstart-1)*integrator_stepsize,u2,xhist2(1:end-1,:)];
