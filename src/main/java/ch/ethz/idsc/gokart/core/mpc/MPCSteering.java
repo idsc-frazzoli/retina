@@ -1,4 +1,4 @@
-// code by mh
+// code by mh,ta
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Optional;
@@ -14,10 +14,10 @@ import ch.ethz.idsc.tensor.Tensor;
    * or Optional.empty() if no steering is defined at given time */
   abstract Optional<Tensor> getSteering(Scalar time);
   
-  /** get the needed steering angle and the change rate of the needed steering angle
+  /** get the needed steering torque and the change rate of the needed steering torque
    * 
    * @param time with unit [s]
-   * @return {wanted steering torque [SCE], wanted steering torque change rate [SCT*s^-1]},
+   * @return {wanted steering torque [SCT], wanted steering torque change rate [SCT*s^-1]},
    * or Optional.empty() if no steering is defined at given time */
-  abstract Optional<Tensor> getSteeringT(Scalar time);
+  abstract Optional<Tensor> getSteeringTorque(Scalar time);
 }

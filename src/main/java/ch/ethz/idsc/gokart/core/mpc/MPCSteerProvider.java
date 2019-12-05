@@ -39,16 +39,37 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     // ---
     Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
     Optional<Tensor> optional = mpcSteering.getSteering(time);
-    if (optional.isPresent()) {
-      Tensor steering = optional.get();
-      Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-      Scalar torqueCmd = steerPositionController.iterate( //
-          currAngle, //
-          steering.Get(0), //
-          steering.Get(1));
-      Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-      return Optional.of(SteerPutEvent.createOn(torqueCmd.add(feedForward)));
+    if (TorqueMode) {//Use Steering Torque
+      if (optional.isPresent()) {
+        Tensor steering = optional.get();
+        Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+        Scalar torqueCmd = steerPositionController.iterate( //
+            currAngle, //
+            steering.Get(0), //
+            steering.Get(1));
+        Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+        return Optional.of(SteerPutEvent.createOn(torqueCmd.add(feedForward)));
+      }
+    } else {//Use Steering Angle
+      if (optional.isPresent()) {
+        Tensor steering = optional.get();
+        Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+        Scalar torqueCmd = steerPositionController.iterate( //
+            currAngle, //
+            steering.Get(0), //
+            steering.Get(1));
+        Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+        return Optional.of(SteerPutEvent.createOn(torqueCmd.add(feedForward)));
+      }
     }
     return Optional.empty();
+  }
+
+  /** Change the steering mode of the go-kart
+   * 
+   * @param bool useTorque (set True if go-kart should use the commanded torque instead of beta)
+   * @return void */
+  public void setSteeringMode(boolean useTorque) {
+    this.TorqueMode = useTorque;
   }
 }
