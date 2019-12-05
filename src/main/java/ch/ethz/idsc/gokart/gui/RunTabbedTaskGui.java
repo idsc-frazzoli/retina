@@ -41,6 +41,7 @@ import ch.ethz.idsc.gokart.core.mpc.LudicControlModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDrivingDynamicModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDrivingKinematicModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDrivingLudicModule;
+import ch.ethz.idsc.gokart.core.mpc.MPCDrivingTorqueModule;
 import ch.ethz.idsc.gokart.core.plan.ClothoidRrtsTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.ClothoidTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.DubinsRrtsTrajectoryModule;
@@ -151,6 +152,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       FigurePureModule.class, //
       MPCDrivingDynamicModule.class, //
       MPCDrivingLudicModule.class, //
+      MPCDrivingTorqueModule.class, //
       LudicControlModule.class, //
       MPCDrivingKinematicModule.class, //
       PureTrajectoryModule.class, //

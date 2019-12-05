@@ -44,7 +44,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   private final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
-  private final MPCSteerProvider mpcSteerProvider;
+  protected final MPCSteerProvider mpcSteerProvider;
   // ---
   final MPCRimoProvider mpcRimoProvider;
   final MPCLinmotProvider mpcLinmotProvider;
@@ -125,6 +125,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     mpcBraking.start();
     mpcControlUpdateLcmClient.addListener(new MPCControlUpdateInterrupt(thread));
     thread.start();
+    setSteering();
     // ---
     System.out.println("Scheduling Timer: start");
   }
@@ -154,6 +155,10 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   public final void bSplineTrack(Optional<BSplineTrack> optional) {
     System.out.println("kinematic mpc bspline track, present=" + optional.isPresent());
     this.mpcBSplineTrack = optional;
+  }
+
+  public void setSteering() {
+    mpcSteerProvider.setSteeringMode(false);
   }
 
   @Override // from Runnable

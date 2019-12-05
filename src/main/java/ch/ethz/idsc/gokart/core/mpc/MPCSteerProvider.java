@@ -40,6 +40,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
     Optional<Tensor> optional = mpcSteering.getSteering(time);
     if (TorqueMode) {//Use Steering Torque
+      System.out.println("Using T-Mode :) ");
       if (optional.isPresent()) {
         Tensor steering = optional.get();
         Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
