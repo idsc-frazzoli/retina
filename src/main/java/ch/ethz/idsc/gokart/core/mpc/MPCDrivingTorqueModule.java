@@ -10,12 +10,12 @@ import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCDrivingTorqueModule extends MPCDrivingCommonModule {
   public MPCDrivingTorqueModule() {
-    super(MPCRequestPublisher.ludic(), Timing.started());
+    super(MPCRequestPublisher.torque(), Timing.started());
   }
 
   // for testing only
   MPCDrivingTorqueModule(MPCStateEstimationProvider mpcStateEstimationProvider, Timing timing, MPCPreviewableTrack track) {
-    super(MPCRequestPublisher.ludic(), mpcStateEstimationProvider, timing, track);
+    super(MPCRequestPublisher.torque(), mpcStateEstimationProvider, timing, track);
   }
 
   @Override // from MPCAbstractDrivingModule

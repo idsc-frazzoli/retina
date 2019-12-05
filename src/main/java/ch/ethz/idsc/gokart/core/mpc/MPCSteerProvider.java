@@ -38,20 +38,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       vlp16PassiveSlowing.bypassSafety();
     // ---
     Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
-    Optional<Tensor> optional = mpcSteering.getSteering(time);
+    
     if (TorqueMode) {//Use Steering Torque
+      Optional<Tensor> optional = mpcSteering.getSteeringTorque(time);
       System.out.println("Using T-Mode :) ");
       if (optional.isPresent()) {
-        Tensor steering = optional.get();
-        Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-        Scalar torqueCmd = steerPositionController.iterate( //
-            currAngle, //
-            steering.Get(0), //
-            steering.Get(1));
-        Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-        return Optional.of(SteerPutEvent.createOn(torqueCmd.add(feedForward)));
+        Tensor torqueMSG = optional.get();
+        Scalar torqueCmd = torqueMSG.Get(0);
+        System.out.println(torqueCmd);
+        return Optional.of(SteerPutEvent.createOn(torqueCmd.multiply(Quantity.of(2, SI.NONE))));
       }
     } else {//Use Steering Angle
+      Optional<Tensor> optional = mpcSteering.getSteering(time);
       if (optional.isPresent()) {
         Tensor steering = optional.get();
         Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
