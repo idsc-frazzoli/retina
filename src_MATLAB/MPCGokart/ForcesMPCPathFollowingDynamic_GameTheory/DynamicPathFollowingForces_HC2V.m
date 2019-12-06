@@ -38,7 +38,7 @@ splinestart = 1;
 splinestart2 = 1;
 nextsplinepoints = 0;
 nextsplinepoints2 = 0;
-
+tend=100;
 %% global parameters index
 global index
 % inputs
@@ -116,9 +116,14 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 %           44.933,58.2,53.8,49,44,43,38.33; ...    %y
 %           2,2,2,2,2,2,2]';          %phi
   
-points = [18,35,42,55.2,56,51,42,40;...          %x
-          41,55,57,56,43,40,45,31; ...    %y
-          2.5,2.5,2.5,2.5,2.5,2.5,2.3,2.5]';   %phi
+% points = [18,35,42,55.2,56,51,42,40;...          %x
+%           41,55,57,56,43,40,45,31; ...    %y
+%           2.5,2.5,2.5,2.5,2.5,2.5,2.3,2.5]';   %phi
+
+points = [36.2,52,57.2,53,52,47,41.8;...          %x
+          44.933,58.2,53.8,49,44,43,38.33; ...    %y
+          2.5,2.5,2.5,2.5,2.5,2.5,2.5]';                        %width 
+
 points(:,3)=points(:,3)-0.2;
 points2=flip(points);
 
@@ -180,7 +185,6 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
 %% Simulation kart 1
-tend = 50;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);

@@ -1,27 +1,27 @@
-function f = objective_PG(z,points,radii,points2,radii2,vmax, maxxacc, steeringreg,plag,plat,pprog,pab,pspeedcost,pslack,pslack2,ptv)
+function f = objective_PG(z,points,radii,points_k2,radii_k2,vmax, maxxacc, steeringreg,plag,plat,pprog,pab,pspeedcost,pslack,pslack2,ptv)
     global index
 
-    %get the fancy spline for gokart 1
+    %get the fancy spline
     [splx,sply] = casadiDynamicBSPLINE(z(index.s),points);
     [spldx, spldy] = casadiDynamicBSPLINEforward(z(index.s),points);
     [splsx, splsy] = casadiDynamicBSPLINEsidewards(z(index.s),points);
-
-    %get the fancy spline for gokart 2
-    [splx2,sply2] = casadiDynamicBSPLINE(z(index.s_k2),points2);
-    [spldx2, spldy2] = casadiDynamicBSPLINEforward(z(index.s_k2),points2);
-    [splsx2, splsy2] = casadiDynamicBSPLINEsidewards(z(index.s_k2),points2);
+    r = casadiDynamicBSPLINERadius(z(index.s),radii);
     
-    %cost function for kart 1
+    [splx_k2,sply_k2] = casadiDynamicBSPLINE(z(index.s_k2),points_k2);
+    [spldx_k2, spldy_k2] = casadiDynamicBSPLINEforward(z(index.s_k2),points_k2);
+    [splsx_k2, splsy_k2] = casadiDynamicBSPLINEsidewards(z(index.s_k2),points_k2);
+    r_k2 = casadiDynamicBSPLINERadius(z(index.s_k2),radii_k2);
     
     forward = [spldx;spldy];
     sidewards = [splsx;splsy];
+
     realPos = z([index.x,index.y]);
     centerPos = realPos;
     wantedpos = [splx;sply];
     error = centerPos-wantedpos;
     lagerror = forward'*error;
     laterror = sidewards'*error;
-    speedcost = speedPunisher(z(index.v),vmax)*pspeedcost;
+    speedcost = speedPunisher(z(index.v),vmax)*pspeedcost; % ~max(v-vmax,0);
     slack = z(index.slack);
     tv = z(index.tv);
     lagcost = plag*lagerror^2;
@@ -29,27 +29,24 @@ function f = objective_PG(z,points,radii,points2,radii2,vmax, maxxacc, steeringr
     prog = -pprog*z(index.ds);
     reg = z(index.dotab).^2*pab+z(index.dotbeta).^2*steeringreg;
     
-    %cost function for kart 2
-    
-    forward2 = [spldx2;spldy2];
-    sidewards2 = [splsx2;splsy2];
-    realPos2 = z([index.x_k2,index.y_k2]);
-    centerPos2 = realPos2;
-    wantedpos2 = [splx2;sply2];
-    error2 = centerPos2-wantedpos2;
-    lagerror2 = forward2'*error2;
-    laterror2 = sidewards2'*error2;
-    speedcost2 = speedPunisher(z(index.v_k2),vmax)*pspeedcost;
+    forward_k2 = [spldx_k2;spldy_k2];
+    sidewards_k2 = [splsx_k2;splsy_k2];
+
+    realPos_k2 = z([index.x_k2,index.y_k2]);
+    centerPos_k2 = realPos_k2;
+    wantedpos_k2 = [splx_k2;sply_k2];
+    error_k2 = centerPos_k2-wantedpos_k2;
+    lagerror_k2 = forward_k2'*error_k2;
+    laterror_k2 = sidewards_k2'*error_k2;
+    speedcost_k2 = speedPunisher(z(index.v_k2),vmax)*pspeedcost; % ~max(v-vmax,0);
     slack_k2 = z(index.slack_k2);
-    tv2 = z(index.tv_k2);
-    lagcost2 = plag*lagerror2^2;
-    latcost2 = plat*laterror2^2;
-    prog2 = -pprog*z(index.ds_k2);
-    reg2 = z(index.dotab_k2).^2*pab+z(index.dotbeta_k2).^2*steeringreg;
+    tv_k2 = z(index.tv_k2);
+    lagcost_k2 = plag*lagerror_k2^2;
+    latcost_k2 = plat*laterror_k2^2;
+    prog_k2 = -pprog*z(index.ds_k2);
+    reg_k2 = z(index.dotab_k2).^2*pab+z(index.dotbeta_k2).^2*steeringreg;
     
-    %shared
-    slack2=z(index.slack2);
-    
-    f = lagcost+latcost+reg+prog+pslack*slack+speedcost+ptv*tv^2+...%
-        lagcost2+latcost2+reg2+prog2+pslack*slack_k2+speedcost2+ptv*tv2^2+pslack2*slack2;%-0.01*sidewardsspeed^2;
+    slack2 = z(index.slack2);
+    f = lagcost+latcost+reg+prog+pslack*slack+speedcost+ptv*tv^2+...
+        lagcost_k2+latcost_k2+reg_k2+prog_k2+pslack*slack_k2+speedcost_k2+ptv*tv_k2^2+pslack2*slack2;
 end

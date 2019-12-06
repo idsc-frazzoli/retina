@@ -21,7 +21,7 @@ behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
 FB = 9;
 FC = 1;
-FD = 7; % gravity acceleration considered
+FD = 6.5; % gravity acceleration considered
 RB = 5.2;
 RC = 1.1;
 RD = 7;
@@ -109,9 +109,12 @@ model.hu = [0;0;1;0;0];
 model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 
+% points = [36.2,52,57.2,53,52,47,41.8;...          %x
+%           44.933,58.2,53.8,49,44,43,38.33; ...    %y
+%           1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
 points = [36.2,52,57.2,53,52,47,41.8;...          %x
           44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
+          2.5,2.5,2.5,2.5,2.5,2.5,2.5]';
 % points = [18,35,42,55.2,56,51,42,40;...          %x
 %           41,55,57,56,43,40,45,31; ...    %y
 %           2.5,2.5,2.5,2.5,2.5,1,1,2.5]';

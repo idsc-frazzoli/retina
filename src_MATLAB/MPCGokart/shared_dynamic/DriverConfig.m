@@ -9,7 +9,7 @@ if strcmp(behaviour,'aggressive')==1
     pprog=0.2;
     pab=0.0004;
     pspeedcost=0.04;
-    pslack=7;
+    pslack=5;
     ptv=0.01;
 elseif strcmp(behaviour,'medium')==1
     maxSpeed = 10; % in [m/s]

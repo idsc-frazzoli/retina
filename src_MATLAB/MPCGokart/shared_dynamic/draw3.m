@@ -158,19 +158,19 @@ ylabel('progress [1]')
 axis([-inf inf 0 2])
 xlabel('[s]')
 plot(lhistory(:,1), lhistory(:,index.s+1));
-B1 = 9;
-C1 = 1;
-D1 = 10; % gravity acceleration considered
-
-B2 = 5.2;
-C2 = 1.1;
-D2 = 10; % gravity acceleration considered
-Cf=0.3;
-param = [B1,C1,D1,B2,C2,D2,Cf];
-
-for ii=1:length(lhistory(:,index.v+1))
-    [ACCX(ii),ACCY(ii),ACCROTZ(ii)] = modelDx(lhistory(ii,index.v+1),lhistory(ii,index.yv+1),lhistory(ii,index.dottheta+1),ackermannAngle(ii),lhistory(ii,index.ab+1),lhistory(ii,index.tv+1), param);
-end
+% B1 = 9;
+% C1 = 1;
+% D1 = 10; % gravity acceleration considered
+% 
+% B2 = 5.2;
+% C2 = 1.1;
+% D2 = 10; % gravity acceleration considered
+% Cf=0.3;
+% param = [B1,C1,D1,B2,C2,D2,Cf];
+% 
+% for ii=1:length(lhistory(:,index.v+1))
+%     [ACCX(ii),ACCY(ii),ACCROTZ(ii)] = modelDx(lhistory(ii,index.v+1),lhistory(ii,index.yv+1),lhistory(ii,index.dottheta+1),ackermannAngle(ii),lhistory(ii,index.ab+1),lhistory(ii,index.tv+1), param);
+% end
 
 % figure
 % plot(lhistory(:,1),ACCX,'b')
@@ -185,35 +185,35 @@ end
 % plot(lhistory(:,1),(-lhistory(:,index.tv+1)/2+lhistory(:,index.ab+1))/0.73*1.19,'r')
 % legend('+','-')
 
-reg=0.5;
-% Pacejka's magic formula
-magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
-% Equation for the lateral force in tire frame
-simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1);
-%simpleaccy = @(VELY,VELX,taccx)magic(-VELY/(VELX+reg),B2,C2,D2);
-    
-% go-kart length between axles
-l = 1.19;
-    
-% distance from the front axle to the center of mass
-l1 = 0.73;
-    
-% distance from the back axle to the center of mass
-l2 = l-l1;
-    
-% normal forces ( g is in D)
-f1n = l2/l;
-f2n = l1/l;
-    
-% Rotation Matrix
-rotmat = @(beta)[cos(beta),sin(beta);-sin(beta),cos(beta)];
-vel1=zeros(2,length(lhistory(:,index.v+1)));
-
-for ii=1:length(lhistory(:,index.v+1))
-    vel1(:,ii) = (rotmat(lhistory(ii,index.beta+1))*[lhistory(ii,index.v+1);lhistory(ii,index.yv+1)+l1*lhistory(ii,index.dottheta+1)])';
-    f1y(ii)= simplefaccy(vel1(2,ii),vel1(1,ii));
-    F1(:,ii) = rotmat(-lhistory(ii,index.beta+1))*[0;f1y(ii)]*f1n;
-end
+% reg=0.5;
+% % Pacejka's magic formula
+% magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
+% % Equation for the lateral force in tire frame
+% simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1);
+% %simpleaccy = @(VELY,VELX,taccx)magic(-VELY/(VELX+reg),B2,C2,D2);
+%     
+% % go-kart length between axles
+% l = 1.19;
+%     
+% % distance from the front axle to the center of mass
+% l1 = 0.73;
+%     
+% % distance from the back axle to the center of mass
+% l2 = l-l1;
+%     
+% % normal forces ( g is in D)
+% f1n = l2/l;
+% f2n = l1/l;
+%     
+% % Rotation Matrix
+% rotmat = @(beta)[cos(beta),sin(beta);-sin(beta),cos(beta)];
+% vel1=zeros(2,length(lhistory(:,index.v+1)));
+% 
+% for ii=1:length(lhistory(:,index.v+1))
+%     vel1(:,ii) = (rotmat(lhistory(ii,index.beta+1))*[lhistory(ii,index.v+1);lhistory(ii,index.yv+1)+l1*lhistory(ii,index.dottheta+1)])';
+%     f1y(ii)= simplefaccy(vel1(2,ii),vel1(1,ii));
+%     F1(:,ii) = rotmat(-lhistory(ii,index.beta+1))*[0;f1y(ii)]*f1n;
+% end
 % 
 % figure
 % plot(lhistory(:,1),F1(1,:)'+lhistory(:,index.ab+1),'r')
@@ -262,11 +262,11 @@ if(1)
 end
 %draw plan
 if(0)
-    [np2, ~] = size(plansx2);
+    [np2, ~] = size(plansx_k2);
     for i = 1:np2
-       plot(plansx2(i,:),plansy2(i,:),'--b');
-       xx2 = [plansx2(i,end),targets2(i,1)];
-       yy2 = [plansy2(i,end),targets2(i,2)];
+       plot(plansx_k2(i,:),plansy_k2(i,:),'--b');
+       xx2 = [plansx_k2(i,end),targets_k2(i,1)];
+       yy2 = [plansy_k2(i,end),targets_k2(i,2)];
        plot(xx2,yy2,'r');
     end
 end
@@ -332,9 +332,9 @@ hold on
 %compute lateral acceleration
 braking2 = zeros(numel(lhistory(:,1)),1);
 c2 = 0;
-for sp=lhistory(:,index.v_k2+1)'
+for sp_k2=lhistory(:,index.v_k2+1)'
     c2 = c2+1;
-    braking2(c2) = min(0,-lhistory(c2,index.ab_k2+1)+casadiGetMaxNegAcc(sp));
+    braking2(c2) = min(0,-lhistory(c2,index.ab_k2+1)+casadiGetMaxNegAcc(sp_k2));
     %braking(c) = max(0,-lhistory(c,2));
 end
 title('braking')
@@ -403,11 +403,11 @@ if(1)
 end
 %draw plan
 if(0)
-    [np2, ~] = size(plansx2);
+    [np2, ~] = size(plansx_k2);
     for i = 1:np2
-       plot(plansx2(i,:),plansy2(i,:),'--b');
-       xx2 = [plansx2(i,end),targets2(i,1)];
-       yy2 = [plansy2(i,end),targets2(i,2)];
+       plot(plansx_k2(i,:),plansy_k2(i,:),'--b');
+       xx2 = [plansx_k2(i,end),targets_k2(i,1)];
+       yy2 = [plansy_k2(i,end),targets_k2(i,2)];
        plot(xx2,yy2,'r');
     end
 end
