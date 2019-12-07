@@ -38,6 +38,10 @@ public class LudicControlModule extends AbstractModule {
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(10);
           mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
           mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
+          mpcLudicConfig.pacejkaRC = MPCLudicConfig.GLOBAL.pacejkaRC;
+          mpcLudicConfig.pacejkaFC = MPCLudicConfig.GLOBAL.pacejkaFC;
+          mpcLudicConfig.pacejkaRB = MPCLudicConfig.GLOBAL.pacejkaRB;
+          mpcLudicConfig.pacejkaFB = MPCLudicConfig.GLOBAL.pacejkaFB;
           mpcLudicConfig.maxSpeed = Quantity.of(5, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
         });
@@ -57,6 +61,10 @@ public class LudicControlModule extends AbstractModule {
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(8);
           mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
           mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
+          mpcLudicConfig.pacejkaRC = MPCLudicConfig.GLOBAL.pacejkaRC;
+          mpcLudicConfig.pacejkaFC = MPCLudicConfig.GLOBAL.pacejkaFC;
+          mpcLudicConfig.pacejkaRB = MPCLudicConfig.GLOBAL.pacejkaRB;
+          mpcLudicConfig.pacejkaFB = MPCLudicConfig.GLOBAL.pacejkaFB;
           mpcLudicConfig.maxSpeed = Quantity.of(8, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
         });
@@ -76,6 +84,10 @@ public class LudicControlModule extends AbstractModule {
           mpcLudicConfig.slackSoftConstraint = RealScalar.of(5);
           mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
           mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
+          mpcLudicConfig.pacejkaRC = MPCLudicConfig.GLOBAL.pacejkaRC;
+          mpcLudicConfig.pacejkaFC = MPCLudicConfig.GLOBAL.pacejkaFC;
+          mpcLudicConfig.pacejkaRB = MPCLudicConfig.GLOBAL.pacejkaRB;
+          mpcLudicConfig.pacejkaFB = MPCLudicConfig.GLOBAL.pacejkaFB;
           mpcLudicConfig.maxSpeed = Quantity.of(12, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
         });

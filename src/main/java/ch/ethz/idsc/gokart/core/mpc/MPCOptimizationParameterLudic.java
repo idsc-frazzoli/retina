@@ -8,7 +8,7 @@ import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 
 class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
-  private static final int LENGTH = (4 + 16) * 4;
+  private static final int LENGTH = (4 + 17) * 4;
   /** Pacejka's formula front wheels parameters */
   private final Scalar pacejkaFB;
   private final Scalar pacejkaFC;
@@ -39,6 +39,7 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
   private final Scalar slackSoftConstraint;
   /** Regularizer for input TV */
   private final Scalar regularizerTV;
+  private final Scalar regTau;
 
   public MPCOptimizationParameterLudic(ByteBuffer byteBuffer) {
     super(byteBuffer);
@@ -58,6 +59,7 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
     speedCost = RealScalar.of(byteBuffer.getFloat());
     slackSoftConstraint = RealScalar.of(byteBuffer.getFloat());
     regularizerTV = RealScalar.of(byteBuffer.getFloat());
+    regTau = RealScalar.of(byteBuffer.getFloat());
   }
 
   public MPCOptimizationParameterLudic(Scalar mpcMaxSpeed, Scalar maxLonAcc, Scalar steeringReg, Scalar specificMoI, MPCLudicConfig mpcLudicConfig) {
@@ -68,6 +70,7 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
     progress = mpcLudicConfig.progress;
     regularizerAB = mpcLudicConfig.regularizerAB;
     regularizerTV = mpcLudicConfig.regularizerTV;
+    regTau = mpcLudicConfig.regularizerTau;
     slackSoftConstraint = mpcLudicConfig.slackSoftConstraint;
     pacejkaFB = mpcLudicConfig.pacejkaFB;
     pacejkaFC = mpcLudicConfig.pacejkaFC;
@@ -100,6 +103,7 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
     byteBuffer.putFloat(Magnitude.ONE.toFloat(speedCost));
     byteBuffer.putFloat(Magnitude.ONE.toFloat(slackSoftConstraint));
     byteBuffer.putFloat(Magnitude.ONE.toFloat(regularizerTV));
+    byteBuffer.putFloat(Magnitude.ONE.toFloat(regTau));
   }
 
   @Override // from BufferInsertable

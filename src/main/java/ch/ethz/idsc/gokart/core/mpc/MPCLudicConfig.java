@@ -44,4 +44,5 @@ public class MPCLudicConfig {
   public Scalar slackSoftConstraint = RealScalar.of(5);
   /** Regularizer for input TV */
   public Scalar regularizerTV = RealScalar.of(0.01);
+  public Scalar regularizerTau = RealScalar.of(0.1);
 }
