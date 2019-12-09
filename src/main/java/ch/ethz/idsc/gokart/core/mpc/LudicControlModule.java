@@ -5,7 +5,10 @@ import java.awt.GridLayout;
 import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
 import ch.ethz.idsc.retina.util.math.SI;
@@ -20,11 +23,34 @@ public class LudicControlModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
+  private Class<? extends MPCDrivingCommonModule> clazz = MPCDrivingLudicModule.class;
+
 
   @Override
   protected void first() {
     {
-      JPanel jPanel = new JPanel(new GridLayout(4, 1));
+      JPanel jPanel = new JPanel(new GridLayout(4, 2));
+      {
+        jPanel.add(new JLabel("Steering Mode:"));
+      }
+      {
+        JToggleButton jToggleButton = new JToggleButton("Angle");
+        jToggleButton.addActionListener(actionEvent -> {
+          endLudic();
+          if (jToggleButton.isSelected()) {
+            clazz = MPCDrivingTorqueModule.class;
+            jToggleButton.setText("Torque");
+          } else {
+            clazz = MPCDrivingLudicModule.class;
+            jToggleButton.setText("Angle");
+          }
+        });
+        jPanel.add(jToggleButton);
+      }
+      {
+        jPanel.add(new JLabel("Driver Mode:"));
+        jPanel.add(new JSeparator());
+      }
       {
         JButton jButton = new JButton("Beginner");
         jButton.addActionListener(actionEvent -> {
@@ -139,6 +165,8 @@ public class LudicControlModule extends AbstractModule {
     // ---
     jFrame.setVisible(false);
     jFrame.dispose();
+    // ---
+    endLudic();
   }
 
   public static void standalone() throws Exception {
@@ -152,8 +180,20 @@ public class LudicControlModule extends AbstractModule {
   }
 
   private void startLudic() {
-    if (Objects.isNull(ModuleAuto.INSTANCE.getInstance(MPCDrivingLudicModule.class)))
-      (new MPCDrivingLudicModule()).first();
+    if (Objects.isNull(ModuleAuto.INSTANCE.getInstance(clazz)))
+      try {
+        ModuleAuto.INSTANCE.runOne(clazz);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
   }
 
+  private void endLudic() {
+    if (Objects.nonNull(ModuleAuto.INSTANCE.getInstance(clazz)))
+      try {
+        ModuleAuto.INSTANCE.endOne(clazz);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+  }
 }
