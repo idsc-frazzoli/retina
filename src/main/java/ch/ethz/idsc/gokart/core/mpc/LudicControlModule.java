@@ -2,7 +2,7 @@
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.awt.GridLayout;
-
+import java.util.Objects;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,6 +11,7 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
+import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
@@ -44,6 +45,7 @@ public class LudicControlModule extends AbstractModule {
           mpcLudicConfig.pacejkaFB = MPCLudicConfig.GLOBAL.pacejkaFB;
           mpcLudicConfig.maxSpeed = Quantity.of(5, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
+          startLudic();
         });
         jPanel.add(jButton);
       }
@@ -67,6 +69,7 @@ public class LudicControlModule extends AbstractModule {
           mpcLudicConfig.pacejkaFB = MPCLudicConfig.GLOBAL.pacejkaFB;
           mpcLudicConfig.maxSpeed = Quantity.of(8, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
+          startLudic();
         });
         jPanel.add(jButton);
       }
@@ -90,6 +93,7 @@ public class LudicControlModule extends AbstractModule {
           mpcLudicConfig.pacejkaFB = MPCLudicConfig.GLOBAL.pacejkaFB;
           mpcLudicConfig.maxSpeed = Quantity.of(12, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
+          startLudic();
         });
         jPanel.add(jButton);
       }
@@ -118,6 +122,7 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Custom mode");
           MPCLudicConfig.FERRY = MPCLudicConfig.GLOBAL;
+          startLudic();
         });
         jPanel.add(jButton);
       }
@@ -145,4 +150,10 @@ public class LudicControlModule extends AbstractModule {
   public static void main(String[] args) throws Exception {
     standalone();
   }
+
+  private void startLudic() {
+    if (Objects.isNull(ModuleAuto.INSTANCE.getInstance(MPCDrivingLudicModule.class)))
+      (new MPCDrivingLudicModule()).first();
+  }
+
 }
