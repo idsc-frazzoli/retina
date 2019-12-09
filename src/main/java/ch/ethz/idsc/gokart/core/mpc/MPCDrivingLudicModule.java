@@ -43,4 +43,9 @@ public class MPCDrivingLudicModule extends MPCDrivingCommonModule {
         MPCLudicConfig.FERRY);
     return mpcOptimizationParameterLudic;
   }
+
+  @Override // from MPCDrivingAbstractModule
+  protected final boolean torqueBased() {
+    return false;
+  }
 }

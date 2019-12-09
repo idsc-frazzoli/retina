@@ -49,4 +49,9 @@ public class MPCDrivingKinematicModule extends MPCDrivingAbstractModule {
         mpcOptimizationConfig.torqueVecEffect, //
         mpcOptimizationConfig.brakeEffect);
   }
+
+  @Override // from MPCDrivingAbstractModule
+  protected final boolean torqueBased() {
+    return false;
+  }
 }

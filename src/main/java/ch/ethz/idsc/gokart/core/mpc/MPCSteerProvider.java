@@ -24,11 +24,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
-  private boolean TorqueMode = false;
+  private final boolean torqueMode;
 
-  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering) {
+  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode) {
     super(timing);
     this.mpcSteering = mpcSteering;
+    this.torqueMode = torqueMode;
   }
 
   @Override // from PutProvider
@@ -38,37 +39,26 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       vlp16PassiveSlowing.bypassSafety();
     // ---
     Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
-    
-    if (TorqueMode) {//Use Steering Torque
-      Optional<Tensor> optional = mpcSteering.getSteeringTorque(time);
-      System.out.println("Using T-Mode :) ");
-      if (optional.isPresent()) {
-        Tensor torqueMSG = optional.get();
-        Scalar torqueCmd = torqueMSG.Get(0);
-        System.out.println(torqueCmd);
-        return Optional.of(SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale)));
-      }
-    } else {//Use Steering Angle
-      Optional<Tensor> optional = mpcSteering.getSteering(time);
-      if (optional.isPresent()) {
-        Tensor steering = optional.get();
-        Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-        Scalar torqueCmd = steerPositionController.iterate( //
-            currAngle, //
-            steering.Get(0), //
-            steering.Get(1));
-        Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-        return Optional.of(SteerPutEvent.createOn(torqueCmd.add(feedForward)));
-      }
-    }
-    return Optional.empty();
+
+    if (torqueMode)
+      return mpcSteering.getSteeringTorque(time).map(this::torqueSteer); // use steering torque
+    else
+      return mpcSteering.getSteering(time).map(this::angleSteer); // use steering angle
   }
 
-  /** Change the steering mode of the go-kart
-   * 
-   * @param useTorque (set True if go-kart should use the commanded torque instead of beta)
-   * @return void */
-  public void setSteeringMode(boolean useTorque) {
-    this.TorqueMode = useTorque;
+  private SteerPutEvent torqueSteer(Tensor torqueMSG) {
+    Scalar torqueCmd = torqueMSG.Get(0);
+    System.out.println(torqueCmd);
+    return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
+  }
+
+  private SteerPutEvent angleSteer(Tensor steering) {
+    Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+    Scalar torqueCmd = steerPositionController.iterate( //
+        currAngle, //
+        steering.Get(0), //
+        steering.Get(1));
+    Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+    return SteerPutEvent.createOn(torqueCmd.add(feedForward));
   }
 }

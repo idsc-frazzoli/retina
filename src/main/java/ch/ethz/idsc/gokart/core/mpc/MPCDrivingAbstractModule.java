@@ -80,7 +80,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     mpcPower = createPower(mpcStateEstimationProvider, mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
-    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
+    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering, torqueBased());
     // link mpc steering
     mpcControlUpdateLcmClient.addListener(mpcSteering);
     mpcControlUpdateLcmClient.addListener(mpcPower);
@@ -125,7 +125,6 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     mpcBraking.start();
     mpcControlUpdateLcmClient.addListener(new MPCControlUpdateInterrupt(thread));
     thread.start();
-    setSteering();
     // ---
     System.out.println("Scheduling Timer: start");
   }
@@ -157,10 +156,6 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     this.mpcBSplineTrack = optional;
   }
 
-  public void setSteering() {
-    mpcSteerProvider.setSteeringMode(false);
-  }
-
   @Override // from Runnable
   public final void run() {
     while (running) {
@@ -186,4 +181,6 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
    * @param mpcSteering
    * @return */
   abstract MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering);
+
+  abstract boolean torqueBased();
 }

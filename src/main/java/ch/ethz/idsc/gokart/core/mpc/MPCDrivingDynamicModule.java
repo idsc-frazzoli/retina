@@ -41,4 +41,9 @@ public class MPCDrivingDynamicModule extends MPCDrivingCommonModule {
         mpcOptimizationConfig.steeringReg, //
         mpcOptimizationConfig.specificMoI);
   }
+
+  @Override // from MPCDrivingAbstractModule
+  protected final boolean torqueBased() {
+    return false;
+  }
 }

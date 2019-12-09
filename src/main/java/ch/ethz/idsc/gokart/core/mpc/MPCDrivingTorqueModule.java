@@ -44,8 +44,8 @@ public class MPCDrivingTorqueModule extends MPCDrivingCommonModule {
     return mpcOptimizationParameterLudic;
   }
 
-  @Override // from MPCAbstractDrivingModule
-  public void setSteering() {
-    mpcSteerProvider.setSteeringMode(true);
+  @Override // from MPCDrivingAbstractModule
+  protected final boolean torqueBased() {
+    return true;
   }
 }
