@@ -29,11 +29,11 @@ specificmoi = 0.3;
 plag=1;
 plat=0.01;
 pprog=0.2;
-pab=0.0004;
-pspeedcost=0.04;
+pab=0.004;
+pspeedcost=0.05;
 pslack=5;
 ptv=0.01;
-ptau=0.5;
+ptau=0.05;
 
 %Simulation Pacejka constants, real values changalbe in java 
 FB = 9;
@@ -174,18 +174,18 @@ model.lb = -ones(1,index.nv)*inf;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
 model.lb(index.ab)=-inf;
-model.ub(index.tv)=1.7;
-model.lb(index.tv)=-1.7;
+model.ub(index.tv)=1.6;
+model.lb(index.tv)=-1.6;
 model.lb(index.slack)=0;
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
 model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
-model.ub(index.tau)=0.5;
-model.lb(index.tau)=-0.5;
-model.ub(index.dottau)=0.5;
-model.lb(index.dottau)=-0.5;
+model.ub(index.tau)=0.55;
+model.lb(index.tau)=-0.55;
+model.ub(index.dottau)=2;
+model.lb(index.dottau)=-2;
 
 
 
@@ -222,7 +222,7 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 %
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-tend = 70;
+tend = 120;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);
@@ -296,7 +296,7 @@ for i =1:tend
         a = 1;
     end
     if(exitflag~=1 && exitflag ~=0)
-        draw
+        drawT
         return
     end
     %nextSplinePoints

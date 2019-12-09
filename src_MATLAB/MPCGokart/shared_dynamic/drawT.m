@@ -38,6 +38,9 @@ for i=1:nu-1
     x = [p(i,1),p(next,1)];
    y = [p(i,2),p(next,2)];
    vc = acc(i)/maxacc;
+   if isnan(vc)
+       vc=0;
+   end
    line(x,y,'Color',[0.5-0.5*vc,0.5+0.5*vc,0]); %%TODO MH not working
    %draw angle
    spc = spc+1;
@@ -148,13 +151,13 @@ subplot(m,n,6)
 hold on
 title('Steering Torque')
 yyaxis left
-axis([-inf inf -0.2 0.2])
+axis([-inf inf -0.6 0.6])
 ylabel('Torque [SCT]')
 plot(lhistory(:,1),lhistory(:,index.tau+1));
 
 yyaxis right
 ylabel('Steering Torque rate[SCT/s]')
-axis([-inf inf -0.2 0.2])
+axis([-inf inf -1 1])
 xlabel('[s]')
 plot(lhistory(:,1), lhistory(:,index.dottau+1));
 
