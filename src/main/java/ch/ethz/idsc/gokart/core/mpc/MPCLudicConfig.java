@@ -45,4 +45,5 @@ public class MPCLudicConfig {
   /** Regularizer for input TV */
   public Scalar regularizerTV = RealScalar.of(0.01);
   public Scalar regularizerTau = RealScalar.of(0.1);
+  public Scalar torqueScale = RealScalar.of(2);
 }

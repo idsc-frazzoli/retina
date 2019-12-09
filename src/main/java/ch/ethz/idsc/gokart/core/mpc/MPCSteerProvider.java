@@ -46,7 +46,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         Tensor torqueMSG = optional.get();
         Scalar torqueCmd = torqueMSG.Get(0);
         System.out.println(torqueCmd);
-        return Optional.of(SteerPutEvent.createOn(torqueCmd.multiply(Quantity.of(2, SI.NONE))));
+        return Optional.of(SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale)));
       }
     } else {//Use Steering Angle
       Optional<Tensor> optional = mpcSteering.getSteering(time);
@@ -66,7 +66,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   /** Change the steering mode of the go-kart
    * 
-   * @param bool useTorque (set True if go-kart should use the commanded torque instead of beta)
+   * @param useTorque (set True if go-kart should use the commanded torque instead of beta)
    * @return void */
   public void setSteeringMode(boolean useTorque) {
     this.TorqueMode = useTorque;
