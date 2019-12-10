@@ -19,11 +19,11 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
   private final Scalar pacejkaRD;
   /** stiffness, damping, inertia of the steering column */
   // TODO Unit is SCT/SCE
-  public Scalar steerStiff = RealScalar.of(0.8875);
+  public Scalar steerStiff;// = RealScalar.of(0.8875);
   // TODO Unit is SCT*s/SCE
-  public Scalar steerDamp = RealScalar.of(0.1625);
+  public Scalar steerDamp;// = RealScalar.of(0.1625);
   // TODO Unit is SCT*s^2/SCE
-  public Scalar steerInertia = RealScalar.of(0.0125);
+  public Scalar steerInertia;// = RealScalar.of(0.0125);
   /** Parameters of the cost function (without unit of measure) */
   /** Lag Error */
   private final Scalar lagError;
@@ -78,6 +78,9 @@ class MPCOptimizationParameterLudic extends MPCOptimizationParameterDynamic {
     pacejkaRB = mpcLudicConfig.pacejkaRB;
     pacejkaRC = mpcLudicConfig.pacejkaRC;
     pacejkaRD = mpcLudicConfig.pacejkaRD;
+    steerStiff = mpcLudicConfig.steerStiff;
+    steerDamp = mpcLudicConfig.steerDamp;
+    steerInertia = mpcLudicConfig.steerInertia;
   }
 
   @Override // from BufferInsertable

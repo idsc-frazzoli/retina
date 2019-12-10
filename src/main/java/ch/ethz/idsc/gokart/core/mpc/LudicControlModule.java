@@ -117,6 +117,9 @@ public class LudicControlModule extends AbstractModule {
           mpcLudicConfig.pacejkaFC = MPCLudicConfig.GLOBAL.pacejkaFC;
           mpcLudicConfig.pacejkaRB = MPCLudicConfig.GLOBAL.pacejkaRB;
           mpcLudicConfig.pacejkaFB = MPCLudicConfig.GLOBAL.pacejkaFB;
+          mpcLudicConfig.steerStiff = MPCLudicConfig.GLOBAL.steerStiff;
+          mpcLudicConfig.steerDamp = MPCLudicConfig.GLOBAL.steerDamp;
+          mpcLudicConfig.steerInertia = MPCLudicConfig.GLOBAL.steerInertia;
           mpcLudicConfig.maxSpeed = Quantity.of(12, SI.VELOCITY);
           MPCLudicConfig.FERRY = mpcLudicConfig;
           startLudic();
