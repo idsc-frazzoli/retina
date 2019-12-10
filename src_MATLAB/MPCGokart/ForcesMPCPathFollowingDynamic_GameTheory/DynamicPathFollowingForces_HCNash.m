@@ -21,15 +21,15 @@ clear all
 
 
 %% Baseline params
-behaviour='custom'; %aggressive,medium, beginner,drifting,custom,collision
+behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
 FB = 9;
 FC = 1;
-FD = 7; % gravity acceleration considered
+FD = 10; % gravity acceleration considered
 RB = 5.2;
 RC = 1.1;
-RD = 7;
+RD = 10;
 J_steer=0.8875;
 b_steer=0.1625;
 k_steer=0.0125;
@@ -42,7 +42,7 @@ splinestart2 = 1;
 nextsplinepoints = 0;
 nextsplinepoints2 = 0;
 % Number of iterations
-tend = 200;
+tend = 20;
 N=10; % Nash iteration
 %% global parameters index
 global index
@@ -123,11 +123,23 @@ model.hl = [-inf;-inf;-inf;-inf;-inf;0];
 % points = [18,35,42,55.2,56,51,42,40;...          %x
 %           41,55,57,56,43,40,45,31; ...    %y
 %           2.5,2.5,2.5,2.5,2.5,2.5,2.3,2.5]';   %phi
-points = [18,35,42,55.2,60,51,42,40;...          %x
-          41,55,57,56,43,40,42,31; ...    %y
-          2.5,2.5,2.5,2.5,2.3,2.3,2.3,2.3]';
+% points = [18,35,42,55.2,60,51,42,40;...          %x
+%           41,55,57,56,43,40,42,31; ...    %y
+%           2.5,2.5,2.5,2.5,2.3,2.3,2.3,2.3]';7
+% points = [36.2,52,57.2,53,52,47,41.8;...          %x
+%           44.933,58.2,53.8,49,44,43,38.33; ...    %y
+%           2.5,2.5,2.5,2.5,2.5,2.5,2.5]';     
+% points(:,3)=points(:,3)-0.2;
+% points2=flip(points);
+points = [41.8,36.2,52,57.2,53,52,47;...          %x
+          38.33,44.933,58.2,53.8,49,44,43; ...    %y
+          2.5,2.5,2.5,2.5,2.5,2.5,2.5]';         %width 
+points2 = [57.2,52,36.2,41.8,47,52,53;...          %x
+          53.8,58.2,44.933,38.33,43,44,49; ...    %y
+          2.5,2.5,2.5,2.5,2.5,2.5,2.5]';       
+
 points(:,3)=points(:,3)-0.2;
-points2=flip(points);
+points2(:,3)=points2(:,3)-0.2;
 
 %% Objective function
 trajectorytimestep = integrator_stepsize;
@@ -233,7 +245,7 @@ plansy2 = [];
 planss2 = [];
 targets2 = [];
 planc2 = 10;
-N=10;
+
 x02 = [zeros(model.N,index.nu),repmat(xs2,model.N,1)]';
 a=0;
 a2=0;
@@ -344,11 +356,11 @@ for i =1:tend
         
         outputM = reshape(output.alldata,[model.nvar,model.N])';
         outputM2 = reshape(output2.alldata,[model.nvar,model.N])';
-        if jj>=2 %% check
-            if sum((AAA(:,index.x)-outputM(:,index.x))<=1e-5)==model.N &&sum((AAA(:,index.y)-outputM(:,index.y))<=1e-5)==model.N && sum((BBB(:,index.x)-outputM2(:,index.x))<=1e-5)==model.N &&sum((BBB(:,index.y)-outputM2(:,index.y))<=1e-5)==model.N
-            jj=N+1;
-            end
-        end
+%         if jj>=2 %% check
+%             if sum((AAA(:,index.x)-outputM(:,index.x))<=1e-5)==model.N &&sum((AAA(:,index.y)-outputM(:,index.y))<=1e-5)==model.N && sum((BBB(:,index.x)-outputM2(:,index.x))<=1e-5)==model.N &&sum((BBB(:,index.y)-outputM2(:,index.y))<=1e-5)==model.N
+%             jj=N+1;
+%             end
+%         end
         problem.all_parameters(index.xComp:model.npar:end)=outputM2(:,index.x);
         problem.all_parameters(index.yComp:model.npar:end)=outputM2(:,index.y);
         

@@ -42,7 +42,7 @@ nextsplinepoints = 0;
 nextsplinepoints2 = 0;
 
 % Simulation length
-tend=100;
+tend=20;
 %% global parameters index
 global index
 % inputs go kart 1
@@ -147,12 +147,16 @@ model.hl = [-inf;-inf;-inf;-inf;-inf;-inf;-inf;-inf;-inf;-inf;0];
 %           41,55,57,56,43,40,45,31; ...    %y
 %           2.5,2.5,2.5,2.5,2.5,2.5,2.3,2.5]';   %phi
 
-points = [36.2,52,57.2,53,52,47,41.8;...          %x
-          44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          2.5,2.5,2.5,2.5,2.5,2.5,2.5]';                        %width 
+points = [41.8,36.2,52,57.2,53,52,47;...          %x
+          38.33,44.933,58.2,53.8,49,44,43; ...    %y
+          2.5,2.5,2.5,2.5,2.5,2.5,2.5]';         %width 
+points2 = [57.2,52,36.2,41.8,47,52,53;...          %x
+          53.8,58.2,44.933,38.33,43,44,49; ...    %y
+          2.5,2.5,2.5,2.5,2.5,2.5,2.5]';       
 
 points(:,3)=points(:,3)-0.2;
-points2=flip(points);
+points2(:,3)=points2(:,3)-0.2;
+% points2=flip(points);
 %points2=points;
 %% Objective function
 trajectorytimestep = integrator_stepsize;
@@ -242,7 +246,7 @@ model.lb(index.slack2)=0;
 
 %% CodeOptions for FORCES solver
 codeoptions = getOptions('MPCPathFollowing_One'); % Need FORCES License to run
-codeoptions.maxit = 5000;    % Maximum number of iterations
+codeoptions.maxit = 1000;    % Maximum number of iterations
 codeoptions.printlevel = 1; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
@@ -381,5 +385,7 @@ for i =1:tend
         targets2 = [targets2;tx2,ty2];
     end        
 end
+
+
 % Plot
 draw3
