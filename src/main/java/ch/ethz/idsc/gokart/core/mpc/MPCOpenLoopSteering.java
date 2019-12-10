@@ -31,7 +31,7 @@ import ch.ethz.idsc.tensor.Tensors;
     Scalar timeSinceLastStep = getTimeSinceLastStep(controlTime);
     Scalar rampUp = timeSinceLastStep.multiply(cnpStep.gokartControl().getudotT());
     return Optional.of(Tensors.of( //
-        cnpStep.gokartState().getTau().add(rampUp), //
+        cnpStep.gokartState().getTau(),//.add(rampUp), //
         cnpStep.gokartControl().getudotT()));
   }
   
