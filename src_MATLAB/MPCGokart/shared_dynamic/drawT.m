@@ -80,7 +80,7 @@ axis([-inf inf -0.5 0.5])
 yyaxis right
 stairs(lhistory(:,1), lhistory(:,index.dotbeta+1))
 %axis([-inf inf -2 2])
-axis([-inf inf -2 2])
+axis([-inf inf -0.5 0.5])
 ylabel('steering change rate [SCE/s]')
 hold off
 title('steering input');
@@ -123,7 +123,8 @@ ylabel('[km/h]')
 xlabel('[s]')
 plot(lhistory(:,1),lhistory(:,index.v+1)*3.6);
 plot(lhistory(:,1),lhistory(:,index.yv+1)*3.6);
-legend('v_x','v_y')
+plot(lhistory(:,1),lhistory(:,index.dottheta+1)*3.6);
+legend('v_x','v_y','v_r')
 
 subplot(m,n,5)
 hold on

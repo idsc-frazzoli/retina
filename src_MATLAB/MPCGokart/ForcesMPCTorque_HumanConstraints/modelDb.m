@@ -24,6 +24,7 @@ B3 = 1;
 C3 = 1;
 D3 = 0;
 
+kRot=0.001;
 %Steering Column Parameters
 scK= param(7);
 scD= param(8);
@@ -37,7 +38,7 @@ reg = 0.5;
 
 simpleMaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1)*Lpneu(-VELY/(VELX+reg));
 
-effectiveTorque3 =@(tau)(1*(tau.^3))+0.04*tau;
+effectiveTorque3 =@(tau)(0.2*(tau.^3))+0.5*tau;
 %effectiveTorque2 =@(tau)(0.5*(tau^2).*sign(tau))+0.05*tau;
 %effectiveTorque1 =@(tau)(1.0*abs(tau.^1.5).*sign(tau))+0.2.*tau;
 %effectiveTorque0 =@(tau)0.2*tau;%(1.2*(x.^2).*sign(x))+0.01.*x;
@@ -50,11 +51,13 @@ rotmat = @(beta)[cos(beta),sin(beta);-sin(beta),cos(beta)];
 vel1 = rotmat(BETA)*[VELX;VELY+l1*VELROTZ];     %Velocity in wheels refrence frame
 F1m=simpleMaccy(vel1(2),vel1(1));                       %Rot accel of SC from the front tire pacejka moment
 
+dotAckerman = ((-1.8*BETA*BETA)+0.94)*DotB;
 %% Cart Accelerations
 fSpring=(-(scK/scJ)*BETA);
 fDamp=(-(scD/scJ)*DotB);
 fTau=effectiveTorque3(TauC)/scJ;
-ACCBETA = fSpring+fDamp+ fTau +F1m;      %Rotational Acceleration of Steering Column
+fRot=(VELROTZ-dotAckerman)*kRot/scJ;
+ACCBETA = fSpring+fDamp+ fTau +F1m+fRot;      %Rotational Acceleration of Steering Column
 
 end
 
