@@ -24,7 +24,7 @@ B3 = 1;
 C3 = 1;
 D3 = 0;
 
-kRot=0.001;
+kRot=0.000;
 %Steering Column Parameters
 scK= param(7);
 scD= param(8);
@@ -38,7 +38,7 @@ reg = 0.5;
 
 simpleMaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1)*Lpneu(-VELY/(VELX+reg));
 
-effectiveTorque3 =@(tau)(0.2*(tau.^3))+0.5*tau;
+effectiveTorque3 =@(tau)(1*(tau.^3))+0.2*tau;
 %effectiveTorque2 =@(tau)(0.5*(tau^2).*sign(tau))+0.05*tau;
 %effectiveTorque1 =@(tau)(1.0*abs(tau.^1.5).*sign(tau))+0.2.*tau;
 %effectiveTorque0 =@(tau)0.2*tau;%(1.2*(x.^2).*sign(x))+0.01.*x;

@@ -32,8 +32,8 @@ pprog=0.2;
 pab=0.004;
 pspeedcost=0.05;
 pslack=5;
-ptv=0.01;
-ptau=0.001;
+ptv=0.05;
+ptau=0.01;
 
 %Simulation Pacejka constants, real values changalbe in java 
 FB = 9;
@@ -44,9 +44,9 @@ RC = 1.1;
 RD = 6;
 
 %Steering column properties
-J_steer=0.5;
-b_steer=-0.4;
-k_steer=0.9;
+J_steer=0.9;
+b_steer=0.2;
+k_steer=0.8;
 
 
 %% global parameters index
@@ -129,10 +129,14 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 
 % Random control points for trajectory sampling
-points = [36.2,52,57.2,53,52,47,41.8;...          %x
-    44.933,58.2,53.8,49,44,43,38.33; ...           %y
-    1.8,1.8,1.8,0.5,0.5,0.5,1.8]';                      %phi
+% points = [36.2,52,57.2,53,52,47,41.8;...          %x
+%     44.933,58.2,53.8,49,44,43,38.33; ...           %y
+%     1.8,1.8,1.8,0.5,0.5,0.5,1.8]';                      %phi
 
+
+points = [20,25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21;...          %x
+          40,34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47; ...    %y
+          1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
 % points = [28,35,42,55.2,56,51,42,40;...          %x
 %           41,60,43,56,43,40,44,31; ...    %y
 %           2,1.5,1.2,1.6,0.6,0.8,1.2,1.6]';   %phi
@@ -182,8 +186,8 @@ model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
 model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
-model.ub(index.tau)=1.2;
-model.lb(index.tau)=-1.2;
+model.ub(index.tau)=0.8;
+model.lb(index.tau)=-0.8;
 model.ub(index.dottau)=4;
 model.lb(index.dottau)=-4;
 
@@ -222,7 +226,7 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 %
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-tend = 80;
+tend = 200;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);

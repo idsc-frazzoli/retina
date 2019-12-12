@@ -24,11 +24,11 @@ public class MPCLudicConfig {
   public Scalar pacejkaRD = RealScalar.of(6.0);
   // /** stiffness, damping, inertia of the steering column */
   // // TODO Unit is SCT/SCE
-   public Scalar steerStiff = RealScalar.of(0.18);
+   public Scalar steerStiff = RealScalar.of(0.8);
   // // TODO Unit is SCT*s/SCE
-   public Scalar steerDamp = RealScalar.of(-0.08);
+   public Scalar steerDamp = RealScalar.of(0.2);
   // // TODO Unit is SCT*s^2/SCE
-   public Scalar steerInertia = RealScalar.of(0.1);
+   public Scalar steerInertia = RealScalar.of(0.9);
   /** Parameters of the cost function (without unit of measure) */
   /** Lag Error cost */
   public Scalar lagError = RealScalar.of(1);
@@ -45,5 +45,5 @@ public class MPCLudicConfig {
   /** Regularizer for input TV */
   public Scalar regularizerTV = RealScalar.of(0.01);
   public Scalar regularizerTau = RealScalar.of(0.001);
-  public Scalar torqueScale = RealScalar.of(1);
+  public Scalar torqueScale = RealScalar.of(0.85);
 }
