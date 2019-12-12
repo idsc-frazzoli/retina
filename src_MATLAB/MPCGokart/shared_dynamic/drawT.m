@@ -152,13 +152,13 @@ subplot(m,n,6)
 hold on
 title('Steering Torque')
 yyaxis left
-axis([-inf inf -0.6 0.6])
+axis([-inf inf -1 1])
 ylabel('Torque [SCT]')
 plot(lhistory(:,1),lhistory(:,index.tau+1));
 
 yyaxis right
 ylabel('Steering Torque rate[SCT/s]')
-axis([-inf inf -1 1])
+axis([-inf inf -4 4])
 xlabel('[s]')
 plot(lhistory(:,1), lhistory(:,index.dottau+1));
 

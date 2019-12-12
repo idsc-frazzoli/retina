@@ -38,15 +38,15 @@ ptau=0.001;
 %Simulation Pacejka constants, real values changalbe in java 
 FB = 9;
 FC = 1;
-FD = 7;
+FD = 6.5;
 RB = 5.2;
 RC = 1.1;
-RD = 7;
+RD = 6;
 
 %Steering column properties
-J_steer=0.1;
-b_steer=-0.08;
-k_steer=0.2;
+J_steer=0.5;
+b_steer=-0.4;
+k_steer=0.9;
 
 
 %% global parameters index
@@ -182,8 +182,8 @@ model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
 model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
-model.ub(index.tau)=0.55;
-model.lb(index.tau)=-0.55;
+model.ub(index.tau)=1.2;
+model.lb(index.tau)=-1.2;
 model.ub(index.dottau)=4;
 model.lb(index.dottau)=-4;
 
