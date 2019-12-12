@@ -48,7 +48,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   private SteerPutEvent torqueSteer(Tensor torqueMSG) {
     Scalar torqueCmd = torqueMSG.Get(0);
-    System.out.println(torqueCmd);
+    System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
   }
 
@@ -59,6 +59,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         steering.Get(0), //
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+    System.out.println(torqueCmd.add(feedForward));
     return SteerPutEvent.createOn(torqueCmd.add(feedForward));
   }
 }
