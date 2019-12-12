@@ -44,9 +44,9 @@ RC = 1.1;
 RD = 7;
 
 %Steering column properties
-J_steer=2;
-b_steer=-0.8;
-k_steer=0.4;
+J_steer=0.1;
+b_steer=-0.08;
+k_steer=0.2;
 
 
 %% global parameters index
