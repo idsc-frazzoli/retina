@@ -1,9 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Dynamic MPC Script
+% Dynamic MPC Script with tunable parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% code by mh
-% annotation mcp
-
+% code by em
 
 %add force path (change that for yourself)
 addpath('..');
@@ -16,15 +14,14 @@ addpath('../shared_dynamic')
 clear model
 clear problem
 clear all
-%close all
 
-behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 %% Baseline params
+behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
 FB = 9;
 FC = 1;
-FD = 7; % gravity acceleration considered
+FD = 6.5; % gravity acceleration considered
 RB = 5.2;
 RC = 1.1;
 RD = 7;
@@ -36,9 +33,8 @@ pointsO = 21; % number of Parameters
 pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
 nextsplinepoints = 0;
-%parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
-% variables z = [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
-
+tend = 150;
+eulersteps = 10;
 
 %% global parameters index
 global index
@@ -113,26 +109,12 @@ model.hu = [0;0;1;0;0];
 model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 
-% Random control points for trajectory sampling
-%points = [1,2,2,4,2,2,1;0,0,5.7,6,6.3,10,10]';
-  %  controlPointsX.append(Quantity.of(36.2, SI.METER));
-  %  controlPointsX.append(Quantity.of(52, SI.METER));
-  %  controlPointsX.append(Quantity.of(57.2, SI.METER));
-  %  controlPointsX.append(Quantity.of(53, SI.METER));
-  %  controlPointsX.append(Quantity.of(52, SI.METER));
-  %  controlPointsX.append(Quantity.of(47, SI.METER));
-  %  controlPointsX.append(Quantity.of(41.8, SI.METER));
-  %  // Y
-  %  controlPointsY.append(Quantity.of(44.933, SI.METER));
-  %  controlPointsY.append(Quantity.of(58.2, SI.METER));
-  %  controlPointsY.append(Quantity.of(53.8, SI.METER));
-  %  controlPointsY.append(Quantity.of(49, SI.METER));
-  %  controlPointsY.append(Quantity.of(47, SI.METER));
-  %  controlPointsY.append(Quantity.of(43, SI.METER));
-  %  controlPointsY.append(Quantity.of(38.333, SI.METER));  
+% points = [36.2,52,57.2,53,52,47,41.8;...          %x
+%           44.933,58.2,53.8,49,44,43,38.33; ...    %y
+%           1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
 points = [36.2,52,57.2,53,52,47,41.8;...          %x
           44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
+          2.5,2.5,2.5,2.5,2.5,2.5,2.5]';
 % points = [18,35,42,55.2,56,51,42,40;...          %x
 %           41,55,57,56,43,40,45,31; ...    %y
 %           2.5,2.5,2.5,2.5,2.5,1,1,2.5]';
@@ -193,10 +175,6 @@ model.lb(index.beta)=-0.5;
 model.ub(index.s)=pointsN-2;
 model.lb(index.s)=0;
 
-%model.ub = [inf, +5, 1.6, +inf, +inf, +inf, +inf,0.45,pointsN-2,85];  % simple upper bounds 
-%model.lb = [-inf, -5, -0.1, -inf, -inf,  -inf, 0,-0.45,0,-inf];  % simple lower bounds 
-
-
 
 %% CodeOptions for FORCES solver
 codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
@@ -211,11 +189,8 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
 %% CodeOptions for FORCES solver
-tend = 150;
-eulersteps = 10;
+
 planintervall = 1;
-%[...,x,y,theta,v,ab,beta,s,braketemp]
-%[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
 fpoints = points(1:2,1:2);
 pdir = diff(fpoints);
 [pstartx,pstarty] = casadiDynamicBSPLINE(0.01,points);

@@ -89,6 +89,7 @@ mvninstall.sh
 /powerlookuptable.csv
 /inversepowerlookuptable.csv
 *.asv
+
 src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic_HumanConstraints/SaveData.m
 src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic_HumanConstraints/CC1_data.mat
 src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic_GameTheory/MPCPathFollowing_One_simulinkBlockcompact.mexw64
