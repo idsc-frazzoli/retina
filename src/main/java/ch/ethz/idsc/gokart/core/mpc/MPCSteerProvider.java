@@ -59,7 +59,7 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
   private SteerPutEvent torqueSteer(Tensor torqueMSG) {
     Scalar torqueCmd = torqueMSG.Get(0);
     System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
-    PowerSteer().ifPresent(Pwr -> adder(Pwr));
+    PowerSteer().ifPresent(Pwr -> pwrSetter(Pwr));//Add the power steer component
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale).add(powerSteerAddition));
   }
 
@@ -71,14 +71,13 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward));
-    PowerSteer().ifPresent(Pwr -> adder(Pwr));
+    PowerSteer().ifPresent(Pwr -> pwrSetter(Pwr));//Add the power steer component
     return SteerPutEvent.createOn(torqueCmd.add(feedForward).add(powerSteerAddition));
   }
 
   private Optional<Scalar> PowerSteer() {
     Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
-    Optional<Scalar> finalTorqueCmd = mpcSteering.getState(time).map(this::Apply);
-    return finalTorqueCmd;
+    return mpcSteering.getState(time).map(this::Apply);
   }
 
   private Scalar Apply(Tensor state) {
@@ -91,7 +90,7 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
     return term0.add(term1);
   }
 
-  Scalar term1(Scalar currangle, Tensor velocity) {
+  private Scalar term1(Scalar currangle, Tensor velocity) {
     AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
     Tensor filteredVel = velocityGeodesicIIR1.apply(velocity);
     Scalar latFront_LeftVel = axleConfiguration.wheel(0).adjoint(filteredVel).Get(1);
@@ -100,8 +99,8 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
         latFront_LeftVel.add(latFrontRightVel).multiply(hapticSteerConfig.latForceCompensation));
   }
 
-  private void adder(Scalar amount) {
+  private void pwrSetter(Scalar amount) {
     if (powerSteerMode)
-      powerSteerAddition = powerSteerAddition.add(amount);
+      powerSteerAddition = amount;
   }
 }
