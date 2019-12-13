@@ -1,4 +1,4 @@
-// code by mh, jph, ta
+// code by  jph, ta
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Optional;
@@ -47,5 +47,9 @@ public class MPCDrivingLudicModule extends MPCDrivingCommonModule {
   @Override // from MPCDrivingAbstractModule
   protected final boolean torqueBased() {
     return false;
+  }
+  
+  protected final boolean PowerSteeringUsed() {
+    return MPCLudicConfig.GLOBAL.powerSteer;
   }
 }

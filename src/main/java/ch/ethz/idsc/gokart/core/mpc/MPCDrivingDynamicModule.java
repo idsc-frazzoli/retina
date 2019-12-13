@@ -46,4 +46,8 @@ public class MPCDrivingDynamicModule extends MPCDrivingCommonModule {
   protected final boolean torqueBased() {
     return false;
   }
+  
+  protected final boolean PowerSteeringUsed() {
+    return false;
+  }
 }

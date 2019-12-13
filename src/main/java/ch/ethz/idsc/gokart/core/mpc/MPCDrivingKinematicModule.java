@@ -54,4 +54,8 @@ public class MPCDrivingKinematicModule extends MPCDrivingAbstractModule {
   protected final boolean torqueBased() {
     return false;
   }
+  
+  protected final boolean PowerSteeringUsed() {
+    return false;
+  }
 }

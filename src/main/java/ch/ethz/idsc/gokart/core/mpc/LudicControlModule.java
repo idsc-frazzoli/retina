@@ -29,7 +29,24 @@ public class LudicControlModule extends AbstractModule {
   @Override
   protected void first() {
     {
-      JPanel jPanel = new JPanel(new GridLayout(4, 2));
+      JPanel jPanel = new JPanel(new GridLayout(5, 2));
+      {
+        jPanel.add(new JLabel("Power Steering (requires restart):"));
+      }
+      {
+        JToggleButton jToggleButton = new JToggleButton("Off");
+        jToggleButton.addActionListener(actionEvent -> {
+          endLudic();
+          if (jToggleButton.isSelected()) {
+            MPCLudicConfig.GLOBAL.powerSteer=true;
+            jToggleButton.setText("On");
+          } else {
+            MPCLudicConfig.GLOBAL.powerSteer=false;
+            jToggleButton.setText("Off");
+          }
+        });
+        jPanel.add(jToggleButton);
+      }
       {
         jPanel.add(new JLabel("Steering Mode:"));
       }

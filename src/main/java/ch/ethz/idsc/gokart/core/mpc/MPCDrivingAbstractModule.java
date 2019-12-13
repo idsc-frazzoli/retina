@@ -80,7 +80,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     mpcPower = createPower(mpcStateEstimationProvider, mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
-    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering, torqueBased());
+    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering, torqueBased(),PowerSteeringUsed());
     // link mpc steering
     mpcControlUpdateLcmClient.addListener(mpcSteering);
     mpcControlUpdateLcmClient.addListener(mpcPower);
@@ -183,4 +183,5 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   abstract MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering);
 
   abstract boolean torqueBased();
+  abstract boolean PowerSteeringUsed();
 }
