@@ -1,4 +1,4 @@
-// code by mh,ta
+// code by mh, ta
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
@@ -58,8 +58,8 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 
   private SteerPutEvent torqueSteer(Tensor torqueMSG) {
     Scalar torqueCmd = torqueMSG.Get(0);
-    System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
-    PowerSteer().ifPresent(Pwr -> pwrSetter(Pwr));//Add the power steer component
+    System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale)); // TODO remove after debugging
+    PowerSteer().ifPresent(this::pwrSetter); // add the power steer component
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale).add(powerSteerAddition));
   }
 
@@ -70,8 +70,8 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
         steering.Get(0), //
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-    System.out.println(torqueCmd.add(feedForward));
-    PowerSteer().ifPresent(Pwr -> pwrSetter(Pwr));//Add the power steer component
+    System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
+    PowerSteer().ifPresent(this::pwrSetter); // add the power steer component
     return SteerPutEvent.createOn(torqueCmd.add(feedForward).add(powerSteerAddition));
   }
 
@@ -83,7 +83,7 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
   private Scalar Apply(Tensor state) {
     Scalar feedForwardValue = SteerFeedForward.FUNCTION.apply(state.Get(5));
     Scalar term0 = hapticSteerConfig.feedForward //
-        ? feedForwardValue
+        ? feedForwardValue //
         : feedForwardValue.zero();
     Scalar term1 = term1(state.Get(5), //
         Tensors.of(state.Get(0), state.Get(1)));

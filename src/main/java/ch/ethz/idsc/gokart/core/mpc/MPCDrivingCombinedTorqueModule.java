@@ -49,7 +49,7 @@ public class MPCDrivingCombinedTorqueModule extends MPCDrivingCommonModule {
     return false;
   }
   
-  protected final boolean PowerSteeringUsed() {
+  protected final boolean powerSteeringUsed() {
     return MPCLudicConfig.GLOBAL.powerSteer;
   }
 }

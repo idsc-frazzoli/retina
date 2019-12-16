@@ -38,13 +38,12 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
   private final MPCAggressiveCorrectedTorqueVectoringBraking mpcBraking = //
       new MPCAggressiveCorrectedTorqueVectoringBraking();
-  private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final Thread thread = new Thread(this);
   private final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
-  protected final MPCSteerProvider mpcSteerProvider;
+  private final MPCSteerProvider mpcSteerProvider;
   // ---
   final MPCRimoProvider mpcRimoProvider;
   final MPCLinmotProvider mpcLinmotProvider;
@@ -76,18 +75,18 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     this.mpcStateEstimationProvider = mpcStateEstimationProvider;
     this.track = track;
     // link mpc steering
-    // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
-    mpcPower = createPower(mpcStateEstimationProvider, mpcSteering);
+    // MPCPower mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    MPCPower mpcPower = createPower(mpcStateEstimationProvider, mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
-    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering, torqueBased(),PowerSteeringUsed());
+    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering, torqueBased(), powerSteeringUsed());
     // link mpc steering
     mpcControlUpdateLcmClient.addListener(mpcSteering);
     mpcControlUpdateLcmClient.addListener(mpcPower);
     mpcControlUpdateLcmClient.addListener(mpcBraking);
   }
 
-  private final void requestControl() {
+  private void requestControl() {
     MPCOptimizationParameter mpcOptimizationParameter = //
         createOptimizationParameter(mpcOptimizationConfig, manualControlProvider.getManualControl());
     mpcRequestPublisher.publishOptimizationParameter(mpcOptimizationParameter);
@@ -183,5 +182,6 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   abstract MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering);
 
   abstract boolean torqueBased();
-  abstract boolean PowerSteeringUsed();
+
+  abstract boolean powerSteeringUsed();
 }

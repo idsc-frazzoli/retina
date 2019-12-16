@@ -37,13 +37,8 @@ public class LudicControlModule extends AbstractModule {
         JToggleButton jToggleButton = new JToggleButton("Off");
         jToggleButton.addActionListener(actionEvent -> {
           endLudic();
-          if (jToggleButton.isSelected()) {
-            MPCLudicConfig.GLOBAL.powerSteer=true;
-            jToggleButton.setText("On");
-          } else {
-            MPCLudicConfig.GLOBAL.powerSteer=false;
-            jToggleButton.setText("Off");
-          }
+          MPCLudicConfig.GLOBAL.powerSteer = jToggleButton.isSelected();
+          jToggleButton.setText(jToggleButton.isSelected() ? "On": "Off");
         });
         jPanel.add(jToggleButton);
       }

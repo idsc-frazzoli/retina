@@ -25,8 +25,8 @@ import ch.ethz.idsc.tensor.io.Timing;
         8 + time, //
         9 + time, //
         10 + time,//
-        12+time ,//
-        13 +time);
+        12 + time, //
+        13 + time);
   }
 
   @Override

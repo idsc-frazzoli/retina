@@ -42,7 +42,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         pose.Get(2).number().floatValue(), //
         0, //
         0, //
-        0, 60,0,0);
+        0, 60, 0, 0);
     MPCOptimizationParameterDynamic optimizationParameterDynamic = new MPCOptimizationParameterDynamic(//
         Quantity.of(10, SI.VELOCITY), //
         Quantity.of(4, SI.ACCELERATION), //

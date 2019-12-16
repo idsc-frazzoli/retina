@@ -23,6 +23,7 @@ import ch.ethz.idsc.tensor.Tensors;
         cnpStep.gokartState().getS().add(rampUp), //
         cnpStep.gokartControl().getudotS()));
   }
+
   Optional<Tensor> getSteeringTorque(Scalar time) {
     Scalar controlTime = time.add(mpcOptimizationConfig.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
@@ -34,6 +35,7 @@ import ch.ethz.idsc.tensor.Tensors;
         cnpStep.gokartState().getTau().add(rampUp), //
         cnpStep.gokartControl().getudotT()));
   }
+
   Optional<Tensor> getState(Scalar time) {
     Scalar controlTime = time.add(mpcOptimizationConfig.steerAntiLag);
     ControlAndPredictionStep cnpStep = getStep(controlTime);
@@ -44,15 +46,12 @@ import ch.ethz.idsc.tensor.Tensors;
     Scalar rampUpS = timeSinceLastStep.multiply(cnpStep.gokartControl().getudotS());
     Tensor vel = cnpStep.gokartState().getVelocity();
     Tensor pose = cnpStep.gokartState().getPose();
-    return Optional.of(Tensors.of(//
-        vel,//
-        pose,//
+    return Optional.of(Tensors.of( //
+        vel, //
+        pose, //
         cnpStep.gokartState().getTau().add(rampUp), //
-        cnpStep.gokartControl().getudotT(),
+        cnpStep.gokartControl().getudotT(), //
         cnpStep.gokartState().getS().add(rampUpS), //
         cnpStep.gokartControl().getudotS()));
-        
   }
-  
-  
 }

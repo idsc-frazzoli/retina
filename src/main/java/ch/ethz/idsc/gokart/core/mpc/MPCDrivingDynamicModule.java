@@ -47,7 +47,7 @@ public class MPCDrivingDynamicModule extends MPCDrivingCommonModule {
     return false;
   }
   
-  protected final boolean PowerSteeringUsed() {
+  protected final boolean powerSteeringUsed() {
     return false;
   }
 }

@@ -55,7 +55,7 @@ public class MPCDrivingKinematicModule extends MPCDrivingAbstractModule {
     return false;
   }
   
-  protected final boolean PowerSteeringUsed() {
+  protected final boolean powerSteeringUsed() {
     return false;
   }
 }
