@@ -3,7 +3,7 @@
 
 #define POINTSN 10
 
-//note: not all values are necessarily known for every type of controller
+// note: not all values are necessarily known for every type of controller
 struct State {
 	float time;
 	float Ux;
@@ -19,15 +19,15 @@ struct State {
 };
 
 struct Control {
-	//control: left power, right power, 
+	// control: left power, right power,
 	float uL;
 	float uR;
-	//control: steering
-	//send dotS as control input (use state value for actual control)
+	// control: steering
+	// send dotS as control input (use state value for actual control)
 	float udotS;
-	//control: braking
+	// control: braking
 	float uB;
-	//if we don't have direct motor control
+	// if we don't have direct motor control
 	float aB;
 };
 
@@ -58,21 +58,20 @@ struct OptimizationParameter {
 	float brakeeffect;
 };
 
-struct ControlAndStateMsg{
+struct ControlAndStateMsg {
 	int messageType;
 	int sequenceInt;
 	struct ControlAndState cns[N];
 };
 
-struct ControlRequestMsg{
+struct ControlRequestMsg {
 	int messageType;
 	int sequenceInt;
 	struct State state;
 	struct PathParameter path;
 };
 
-
-struct ParaMsg{
+struct ParaMsg {
 	int messageType;
 	int sequenceInt;
 	struct OptimizationParameter para;

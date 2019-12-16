@@ -71,20 +71,20 @@ struct OptimizationParameter {
 	float regularizerTV;
 };
 
-struct ControlAndStateMsg{
+struct ControlAndStateMsg {
 	int messageType;
 	int sequenceInt;
 	struct ControlAndState cns[N];
 };
 
-struct ControlRequestMsg{
+struct ControlRequestMsg {
 	int messageType;
 	int sequenceInt;
 	struct State state;
 	struct PathParameter path;
 };
 
-struct ParaMsg{
+struct ParaMsg {
 	int messageType;
 	int sequenceInt;
 	struct OptimizationParameter para;
