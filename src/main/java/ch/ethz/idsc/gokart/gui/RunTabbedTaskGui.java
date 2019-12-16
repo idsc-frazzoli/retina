@@ -70,6 +70,8 @@ import ch.ethz.idsc.gokart.gui.trj.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
+import ch.ethz.idsc.gokart.lcm.led.KittColourLedModule;
+import ch.ethz.idsc.gokart.lcm.led.KittLedModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
@@ -100,6 +102,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       AutoboxLcmServerModule.class, //
       SteerColumnLcmModule.class, //
       GokartTimestampModule.class, //
+      KittLedModule.class, //
+      KittColourLedModule.class, //
       LoggerModule.class, //
       LabjackU3Module.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
