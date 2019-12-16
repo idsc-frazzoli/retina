@@ -28,15 +28,15 @@ FD = 7; % gravity acceleration considered
 RB = 5.2;
 RC = 1.1;
 RD = 7;
-J_steer=0.8875;
-b_steer=0.1625;
-k_steer=0.0125;
-ptau=0.05;   
+J_steer = 0.8875;
+b_steer = 0.1625;
+k_steer = 0.0125;
+ptau = 0.05;   
 pointsO = 21; % number of Parameters
 pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
 nextsplinepoints = 0;
-%parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
+% parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
 % variables z = [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
 
 
@@ -84,7 +84,7 @@ index.ptv = 20;
 index.ptau = 21;
 
 index.pointsO = pointsO; % number of Parameters
-index.pointsN = pointsN;% number of Spline points to use
+index.pointsN = pointsN; % number of Spline points to use
 
 solvetimes = [];
 
@@ -240,8 +240,8 @@ x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
 %x0 = zeros(model.N*model.nvar,1); 
 tstart = 1;
 %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-a=0;
-for i =1:tend
+a = 0;
+for i = 1:tend
     tstart = i;
     %model.xinit = [0,5,0,0.1,0,0];
 
@@ -274,7 +274,7 @@ for i =1:tend
     end
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
     %paras = ttpos(tstart:tstart+model.N-1,2:3)';
-    problem.all_parameters =repmat (getParametersTHC(maxSpeed,maxxacc,...
+    problem.all_parameters = repmat(getParametersTHC(maxSpeed,maxxacc,...
         steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
         plag,plat,pprog,pab,pspeedcost,...
         pslack,ptv,ptau,nextSplinePoints) , model.N ,1);
