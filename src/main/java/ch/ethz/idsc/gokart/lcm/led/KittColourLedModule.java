@@ -20,14 +20,15 @@ public class KittColourLedModule extends AbstractModule implements LEDListener {
   private final LEDLcmClient ledLcmClient = new LEDLcmClient();
   private final ColorDataIndexed colorDataIndexed = ColorDataLists._001.cyclic();
   private final JFrame jFrame = new JFrame();
-  private final JTextField[] leds = { new JTextField(), new JTextField(), new JTextField(), new JTextField() };
+  private final JTextField[] leds = { new JTextField(), new JTextField(), new JTextField(), new JTextField(), new JTextField(), new JTextField(),
+      new JTextField(), new JTextField(), new JTextField(), new JTextField(), new JTextField()};
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
 
   @Override
   protected void first() {
     {
-      JPanel jPanel = new JPanel(new GridLayout(4, 1));
+      JPanel jPanel = new JPanel(new GridLayout(1, 11));
       for (JTextField led : leds) {
         led.setBackground(colorDataIndexed.getColor(0));
         jPanel.add(led);
@@ -57,9 +58,8 @@ public class KittColourLedModule extends AbstractModule implements LEDListener {
       int index = indexColor[i];
       JTextField led = leds[i];
       Color color = colorDataIndexed.getColor(index);
-      System.out.println("color" + color);
+      //System.out.println("color" + color);
       led.setBackground(color);
     }
-    
   }
 }

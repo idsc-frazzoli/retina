@@ -10,12 +10,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class KittLedModule extends AbstractClockedModule {
   private int counterProgress;
   private int indexColor;
-  private int[] arrayIndex = new int[4];
+  private int[] arrayIndex = new int[11];
 
   @Override
   protected void runAlgo() {
     counterProgress = counterProgress + 1;
-    indexColor = counterProgress % 4;
+    indexColor = counterProgress % arrayIndex.length;
     for (int i = 0; i < arrayIndex.length; i++) {
       if (indexColor == i) {
         arrayIndex[i] = 1;

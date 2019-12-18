@@ -42,7 +42,7 @@ nextsplinepoints = 0;
 nextsplinepoints2 = 0;
 
 % Simulation length
-tend=20;
+tend=100;
 %% global parameters index
 global index
 % inputs go kart 1
@@ -293,9 +293,15 @@ plansx2 = [];
 plansy2 = [];
 planss2 = [];
 targets2 = [];
+objval=[];
 planc = 10;
 a=0;
 IND=[];
+cost1 = zeros(tend,1);
+cost2 = zeros(tend,1);
+Progress1 = zeros(tend,1);
+Progress2 = zeros(tend,1);
+costS = zeros(tend,1);
 x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
 history = zeros(tend*eulersteps,model.nvar+1);
 splinepointhist = zeros(tend,pointsN*3+pointsN2*3+1);
@@ -354,6 +360,7 @@ for i =1:tend
     % solve mpc
     [output,exitflag,info] = MPCPathFollowing_One(problem);
     solvetimes(end+1)=info.solvetime;
+    objval(end+1)=info.pobj;
     if(exitflag==0)
         a =a+ 1;
         IND=[IND;i];
@@ -365,7 +372,14 @@ for i =1:tend
     %get output
     outputM = reshape(output.alldata,[model.nvar,model.N])';
     x0 = outputM';
+    printCostFunction
+    cost1(i)=costA;
+    cost2(i)=costB;
+    costS(i)=costS;
+    Progress1(i)=outputM(1,index.s);
+    Progress2(i)=outputM(1,index.s_k2);
     u = repmat(outputM(1,1:index.nu),eulersteps,1);
+
     [xhist,time] = euler(@(x,u)interstagedx_PG(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
     xs = xhist(end,:);
     xs
@@ -379,13 +393,23 @@ for i =1:tend
         plansx2 = [plansx2; outputM(:,index.x_k2)'];
         plansy2 = [plansy2; outputM(:,index.y_k2)'];
         planss2 = [planss2; outputM(:,index.s_k2)'];
-        [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s_k2),nextSplinePoints);
+        [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s),nextSplinePoints);
         targets = [targets;tx,ty];
         [tx2,ty2]=casadiDynamicBSPLINE(outputM(end,index.s_k2),nextSplinePoints_k2);
         targets2 = [targets2;tx2,ty2];
     end        
 end
 
-
+figure
+hold on
+plot(cost1,'b')
+plot(cost2,'r')
+plot(objval,'g')
+legend('Kart1','Kart2','tot')
+figure
+hold on
+plot(Progress1,'b')
+plot(Progress2,'r')
+legend('Kart1','Kart2')
 % Plot
 draw3

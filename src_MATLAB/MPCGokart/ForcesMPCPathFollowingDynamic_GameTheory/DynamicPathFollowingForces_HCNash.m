@@ -42,7 +42,7 @@ splinestart2 = 1;
 nextsplinepoints = 0;
 nextsplinepoints2 = 0;
 % Number of iterations
-tend = 20;
+tend = 100;
 N=10; % Nash iteration
 %% global parameters index
 global index
@@ -253,6 +253,11 @@ IND=[];
 IND2=[];
 Pos1=repmat(pstart, model.N-1 ,1);
 Pos2=repmat(pstart2, model.N-1 ,1);
+cost1 = zeros(tend,1);
+cost2 = zeros(tend,1);
+Progress1 = zeros(tend,1);
+Progress2 = zeros(tend,1);
+costS = zeros(tend,1);
 
 for i =1:tend
     tstart = i;
@@ -408,7 +413,11 @@ for i =1:tend
         [tx2,ty2]=casadiDynamicBSPLINE(outputM2(end,index.s),nextSplinePoints2);
         targets2 = [targets2;tx2,ty2];
     end
-    
+    cost1(i)=info.pobj;
+    cost2(i)=info2.pobj;
+    %costS(i)=costS;
+    Progress1(i)=outputM(1,index.s);
+    Progress2(i)=outputM2(1,index.s);
     % check
     Pos2=[outputM2(2:end,index.x),outputM2(2:end,index.y)];
     distanceX=xs(1)-xs2(1);
@@ -420,4 +429,14 @@ for i =1:tend
     end
 end
 draw2
-
+figure
+hold on
+plot(cost1,'b')
+plot(cost2,'r')
+plot(cost1+cost2,'g')
+legend('Kart1','Kart2','Tot')
+figure
+hold on
+plot(Progress1,'b')
+plot(Progress2,'r')
+legend('Kart1','Kart2')
