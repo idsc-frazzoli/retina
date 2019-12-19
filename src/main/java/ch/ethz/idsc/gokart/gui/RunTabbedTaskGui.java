@@ -72,7 +72,7 @@ import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
 import ch.ethz.idsc.gokart.gui.led.VirtualLedModule;
 import ch.ethz.idsc.gokart.gui.led.KittLedModule;
-import ch.ethz.idsc.gokart.gui.led.KittLedModuleCoach;
+import ch.ethz.idsc.gokart.gui.led.CoachLedModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
@@ -104,7 +104,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       SteerColumnLcmModule.class, //
       GokartTimestampModule.class, //
       KittLedModule.class, //
-      KittLedModuleCoach.class, //
+      CoachLedModule.class, //
       VirtualLedModule.class, //
       LoggerModule.class, //
       LabjackU3Module.class, //

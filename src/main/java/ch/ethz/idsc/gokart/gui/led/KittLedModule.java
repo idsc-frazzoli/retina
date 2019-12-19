@@ -9,30 +9,25 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class KittLedModule extends AbstractClockedModule {
+  private final int[] arrayIndex = new int[VirtualLedModule.NUM_LEDS];
   private int counterProgress;
-  private int indexColor;
-  private int[] arrayIndex = new int[11];
 
   @Override
   protected void runAlgo() {
-    counterProgress = counterProgress + 1;
-    indexColor = counterProgress % arrayIndex.length;
-    for (int i = 0; i < arrayIndex.length; i++) {
-      if (indexColor == i) {
-        arrayIndex[i] = 1;
-      } else {
-        arrayIndex[i] = 0;
-      }
-    }
+    counterProgress++;
+    for (int i = 0; i < arrayIndex.length; i++)
+      arrayIndex[i] = counterProgress % arrayIndex.length == i ? 1 : 0;
     LEDLcm.publish(GokartLcmChannel.LED_STATUS, arrayIndex);
   }
 
   @Override
   protected void first() {
+    // ---
   }
 
   @Override
   protected void last() {
+    // ---
   }
 
   @Override

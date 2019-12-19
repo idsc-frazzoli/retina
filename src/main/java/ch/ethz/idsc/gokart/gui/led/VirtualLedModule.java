@@ -9,7 +9,6 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.util.Arrays;
 import java.util.stream.IntStream;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,25 +19,20 @@ import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 
 public class VirtualLedModule extends AbstractModule implements LEDListener {
-  public static final int NUM_LEDS = 11;
+  public static final int NUM_LEDS = 11; // TODO delete one actual LED number is known and provided elsewhere
+  private static final ColorDataIndexed COLOR_SCHEME = ColorDataLists._001.cyclic();
 
   private final LEDLcmClient ledLcmClient = new LEDLcmClient();
-  private final ColorDataIndexed colorDataIndexed = ColorDataLists._001.cyclic();
   private final JFrame jFrame = new JFrame();
-  private final JTextField[] leds = { new JTextField(), new JTextField(), new JTextField(), new JTextField(), new JTextField(), new JTextField(),
-      new JTextField(), new JTextField(), new JTextField(), new JTextField(), new JTextField() };
+  private final JTextField[] leds = IntStream.range(0, NUM_LEDS).mapToObj(i -> new JTextField()).toArray(JTextField[]::new);
   private final WindowConfiguration windowConfiguration = AppCustomization.load(getClass(), new WindowConfiguration());
-
-  // public VirtualLedModule() {
-  //   Arrays.fill(leds, new JTextField());
-  // }
 
   @Override
   protected void first() {
     {
-      JPanel jPanel = new JPanel(new GridLayout(1, 11));
+      JPanel jPanel = new JPanel(new GridLayout(1, NUM_LEDS));
       for (JTextField led : leds) {
-        led.setBackground(colorDataIndexed.getColor(0));
+        led.setBackground(COLOR_SCHEME.getColor(0));
         jPanel.add(led);
       }
       jFrame.setContentPane(jPanel);
@@ -65,8 +59,7 @@ public class VirtualLedModule extends AbstractModule implements LEDListener {
     for (int i = 0; i < indexColor.length; i++) {
       int index = indexColor[i];
       JTextField led = leds[i];
-      Color color = colorDataIndexed.getColor(index);
-      //System.out.println("color" + color);
+      Color color = COLOR_SCHEME.getColor(index);
       led.setBackground(color);
     }
   }
