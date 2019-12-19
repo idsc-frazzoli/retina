@@ -1,7 +1,8 @@
 // code by em
-package ch.ethz.idsc.gokart.lcm.led;
+package ch.ethz.idsc.gokart.gui.led;
 
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;

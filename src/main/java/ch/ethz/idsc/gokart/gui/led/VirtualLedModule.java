@@ -1,13 +1,16 @@
 // code by em
-package ch.ethz.idsc.gokart.lcm.led;
+package ch.ethz.idsc.gokart.gui.led;
 
+import ch.ethz.idsc.gokart.lcm.led.LEDLcmClient;
+import ch.ethz.idsc.gokart.lcm.led.LEDListener;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-
+import java.util.Arrays;
+import java.util.stream.IntStream;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -16,14 +19,19 @@ import javax.swing.WindowConstants;
 import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 
-public class KittColourLedModule extends AbstractModule implements LEDListener {
+public class VirtualLedModule extends AbstractModule implements LEDListener {
+  public static final int NUM_LEDS = 11;
+
   private final LEDLcmClient ledLcmClient = new LEDLcmClient();
   private final ColorDataIndexed colorDataIndexed = ColorDataLists._001.cyclic();
   private final JFrame jFrame = new JFrame();
   private final JTextField[] leds = { new JTextField(), new JTextField(), new JTextField(), new JTextField(), new JTextField(), new JTextField(),
-      new JTextField(), new JTextField(), new JTextField(), new JTextField(), new JTextField()};
-  private final WindowConfiguration windowConfiguration = //
-      AppCustomization.load(getClass(), new WindowConfiguration());
+      new JTextField(), new JTextField(), new JTextField(), new JTextField(), new JTextField() };
+  private final WindowConfiguration windowConfiguration = AppCustomization.load(getClass(), new WindowConfiguration());
+
+  // public VirtualLedModule() {
+  //   Arrays.fill(leds, new JTextField());
+  // }
 
   @Override
   protected void first() {
