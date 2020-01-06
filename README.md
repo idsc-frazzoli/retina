@@ -81,6 +81,7 @@ The gokart is operated at Innovation Park Dübendorf since December 2017.
 * Joel Gächter (MT): sight-lines mapping, clothoid pursuit, planning with clothoids
 * Antonia Mosberger (BT): power steering, anti-lock braking, lane keeping
 * Maximilien Picquet (SP): Pacejka parameter estimation using an unscented Kalman filter
+* Thomas Andrews (SP): Torque Controlled Steering extenstion to MPC.
 
 
 ## Gallery Rendering
