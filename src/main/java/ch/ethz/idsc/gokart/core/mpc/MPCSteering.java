@@ -1,4 +1,4 @@
-// code by mh,ta
+// code by mh, ta
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Optional;

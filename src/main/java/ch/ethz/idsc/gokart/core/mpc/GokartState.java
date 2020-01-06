@@ -355,8 +355,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
         getw2L(), //
         getw2R(), //
         getS(), //
-        getBTemp(),//
-        getTau(),//
+        getBTemp(), //
+        getTau(), //
         getUDotS());
   }
 }

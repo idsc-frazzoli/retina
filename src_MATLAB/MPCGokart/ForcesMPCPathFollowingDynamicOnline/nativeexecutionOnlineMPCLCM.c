@@ -16,7 +16,7 @@
 #include "helperFunctionsOnlineMPC.c"
 #include <unistd.h>
 
-//[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
+// [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
 
 #define N 31
 #define S 14
@@ -71,7 +71,7 @@ extern void OnlineMPCPathFollowing_casadi2forces(
 
 OnlineMPCPathFollowing_extfunc pt2Function =&OnlineMPCPathFollowing_casadi2forces;
 
-//[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
+// [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
 static void getLastControls(
         OnlineMPCPathFollowing_float* ab,
         OnlineMPCPathFollowing_float* dotab,
@@ -84,25 +84,25 @@ static void getLastControls(
 	double dTime = time-lastSolutionTime;
 	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
 	*dStepTime = dTime - lastStep*ISS;
-	//printf("timeval: %f\n",time);
-	//printf("last step: %d/dtime %f\n",lastStep,*dStepTime);
-	*ab = lastSolution[i*S+11];
+	// printf("timeval: %f\n",time);
+	// printf("last step: %d/dtime %f\n",lastStep,*dStepTime);
+	*ab = lastSolution[i*S + 11];
 	*dotab = lastSolution[i*S];
-	*beta = lastSolution[i*S+12];
-	*dotbeta = lastSolution[i*S+1];
+	*beta = lastSolution[i*S + 12];
+	*dotbeta = lastSolution[i*S + 1];
 }
 
 static void para_handler(const lcm_recv_buf_t *rbuf,
                          const char *channel, const idsc_BinaryBlob *msg, void *userdata){
     printf("received path message\n");
     memcpy((int8_t*)&lastParaMsg, msg->data, msg->data_length);
-    //printf("max speed: %f\n",lastParaMsg.para.speedLimit);
-    //printf("max X-acc: %f\n",lastParaMsg.para.maxxacc);
-    //printf("max Y-acc: %f\n",lastParaMsg.para.maxyacc);
-    //printf("max front lat acc: %f\n",lastParaMsg.para.latacclim);
-    //printf("max rot acc: %f\n",lastParaMsg.para.rotacceffect);
-    //printf("torque vec effect: %f\n",lastParaMsg.para.torqueveceffect);
-    //printf("brake effect: %f\n",lastParaMsg.para.brakeeffect);
+    // printf("max speed: %f\n",lastParaMsg.para.speedLimit);
+    // printf("max X-acc: %f\n",lastParaMsg.para.maxxacc);
+    // printf("max Y-acc: %f\n",lastParaMsg.para.maxyacc);
+    // printf("max front lat acc: %f\n",lastParaMsg.para.latacclim);
+    // printf("max rot acc: %f\n",lastParaMsg.para.rotacceffect);
+    // printf("torque vec effect: %f\n",lastParaMsg.para.torqueveceffect);
+    // printf("brake effect: %f\n",lastParaMsg.para.brakeeffect);
 }
 
 static void pacj_handler(const lcm_recv_buf_t *rbuf,
@@ -119,15 +119,14 @@ static void pacj_handler(const lcm_recv_buf_t *rbuf,
 
 static void state_handler(const lcm_recv_buf_t *rbuf,
         const char *channel, const idsc_BinaryBlob *msg, void *userdata){
-	//printf("received control message\n");
+	// printf("received control message\n");
 	memcpy((int8_t*)&lastCRMsg, msg->data, msg->data_length);
-  /*for (int i = 0; i<POINTSN; i++)
-	{
-    		struct PathEntry pe = lastCRMsg.path.controlPoints[i];
+    /* for (int i = 0; i < POINTSN; i++) {
+        struct PathEntry pe = lastCRMsg.path.controlPoints[i];
 		printf("i=%d: pointX:%f\n",i,pe.pex);
 		printf("i=%d: pointY:%f\n",i,pe.pey);
 		printf("i=%d: pointR:%f\n",i,pe.per);
-	}*/
+	} */
 
     OnlineMPCPathFollowing_params params;
 
@@ -140,7 +139,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
     OnlineMPCPathFollowing_float initab;
     OnlineMPCPathFollowing_float initbeta;
 
-	if(lastCRMsg.state.time-timeOfLastSolution<timeTolerance){
+	if (lastCRMsg.state.time-timeOfLastSolution<timeTolerance){
 		getLastControls(
 			&lab,
 			&ldotab,
@@ -151,12 +150,10 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		
 		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);
 		initbeta = getInitSteer(lbeta, ldotbeta, dTime);
-	}else
-	{
+	} else
 		initab = 0;
 
-	}
-	//[x,y,theta,dottheta,v,yv,ab,beta,s]
+	// [x,y,theta,dottheta,v,yv,ab,beta,s]
 	initbeta = lastCRMsg.state.s;
 	params.xinit[0] = lastCRMsg.state.X+cos(lastCRMsg.state.Psi)*backToCoM;
 	params.xinit[1] = lastCRMsg.state.Y+sin(lastCRMsg.state.Psi)*backToCoM;
@@ -168,86 +165,82 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[7] = initbeta;
 	params.xinit[8] = lastCRMsg.path.startingProgress;
 
-	/*for(int i = 0; i<7;i++){
-		printf("%i: %f\n",i,params.xinit[i]);
-	}*/
+	/* for(int i = 0; i<7;i++)
+		printf("%i: %f\n",i,params.xinit[i]); */
 
-	//gather parameter data
-	int pl = 3*POINTSN+4 + 6;
+	// gather parameter data
+	int pl = 3*POINTSN + 4 + 6;
 	
 	printf("parameters\n");
-	for(int i = 0; i<N;i++){
+	for (int i = 0; i < N; i++) {
 	    int offset = i*pl;
 		params.all_parameters[offset] = lastParaMsg.para.speedLimit;
-		params.all_parameters[offset+1] = lastParaMsg.para.maxxacc;
-		params.all_parameters[offset+2] = lastParaMsg.para.steeringreg;
-		params.all_parameters[offset+3] = lastParaMsg.para.specificmoi;
-		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[offset+4+ip]=lastCRMsg.path.controlPoints[ip].pex;
-		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[offset+4+POINTSN+ip]=lastCRMsg.path.controlPoints[ip].pey;
-		for (int ip=0; ip<POINTSN;ip++)
-			params.all_parameters[offset+4+2*POINTSN+ip]=lastCRMsg.path.controlPoints[ip].per;
-		params.all_parameters[offset+4+3*POINTSN+0] = lastPacjMsg.B1; 
-        params.all_parameters[offset+4+3*POINTSN+1] = lastPacjMsg.C1;
-        params.all_parameters[offset+4+3*POINTSN+2] = lastPacjMsg.D1;
-        params.all_parameters[offset+4+3*POINTSN+3] = lastPacjMsg.B2;        
-        params.all_parameters[offset+4+3*POINTSN+4] = lastPacjMsg.C2;        
-        params.all_parameters[offset+4+3*POINTSN+5] = lastPacjMsg.D2;
+		params.all_parameters[offset + 1] = lastParaMsg.para.maxxacc;
+		params.all_parameters[offset + 2] = lastParaMsg.para.steeringreg;
+		params.all_parameters[offset + 3] = lastParaMsg.para.specificmoi;
+		for (int ip = 0; ip < POINTSN; ip++)
+			params.all_parameters[offset + 4 + ip] = lastCRMsg.path.controlPoints[ip].pex;
+		for (int ip = 0; ip < POINTSN; ip++)
+			params.all_parameters[offset + 4 + POINTSN + ip]=lastCRMsg.path.controlPoints[ip].pey;
+		for (int ip = 0; ip < POINTSN; ip++)
+			params.all_parameters[offset + 4 + 2*POINTSN + ip]=lastCRMsg.path.controlPoints[ip].per;
+		params.all_parameters[offset + 4 + 3*POINTSN + 0] = lastPacjMsg.B1;
+        params.all_parameters[offset + 4 + 3*POINTSN + 1] = lastPacjMsg.C1;
+        params.all_parameters[offset + 4 + 3*POINTSN + 2] = lastPacjMsg.D1;
+        params.all_parameters[offset + 4 + 3*POINTSN + 3] = lastPacjMsg.B2;
+        params.all_parameters[offset + 4 + 3*POINTSN + 4] = lastPacjMsg.C2;
+        params.all_parameters[offset + 4 + 3*POINTSN + 5] = lastPacjMsg.D2;
 	}
 	
-	//assume that this works
-	/*for(int i = 0; i<N*(4+POINTSN*3+6);i++)
-		printf("param i=%d: %f\n",i,params.all_parameters[i]);
-	 */
+	// assume that this works
+	/* for(int i = 0; i < N*(4 + POINTSN*3 + 6); i++)
+		printf("param i=%d: %f\n", i, params.all_parameters[i]); */
 
-	memcpy(params.x0, lastSolution,sizeof(OnlineMPCPathFollowing_float)*S*N);
+	memcpy(params.x0, lastSolution, sizeof(OnlineMPCPathFollowing_float)*S*N);
 	// TODO MH fix for 2PI wrap around problem: change initial guess according
-	//change amount:
+	// change amount:
     OnlineMPCPathFollowing_float deltaPsi = lastCRMsg.state.Psi-lastInitialPsi;
-	//printf("deltaPsi %f", deltaPsi);
-	for(int i = 0; i<N;i++){
-		params.x0[i*S+7]+=deltaPsi;
-	}
+	// printf("deltaPsi %f", deltaPsi);
+	for(int i = 0; i < N; i++)
+		params.x0[i*S + 7] += deltaPsi;
 	lastInitialPsi = lastCRMsg.state.Psi;
 
-	//do optimization
+	// do optimization
 	exitflag = OnlineMPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
 
-
-	//look at data
-	//optimal or maxit (maxit is ok in most cases)
-	if(exitflag == 1 || exitflag == 0){
+	// look at data
+	// optimal or maxit (maxit is ok in most cases)
+	if (exitflag == 1 || exitflag == 0) {
 		memcpy(lastSolution, myoutput.alldata,sizeof(OnlineMPCPathFollowing_float)*S*N);
-		//printf("lastSolution: %f\n", lastSolution[341]);
+		// printf("lastSolution: %f\n", lastSolution[341]);
 		timeOfLastSolution = lastCRMsg.state.time;
 
-		//[dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
+		// [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
 		
 		struct ControlAndStateMsg cnsmsg;
 		cnsmsg.messageType = 3;
 		cnsmsg.sequenceInt = outC++;
-		for(int i = 0; i<N; i++){
-            OnlineMPCPathFollowing_float ab = myoutput.alldata[i*S+11];
-            OnlineMPCPathFollowing_float tv = myoutput.alldata[i*S+3];
-            OnlineMPCPathFollowing_float psi = myoutput.alldata[i*S+7];
-            OnlineMPCPathFollowing_float dotPsi = myoutput.alldata[i*S+8];
-			cnsmsg.cns[i].control.uL = ab-tv;
-			cnsmsg.cns[i].control.uR = ab+tv;
-			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S+1];
-			cnsmsg.cns[i].control.uB = 0;//not in use
+		for (int i = 0; i<N; i++) {
+            OnlineMPCPathFollowing_float ab = myoutput.alldata[i*S + 11];
+            OnlineMPCPathFollowing_float tv = myoutput.alldata[i*S + 3];
+            OnlineMPCPathFollowing_float psi = myoutput.alldata[i*S + 7];
+            OnlineMPCPathFollowing_float dotPsi = myoutput.alldata[i*S + 8];
+			cnsmsg.cns[i].control.uL = ab - tv;
+			cnsmsg.cns[i].control.uR = ab + tv;
+			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S + 1];
+			cnsmsg.cns[i].control.uB = 0; // not in use
 			cnsmsg.cns[i].control.aB = ab;
-			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
-			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S+9];
-			cnsmsg.cns[i].state.Uy = myoutput.alldata[i*S+10]-lastCRMsg.state.dotPsi*backToCoM;
-			//printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+6],myoutput.alldata[i*S+10],myoutput.alldata[i*S+2]);
+			cnsmsg.cns[i].state.time = i*ISS + lastCRMsg.state.time;
+			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S + 9];
+			cnsmsg.cns[i].state.Uy = myoutput.alldata[i*S + 10] - lastCRMsg.state.dotPsi*backToCoM;
+			// printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+6],myoutput.alldata[i*S+10],myoutput.alldata[i*S+2]);
 			cnsmsg.cns[i].state.dotPsi = dotPsi;
-			cnsmsg.cns[i].state.X = myoutput.alldata[i*S+5]-cos(psi)*backToCoM;
-			cnsmsg.cns[i].state.Y = myoutput.alldata[i*S+6]-sin(psi)*backToCoM;
+			cnsmsg.cns[i].state.X = myoutput.alldata[i*S + 5] - cos(psi)*backToCoM;
+			cnsmsg.cns[i].state.Y = myoutput.alldata[i*S + 6] - sin(psi)*backToCoM;
 			cnsmsg.cns[i].state.Psi = psi;
-			cnsmsg.cns[i].state.w2L = 0;//not in use
-			cnsmsg.cns[i].state.w2R = 0;//not in use
-			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+12];
+			cnsmsg.cns[i].state.w2L = 0; // not in use
+			cnsmsg.cns[i].state.w2R = 0; // not in use
+			cnsmsg.cns[i].state.s = myoutput.alldata[i*S + 12];
 			cnsmsg.cns[i].state.bTemp = 60;
 		}
 
@@ -255,17 +248,17 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		struct _idsc_BinaryBlob blob;
 		blob.data_length = sizeof(struct ControlAndStateMsg);
 		blob.data = (int8_t*)&cnsmsg;
-		//printf("lcm addr: %p\n",lcm);
-		//printf("blob addr: %p\n",&blob);
-		//printf("sleep...");	
-		//usleep(50000);
-		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
-			printf("published cns message: %lu\n",sizeof(struct ControlAndStateMsg));
+		// printf("lcm addr: %p\n",lcm);
+		// printf("blob addr: %p\n",&blob);
+		// printf("sleep...");
+		// usleep(50000);
+		if (idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob) == 0)
+			printf("published cns message: %lu\n", sizeof(struct ControlAndStateMsg));
 		else
 			printf("error while publishing message\n");
 
 
-        //msg for online
+        // msg for online
         struct OnlineParam onlineParam;
         onlineParam.time = lastCRMsg.state.time;
         onlineParam.vx = lastCRMsg.state.Ux;
@@ -277,15 +270,12 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
         struct _idsc_BinaryBlob blobOnline;
         blobOnline.data_length = sizeof(struct OnlineParam);
         blobOnline.data = (int8_t*)&onlineParam;
-        if(idsc_BinaryBlob_publish(lcm, "mpc.online.params.d", &blobOnline)==0)
-            printf("published online message: %lu\n",sizeof(struct OnlineParam));
+        if(idsc_BinaryBlob_publish(lcm, "mpc.online.params.d", &blobOnline) == 0)
+            printf("published online message: %lu\n", sizeof(struct OnlineParam));
         else
             printf("error while publishing 'online' message\n");
-
-
-    }else{
-		printf("exitflag: %d\n",exitflag);
-	}
+    } else
+		printf("exitflag: %d\n", exitflag);
 }
 
 int main(int argc, char *argv[]) {
@@ -299,19 +289,19 @@ int main(int argc, char *argv[]) {
     lastPacjMsg.D2 = 20;
 	
 	lcm = lcm_create(NULL);
-	if(!lcm)
+	if (!lcm)
 		return 1;
 	
-	//return format [state]
-	//exitflag = OnlineMPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
+	// return format [state]
+	// exitflag = OnlineMPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
 	
-	//sendEmptyControlAndStates(lcm);
+	// sendEmptyControlAndStates(lcm);
 	printf("about to subscribe\n");
     idsc_BinaryBlob_subscribe(lcm, "mpc.forces.pacj.d", &pacj_handler, NULL);
     idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs.d", &state_handler, NULL);
 	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.op.d", &para_handler, NULL);
 	printf("starting main loop\n");
-	while(1)
+	while (1)
 		lcm_handle(lcm);
 	
 	lcm_destroy(lcm);

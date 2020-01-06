@@ -70,7 +70,7 @@ public class MPCOptimizationParameterKinematicTest extends TestCase {
           0, //
           0, //
           0, //
-          0, 60,0,0);
+          0, 60, 0, 0);
       MPCOptimizationParameterKinematic optimizationParameter = TestHelper.optimizationParameterKinematic( //
           Quantity.of(10, SI.VELOCITY), Quantity.of(5, SI.ACCELERATION), Quantity.of(5, SI.ACCELERATION));
       mpcRequestPublisher.publishOptimizationParameter(optimizationParameter);
