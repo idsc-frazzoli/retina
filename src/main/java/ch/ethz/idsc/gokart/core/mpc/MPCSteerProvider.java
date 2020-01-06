@@ -26,7 +26,6 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
   private static final Scalar ZERO_ADDITION = Quantity.of(0, SteerPutEvent.UNIT_RTORQUE);
-
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
@@ -60,13 +59,10 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 
   private SteerPutEvent torqueSteer(Tensor torqueMSG) {
     Scalar torqueCmd = torqueMSG.Get(0);
-
     System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale)); // TODO remove after debugging
     powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-
     System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
     powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale).add(powerSteerAddition));
   }
 
@@ -77,13 +73,10 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
         steering.Get(0), //
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
     powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-
     System.out.println(torqueCmd.add(feedForward));
     powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-
     return SteerPutEvent.createOn(torqueCmd.add(feedForward).add(powerSteerAddition));
   }
 
