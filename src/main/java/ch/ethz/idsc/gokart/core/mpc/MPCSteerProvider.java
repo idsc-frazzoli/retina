@@ -61,8 +61,6 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
     Scalar torqueCmd = torqueMSG.Get(0);
     System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale)); // TODO remove after debugging
     powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-    System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
-    powerSteer().ifPresent(this::pwrSetter); // add the power steer component
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale).add(powerSteerAddition));
   }
 
@@ -74,8 +72,6 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
-    powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-    System.out.println(torqueCmd.add(feedForward));
     powerSteer().ifPresent(this::pwrSetter); // add the power steer component
     return SteerPutEvent.createOn(torqueCmd.add(feedForward).add(powerSteerAddition));
   }
