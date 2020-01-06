@@ -5,6 +5,6 @@ import junit.framework.TestCase;
 
 public class ControlAndPredictionStepTest extends TestCase {
   public void testSimple() {
-    assertEquals(ControlAndPredictionStep.LENGTH, 64);
+    assertEquals(ControlAndPredictionStep.LENGTH, 76);
   }
 }

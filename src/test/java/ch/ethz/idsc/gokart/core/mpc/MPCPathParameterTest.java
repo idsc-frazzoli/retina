@@ -100,7 +100,7 @@ public class MPCPathParameterTest extends TestCase {
     Timing timing = Timing.started();
     MPCPathParameter mpcPathParameter = //
         mpcbSplineTrack.getPathParameterPreview(5, Tensors.vector(0, 3).multiply(Quantity.of(1, SI.METER)), Quantity.of(0, SI.METER));
-    long limit = TravisUserName.whoami() ? 10_000_000 : 1500_000;
+    long limit = TravisUserName.whoami() ? 15_000_000 : 2500_000;
     assertTrue(timing.nanoSeconds() < limit);
     // System.out.println(" path progress timing: " + (endTime - startTime) + "[ns]");
     assertEquals(mpcPathParameter.getControlPointsX(), QuantityTensor.of(Tensors.vector(2, 0, 1, 2, 0), SI.METER));

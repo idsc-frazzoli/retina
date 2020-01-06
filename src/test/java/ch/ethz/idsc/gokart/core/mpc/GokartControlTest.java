@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class GokartControlTest extends TestCase {
   public void testSimple() {
-    assertEquals(GokartControl.LENGTH, 20);
+    assertEquals(GokartControl.LENGTH, 24);
     GokartControl gokartControl = new GokartControl(1, 2, 3, 4);
     assertEquals(gokartControl.getuL(), Quantity.of(1, SI.ACCELERATION));
     assertEquals(gokartControl.getuR(), Quantity.of(2, SI.ACCELERATION));
