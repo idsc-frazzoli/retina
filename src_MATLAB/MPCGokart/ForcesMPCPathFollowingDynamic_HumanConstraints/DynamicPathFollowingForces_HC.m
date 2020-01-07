@@ -24,10 +24,10 @@ behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
 FB = 9;
 FC = 1;
-FD = 7; % gravity acceleration considered
+FD = 6.5;
 RB = 5.2;
 RC = 1.1;
-RD = 7;
+RD = 6;
 J_steer = 0.8875;
 b_steer = 0.1625;
 k_steer = 0.0125;
@@ -130,9 +130,13 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
   %  controlPointsY.append(Quantity.of(47, SI.METER));
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));  
-points = [36.2,52,57.2,53,52,47,41.8;...          %x
-          44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
+points = [20,25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21;...          %x
+          40,34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47; ...    %y
+          1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
+  
+%   points = [36.2,52,57.2,53,52,47,41.8;...          %x
+%           44.933,58.2,53.8,49,44,43,38.33; ...    %y
+%           1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
 % points = [18,35,42,55.2,56,51,42,40;...          %x
 %           41,55,57,56,43,40,45,31; ...    %y
 %           2.5,2.5,2.5,2.5,2.5,1,1,2.5]';

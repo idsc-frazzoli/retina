@@ -16,7 +16,7 @@ addpath('../shared_dynamic')
 clear model
 clear problem
 clear all
-close all
+%close all
 
 %% Baseline params
 
@@ -24,16 +24,16 @@ maxSpeed = 10; % in [m/s]
 maxxacc = 5; % in [m/s^-1]
 
 %Costs for simulation, change the real values in Java 
-steeringreg = 0.05;
+steeringreg = 0.02;
 specificmoi = 0.3;
 plag=1;
 plat=0.01;
 pprog=0.2;
-pab=0.004;
-pspeedcost=0.05;
-pslack=5;
+pab=0.0004;
+pspeedcost=0.04;
+pslack=7;
 ptv=0.05;
-ptau=0.01;
+ptau=0.001;
 
 %Simulation Pacejka constants, real values changalbe in java 
 FB = 9;
@@ -44,9 +44,9 @@ RC = 1.1;
 RD = 6;
 
 %Steering column properties
-J_steer=0.9;
+J_steer=0.1;
 b_steer=0.2;
-k_steer=0.8;
+k_steer=0.08;
 
 
 %% global parameters index
@@ -226,7 +226,7 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 %
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-tend = 200;
+tend = 100;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);
