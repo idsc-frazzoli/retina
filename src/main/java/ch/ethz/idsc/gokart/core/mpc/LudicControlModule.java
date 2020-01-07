@@ -24,12 +24,12 @@ public class LudicControlModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private Class<? extends MPCDrivingCommonModule> clazz = MPCDrivingLudicModule.class;
-
+  private Class<? extends MPCDrivingCommonModule> clazz2 = MPCDrivingLudicModule.class;
 
   @Override
   protected void first() {
     {
-      JPanel jPanel = new JPanel(new GridLayout(5, 2));
+      JPanel jPanel = new JPanel(new GridLayout(6, 2));
       {
         jPanel.add(new JLabel("Power Steering (requires restart):"));
       }
@@ -38,7 +38,7 @@ public class LudicControlModule extends AbstractModule {
         jToggleButton.addActionListener(actionEvent -> {
           endLudic();
           MPCLudicConfig.GLOBAL.powerSteer = jToggleButton.isSelected();
-          jToggleButton.setText(jToggleButton.isSelected() ? "On": "Off");
+          jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
         });
         jPanel.add(jToggleButton);
       }
@@ -51,10 +51,29 @@ public class LudicControlModule extends AbstractModule {
           endLudic();
           if (jToggleButton.isSelected()) {
             clazz = MPCDrivingTorqueModule.class;
+            clazz2 = MPCDrivingTorqueModule.class;
             jToggleButton.setText("Torque");
           } else {
             clazz = MPCDrivingLudicModule.class;
+            clazz2 = MPCDrivingLudicModule.class;
             jToggleButton.setText("Angle");
+          }
+        });
+        jPanel.add(jToggleButton);
+      }
+      {
+        jPanel.add(new JLabel("Combined Mode:"));
+      }
+      {
+        JToggleButton jToggleButton = new JToggleButton("Off");
+        jToggleButton.addActionListener(actionEvent -> {
+          endLudic();
+          if (jToggleButton.isSelected()) {
+            clazz = MPCDrivingCombinedTorqueModule.class;
+            jToggleButton.setText("On");
+          } else {
+            clazz = clazz2;
+            jToggleButton.setText("Off");
           }
         });
         jPanel.add(jToggleButton);

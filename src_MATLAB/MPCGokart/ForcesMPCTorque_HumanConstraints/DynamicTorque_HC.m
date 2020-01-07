@@ -32,8 +32,8 @@ pprog=0.2;
 pab=0.0004;
 pspeedcost=0.04;
 pslack=7;
-ptv=0.05;
-ptau=0.001;
+ptv=0.01;
+ptau=0.0001;
 
 %Simulation Pacejka constants, real values changalbe in java 
 FB = 9;
@@ -44,7 +44,7 @@ RC = 1.1;
 RD = 6;
 
 %Steering column properties
-J_steer=0.1;
+J_steer=0.01;
 b_steer=0.2;
 k_steer=0.08;
 
@@ -134,8 +134,8 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 %     1.8,1.8,1.8,0.5,0.5,0.5,1.8]';                      %phi
 
 
-points = [20,25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21;...          %x
-          40,34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47; ...    %y
+      points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
+         34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
 % points = [28,35,42,55.2,56,51,42,40;...          %x
 %           41,60,43,56,43,40,44,31; ...    %y
@@ -226,7 +226,7 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 %
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-tend = 100;
+tend = 150;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);

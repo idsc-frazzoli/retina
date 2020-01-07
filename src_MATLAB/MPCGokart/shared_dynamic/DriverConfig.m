@@ -14,7 +14,7 @@ if strcmp(behaviour,'aggressive')==1
 elseif strcmp(behaviour,'medium')==1
     maxSpeed = 10; % in [m/s]
     maxxacc = 5; % in [m/s^-1]
-    steeringreg = 0.04;  
+    steeringreg = 0.02;  
     specificmoi = 0.3;
     plag=1;
     plat=0.04;
@@ -26,7 +26,7 @@ elseif strcmp(behaviour,'medium')==1
 elseif strcmp(behaviour,'beginner')==1
     maxSpeed = 10; % in [m/s]
     maxxacc = 5; % in [m/s^-1]
-    steeringreg = 0.05;  
+    steeringreg = 0.02;  
     specificmoi = 0.3;
     plag=1;
     plat=0.2;
@@ -38,7 +38,7 @@ elseif strcmp(behaviour,'beginner')==1
 elseif strcmp(behaviour,'drifting')==1
     maxSpeed = 10; % in [m/s]
     maxxacc = 5; % in [m/s^-1]
-    steeringreg = 0.01;  
+    steeringreg = 0.02;  
     specificmoi = 0.3;
     plag=0.2;
     plat=0.01;
@@ -50,7 +50,7 @@ elseif strcmp(behaviour,'drifting')==1
 elseif strcmp(behaviour,'custom')==1
     maxSpeed = 7; % in [m/s]
     maxxacc = 5; % in [m/s^-1]
-    steeringreg = 0.03;  
+    steeringreg = 0.02;  
     specificmoi = 0.3;
     plag=1;
     plat=0.0001;
