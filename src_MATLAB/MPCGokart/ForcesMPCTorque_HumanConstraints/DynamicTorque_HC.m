@@ -45,7 +45,7 @@ RD = 6;
 
 %Steering column properties
 J_steer=0.01;
-b_steer=0.2;
+b_steer=0.1;
 k_steer=0.08;
 
 
@@ -186,10 +186,10 @@ model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
 model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
-model.ub(index.tau)=0.8;
-model.lb(index.tau)=-0.8;
-model.ub(index.dottau)=4;
-model.lb(index.dottau)=-4;
+model.ub(index.tau)=1;
+model.lb(index.tau)=-1;
+model.ub(index.dottau)=6;
+model.lb(index.dottau)=-6;
 
 
 

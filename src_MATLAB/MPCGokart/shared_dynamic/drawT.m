@@ -152,7 +152,7 @@ subplot(m,n,6)
 hold on
 title('Steering Torque')
 yyaxis left
-axis([-inf inf -1 1])
+axis([-inf inf -0.8 0.8])
 ylabel('Torque [SCT]')
 plot(lhistory(:,1),lhistory(:,index.tau+1));
 
