@@ -9,7 +9,7 @@
 addpath('..');
 userDir = getuserdir;
 addpath([userDir '/Forces']); % Location of FORCES PRO
-%addpath('C:\Users\me\Documents\FORCES_client');
+addpath('C:\Users\me\Documents\FORCES_client');
 addpath('casadi');
 addpath('../shared_dynamic')
 
@@ -178,8 +178,8 @@ model.lb = -ones(1,index.nv)*inf;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
 model.lb(index.ab)=-inf;
-model.ub(index.tv)=1.5;
-model.lb(index.tv)=-1.5;
+model.ub(index.tv)=1.6;
+model.lb(index.tv)=-1.6;
 model.lb(index.slack)=0;
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;

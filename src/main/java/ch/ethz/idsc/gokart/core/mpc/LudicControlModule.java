@@ -51,21 +51,19 @@ public class LudicControlModule extends AbstractModule {
         jComboBox.addActionListener(actionEvent -> {
           endLudic();
           switch (jComboBox.getSelectedIndex()) {
-          case 1:
+          case 1:// Use Torque MPC model to command torque
             clazz = MPCDrivingTorqueModule.class;
             break;
-          case 0:
+          case 0://Use Ludic MPC model to command steering angle
             clazz = MPCDrivingLudicModule.class;
             break;
-          case 2:
+          case 2://Use Torque MPC model, but command steering angle
             clazz = MPCDrivingCombinedTorqueModule.class;
             break;
           default:
             clazz = MPCDrivingLudicModule.class;
           }
           System.out.println(clazz);
-          // actionEvent.
-          // jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
         });
         jPanel.add(jComboBox);
       }
