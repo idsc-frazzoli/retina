@@ -4,6 +4,7 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.awt.GridLayout;
 import java.util.Objects;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,14 +25,13 @@ public class LudicControlModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private Class<? extends MPCDrivingCommonModule> clazz = MPCDrivingLudicModule.class;
-  private Class<? extends MPCDrivingCommonModule> clazz2 = MPCDrivingLudicModule.class;
 
   @Override
   protected void first() {
     {
-      JPanel jPanel = new JPanel(new GridLayout(6, 2));
+      JPanel jPanel = new JPanel(new GridLayout(5, 2));
       {
-        jPanel.add(new JLabel("Power Steering (requires restart):"));
+        jPanel.add(new JLabel("Power Steering:"));
       }
       {
         JToggleButton jToggleButton = new JToggleButton("Off");
@@ -46,37 +46,28 @@ public class LudicControlModule extends AbstractModule {
         jPanel.add(new JLabel("Steering Mode:"));
       }
       {
-        JToggleButton jToggleButton = new JToggleButton("Angle");
-        jToggleButton.addActionListener(actionEvent -> {
+        String[] choices = {  "Angle","Torque", "Combined" };
+        JComboBox<String> jComboBox = new JComboBox<String>(choices);
+        jComboBox.addActionListener(actionEvent -> {
           endLudic();
-          if (jToggleButton.isSelected()) {
+          switch (jComboBox.getSelectedIndex()) {
+          case 1:
             clazz = MPCDrivingTorqueModule.class;
-            clazz2 = MPCDrivingTorqueModule.class;
-            jToggleButton.setText("Torque");
-          } else {
+            break;
+          case 0:
             clazz = MPCDrivingLudicModule.class;
-            clazz2 = MPCDrivingLudicModule.class;
-            jToggleButton.setText("Angle");
-          }
-        });
-        jPanel.add(jToggleButton);
-      }
-      {
-        jPanel.add(new JLabel("Combined Mode:"));
-      }
-      {
-        JToggleButton jToggleButton = new JToggleButton("Off");
-        jToggleButton.addActionListener(actionEvent -> {
-          endLudic();
-          if (jToggleButton.isSelected()) {
+            break;
+          case 2:
             clazz = MPCDrivingCombinedTorqueModule.class;
-            jToggleButton.setText("On");
-          } else {
-            clazz = clazz2;
-            jToggleButton.setText("Off");
+            break;
+          default:
+            clazz = MPCDrivingLudicModule.class;
           }
+          System.out.println(clazz);
+          // actionEvent.
+          // jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
         });
-        jPanel.add(jToggleButton);
+        jPanel.add(jComboBox);
       }
       {
         jPanel.add(new JLabel("Driver Mode:"));
