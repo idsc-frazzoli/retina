@@ -1,8 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Dynamic MPC Script
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% code by mh
-% annotation mcp
+% code by em
+% 2 vehicle running in the same track in opponent direction, with 
+% constraints on collisions. The iterations run until a Nash equilibrium is
+% reached
 
 
 %add force path (change that for yourself)
@@ -17,8 +19,9 @@ clear problem
 clear all
 %close all
 
-behaviour='custom'; %aggressive,medium, beginner,drifting,custom,collision
+
 %% Baseline params
+behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
 FB = 9;
@@ -38,18 +41,19 @@ splinestart = 1;
 splinestart2 = 1;
 nextsplinepoints = 0;
 nextsplinepoints2 = 0;
-%parameters: p = [maxspeed, xmaxacc,ymaxacc,latacclim,rotacceffect,torqueveceffect, brakeeffect, pointsx, pointsy]
-% variables z = [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
-
-
+% Number of iterations
+tend = 100;
+N=10; % Nash iteration
 %% global parameters index
 global index
+% input
 index.dotab = 1;
 index.dotbeta = 2;
 index.ds = 3;
 index.tv = 4;
 index.slack = 5;
 index.slack2=6;
+% states
 index.x = 7;
 index.y = 8;
 index.theta = 9;
@@ -59,15 +63,17 @@ index.yv = 12;
 index.ab = 13;
 index.beta = 14;
 index.s = 15;
+% inputs and states number
 index.ns = 9;
 index.nu = 6;
 index.nv = index.ns+index.nu;   % = 15
 index.sb = index.nu+1;          % = 6
+
+% parameters
 index.ps = 1;
 index.pax = 2;
 index.pbeta = 3;
 index.pmoi = 4;
-% Cost function parameters
 index.pacFB = 5;
 index.pacFC = 6;
 index.pacFD = 7;
@@ -88,13 +94,14 @@ index.ptv = 21;
 index.xComp=22;
 index.yComp=23;
 index.dist=24;
+
 solvetimes = [];
 solvetimes2=[];
 index.pointsO=pointsO;
 index.pointsN=pointsN;
 integrator_stepsize = 0.1;
 
-%% model params
+%% Model Definition
 model.N = 31;                       % Forward horizon
 model.nvar = index.nv;              % = 14
 model.neq = index.ns;               % = 9
@@ -106,31 +113,36 @@ model.eq = @(z,p) RK4( ...
     p);
 model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 
-l = 1;
-
-%limit lateral acceleration
+%% Inequalities constraint
 model.nh = 6; 
 model.ineq = @(z,p) nlconst_GT(z,p);
-%model.hu = [36,0];
-%model.hl = [-inf,-inf];
 model.hu = [0;0;1;0;0;inf];
 model.hl = [-inf;-inf;-inf;-inf;-inf;0];
 
+% Control points B-splines
 % points = [18,35,42,55.2,56,51,42,40;...          %x
 %           41,55,57,56,43,40,45,31; ...    %y
 %           2.5,2.5,2.5,2.5,2.5,2.5,2.3,2.5]';   %phi
-points = [18,35,42,55.2,60,51,42,40;...          %x
-          41,55,57,56,43,40,42,31; ...    %y
-          2.5,2.5,2.5,2.5,2.3,2.3,2.3,2.3]';
-% %points = getPoints('/wildpoints.csv');
-points2=flip(points);
+% points = [18,35,42,55.2,60,51,42,40;...          %x
+%           41,55,57,56,43,40,42,31; ...    %y
+%           2.5,2.5,2.5,2.5,2.3,2.3,2.3,2.3]';7
+% points = [36.2,52,57.2,53,52,47,41.8;...          %x
+%           44.933,58.2,53.8,49,44,43,38.33; ...    %y
+%           2.5,2.5,2.5,2.5,2.5,2.5,2.5]';     
+% points(:,3)=points(:,3)-0.2;
+% points2=flip(points);
+points = [41.8,36.2,52,57.2,53,52,47;...          %x
+          38.33,44.933,58.2,53.8,49,44,43; ...    %y
+          2.5,2.5,2.5,2.5,2.5,2.5,2.5]';         %width 
+points2 = [57.2,52,36.2,41.8,47,52,53;...          %x
+          53.8,58.2,44.933,38.33,43,44,49; ...    %y
+          2.5,2.5,2.5,2.5,2.5,2.5,2.5]';       
+
 points(:,3)=points(:,3)-0.2;
 points2(:,3)=points2(:,3)-0.2;
-%points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
-%points = [0,40,40,5,0;0,0,10,9,10]';
 
+%% Objective function
 trajectorytimestep = integrator_stepsize;
-%[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
 model.npar = pointsO + 3*pointsN;
 for i=1:model.N
    model.objective{i} = @(z,p)objective_GT(...
@@ -150,27 +162,23 @@ for i=1:model.N
        p(index.ptv));
 end
 
-
-%model.objective{model.N} = @(z,p)objectiveN(z,getPointsFromParameters(p, pointsO, pointsN),p(index.ps));
-
+%% Equality constraint
 model.xinitidx = index.sb:index.nv;
-% variables z = [ab,dotbeta,ds,x,y,theta,v,beta,s,braketemp]
+
 model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
-%model.ub(index.dotbeta)=5;
-%model.lb(index.dotbeta)=-5;
+
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
-%model.ub(index.ab)=2;
-%model.lb(index.ab)=-4.5;
+
 model.lb(index.ab)=-inf;
 
 model.ub(index.tv)=1.7;
 model.lb(index.tv)=-1.7;
-%model.ub(index.tv)=0.1;
-%model.lb(index.tv)=-0.1;
+
 model.lb(index.slack)=0;
 model.lb(index.slack2)=0;
+
 model.lb(index.v)=0;
 
 model.ub(index.beta)=0.5;
@@ -178,11 +186,6 @@ model.lb(index.beta)=-0.5;
 
 model.ub(index.s)=pointsN-2;
 model.lb(index.s)=0;
-
-%model.ub = [inf, +5, 1.6, +inf, +inf, +inf, +inf,0.45,pointsN-2,85];  % simple upper bounds 
-%model.lb = [-inf, -5, -0.1, -inf, -inf,  -inf, 0,-0.45,0,-inf];  % simple lower bounds 
-
-
 
 %% CodeOptions for FORCES solver
 codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
@@ -196,12 +199,9 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
-%% CodeOptions for FORCES solver
-tend = 200;
+%% Simulation kart 1
 eulersteps = 10;
 planintervall = 1;
-%[...,x,y,theta,v,ab,beta,s,braketemp]
-%[49.4552   43.1609   -2.4483    7.3124   -1.0854   -0.0492    1.0496   39.9001]
 fpoints = points(1:2,1:2);
 pdir = diff(fpoints);
 [pstartx,pstarty] = casadiDynamicBSPLINE(0.01,points);
@@ -214,7 +214,6 @@ xs(index.v-index.nu)=5;
 xs(index.ab-index.nu)=0;
 xs(index.beta-index.nu)=0;
 xs(index.s-index.nu)=0.01;
-%xs(index.braketemp-index.nu)=40;
 history = zeros(tend*eulersteps,model.nvar+1);
 splinepointhist = zeros(tend,pointsN*3+1);
 plansx = [];
@@ -223,11 +222,9 @@ planss = [];
 targets = [];
 planc = 10;
 x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
-%x0 = zeros(model.N*model.nvar,1); 
 tstart = 1;
 
-%% kart 2
-
+%% Simulation kart 2
 planintervall2 = 1;
 fpoints2 = points2(1:2,1:2);
 pdir2 = diff(fpoints2);
@@ -241,7 +238,6 @@ xs2(index.v-index.nu)=5;
 xs2(index.ab-index.nu)=0;
 xs2(index.beta-index.nu)=0;
 xs2(index.s-index.nu)=0.01;
-%xs(index.braketemp-index.nu)=40;
 history2 = zeros(tend*eulersteps,model.nvar+1);
 splinepointhist2 = zeros(tend,pointsN*3+1);
 plansx2 = [];
@@ -249,7 +245,7 @@ plansy2 = [];
 planss2 = [];
 targets2 = [];
 planc2 = 10;
-N=10;
+
 x02 = [zeros(model.N,index.nu),repmat(xs2,model.N,1)]';
 a=0;
 a2=0;
@@ -257,10 +253,14 @@ IND=[];
 IND2=[];
 Pos1=repmat(pstart, model.N-1 ,1);
 Pos2=repmat(pstart2, model.N-1 ,1);
-%paras = ttpos(tstart:tstart+model.N-1,2:3)';
+cost1 = zeros(tend,1);
+cost2 = zeros(tend,1);
+Progress1 = zeros(tend,1);
+Progress2 = zeros(tend,1);
+costS = zeros(tend,1);
+
 for i =1:tend
     tstart = i;
-    %model.xinit = [0,5,0,0.1,0,0];
 
     %find bspline
     if(1)
@@ -269,9 +269,6 @@ for i =1:tend
             %spline step forward
             splinestart = splinestart+1;
             xs(index.s-index.nu)=xs(index.s-index.nu)-1;
-            %if(splinestart>pointsN)
-                %splinestart = splinestart-pointsN;
-            %end
         end
     end
     if(1)
@@ -280,20 +277,17 @@ for i =1:tend
             %spline step forward
             splinestart2 = splinestart2+1;
             xs2(index.s-index.nu)=xs2(index.s-index.nu)-1;
-            %if(splinestart>pointsN)
-                %splinestart = splinestart-pointsN;
-            %end
         end
     end
-    %xs(6)=xs(6)+normrnd(0,0.04);
+    
+    %go kart 1
     xs(index.ab-index.nu)=min(casadiGetMaxAcc(xs(index.v-index.nu))-0.0001,xs(index.ab-index.nu));
     problem.xinit = xs';
     %go kart 2
     xs2(index.ab-index.nu)=min(casadiGetMaxAcc(xs2(index.v-index.nu))-0.0001,xs2(index.ab-index.nu));
     problem2.xinit = xs2';
     
-    %do it every time because we don't care about the performance of this
-    %script
+    %go kart 1
     ip = splinestart;
     [nkp, ~] = size(points);
     nextSplinePoints = zeros(pointsN,3);
@@ -305,6 +299,7 @@ for i =1:tend
        ip = ip + 1;
     end
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
+    
     %go kart 2
     ip2 = splinestart2;
     [nkp2, ~] = size(points2);
@@ -318,6 +313,7 @@ for i =1:tend
     end
     splinepointhist2(i,:)=[xs2(index.s-index.nu),nextSplinePoints2(:)'];
     
+    %go kart 1
     problem.all_parameters = repmat (getParametersGT(maxSpeed,maxxacc,...
         steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
         plag,plat,pprog,pab,pspeedcost,pslack,pslack2,...
@@ -326,7 +322,8 @@ for i =1:tend
     problem.all_parameters(index.xComp:model.npar:end)=[Pos2(:,1);Pos2(end,1)];
     problem.all_parameters(index.yComp:model.npar:end)=[Pos2(:,2);Pos2(end,2)];
     problem.x0 = x0(:);
-     %go kart 2
+    
+    %go kart 2
     problem2.all_parameters = repmat (getParametersGT(maxSpeed,maxxacc,...
         steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
         plag,plat,pprog,pab,pspeedcost,pslack,pslack2,...
@@ -335,9 +332,12 @@ for i =1:tend
     problem2.all_parameters(index.xComp:model.npar:end)=[Pos1(:,1);Pos1(end,1)];
     problem2.all_parameters(index.yComp:model.npar:end)=[Pos1(:,2);Pos1(end,2)];
     problem2.x0 = x02(:);
+    
+    % Nash
     jj=1;
     while jj<=N
-        % solve mpc
+        
+        %go kart 1
         [output,exitflag,info] = MPCPathFollowing(problem);
         solvetimes(end+1)=info.solvetime;
         if(exitflag==0)
@@ -346,8 +346,9 @@ for i =1:tend
         end
         if(exitflag~=1 && exitflag ~=0)
            keyboard
-            
         end
+        
+        %go kart 2
         [output2,exitflag2,info2] = MPCPathFollowing(problem2);
         solvetimes2(end+1)=info2.solvetime;
         if(exitflag2==0)
@@ -357,13 +358,14 @@ for i =1:tend
         if(exitflag2~=1 && exitflag2 ~=0)
             keyboard           
         end
+        
         outputM = reshape(output.alldata,[model.nvar,model.N])';
         outputM2 = reshape(output2.alldata,[model.nvar,model.N])';
-        if jj>=2
-            if sum((AAA(:,index.x)-outputM(:,index.x))<=1e-5)==model.N &&sum((AAA(:,index.y)-outputM(:,index.y))<=1e-5)==model.N && sum((BBB(:,index.x)-outputM2(:,index.x))<=1e-5)==model.N &&sum((BBB(:,index.y)-outputM2(:,index.y))<=1e-5)==model.N
-            jj=N+1;
-            end
-        end
+%         if jj>=2 %% check
+%             if sum((AAA(:,index.x)-outputM(:,index.x))<=1e-5)==model.N &&sum((AAA(:,index.y)-outputM(:,index.y))<=1e-5)==model.N && sum((BBB(:,index.x)-outputM2(:,index.x))<=1e-5)==model.N &&sum((BBB(:,index.y)-outputM2(:,index.y))<=1e-5)==model.N
+%             jj=N+1;
+%             end
+%         end
         problem.all_parameters(index.xComp:model.npar:end)=outputM2(:,index.x);
         problem.all_parameters(index.yComp:model.npar:end)=outputM2(:,index.y);
         
@@ -374,7 +376,8 @@ for i =1:tend
         BBB=outputM2;
         jj=jj+1;
     end
-    %get output
+    
+    %get output go kart 1
     outputM = reshape(output.alldata,[model.nvar,model.N])';
     x0 = outputM';
     u = repmat(outputM(1,1:index.nu),eulersteps,1);
@@ -392,8 +395,8 @@ for i =1:tend
         targets = [targets;tx,ty];
     end
     Pos1=[outputM(2:end,index.x),outputM(2:end,index.y)];
-    % go kart 2
-    %get output
+    
+    %get output go kart 2
     outputM2 = reshape(output2.alldata,[model.nvar,model.N])';
     x02 = outputM2';
     u2 = repmat(outputM2(1,1:index.nu),eulersteps,1);
@@ -410,15 +413,30 @@ for i =1:tend
         [tx2,ty2]=casadiDynamicBSPLINE(outputM2(end,index.s),nextSplinePoints2);
         targets2 = [targets2;tx2,ty2];
     end
+    cost1(i)=info.pobj;
+    cost2(i)=info2.pobj;
+    %costS(i)=costS;
+    Progress1(i)=outputM(1,index.s);
+    Progress2(i)=outputM2(1,index.s);
+    % check
     Pos2=[outputM2(2:end,index.x),outputM2(2:end,index.y)];
     distanceX=xs(1)-xs2(1);
     distanceY=xs(2)-xs2(2);
    
     squared_distance_array   = sqrt(distanceX.^2 + distanceY.^2);
-    if squared_distance_array<=1
+    if squared_distance_array<=dist
         squared_distance_array
     end
 end
-%[t,ab,dotbeta,x,y,theta,v,beta,s]
 draw2
-
+figure
+hold on
+plot(cost1,'b')
+plot(cost2,'r')
+plot(cost1+cost2,'g')
+legend('Kart1','Kart2','Tot')
+figure
+hold on
+plot(Progress1,'b')
+plot(Progress2,'r')
+legend('Kart1','Kart2')
