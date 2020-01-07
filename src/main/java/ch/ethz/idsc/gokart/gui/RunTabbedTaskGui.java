@@ -104,9 +104,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       AutoboxLcmServerModule.class, //
       SteerColumnLcmModule.class, //
       GokartTimestampModule.class, //
-      KittLedModule.class, //
-      CoachLedModule.class, //
-      VirtualLedModule.class, //
+      
       LoggerModule.class, //
       LabjackU3Module.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
@@ -191,6 +189,9 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       LinmotPressTestModule.class, //
       LinmotConstantPressTestModule.class, //
       // LocalViewLcmModule.class, //
+      KittLedModule.class, //
+      CoachLedModule.class, //
+      VirtualLedModule.class, //
       DavisDetailModule.class, //
       SeyeDetailModule.class, //
       PanoramaViewModule.class, // , //
