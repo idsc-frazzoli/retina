@@ -36,6 +36,7 @@ nextsplinepoints = 0;
 tend = 250;
 eulersteps = 10;
 
+
 %% global parameters index
 global index
 index.dotab = 1;
@@ -175,8 +176,8 @@ model.lb(index.ds)=-1;
 %model.lb(index.ab)=-4.5;
 model.lb(index.ab)=-inf;
 
-model.ub(index.tv)=1.7;
-model.lb(index.tv)=-1.7;
+model.ub(index.tv)=1.2;
+model.lb(index.tv)=-1.2;
 %model.ub(index.tv)=0.1;
 %model.lb(index.tv)=-0.1;
 model.lb(index.slack)=0;
@@ -193,7 +194,7 @@ model.lb(index.s)=0;
 %% CodeOptions for FORCES solver
 codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
 codeoptions.maxit = 200;    % Maximum number of iterations
-codeoptions.printlevel = 2; % Use printlevel = 2 to print progress (but not for timings)
+codeoptions.printlevel = 0; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
@@ -288,7 +289,7 @@ for i = 1:tend
     u = repmat(outputM(1,1:index.nu),eulersteps,1);
     [xhist,time] = euler(@(x,u)interstagedx_HC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
     xs = xhist(end,:);
-    xs
+    %xs
     history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
     planc = planc + 1;
     if(planc>planintervall)
@@ -299,6 +300,7 @@ for i = 1:tend
         [tx,ty]=casadiDynamicBSPLINE(outputM(end,index.s),nextSplinePoints);
         targets = [targets;tx,ty];
     end
+    Percentage_Complete = 100*i/tend
 end
 %[t,ab,dotbeta,x,y,theta,v,beta,s]
 draw

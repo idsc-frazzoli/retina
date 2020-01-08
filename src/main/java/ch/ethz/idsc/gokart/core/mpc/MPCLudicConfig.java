@@ -28,7 +28,7 @@ public class MPCLudicConfig {
   // // TODO Unit is SCT*s/SCE
   public Scalar steerDamp = RealScalar.of(0.2);
   // // TODO Unit is SCT/SCE
-  public Scalar steerStiff = RealScalar.of(0.08);
+  public Scalar steerStiff = RealScalar.of(0.2);
   /** Parameters of the cost function (without unit of measure) */
   /** Lag Error cost */
   public Scalar lagError = RealScalar.of(1);
