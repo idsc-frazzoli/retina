@@ -33,7 +33,7 @@ pointsO = 21; % number of Parameters
 pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
 nextsplinepoints = 0;
-tend = 150;
+tend = 250;
 eulersteps = 10;
 
 %% global parameters index

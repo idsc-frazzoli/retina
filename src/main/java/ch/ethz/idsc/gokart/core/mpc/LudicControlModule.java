@@ -12,13 +12,11 @@ import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
-import ch.ethz.idsc.tensor.RealScalar;
-import ch.ethz.idsc.tensor.qty.Quantity;
+
 
 public class LudicControlModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
@@ -76,6 +74,7 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Beginner driving");
           MPCLudicConfig.FERRY = MPCLudicDriverConfigs.BEGINNER.get();
+          System.out.println("Max speed: "+MPCLudicConfig.FERRY.maxSpeed);
           startLudic();
         });
         jPanel.add(jButton);
@@ -85,6 +84,7 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Moderate driving");
           MPCLudicConfig.FERRY = MPCLudicDriverConfigs.MODERATE.get();
+          System.out.println("Max speed: "+ MPCLudicConfig.FERRY.maxSpeed);
           startLudic();
         });
         jPanel.add(jButton);
@@ -94,6 +94,7 @@ public class LudicControlModule extends AbstractModule {
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Advanced driving");
           MPCLudicConfig.FERRY = MPCLudicDriverConfigs.ADVANCED.get();
+          System.out.println("Max speed: "+MPCLudicConfig.FERRY.maxSpeed);
           startLudic();
         });
         jPanel.add(jButton);
@@ -104,6 +105,7 @@ public class LudicControlModule extends AbstractModule {
           System.out.println("Swapped to Custom mode");
           MPCLudicConfig.FERRY = MPCLudicConfig.GLOBAL;
           startLudic();
+          System.out.println("Max speed: "+MPCLudicConfig.FERRY.maxSpeed);
         });
         jPanel.add(jButton);
       }
