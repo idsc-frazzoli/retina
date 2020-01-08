@@ -230,7 +230,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
     tabbedTaskGui.tab("aut", MODULES_AUT);
     tabbedTaskGui.tab("fuse", MODULES_FUSE);
     tabbedTaskGui.tab("lab", MODULES_LAB);
-    tabbedTaskGui.tab("cfg_m", MODULES_CFG_MIN);
+    tabbedTaskGui.tab("cfg_mpc", MODULES_CFG_MIN);
     tabbedTaskGui.tab("track", MODULES_TRACK);
     tabbedTaskGui.tab("mpc", MODULES_MPC_MIN);
     windowConfiguration.attach(RunTabbedTaskGui.class, tabbedTaskGui.jFrame);

@@ -46,18 +46,18 @@ public class LudicControlModule extends AbstractModule {
         jPanel.add(new JLabel("Steering Mode:"));
       }
       {
-        String[] choices = {  "Angle","Torque", "Combined" };
+        String[] choices = { "Angle", "Torque", "Combined" };
         JComboBox<String> jComboBox = new JComboBox<String>(choices);
         jComboBox.addActionListener(actionEvent -> {
           endLudic();
           switch (jComboBox.getSelectedIndex()) {
+          case 0:// Use Ludic MPC model to command steering angle
+            clazz = MPCDrivingLudicModule.class;
+            break;
           case 1:// Use Torque MPC model to command torque
             clazz = MPCDrivingTorqueModule.class;
             break;
-          case 0://Use Ludic MPC model to command steering angle
-            clazz = MPCDrivingLudicModule.class;
-            break;
-          case 2://Use Torque MPC model, but command steering angle
+          case 2:// Use Torque MPC model, but command steering angle
             clazz = MPCDrivingCombinedTorqueModule.class;
             break;
           default:
@@ -75,25 +75,7 @@ public class LudicControlModule extends AbstractModule {
         JButton jButton = new JButton("Beginner");
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Beginner driving");
-          MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.02);
-          mpcLudicConfig.lagError = RealScalar.of(1);
-          mpcLudicConfig.latError = RealScalar.of(0.12);
-          mpcLudicConfig.progress = RealScalar.of(0.1);
-          mpcLudicConfig.regularizerAB = RealScalar.of(0.0012);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
-          mpcLudicConfig.slackSoftConstraint = RealScalar.of(10);
-          mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
-          mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
-          mpcLudicConfig.pacejkaRC = MPCLudicConfig.GLOBAL.pacejkaRC;
-          mpcLudicConfig.pacejkaFC = MPCLudicConfig.GLOBAL.pacejkaFC;
-          mpcLudicConfig.pacejkaRB = MPCLudicConfig.GLOBAL.pacejkaRB;
-          mpcLudicConfig.pacejkaFB = MPCLudicConfig.GLOBAL.pacejkaFB;
-          mpcLudicConfig.steerStiff = MPCLudicConfig.GLOBAL.steerStiff;
-          mpcLudicConfig.steerDamp = MPCLudicConfig.GLOBAL.steerDamp;
-          mpcLudicConfig.steerInertia = MPCLudicConfig.GLOBAL.steerInertia;
-          mpcLudicConfig.maxSpeed = Quantity.of(5, SI.VELOCITY);
-          MPCLudicConfig.FERRY = mpcLudicConfig;
+          MPCLudicConfig.FERRY = MPCLudicDriverConfigs.BEGINNER.get();
           startLudic();
         });
         jPanel.add(jButton);
@@ -102,25 +84,7 @@ public class LudicControlModule extends AbstractModule {
         JButton jButton = new JButton("Moderate");
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Moderate driving");
-          MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.02);
-          mpcLudicConfig.lagError = RealScalar.of(1);
-          mpcLudicConfig.latError = RealScalar.of(0.06);
-          mpcLudicConfig.progress = RealScalar.of(0.15);
-          mpcLudicConfig.regularizerAB = RealScalar.of(0.0008);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
-          mpcLudicConfig.slackSoftConstraint = RealScalar.of(8);
-          mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
-          mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
-          mpcLudicConfig.pacejkaRC = MPCLudicConfig.GLOBAL.pacejkaRC;
-          mpcLudicConfig.pacejkaFC = MPCLudicConfig.GLOBAL.pacejkaFC;
-          mpcLudicConfig.pacejkaRB = MPCLudicConfig.GLOBAL.pacejkaRB;
-          mpcLudicConfig.pacejkaFB = MPCLudicConfig.GLOBAL.pacejkaFB;
-          mpcLudicConfig.steerStiff = MPCLudicConfig.GLOBAL.steerStiff;
-          mpcLudicConfig.steerDamp = MPCLudicConfig.GLOBAL.steerDamp;
-          mpcLudicConfig.steerInertia = MPCLudicConfig.GLOBAL.steerInertia;
-          mpcLudicConfig.maxSpeed = Quantity.of(8, SI.VELOCITY);
-          MPCLudicConfig.FERRY = mpcLudicConfig;
+          MPCLudicConfig.FERRY = MPCLudicDriverConfigs.MODERATE.get();
           startLudic();
         });
         jPanel.add(jButton);
@@ -129,49 +93,11 @@ public class LudicControlModule extends AbstractModule {
         JButton jButton = new JButton("Advanced");
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Advanced driving");
-          MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-          mpcLudicConfig.speedCost = RealScalar.of(0.03);
-          mpcLudicConfig.lagError = RealScalar.of(1);
-          mpcLudicConfig.latError = RealScalar.of(0.01);
-          mpcLudicConfig.progress = RealScalar.of(0.3);
-          mpcLudicConfig.regularizerAB = RealScalar.of(0.0004);
-          mpcLudicConfig.regularizerTV = RealScalar.of(0.01);
-          mpcLudicConfig.slackSoftConstraint = RealScalar.of(5);
-          mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
-          mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
-          mpcLudicConfig.pacejkaRC = MPCLudicConfig.GLOBAL.pacejkaRC;
-          mpcLudicConfig.pacejkaFC = MPCLudicConfig.GLOBAL.pacejkaFC;
-          mpcLudicConfig.pacejkaRB = MPCLudicConfig.GLOBAL.pacejkaRB;
-          mpcLudicConfig.pacejkaFB = MPCLudicConfig.GLOBAL.pacejkaFB;
-          mpcLudicConfig.steerStiff = MPCLudicConfig.GLOBAL.steerStiff;
-          mpcLudicConfig.steerDamp = MPCLudicConfig.GLOBAL.steerDamp;
-          mpcLudicConfig.steerInertia = MPCLudicConfig.GLOBAL.steerInertia;
-          mpcLudicConfig.maxSpeed = Quantity.of(12, SI.VELOCITY);
-          MPCLudicConfig.FERRY = mpcLudicConfig;
+          MPCLudicConfig.FERRY = MPCLudicDriverConfigs.ADVANCED.get();
           startLudic();
         });
         jPanel.add(jButton);
       }
-      // {
-      // JButton jButton = new JButton("Drifting");
-      // list.add(jButton);
-      // jButton.addActionListener(actionEvent -> {
-      // System.out.println("Swapped to Drifting mode");
-      // MPCLudicConfig mpcLudicConfig = new MPCLudicConfig();
-      // mpcLudicConfig.speedCost = RealScalar.of(0.04);
-      // mpcLudicConfig.lagError = RealScalar.of(0.2);
-      // mpcLudicConfig.latError = RealScalar.of(0.01);
-      // mpcLudicConfig.progress = RealScalar.of(0.1);
-      // mpcLudicConfig.regularizerAB = RealScalar.of(0.0004);
-      // mpcLudicConfig.regularizerTV = RealScalar.of(0.05);
-      // mpcLudicConfig.slackSoftConstraint = RealScalar.of(4);
-      // mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
-      // mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
-      // mpcLudicConfig.maxSpeed= Quantity.of(8, SI.VELOCITY);
-      // MPCLudicConfig.FERRY = mpcLudicConfig;
-      // });
-      // jPanel.add(jButton);
-      // }
       {
         JButton jButton = new JButton("Custom");
         jButton.addActionListener(actionEvent -> {

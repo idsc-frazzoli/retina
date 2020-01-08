@@ -9,7 +9,7 @@
 addpath('..');
 userDir = getuserdir;
 addpath([userDir '/Forces']); % Location of FORCES PRO
-addpath('C:\Users\me\Documents\FORCES_client');
+%addpath('C:\Users\me\Documents\FORCES_client');
 addpath('casadi');
 addpath('../shared_dynamic')
 
@@ -186,10 +186,10 @@ model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
 model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
-model.ub(index.tau)=1;
-model.lb(index.tau)=-1;
-model.ub(index.dottau)=6;
-model.lb(index.dottau)=-6;
+model.ub(index.tau)=1.2;
+model.lb(index.tau)=-1.2;
+model.ub(index.dottau)=10;
+model.lb(index.dottau)=-10;
 
 
 
@@ -226,7 +226,7 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 %
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-tend = 150;
+tend = 250;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);
