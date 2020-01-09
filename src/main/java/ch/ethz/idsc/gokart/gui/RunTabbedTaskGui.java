@@ -217,6 +217,7 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       //PredictiveTorqueVectoringModule.class, //
       //NaivePowerSteeringModule.class, //
       LudicControlModule.class, //
+      VirtualLedModule.class, //
       ParametersModule.class // configure parameters
   );
 
