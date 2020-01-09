@@ -3,6 +3,8 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
@@ -12,6 +14,9 @@ import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.gui.led.VirtualLedModule;
+import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
@@ -30,18 +35,21 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
+  private final int[] arrayIndex = new int[VirtualLedModule.NUM_LEDS];
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
   private final boolean powerSteerMode;
+  private final boolean ledSteerMode;
   private final GeodesicIIR1 velocityGeodesicIIR1;
   private final HapticSteerConfig hapticSteerConfig = HapticSteerConfig.GLOBAL;
   private Scalar powerSteerAddition = ZERO_ADDITION;
 
-  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode, boolean powerSteerMode) {
+  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode, boolean powerSteerMode, boolean ledSteerMode) {
     super(timing);
     this.mpcSteering = mpcSteering;
     this.torqueMode = torqueMode;
     this.powerSteerMode = powerSteerMode;
+    this.ledSteerMode = ledSteerMode;
     velocityGeodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
   }
 
@@ -61,9 +69,9 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
   private SteerPutEvent torqueSteer(Tensor torqueMSG) {
     Scalar torqueCmd = torqueMSG.Get(0);
     System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale)); // TODO remove after debugging
-    //powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-    //System.out.println(powerSteerAddition);// TODO remove after debugging
-    return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));//.add(powerSteerAddition));
+    // powerSteer().ifPresent(this::pwrSetter); // add the power steer component
+    // System.out.println(powerSteerAddition);// TODO remove after debugging
+    return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
   }
 
   private SteerPutEvent angleSteer(Tensor steering) {
@@ -76,9 +84,17 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
-    //powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-    //System.out.println(powerSteerAddition);// TODO remove after debugging
-    return SteerPutEvent.createOn(torqueCmd.add(feedForward));//.add(powerSteerAddition));
+    if (ledSteerMode) {
+      double num1 = (double) steering.Get(0).number();
+      int num2 = (int) Math.round((num1 + 0.5) * (10)); //
+      // System.out.println("num: " + num1 + " num2: " + num2);
+      IntStream.rangeClosed(0, 10).forEach(i -> //
+      arrayIndex[Math.floorMod(i, arrayIndex.length)] = (num2 == i ? 1 : 0) + (num2 == i ? 2 : 0));
+      LEDLcm.publish(GokartLcmChannel.LED_STATUS, arrayIndex);
+    }
+    // powerSteer().ifPresent(this::pwrSetter); // add the power steer component
+    // System.out.println(powerSteerAddition);// TODO remove after debugging
+    return SteerPutEvent.createOn(torqueCmd.add(feedForward));
   }
 
   private Optional<Scalar> powerSteer() {

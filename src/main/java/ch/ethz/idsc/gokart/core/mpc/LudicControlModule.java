@@ -29,13 +29,13 @@ public class LudicControlModule extends AbstractModule {
     {
       JPanel jPanel = new JPanel(new GridLayout(5, 2));
       {
-        jPanel.add(new JLabel("Power Steering:"));
+        jPanel.add(new JLabel("LED Steering:"));
       }
       {
         JToggleButton jToggleButton = new JToggleButton("Off");
         jToggleButton.addActionListener(actionEvent -> {
           endLudic();
-          MPCLudicConfig.GLOBAL.powerSteer = jToggleButton.isSelected();
+          MPCLudicConfig.GLOBAL.ledSteer = jToggleButton.isSelected();
           jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
         });
         jPanel.add(jToggleButton);
