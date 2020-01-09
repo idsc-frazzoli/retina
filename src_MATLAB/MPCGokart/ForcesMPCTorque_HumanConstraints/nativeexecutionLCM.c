@@ -122,6 +122,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 
 	MPCPathFollowing_float initab;
 	MPCPathFollowing_float inittau;
+	MPCPathFollowing_float initbeta;
 
 	if (lastCRMsg.state.time-timeOfLastSolution<timeTolerance) {
 		getLastControls(
