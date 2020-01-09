@@ -1,4 +1,4 @@
-// code by mh, jph
+// code by mh, jph, ta
 package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.owl.math.region.Region;
@@ -53,7 +53,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
         if (region.isMember(pos.add(dir.multiply(probe))))
           break;
       }
-      limit.lo = probe;
+      limit.lo = probe.add(increment);//Want the distance before collision
     }
     { // positive direction
       Scalar probe = init;
@@ -62,7 +62,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
         if (region.isMember(pos.add(dir.multiply(probe))))
           break;
       }
-      limit.hi = probe;
+      limit.hi = probe.subtract(increment);//Want the distance before collision
     }
     return limit;
   }
