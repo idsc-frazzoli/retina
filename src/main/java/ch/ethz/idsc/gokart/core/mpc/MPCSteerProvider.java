@@ -16,6 +16,7 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -106,6 +107,6 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
     if (powerSteerMode)
       powerSteerAddition = amount;
     else
-      powerSteerAddition = ZERO_ADDITION;
+      powerSteerAddition = RealScalar.of(0);
   }
 }
