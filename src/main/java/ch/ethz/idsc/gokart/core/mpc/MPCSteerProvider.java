@@ -68,6 +68,8 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+    System.out.print("Beta: "+steering.Get(0));
+    System.out.println(" Dot Beta: "+steering.Get(1));
     Scalar torqueCmd = steerPositionController.iterate( //
         currAngle, //
         steering.Get(0), //

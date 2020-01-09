@@ -67,6 +67,8 @@ static void getLastControls(
         MPCPathFollowing_float* dotab,
         MPCPathFollowing_float* tau,
         MPCPathFollowing_float* dottau,
+		MPCPathFollowing_float* beta,
+		MPCPathFollowing_float* dotbeta,
         double* dStepTime,
         double time) {
 	double lastSolutionTime = timeOfLastSolution;
@@ -79,6 +81,9 @@ static void getLastControls(
 	*dotab = lastSolution[i*S];
 	*tau = lastSolution[i*S + 15];
 	*dottau = lastSolution[i*S + 1];
+	*beta = lastSolution[i*S+12];
+	*dotbeta = lastSolution[i*S+14];
+	
 }
 
 static void para_handler(const lcm_recv_buf_t *rbuf,
@@ -111,6 +116,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	MPCPathFollowing_float ldotab;
 	MPCPathFollowing_float ltau;
 	MPCPathFollowing_float ldottau;
+	MPCPathFollowing_float lbeta;
+	MPCPathFollowing_float ldotbeta;
 	double dTime;
 
 	MPCPathFollowing_float initab;
@@ -123,9 +130,12 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			&ltau,
 			&ldottau,
 			&dTime,
+			&lbeta,
+			&ldotbeta,
 			lastCRMsg.state.time);
 
 		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);
+		initbeta = getInitSteer(lbeta, ldotbeta, dTime);
 		inittau = getInitTau(ltau, ldottau, dTime);
 	} else
 	    initab = 0;
@@ -139,7 +149,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[4] = lastCRMsg.state.Ux;
 	params.xinit[5] = lastCRMsg.state.Uy+lastCRMsg.state.dotPsi*backToCoM;
 	params.xinit[6] = initab;
-	params.xinit[7] = lastCRMsg.state.s;
+	params.xinit[7] = initbeta;
 	params.xinit[8] = lastCRMsg.path.startingProgress;
 	params.xinit[9] = lastCRMsg.state.dotbeta;
 	params.xinit[10] = inittau;
