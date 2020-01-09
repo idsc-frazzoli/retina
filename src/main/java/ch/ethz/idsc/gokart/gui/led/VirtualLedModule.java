@@ -19,7 +19,7 @@ import ch.ethz.idsc.tensor.img.ColorDataIndexed;
 import ch.ethz.idsc.tensor.img.ColorDataLists;
 
 public class VirtualLedModule extends AbstractModule implements LEDListener {
-  public static final int NUM_LEDS = 11; // TODO delete one actual LED number is known and provided elsewhere
+  public static final int NUM_LEDS = 10; // TODO delete one actual LED number is known and provided elsewhere
   private static final ColorDataIndexed COLOR_SCHEME = ColorDataLists._001.cyclic();
 
   private final LEDLcmClient ledLcmClient = new LEDLcmClient();
