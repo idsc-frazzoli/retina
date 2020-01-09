@@ -47,4 +47,5 @@ public class MPCLudicConfig {
   public Scalar regularizerTau = RealScalar.of(0.001);
   public Scalar torqueScale = RealScalar.of(1);
   public Boolean powerSteer = false;
+  public Boolean ledSteer = false;
 }

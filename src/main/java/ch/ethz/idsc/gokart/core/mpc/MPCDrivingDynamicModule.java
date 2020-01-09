@@ -50,4 +50,8 @@ public class MPCDrivingDynamicModule extends MPCDrivingCommonModule {
   protected final boolean powerSteeringUsed() {
     return false;
   }
+  
+  protected final boolean ledSteeringUsed() {
+    return MPCLudicConfig.GLOBAL.ledSteer;
+  }
 }
