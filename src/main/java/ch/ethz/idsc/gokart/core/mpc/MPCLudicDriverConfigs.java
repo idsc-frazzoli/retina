@@ -14,7 +14,7 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(0.0012), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(10), // Slack SoftConstraint
-      RealScalar.of(5)), // Max Speed
+      RealScalar.of(6)), // Max Speed
   MODERATE(//
       RealScalar.of(0.02), // Speed cost
       RealScalar.of(1), // Lag Error
@@ -23,16 +23,43 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(0.0008), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(8), // slack SoftConstraint
-      RealScalar.of(8)), // Max Speed
+      RealScalar.of(10)), // Max Speed
   ADVANCED(//
       RealScalar.of(0.03), // Speed cost
       RealScalar.of(1), // Lag Error
-      RealScalar.of(0.01), // Lat Error
+      RealScalar.of(0.02), // Lat Error
       RealScalar.of(0.3), // Progress
-      RealScalar.of(0.0004), // Regularizer AB
+      RealScalar.of(0.0006), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(5), // Slack SoftConstraint
-      RealScalar.of(12)); // Max Speed
+      RealScalar.of(14)), // Max Speed
+  BEGINNER_T(//
+      RealScalar.of(0.02), // Speed cost
+      RealScalar.of(1), // Lag Error
+      RealScalar.of(0.12), // Lat Error
+      RealScalar.of(0.1), // Progress
+      RealScalar.of(0.0012), // Regularizer AB
+      RealScalar.of(0.01), // Regularizer TV
+      RealScalar.of(10), // Slack SoftConstraint
+      RealScalar.of(6)), // Max Speed
+  MODERATE_T(//
+      RealScalar.of(0.02), // Speed cost
+      RealScalar.of(1), // Lag Error
+      RealScalar.of(0.10), // Lat Error
+      RealScalar.of(0.15), // Progress
+      RealScalar.of(0.0008), // Regularizer AB
+      RealScalar.of(0.01), // Regularizer TV
+      RealScalar.of(8), // slack SoftConstraint
+      RealScalar.of(10)), // Max Speed
+  ADVANCED_T(//
+      RealScalar.of(0.02), // Speed cost
+      RealScalar.of(1), // Lag Error
+      RealScalar.of(0.08), // Lat Error
+      RealScalar.of(0.3), // Progress
+      RealScalar.of(0.0006), // Regularizer AB
+      RealScalar.of(0.01), // Regularizer TV
+      RealScalar.of(5), // Slack SoftConstraint
+      RealScalar.of(14)); // Max Speed
 
   private MPCLudicConfig mpcLudicConfig;
 

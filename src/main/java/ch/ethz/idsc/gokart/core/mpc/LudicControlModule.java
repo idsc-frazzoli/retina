@@ -23,6 +23,7 @@ public class LudicControlModule extends AbstractModule {
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private Class<? extends MPCDrivingCommonModule> clazz = MPCDrivingLudicModule.class;
+  private boolean tParams=false;
 
   @Override
   protected void first() {
@@ -51,15 +52,19 @@ public class LudicControlModule extends AbstractModule {
           switch (jComboBox.getSelectedIndex()) {
           case 0:// Use Ludic MPC model to command steering angle
             clazz = MPCDrivingLudicModule.class;
+            tParams=false;
             break;
           case 1:// Use Torque MPC model to command torque
             clazz = MPCDrivingTorqueModule.class;
+            tParams=true;
             break;
           case 2:// Use Torque MPC model, but command steering angle
             clazz = MPCDrivingCombinedTorqueModule.class;
+            tParams=true;
             break;
           default:
             clazz = MPCDrivingLudicModule.class;
+            tParams=false;
           }
           System.out.println(clazz);
         });
@@ -73,7 +78,11 @@ public class LudicControlModule extends AbstractModule {
         JButton jButton = new JButton("Beginner");
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Beginner driving");
-          MPCLudicConfig.FERRY = MPCLudicDriverConfigs.BEGINNER.get();
+          if(tParams) {
+            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.BEGINNER_T.get();
+          }else {
+            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.BEGINNER.get();
+          }
           System.out.println("Max speed: "+MPCLudicConfig.FERRY.maxSpeed);
           startLudic();
         });
@@ -83,7 +92,11 @@ public class LudicControlModule extends AbstractModule {
         JButton jButton = new JButton("Moderate");
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Moderate driving");
-          MPCLudicConfig.FERRY = MPCLudicDriverConfigs.MODERATE.get();
+          if(tParams) {
+            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.MODERATE_T.get();
+          }else {
+            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.MODERATE.get();
+          }
           System.out.println("Max speed: "+ MPCLudicConfig.FERRY.maxSpeed);
           startLudic();
         });
@@ -93,7 +106,11 @@ public class LudicControlModule extends AbstractModule {
         JButton jButton = new JButton("Advanced");
         jButton.addActionListener(actionEvent -> {
           System.out.println("Swapped to Advanced driving");
-          MPCLudicConfig.FERRY = MPCLudicDriverConfigs.ADVANCED.get();
+          if(tParams) {
+            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.ADVANCED_T.get();
+          }else {
+            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.ADVANCED.get();
+          }
           System.out.println("Max speed: "+MPCLudicConfig.FERRY.maxSpeed);
           startLudic();
         });

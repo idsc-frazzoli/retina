@@ -144,7 +144,7 @@ plot(lhistory(:,1),braking);
 
 yyaxis right
 ylabel('slack')
-axis([-inf inf -0.1 0.1])
+axis([-inf inf -2 0.5])
 plot(lhistory(:,1), lhistory(:,index.slack+1));
 
 subplot(m,n,6)
