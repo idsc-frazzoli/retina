@@ -6,35 +6,35 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.Scalar;
 
 public enum MPCLudicDriverConfigs {
-  BEGINNER(//
-      RealScalar.of(0.02), // Speed cost
-      RealScalar.of(1), // Lag Error
-      RealScalar.of(0.12), // Lat Error
-      RealScalar.of(0.1), // Progress
-      RealScalar.of(0.0012), // Regularizer AB
-      RealScalar.of(0.01), // Regularizer TV
-      RealScalar.of(10), // Slack SoftConstraint
-      RealScalar.of(5)), // Max Speed
-  MODERATE(//
-      RealScalar.of(0.02), // Speed cost
-      RealScalar.of(1), // Lag Error
-      RealScalar.of(0.06), // Lat Error
-      RealScalar.of(0.15), // Progress
-      RealScalar.of(0.0008), // Regularizer AB
-      RealScalar.of(0.01), // Regularizer TV
-      RealScalar.of(8), // slack SoftConstraint
-      RealScalar.of(8)), // Max Speed
-  ADVANCED(//
-      RealScalar.of(0.03), // Speed cost
-      RealScalar.of(1), // Lag Error
-      RealScalar.of(0.01), // Lat Error
-      RealScalar.of(0.3), // Progress
-      RealScalar.of(0.0004), // Regularizer AB
-      RealScalar.of(0.01), // Regularizer TV
-      RealScalar.of(5), // Slack SoftConstraint
-      RealScalar.of(12)); // Max Speed
+  BEGINNER( //
+      RealScalar.of(0.02), // speed cost
+      RealScalar.of(1), // lag Error
+      RealScalar.of(0.12), // lat error
+      RealScalar.of(0.1), // progress
+      RealScalar.of(0.0012), // regularizer AB
+      RealScalar.of(0.01), // regularizer TV
+      RealScalar.of(10), // slack soft constraint
+      RealScalar.of(5)), // max Speed
+  MODERATE( //
+      RealScalar.of(0.02), // speed cost
+      RealScalar.of(1), // lag Error
+      RealScalar.of(0.06), // lat error
+      RealScalar.of(0.15), // progress
+      RealScalar.of(0.0008), // regularizer AB
+      RealScalar.of(0.01), // regularizer TV
+      RealScalar.of(8), // slack soft constraint
+      RealScalar.of(8)), // max Speed
+  ADVANCED( //
+      RealScalar.of(0.03), // speed cost
+      RealScalar.of(1), // lag Error
+      RealScalar.of(0.01), // lat error
+      RealScalar.of(0.3), // progress
+      RealScalar.of(0.0004), // regularizer AB
+      RealScalar.of(0.01), // regularizer TV
+      RealScalar.of(5), // slack soft constraint
+      RealScalar.of(12)); // max Speed
 
-  private MPCLudicConfig mpcLudicConfig;
+  private final MPCLudicConfig mpcLudicConfig;
 
   MPCLudicDriverConfigs(Scalar speedcost, Scalar lagError, Scalar latError, Scalar progress,//
       Scalar regularizerAB, Scalar regularizerTV, Scalar slackSoftConstraint, Scalar maxSpeed) {
