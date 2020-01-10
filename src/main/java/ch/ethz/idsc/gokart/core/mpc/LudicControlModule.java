@@ -50,15 +50,15 @@ public class LudicControlModule extends AbstractModule {
         jComboBox.addActionListener(actionEvent -> {
           endLudic();
           switch (jComboBox.getSelectedIndex()) {
-          case 0:// Use Ludic MPC model to command steering angle
+          case 0: // use Ludic MPC model to command steering angle
             clazz = MPCDrivingLudicModule.class;
             tParams=false;
             break;
-          case 1:// Use Torque MPC model to command torque
+          case 1: // use Torque MPC model to command torque
             clazz = MPCDrivingTorqueModule.class;
             tParams=true;
             break;
-          case 2:// Use Torque MPC model, but command steering angle
+          case 2: // use Torque MPC model, but command steering angle
             clazz = MPCDrivingCombinedTorqueModule.class;
             tParams=true;
             break;

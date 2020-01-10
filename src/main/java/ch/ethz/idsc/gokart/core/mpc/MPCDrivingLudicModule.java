@@ -52,8 +52,4 @@ public class MPCDrivingLudicModule extends MPCDrivingCommonModule {
   protected final boolean powerSteeringUsed() {
     return MPCLudicConfig.GLOBAL.powerSteer;
   }
-  
-  protected final boolean ledSteeringUsed() {
-    return MPCLudicConfig.GLOBAL.ledSteer;
-  }
 }

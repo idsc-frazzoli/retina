@@ -61,7 +61,7 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(5), // Slack SoftConstraint
       RealScalar.of(14)); // Max Speed
 
-  private MPCLudicConfig mpcLudicConfig;
+  private final MPCLudicConfig mpcLudicConfig;
 
   MPCLudicDriverConfigs(Scalar speedcost, Scalar lagError, Scalar latError, Scalar progress,//
       Scalar regularizerAB, Scalar regularizerTV, Scalar slackSoftConstraint, Scalar maxSpeed) {

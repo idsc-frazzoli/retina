@@ -48,21 +48,17 @@ import ch.ethz.idsc.tensor.sca.Sign;
     }
     { // negative direction
       Scalar probe = init;
-      while (Scalars.lessThan(probe.abs(), max)) {
-        probe = probe.subtract(increment);
-        if (region.isMember(pos.add(dir.multiply(probe))))
-          break;
-      }
-      limit.lo = probe.add(increment);//Want the distance before collision
+      Scalar probe_next;
+      while (Scalars.lessThan(probe.abs(), max) && !region.isMember(pos.add(dir.multiply(probe_next = probe.subtract(increment)))))
+        probe = probe_next;
+      limit.lo = probe;
     }
     { // positive direction
       Scalar probe = init;
-      while (Scalars.lessThan(probe.abs(), max)) {
-        probe = probe.add(increment);
-        if (region.isMember(pos.add(dir.multiply(probe))))
-          break;
-      }
-      limit.hi = probe.subtract(increment);//Want the distance before collision
+      Scalar probe_next;
+      while (Scalars.lessThan(probe.abs(), max) && !region.isMember(pos.add(dir.multiply(probe_next = probe.add(increment)))))
+        probe = probe_next;
+      limit.hi = probe;
     }
     return limit;
   }

@@ -58,8 +58,4 @@ public class MPCDrivingKinematicModule extends MPCDrivingAbstractModule {
   protected final boolean powerSteeringUsed() {
     return false;
   }
-  
-  protected final boolean ledSteeringUsed() {
-    return MPCLudicConfig.GLOBAL.ledSteer;
-  }
 }
