@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
@@ -35,21 +34,18 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
-  private final int[] arrayIndex = new int[VirtualLedModule.NUM_LEDS];
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
   private final boolean powerSteerMode;
-  private final boolean ledSteerMode;
   private final GeodesicIIR1 velocityGeodesicIIR1;
   private final HapticSteerConfig hapticSteerConfig = HapticSteerConfig.GLOBAL;
   private Scalar powerSteerAddition = ZERO_ADDITION;
 
-  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode, boolean powerSteerMode, boolean ledSteerMode) {
+  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode, boolean powerSteerMode) {
     super(timing);
     this.mpcSteering = mpcSteering;
     this.torqueMode = torqueMode;
     this.powerSteerMode = powerSteerMode;
-    this.ledSteerMode = ledSteerMode;
     velocityGeodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
   }
 
@@ -70,32 +66,26 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
     Scalar torqueCmd = torqueMSG.Get(0);
     System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale)); // TODO remove after debugging
     // powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-    // System.out.println(powerSteerAddition);// TODO remove after debugging
+    // System.out.println(powerSteerAddition); // TODO remove after debugging
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
   }
 
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-    System.out.print("Beta: "+steering.Get(0));
-    System.out.println(" Dot Beta: "+steering.Get(1));
+    System.out.print("Beta: " + steering.Get(0));
+    System.out.println(" Dot Beta: " + steering.Get(1));
     Scalar torqueCmd = steerPositionController.iterate( //
         currAngle, //
         steering.Get(0), //
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
-    if (ledSteerMode) {
-      double num1 = (double) steering.Get(0).number();
-      int num2 = (int) Math.round((num1 + 0.5) * (10)); //
-      // System.out.println("num: " + num1 + " num2: " + num2);
-      IntStream.rangeClosed(0, 10).forEach(i -> //
-      arrayIndex[Math.floorMod(i, arrayIndex.length)] = (num2 == i ? 1 : 0) + (num2 == i ? 2 : 0));
-      LEDLcm.publish(GokartLcmChannel.LED_STATUS, arrayIndex);
-    }
+    MPCSteerProvider.notifyLED(steering); // either directly query config or always publish but only listen when desired
     // powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-    // System.out.println(powerSteerAddition);// TODO remove after debugging
+    // System.out.println(powerSteerAddition); // TODO remove after debugging
     return SteerPutEvent.createOn(torqueCmd.add(feedForward));
   }
+
 
   private Optional<Scalar> powerSteer() {
     Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
@@ -126,5 +116,13 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
       powerSteerAddition = amount;
     else
       powerSteerAddition = RealScalar.of(0);
+  }
+
+  private static void notifyLED(Tensor steering) {
+    double num1 = steering.Get(0).number().doubleValue();
+    int refIdx = (int) Math.round((num1 + 0.5) * 10);
+    // TODO use separate indices for reference and actual value
+    int[] arrayIndex = IntStream.range(0, VirtualLedModule.NUM_LEDS).map(idx -> (refIdx == idx ? 1 : 0) /* + (valIdx == idx ? 2 : 0) */).toArray();
+    LEDLcm.publish(GokartLcmChannel.LED_STATUS, arrayIndex);
   }
 }

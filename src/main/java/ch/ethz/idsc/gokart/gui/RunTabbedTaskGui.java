@@ -38,10 +38,8 @@ import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
 import ch.ethz.idsc.gokart.core.map.OccupancyMappingModule;
 import ch.ethz.idsc.gokart.core.map.OccupancyViewerModule;
 import ch.ethz.idsc.gokart.core.mpc.LudicControlModule;
-//import ch.ethz.idsc.gokart.core.mpc.MPCDrivingCombinedTorqueModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDrivingDynamicModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDrivingKinematicModule;
-//import ch.ethz.idsc.gokart.core.mpc.MPCDrivingTorqueModule;
 import ch.ethz.idsc.gokart.core.plan.ClothoidRrtsTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.ClothoidTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.DubinsRrtsTrajectoryModule;
@@ -194,31 +192,10 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       VirtualLedModule.class, //
       DavisDetailModule.class, //
       SeyeDetailModule.class, //
-      PanoramaViewModule.class, // , //
+      PanoramaViewModule.class, //
       SideViewLcmModule.class, //
       PresenterLcmModule.class //
-  // DavisOverviewModule.class //
-  );
-  static final List<Class<? extends AbstractModule>> MODULES_CFG_MIN = Arrays.asList( //
-      Vmu931LcmServerModule.class, // vmu931 imu
-      // Vmu932LcmServerModule.class, // vmu932 imu
-      IgnitionModule.class, // actuation monitoring
-      GlobalViewLcmModule.class // initialize localization
-      //TrackReconModule.class, //
-      //ParametersModule.class // configure parameters
-  );
-  static final List<Class<? extends AbstractModule>> MODULES_TRACK = Arrays.asList( //
-      TrackReconModule.class, //
-      PredictiveTorqueVectoringModule.class, //
-      NaivePowerSteeringModule.class //
-      
-  );
-  static final List<Class<? extends AbstractModule>> MODULES_MPC_MIN = Arrays.asList( //
-      //PredictiveTorqueVectoringModule.class, //
-      //NaivePowerSteeringModule.class, //
-      LudicControlModule.class, //
-      VirtualLedModule.class, //
-      ParametersModule.class // configure parameters
+      // DavisOverviewModule.class //
   );
 
   public static void main(String[] args) {
@@ -231,9 +208,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
     tabbedTaskGui.tab("aut", MODULES_AUT);
     tabbedTaskGui.tab("fuse", MODULES_FUSE);
     tabbedTaskGui.tab("lab", MODULES_LAB);
-    tabbedTaskGui.tab("cfg_mpc", MODULES_CFG_MIN);
-    tabbedTaskGui.tab("track", MODULES_TRACK);
-    tabbedTaskGui.tab("mpc", MODULES_MPC_MIN);
     windowConfiguration.attach(RunTabbedTaskGui.class, tabbedTaskGui.jFrame);
     tabbedTaskGui.jFrame.setVisible(true);
   }
