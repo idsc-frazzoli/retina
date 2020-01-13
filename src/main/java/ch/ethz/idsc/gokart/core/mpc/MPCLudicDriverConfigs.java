@@ -28,7 +28,7 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(0.03), // Speed cost
       RealScalar.of(1), // Lag Error
       RealScalar.of(0.04), // Lat Error
-      RealScalar.of(0.3), // Progress
+      RealScalar.of(0.2), // Progress
       RealScalar.of(0.0006), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(5), // Slack SoftConstraint
@@ -55,7 +55,7 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(0.02), // Speed cost
       RealScalar.of(1), // Lag Error
       RealScalar.of(0.08), // Lat Error
-      RealScalar.of(0.3), // Progress
+      RealScalar.of(0.2), // Progress
       RealScalar.of(0.0006), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(5), // Slack SoftConstraint
