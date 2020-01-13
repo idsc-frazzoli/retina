@@ -17,18 +17,18 @@ public class MPCLudicConfig {
   /** Pacejka's formula front wheels parameters */
   public Scalar pacejkaFB = RealScalar.of(9);
   public Scalar pacejkaFC = RealScalar.of(1);
-  public Scalar pacejkaFD = RealScalar.of(6.5);
+  public Scalar pacejkaFD = RealScalar.of(7);
   /** Pacejka's formula rear wheels parameters */
   public Scalar pacejkaRB = RealScalar.of(5.2);
   public Scalar pacejkaRC = RealScalar.of(1.1);
-  public Scalar pacejkaRD = RealScalar.of(6.0);
+  public Scalar pacejkaRD = RealScalar.of(6.5);
   // /** stiffness, damping, inertia of the steering column */
   // // TODO Unit is SCT*s^2/SCE
   public Scalar steerInertia = RealScalar.of(0.01);
   // // TODO Unit is SCT*s/SCE
   public Scalar steerDamp = RealScalar.of(0.2);
   // // TODO Unit is SCT/SCE
-  public Scalar steerStiff = RealScalar.of(0.2);
+  public Scalar steerStiff = RealScalar.of(0.08);
   /** Parameters of the cost function (without unit of measure) */
   /** Lag Error cost */
   public Scalar lagError = RealScalar.of(1);
@@ -45,7 +45,7 @@ public class MPCLudicConfig {
   /** Regularizer for input TV */
   public Scalar regularizerTV = RealScalar.of(0.01);
   public Scalar regularizerTau = RealScalar.of(0.001);
-  public Scalar torqueScale = RealScalar.of(1);
+  public Scalar torqueScale = RealScalar.of(0.58);
   public Boolean powerSteer = false;
   public Boolean ledSteer = false;
 }

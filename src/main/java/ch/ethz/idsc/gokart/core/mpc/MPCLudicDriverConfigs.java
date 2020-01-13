@@ -27,7 +27,7 @@ public enum MPCLudicDriverConfigs {
   ADVANCED(//
       RealScalar.of(0.03), // Speed cost
       RealScalar.of(1), // Lag Error
-      RealScalar.of(0.02), // Lat Error
+      RealScalar.of(0.04), // Lat Error
       RealScalar.of(0.3), // Progress
       RealScalar.of(0.0006), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
