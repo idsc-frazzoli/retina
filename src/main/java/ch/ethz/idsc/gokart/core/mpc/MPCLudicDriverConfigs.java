@@ -31,7 +31,7 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(0.2), // Progress
       RealScalar.of(0.0006), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
-      RealScalar.of(5), // Slack SoftConstraint
+      RealScalar.of(8), // Slack SoftConstraint
       RealScalar.of(14)), // Max Speed
   BEGINNER_T(//
       RealScalar.of(0.02), // Speed cost
@@ -71,7 +71,7 @@ public enum MPCLudicDriverConfigs {
     mpcLudicConfig.latError = latError;
     mpcLudicConfig.progress = progress;
     mpcLudicConfig.regularizerAB = regularizerAB;
-    mpcLudicConfig.regularizerTV = regularizerTV;
+    mpcLudicConfig.regularizerTV = MPCLudicConfig.GLOBAL.regularizerTV;
     mpcLudicConfig.slackSoftConstraint = slackSoftConstraint;
     mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
     mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;
