@@ -20,19 +20,19 @@ clear all
 
 %% Baseline params
 
-maxSpeed = 10; % in [m/s]
+maxSpeed = 15; % in [m/s]
 maxxacc = 5; % in [m/s^-1]
 
 %Costs for simulation, change the real values in Java 
-steeringreg = 0.02;
+steeringreg = 0.01;
 specificmoi = 0.3;
 plag=1;
 plat=0.01;
 pprog=0.2;
 pab=0.0004;
-pspeedcost=0.04;
-pslack=7;
-ptv=0.05;
+pspeedcost=0.02;
+pslack=5;
+ptv=0.01;
 ptau=0.0001;
 
 %Simulation Pacejka constants, real values changalbe in java 
@@ -186,10 +186,10 @@ model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
 model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
-model.ub(index.tau)=1.2;
-model.lb(index.tau)=-1.2;
-model.ub(index.dottau)=12;
-model.lb(index.dottau)=-12;
+model.ub(index.tau)=1.4;
+model.lb(index.tau)=-1.4;
+model.ub(index.dottau)=20;
+model.lb(index.dottau)=-20;
 
 
 
@@ -226,7 +226,7 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 %
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-tend = 150;
+tend = 250;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);

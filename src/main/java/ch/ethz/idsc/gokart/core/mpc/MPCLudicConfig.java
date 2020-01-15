@@ -12,7 +12,7 @@ public class MPCLudicConfig {
   public static final MPCLudicConfig GLOBAL = AppResources.load(new MPCLudicConfig());
   static MPCLudicConfig FERRY = AppResources.load(new MPCLudicConfig());
   /** The limit for the Go-kart speed */
-  @FieldSubdivide(start = "4f[m*s^-1]", end = "10[m*s^-1]", intervals = 6)
+  @FieldSubdivide(start = "4f[m*s^-1]", end = "16[m*s^-1]", intervals = 12)
   public Scalar maxSpeed = Quantity.of(10, SI.VELOCITY);
   /** Pacejka's formula front wheels parameters */
   public Scalar pacejkaFB = RealScalar.of(9);
@@ -44,7 +44,7 @@ public class MPCLudicConfig {
   public Scalar slackSoftConstraint = RealScalar.of(7);
   /** Regularizer for input TV */
   public Scalar regularizerTV = RealScalar.of(0.01);
-  public Scalar regularizerTau = RealScalar.of(0.001);
+  public Scalar regularizerTau = RealScalar.of(0.0001);
   public Scalar torqueScale = RealScalar.of(0.58);
   public Boolean powerSteer = false;
   public Boolean ledSteer = false;
