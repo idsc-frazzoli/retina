@@ -9,7 +9,7 @@ public enum MPCLudicDriverConfigs {
   BEGINNER(//
       RealScalar.of(0.02), // Speed cost
       RealScalar.of(1), // Lag Error
-      RealScalar.of(0.12), // Lat Error
+      RealScalar.of(0.03), // Lat Error
       RealScalar.of(0.1), // Progress
       RealScalar.of(0.0012), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
@@ -18,7 +18,7 @@ public enum MPCLudicDriverConfigs {
   MODERATE(//
       RealScalar.of(0.02), // Speed cost
       RealScalar.of(1), // Lag Error
-      RealScalar.of(0.06), // Lat Error
+      RealScalar.of(0.01), // Lat Error
       RealScalar.of(0.15), // Progress
       RealScalar.of(0.0008), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
@@ -27,8 +27,8 @@ public enum MPCLudicDriverConfigs {
   ADVANCED(//
       RealScalar.of(0.03), // Speed cost
       RealScalar.of(1), // Lag Error
-      RealScalar.of(0.04), // Lat Error
-      RealScalar.of(0.2), // Progress
+      RealScalar.of(0.01), // Lat Error
+      RealScalar.of(0.15), // Progress
       RealScalar.of(0.0006), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(8), // Slack SoftConstraint
@@ -37,7 +37,7 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(0.02), // Speed cost
       RealScalar.of(1), // Lag Error
       RealScalar.of(0.12), // Lat Error
-      RealScalar.of(0.1), // Progress
+      RealScalar.of(0.02), // Progress
       RealScalar.of(0.0012), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(10), // Slack SoftConstraint
@@ -45,7 +45,7 @@ public enum MPCLudicDriverConfigs {
   MODERATE_T(//
       RealScalar.of(0.02), // Speed cost
       RealScalar.of(1), // Lag Error
-      RealScalar.of(0.10), // Lat Error
+      RealScalar.of(0.02), // Lat Error
       RealScalar.of(0.15), // Progress
       RealScalar.of(0.0008), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
@@ -54,8 +54,8 @@ public enum MPCLudicDriverConfigs {
   ADVANCED_T(//
       RealScalar.of(0.02), // Speed cost
       RealScalar.of(1), // Lag Error
-      RealScalar.of(0.08), // Lat Error
-      RealScalar.of(0.2), // Progress
+      RealScalar.of(0.01), // Lat Error
+      RealScalar.of(0.15), // Progress
       RealScalar.of(0.0006), // Regularizer AB
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(5), // Slack SoftConstraint
