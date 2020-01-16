@@ -67,7 +67,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
     MPCSteerProvider.notifyLED(steering,currAngle); // either directly query config or always publish but only listen when desired
-    Scalar negator = torqueCmd.add(feedForward).negate();
+    //Scalar negator = torqueCmd.add(feedForward).negate();
     return SteerPutEvent.createOn(torqueCmd.add(feedForward)/*.add(negator)*/);
   }
 
