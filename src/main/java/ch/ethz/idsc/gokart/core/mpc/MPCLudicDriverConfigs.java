@@ -90,7 +90,7 @@ public enum MPCLudicDriverConfigs {
     mpcLudicConfig.steerDamp = MPCLudicConfig.GLOBAL.steerDamp;
     mpcLudicConfig.steerInertia = MPCLudicConfig.GLOBAL.steerInertia;
     mpcLudicConfig.maxSpeed = Quantity.of(maxSpeed, SI.VELOCITY);
-    mpcLudicConfig.regularizerTau=regularizerTau;
+    mpcLudicConfig.regularizerTau=MPCLudicConfig.GLOBAL.regularizerTau;
   }
 
   public MPCLudicConfig get() {
