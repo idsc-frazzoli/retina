@@ -56,7 +56,7 @@ public class MPCOptimizationConfig {
   @FieldSubdivide(start = "0f", end = "1", intervals = 10)
   public Scalar qpLimit = RealScalar.of(0.7);
   /** steering regularization in MPC optimization */
-  public Scalar steeringReg = RealScalar.of(0.01);
+  public Scalar steeringReg = RealScalar.of(0.02);
   /** specific MoI in "m" */
   public Scalar specificMoI = Quantity.of(0.3, SI.METER);
 }

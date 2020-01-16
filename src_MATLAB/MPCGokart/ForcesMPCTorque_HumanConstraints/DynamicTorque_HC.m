@@ -44,9 +44,9 @@ RC = 1.1;
 RD = 6;
 
 %Steering column properties
-J_steer=0.01;%0.01
-b_steer=0.2;
-k_steer=0.2;
+J_steer=0.88;%0.01
+b_steer=0.16;
+k_steer=0.01;
 
 
 %% global parameters index
@@ -178,8 +178,8 @@ model.lb = -ones(1,index.nv)*inf;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
 model.lb(index.ab)=-inf;
-model.ub(index.tv)=1.6;
-model.lb(index.tv)=-1.6;
+model.ub(index.tv)=1.2;
+model.lb(index.tv)=-1.2;
 model.lb(index.slack)=-0;%Size of buffer zone around walls in meters 
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;
@@ -188,8 +188,8 @@ model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
 model.ub(index.tau)=1.4;
 model.lb(index.tau)=-1.4;
-model.ub(index.dottau)=14;
-model.lb(index.dottau)=-14;
+model.ub(index.dottau)=15;
+model.lb(index.dottau)=-15;
 
 
 

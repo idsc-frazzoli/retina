@@ -45,7 +45,7 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(10), // Slack SoftConstraint
       RealScalar.of(6), // Max Speed
-      RealScalar.of(0.0001)), // Regtau
+      RealScalar.of(0.0005)), // Regtau
   MODERATE_T(//
       RealScalar.of(0.02), // Speed cost
       RealScalar.of(1), // Lag Error
@@ -55,7 +55,7 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(8), // slack SoftConstraint
       RealScalar.of(10), // Max Speed
-      RealScalar.of(0.0001)), // Regtau
+      RealScalar.of(0.0005)), // Regtau
   ADVANCED_T(//
       RealScalar.of(0.02), // Speed cost
       RealScalar.of(1), // Lag Error
@@ -65,7 +65,7 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(0.01), // Regularizer TV
       RealScalar.of(5), // Slack SoftConstraint
       RealScalar.of(14), // Max Speed
-      RealScalar.of(0.0001)); // Regtau
+      RealScalar.of(0.0005)); // Regtau
 
   private final MPCLudicConfig mpcLudicConfig;
 
