@@ -66,15 +66,18 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
-    MPCSteerProvider.notifyLED(steering); // either directly query config or always publish but only listen when desired
-    return SteerPutEvent.createOn(torqueCmd.add(feedForward));
+    MPCSteerProvider.notifyLED(steering,currAngle); // either directly query config or always publish but only listen when desired
+    Scalar negator = torqueCmd.add(feedForward).negate();
+    return SteerPutEvent.createOn(torqueCmd.add(feedForward)/*.add(negator)*/);
   }
 
-  private static void notifyLED(Tensor steering) {
+  private static void notifyLED(Tensor steering,Scalar currAngle) {
     double num1 = steering.Get(0).number().doubleValue();
+    double num2 = currAngle.number().doubleValue();
     int refIdx = (int) Math.round((num1 - 0.5) * -24);
+    int valIdx= (int) Math.round((num2 - 0.5) * -24);
     // TODO use separate indices for reference and actual value
-    int[] arrayIndex = IntStream.range(0, VirtualLedModule.NUM_LEDS).map(idx -> (refIdx == idx ? 1 : 0) /* + (valIdx == idx ? 2 : 0) */).toArray();
+    int[] arrayIndex = IntStream.range(0, VirtualLedModule.NUM_LEDS).map(idx -> (refIdx == idx ? 1 : 0)  + (valIdx == idx ? 2 : 0) ).toArray();
     LEDLcm.publish(GokartLcmChannel.LED_STATUS, arrayIndex);
   }
 }
