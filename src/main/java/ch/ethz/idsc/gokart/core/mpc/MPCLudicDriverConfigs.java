@@ -78,7 +78,7 @@ public enum MPCLudicDriverConfigs {
     mpcLudicConfig.latError = latError;
     mpcLudicConfig.progress = progress;
     mpcLudicConfig.regularizerAB = regularizerAB;
-    mpcLudicConfig.regularizerTV = MPCLudicConfig.GLOBAL.regularizerTV;
+    mpcLudicConfig.regularizerTV = regularizerTV;
     mpcLudicConfig.slackSoftConstraint = slackSoftConstraint;
     mpcLudicConfig.pacejkaRD = MPCLudicConfig.GLOBAL.pacejkaRD;
     mpcLudicConfig.pacejkaFD = MPCLudicConfig.GLOBAL.pacejkaFD;

@@ -21,7 +21,7 @@ clear all
 %% Baseline params
 
 maxSpeed = 10; % in [m/s]
-maxxacc = 15; % in [m/s^-1]
+maxxacc = 10; % in [m/s^-1]
 
 %Costs for simulation, change the real values in Java 
 steeringreg = 0.01;
