@@ -34,14 +34,12 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   private final MPCRequestPublisher mpcRequestPublisher;
   private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
-  private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
   // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
   private final MPCAggressiveCorrectedTorqueVectoringBraking mpcBraking = //
       new MPCAggressiveCorrectedTorqueVectoringBraking();
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final Thread thread = new Thread(this);
-  private final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final MPCSteerProvider mpcSteerProvider;
@@ -77,10 +75,11 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     this.track = track;
     // link mpc steering
     // MPCPower mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    MPCSteering mpcSteering = new MPCOpenLoopSteering();
     MPCPower mpcPower = createPower(mpcStateEstimationProvider, mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
-    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering, torqueBased(), powerSteeringUsed());
+    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering, torqueBased());
     // link mpc steering
     mpcControlUpdateLcmClient.addListener(mpcSteering);
     mpcControlUpdateLcmClient.addListener(mpcPower);
@@ -99,6 +98,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     Scalar padding = MPCOptimizationConfig.GLOBAL.padding;
     Scalar qpFactor = MPCOptimizationConfig.GLOBAL.qpFactor;
     Scalar qpLimit = MPCOptimizationConfig.GLOBAL.qpLimit;
+    final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
     if (Objects.nonNull(track))
       mpcPathParameter = track.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor, qpLimit);
     else if (Objects.nonNull(liveTrack))
@@ -189,6 +189,4 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   abstract MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering);
 
   abstract boolean torqueBased();
-
-  abstract boolean powerSteeringUsed();
 }

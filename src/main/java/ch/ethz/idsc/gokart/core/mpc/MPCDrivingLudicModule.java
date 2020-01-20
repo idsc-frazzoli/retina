@@ -40,9 +40,4 @@ public class MPCDrivingLudicModule extends MPCDrivingCommonModule {
   protected final boolean torqueBased() {
     return false;
   }
-
-  @Override // from MPCDrivingAbstractModule
-  protected final boolean powerSteeringUsed() {
-    return MPCLudicConfig.GLOBAL.powerSteer;
-  }
 }

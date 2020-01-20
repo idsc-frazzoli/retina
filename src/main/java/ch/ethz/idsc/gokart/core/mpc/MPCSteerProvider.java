@@ -29,23 +29,19 @@ import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
-  private static final Scalar ZERO_ADDITION = Quantity.of(0, SteerPutEvent.UNIT_RTORQUE);
   // TODO JPH not too good location for vlp16 slowing
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
-  private final boolean powerSteerMode; // TODO remove if unneeded
   private final GeodesicIIR1 velocityGeodesicIIR1;
   private final HapticSteerConfig hapticSteerConfig = HapticSteerConfig.GLOBAL;
-  private Scalar powerSteerAddition = ZERO_ADDITION;
 
-  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode, boolean powerSteerMode) {
+  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode) {
     super(timing);
     this.mpcSteering = mpcSteering;
     this.torqueMode = torqueMode;
-    this.powerSteerMode = powerSteerMode;
     velocityGeodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
   }
 
@@ -65,8 +61,6 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
   private SteerPutEvent torqueSteer(Tensor torqueMSG) {
     Scalar torqueCmd = torqueMSG.Get(0);
     System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale)); // TODO remove after debugging
-    // powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-    // System.out.println(powerSteerAddition); // TODO remove after debugging
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
   }
 
@@ -81,8 +75,6 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
     MPCSteerProvider.notifyLED(steering); // either directly query config or always publish but only listen when desired
-    // powerSteer().ifPresent(this::pwrSetter); // add the power steer component
-    // System.out.println(powerSteerAddition); // TODO remove after debugging
     return SteerPutEvent.createOn(torqueCmd.add(feedForward));
   }
 
@@ -109,12 +101,6 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
     Scalar latFrontRightVel = axleConfiguration.wheel(1).adjoint(filteredVel).Get(1);
     return hapticSteerConfig.latForceCompensationBoundaryClip().apply( //
         latFront_LeftVel.add(latFrontRightVel).multiply(hapticSteerConfig.latForceCompensation));
-  }
-
-  private void pwrSetter(Scalar amount) {
-    powerSteerAddition = powerSteerMode //
-        ? amount //
-        : ZERO_ADDITION;
   }
 
   private static void notifyLED(Tensor steering) {

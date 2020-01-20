@@ -48,9 +48,4 @@ public class MPCDrivingKinematicModule extends MPCDrivingAbstractModule {
   protected final boolean torqueBased() {
     return false;
   }
-
-  @Override // from MPCDrivingAbstractModule
-  protected final boolean powerSteeringUsed() {
-    return false;
-  }
 }
