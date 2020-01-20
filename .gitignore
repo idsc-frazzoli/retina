@@ -147,3 +147,11 @@ src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic_GameTheory/MPCPathFollowing_l
 src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic_GameTheory/MPCPathFollowing_leader/MPCPathFollowing_leader.m
 src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic_GameTheory/MPCPathFollowing_leader/obj/MPCPathFollowing_leader.o
 src_MATLAB/MPCGokart/ForcesMPCTorque_HumanConstraints/plotter.m
+*.mexw64
+*.c
+*.obj
+*.py
+*.forces
+src_MATLAB/MPCGokart/ForcesMPCTorque_HumanConstraints/DynamicTorque_HC.m
+src_MATLAB/MPCGokart/ForcesMPCTorque_HumanConstraints/MPCPathFollowing.m
+src_MATLAB/MPCGokart/ForcesMPCTorque_HumanConstraints/MPCPathFollowing_mex_compiler_warnings.txt
