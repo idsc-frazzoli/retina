@@ -42,8 +42,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         pose.Get(2).number().floatValue(), //
         0, //
         0, //
-        0, 60, 0, 0);
-    MPCOptimizationParameterDynamic optimizationParameterDynamic = new MPCOptimizationParameterDynamic(//
+        0, //
+        60, //
+        0, //
+        0);
+    MPCOptimizationParameterDynamic optimizationParameterDynamic = new MPCOptimizationParameterDynamic( //
         Quantity.of(10, SI.VELOCITY), //
         Quantity.of(4, SI.ACCELERATION), //
         RealScalar.of(0.02), //
@@ -67,12 +70,12 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         position = gokartState.getCenterPosition();
         positions.append(position);
         Scalar changeRate = mpcControlUpdateCapture.cns.steps[0].gokartControl().getudotS();
-        Scalar rampupVale = mpcControlUpdateCapture.cns.steps[0].gokartState().getS()//
+        Scalar rampupVale = mpcControlUpdateCapture.cns.steps[0].gokartState().getS() //
             .add(changeRate.multiply(Quantity.of(0.1, SI.SECOND)));
         Scalar betaDiff = mpcControlUpdateCapture.cns.steps[1].gokartState().getS().subtract(rampupVale);
         System.out.println("should be zero: " + betaDiff);
-        mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER), RealScalar.of(1),
-            RealScalar.of(0.5));
+        mpcPathParameter = track.getPathParameterPreview(MPCNative.SPLINE_PREVIEW_SIZE, position, Quantity.of(0, SI.METER), //
+            RealScalar.of(1), RealScalar.of(0.5));
         System.out.println("progressstart: " + mpcPathParameter.getProgressOnPath());
         mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
       } else

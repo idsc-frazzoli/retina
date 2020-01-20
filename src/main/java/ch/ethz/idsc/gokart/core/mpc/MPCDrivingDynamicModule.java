@@ -6,7 +6,6 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
-import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCDrivingDynamicModule extends MPCDrivingCommonModule {
   public MPCDrivingDynamicModule() {
@@ -24,17 +23,11 @@ public class MPCDrivingDynamicModule extends MPCDrivingCommonModule {
     return optimizationParameter(mpcOptimizationConfig, optional);
   }
 
-  // package for testing
-  static MPCOptimizationParameterDynamic optimizationParameter( //
+  /* package for testing */ static MPCOptimizationParameterDynamic optimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
     final Scalar minSpeed = mpcOptimizationConfig.minSpeed;
-    final Scalar mpcMaxSpeed;
-    if (optional.isPresent()) {
-      ManualControlInterface manualControlInterface = optional.get();
-      Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
-      mpcMaxSpeed = Max.of(minSpeed, mpcOptimizationConfig.maxSpeed.multiply(forward));
-    } else
-      mpcMaxSpeed = minSpeed; // fallback speed value
+    final Scalar mpcMaxSpeed = //
+        optional.map(MPCDrivingAbstractModule.toMPCmaxSpeed(minSpeed, mpcOptimizationConfig.maxSpeed)).orElse(minSpeed);
     return new MPCOptimizationParameterDynamic( //
         mpcMaxSpeed, //
         mpcOptimizationConfig.maxLonAcc, //
@@ -46,7 +39,8 @@ public class MPCDrivingDynamicModule extends MPCDrivingCommonModule {
   protected final boolean torqueBased() {
     return false;
   }
-  
+
+  @Override // from MPCDrivingAbstractModule
   protected final boolean powerSteeringUsed() {
     return false;
   }

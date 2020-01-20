@@ -12,13 +12,10 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Unit;
 
 /** Reference: Marc Heim Thesis, p. 37 eq. 3.53 */
 /* package */ class GokartControl implements BufferInsertable, OfflineVectorInterface {
   static final int LENGTH = 24;
-  private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
-  private static final Unit SCT_PER_SECOND = SteerPutEvent.UNIT_RTORQUE.add(SI.PER_SECOND);
   // ---
   private final float uL;
   private final float uR;
@@ -39,7 +36,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.udotS = udotS;
     this.uB = uB;
     this.aB = 0;
-    this.udotT=0;
+    this.udotT = 0;
   }
 
   /** ONLY FOR TESTING
@@ -52,7 +49,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.udotS = udotS;
     this.uB = 0;
     this.aB = aB;
-    this.udotT=0;
+    this.udotT = 0;
   }
 
   public Scalar getuL() {
@@ -64,7 +61,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
   }
 
   public Scalar getudotS() {
-    return Quantity.of(udotS, SCE_PER_SECOND);
+    return Quantity.of(udotS, SteerPutEvent.UNIT_ENCODER_DOT);
   }
 
   public Scalar getuB() {
@@ -72,7 +69,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
   }
   
   public Scalar getudotT() {
-    return Quantity.of(udotT, SCT_PER_SECOND);
+    return Quantity.of(udotT, SteerPutEvent.UNIT_RTORQUE_DOT);
   }
 
   /** @return braking acceleration, quantity with unit "m*s^-2" */
@@ -86,8 +83,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     udotS = byteBuffer.getFloat();
     uB = byteBuffer.getFloat();
     aB = byteBuffer.getFloat();
-    udotT=byteBuffer.getFloat();
-    
+    udotT = byteBuffer.getFloat();
   }
 
   @Override // from BufferInsertable
@@ -112,7 +108,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
         uR, //
         udotS, //
         uB, //
-        aB,//
+        aB, //
         udotT);
   }
 

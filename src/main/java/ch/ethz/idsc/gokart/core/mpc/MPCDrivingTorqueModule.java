@@ -6,7 +6,6 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
-import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCDrivingTorqueModule extends MPCDrivingCommonModule {
   public MPCDrivingTorqueModule() {
@@ -24,24 +23,17 @@ public class MPCDrivingTorqueModule extends MPCDrivingCommonModule {
     return optimizationParameter(mpcOptimizationConfig, optional);
   }
 
-  static MPCOptimizationParameterLudic optimizationParameter( //
+  private static MPCOptimizationParameterLudic optimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
-    final Scalar maxSpeed = MPCLudicConfig.FERRY.maxSpeed;
     final Scalar minSpeed = mpcOptimizationConfig.minSpeed;
-    final Scalar mpcMaxSpeed;
-    if (optional.isPresent()) {
-      ManualControlInterface manualControlInterface = optional.get();
-      Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
-      mpcMaxSpeed = Max.of(minSpeed, maxSpeed.multiply(forward));
-    } else
-      mpcMaxSpeed = minSpeed; // fallback speed value
-    MPCOptimizationParameterLudic mpcOptimizationParameterLudic = new MPCOptimizationParameterLudic( //
+    final Scalar mpcMaxSpeed = //
+        optional.map(MPCDrivingAbstractModule.toMPCmaxSpeed(minSpeed, MPCLudicConfig.FERRY.maxSpeed)).orElse(minSpeed);
+    return new MPCOptimizationParameterLudic( //
         mpcMaxSpeed, //
         mpcOptimizationConfig.maxLonAcc, //
         mpcOptimizationConfig.steeringReg, //
         mpcOptimizationConfig.specificMoI, //
         MPCLudicConfig.FERRY);
-    return mpcOptimizationParameterLudic;
   }
 
   @Override // from MPCDrivingAbstractModule

@@ -18,15 +18,13 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
-import ch.ethz.idsc.tensor.qty.Unit;
 import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** Reference: Marc Heim Thesis, p. 37 eq. 3.52 */
 /* package */ class GokartState implements PoseVelocityInterface, OfflineVectorInterface, BufferInsertable {
-  public static final int LENGTH = 13 * Float.BYTES; // 11 * 4
+  public static final int LENGTH = 13 * Float.BYTES; // 13 * 4
   private static final Scalar ZERO_DEGC = Quantity.of(0.0, NonSI.DEGREE_CELSIUS);
-  public static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
-  public static final ScalarUnaryOperator ENCODERDOT = QuantityMagnitude.singleton(SCE_PER_SECOND);
+  public static final ScalarUnaryOperator ENCODER_DOT = QuantityMagnitude.singleton(SteerPutEvent.UNIT_ENCODER_DOT);
   // ---
   private final static Scalar CENTER_OFFSET = ChassisGeometry.GLOBAL.xAxleRtoCoM;
   /** time in seconds from synchronized time point */
@@ -192,7 +190,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
     this.s = SteerPutEvent.ENCODER.apply(s).number().floatValue();
     this.bTemp = Magnitude.DEGREE_CELSIUS.toFloat(bTemp);
     this.tau = SteerPutEvent.RTORQUE.apply(tau).number().floatValue();
-    this.uDotS = ENCODERDOT.apply(uDotS).number().floatValue();
+    this.uDotS = ENCODER_DOT.apply(uDotS).number().floatValue();
   }
 
   /** constructor for input stream
@@ -271,7 +269,7 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   }
 
   public Scalar getUDotS() {
-    return Quantity.of(uDotS, SteerPutEvent.UNIT_ENCODERDOT);
+    return Quantity.of(uDotS, SteerPutEvent.UNIT_ENCODER_DOT);
   }
 
   @Override // from PoseInterface

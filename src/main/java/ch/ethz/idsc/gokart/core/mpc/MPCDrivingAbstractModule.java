@@ -4,8 +4,8 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-//Not in use yet
 import java.util.Optional;
+import java.util.function.Function;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.track.BSplineTrack;
@@ -21,6 +21,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
+import ch.ethz.idsc.tensor.red.Max;
 
 /** super class of
  * {@link MPCDrivingDynamicModule}
@@ -100,13 +101,12 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     Scalar qpLimit = MPCOptimizationConfig.GLOBAL.qpLimit;
     if (Objects.nonNull(track))
       mpcPathParameter = track.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor, qpLimit);
-    else //
-    if (Objects.nonNull(liveTrack))
+    else if (Objects.nonNull(liveTrack))
       mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor, qpLimit);
     if (Objects.nonNull(mpcPathParameter))
       mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
     else
-      System.out.println("no Track to drive on! :O");
+      System.out.println("No Track to drive on!");
   }
 
   @Override // from AbstractModule
@@ -166,6 +166,13 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
       }
     }
     System.out.println("Thread terminated");
+  }
+
+  protected static Function<ManualControlInterface, Scalar> toMPCmaxSpeed(Scalar minSpeed, Scalar maxSpeed) {
+     return manualControlInterface -> {
+      Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
+      return Max.of(minSpeed, maxSpeed.multiply(forward));
+    };
   }
 
   /***************************************************/

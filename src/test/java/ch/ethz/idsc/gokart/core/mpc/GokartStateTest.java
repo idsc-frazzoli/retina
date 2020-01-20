@@ -65,8 +65,8 @@ public class GokartStateTest extends TestCase {
         Quantity.of(8, SI.PER_SECOND), //
         Quantity.of(9, SI.PER_SECOND), //
         Quantity.of(10, "SCE"), //
-        Quantity.of(11, NonSI.DEGREE_CELSIUS),//
-        Quantity.of(12, "SCT"),//
+        Quantity.of(11, NonSI.DEGREE_CELSIUS), //
+        Quantity.of(12, "SCT"), //
         Quantity.of(13, Unit.of("SCE").add(SI.PER_SECOND)));
     GokartState gokartState2 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
     assertEquals(gokartState1.asVector(), gokartState2.asVector());
@@ -85,8 +85,8 @@ public class GokartStateTest extends TestCase {
         Quantity.of(7, SI.ONE), //
         Quantity.of(8, SI.PER_SECOND), //
         Quantity.of(9, SI.PER_SECOND), //
-        Quantity.of(10, "SCE"),//
-        Quantity.of(12, "SCT"),//
+        Quantity.of(10, "SCE"), //
+        Quantity.of(12, "SCT"), //
         Quantity.of(13, Unit.of("SCE").add(SI.PER_SECOND)));
     GokartState gokartState2 = new GokartState(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13);
     assertEquals(gokartState1.asVector(), gokartState2.asVector());

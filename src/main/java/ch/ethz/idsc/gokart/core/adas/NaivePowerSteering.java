@@ -8,7 +8,7 @@ import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 
-public class NaivePowerSteering extends PowerSteering {
+/* package */ class NaivePowerSteering extends PowerSteering {
   private final GeodesicIIR1 velocityGeodesicIIR1;
 
   public NaivePowerSteering(HapticSteerConfig hapticSteerConfig) {

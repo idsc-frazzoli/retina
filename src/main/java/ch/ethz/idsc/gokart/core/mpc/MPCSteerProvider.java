@@ -20,7 +20,6 @@ import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
-import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -31,12 +30,13 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
   private static final Scalar ZERO_ADDITION = Quantity.of(0, SteerPutEvent.UNIT_RTORQUE);
+  // TODO JPH not too good location for vlp16 slowing
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
-  private final boolean powerSteerMode;
+  private final boolean powerSteerMode; // TODO remove if unneeded
   private final GeodesicIIR1 velocityGeodesicIIR1;
   private final HapticSteerConfig hapticSteerConfig = HapticSteerConfig.GLOBAL;
   private Scalar powerSteerAddition = ZERO_ADDITION;
@@ -112,10 +112,9 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
   }
 
   private void pwrSetter(Scalar amount) {
-    if (powerSteerMode)
-      powerSteerAddition = amount;
-    else
-      powerSteerAddition = RealScalar.of(0);
+    powerSteerAddition = powerSteerMode //
+        ? amount //
+        : ZERO_ADDITION;
   }
 
   private static void notifyLED(Tensor steering) {
