@@ -13,11 +13,11 @@ import ch.ethz.idsc.gokart.offline.gui.GokartLogFileIndexer;
   ;
   public static void main(String[] args) throws IOException {
     SensorsConfig.GLOBAL.planarVmu931Type = PlanarVmu931Type.ROT90.name();
-    File file = new File("C:\\Users\\me\\Documents\\2019\\ETH\\Sem proj\\20191104\\20191104T134346_5edf85b5.lcm.00");
+    File file = new File("C:\\Users\\me\\Documents\\2019\\ETH\\Sem proj\\20191210\\20191210T143339_8c882510.lcm.00");
     GokartLogFileIndexer gokartLogFileIndexer = GokartLogFileIndexer.create(file);
     new GokartLcmLogCutter( //
         gokartLogFileIndexer, //
         new File("C:\\Users\\me\\Documents\\2019\\ETH\\Sem proj\\cut"), //
-        "cut4");
+        "cutMPC3");
   }
 }

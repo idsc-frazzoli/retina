@@ -16,7 +16,7 @@ addpath('../shared_dynamic')
 clear model
 clear problem
 clear all
-close all
+%close all
 
 %% Baseline params
 
@@ -24,29 +24,29 @@ maxSpeed = 10; % in [m/s]
 maxxacc = 5; % in [m/s^-1]
 
 %Costs for simulation, change the real values in Java 
-steeringreg = 0.1;
+steeringreg = 0.02;
 specificmoi = 0.3;
 plag=1;
 plat=0.01;
 pprog=0.2;
 pab=0.0004;
 pspeedcost=0.04;
-pslack=5;
-ptv=0.01;
-ptau=0.05;
+pslack=7;
+ptv=0.05;
+ptau=0.0001;
 
 %Simulation Pacejka constants, real values changalbe in java 
 FB = 9;
 FC = 1;
-FD = 7;
+FD = 6.5;
 RB = 5.2;
 RC = 1.1;
-RD = 7;
+RD = 6;
 
 %Steering column properties
-J_steer=0.8875;
-b_steer=0.1625;
-k_steer=0.0125;
+J_steer=0.01;%0.01
+b_steer=0.2;
+k_steer=0.2;
 
 
 %% global parameters index
@@ -129,10 +129,14 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 
 % Random control points for trajectory sampling
-points = [36.2,52,57.2,53,52,47,41.8;...          %x
-    44.933,58.2,53.8,49,44,43,38.33; ...           %y
-    1.8,1.8,1.8,0.5,0.5,0.5,1.8]';                      %phi
+% points = [36.2,52,57.2,53,52,47,41.8;...          %x
+%     44.933,58.2,53.8,49,44,43,38.33; ...           %y
+%     1.8,1.8,1.8,0.5,0.5,0.5,1.8]';                      %phi
 
+
+      points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
+         34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
+          1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
 % points = [28,35,42,55.2,56,51,42,40;...          %x
 %           41,60,43,56,43,40,44,31; ...    %y
 %           2,1.5,1.2,1.6,0.6,0.8,1.2,1.6]';   %phi
@@ -174,18 +178,18 @@ model.lb = -ones(1,index.nv)*inf;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
 model.lb(index.ab)=-inf;
-model.ub(index.tv)=1.7;
-model.lb(index.tv)=-1.7;
-model.lb(index.slack)=0;
+model.ub(index.tv)=1.6;
+model.lb(index.tv)=-1.6;
+model.lb(index.slack)=-0.3;%Size of buffer zone around walls in meters 
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
 model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
-model.ub(index.tau)=0.5;
-model.lb(index.tau)=-0.5;
-model.ub(index.dottau)=0.5;
-model.lb(index.dottau)=-0.5;
+model.ub(index.tau)=1.2;
+model.lb(index.tau)=-1.2;
+model.ub(index.dottau)=12;
+model.lb(index.dottau)=-12;
 
 
 
@@ -222,7 +226,7 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 %
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-tend = 70;
+tend = 150;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);
@@ -296,7 +300,7 @@ for i =1:tend
         a = 1;
     end
     if(exitflag~=1 && exitflag ~=0)
-        draw
+        drawT
         return
     end
     %nextSplinePoints

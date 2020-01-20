@@ -7,6 +7,7 @@ import java.util.List;
 
 import ch.ethz.idsc.retina.util.data.DataEvent;
 import ch.ethz.idsc.retina.util.data.Word;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
@@ -26,7 +27,9 @@ public class SteerPutEvent extends DataEvent {
    * 
    * Reference: A. Mosberger Thesis p. 9
    * https://github.com/idsc-frazzoli/retina/files/3568527/20190828_advanced_driver_assistance_systems_on_a_go-kart.pdf */
+  public static final Unit UNIT_ENCODER_DOT = UNIT_ENCODER.add(SI.PER_SECOND);
   public static final Unit UNIT_RTORQUE = Unit.of("SCT");
+  public static final Unit UNIT_RTORQUE_DOT = UNIT_RTORQUE.add(SI.PER_SECOND);
   public static final ScalarUnaryOperator ENCODER = QuantityMagnitude.singleton(UNIT_ENCODER);
   public static final ScalarUnaryOperator RTORQUE = QuantityMagnitude.singleton(UNIT_RTORQUE);
   public static final List<Word> COMMANDS = Arrays.asList(MOT_TRQ_0, MOT_TRQ_1);

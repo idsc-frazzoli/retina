@@ -4,8 +4,8 @@ package ch.ethz.idsc.gokart.core.mpc;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-//Not in use yet
 import java.util.Optional;
+import java.util.function.Function;
 
 import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.track.BSplineTrack;
@@ -21,6 +21,7 @@ import ch.ethz.idsc.retina.util.sys.AbstractModule;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
+import ch.ethz.idsc.tensor.red.Max;
 
 /** super class of
  * {@link MPCDrivingDynamicModule}
@@ -33,15 +34,12 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   private final MPCRequestPublisher mpcRequestPublisher;
   private final MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
   private final MPCOptimizationConfig mpcOptimizationConfig = MPCOptimizationConfig.GLOBAL;
-  private final MPCSteering mpcSteering = new MPCOpenLoopSteering();
   // private final MPCBraking mpcBraking = new MPCSimpleBraking();
   // private final MPCBraking mpcBraking = new MPCAggressiveTorqueVectoringBraking();
   private final MPCAggressiveCorrectedTorqueVectoringBraking mpcBraking = //
       new MPCAggressiveCorrectedTorqueVectoringBraking();
-  private final MPCPower mpcPower;
   private final MPCStateEstimationProvider mpcStateEstimationProvider;
   private final Thread thread = new Thread(this);
-  private final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final MPCSteerProvider mpcSteerProvider;
@@ -76,18 +74,19 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     this.mpcStateEstimationProvider = mpcStateEstimationProvider;
     this.track = track;
     // link mpc steering
-    // mpcPower = new MPCTorqueVectoringPower(mpcSteering);
-    mpcPower = createPower(mpcStateEstimationProvider, mpcSteering);
+    // MPCPower mpcPower = new MPCTorqueVectoringPower(mpcSteering);
+    MPCSteering mpcSteering = new MPCOpenLoopSteering();
+    MPCPower mpcPower = createPower(mpcStateEstimationProvider, mpcSteering);
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
-    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering);
+    mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering, torqueBased());
     // link mpc steering
     mpcControlUpdateLcmClient.addListener(mpcSteering);
     mpcControlUpdateLcmClient.addListener(mpcPower);
     mpcControlUpdateLcmClient.addListener(mpcBraking);
   }
 
-  private final void requestControl() {
+  private void requestControl() {
     MPCOptimizationParameter mpcOptimizationParameter = //
         createOptimizationParameter(mpcOptimizationConfig, manualControlProvider.getManualControl());
     mpcRequestPublisher.publishOptimizationParameter(mpcOptimizationParameter);
@@ -99,15 +98,15 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     Scalar padding = MPCOptimizationConfig.GLOBAL.padding;
     Scalar qpFactor = MPCOptimizationConfig.GLOBAL.qpFactor;
     Scalar qpLimit = MPCOptimizationConfig.GLOBAL.qpLimit;
+    final int previewSize = MPCNative.SPLINE_PREVIEW_SIZE;
     if (Objects.nonNull(track))
       mpcPathParameter = track.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor, qpLimit);
-    else //
-    if (Objects.nonNull(liveTrack))
+    else if (Objects.nonNull(liveTrack))
       mpcPathParameter = liveTrack.getPathParameterPreview(previewSize, safetyRadiusPosition, padding, qpFactor, qpLimit);
     if (Objects.nonNull(mpcPathParameter))
       mpcRequestPublisher.publishControlRequest(gokartState, mpcPathParameter);
     else
-      System.out.println("no Track to drive on! :O");
+      System.out.println("No Track to drive on!");
   }
 
   @Override // from AbstractModule
@@ -169,6 +168,13 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     System.out.println("Thread terminated");
   }
 
+  protected static Function<ManualControlInterface, Scalar> toMPCmaxSpeed(Scalar minSpeed, Scalar maxSpeed) {
+     return manualControlInterface -> {
+      Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
+      return Max.of(minSpeed, maxSpeed.multiply(forward));
+    };
+  }
+
   /***************************************************/
   /** @param mpcOptimizationConfig non-null
    * @param optional
@@ -181,4 +187,6 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
    * @param mpcSteering
    * @return */
   abstract MPCPower createPower(MPCStateEstimationProvider mpcStateEstimationProvider, MPCSteering mpcSteering);
+
+  abstract boolean torqueBased();
 }

@@ -40,7 +40,6 @@ import ch.ethz.idsc.gokart.core.map.OccupancyViewerModule;
 import ch.ethz.idsc.gokart.core.mpc.LudicControlModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDrivingDynamicModule;
 import ch.ethz.idsc.gokart.core.mpc.MPCDrivingKinematicModule;
-import ch.ethz.idsc.gokart.core.mpc.MPCDrivingLudicModule;
 import ch.ethz.idsc.gokart.core.plan.ClothoidRrtsTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.ClothoidTrajectoryModule;
 import ch.ethz.idsc.gokart.core.plan.DubinsRrtsTrajectoryModule;
@@ -70,6 +69,9 @@ import ch.ethz.idsc.gokart.gui.trj.TrajectoryDesignModule;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
+import ch.ethz.idsc.gokart.gui.led.VirtualLedModule;
+import ch.ethz.idsc.gokart.gui.led.KittLedModule;
+import ch.ethz.idsc.gokart.gui.led.CoachLedModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16RayLcmServerModule;
@@ -150,7 +152,9 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       FigureClothoidModule.class, //
       FigurePureModule.class, //
       MPCDrivingDynamicModule.class, //
-      MPCDrivingLudicModule.class, //
+      // MPCDrivingTorqueModule.class, //
+      // MPCDrivingLudicModule.class, //
+      // MPCDrivingCombinedTorqueModule.class, //
       LudicControlModule.class, //
       MPCDrivingKinematicModule.class, //
       PureTrajectoryModule.class, //
@@ -182,12 +186,15 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       LinmotPressTestModule.class, //
       LinmotConstantPressTestModule.class, //
       // LocalViewLcmModule.class, //
+      KittLedModule.class, //
+      CoachLedModule.class, //
+      VirtualLedModule.class, //
       DavisDetailModule.class, //
       SeyeDetailModule.class, //
-      PanoramaViewModule.class, // , //
+      PanoramaViewModule.class, //
       SideViewLcmModule.class, //
       PresenterLcmModule.class //
-  // DavisOverviewModule.class //
+      // DavisOverviewModule.class //
   );
 
   public static void main(String[] args) {

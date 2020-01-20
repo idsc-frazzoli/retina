@@ -49,7 +49,7 @@ public class MappingConfig {
   /** lower bounds coordinates with interpretation meter */
   public Tensor lBounds = Tensors.vector(16, 20);
   /** range of map with interpretation meter */
-  public Tensor range = Tensors.vector(40, 40);
+  public Tensor range = Tensors.vector(50, 50);
 
   /***************************************************/
   public double getP_M() {

@@ -1,4 +1,4 @@
-function v = nlconst_HC(z,p)
+function v = nlconst_THC(z,p)
 global index
 %NLCONST Summary of this function goes here
 %   Detailed explanation goes here

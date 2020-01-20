@@ -12,18 +12,17 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.qty.Unit;
 
 /** Reference: Marc Heim Thesis, p. 37 eq. 3.53 */
 /* package */ class GokartControl implements BufferInsertable, OfflineVectorInterface {
-  static final int LENGTH = 20;
-  private static final Unit SCE_PER_SECOND = SteerPutEvent.UNIT_ENCODER.add(SI.PER_SECOND);
+  static final int LENGTH = 24;
   // ---
   private final float uL;
   private final float uR;
   private final float udotS;
   private final float uB;
   private final float aB;
+  private final float udotT;
 
   /** ONLY FOR TESTING
    * 
@@ -37,6 +36,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.udotS = udotS;
     this.uB = uB;
     this.aB = 0;
+    this.udotT = 0;
   }
 
   /** ONLY FOR TESTING
@@ -49,6 +49,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     this.udotS = udotS;
     this.uB = 0;
     this.aB = aB;
+    this.udotT = 0;
   }
 
   public Scalar getuL() {
@@ -60,11 +61,15 @@ import ch.ethz.idsc.tensor.qty.Unit;
   }
 
   public Scalar getudotS() {
-    return Quantity.of(udotS, SCE_PER_SECOND);
+    return Quantity.of(udotS, SteerPutEvent.UNIT_ENCODER_DOT);
   }
 
   public Scalar getuB() {
     return RealScalar.of(uB);
+  }
+  
+  public Scalar getudotT() {
+    return Quantity.of(udotT, SteerPutEvent.UNIT_RTORQUE_DOT);
   }
 
   /** @return braking acceleration, quantity with unit "m*s^-2" */
@@ -78,6 +83,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     udotS = byteBuffer.getFloat();
     uB = byteBuffer.getFloat();
     aB = byteBuffer.getFloat();
+    udotT = byteBuffer.getFloat();
   }
 
   @Override // from BufferInsertable
@@ -87,6 +93,7 @@ import ch.ethz.idsc.tensor.qty.Unit;
     byteBuffer.putFloat(udotS);
     byteBuffer.putFloat(uB);
     byteBuffer.putFloat(aB);
+    byteBuffer.putFloat(udotT);
   }
 
   @Override // from BufferInsertable
@@ -101,7 +108,8 @@ import ch.ethz.idsc.tensor.qty.Unit;
         uR, //
         udotS, //
         uB, //
-        aB);
+        aB, //
+        udotT);
   }
 
   @Override

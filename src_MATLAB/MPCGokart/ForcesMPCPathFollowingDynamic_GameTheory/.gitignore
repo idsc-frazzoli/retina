@@ -93,3 +93,7 @@ stdout_temp
 /MPCPathFollowing_Boom_py.py
 /MPCPathFollowing_Boom_simulinkBlock.mexw64
 /MPCPathFollowing_Boom_simulinkBlockcompact.mexw64
+/MPCPathFollowing_leader.mexw64
+/MPCPathFollowing_leader_mex_compiler_warnings.txt
+/MPCPathFollowing_leader_simulinkBlock.mexw64
+/MPCPathFollowing_leader_simulinkBlockcompact.mexw64

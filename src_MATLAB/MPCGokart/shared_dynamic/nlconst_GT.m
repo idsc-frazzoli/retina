@@ -11,8 +11,8 @@ VELY = z(index.yv);
 slack = z(index.slack);
 slack2= z(index.slack2);
 dist=p(index.dist);
-pointsO = 24;
-pointsN = 10;
+pointsO = index.pointsO;
+pointsN = index.pointsN;
 xVehicle2=p(index.xComp);
 yVehicle2=p(index.yComp);
 

@@ -17,11 +17,14 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.lie.AngleVector;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.qty.QuantityMagnitude;
+import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
 
 /** Reference: Marc Heim Thesis, p. 37 eq. 3.52 */
 /* package */ class GokartState implements PoseVelocityInterface, OfflineVectorInterface, BufferInsertable {
-  public static final int LENGTH = 11 * Float.BYTES; // 11 * 4
+  public static final int LENGTH = 13 * Float.BYTES; // 13 * 4
   private static final Scalar ZERO_DEGC = Quantity.of(0.0, NonSI.DEGREE_CELSIUS);
+  public static final ScalarUnaryOperator ENCODER_DOT = QuantityMagnitude.singleton(SteerPutEvent.UNIT_ENCODER_DOT);
   // ---
   private final static Scalar CENTER_OFFSET = ChassisGeometry.GLOBAL.xAxleRtoCoM;
   /** time in seconds from synchronized time point */
@@ -46,6 +49,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final float s;
   /** brake temperature */
   private final float bTemp;
+  /** steering column torque */
+  private final float tau;
+  /** steering column encoder */
+  private final float uDotS;
 
   /** create GokartState
    * 
@@ -69,8 +76,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       float Psi, //
       float w2L, //
       float w2R, //
-      float s) {
-    this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, 0f);
+      float s, //
+      float tau, //
+      float uDotS) {
+    this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, 0f, tau, uDotS);
   }
 
   /** create GokartState
@@ -97,7 +106,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       float w2L, //
       float w2R, //
       float s, //
-      float bTemp) {
+      float bTemp, //
+      float tau, //
+      float uDotS) {
     this.time = time;
     this.Ux = Ux;
     this.Uy = Uy;
@@ -109,6 +120,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     this.w2R = w2R;
     this.s = s;
     this.bTemp = bTemp;
+    this.tau = tau;
+    this.uDotS = uDotS;
   }
 
   /** create GokartState
@@ -133,8 +146,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       Scalar Psi, //
       Scalar w2L, //
       Scalar w2R, //
-      Scalar s) {
-    this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, ZERO_DEGC);
+      Scalar s, Scalar tau, //
+      Scalar uDotS) {
+    this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, ZERO_DEGC, tau, uDotS);
   }
 
   /** create GokartState
@@ -161,7 +175,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       Scalar w2L, //
       Scalar w2R, //
       Scalar s, //
-      Scalar bTemp) {
+      Scalar bTemp, //
+      Scalar tau, //
+      Scalar uDotS) {
     this.time = Magnitude.SECOND.toFloat(time);
     this.Ux = Magnitude.VELOCITY.toFloat(Ux);
     this.Uy = Magnitude.VELOCITY.toFloat(Uy);
@@ -173,6 +189,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     this.w2R = Magnitude.PER_SECOND.toFloat(w2R);
     this.s = SteerPutEvent.ENCODER.apply(s).number().floatValue();
     this.bTemp = Magnitude.DEGREE_CELSIUS.toFloat(bTemp);
+    this.tau = SteerPutEvent.RTORQUE.apply(tau).number().floatValue();
+    this.uDotS = ENCODER_DOT.apply(uDotS).number().floatValue();
   }
 
   /** constructor for input stream
@@ -192,6 +210,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     w2R = byteBuffer.getFloat();
     s = byteBuffer.getFloat();
     bTemp = byteBuffer.getFloat();
+    tau = byteBuffer.getFloat();
+    uDotS = byteBuffer.getFloat();
   }
 
   /** @return time in "s" */
@@ -244,6 +264,14 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     return Quantity.of(bTemp, NonSI.DEGREE_CELSIUS);
   }
 
+  public Scalar getTau() {
+    return Quantity.of(tau, SteerPutEvent.UNIT_RTORQUE);
+  }
+
+  public Scalar getUDotS() {
+    return Quantity.of(uDotS, SteerPutEvent.UNIT_ENCODER_DOT);
+  }
+
   @Override // from PoseInterface
   public Tensor getPose() {
     return Tensors.of(getX(), getY(), getPsi());
@@ -281,6 +309,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     byteBuffer.putFloat(w2R); // 32
     byteBuffer.putFloat(s); // 36
     byteBuffer.putFloat(bTemp); // 40
+    byteBuffer.putFloat(tau); // 44
+    byteBuffer.putFloat(uDotS); // 48
   }
 
   @Override // from BufferInsertable
@@ -306,7 +336,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         w2L, //
         w2R, //
         s, //
-        bTemp);
+        bTemp, //
+        tau, //
+        uDotS);
   }
 
   Tensor asVectorWithUnits() {
@@ -321,6 +353,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         getw2L(), //
         getw2R(), //
         getS(), //
-        getBTemp());
+        getBTemp(), //
+        getTau(), //
+        getUDotS());
   }
 }

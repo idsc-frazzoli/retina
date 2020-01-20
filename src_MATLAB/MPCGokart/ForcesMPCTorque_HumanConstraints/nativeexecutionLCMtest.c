@@ -29,21 +29,19 @@ lcm_t * lcm;
 struct ControlAndState cns [DATASIZE];
 
 /* declare FORCES variables and structures */
-/*
-int i, exitflag;
+/* int i, exitflag;
 MPCPathFollowing_params myparams;
 MPCPathFollowing_output myoutput;
 MPCPathFollowing_info myinfo;
 
-MPCPathFollowing_float minusA_times_x0[2];*/
+MPCPathFollowing_float minusA_times_x0[2]; */
 
-/*
-extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, double *p,
+/* extern void MPCPathFollowing_casadi2forces(double *x, double *y, double *l, double *p,
                                                 double *f, double *nabla_f, double *c, double *nabla_c,
-                                                double *h, double *nabla_h, double *H, int stage);*/
+                                                double *h, double *nabla_h, double *H, int stage); */
 
 
-//MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
+// MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 
 
 
@@ -63,16 +61,16 @@ void sendEmptyControlAndStates(lcm_t * lcm){
 		cns[i].state.w2L = 11;
 		cns[i].state.w2R = 12;
 		cns[i].state.s = 13;
-		cns[i].state.beta=14;
-		cns[i].state.dotbeta=15;
+		cns[i].state.beta = 14;
+		cns[i].state.dotbeta = 15;
 	}
 
 	blob.data_length = sizeof(struct ControlAndStateMsg)*N;
 	blob.data = (int8_t*)&cns;
 
-	for (int i = 0; i< 1; i++){
-		if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
-			printf("published test message%zu\n",sizeof(struct ControlAndStateMsg)*N);
+	for (int i = 0; i < 1; i++) {
+		if (idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob) == 0)
+			printf("published test message%zu\n", sizeof(struct ControlAndStateMsg)*N);
 		else
 			printf("error while publishing message\n");
 	}
@@ -86,23 +84,21 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 
 	float *floats = (float*)msg->data+2;
 	int length = msg->data_length/4-2;
-	//integers are LITTLE ENDIAN in C
+	// integers are LITTLE ENDIAN in C
 	printf("message type: %hxx\n", msg->data[0]);
 	printf("message seq: %hxx\n", msg->data[4]);
 	printf("floats: %d\n",length);
-	for (int i = 0; i<length; i++){
-		printf("i=%d: %f\n",i,floats[i]);
-	}
+	for (int i = 0; i < length; i++)
+		printf("i=%d: %f\n", i, floats[i]);
 	printf("bytes: %d\n", msg->data_length);
-	for(int i = 0; i<msg->data_length; i++){
+	for(int i = 0; i < msg->data_length; i++)
 		printf("i=%d: %hhx\n",i,msg->data[i]);
-	}
 	printf("copied to state\n");
 
 	sendEmptyControlAndStates(lcm);
 
 	struct _idsc_BinaryBlob blob;
-	for (int i = 0; i<N; i++){
+	for (int i = 0; i < N; i++){
 		cns[i].control.uL = 1;
 		cns[i].control.uR = 2;
 		cns[i].control.udotS = 1;
@@ -113,10 +109,10 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	blob.data_length = sizeof(struct ControlAndStateMsg)*N;
 	blob.data = (int8_t*)&cns;
 	printf("linked data\n");
-	printf("lcm addr: %p\n",lcm);
-	printf("blob addr: %p\n",&blob);
-	printf("state Ux: %f\n",stateMsg.Ux);
-	if(idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob)==0)
+	printf("lcm addr: %p\n", lcm);
+	printf("blob addr: %p\n", &blob);
+	printf("state Ux: %f\n", stateMsg.Ux);
+	if (idsc_BinaryBlob_publish(lcm, "mpc.forces.cns", &blob) == 0)
 		printf("published message: %zu\n",sizeof(struct ControlAndStateMsg)*N);
 	else
 		printf("error while publishing message\n");
@@ -125,17 +121,17 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 int main(int argc, char *argv[]) {
 	printf("start lcm server\n");
 	lcm = lcm_create(NULL);
-	if(!lcm)
+	if (!lcm)
 		return 1;
 
-	//return format [state]
+	// return format [state]
 	exitflag = MPCPathFollowing_solve(&myparams, &myoutput, &myinfo, solverFile, pt2Function);
 
-	//sendEmptyControlAndStates(lcm);
+	// sendEmptyControlAndStates(lcm);
 	printf("about to subscribe\n");
 	idsc_BinaryBlob_subscribe(lcm, "mpc.forces.gs.t", &state_handler, NULL);
 	printf("starting main loop\n");
-	while(1)
+	while (1)
 		lcm_handle(lcm);
 
 	lcm_destroy(lcm);

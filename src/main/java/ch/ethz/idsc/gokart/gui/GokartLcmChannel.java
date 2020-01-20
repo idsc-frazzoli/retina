@@ -51,4 +51,7 @@ public enum GokartLcmChannel {
   /** the joystick was in use until end of 2018 after which
    * the labjack u3 was available for readout of the throttle */
   public static final String JOYSTICK = "joystick.generic_xbox_pad";
+  /** channel used to define the color of the LED strips
+   * and which lights have to be turned on */
+  public static final String LED_STATUS = "led.colors";
 }

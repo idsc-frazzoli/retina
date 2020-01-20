@@ -14,10 +14,10 @@ struct State {
 	float Psi;
 	float w2L;
 	float w2R;
-	float s;
+	float s; //same as beta
 	float bTemp;
-	float beta;
-	float dotbeta;
+	float tau;
+	float dotbeta; //same as uDotS
 };
 
 struct Control {
@@ -31,6 +31,8 @@ struct Control {
 	float uB;
 	//if we don't have direct motor control
 	float aB;
+	//send dotS as control input (use state value for actual control)
+	float udotT;
 };
 
 struct ControlAndState {
@@ -74,20 +76,20 @@ struct OptimizationParameter {
 	float regTorque;
 };
 
-struct ControlAndStateMsg{
+struct ControlAndStateMsg {
 	int messageType;
 	int sequenceInt;
 	struct ControlAndState cns[N];
 };
 
-struct ControlRequestMsg{
+struct ControlRequestMsg {
 	int messageType;
 	int sequenceInt;
 	struct State state;
 	struct PathParameter path;
 };
 
-struct ParaMsg{
+struct ParaMsg {
 	int messageType;
 	int sequenceInt;
 	struct OptimizationParameter para;

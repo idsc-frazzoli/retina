@@ -39,6 +39,16 @@ import idsc.BinaryBlob;
       }
     };
   }
+  
+  public static MPCRequestPublisher torque() {
+    return new MPCRequestPublisher(".t") {
+      @Override // from MPCRequestPublisher
+      BufferInsertable from(MPCOptimizationParameter mpcOptimizationParameter, MPCNativeSession mpcNativeSession) {
+        return new MPCOptimizationParameterMessageLudic( //
+            mpcNativeSession, (MPCOptimizationParameterLudic) mpcOptimizationParameter);
+      }
+    };
+  }
 
   // ---
   private final MPCNativeSession mpcNativeSession = new MPCNativeSession();

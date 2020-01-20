@@ -1,4 +1,4 @@
-// code by mh, jph
+// code by mh, jph, ta
 package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.owl.math.region.Region;
@@ -48,20 +48,16 @@ import ch.ethz.idsc.tensor.sca.Sign;
     }
     { // negative direction
       Scalar probe = init;
-      while (Scalars.lessThan(probe.abs(), max)) {
-        probe = probe.subtract(increment);
-        if (region.isMember(pos.add(dir.multiply(probe))))
-          break;
-      }
+      Scalar probe_next;
+      while (Scalars.lessThan(probe.abs(), max) && !region.isMember(pos.add(dir.multiply(probe_next = probe.subtract(increment)))))
+        probe = probe_next;
       limit.lo = probe;
     }
     { // positive direction
       Scalar probe = init;
-      while (Scalars.lessThan(probe.abs(), max)) {
-        probe = probe.add(increment);
-        if (region.isMember(pos.add(dir.multiply(probe))))
-          break;
-      }
+      Scalar probe_next;
+      while (Scalars.lessThan(probe.abs(), max) && !region.isMember(pos.add(dir.multiply(probe_next = probe.add(increment)))))
+        probe = probe_next;
       limit.hi = probe;
     }
     return limit;

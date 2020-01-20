@@ -35,7 +35,7 @@ public class GlobalViewLcmModuleWithMPCTest extends TestCase {
         0.6f, //
         0, //
         0, //
-        0, 60);
+        0, 60, 0, 0);
     // MPCOptimizationParameter optimizationParameter = new MPCOptimizationParameter(Quantity.of(20, SI.VELOCITY));
     MPCOptimizationParameterKinematic optimizationParameter = TestHelper.optimizationParameterKinematic( //
         Quantity.of(20, SI.VELOCITY), //
