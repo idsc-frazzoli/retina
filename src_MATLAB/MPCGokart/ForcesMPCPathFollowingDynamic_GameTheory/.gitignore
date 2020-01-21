@@ -16,8 +16,6 @@ MPCPathFollowing_model_31.o
 MPCPathFollowing_py.py
 MPCPathFollowing_simulinkBlock.mexa64
 MPCPathFollowing_simulinkBlockcompact.mexa64
-nativeMPCLCM
-nativeLCMtest
 stdout_temp
 
 /MPCPathFollowing.mexw64
