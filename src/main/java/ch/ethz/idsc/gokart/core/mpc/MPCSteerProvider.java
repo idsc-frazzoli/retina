@@ -18,23 +18,29 @@ import ch.ethz.idsc.gokart.gui.led.VirtualLedModule;
 import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
-
+import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
+import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
+// TODO JPH not too good location for vlp16 slowing
+
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
+  private final GeodesicIIR1 velocityGeodesicIIR1;
+  private final HapticSteerConfig hapticSteerConfig = HapticSteerConfig.GLOBAL;
 
-  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode, boolean powerSteerMode) {
+  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode) {
     super(timing);
     this.mpcSteering = mpcSteering;
     this.torqueMode = torqueMode;
+    velocityGeodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
   }
 
   @Override // from PutProvider
@@ -66,12 +72,36 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
-    MPCSteerProvider.notifyLED(steering,currAngle); // either directly query config or always publish but only listen when desired
-    //Scalar negator = torqueCmd.add(feedForward).negate();
-    return SteerPutEvent.createOn(torqueCmd.add(feedForward)/*.add(negator)*/);
+    MPCSteerProvider.notifyLED(steering); // either directly query config or always publish but only listen when desired
+    return SteerPutEvent.createOn(torqueCmd.add(feedForward));
   }
 
-  private static void notifyLED(Tensor steering,Scalar currAngle) {
+
+  private Optional<Scalar> powerSteer() {
+    Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
+    return mpcSteering.getState(time).map(this::apply);
+  }
+
+  private Scalar apply(Tensor state) {
+    Scalar feedForwardValue = SteerFeedForward.FUNCTION.apply(state.Get(5));
+    Scalar term0 = hapticSteerConfig.feedForward //
+        ? feedForwardValue //
+        : feedForwardValue.zero();
+    Scalar term1 = term1(state.Get(5), //
+        Tensors.of(state.Get(0), state.Get(1)));
+    return term0.add(term1);
+  }
+
+  private Scalar term1(Scalar currangle, Tensor velocity) {
+    AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
+    Tensor filteredVel = velocityGeodesicIIR1.apply(velocity);
+    Scalar latFront_LeftVel = axleConfiguration.wheel(0).adjoint(filteredVel).Get(1);
+    Scalar latFrontRightVel = axleConfiguration.wheel(1).adjoint(filteredVel).Get(1);
+    return hapticSteerConfig.latForceCompensationBoundaryClip().apply( //
+        latFront_LeftVel.add(latFrontRightVel).multiply(hapticSteerConfig.latForceCompensation));
+  }
+
+  private static void notifyLED(Tensor steering) {
     double num1 = steering.Get(0).number().doubleValue();
     double num2 = currAngle.number().doubleValue();
     int refIdx = (int) Math.round((num1 - 0.5) * -24);

@@ -12,12 +12,11 @@ import lcm.lcm.LCM;
 
 public class LEDLcm {
   /** encode uses the method ArrayFloatBlob::encode to turn the received message
-   * ((in this case, a vector of integers int[],
+   * (in this case, a vector of integers int[],
    * that will be characterized by steering position/torque in the future)
    * into a BinaryBlob */
   public static BinaryBlob encode(int[] sp) {
-    Tensor inTensor=Tensors.vectorInt(sp);
-    return ArrayFloatBlob.encode(inTensor);
+    return ArrayFloatBlob.encode(Tensors.vectorInt(sp));
   }
 
   /** publish sends the BinaryBlob through the "led.color" channel

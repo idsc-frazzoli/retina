@@ -27,13 +27,14 @@ public class SteerPutEvent extends DataEvent {
    * 
    * Reference: A. Mosberger Thesis p. 9
    * https://github.com/idsc-frazzoli/retina/files/3568527/20190828_advanced_driver_assistance_systems_on_a_go-kart.pdf */
+  public static final Unit UNIT_ENCODER_DOT = UNIT_ENCODER.add(SI.PER_SECOND);
   public static final Unit UNIT_RTORQUE = Unit.of("SCT");
+  public static final Unit UNIT_RTORQUE_DOT = UNIT_RTORQUE.add(SI.PER_SECOND);
   public static final ScalarUnaryOperator ENCODER = QuantityMagnitude.singleton(UNIT_ENCODER);
   public static final ScalarUnaryOperator RTORQUE = QuantityMagnitude.singleton(UNIT_RTORQUE);
   public static final List<Word> COMMANDS = Arrays.asList(MOT_TRQ_0, MOT_TRQ_1);
   public static final SteerPutEvent PASSIVE_MOT_TRQ_0 = new SteerPutEvent(SteerPutEvent.MOT_TRQ_0, 0);
   public static final SteerPutEvent PASSIVE_MOT_TRQ_1 = new SteerPutEvent(SteerPutEvent.MOT_TRQ_1, 0);
-  public static final Unit UNIT_ENCODERDOT = Unit.of("SCE").add(SI.PER_SECOND);
 
   /** @param command
    * @param torque with unit "SCT"

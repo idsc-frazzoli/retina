@@ -90,6 +90,7 @@ mvninstall.sh
 /inversepowerlookuptable.csv
 *.asv
 
+# TODO EM check which are still relevant, and either delete or move to respective sub-gitignore
 src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic_HumanConstraints/SaveData.m
 src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic_HumanConstraints/CC1_data.mat
 src_MATLAB/MPCGokart/ForcesMPCPathFollowingDynamic_GameTheory/MPCPathFollowing_One_simulinkBlockcompact.mexw64
