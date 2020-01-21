@@ -6,8 +6,9 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
+import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
-
+import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
@@ -16,12 +17,14 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.gokart.gui.led.VirtualLedModule;
 import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
+import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
 import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
+import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
@@ -72,7 +75,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
-    MPCSteerProvider.notifyLED(steering); // either directly query config or always publish but only listen when desired
+    MPCSteerProvider.notifyLED(steering, currAngle); // either directly query config or always publish but only listen when desired
     return SteerPutEvent.createOn(torqueCmd.add(feedForward));
   }
 
@@ -101,12 +104,11 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         latFront_LeftVel.add(latFrontRightVel).multiply(hapticSteerConfig.latForceCompensation));
   }
 
-  private static void notifyLED(Tensor steering) {
+  private static void notifyLED(Tensor steering, Scalar currAngle) {
     double num1 = steering.Get(0).number().doubleValue();
     double num2 = currAngle.number().doubleValue();
     int refIdx = (int) Math.round((num1 - 0.5) * -24);
     int valIdx= (int) Math.round((num2 - 0.5) * -24);
-    // TODO use separate indices for reference and actual value
     int[] arrayIndex = IntStream.range(0, VirtualLedModule.NUM_LEDS).map(idx -> (refIdx == idx ? 1 : 0)  + (valIdx == idx ? 2 : 0) ).toArray();
     LEDLcm.publish(GokartLcmChannel.LED_STATUS, arrayIndex);
   }
