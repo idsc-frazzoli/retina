@@ -13,8 +13,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 import junit.framework.TestCase;
 
 public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
-  GokartState gokartState;
-
   public void testSimple() throws Exception {
     MPCRequestPublisher mpcRequestPublisher = MPCRequestPublisher.dynamic();
     MPCControlUpdateLcmClient mpcControlUpdateLcmClient = new MPCControlUpdateLcmClient();
@@ -25,7 +23,7 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
     // mpcRequestPublisher.switchToExternalStart(); // TODO MPC start (external) process somewhere
     globalViewLcmModule.first();
     // 44.2575 51.6983
-    gokartState = new GokartState( //
+    GokartState gokartState = new GokartState( //
         11, //
         1f, //
         0, //
@@ -35,7 +33,10 @@ public class GlobalViewLcmModuleWithDynamicMPCTest extends TestCase {
         0.6f, //
         0, //
         0, //
-        0, 60, 0, 0);
+        0, //
+        60, //
+        0, //
+        0);
     // MPCOptimizationParameter optimizationParameter = new MPCOptimizationParameter(Quantity.of(20, SI.VELOCITY));
     /* MPCOptimizationParameterKinematic optimizationParameter = new MPCOptimizationParameterKinematic(//
      * Quantity.of(20, SI.VELOCITY), //

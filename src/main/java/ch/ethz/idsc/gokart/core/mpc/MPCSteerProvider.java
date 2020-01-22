@@ -18,7 +18,6 @@ import ch.ethz.idsc.gokart.gui.led.VirtualLedModule;
 import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
-
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
@@ -31,7 +30,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
 
-  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode, boolean powerSteerMode) {
+  public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode) {
     super(timing);
     this.mpcSteering = mpcSteering;
     this.torqueMode = torqueMode;

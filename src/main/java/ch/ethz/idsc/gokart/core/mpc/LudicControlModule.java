@@ -46,25 +46,23 @@ public class LudicControlModule extends AbstractModule {
       }
       {
         String[] choices = { "Angle", "Torque", "Combined" };
-        JComboBox<String> jComboBox = new JComboBox<String>(choices);
+        JComboBox<String> jComboBox = new JComboBox<>(choices);
         jComboBox.addActionListener(actionEvent -> {
           endLudic();
           switch (jComboBox.getSelectedIndex()) {
-          case 0: // use Ludic MPC model to command steering angle
-            clazz = MPCDrivingLudicModule.class;
-            tParams=false;
-            break;
-          case 1: // use Torque MPC model to command torque
-            clazz = MPCDrivingTorqueModule.class;
-            tParams=true;
-            break;
-          case 2: // use Torque MPC model, but command steering angle
-            clazz = MPCDrivingCombinedTorqueModule.class;
-            tParams=true;
-            break;
-          default:
-            clazz = MPCDrivingLudicModule.class;
-            tParams=false;
+            default:
+            case 0: // use Ludic MPC model to command steering angle
+              clazz = MPCDrivingLudicModule.class;
+              tParams = false;
+              break;
+            case 1: // use Torque MPC model to command torque
+              clazz = MPCDrivingTorqueModule.class;
+              tParams = true;
+              break;
+            case 2: // use Torque MPC model, but command steering angle
+              clazz = MPCDrivingCombinedTorqueModule.class;
+              tParams = true;
+              break;
           }
           System.out.println(clazz);
         });
@@ -75,56 +73,16 @@ public class LudicControlModule extends AbstractModule {
         jPanel.add(new JSeparator());
       }
       {
-        JButton jButton = new JButton("Beginner");
-        jButton.addActionListener(actionEvent -> {
-          System.out.println("Swapped to Beginner driving");
-          if(tParams) {
-            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.BEGINNER_T.get();
-          }else {
-            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.BEGINNER.get();
-          }
-          System.out.println("Max speed: "+MPCLudicConfig.FERRY.maxSpeed);
-          startLudic();
-        });
-        jPanel.add(jButton);
+        jPanel.add(createButton("Beginner", tParams ? MPCLudicDriverConfigs.BEGINNER_T : MPCLudicDriverConfigs.BEGINNER));
       }
       {
-        JButton jButton = new JButton("Moderate");
-        jButton.addActionListener(actionEvent -> {
-          System.out.println("Swapped to Moderate driving");
-          if(tParams) {
-            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.MODERATE_T.get();
-          }else {
-            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.MODERATE.get();
-          }
-          System.out.println("Max speed: "+ MPCLudicConfig.FERRY.maxSpeed);
-          startLudic();
-        });
-        jPanel.add(jButton);
+        jPanel.add(createButton("Moderate", tParams ? MPCLudicDriverConfigs.MODERATE_T : MPCLudicDriverConfigs.MODERATE));
       }
       {
-        JButton jButton = new JButton("Advanced");
-        jButton.addActionListener(actionEvent -> {
-          System.out.println("Swapped to Advanced driving");
-          if(tParams) {
-            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.ADVANCED_T.get();
-          }else {
-            MPCLudicConfig.FERRY = MPCLudicDriverConfigs.ADVANCED.get();
-          }
-          System.out.println("Max speed: "+MPCLudicConfig.FERRY.maxSpeed);
-          startLudic();
-        });
-        jPanel.add(jButton);
+        jPanel.add(createButton("Advanced", tParams ? MPCLudicDriverConfigs.ADVANCED_T : MPCLudicDriverConfigs.ADVANCED));
       }
       {
-        JButton jButton = new JButton("Custom");
-        jButton.addActionListener(actionEvent -> {
-          System.out.println("Swapped to Custom mode");
-          MPCLudicConfig.FERRY = MPCLudicConfig.GLOBAL;
-          startLudic();
-          System.out.println("Max speed: "+MPCLudicConfig.FERRY.maxSpeed);
-        });
-        jPanel.add(jButton);
+        jPanel.add(createButton("Custom", MPCLudicConfig.GLOBAL));
       }
       // also add turn of button
       jFrame.setContentPane(jPanel);
@@ -132,6 +90,21 @@ public class LudicControlModule extends AbstractModule {
     windowConfiguration.attach(getClass(), jFrame);
     jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     jFrame.setVisible(true);
+  }
+
+  private JButton createButton(String name, MPCLudicDriverConfigs configs) {
+    return createButton(name,configs.get());
+  }
+
+  private JButton createButton(String name, MPCLudicConfig config) {
+    JButton jButton = new JButton(name);
+    jButton.addActionListener(actionEvent -> {
+      System.out.println("Swapped to " + name + " driving");
+      MPCLudicConfig.FERRY = config;
+      System.out.println("Max speed: " + MPCLudicConfig.FERRY.maxSpeed);
+      startLudic();
+    });
+    return jButton;
   }
 
   @Override

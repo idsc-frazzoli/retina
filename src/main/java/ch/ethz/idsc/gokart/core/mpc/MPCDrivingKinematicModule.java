@@ -6,7 +6,6 @@ import java.util.Optional;
 import ch.ethz.idsc.retina.joystick.ManualControlInterface;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.io.Timing;
-import ch.ethz.idsc.tensor.red.Max;
 
 public class MPCDrivingKinematicModule extends MPCDrivingAbstractModule {
   public MPCDrivingKinematicModule() {
@@ -33,13 +32,8 @@ public class MPCDrivingKinematicModule extends MPCDrivingAbstractModule {
   static MPCOptimizationParameterKinematic optimizationParameter( //
       MPCOptimizationConfig mpcOptimizationConfig, Optional<ManualControlInterface> optional) {
     final Scalar minSpeed = mpcOptimizationConfig.minSpeed;
-    final Scalar mpcMaxSpeed;
-    if (optional.isPresent()) {
-      ManualControlInterface manualControlInterface = optional.get();
-      Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
-      mpcMaxSpeed = Max.of(minSpeed, mpcOptimizationConfig.maxSpeed.multiply(forward));
-    } else
-      mpcMaxSpeed = minSpeed; // fallback speed value
+    final Scalar mpcMaxSpeed = //
+        optional.map(MPCDrivingAbstractModule.toMPCmaxSpeed(minSpeed, mpcOptimizationConfig.maxSpeed)).orElse(minSpeed);
     return new MPCOptimizationParameterKinematic( //
         mpcMaxSpeed, //
         mpcOptimizationConfig.maxLonAcc, //
@@ -52,10 +46,6 @@ public class MPCDrivingKinematicModule extends MPCDrivingAbstractModule {
 
   @Override // from MPCDrivingAbstractModule
   protected final boolean torqueBased() {
-    return false;
-  }
-  
-  protected final boolean powerSteeringUsed() {
     return false;
   }
 }

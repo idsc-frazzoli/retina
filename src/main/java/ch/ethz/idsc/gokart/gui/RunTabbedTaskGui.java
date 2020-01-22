@@ -102,7 +102,6 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       AutoboxLcmServerModule.class, //
       SteerColumnLcmModule.class, //
       GokartTimestampModule.class, //
-      
       LoggerModule.class, //
       LabjackU3Module.class, //
       SteerCalibrationWatchdog.class, // <- DON'T REMOVE
