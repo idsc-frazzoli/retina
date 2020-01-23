@@ -33,7 +33,9 @@ pointsO = 21; % number of Parameters
 pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
 nextsplinepoints = 0;
-tend = 250;
+
+%% TEND 
+tend = 50;
 eulersteps = 10;
 
 
@@ -176,16 +178,16 @@ model.lb(index.ds)=-1;
 %model.lb(index.ab)=-4.5;
 model.lb(index.ab)=-inf;
 
-model.ub(index.tv)=1.2;
-model.lb(index.tv)=-1.2;
+model.ub(index.tv)=1.6;
+model.lb(index.tv)=-1.6;
 %model.ub(index.tv)=0.1;
 %model.lb(index.tv)=-0.1;
 model.lb(index.slack)=0;
 
 model.lb(index.v)=0;
 
-model.ub(index.beta)=0.5;
-model.lb(index.beta)=-0.5;
+model.ub(index.beta)=0.52;
+model.lb(index.beta)=-0.52;
 
 model.ub(index.s)=pointsN-2;
 model.lb(index.s)=0;

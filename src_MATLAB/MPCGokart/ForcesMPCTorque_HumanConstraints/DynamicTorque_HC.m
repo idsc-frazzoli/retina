@@ -178,18 +178,18 @@ model.lb = -ones(1,index.nv)*inf;
 model.ub(index.ds)=5;
 model.lb(index.ds)=-1;
 model.lb(index.ab)=-inf;
-model.ub(index.tv)=1.2;
-model.lb(index.tv)=-1.2;
+model.ub(index.tv)=1.6;
+model.lb(index.tv)=-1.6;
 model.lb(index.slack)=-0;%Size of buffer zone around walls in meters 
 model.lb(index.v)=0;
 model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
 model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
-model.ub(index.tau)=1.4;
-model.lb(index.tau)=-1.4;
-model.ub(index.dottau)=15;
-model.lb(index.dottau)=-15;
+model.ub(index.tau)=1.6;
+model.lb(index.tau)=-1.6;
+model.ub(index.dottau)=20;
+model.lb(index.dottau)=-20;
 
 
 
@@ -226,7 +226,8 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 %
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-tend = 200;
+%% Tend
+tend = 50;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);
