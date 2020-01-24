@@ -19,6 +19,7 @@ clear all
 behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
+plat=0.00001;
 FB = 9;
 FC = 1;
 FD = 6.5; % gravity acceleration considered
@@ -35,7 +36,7 @@ splinestart = 1;
 nextsplinepoints = 0;
 
 %% TEND 
-tend = 50;
+tend = 150;
 eulersteps = 10;
 
 
@@ -133,11 +134,13 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 %           40,34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47; ...    %y
 %           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
  
-      points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
-         34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
-          1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
+%       points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
+%          34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
+%           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
 
-
+points = [10,10,20,10,20,20,40,60,80,90,90,90,80,50,20;...          %x
+            10,35,45,55,75,90,90,90,80,60,42,15,10,5,5; ...    %y
+            4,3,5,4,3,4,4,6,4,3,2,3,4,4,6]';
 
 % %points = getPoints('/wildpoints.csv');
 points(:,3)=points(:,3)-0.2;
