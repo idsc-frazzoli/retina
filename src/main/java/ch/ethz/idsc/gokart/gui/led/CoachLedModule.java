@@ -1,36 +1,34 @@
-// code by em
+// code by em, gjoel
 package ch.ethz.idsc.gokart.gui.led;
 
+import ch.ethz.idsc.gokart.dev.led.LEDStatus;
 import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
 import ch.ethz.idsc.retina.util.sys.AbstractClockedModule;
 import ch.ethz.idsc.tensor.Scalar;
 
-import java.util.Random;
-import java.util.stream.IntStream;
-
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
 import ch.ethz.idsc.retina.util.math.SI;
+import ch.ethz.idsc.tensor.pdf.Distribution;
+import ch.ethz.idsc.tensor.pdf.RandomVariate;
+import ch.ethz.idsc.tensor.pdf.UniformDistribution;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 public class CoachLedModule extends AbstractClockedModule {
-  private final int[] arrayIndex = new int[VirtualLedModule.NUM_LEDS];
-  private final int max = (int) Math.floor(arrayIndex.length / 2.);
-  private final int min = -max;
+  private static final Distribution UNIFORM = UniformDistribution.of(Clips.positive(LEDStatus.NUM_LEDS));
 
   @Override
   protected void runAlgo() {
-    Random rand = new Random();
-    int num1 = rand.nextInt((max - min) + 1) + min;
-    int num2 = rand.nextInt((max - min) + 1) + min;
-    // System.out.println("num: " + num1 + " num2: " + num2);
-    IntStream.rangeClosed(min, max).forEach(i -> //
-        arrayIndex[Math.floorMod(i, arrayIndex.length)] = (num1 == i ? 1 : 0) + (num2 == i ? 2 : 0));
-    LEDLcm.publish(GokartLcmChannel.LED_STATUS, arrayIndex);
+    LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(randomInt(), randomInt()));
+  }
+
+  private static int randomInt() {
+    return RandomVariate.of(UNIFORM).number().intValue();
   }
 
   @Override
   protected Scalar getPeriod() {
-    return Quantity.of(1, SI.SECOND);
+    return Quantity.of(0.5, SI.SECOND);
   }
 
   @Override
