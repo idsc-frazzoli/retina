@@ -21,7 +21,7 @@ clear all
 %% Baseline params
 
 maxSpeed = 10; % in [m/s]
-maxxacc = 10; % in [m/s^-1]
+maxxacc = 5; % in [m/s^-1]
 
 %Costs for simulation, change the real values in Java 
 steeringreg = 0.01;
@@ -97,7 +97,7 @@ index.ptv = 20;
 index.ptau = 21;
 
 index.pointsO = 21; % number of Parameters
-index.pointsN = 10;% number of Spline points to use
+index.pointsN = 15;% number of Spline points to use
 splinestart = 1;
 nextsplinepoints = 0;
 

@@ -1,7 +1,7 @@
 #include <byteswap.h>
 #define N 31
 
-#define POINTSN 10
+#define POINTSN 15
 #define NUMPARAM 21
 //note: not all values are necessarily known for every type of controller
 struct State {

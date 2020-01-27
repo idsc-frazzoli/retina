@@ -31,7 +31,7 @@ b_steer = 0.1625;
 k_steer = 0.0125;
 ptau = 0.05;   
 pointsO = 21; % number of Parameters
-pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
+pointsN = 15; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
 nextsplinepoints = 0;
 
