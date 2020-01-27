@@ -8,6 +8,7 @@ import java.util.Set;
 import ch.ethz.idsc.gokart.core.AutoboxSocketModule;
 import ch.ethz.idsc.gokart.core.slam.LidarLocalizationModule;
 import ch.ethz.idsc.gokart.dev.GokartTimestampModule;
+import ch.ethz.idsc.gokart.dev.led.LEDServerModule;
 import ch.ethz.idsc.gokart.dev.u3.LabjackU3Module;
 import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
@@ -21,7 +22,8 @@ public class QuickStartGuiTest extends TestCase {
       GokartTimestampModule.class, //
       LoggerModule.class, //
       LabjackU3Module.class, //
-      LidarLocalizationModule.class));
+      LidarLocalizationModule.class, //
+      LEDServerModule.class));
 
   public void testSimple() throws Exception {
     ModuleAuto.INSTANCE.runOne(LidarLocalizationModule.class);

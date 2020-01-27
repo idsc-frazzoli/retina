@@ -5,7 +5,6 @@ import ch.ethz.idsc.gokart.lcm.led.LEDLcmClient;
 import ch.ethz.idsc.gokart.lcm.led.LEDListener;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
 
-// TODO attach to autorun
 public class LEDServerModule extends AbstractModule implements LEDListener {
   private final LEDLcmClient ledLcmClient = new LEDLcmClient();
 
@@ -24,7 +23,6 @@ public class LEDServerModule extends AbstractModule implements LEDListener {
 
   @Override
   public void statusReceived(LEDStatus ledStatus) {
-    // TODO process and send to LEDSocket
-    // either use CRC-8-maxim or ask mac/markus to turn it off
+    LEDSocket.INSTANCE.write(Crc8MaximHelper.convert(ledStatus.asArray()));
   }
 }
