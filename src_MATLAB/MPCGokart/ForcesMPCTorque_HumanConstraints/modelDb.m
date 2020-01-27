@@ -38,7 +38,7 @@ reg = 0.5;
 
 simpleMaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1)*Lpneu(-VELY/(VELX+reg));
 
-effectiveTorque3 =@(tau)(1*(tau.^3))+0.4*tau;
+effectiveTorque3 =@(tau)(1*(tau.^3))+0.2*tau;
 
 %effectiveTorque2 =@(tau)(0.5*(tau^2).*sign(tau))+0.05*tau;
 %effectiveTorque1 =@(tau)(1.0*abs(tau.^1.5).*sign(tau))+0.2.*tau;
