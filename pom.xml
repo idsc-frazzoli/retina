@@ -87,6 +87,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.dalsemi.onewire</groupId>
+			<artifactId>owapi</artifactId>
+			<version>1.10</version>
+		</dependency>
+		<dependency>
 			<groupId>com.fazecast</groupId>
 			<artifactId>jSerialComm</artifactId>
 			<version>2.5.2</version>
@@ -166,6 +171,14 @@
 		<repository>
 			<id>owl-mvn-repo</id>
 			<url>https://raw.github.com/idsc-frazzoli/owl/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>owapi-mvn-repo</id>
+			<url>https://raw.github.com/creepid/owapi/mvn-repo/</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>

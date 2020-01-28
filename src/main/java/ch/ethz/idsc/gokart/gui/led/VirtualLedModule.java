@@ -1,6 +1,7 @@
 // code by em
 package ch.ethz.idsc.gokart.gui.led;
 
+import ch.ethz.idsc.gokart.dev.led.LEDStatus;
 import ch.ethz.idsc.gokart.lcm.led.LEDLcmClient;
 import ch.ethz.idsc.gokart.lcm.led.LEDListener;
 import ch.ethz.idsc.retina.util.sys.AbstractModule;
@@ -12,28 +13,32 @@ import java.awt.GridLayout;
 import java.util.stream.IntStream;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import ch.ethz.idsc.tensor.img.ColorDataIndexed;
-import ch.ethz.idsc.tensor.img.ColorDataLists;
-
 public class VirtualLedModule extends AbstractModule implements LEDListener {
-  public static final int NUM_LEDS = 10; // TODO delete once actual LED number is known and provided elsewhere
-  private static final ColorDataIndexed COLOR_SCHEME = ColorDataLists._001.cyclic();
-
   private final LEDLcmClient ledLcmClient = new LEDLcmClient();
   private final JFrame jFrame = new JFrame();
-  private final JTextField[] leds = IntStream.range(0, NUM_LEDS).mapToObj(i -> new JTextField()).toArray(JTextField[]::new);
+  private final JTextField statusLed = new JTextField();
+  private final JTextField[] leds = IntStream.range(0, LEDStatus.NUM_LEDS).mapToObj(i -> new JTextField()).toArray(JTextField[]::new);
   private final WindowConfiguration windowConfiguration = AppCustomization.load(getClass(), new WindowConfiguration());
 
-  @Override
+  @Override // from AbstractModule
   protected void first() {
     {
-      JPanel jPanel = new JPanel(new GridLayout(1, NUM_LEDS));
-      for (JTextField led : leds) {
-        led.setBackground(COLOR_SCHEME.getColor(0));
-        jPanel.add(led);
+      JPanel jPanel = new JPanel(new GridLayout(2, leds.length));
+      {
+        statusLed.setEnabled(false);
+        statusLed.setBackground(Color.BLACK);
+        IntStream.range(0, leds.length).forEach(i -> jPanel.add(i == 0 ? statusLed : new JSeparator()));
+      }
+      {
+        for (JTextField led : leds) {
+          led.setEnabled(false);
+          led.setBackground(Color.BLACK);
+          jPanel.add(led);
+        }
       }
       jFrame.setContentPane(jPanel);
     }
@@ -44,7 +49,7 @@ public class VirtualLedModule extends AbstractModule implements LEDListener {
     ledLcmClient.startSubscriptions();
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     // ---
     jFrame.setVisible(false);
@@ -53,14 +58,17 @@ public class VirtualLedModule extends AbstractModule implements LEDListener {
     ledLcmClient.stopSubscriptions();
   }
 
-  /** its arrayReceived turns int[] into Colors using ColorDataIndexed, and sets them accordingly in the GUI */
-  @Override
-  public void arrayReceived(int[] indexColor) {
-    for (int i = 0; i < indexColor.length; i++) {
-      int index = indexColor[i];
-      JTextField led = leds[i];
-      Color color = COLOR_SCHEME.getColor(index);
-      led.setBackground(color);
+  @Override // from LEDListener
+  public void statusReceived(LEDStatus ledStatus) {
+    statusLed.setBackground(ledStatus.statusColor);
+    for (JTextField led : leds)
+      led.setBackground(Color.BLACK);
+
+    if (ledStatus.indexGreen == ledStatus.indexRed)
+      leds[ledStatus.indexGreen].setBackground(Color.BLUE);
+    else {
+      leds[ledStatus.indexGreen].setBackground(Color.GREEN);
+      leds[ledStatus.indexRed].setBackground(Color.RED);
     }
   }
 }
