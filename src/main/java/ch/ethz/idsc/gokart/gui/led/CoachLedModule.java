@@ -17,7 +17,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
 public class CoachLedModule extends AbstractClockedModule {
   private static final Distribution UNIFORM = UniformDistribution.of(Clips.positive(LEDStatus.NUM_LEDS));
 
-  @Override
+  @Override // from AbstractClockedModule
   protected void runAlgo() {
     LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(randomInt(), randomInt()));
   }
@@ -26,17 +26,17 @@ public class CoachLedModule extends AbstractClockedModule {
     return RandomVariate.of(UNIFORM).number().intValue();
   }
 
-  @Override
+  @Override // from AbstractClockedModule
   protected Scalar getPeriod() {
     return Quantity.of(0.5, SI.SECOND);
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void first() {
     // ---
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     // ---
   }

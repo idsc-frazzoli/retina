@@ -24,7 +24,7 @@ public class VirtualLedModule extends AbstractModule implements LEDListener {
   private final JTextField[] leds = IntStream.range(0, LEDStatus.NUM_LEDS).mapToObj(i -> new JTextField()).toArray(JTextField[]::new);
   private final WindowConfiguration windowConfiguration = AppCustomization.load(getClass(), new WindowConfiguration());
 
-  @Override
+  @Override // from AbstractModule
   protected void first() {
     {
       JPanel jPanel = new JPanel(new GridLayout(2, leds.length));
@@ -49,7 +49,7 @@ public class VirtualLedModule extends AbstractModule implements LEDListener {
     ledLcmClient.startSubscriptions();
   }
 
-  @Override
+  @Override // from AbstractModule
   protected void last() {
     // ---
     jFrame.setVisible(false);
@@ -58,7 +58,7 @@ public class VirtualLedModule extends AbstractModule implements LEDListener {
     ledLcmClient.stopSubscriptions();
   }
 
-  @Override
+  @Override // from LEDListener
   public void statusReceived(LEDStatus ledStatus) {
     statusLed.setBackground(ledStatus.statusColor);
     for (JTextField led : leds)

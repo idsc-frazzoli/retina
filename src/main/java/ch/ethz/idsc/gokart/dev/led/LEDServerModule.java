@@ -21,7 +21,7 @@ public class LEDServerModule extends AbstractModule implements LEDListener {
     LEDSocket.INSTANCE.stop();
   }
 
-  @Override
+  @Override // from LEDListener
   public void statusReceived(LEDStatus ledStatus) {
     LEDSocket.INSTANCE.write(Crc8MaximHelper.convert(ledStatus.asArray()));
   }

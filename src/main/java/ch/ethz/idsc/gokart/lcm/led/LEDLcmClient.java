@@ -13,7 +13,7 @@ public class LEDLcmClient extends SimpleLcmClient<LEDListener>{
     super(GokartLcmChannel.LED_STATUS);
   }
 
-  @Override
+  @Override // from BinaryLcmClient
   protected void messageReceived(ByteBuffer byteBuffer) {
     LEDStatus ledStatus = LEDLcm.decode(byteBuffer);
     listeners.forEach(listener -> listener.statusReceived(ledStatus));
