@@ -38,9 +38,9 @@ reg = 0.5;
 
 simpleMaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1)*Lpneu(-VELY/(VELX+reg));
 
-effectiveTorque3 =@(tau)(1*(tau.^3))+0.4*tau;
+effectiveTorque3 =@(tau)(1*(tau.^3))+0.2*tau;
 
-%effectiveTorque2 =@(tau)(0.5*(tau^2).*sign(tau))+0.05*tau;
+effectiveTorque2 =@(tau)tau;
 %effectiveTorque1 =@(tau)(1.0*abs(tau.^1.5).*sign(tau))+0.2.*tau;
 %effectiveTorque0 =@(tau)0.2*tau;%(1.2*(x.^2).*sign(x))+0.01.*x;
 l = 1.19;   %Length of the Go-cart

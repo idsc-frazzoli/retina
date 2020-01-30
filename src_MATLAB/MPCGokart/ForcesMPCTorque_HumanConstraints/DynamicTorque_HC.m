@@ -1,4 +1,4 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Dynamic MPC Script
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % code by mh,em,ta
@@ -44,9 +44,9 @@ RC = 1.1;
 RD = 6;
 
 %Steering column properties
-J_steer=0.88;%0.01
-b_steer=0.16;
-k_steer=0.01;
+J_steer=4;%0.01
+b_steer=-0.45;
+k_steer=0.21;
 
 
 %% global parameters index
@@ -186,8 +186,8 @@ model.ub(index.beta)=0.5;
 model.lb(index.beta)=-0.5;
 model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
-model.ub(index.tau)=1.6;
-model.lb(index.tau)=-1.6;
+model.ub(index.tau)=2;
+model.lb(index.tau)=-2;
 model.ub(index.dottau)=20;
 model.lb(index.dottau)=-20;
 
@@ -227,7 +227,7 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
 %% Tend
-tend = 50;
+tend = 250;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);

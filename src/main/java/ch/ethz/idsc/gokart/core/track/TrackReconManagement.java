@@ -26,7 +26,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 public class TrackReconManagement {
   private static final Scalar RADIUS_SEED = Quantity.of(1.0, SI.METER);
   private static final Scalar RADIUS_OFFSET = Quantity.of(0.5, SI.METER);
-  private static final Scalar SPACING = RealScalar.of(1.1); // TODO MH/JPH should be meters
+  private static final Scalar SPACING = RealScalar.of(1.2); // TODO MH/JPH should be meters
   private static final Scalar CP_RESOLUTION = RealScalar.of(0.5);//scales number of control points, was 0.5 
   private static final int RESOLUTION = 8;
   // ---
