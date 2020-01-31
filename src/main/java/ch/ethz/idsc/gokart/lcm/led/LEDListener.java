@@ -1,6 +1,8 @@
-// code by em
+// code by gjoel
 package ch.ethz.idsc.gokart.lcm.led;
 
+import ch.ethz.idsc.gokart.dev.led.LEDStatus;
+
 public interface LEDListener {
-  void arrayReceived(int[] array);
+  void statusReceived(LEDStatus ledStatus);
 }

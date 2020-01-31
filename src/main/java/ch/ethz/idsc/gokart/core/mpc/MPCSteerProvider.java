@@ -3,18 +3,17 @@ package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
 
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
+import ch.ethz.idsc.gokart.dev.led.LEDStatus;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.gui.led.VirtualLedModule;
 import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
@@ -76,7 +75,6 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     int refIdx = (int) Math.round((num1 - 0.5) * -24);
     int valIdx= (int) Math.round((num2 - 0.5) * -24);
     // TODO use separate indices for reference and actual value
-    int[] arrayIndex = IntStream.range(0, VirtualLedModule.NUM_LEDS).map(idx -> (refIdx == idx ? 1 : 0)  + (valIdx == idx ? 2 : 0) ).toArray();
-    LEDLcm.publish(GokartLcmChannel.LED_STATUS, arrayIndex);
+    LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(0, 0));
   }
 }
