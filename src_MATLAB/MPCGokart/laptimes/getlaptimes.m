@@ -5,22 +5,20 @@ userdir = getuserdir
 folders = {};
 poses = {};
 targetfiles = {};
+
 if(1)
-    folders{end+1} = '/mpcposes/mp1/';
-    
-    folders{end+1} = '/mpcposes/mp2/';
-end
-if(1)
-    folders{end+1} = '/mpcposes/md1/';
+    %folders{end+1} ='\Documents\2019\ETH\Sem proj\Steering Model\PoseData2\b.csv';
+    %folders{end+1} ='\Documents\2019\ETH\Sem proj\Steering Model\PoseData2\m.csv';
+    folders{end+1} ='\Documents\2019\ETH\Sem proj\Steering Model\PoseData2\m.csv';
 end
 N = numel(folders);
 tic;
-startpos = [30,30];
-startrad = 4;
+startpos = [30,25];
+startrad = 2;
 lastwasin = 0;
 for i = 1:N
     folders{i}=strcat(userdir,folders{i});
-    poses = loadSmoothPoseData(folders{i});
+    poses = csvread(folders{i});
     times = [];
     [m,n]=size(poses);
     lastenter = 0;
@@ -38,7 +36,7 @@ for i = 1:N
             lastwasin = 0;
         end
     end
-    times
-    mean(times(2:end-1))
-    min(times)
+    times(2:end)
+    mean(times(2:end))
+    min(times(2:end))
 end
