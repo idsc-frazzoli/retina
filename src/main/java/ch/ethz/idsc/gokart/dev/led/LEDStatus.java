@@ -10,6 +10,7 @@ import ch.ethz.idsc.tensor.Tensors;
 
 public class LEDStatus implements OfflineVectorInterface {
   public static final int NUM_LEDS = 28;
+  public static final int LENGTH = 5;
 
   public final int indexGreen;
   public final int indexRed;
