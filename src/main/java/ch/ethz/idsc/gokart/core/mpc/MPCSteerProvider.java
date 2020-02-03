@@ -106,6 +106,10 @@ import ch.ethz.idsc.owl.car.core.AxleConfiguration;
     double num1 = steering.Get(0).number().doubleValue();
     int refIdx = (int) Math.round((num1 + 0.5) * 10);
     // TODO use separate indices for reference and actual value
-    LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(0, 0));
+    try {
+      LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(0, 0));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
