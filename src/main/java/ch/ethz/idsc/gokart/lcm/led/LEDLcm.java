@@ -37,7 +37,7 @@ public class LEDLcm {
     case 5:
       return new LEDStatus(array[0], array[1], new Color(array[2], array[3], array[4]));
     default:
-      throw new RuntimeException("expected 4 arguments, got " + array.length + ": " + Arrays.asList(array));
+      throw new RuntimeException("expected a message of length 1, 2 or 5, got " + array.length + ": " + Arrays.toString(array));
     }
   }
 }
