@@ -20,16 +20,17 @@ behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 
 [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
-
+%maxSpeed=15;
+%pprog=0.3;
 ptau = 0.05;  
-
+plat = 0.0001;
 % Pacejka
 FB = 9;
 FC = 1;
-FD = 7; % gravity acceleration considered
+FD = 10; % gravity acceleration considered
 RB = 5.2;
 RC = 1.1;
-RD = 6.5;
+RD = 10;
 
 % Steering Column (not used now)
 J_steer = 0.8875;
@@ -38,14 +39,14 @@ k_steer = 0.0125;
 
 % Control Points
 pointsO = 21; % number of Parameters
-pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
+pointsN = 5; % Number of points for B-splines (10 in 3 coordinates)
 
 % Spline
 splinestart = 1;
 nextsplinepoints = 0;
 
 % Runs
-tend = 250;
+tend = 300;
 
 % Integrator step
 eulersteps = 10;
@@ -124,10 +125,12 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 %% Control points for trajectory sampling
  
-points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
-          34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
-          1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
-
+% points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
+%           34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
+%           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
+points = [8,7,5,7,10,10,11,18,25,35,40,39,40,41,37,35,30,25,20,15;...          %x
+          10,25,35,45,55,61,70,72,70,65,60,50,42,30,18,12,13,12,10,8; ...    %y
+          4,4,4,4,4,4,4,4,3,3,2,2,2,3,2,2,2,2,3,3.5]';
 points(:,3)=points(:,3)-0.2;
 
 %trajectorytimestep = integrator_stepsize;
@@ -168,8 +171,8 @@ model.lb(index.ds)=-1;
 model.lb(index.ab)=-inf;
 
 % Torque vectoring
-model.ub(index.tv)=1.2;
-model.lb(index.tv)=-1.2;
+model.ub(index.tv)=1.7;
+model.lb(index.tv)=-1.7;
 
 % Slack variable
 model.lb(index.slack)=0;

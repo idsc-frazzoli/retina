@@ -1,7 +1,7 @@
 function [maxSpeed,maxxacc,steeringreg,specificmoi,plag,plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour)
 if strcmp(behaviour,'aggressive')==1
     maxSpeed = 10; % in [m/s]
-    maxxacc = 10; % in [m/s^-1]
+    maxxacc = 5; % in [m/s^-1]
     steeringreg = 0.02;  
     specificmoi = 0.3;
     plag=1;
@@ -10,7 +10,7 @@ if strcmp(behaviour,'aggressive')==1
     pab=0.0004;
     pspeedcost=0.04;
     pslack=5;
-    ptv=0.05;
+    ptv=0.01;
 elseif strcmp(behaviour,'medium')==1
     maxSpeed = 10; % in [m/s]
     maxxacc = 10; % in [m/s^-1]

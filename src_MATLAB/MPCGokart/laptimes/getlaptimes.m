@@ -1,21 +1,32 @@
 clear
 close all
-userdir = getuserdir
+userdir = getuserdir;
 
 folders = {};
 poses = {};
 targetfiles = {};
 if(1)
-    folders{end+1} = '/mpcposes/mp1/';
-    
-    folders{end+1} = '/mpcposes/mp2/';
+%     folders{end+1} = '\mpcposes\mb1\';
+%     folders{end+1} = '\mpcposes\mi1\';
+%     folders{end+1} = '\mpcposes\ma1\';
+%     folders{end+1} = '\mpcposes\mp1\';
+%     folders{end+1} = '\mpcposes\mp2\';
+%     folders{end+1} = '\mpcposes\mp3\';
+%     folders{end+1} = '\mpcposes\mp4\';
+%     folders{end+1} = '\mpcposes\mp5\';
+%     folders{end+1} = '\mpcposes\t1\';
+%     folders{end+1} = '\mpcposes\t2\';
+%     folders{end+1} = '\mpcposes\t3\';
+%     folders{end+1} = '\mpcposes\t4\';
+      folders{end+1} = '\mpcposes\anEM2\';
+
 end
-if(1)
-    folders{end+1} = '/mpcposes/md1/';
-end
+% if(1)
+%     folders{end+1} = '\mpcposes\md1\';
+% end
 N = numel(folders);
 tic;
-startpos = [30,30];
+startpos = [45,45];
 startrad = 4;
 lastwasin = 0;
 for i = 1:N
@@ -39,6 +50,6 @@ for i = 1:N
         end
     end
     times
-    mean(times(2:end-1))
-    min(times)
+    Media = mean(times(2:end-1))
+    Minimo = min(times(2:end-1))
 end

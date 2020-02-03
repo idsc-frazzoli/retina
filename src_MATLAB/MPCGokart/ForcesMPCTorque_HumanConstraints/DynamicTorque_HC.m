@@ -37,19 +37,19 @@ ptau=0.0001;
 %Simulation Pacejka constants, real values changeable in java 
 FB = 9;
 FC = 1;
-FD = 6.5;
+FD = 7.2;
 RB = 5.2;
 RC = 1.1;
 RD = 7;
 
 % Steering Column
-J_steer = 0.8875;
-b_steer = 0.1625;
-k_steer = 0.0125;
+J_steer = 3.3;
+b_steer = 0.24;%2.4895;
+k_steer = 0.9595;%1.3092;;
 
 % Control Points
 pointsO = 21; % number of Parameters
-pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
+pointsN = 15; % Number of points for B-splines (10 in 3 coordinates)
 
 % Spline
 splinestart = 1;
@@ -208,8 +208,8 @@ model.ub(index.s)=index.pointsN-2;
 model.lb(index.s)=0;
 
 % Torque Bounds
-model.ub(index.tau)=1.4;
-model.lb(index.tau)=-1.4;
+model.ub(index.tau)=2;
+model.lb(index.tau)=-2;
 
 % Variation Torque
 model.ub(index.dottau)=15;
@@ -319,6 +319,14 @@ for i =1:tend
 end
 
 drawT
+
+figure
+hold on
+title('Steering Torque')
+axis([-inf inf -2 2])
+ylabel('Torque [SCT]')
+plot(lhistory(:,1),lhistory(:,index.tau+1));
+
 figure
 hold on
 title('path progress')
