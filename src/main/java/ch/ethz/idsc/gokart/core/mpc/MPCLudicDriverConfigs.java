@@ -28,7 +28,7 @@ public enum MPCLudicDriverConfigs {
       RealScalar.of(7), // Max Speed
       RealScalar.of(1)), // Regtau Not used
   ADVANCED(//
-      RealScalar.of(0.005), // Speed cost
+      RealScalar.of(0.01), // Speed cost
       RealScalar.of(1), // Lag Error
       RealScalar.of(0.015), // Lat Error
       RealScalar.of(0.2), // Progress
