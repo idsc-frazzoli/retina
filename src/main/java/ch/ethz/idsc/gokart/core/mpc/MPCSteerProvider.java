@@ -106,8 +106,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private static void notifyLED(Tensor steering, Scalar currAngle) {
     double num1 = steering.Get(0).number().doubleValue();
     double num2 = currAngle.number().doubleValue();
-    int refIdx = (int) Math.round((num1 - 0.5) * -24);
-    int valIdx= (int) Math.round((num2 - 0.5) * -24);
-    LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(0, 0));
+    int refIdx = (int) Math.min(Math.max(Math.round((num1 - 0.5) * -LEDStatus.NUM_LEDS), 0), LEDStatus.NUM_LEDS-1);
+    int valIdx= (int) Math.min(Math.max(Math.round((num2 - 0.5) * -LEDStatus.NUM_LEDS), 0), LEDStatus.NUM_LEDS-1);
+    LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
   }
 }
