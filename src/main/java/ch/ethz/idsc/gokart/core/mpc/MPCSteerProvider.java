@@ -20,8 +20,12 @@ import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
+  private static final Clip ANGLE_RANGE = Clips.interval(-0.5, 0.5);
+  // ---
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
@@ -55,28 +59,31 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-    System.out.print("Beta: " + steering.Get(0));
-    System.out.println(" Dot Beta: " + steering.Get(1));
+    System.out.print("Beta: " + steering.Get(0)); // TODO remove after debugging
+    System.out.println(" Dot Beta: " + steering.Get(1)); // TODO remove after debugging
     Scalar torqueCmd = steerPositionController.iterate( //
         currAngle, //
         steering.Get(0), //
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
-    MPCSteerProvider.notifyLED(steering,currAngle); // either directly query config or always publish but only listen when desired
+    MPCSteerProvider.notifyLED(steering.Get(0), currAngle); // either directly query config or always publish but only listen when desired
     // Scalar negator = torqueCmd.add(feedForward).negate();
     return SteerPutEvent.createOn(torqueCmd.add(feedForward) /* .add(negator) */ );
   }
 
-  private static void notifyLED(Tensor steering, Scalar currAngle) {
-    double num1 = steering.Get(0).number().doubleValue();
-    double num2 = currAngle.number().doubleValue();
-    int refIdx = (int) Math.min(Math.max((Math.round((0.5 - num1) * LEDStatus.NUM_LEDS)), 0), LEDStatus.NUM_LEDS - 1);
-    int valIdx= (int) Math.min(Math.max((Math.round((0.5 - num2) * LEDStatus.NUM_LEDS)), 0), LEDStatus.NUM_LEDS - 1);
+  private static void notifyLED(Scalar referenceAngle, Scalar currAngle) {
+    int refIdx = angleToIdx(referenceAngle);
+    int valIdx = angleToIdx(currAngle);
     try {
       LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private static int angleToIdx(Scalar angle) {
+    double angleCorr = ANGLE_RANGE.apply(angle).number().doubleValue();
+    return (int) Math.round(0.5 - angleCorr) * (LEDStatus.NUM_LEDS - 1);
   }
 }
