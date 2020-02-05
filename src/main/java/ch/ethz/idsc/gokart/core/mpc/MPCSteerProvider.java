@@ -73,6 +73,10 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     double num2 = currAngle.number().doubleValue();
     int refIdx = (int) Math.min(Math.max((Math.round((0.5 - num1) * LEDStatus.NUM_LEDS)), 0), LEDStatus.NUM_LEDS - 1);
     int valIdx= (int) Math.min(Math.max((Math.round((0.5 - num2) * LEDStatus.NUM_LEDS)), 0), LEDStatus.NUM_LEDS - 1);
-    LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
+    try {
+      LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }
