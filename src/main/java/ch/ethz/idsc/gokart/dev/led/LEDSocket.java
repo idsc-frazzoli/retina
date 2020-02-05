@@ -8,7 +8,7 @@ import ch.ethz.idsc.retina.util.tty.SerialPorts;
 import com.fazecast.jSerialComm.SerialPort;
 
 public final class LEDSocket implements StartAndStoppable {
-  private static final String PORT = "/dev/ttyUSB0";
+  private static final String PORT = "/dev/ttyUSB1";
   private static final int BAUD_RATE = 9600;
   private static final int BYTE_SIZE = 8;
   // ---
@@ -30,6 +30,10 @@ public final class LEDSocket implements StartAndStoppable {
 
   public boolean isOpen() {
     return Optional.ofNullable(serialPort).map(SerialPort::isOpen).orElse(false);
+  }
+
+  public void write(LEDStatus ledStatus) {
+    write(Crc8MaximHelper.convert(ledStatus.asArray()));
   }
 
   public void write(byte[] data) {
