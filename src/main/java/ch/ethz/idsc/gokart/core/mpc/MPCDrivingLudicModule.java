@@ -28,7 +28,6 @@ public class MPCDrivingLudicModule extends MPCDrivingCommonModule {
     final Scalar minSpeed = mpcOptimizationConfig.minSpeed;
     final Scalar mpcMaxSpeed = //
         optional.map(MPCDrivingAbstractModule.toMPCmaxSpeed(minSpeed, MPCLudicConfig.FERRY.maxSpeed)).orElse(minSpeed);
-    System.out.println(mpcMaxSpeed);
     return new MPCOptimizationParameterLudic( //
         mpcMaxSpeed, //
         mpcOptimizationConfig.maxLonAcc, //

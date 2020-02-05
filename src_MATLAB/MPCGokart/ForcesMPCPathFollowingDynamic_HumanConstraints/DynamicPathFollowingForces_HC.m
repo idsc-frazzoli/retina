@@ -7,7 +7,7 @@
 addpath('..');
 userDir = getuserdir;
 addpath([userDir '/Forces']); % Location of FORCES PRO
-%addpath('C:\Users\me\Documents\FORCES_client');
+% addpath('C:\Users\me\Documents\FORCES_client');
 addpath('casadi');
 addpath('../shared_dynamic')
     
@@ -19,7 +19,7 @@ clear all
 behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
-plat=0.00001;
+plat = 0.00001;
 FB = 9;
 FC = 1;
 FD = 6.5; % gravity acceleration considered

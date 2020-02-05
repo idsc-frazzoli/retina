@@ -1,11 +1,11 @@
 function [ACCBETA] = modelDb(VELX,VELY,VELROTZ,BETA,DotB,TauC, param)
 
-%modelDx: Calculates Accelerations of the Cart based on the slipping
-%Tricycle model described in Marc Heims Masters Thesis 2019
+% modelDx: Calculates Accelerations of the Cart based on the slipping
+% Tricycle model described in Marc Heims Masters Thesis 2019
 
-%N.B. This Function is Mass invariant as all the forces applied are factors of
-%the Normal contract force so the mass cancels out of all equations.
-%However The magic formula co-efs (param[1:6]) may change with mass
+% N.B. This Function is Mass invariant as all the forces applied are factors of
+% the Normal contract force so the mass cancels out of all equations.
+% However The magic formula co-efs (param[1:6]) may change with mass
 
 % BETA : Lenkwinkel (control variable)
 % AB : acceleration of hinterachse (control variable)
@@ -15,11 +15,11 @@ function [ACCBETA] = modelDb(VELX,VELY,VELROTZ,BETA,DotB,TauC, param)
 
 
 %% Model Parameters
-%Front Tire Params (for magic formula)
+% Front Tire Params (for magic formula)
 B1 = param(1);
 C1 = param(2);
 D1 = param(3);
-%Front Tire Moment Params (for magic formula)
+% Front Tire Moment Params (for magic formula)
 B3 = 1;
 C3 = 1;
 D3 = 0;
@@ -57,7 +57,7 @@ dotAckerman = ((-1.8*BETA*BETA)+0.94)*DotB;
 fSpring=(-(scK/scJ)*BETA);
 fDamp=(-(scD/scJ)*DotB);
 fTau=effectiveTorque3(TauC)/scJ;
-%fTau=TauC/scJ;
+% fTau=TauC/scJ;
 fRot=(VELROTZ-dotAckerman)*kRot/scJ;
 ACCBETA = fSpring+fDamp+ fTau +F1m+fRot;      %Rotational Acceleration of Steering Column
 

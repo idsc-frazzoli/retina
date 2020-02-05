@@ -27,10 +27,10 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
       Vmu931LcmServerModule.class, // vmu931 imu
       // Vmu932LcmServerModule.class, // vmu932 imu
       IgnitionModule.class, // actuation monitoring
-      KittLedModule.class,
-      GlobalViewLcmModule.class // initialize localization
+      GlobalViewLcmModule.class, // initialize localization
       // TrackReconModule.class, //
       // ParametersModule.class // configure parameters
+      KittLedModule.class // to test leds
   );
   static final List<Class<? extends AbstractModule>> MODULES_TRACK = Arrays.asList( //
       TrackReconModule.class, //

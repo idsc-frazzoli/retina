@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
-
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.dev.led.LEDStatus;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
@@ -65,16 +64,15 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
     MPCSteerProvider.notifyLED(steering,currAngle); // either directly query config or always publish but only listen when desired
-    //Scalar negator = torqueCmd.add(feedForward).negate();
-    return SteerPutEvent.createOn(torqueCmd.add(feedForward)/*.add(negator)*/);
+    // Scalar negator = torqueCmd.add(feedForward).negate();
+    return SteerPutEvent.createOn(torqueCmd.add(feedForward) /* .add(negator) */ );
   }
 
-  private static void notifyLED(Tensor steering,Scalar currAngle) {
+  private static void notifyLED(Tensor steering, Scalar currAngle) {
     double num1 = steering.Get(0).number().doubleValue();
     double num2 = currAngle.number().doubleValue();
-    int refIdx = (int) Math.min(Math.max((Math.round((num1 - 0.5) * -LEDStatus.NUM_LEDS)),0),27);
-    int valIdx= (int) Math.min(Math.max((Math.round((num2 - 0.5) * -LEDStatus.NUM_LEDS)),0),27);
-    // TODO use separate indices for reference and actual value
+    int refIdx = (int) Math.min(Math.max((Math.round((0.5 - num1) * LEDStatus.NUM_LEDS)), 0), LEDStatus.NUM_LEDS - 1);
+    int valIdx= (int) Math.min(Math.max((Math.round((0.5 - num2) * LEDStatus.NUM_LEDS)), 0), LEDStatus.NUM_LEDS - 1);
     LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
   }
 }

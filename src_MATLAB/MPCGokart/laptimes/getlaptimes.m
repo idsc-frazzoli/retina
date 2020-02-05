@@ -7,8 +7,7 @@ poses = {};
 targetfiles = {};
 
 if(1)
-    %folders{end+1} ='\Documents\2019\ETH\Sem proj\Steering Model\PoseData2\b.csv';
-    %folders{end+1} ='\Documents\2019\ETH\Sem proj\Steering Model\PoseData2\m.csv';
+    % folders{end+1} ='\Documents\2019\ETH\Sem proj\Steering Model\PoseData2\b.csv';
     folders{end+1} ='\Documents\2019\ETH\Sem proj\Steering Model\PoseData2\m.csv';
 end
 N = numel(folders);
