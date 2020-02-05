@@ -91,8 +91,7 @@ public enum MPCLudicDriverConfigs {
     mpcLudicConfig.steerDamp = MPCLudicConfig.GLOBAL.steerDamp;
     mpcLudicConfig.steerInertia = MPCLudicConfig.GLOBAL.steerInertia;
     mpcLudicConfig.maxSpeed = Quantity.of(maxSpeed, SI.VELOCITY);
-    // TODO input variable regularizer tau is not used -> remove or fix
-    mpcLudicConfig.regularizerTau = MPCLudicConfig.GLOBAL.regularizerTau;
+    mpcLudicConfig.regularizerTau = regularizerTau;
   }
 
   public MPCLudicConfig get() {
