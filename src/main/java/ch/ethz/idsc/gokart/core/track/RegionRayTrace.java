@@ -4,10 +4,12 @@ package ch.ethz.idsc.gokart.core.track;
 import ch.ethz.idsc.gokart.calib.ChassisGeometry;
 import ch.ethz.idsc.owl.math.region.Region;
 import ch.ethz.idsc.retina.util.math.Magnitude;
+import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Sign;
 
 // TODO JPH class design, see where Limit is used, possibly hide more
@@ -74,7 +76,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
    * {@param dist} in direction ...
    * {@param dir} interfers with {@link RegionRayTrace#region} */
   private boolean isOccupied(Tensor pos, Tensor dir, Scalar dist) {
-    Scalar front = Magnitude.METER.apply(ChassisGeometry.GLOBAL.xTipMeter()).subtract(ChassisGeometry.GLOBAL.xAxleRtoCoM);
+    Scalar front = Quantity.of(ChassisGeometry.GLOBAL.xTipMeter(), SI.METER).subtract(ChassisGeometry.GLOBAL.xAxleRtoCoM);
     Scalar rear = ChassisGeometry.GLOBAL.xAxleRtoCoM;
     Tensor forwardDir = Tensors.of(dir.Get(1), dir.Get(0).negate());
     Tensor virtualGokart = Tensors.of(
