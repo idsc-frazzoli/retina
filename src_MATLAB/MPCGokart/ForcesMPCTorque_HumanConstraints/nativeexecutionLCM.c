@@ -83,6 +83,7 @@ static void getLastControls(
 	*dottau = lastSolution[i*S + 1];
 	*beta = lastSolution[i*S+12];
 	*dotbeta = lastSolution[i*S+14];
+	printf("in fn Beta: %f\n",lastSolution[i*S+12]);
 	
 }
 
@@ -138,9 +139,12 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);
 		initbeta = getInitSteer(lbeta, ldotbeta, dTime);
 		inittau = getInitTau(ltau, ldottau, dTime);
+		printf("in loop Beta: %f\n",initbeta);
 	} else
 	    initab = 0;
-
+		printf("used else");
+		
+		
 	// [x,y,theta,dottheta,v,yv,beta,dotbeta,ab,tau,s]
 	inittau = lastCRMsg.state.tau;
 	params.xinit[0] = lastCRMsg.state.X+cos(lastCRMsg.state.Psi)*backToCoM;
@@ -155,8 +159,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[9] = lastCRMsg.state.dotbeta;
 	params.xinit[10] = inittau;
 	
-
-	/* for(int i = 0; i<7;i++)
+	printf("init Beta: %f\n",params.xinit[7]);
+	/* for(int i = 0; i<10;i++)
 		printf("%i: %f\n",i,params.xinit[i]); */
 
 	// gather parameter data
