@@ -31,6 +31,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
+  private int count =0;
 
   public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode) {
     super(timing);
@@ -58,7 +59,11 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+    this.count=this.count+1;
+    if (this.count>= 4) {
     MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
+    this.count=0;
+    }
     if (MPCLudicConfig.GLOBAL.manualMode) {
       return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
     }
