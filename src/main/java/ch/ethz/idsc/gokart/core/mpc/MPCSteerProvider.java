@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
-  private static final Clip ANGLE_RANGE = Clips.interval(-0.5, 0.5);
+  private static final Clip ANGLE_RANGE = Clips.interval(Quantity.of(-0.5, "SCE"), Quantity.of(0.5, "SCE"));
   // ---
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
@@ -69,10 +69,10 @@ import ch.ethz.idsc.tensor.sca.Clips;
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     this.count = this.count + 1;
     if (this.count >= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
-      System.out.println("LED message triggered, count = " + this.count);
+      //System.out.println("LED message triggered, count = " + this.count);
       MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
       this.count = 0;
-      System.out.println("LED message sent, count = " + this.count);
+      //System.out.println("LED message sent, count = " + this.count);
     }
     if (MPCLudicConfig.GLOBAL.manualMode) {
       if (MPCLudicConfig.GLOBAL.powerSteer) {
@@ -91,7 +91,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private static void notifyLED(Scalar referenceAngle, Scalar currAngle) {
     int refIdx = angleToIdx(referenceAngle);
     int valIdx = angleToIdx(currAngle);
-    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: "+ valIdx);
+    //System.out.println("Steer msg: " + refIdx + ", Pwr Steer: "+ valIdx);
     try {
       LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
     } catch (Exception e) {
@@ -101,6 +101,6 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   private static int angleToIdx(Scalar angle) {
     double angleCorr = ANGLE_RANGE.apply(angle).number().doubleValue();
-    return (int) Math.round(0.5 - angleCorr) * (LEDStatus.NUM_LEDS - 1);
+    return (int) Math.round((0.5 - angleCorr) * (LEDStatus.NUM_LEDS - 1));
   }
 }
