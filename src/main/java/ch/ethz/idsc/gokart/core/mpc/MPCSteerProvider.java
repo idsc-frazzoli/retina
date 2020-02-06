@@ -31,7 +31,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
-  private int count =0;
+  private int count = 0;
 
   public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode) {
     super(timing);
@@ -54,24 +54,33 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   private SteerPutEvent torqueSteer(Tensor torqueMSG) {
     Scalar torqueCmd = torqueMSG.Get(0);
+    Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+    Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+    if (MPCLudicConfig.GLOBAL.powerSteer) {
+      return SteerPutEvent.createOn(torqueCmd.add(feedForward).multiply(MPCLudicConfig.GLOBAL.torqueScale));
+    }
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
   }
 
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-    this.count=this.count+1;
-    if (this.count>= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
-    MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
-    this.count=0;
+    Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+    this.count = this.count + 1;
+    if (this.count >= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
+      MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
+      this.count = 0;
     }
     if (MPCLudicConfig.GLOBAL.manualMode) {
-      return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
+      if (MPCLudicConfig.GLOBAL.powerSteer) {
+        return SteerPutEvent.createOn(feedForward);
+      } else {
+        return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
+      }
     }
     Scalar torqueCmd = steerPositionController.iterate( //
         currAngle, //
         steering.Get(0), //
         steering.Get(1));
-    Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     return SteerPutEvent.createOn(torqueCmd.add(feedForward));
   }
 

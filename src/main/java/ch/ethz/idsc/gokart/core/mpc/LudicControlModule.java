@@ -27,7 +27,7 @@ public class LudicControlModule extends AbstractModule {
   @Override
   protected void first() {
     {
-      JPanel jPanel = new JPanel(new GridLayout(5, 2));
+      JPanel jPanel = new JPanel(new GridLayout(6, 2));
       {
         jPanel.add(new JLabel("Manual Steering:"));
       }
@@ -36,6 +36,19 @@ public class LudicControlModule extends AbstractModule {
         jToggleButton.addActionListener(actionEvent -> {
           endLudic();
           MPCLudicConfig.GLOBAL.manualMode = jToggleButton.isSelected();
+          jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
+          System.out.println("Steering in Manual Mode: "+ MPCLudicConfig.GLOBAL.manualMode);
+        });
+        jPanel.add(jToggleButton);
+      }
+      {
+        jPanel.add(new JLabel("Power Steering:"));
+      }
+      {
+        JToggleButton jToggleButton = new JToggleButton("Off");
+        jToggleButton.addActionListener(actionEvent -> {
+          endLudic();
+          MPCLudicConfig.GLOBAL.powerSteer = jToggleButton.isSelected();
           jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
           System.out.println("Steering in Manual Mode: "+ MPCLudicConfig.GLOBAL.manualMode);
         });
