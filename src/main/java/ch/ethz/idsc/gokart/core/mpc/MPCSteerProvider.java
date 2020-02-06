@@ -57,8 +57,10 @@ import ch.ethz.idsc.tensor.sca.Clips;
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     if (MPCLudicConfig.GLOBAL.powerSteer) {
+      System.out.println("Torque msg: " + torqueCmd + ", Pwr Steer: " + feedForward);
       return SteerPutEvent.createOn(torqueCmd.add(feedForward).multiply(MPCLudicConfig.GLOBAL.torqueScale));
     }
+    System.out.println("Torque msg: " + torqueCmd + ", Pwr Steer: off");
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
   }
 
