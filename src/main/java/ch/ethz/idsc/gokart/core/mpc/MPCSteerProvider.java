@@ -69,10 +69,10 @@ import ch.ethz.idsc.tensor.sca.Clips;
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     this.count = this.count + 1;
     if (this.count >= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
-      System.out.println("LED message triggered");
+      System.out.println("LED message triggered, count = " + this.count);
       MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
       this.count = 0;
-      System.out.println("LED message sent");
+      System.out.println("LED message sent, count = " + this.count);
     }
     if (MPCLudicConfig.GLOBAL.manualMode) {
       if (MPCLudicConfig.GLOBAL.powerSteer) {
