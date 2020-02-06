@@ -49,7 +49,6 @@ public class MPCLudicConfig {
   public Scalar slackSoftConstraint = RealScalar.of(7);
   /** Regularizer for input TV */
   public Scalar regularizerTV = RealScalar.of(0.01);
-
   public Scalar regularizerTau = RealScalar.of(0.0005);
   @FieldSubdivide(start = "0.2f", end = "1.2", intervals = 50)
   public Scalar torqueScale = RealScalar.of(0.48);

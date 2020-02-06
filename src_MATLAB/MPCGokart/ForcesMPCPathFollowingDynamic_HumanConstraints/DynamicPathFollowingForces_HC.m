@@ -123,18 +123,18 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 %% Control points for trajectory sampling
 
-%       points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
-%          34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
+% points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20; ...          %x
+%           34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
 %           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
 
-points = [10,10,20,10,20,20,40,60,80,90,90,90,80,50,20;...          %x
+points = [10,10,20,10,20,20,40,60,80,90,90,90,80,50,20; ...          %x
             10,35,45,55,75,90,90,90,80,60,42,15,10,5,5; ...    %y
             4,3,5,4,3,4,4,6,4,3,2,3,4,4,6]';
 
-points(:,3)=points(:,3)-0.2;
+points(:,3) = points(:,3) - 0.2;
 
-%trajectorytimestep = integrator_stepsize;
-%[p,steps,speed,ttpos]=getTrajectory(points,2,1,trajectorytimestep);
+% trajectorytimestep = integrator_stepsize;
+% [p,steps,speed,ttpos] = getTrajectory(points,2,1,trajectorytimestep);
 
 %% Number of parameters
 model.npar = pointsO + 3*pointsN;
@@ -253,8 +253,8 @@ for i = 1:tend
     ip = splinestart;
     [nkp, ~] = size(points);
     nextSplinePoints = zeros(pointsN,3);
-    for jj=1:pointsN
-       while ip>nkp
+    for jj = 1:pointsN
+       while ip > nkp
             ip = ip -nkp;
        end
        nextSplinePoints(jj,:)=points(ip,:);
@@ -290,9 +290,9 @@ for i = 1:tend
     % update
     [xhist,time] = euler(@(x,u)interstagedx_HC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
     xs = xhist(end,:);
-    history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:)=[time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
+    history((tstart-1)*eulersteps+1:(tstart)*eulersteps,:) = [time(1:end-1)+(tstart-1)*integrator_stepsize,u,xhist(1:end-1,:)];
     planc = planc + 1;
-    if(planc>planintervall)
+    if(planc > planintervall)
         planc = 1;
         plansx = [plansx; outputM(:,index.x)'];
         plansy = [plansy; outputM(:,index.y)'];

@@ -44,8 +44,8 @@ RD = 7;
 
 % Steering Column
 J_steer = 3.3;
-b_steer = 0.24;%2.4895;
-k_steer = 0.9595;%1.3092;;
+b_steer = 0.24; % 2.4895;
+k_steer = 0.9595; % 1.3092;
 
 % Control Points
 pointsO = 21; % number of Parameters
@@ -115,7 +115,7 @@ index.ptv = 20;
 index.ptau = 21;
 
 index.pointsO = 21; % number of Parameters
-index.pointsN = 15;% number of Spline points to use
+index.pointsN = 15; % number of Spline points to use
 
 %% model definition
 model.N = 31;                       % Forward horizon
@@ -141,18 +141,18 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 %% Control points for trajectory sampling
 
-points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
+points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20; ...          %x
           34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
 
-% points = [36.2,52,57.2,53,52,47,41.8;...          %x
-%     44.933,58.2,53.8,49,44,43,38.33; ...           %y
-%     1.8,1.8,1.8,0.5,0.5,0.5,1.8]';                      %phi
+% points = [36.2,52,57.2,53,52,47,41.8; ...          %x
+%         44.933,58.2,53.8,49,44,43,38.33; ...           %y
+%         1.8,1.8,1.8,0.5,0.5,0.5,1.8]';                      %phi
 
-% points = [28,35,42,55.2,56,51,42,40;...          %x
+% points = [28,35,42,55.2,56,51,42,40; ...          %x
 %           41,60,43,56,43,40,44,31; ...    %y
 %           2,1.5,1.2,1.6,0.6,0.8,1.2,1.6]';   %phi
-points(:,3)=points(:,3)-0.2;
+points(:,3) = points(:,3) - 0.2;
 %% Number of parameters
 model.npar = index.pointsO + 3*index.pointsN;
 
@@ -258,7 +258,7 @@ for i = 1:tend
     tstart = i;
     %find bspline
     if(1)
-        if xs(index.s-index.nu) > 1
+        if xs(index.s - index.nu) > 1
             nextSplinePoints;
             %spline step forward
             splinestart = splinestart+1;
@@ -270,8 +270,8 @@ for i = 1:tend
     ip = splinestart;
     [nkp, ~] = size(points);
     nextSplinePoints = zeros(index.pointsN,3);
-    for jj=1:index.pointsN
-        while ip>nkp
+    for jj = 1:index.pointsN
+        while ip > nkp
             ip = ip - nkp;
         end
         nextSplinePoints(jj,:) = points(ip,:);
@@ -288,7 +288,7 @@ for i = 1:tend
 
     % solve mpc
     [output,exitflag,info] = MPCPathFollowing(problem);
-    solvetimes(end+1)=info.solvetime;
+    solvetimes(end+1) = info.solvetime;
     if(exitflag==0)
         a = 1;
     end
@@ -297,7 +297,7 @@ for i = 1:tend
         return
     end
 
-    %get output
+    % get output
     outputM = reshape(output.alldata,[model.nvar,model.N])';
     x0 = outputM';
     u = repmat(outputM(1,1:index.nu),eulersteps,1);

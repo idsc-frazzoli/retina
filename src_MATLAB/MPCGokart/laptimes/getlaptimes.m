@@ -7,20 +7,20 @@ poses = {};
 targetfiles = {};
 
 if(1)
-%     folders{end+1} = '\mpcposes\mb1\';
-%     folders{end+1} = '\mpcposes\mi1\';
-%     folders{end+1} = '\mpcposes\ma1\';
-%     folders{end+1} = '\mpcposes\mp1\';
-%     folders{end+1} = '\mpcposes\mp2\';
-%     folders{end+1} = '\mpcposes\mp3\';
-%     folders{end+1} = '\mpcposes\mp4\';
-%     folders{end+1} = '\mpcposes\mp5\';
-%     folders{end+1} = '\mpcposes\t1\';
-%     folders{end+1} = '\mpcposes\t2\';
-%     folders{end+1} = '\mpcposes\t3\';
-%     folders{end+1} = '\mpcposes\t4\';
-%       folders{end+1} = '\mpcposes\EM_NT\';
-      folders{end+1} = '\mpcposes\MPC_NT\';
+    % folders{end+1} = '\mpcposes\mb1\';
+    % folders{end+1} = '\mpcposes\mi1\';
+    % folders{end+1} = '\mpcposes\ma1\';
+    % folders{end+1} = '\mpcposes\mp1\';
+    % folders{end+1} = '\mpcposes\mp2\';
+    % folders{end+1} = '\mpcposes\mp3\';
+    % folders{end+1} = '\mpcposes\mp4\';
+    % folders{end+1} = '\mpcposes\mp5\';
+    % folders{end+1} = '\mpcposes\t1\';
+    % folders{end+1} = '\mpcposes\t2\';
+    % folders{end+1} = '\mpcposes\t3\';
+    % folders{end+1} = '\mpcposes\t4\';
+    % folders{end+1} = '\mpcposes\EM_NT\';
+    folders{end+1} = '\mpcposes\MPC_NT\';
 end
 % if(1)
 %     folders{end+1} = '\mpcposes\md1\';
