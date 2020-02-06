@@ -60,7 +60,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     this.count=this.count+1;
-    if (this.count>= 4) {
+    if (this.count>= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
     MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
     this.count=0;
     }
