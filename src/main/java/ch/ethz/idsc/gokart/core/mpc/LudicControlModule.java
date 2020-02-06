@@ -50,7 +50,7 @@ public class LudicControlModule extends AbstractModule {
           endLudic();
           MPCLudicConfig.GLOBAL.powerSteer = jToggleButton.isSelected();
           jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
-          System.out.println("Steering in Manual Mode: "+ MPCLudicConfig.GLOBAL.manualMode);
+          System.out.println("Power Steering: "+ MPCLudicConfig.GLOBAL.powerSteer);
         });
         jPanel.add(jToggleButton);
       }
