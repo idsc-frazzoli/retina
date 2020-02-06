@@ -7,7 +7,7 @@
 addpath('..');
 userDir = getuserdir;
 addpath([userDir '/Forces']); % Location of FORCES PRO
-addpath('C:\Users\me\Documents\FORCES_client');
+% addpath('C:\Users\me\Documents\FORCES_client');
 addpath('casadi');
 addpath('../shared_dynamic')
     
@@ -19,6 +19,7 @@ clear all
 behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
+plat = 0.00001;
 FB = 9;
 FC = 1;
 FD = 6.5; % gravity acceleration considered
@@ -30,10 +31,12 @@ b_steer = 0.1625;
 k_steer = 0.0125;
 ptau = 0.05;   
 pointsO = 21; % number of Parameters
-pointsN = 10; % Number of points for B-splines (10 in 3 coordinates)
+pointsN = 15; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
 nextsplinepoints = 0;
-tend = 250;
+
+%% TEND 
+tend = 150;
 eulersteps = 10;
 
 
@@ -131,11 +134,13 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 %           40,34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47; ...    %y
 %           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
  
-      points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
-         34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
-          1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
+%       points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
+%          34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
+%           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
 
-
+points = [10,10,20,10,20,20,40,60,80,90,90,90,80,50,20;...          %x
+            10,35,45,55,75,90,90,90,80,60,42,15,10,5,5; ...    %y
+            4,3,5,4,3,4,4,6,4,3,2,3,4,4,6]';
 
 % %points = getPoints('/wildpoints.csv');
 points(:,3)=points(:,3)-0.2;
@@ -176,16 +181,16 @@ model.lb(index.ds)=-1;
 %model.lb(index.ab)=-4.5;
 model.lb(index.ab)=-inf;
 
-model.ub(index.tv)=1.2;
-model.lb(index.tv)=-1.2;
+model.ub(index.tv)=1.6;
+model.lb(index.tv)=-1.6;
 %model.ub(index.tv)=0.1;
 %model.lb(index.tv)=-0.1;
 model.lb(index.slack)=0;
 
 model.lb(index.v)=0;
 
-model.ub(index.beta)=0.5;
-model.lb(index.beta)=-0.5;
+model.ub(index.beta)=0.52;
+model.lb(index.beta)=-0.52;
 
 model.ub(index.s)=pointsN-2;
 model.lb(index.s)=0;

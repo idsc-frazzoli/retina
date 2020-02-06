@@ -11,7 +11,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 /* package */ enum MPCNative {
   ;
   public static final int PREDICTION_SIZE = 31;
-  public static final int SPLINE_PREVIEW_SIZE = 10;
+  public static final int SPLINE_PREVIEW_SIZE = 15;
   /** time that the controller is allowed to operate in open loop control */
   public static final Scalar OPEN_LOOP_TIME = Quantity.of(2, SI.SECOND);
   // executable location and name

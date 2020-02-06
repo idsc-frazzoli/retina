@@ -98,9 +98,9 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
   %  controlPointsY.append(Quantity.of(47, SI.METER));
   %  controlPointsY.append(Quantity.of(43, SI.METER));
   %  controlPointsY.append(Quantity.of(38.333, SI.METER));  
-points = [36.2,52,57.2,53,52,47,41.8;...          %x
-          44.933,58.2,53.8,49,44,43,38.33; ...    %y
-          1.8,1.8,1.8,0.5,0.5,0.5,1.8]';          %phi
+points = [0,5,10,5,10,10,20,40,52,40,45,35,25,10;...          %x
+            10,35,45,55,75,90,100,90,70,42,15,14,12,5; ...    %y
+            4,3,5,4,3,4,4,4,4,4,4,4,4,4]';
 %points = getPoints('/wildpoints.csv');
 points(:,3)=points(:,3)-0.2;
 %points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
@@ -165,7 +165,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
-tend = 300;
+tend = 200;
 eulersteps = 10;
 planintervall = 1
 %[...,x,y,theta,v,ab,beta,s,braketemp]

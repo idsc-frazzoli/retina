@@ -9,6 +9,7 @@ import ch.ethz.idsc.gokart.core.man.PredictiveTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.mpc.LudicControlModule;
 import ch.ethz.idsc.gokart.core.track.TrackReconModule;
 import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
+import ch.ethz.idsc.gokart.gui.led.KittLedModule;
 import ch.ethz.idsc.gokart.gui.led.VirtualLedModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
@@ -26,9 +27,10 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
       Vmu931LcmServerModule.class, // vmu931 imu
       // Vmu932LcmServerModule.class, // vmu932 imu
       IgnitionModule.class, // actuation monitoring
-      GlobalViewLcmModule.class // initialize localization
+      GlobalViewLcmModule.class, // initialize localization
       // TrackReconModule.class, //
       // ParametersModule.class // configure parameters
+      KittLedModule.class // to test leds
   );
   static final List<Class<? extends AbstractModule>> MODULES_TRACK = Arrays.asList( //
       TrackReconModule.class, //

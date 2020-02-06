@@ -3,7 +3,6 @@ package ch.ethz.idsc.gokart.core.track;
 
 import ch.ethz.idsc.gokart.calib.ChassisGeometry;
 import ch.ethz.idsc.owl.math.region.Region;
-import ch.ethz.idsc.retina.util.math.Magnitude;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;

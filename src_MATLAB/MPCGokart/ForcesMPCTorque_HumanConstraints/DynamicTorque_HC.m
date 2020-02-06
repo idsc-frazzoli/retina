@@ -23,19 +23,19 @@ clear all
 maxSpeed = 10; % in [m/s]
 maxxacc = 5; % in [m/s^-1]
 
-%Costs for simulation, change the real values in Java 
-steeringreg = 0.02;
+% Costs for simulation, change the real values in Java
+steeringreg = 0.01;
 specificmoi = 0.3;
-plag=1;
-plat=0.01;
-pprog=0.2;
-pab=0.0004;
-pspeedcost=0.04;
-pslack=7;
-ptv=0.05;
-ptau=0.0001;
+plag = 1;
+plat = 0.01;
+pprog = 0.2;
+pab = 0.0004;
+pspeedcost = 0.02;
+pslack = 5;
+ptv = 0.01;
+ptau = 0.0001;
 
-%Simulation Pacejka constants, real values changalbe in java 
+% Simulation Pacejka constants, real values changalbe in java
 FB = 9;
 FC = 1;
 FD = 6.5;
@@ -43,10 +43,10 @@ RB = 5.2;
 RC = 1.1;
 RD = 6;
 
-%Steering column properties
-J_steer=0.01;%0.01
-b_steer=0.2;
-k_steer=0.2;
+% Steering column properties
+J_steer = 4; % 0.01
+b_steer = -0.45;
+k_steer = 0.21;
 
 
 %% global parameters index
@@ -84,9 +84,9 @@ index.pacFD = 7;
 index.pacRB = 8;
 index.pacRC = 9;
 index.pacRD = 10;
-index.steerStiff=11;
-index.steerDamp=12;
-index.steerInertia=13;
+index.steerStiff = 11;
+index.steerDamp = 12;
+index.steerInertia = 13;
 index.plag = 14;
 index.plat = 15;
 index.pprog = 16;
@@ -96,8 +96,8 @@ index.pslack = 19;
 index.ptv = 20;
 index.ptau = 21;
 
-index.pointsO = 21; % number of Parameters
-index.pointsN = 10;% number of Spline points to use
+index.pointsO = 21; % number of parameters
+index.pointsN = 15; % number of spline points to use
 splinestart = 1;
 nextsplinepoints = 0;
 
@@ -106,13 +106,13 @@ solvetimes = [];
 integrator_stepsize = 0.1;
 
 %% model params
-model.N = 31;                       % Forward horizon
+model.N = 31;                       % forward horizon
 model.nvar = index.nv;              % = 16
 model.neq = index.ns;               % = 11
 model.eq = @(z,p) RK4( ...
     z(index.sb:end), ...
     z(1:index.nu), ...
-    @(x,u,p)interstagedx_THC(x,u,p), ... %PACEJKA PARAMETERS
+    @(x,u,p)interstagedx_THC(x,u,p), ... % PACEJKA PARAMETERS
     integrator_stepsize,...
     p);
 model.E = [zeros(index.ns,index.nu), eye(index.ns)];
@@ -175,40 +175,40 @@ model.xinitidx = index.sb:index.nv;
 model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
 
-model.ub(index.ds)=5;
-model.lb(index.ds)=-1;
-model.lb(index.ab)=-inf;
-model.ub(index.tv)=1.6;
-model.lb(index.tv)=-1.6;
-model.lb(index.slack)=-0.3;%Size of buffer zone around walls in meters 
-model.lb(index.v)=0;
-model.ub(index.beta)=0.5;
-model.lb(index.beta)=-0.5;
-model.ub(index.s)=index.pointsN-2;
-model.lb(index.s)=0;
-model.ub(index.tau)=1.2;
-model.lb(index.tau)=-1.2;
-model.ub(index.dottau)=12;
-model.lb(index.dottau)=-12;
+model.ub(index.ds) = 5;
+model.lb(index.ds) = -1;
+model.lb(index.ab) = -inf;
+model.ub(index.tv) = 1.6;
+model.lb(index.tv) = -1.6;
+model.lb(index.slack) = -0; % size of buffer zone around walls in meters
+model.lb(index.v) = 0;
+model.ub(index.beta) = 0.5;
+model.lb(index.beta) = -0.5;
+model.ub(index.s) = index.pointsN - 2;
+model.lb(index.s) = 0;
+model.ub(index.tau) = 2;
+model.lb(index.tau) = -2;
+model.ub(index.dottau) = 20;
+model.lb(index.dottau) = -20;
 
 
 
 %% CodeOptions for FORCES solver
 codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
-codeoptions.maxit = 200;    % Maximum number of iterations
-codeoptions.printlevel = 0; % Use printlevel = 2 to print progress (but not for timings)
+codeoptions.maxit = 200;    % maximum number of iterations
+codeoptions.printlevel = 0; % use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
 
 output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
-FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
+FORCES_NLP(model, codeoptions,output); % need FORCES license to run
 
 %% CodeOptions for FORCES solver
 % codeoptions_stop = getOptions('MPCPathFollowing_stop'); % Need FORCES License to run
-% codeoptions_stop.maxit = 200;    % Maximum number of iterations
-% codeoptions_stop.printlevel = 0; % Use printlevel = 2 to print progress (but not for timings)
+% codeoptions_stop.maxit = 200;    % maximum number of iterations
+% codeoptions_stop.printlevel = 0; % use printlevel = 2 to print progress (but not for timings)
 % codeoptions_stop.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
 % codeoptions_stop.cleanup = 0;
 % codeoptions_stop.timing = 1;
@@ -226,7 +226,8 @@ FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 %
 % FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-tend = 150;
+%% Tend
+tend = 250;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);
@@ -254,18 +255,18 @@ x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
 
 tstart = 1;
 
-for i =1:tend
+for i = 1:tend
     tstart = i;    
     %find bspline
     if(1)
-        if xs(index.s-index.nu)>1
+        if xs(index.s-index.nu) > 1
             nextSplinePoints;
-            %spline step forward
-            splinestart = splinestart+1;
-            xs(index.s-index.nu)=xs(index.s-index.nu)-1;
-            %if(splinestart>pointsN)
-            %splinestart = splinestart-pointsN;
-            %end
+            % spline step forward
+            splinestart = splinestart + 1;
+            xs(index.s-index.nu) =xs(index.s - index.nu) - 1;
+            % if(splinestart > pointsN)
+            % splinestart = splinestart - pointsN;
+            % end
         end
     end
     
@@ -278,12 +279,12 @@ for i =1:tend
     nextSplinePoints = zeros(index.pointsN,3);
     for jj=1:index.pointsN
         while ip>nkp
-            ip = ip -nkp;
+            ip = ip - nkp;
         end
-        nextSplinePoints(jj,:)=points(ip,:);
+        nextSplinePoints(jj,:) = points(ip,:);
         ip = ip + 1;
     end
-    splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
+    splinepointhist(i,:) = [xs(index.s-index.nu), nextSplinePoints(:)'];
     
     problem.all_parameters = repmat (getParametersTHC(maxSpeed,maxxacc,...
         steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...

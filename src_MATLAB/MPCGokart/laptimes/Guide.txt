@@ -1,0 +1,136 @@
+1) steerGetCsv:
+    0)Time
+    A) motAsp: indicates the rotational velocity of the steering wheel.
+       The value ranges typical in the interval [-150, 150].
+    B) motAsp_Qual: during nominal operation motAsp_Qual is constant 2f
+       a value of 0f was observed briefly during failure instant
+    C) tsuTrq: indicates the torque exerted by the driver.
+       the value ranges in the interval [-8, 8].
+       When the driver does not touch the steering wheel, the value is
+       close to 0.
+       A positive value indicates a drag to the left, ccw.
+       A negative value indicates a drag to the right, clockwise.
+    D) tsuTrq_qual: during nominal operation tsuTrq_qual is constant 2f
+       a value of 0f was observed briefly during failure instant
+    E) refMotTrq: post processing of data has shown that refMotTrq
+       allows the interpretation of reference motor torque.
+       refMotTrq closely correlates to the demanded torque
+       as commanded by {@link SteerPutEvent}. Due to communication,
+       there is a time delay until the demanded torque is considered
+       as "reference" by the steering actuator.
+    F) estMotTrq: when the device {@link #isActive()} then the difference
+       between "estMotTrq - refMotTrq" is typically small.
+       When the torque command is disabled, the value estMotTrq
+       takes an arbitrary value that should be ignored.
+    G) estMotTrq_qual: {@link SteerPutEvent} commands the steer actuator
+       to be passive or active. In passive mode, no torque is applied by 
+       the device.
+       - estMotTrq_Qual == 0.0 means the device was not in operation since
+       power on, or has insufficient supply power, or has another issue.
+       - estMotTrq_Qual == 1.0 means the device is passive
+       - estMotTrq_Qual == 2.0 means the device is active, and then
+         the difference "refMotTrq - estMotTrq" should be small.
+         in autonomous mode, estMotTrq_Qual should always be 2.0
+    H) gcpRelRckPos: angular position relative to fixed but initially 
+       unknown offset
+    I) gcpRelRckQual is constant 2f during nominal conditions
+       when a failure occurs the value is constant 1f
+    J) gearRat is constant 22f, a value of 0f was observed briefly
+       during failure instant
+    H) halfRckPos is constant 72f, a value of 0f was observed briefly
+       during failure instant
+
+2) steerPutCsv:
+    0) Time
+    A) command: (0 means Power Steering off, 1 means on)
+    B) TorqueVal: applied torque By PS, typically in the interval 
+       [-1.5, +1.5] SCT (1[SCT] = 9.5638[Nm], approssimatively)
+
+3) gokart poseLidarCsv:
+    0) Time
+    A) X: global position on the X axis of the center of mass [m]
+    B) Y: global position on the Y axis of the center of mass [m]
+    C) Phi: indicates the global heading [rad]
+    D) PosQuality: Pose Estimation Quality
+    E) TangVel: Tangential Velocity [m/s] (Vx)
+    F) SideSlip: [m/s] (Vy)
+    G) Rotrate: [rad/s] (Vphi)
+
+4) gokart statusGetCsv:
+    0) Time
+    A) StAng: steering angle with center at 0 [SCE] Range: [-0.7, 0.7] SCE
+       (No map available to rad, unfortunately)
+
+5) vmu931:
+    0) Time
+    A) TimeStamp (ms)
+    B) AccX [m/s^2]
+    C) AccY [m/s^2]
+    D) AccZ [m/s^2]
+    E) Roll [rad/s]
+    F) Pitch [rad/s]
+    G) Yaw  [rad/s]
+
+5) vmu1: (reduced version of the vmu931)
+    0) Time
+    A) TimeStamp (ms)
+    B) AccX  [m/s^2]
+    C) AccY  [m/s^2] 
+    D) Yaw   [rad/s]
+
+6) vlp16
+    0) Time
+    A) Not Clear to me (Look at Html, if you can understand it)
+    B) Not Clear to me (Look at Html, if you can understand it)
+
+6) labjack
+    0) Time
+    A) boost button (it's a button on the steering wheel) [V]
+    B) reverse gear button (it's a button on the steering wheel) [V]
+    C) throttle pedal [V]
+    D) Autonomous button
+    E) ADC5 (not used)
+
+7) rimoPutCsv rear wheel motors torque commands [ARMS] with sign 
+   convention around Y-axis 
+    0) Time
+    A) Left wheel
+    B) Right wheel
+
+8) rimoGetCsv (info from the rear motors)
+    0) Time
+    LEFT:
+    A) status_word
+    B) rotational rate around the y-axis with unit [rad/s]
+       a positive value usually corresponds to forward motion of the 
+       vehicle 
+    C) rms_motor_current, //
+    D) dc_bus_voltage, //
+    E) error_code, //
+    F) temperature_motor, //
+    G) temperature_heatsink
+    RIGHT:
+    H) status_word
+    I) rotational rate around the y-axis with unit [rad/s]
+       a positive value usually corresponds to forward motion of the 
+       vehicle 
+    J) rms_motor_current, //
+    K) dc_bus_voltage, //
+    L) error_code, //
+    M) temperature_motor, //
+    N) temperature_heatsink
+
+9) linmotGetCsv: information received from micro-autobox about linear motor
+   that controls the break of the gokart
+    0) Time
+    A) Control Word
+    B) state_variable & 0xffff, //
+    C) actual_position [m]
+    D) demand_position [m], //
+    E) winding_temp1  [°C] //
+    F) winding_temp2  [°C]
+
+9) linmotPutCsv: information received from micro-autobox about linear motor
+   that controls the break of the gokart
+    0) Time
+    A) Motor Command
