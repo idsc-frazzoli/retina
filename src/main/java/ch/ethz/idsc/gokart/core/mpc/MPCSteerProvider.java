@@ -53,23 +53,21 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   private SteerPutEvent torqueSteer(Tensor torqueMSG) {
     Scalar torqueCmd = torqueMSG.Get(0);
-    System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale)); // TODO remove after debugging
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
   }
 
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-    System.out.print("Beta: " + steering.Get(0)); // TODO remove after debugging
-    System.out.println(" Dot Beta: " + steering.Get(1)); // TODO remove after debugging
+    MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
+    if (MPCLudicConfig.GLOBAL.manualMode) {
+      return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
+    }
     Scalar torqueCmd = steerPositionController.iterate( //
         currAngle, //
         steering.Get(0), //
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-    System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
-    MPCSteerProvider.notifyLED(steering.Get(0), currAngle); // either directly query config or always publish but only listen when desired
-    // Scalar negator = torqueCmd.add(feedForward).negate();
-    return SteerPutEvent.createOn(torqueCmd.add(feedForward) /* .add(negator) */ );
+    return SteerPutEvent.createOn(torqueCmd.add(feedForward));
   }
 
   private static void notifyLED(Scalar referenceAngle, Scalar currAngle) {
