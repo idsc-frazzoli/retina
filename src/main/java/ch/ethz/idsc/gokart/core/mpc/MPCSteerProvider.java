@@ -69,9 +69,10 @@ import ch.ethz.idsc.tensor.sca.Clips;
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     this.count = this.count + 1;
     if (this.count >= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
-      System.out.println("Steer msg: " + steering.Get(0) + ", Pwr Steer: "+ currAngle);
+      System.out.println("LED message triggered");
       MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
       this.count = 0;
+      System.out.println("LED message sent");
     }
     if (MPCLudicConfig.GLOBAL.manualMode) {
       if (MPCLudicConfig.GLOBAL.powerSteer) {
@@ -90,6 +91,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private static void notifyLED(Scalar referenceAngle, Scalar currAngle) {
     int refIdx = angleToIdx(referenceAngle);
     int valIdx = angleToIdx(currAngle);
+    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: "+ valIdx);
     try {
       LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
     } catch (Exception e) {
