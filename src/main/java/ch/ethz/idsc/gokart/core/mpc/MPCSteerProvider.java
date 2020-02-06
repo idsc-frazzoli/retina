@@ -47,7 +47,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
     // ---
     Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
     if (torqueMode)
-      return mpcSteering.getSteeringTorque(time).map(this::torqueSteer); // use steering torque
+      return mpcSteering.getState(time).map(this::torqueSteer); // use steering torque
     else
       return mpcSteering.getSteering(time).map(this::angleSteer); // use steering angle
   }
@@ -56,6 +56,13 @@ import ch.ethz.idsc.tensor.sca.Clips;
     Scalar torqueCmd = torqueMSG.Get(0);
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+    this.count = this.count + 1;
+    if (this.count >= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
+      // System.out.println("LED message triggered, count = " + this.count);
+      MPCSteerProvider.notifyLED(torqueCmd.Get(3), currAngle);
+      this.count = 0;
+      // System.out.println("LED message sent, count = " + this.count);
+    }
     if (MPCLudicConfig.GLOBAL.powerSteer) {
       System.out.println("Torque msg: " + torqueCmd + ", Pwr Steer: " + feedForward);
       return SteerPutEvent.createOn(torqueCmd.add(feedForward).multiply(MPCLudicConfig.GLOBAL.torqueScale));
@@ -69,10 +76,10 @@ import ch.ethz.idsc.tensor.sca.Clips;
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     this.count = this.count + 1;
     if (this.count >= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
-      //System.out.println("LED message triggered, count = " + this.count);
+      // System.out.println("LED message triggered, count = " + this.count);
       MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
       this.count = 0;
-      //System.out.println("LED message sent, count = " + this.count);
+      // System.out.println("LED message sent, count = " + this.count);
     }
     if (MPCLudicConfig.GLOBAL.manualMode) {
       if (MPCLudicConfig.GLOBAL.powerSteer) {
@@ -91,7 +98,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private static void notifyLED(Scalar referenceAngle, Scalar currAngle) {
     int refIdx = angleToIdx(referenceAngle);
     int valIdx = angleToIdx(currAngle);
-    //System.out.println("Steer msg: " + refIdx + ", Pwr Steer: "+ valIdx);
+    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
     try {
       LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
     } catch (Exception e) {
