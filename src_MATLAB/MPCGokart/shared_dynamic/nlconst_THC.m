@@ -54,7 +54,7 @@ error = realPos-wantedpos;
 %v1=(tan(z(8))*z(7)^2/l);
 v1 = z(index.ab)+z(index.tv)-casadiGetSmoothMaxAcc(z(index.v));
 v2 = z(index.ab)-z(index.tv)-casadiGetSmoothMaxAcc(z(index.v));
-v3 = acclim(VELY,VELX,forwardacc);%-slack;
+v3 = acclim(VELY,VELX,forwardacc); % -slack;
 v4 = laterror-r-0.5*slack;
 v5 = -laterror-r-0.5*slack;
 

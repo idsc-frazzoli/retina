@@ -7,7 +7,6 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.gokart.calib.steer.RimoAxleConfiguration;
 import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
-import ch.ethz.idsc.gokart.core.adas.HapticSteerConfig;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
 import ch.ethz.idsc.gokart.dev.led.LEDStatus;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
@@ -19,30 +18,26 @@ import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
 import ch.ethz.idsc.owl.car.core.AxleConfiguration;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
-import ch.ethz.idsc.sophus.flt.ga.GeodesicIIR1;
-import ch.ethz.idsc.sophus.lie.rn.RnGeodesic;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
-// TODO JPH not too good location for vlp16 slowing
-
+  private static final Clip ANGLE_RANGE = Clips.interval(-0.5, 0.5);
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
-  private final GeodesicIIR1 velocityGeodesicIIR1;
-  private final HapticSteerConfig hapticSteerConfig = HapticSteerConfig.GLOBAL;
 
   public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode) {
     super(timing);
     this.mpcSteering = mpcSteering;
     this.torqueMode = torqueMode;
-    velocityGeodesicIIR1 = new GeodesicIIR1(RnGeodesic.INSTANCE, hapticSteerConfig.velocityFilter);
   }
 
   @Override // from PutProvider
@@ -66,48 +61,31 @@ import ch.ethz.idsc.tensor.qty.Quantity;
 
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-    System.out.print("Beta: " + steering.Get(0));
-    System.out.println(" Dot Beta: " + steering.Get(1));
+    System.out.print("Beta: " + steering.Get(0)); // TODO remove after debugging
+    System.out.println(" Dot Beta: " + steering.Get(1)); // TODO remove after debugging
     Scalar torqueCmd = steerPositionController.iterate( //
         currAngle, //
         steering.Get(0), //
         steering.Get(1));
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
     System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
-    MPCSteerProvider.notifyLED(steering, currAngle); // either directly query config or always publish but only listen when desired
-    return SteerPutEvent.createOn(torqueCmd.add(feedForward));
+    MPCSteerProvider.notifyLED(steering.Get(0), currAngle); // either directly query config or always publish but only listen when desired
+    // Scalar negator = torqueCmd.add(feedForward).negate();
+    return SteerPutEvent.createOn(torqueCmd.add(feedForward) /* .add(negator) */ );
   }
 
-
-  private Optional<Scalar> powerSteer() {
-    Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
-    return mpcSteering.getState(time).map(this::apply);
+  private static void notifyLED(Scalar referenceAngle, Scalar currAngle) {
+    int refIdx = angleToIdx(referenceAngle);
+    int valIdx = angleToIdx(currAngle);
+    try {
+      LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
-  private Scalar apply(Tensor state) {
-    Scalar feedForwardValue = SteerFeedForward.FUNCTION.apply(state.Get(5));
-    Scalar term0 = hapticSteerConfig.feedForward //
-        ? feedForwardValue //
-        : feedForwardValue.zero();
-    Scalar term1 = term1(state.Get(5), //
-        Tensors.of(state.Get(0), state.Get(1)));
-    return term0.add(term1);
-  }
-
-  private Scalar term1(Scalar currangle, Tensor velocity) {
-    AxleConfiguration axleConfiguration = RimoAxleConfiguration.frontFromSCE(currangle);
-    Tensor filteredVel = velocityGeodesicIIR1.apply(velocity);
-    Scalar latFront_LeftVel = axleConfiguration.wheel(0).adjoint(filteredVel).Get(1);
-    Scalar latFrontRightVel = axleConfiguration.wheel(1).adjoint(filteredVel).Get(1);
-    return hapticSteerConfig.latForceCompensationBoundaryClip().apply( //
-        latFront_LeftVel.add(latFrontRightVel).multiply(hapticSteerConfig.latForceCompensation));
-  }
-
-  private static void notifyLED(Tensor steering, Scalar currAngle) {
-    double num1 = steering.Get(0).number().doubleValue();
-    double num2 = currAngle.number().doubleValue();
-    int refIdx = (int) Math.min(Math.max(Math.round((num1 - 0.5) * -LEDStatus.NUM_LEDS), 0), LEDStatus.NUM_LEDS-1);
-    int valIdx= (int) Math.min(Math.max(Math.round((num2 - 0.5) * -LEDStatus.NUM_LEDS), 0), LEDStatus.NUM_LEDS-1);
-    LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
+  private static int angleToIdx(Scalar angle) {
+    double angleCorr = ANGLE_RANGE.apply(angle).number().doubleValue();
+    return (int) Math.round(0.5 - angleCorr) * (LEDStatus.NUM_LEDS - 1);
   }
 }

@@ -6,11 +6,11 @@
 %add force path (change that for yourself)
 addpath('..');
 userDir = getuserdir;
-%addpath([userDir '/Forces']); % Location of FORCES PRO
-%addpath('C:\Users\me\Documents\FORCES_client');
+addpath([userDir '/Forces']); % Location of FORCES PRO
+% addpath('C:\Users\me\Documents\FORCES_client');
 addpath('casadi');
 addpath('../shared_dynamic')
-    
+
 clear model
 clear problem
 clear all
@@ -20,11 +20,7 @@ behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 
 [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
-%maxSpeed=15;
-%pprog=0.3;
-ptau = 0.05;  
-plat = 0.0001;
-% Pacejka
+plat = 0.00001;
 FB = 9;
 FC = 1;
 FD = 10; % gravity acceleration considered
@@ -39,11 +35,13 @@ k_steer = 0.0125;
 
 % Control Points
 pointsO = 21; % number of Parameters
-pointsN = 5; % Number of points for B-splines (10 in 3 coordinates)
-
-% Spline
+pointsN = 15; % Number of points for B-splines (10 in 3 coordinates)
 splinestart = 1;
 nextsplinepoints = 0;
+
+%% TEND
+tend = 150;
+eulersteps = 10;
 
 % Runs
 tend = 300;
@@ -124,13 +122,15 @@ model.hu = [0;0;1;0;0];
 model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 %% Control points for trajectory sampling
- 
-% points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
-%           34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
+
+%       points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
+%          34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
 %           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
-points = [8,7,5,7,10,10,11,18,25,35,40,39,40,41,37,35,30,25,20,15;...          %x
-          10,25,35,45,55,61,70,72,70,65,60,50,42,30,18,12,13,12,10,8; ...    %y
-          4,4,4,4,4,4,4,4,3,3,2,2,2,3,2,2,2,2,3,3.5]';
+
+points = [10,10,20,10,20,20,40,60,80,90,90,90,80,50,20;...          %x
+            10,35,45,55,75,90,90,90,80,60,42,15,10,5,5; ...    %y
+            4,3,5,4,3,4,4,6,4,3,2,3,4,4,6]';
+
 points(:,3)=points(:,3)-0.2;
 
 %trajectorytimestep = integrator_stepsize;
@@ -174,10 +174,9 @@ model.lb(index.ab)=-inf;
 model.ub(index.tv)=1.7;
 model.lb(index.tv)=-1.7;
 
-% Slack variable
 model.lb(index.slack)=0;
 
-% Speed lower bound 
+% Speed lower bound
 model.lb(index.v)=0;
 
 % Steering Angle Bounds
@@ -208,7 +207,7 @@ fpoints = points(1:2,1:2);
 pdir = diff(fpoints);
 
 % Initial position and orientation of the gokart
-[pstartx,pstarty] = casadiDynamicBSPLINE(0.01,points); 
+[pstartx,pstarty] = casadiDynamicBSPLINE(0.01,points);
 pstart = [pstartx,pstarty];
 pangle = atan2(pdir(2),pdir(1));
 
@@ -262,13 +261,13 @@ for i = 1:tend
        ip = ip + 1;
     end
     splinepointhist(i,:)=[xs(index.s-index.nu),nextSplinePoints(:)'];
-    
+
     % Parameters
     problem.all_parameters = repmat(getParametersTHC(maxSpeed,maxxacc,...
         steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
         plag,plat,pprog,pab,pspeedcost,...
         pslack,ptv,ptau,nextSplinePoints) , model.N ,1);
-    
+
     % Initial state
     problem.x0 = x0(:);
 
@@ -287,7 +286,7 @@ for i = 1:tend
     outputM = reshape(output.alldata,[model.nvar,model.N])';
     x0 = outputM';
     u = repmat(outputM(1,1:index.nu),eulersteps,1);
-    
+
     % update
     [xhist,time] = euler(@(x,u)interstagedx_HC(x,u,problem.all_parameters),xs,u,integrator_stepsize/eulersteps);
     xs = xhist(end,:);
@@ -304,4 +303,3 @@ for i = 1:tend
     Percentage_Complete = 100*i/tend
 end
 draw
-

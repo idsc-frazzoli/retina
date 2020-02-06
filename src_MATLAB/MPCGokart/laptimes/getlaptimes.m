@@ -5,6 +5,7 @@ userdir = getuserdir;
 folders = {};
 poses = {};
 targetfiles = {};
+
 if(1)
 %     folders{end+1} = '\mpcposes\mb1\';
 %     folders{end+1} = '\mpcposes\mi1\';
@@ -20,19 +21,20 @@ if(1)
 %     folders{end+1} = '\mpcposes\t4\';
 %       folders{end+1} = '\mpcposes\EM_NT\';
       folders{end+1} = '\mpcposes\MPC_NT\';
-
 end
 % if(1)
 %     folders{end+1} = '\mpcposes\md1\';
 % end
 N = numel(folders);
 tic;
+
 startpos = [45,45];
 startrad = 4;
+
 lastwasin = 0;
 for i = 1:N
     folders{i}=strcat(userdir,folders{i});
-    poses = loadSmoothPoseData(folders{i});
+    poses = csvread(folders{i});
     times = [];
     [m,n]=size(poses);
     lastenter = 0;

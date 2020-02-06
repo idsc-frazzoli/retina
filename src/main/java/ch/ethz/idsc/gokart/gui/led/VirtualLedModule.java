@@ -18,7 +18,6 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 public class VirtualLedModule extends AbstractModule implements LEDListener {
-
   private final LEDLcmClient ledLcmClient = new LEDLcmClient();
   private final JFrame jFrame = new JFrame();
   private final JTextField statusLed = new JTextField();
