@@ -17,27 +17,40 @@ import ch.ethz.idsc.retina.util.sys.AppCustomization;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
-
 public class LudicControlModule extends AbstractModule {
   private final JFrame jFrame = new JFrame();
   private final WindowConfiguration windowConfiguration = //
       AppCustomization.load(getClass(), new WindowConfiguration());
   private Class<? extends MPCDrivingCommonModule> clazz = MPCDrivingLudicModule.class;
-  private boolean tParams=false;
+  private boolean tParams = false;
 
   @Override
   protected void first() {
     {
-      JPanel jPanel = new JPanel(new GridLayout(5, 2));
+      JPanel jPanel = new JPanel(new GridLayout(6, 2));
       {
-        jPanel.add(new JLabel("LED Steering:"));
+        jPanel.add(new JLabel("Manual Steering:"));
       }
       {
         JToggleButton jToggleButton = new JToggleButton("Off");
         jToggleButton.addActionListener(actionEvent -> {
           endLudic();
-          MPCLudicConfig.GLOBAL.ledSteer = jToggleButton.isSelected();
+          MPCLudicConfig.GLOBAL.manualMode = jToggleButton.isSelected();
           jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
+          System.out.println("Steering in Manual Mode: "+ MPCLudicConfig.GLOBAL.manualMode);
+        });
+        jPanel.add(jToggleButton);
+      }
+      {
+        jPanel.add(new JLabel("Power Steering:"));
+      }
+      {
+        JToggleButton jToggleButton = new JToggleButton("Off");
+        jToggleButton.addActionListener(actionEvent -> {
+          endLudic();
+          MPCLudicConfig.GLOBAL.powerSteer = jToggleButton.isSelected();
+          jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
+          System.out.println("Power Steering: "+ MPCLudicConfig.GLOBAL.powerSteer);
         });
         jPanel.add(jToggleButton);
       }
@@ -50,19 +63,19 @@ public class LudicControlModule extends AbstractModule {
         jComboBox.addActionListener(actionEvent -> {
           endLudic();
           switch (jComboBox.getSelectedIndex()) {
-            default:
-            case 0: // use Ludic MPC model to command steering angle
-              clazz = MPCDrivingLudicModule.class;
-              tParams = false;
-              break;
-            case 1: // use Torque MPC model to command torque
-              clazz = MPCDrivingTorqueModule.class;
-              tParams = true;
-              break;
-            case 2: // use Torque MPC model, but command steering angle
-              clazz = MPCDrivingCombinedTorqueModule.class;
-              tParams = true;
-              break;
+          default:
+          case 0: // use Ludic MPC model to command steering angle
+            clazz = MPCDrivingLudicModule.class;
+            tParams = false;
+            break;
+          case 1: // use Torque MPC model to command torque
+            clazz = MPCDrivingTorqueModule.class;
+            tParams = true;
+            break;
+          case 2: // use Torque MPC model, but command steering angle
+            clazz = MPCDrivingCombinedTorqueModule.class;
+            tParams = true;
+            break;
           }
           System.out.println(clazz);
         });
@@ -93,7 +106,7 @@ public class LudicControlModule extends AbstractModule {
   }
 
   private JButton createButton(String name, MPCLudicDriverConfigs configs) {
-    return createButton(name,configs.get());
+    return createButton(name, configs.get());
   }
 
   private JButton createButton(String name, MPCLudicConfig config) {

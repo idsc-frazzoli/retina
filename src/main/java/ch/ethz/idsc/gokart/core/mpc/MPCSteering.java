@@ -24,7 +24,7 @@ import ch.ethz.idsc.tensor.Tensor;
   /** get the Velocity and pose of the gokart
    * 
    * @param time with unit [s]
-   * @return {Ux,Uy,dotPsi,X,Y,Psi},
+   * @return {wanted steering torque [SCT], wanted steering torque change rate [SCT*s^-1],wanted steering angle [SCE], wanted steering angle change rate [SCE*s^-1]},
    * or Optional.empty() if no steering is defined at given time */
   abstract Optional<Tensor> getState(Scalar time);
 }

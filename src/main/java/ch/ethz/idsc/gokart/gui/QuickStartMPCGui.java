@@ -25,11 +25,8 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
 
   static final List<Class<? extends AbstractModule>> MODULES_CFG_MIN = Arrays.asList( //
       Vmu931LcmServerModule.class, // vmu931 imu
-      // Vmu932LcmServerModule.class, // vmu932 imu
       IgnitionModule.class, // actuation monitoring
       GlobalViewLcmModule.class, // initialize localization
-      // TrackReconModule.class, //
-      // ParametersModule.class // configure parameters
       KittLedModule.class // to test leds
   );
   static final List<Class<? extends AbstractModule>> MODULES_TRACK = Arrays.asList( //
@@ -38,8 +35,6 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
       NaivePowerSteeringModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_MPC_MIN = Arrays.asList( //
-      // PredictiveTorqueVectoringModule.class, //
-      // NaivePowerSteeringModule.class, //
       LudicControlModule.class, //
       VirtualLedModule.class, //
       ParametersModule.class // configure parameters

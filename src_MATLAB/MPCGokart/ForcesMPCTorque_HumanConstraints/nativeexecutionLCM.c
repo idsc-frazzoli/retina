@@ -65,8 +65,8 @@ MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 static void getLastControls(
 	MPCPathFollowing_float* ab,
 	MPCPathFollowing_float* dotab,
-    MPCPathFollowing_float* tau,
-    MPCPathFollowing_float* dottau,
+  MPCPathFollowing_float* tau,
+  MPCPathFollowing_float* dottau,
 	//MPCPathFollowing_float* beta,
 	//MPCPathFollowing_float* dotbeta,
 	double* dStepTime,
@@ -83,6 +83,8 @@ static void getLastControls(
 	*dottau = lastSolution[i*S + 1];
 	//*beta = lastSolution[i*S+12];
 	//*dotbeta = lastSolution[i*S+14];
+	//printf("in fn Beta: %f\n",lastSolution[i*S+12]);
+
 }
 
 static void para_handler(const lcm_recv_buf_t *rbuf,
@@ -137,10 +139,12 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime); // limits AB
 		//initbeta = getInitSteer(lbeta, ldotbeta, dTime); // limits Beta
 		inittau = getInitTau(ltau, ldottau, dTime);
-	} else
+		printf("in loop Beta: %f\n",initbeta);
+	} else{
 		initab = 0;
+		printf("used else");}
 
-	// [x,y,theta,dottheta,v,yv,ab,beta,s,dotbeta,tau]
+	// [x,y,theta,dottheta,v,yv,beta,dotbeta,ab,tau,s]
 	inittau = lastCRMsg.state.tau;
 	params.xinit[0] = lastCRMsg.state.X+cos(lastCRMsg.state.Psi)*backToCoM;
 	params.xinit[1] = lastCRMsg.state.Y+sin(lastCRMsg.state.Psi)*backToCoM;
@@ -154,7 +158,9 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[9] = lastCRMsg.state.dotbeta;
 	params.xinit[10] = inittau;
 
-	/* for(int i = 0; i < 7; i++) {
+	printf("init DotBeta: %f\n",params.xinit[9]);
+	/* for(int i = 0; i<10;i++)
+
 		printf("%i: %f\n",i,params.xinit[i]); */
 
 	// gather parameter data

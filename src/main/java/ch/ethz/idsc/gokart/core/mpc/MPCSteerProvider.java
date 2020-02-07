@@ -24,13 +24,14 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
-  private static final Clip ANGLE_RANGE = Clips.interval(-0.5, 0.5);
+  private static final Clip ANGLE_RANGE = Clips.interval(Quantity.of(-0.5, "SCE"), Quantity.of(0.5, "SCE"));
   // ---
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
+  private int count = 0;
 
   public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode) {
     super(timing);
@@ -46,35 +47,58 @@ import ch.ethz.idsc.tensor.sca.Clips;
     // ---
     Scalar time = Quantity.of(timing.seconds(), SI.SECOND);
     if (torqueMode)
-      return mpcSteering.getSteeringTorque(time).map(this::torqueSteer); // use steering torque
+      return mpcSteering.getState(time).map(this::torqueSteer); // use steering torque
     else
       return mpcSteering.getSteering(time).map(this::angleSteer); // use steering angle
   }
 
   private SteerPutEvent torqueSteer(Tensor torqueMSG) {
     Scalar torqueCmd = torqueMSG.Get(0);
-    System.out.println(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale)); // TODO remove after debugging
+    Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
+    Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+    this.count = this.count + 1;
+    if (this.count >= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
+      // System.out.println("LED message triggered, count = " + this.count);
+      MPCSteerProvider.notifyLED(torqueCmd.Get(3), currAngle);
+      this.count = 0;
+      // System.out.println("LED message sent, count = " + this.count);
+    }
+    if (MPCLudicConfig.GLOBAL.powerSteer) {
+      System.out.println("Torque msg: " + torqueCmd + ", Pwr Steer: " + feedForward);
+      return SteerPutEvent.createOn(torqueCmd.add(feedForward).multiply(MPCLudicConfig.GLOBAL.torqueScale));
+    }
+    System.out.println("Torque msg: " + torqueCmd + ", Pwr Steer: off");
     return SteerPutEvent.createOn(torqueCmd.multiply(MPCLudicConfig.GLOBAL.torqueScale));
   }
 
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
-    System.out.print("Beta: " + steering.Get(0)); // TODO remove after debugging
-    System.out.println(" Dot Beta: " + steering.Get(1)); // TODO remove after debugging
+    Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
+    this.count = this.count + 1;
+    if (this.count >= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
+      // System.out.println("LED message triggered, count = " + this.count);
+      MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
+      this.count = 0;
+      // System.out.println("LED message sent, count = " + this.count);
+    }
+    if (MPCLudicConfig.GLOBAL.manualMode) {
+      if (MPCLudicConfig.GLOBAL.powerSteer) {
+        return SteerPutEvent.createOn(feedForward);
+      } else {
+        return SteerPutEvent.createOn(Quantity.of(0, "SCT"));
+      }
+    }
     Scalar torqueCmd = steerPositionController.iterate( //
         currAngle, //
         steering.Get(0), //
         steering.Get(1));
-    Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-    System.out.println(torqueCmd.add(feedForward)); // TODO remove after debugging
-    MPCSteerProvider.notifyLED(steering.Get(0), currAngle); // either directly query config or always publish but only listen when desired
-    // Scalar negator = torqueCmd.add(feedForward).negate();
-    return SteerPutEvent.createOn(torqueCmd.add(feedForward) /* .add(negator) */ );
+    return SteerPutEvent.createOn(torqueCmd.add(feedForward));
   }
 
   private static void notifyLED(Scalar referenceAngle, Scalar currAngle) {
     int refIdx = angleToIdx(referenceAngle);
     int valIdx = angleToIdx(currAngle);
+    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
     try {
       LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
     } catch (Exception e) {
@@ -84,6 +108,6 @@ import ch.ethz.idsc.tensor.sca.Clips;
 
   private static int angleToIdx(Scalar angle) {
     double angleCorr = ANGLE_RANGE.apply(angle).number().doubleValue();
-    return (int) Math.round(0.5 - angleCorr) * (LEDStatus.NUM_LEDS - 1);
+    return (int) Math.round((0.5 - angleCorr) * (LEDStatus.NUM_LEDS - 1));
   }
 }
