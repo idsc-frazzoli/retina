@@ -63,27 +63,26 @@ MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 
 // [dotab,dottau,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s,dotbeta,tau]
 static void getLastControls(
-        MPCPathFollowing_float* ab,
-        MPCPathFollowing_float* dotab,
-        MPCPathFollowing_float* tau,
-        MPCPathFollowing_float* dottau,
-		MPCPathFollowing_float* beta,
-		MPCPathFollowing_float* dotbeta,
-        double* dStepTime,
-        double time) {
+	MPCPathFollowing_float* ab,
+	MPCPathFollowing_float* dotab,
+    MPCPathFollowing_float* tau,
+    MPCPathFollowing_float* dottau,
+	//MPCPathFollowing_float* beta,
+	//MPCPathFollowing_float* dotbeta,
+	double* dStepTime,
+	double time){
 	double lastSolutionTime = timeOfLastSolution;
 	double dTime = time-lastSolutionTime;
 	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
 	*dStepTime = dTime - lastStep*ISS;
 	// printf("timeval: %f\n",time);
 	// printf("last step: %d/dtime %f\n",lastStep,*dStepTime);
-	*ab = lastSolution[i*S + 11];
+	*ab = lastSolution[i*S+11];
 	*dotab = lastSolution[i*S];
 	*tau = lastSolution[i*S + 15];
 	*dottau = lastSolution[i*S + 1];
-	*beta = lastSolution[i*S+12];
-	*dotbeta = lastSolution[i*S+14];
-	
+	//*beta = lastSolution[i*S+12];
+	//*dotbeta = lastSolution[i*S+14];
 }
 
 static void para_handler(const lcm_recv_buf_t *rbuf,
@@ -104,7 +103,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	// printf("received control message\n");
 	memcpy((int8_t*)&lastCRMsg, msg->data, msg->data_length);
     /* for (int i = 0; i < POINTSN; i++) {
-    		struct PathEntry pe = lastCRMsg.path.controlPoints[i];
+		struct PathEntry pe = lastCRMsg.path.controlPoints[i];
 		printf("i=%d: pointX:%f\n",i,pe.pex);
 		printf("i=%d: pointY:%f\n",i,pe.pey);
 		printf("i=%d: pointR:%f\n",i,pe.per);
@@ -116,13 +115,13 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	MPCPathFollowing_float ldotab;
 	MPCPathFollowing_float ltau;
 	MPCPathFollowing_float ldottau;
-	MPCPathFollowing_float lbeta;
-	MPCPathFollowing_float ldotbeta;
+	//MPCPathFollowing_float lbeta;
+	//MPCPathFollowing_float ldotbeta;
 	double dTime;
 
 	MPCPathFollowing_float initab;
 	MPCPathFollowing_float inittau;
-	MPCPathFollowing_float initbeta;
+	//MPCPathFollowing_float initbeta;
 
 	if (lastCRMsg.state.time-timeOfLastSolution<timeTolerance) {
 		getLastControls(
@@ -130,18 +129,18 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			&ldotab,
 			&ltau,
 			&ldottau,
+		    //	&lbeta,
+	  	    //	&ldotbeta,
 			&dTime,
-			&lbeta,
-			&ldotbeta,
 			lastCRMsg.state.time);
 
-		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime);
-		initbeta = getInitSteer(lbeta, ldotbeta, dTime);
+		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime); // limits AB
+		//initbeta = getInitSteer(lbeta, ldotbeta, dTime); // limits Beta
 		inittau = getInitTau(ltau, ldottau, dTime);
 	} else
-	    initab = 0;
+		initab = 0;
 
-	// [x,y,theta,dottheta,v,yv,beta,dotbeta,ab,tau,s]
+	// [x,y,theta,dottheta,v,yv,ab,beta,s,dotbeta,tau]
 	inittau = lastCRMsg.state.tau;
 	params.xinit[0] = lastCRMsg.state.X+cos(lastCRMsg.state.Psi)*backToCoM;
 	params.xinit[1] = lastCRMsg.state.Y+sin(lastCRMsg.state.Psi)*backToCoM;
@@ -150,17 +149,16 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[4] = lastCRMsg.state.Ux;
 	params.xinit[5] = lastCRMsg.state.Uy+lastCRMsg.state.dotPsi*backToCoM;
 	params.xinit[6] = initab;
-	params.xinit[7] = initbeta;
+	params.xinit[7] = lastCRMsg.state.s;
 	params.xinit[8] = lastCRMsg.path.startingProgress;
 	params.xinit[9] = lastCRMsg.state.dotbeta;
 	params.xinit[10] = inittau;
-	
 
-	/* for(int i = 0; i<7;i++)
+	/* for(int i = 0; i < 7; i++) {
 		printf("%i: %f\n",i,params.xinit[i]); */
 
 	// gather parameter data
-	int pl = 3*POINTSN+NUMPARAM;
+	int pl = 3*POINTSN + NUMPARAM;
 
 	printf("parameters\n");
 	for (int i = 0; i < N; i++){
@@ -197,7 +195,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	for (int i = 0; i < N*pl; i++)
 		printf("i=%d: %f\n", i, params.all_parameters[i]);
 
-	memcpy(params.x0, lastSolution, sizeof(MPCPathFollowing_float)*S*N);
+	memcpy(params.x0, lastSolution,sizeof(MPCPathFollowing_float)*S*N);
 	// TODO MH fix for 2PI wrap around problem: change initial guess according
 	// change amount:
 	MPCPathFollowing_float deltaPsi = lastCRMsg.state.Psi - lastInitialPsi;
@@ -211,9 +209,9 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	exitflag = MPCPathFollowing_solve(&params, &myoutput, &myinfo, stdout, pt2Function);
 	// look at data
 	// optimal or maxit (maxit is ok in most cases)
-	if(exitflag == 1 || exitflag == 0){
-		memcpy(lastSolution, myoutput.alldata, sizeof(MPCPathFollowing_float)*S*N);
-		//printf("lastSolution: %f\n", lastSolution[341]);
+	if (exitflag == 1 || exitflag == 0){
+		memcpy(lastSolution, myoutput.alldata,sizeof(MPCPathFollowing_float)*S*N);
+		// printf("lastSolution: %f\n", lastSolution[341]);
 		timeOfLastSolution = lastCRMsg.state.time;
 
 		// [dotab,dotbeta,ds,tv,slack,x,y,theta,dottheta,v,yv,ab,beta,s]
@@ -228,13 +226,13 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			MPCPathFollowing_float dotPsi = myoutput.alldata[i*S + 8];
 			cnsmsg.cns[i].control.uL = ab - tv;
 			cnsmsg.cns[i].control.uR = ab + tv;
-			cnsmsg.cns[i].control.udotS = myoutput.alldata[i*S + 14];
+			cnsmsg.cns[i].control.udotS = 0; // not in use
 			cnsmsg.cns[i].control.uB = 0; // not in use
 			cnsmsg.cns[i].control.aB = ab;
 			cnsmsg.cns[i].control.udotT = myoutput.alldata[i*S + 1];
-			cnsmsg.cns[i].state.time = i*ISS + lastCRMsg.state.time;
+			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
 			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S + 9];
-			cnsmsg.cns[i].state.Uy = myoutput.alldata[i*S + 10]-lastCRMsg.state.dotPsi*backToCoM;
+			cnsmsg.cns[i].state.Uy = myoutput.alldata[i*S + 10] - lastCRMsg.state.dotPsi*backToCoM;
 			// printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+6],myoutput.alldata[i*S+10],myoutput.alldata[i*S+2]);
 			cnsmsg.cns[i].state.dotPsi = dotPsi;
 			cnsmsg.cns[i].state.X = myoutput.alldata[i*S + 5] - cos(psi)*backToCoM;
@@ -275,7 +273,7 @@ int main(int argc, char *argv[]) {
 	} */
 
 	lcm = lcm_create(NULL);
-	if (!lcm)
+	if(!lcm)
 		return 1;
 
 	// return format [state]
