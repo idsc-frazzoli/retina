@@ -56,6 +56,8 @@ import ch.ethz.idsc.tensor.qty.Quantity;
       if (steerColumnInterface.isSteerColumnCalibrated()) {
         // TODO is this smart? Can we get the info directly from the getEvenet
         s = steerColumnInterface.getSteerColumnEncoderCentered();
+        uDots = getEvent.motAsp();
+        tau = getEvent.estMotTrq();
         lastUpdate = getTime();
       }
     }
