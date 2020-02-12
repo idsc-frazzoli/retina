@@ -22,12 +22,24 @@ clear all
 behaviour='custom'; %aggressive,medium, beginner,drifting,custom,collision
 [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
+% FB = 9;
+% FC = 1;
+% FD = 7; % gravity acceleration considered
+% RB = 5.2;
+% RC = 1.1;
+% RD = 7;
+% FB = 9;
+% FC = 1;
+% FD = 6.5;
+% RB = 5.2;
+% RC = 1.1;
+% RD = 6;
 FB = 9;
 FC = 1;
-FD = 7; % gravity acceleration considered
+FD = 10;
 RB = 5.2;
 RC = 1.1;
-RD = 7;
+RD = 10;
 J_steer=0.8875;
 b_steer=0.1625;
 k_steer=0.0125;

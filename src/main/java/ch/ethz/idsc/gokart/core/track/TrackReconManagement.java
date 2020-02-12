@@ -84,7 +84,7 @@ public class TrackReconManagement {
   }
 
   /** set start position
-   * 
+   *
    * @param pose {x[m], y[m], angle} */
   public void setStart(Tensor pose) {
     Tensor transform = occupancyGrid.getTransform();

@@ -13,6 +13,7 @@ import java.util.Optional;
 import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.gokart.core.map.DubendorfFrame;
+import ch.ethz.idsc.gokart.core.map.RieterFrame;
 import ch.ethz.idsc.gokart.core.pos.GokartPoseEvent;
 import ch.ethz.idsc.gokart.lcm.OfflineLogPlayer;
 import ch.ethz.idsc.gokart.offline.api.FirstLogMessage;
@@ -58,7 +59,7 @@ public enum VideoBackground {
 
   public static BackgroundImage auto(File file) throws IOException {
     File directory = file.getParentFile();
-    return BackgroundImage.from(new File(directory, directory.getName() + ".bck.png"), DubendorfFrame._20190401);
+    return BackgroundImage.from(new File(directory, directory.getName() + ".bck.png"), RieterFrame._20191022);
   }
 
   public static File render(File directory) throws IOException {
@@ -73,7 +74,7 @@ public enum VideoBackground {
     ObstacleAggregate obstacleAggregate = new ObstacleAggregate( //
         GokartPoseChannel.INSTANCE.channel(), //
         graphics, //
-        DubendorfFrame._20190401, //
+        RieterFrame._20191022, //
         GokartPoseEvent.of(optional.get()).getPose());
     System.out.print("processing... ");
     OfflineLogPlayer.process(gokartLogInterface.file(), obstacleAggregate);

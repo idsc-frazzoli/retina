@@ -1,19 +1,36 @@
 clear
 close all
-userdir = getuserdir
+userdir = getuserdir;
 
 folders = {};
 poses = {};
 targetfiles = {};
 
 if(1)
-    % folders{end+1} ='\Documents\2019\ETH\Sem proj\Steering Model\PoseData2\b.csv';
-    folders{end+1} ='\Documents\2019\ETH\Sem proj\Steering Model\PoseData2\m.csv';
+    % folders{end+1} = '\mpcposes\mb1\';
+    % folders{end+1} = '\mpcposes\mi1\';
+    % folders{end+1} = '\mpcposes\ma1\';
+    % folders{end+1} = '\mpcposes\mp1\';
+    % folders{end+1} = '\mpcposes\mp2\';
+    % folders{end+1} = '\mpcposes\mp3\';
+    % folders{end+1} = '\mpcposes\mp4\';
+    % folders{end+1} = '\mpcposes\mp5\';
+    % folders{end+1} = '\mpcposes\t1\';
+    % folders{end+1} = '\mpcposes\t2\';
+    % folders{end+1} = '\mpcposes\t3\';
+    % folders{end+1} = '\mpcposes\t4\';
+    % folders{end+1} = '\mpcposes\EM_NT\';
+    folders{end+1} = '\mpcposes\MPC_NT\';
 end
+% if(1)
+%     folders{end+1} = '\mpcposes\md1\';
+% end
 N = numel(folders);
 tic;
-startpos = [30,25];
-startrad = 2;
+
+startpos = [45,45];
+startrad = 4;
+
 lastwasin = 0;
 for i = 1:N
     folders{i}=strcat(userdir,folders{i});
@@ -35,7 +52,7 @@ for i = 1:N
             lastwasin = 0;
         end
     end
-    times(2:end)
-    mean(times(2:end))
-    min(times(2:end))
+    times
+    Media = mean(times(2:end-1))
+    Minimo = min(times(2:end-1))
 end
