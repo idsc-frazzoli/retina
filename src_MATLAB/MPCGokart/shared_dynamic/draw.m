@@ -73,11 +73,11 @@ hold on
 yyaxis left
 plot(lhistory(:,1),lhistory(:,index.beta+1))
 ylabel('steering position [rad]')
-axis([-inf inf -1 1])
+axis([-inf inf -0.5 0.5])
 yyaxis right
 stairs(lhistory(:,1), lhistory(:,index.dotbeta+1))
 %axis([-inf inf -2 2])
-axis([-inf inf -4 4])
+axis([-inf inf -0.5 0.5])
 ylabel('steering change rate [rad/s]')
 hold off
 title('steering input');

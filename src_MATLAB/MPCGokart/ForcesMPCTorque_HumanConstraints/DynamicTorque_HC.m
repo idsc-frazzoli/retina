@@ -4,7 +4,6 @@
 % code by mh,em,ta
 % annotation mcp,ta
 
-
 %add force path (change that for yourself)
 addpath('..');
 userDir = getuserdir;
@@ -38,19 +37,35 @@ ptau = 0.0001;
 % Simulation Pacejka constants, real values changalbe in java
 FB = 9;
 FC = 1;
-FD = 6.5;
+FD = 7.2;
 RB = 5.2;
 RC = 1.1;
-RD = 6;
+RD = 7;
 
-% Steering column properties
-J_steer = 2; % 0.01
-b_steer = 0.2;
-k_steer = 0.1;
+% Steering Column
+J_steer = 3.3;
+b_steer = 0.24; % 2.4895;
+k_steer = 0.9595; % 1.3092;
 
+% Control Points
+pointsO = 21; % number of Parameters
+pointsN = 15; % Number of points for B-splines (10 in 3 coordinates)
+
+% Spline
+splinestart = 1;
+nextsplinepoints = 0;
+
+% Runs
+tend = 250;
+
+% Integrator step
+eulersteps = 10;
+solvetimes = [];
+integrator_stepsize = 0.1;
 
 %% global parameters index
 global index
+
 index.dotab = 1;
 index.dottau = 2;
 index.ds = 3;
@@ -67,16 +82,19 @@ index.beta = 13;
 index.s = 14;
 index.dotbeta = 15;
 index.tau = 16;
+
 %Variable sizes
 index.ns = 11; %number of state vars
 index.nu = 5; %number of control vars
 index.nv = index.ns+index.nu;   % = 16
 index.sb = index.nu+1;          % = 6
+
 %Gokart Parameters
 index.ps = 1;
 index.pax = 2;
 index.pbeta = 3;
 index.pmoi = 4;
+
 % Cost function parameters
 index.pacFB = 5;
 index.pacFC = 6;
@@ -96,56 +114,46 @@ index.pslack = 19;
 index.ptv = 20;
 index.ptau = 21;
 
-index.pointsO = 21; % number of parameters
-index.pointsN = 15; % number of spline points to use
-splinestart = 1;
-nextsplinepoints = 0;
+index.pointsO = 21; % number of Parameters
+index.pointsN = 15; % number of Spline points to use
 
+%% model definition
+model.N = 31;                       % Forward horizon
 
-solvetimes = [];
-integrator_stepsize = 0.1;
-
-%% model params
-model.N = 31;                       % forward horizon
 model.nvar = index.nv;              % = 16
 model.neq = index.ns;               % = 11
+
 model.eq = @(z,p) RK4( ...
     z(index.sb:end), ...
     z(1:index.nu), ...
     @(x,u,p)interstagedx_THC(x,u,p), ... % PACEJKA PARAMETERS
     integrator_stepsize,...
     p);
+
 model.E = [zeros(index.ns,index.nu), eye(index.ns)];
 
-l = 1;
+%% inequality constraints
 
-%limit lateral acceleration
-model.nh = 5;
+model.nh = 5;% Number of inequality constraints
 model.ineq = @(z,p) nlconst_THC(z,p);
-%model.hu = [36,0];
-%model.hl = [-inf,-inf];
 model.hu = [0;0;1;0;0];
 model.hl = [-inf;-inf;-inf;-inf;-inf];
 
+%% Control points for trajectory sampling
 
-% Random control points for trajectory sampling
-% points = [36.2,52,57.2,53,52,47,41.8;...          %x
-%     44.933,58.2,53.8,49,44,43,38.33; ...           %y
-%     1.8,1.8,1.8,0.5,0.5,0.5,1.8]';                      %phi
-
-
-      points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20;...          %x
-         34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
+points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20; ...          %x
+          34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
-% points = [28,35,42,55.2,56,51,42,40;...          %x
+
+% points = [36.2,52,57.2,53,52,47,41.8; ...          %x
+%         44.933,58.2,53.8,49,44,43,38.33; ...           %y
+%         1.8,1.8,1.8,0.5,0.5,0.5,1.8]';                      %phi
+
+% points = [28,35,42,55.2,56,51,42,40; ...          %x
 %           41,60,43,56,43,40,44,31; ...    %y
 %           2,1.5,1.2,1.6,0.6,0.8,1.2,1.6]';   %phi
-% %points = getPoints('/wildpoints.csv');
-points(:,3)=points(:,3)-0.2;
-%points = [36.2,52,57.2,53,55,47,41.8;44.933,58.2,53.8,49,44,43,38.33;1.8,1.8,1.8,0.2,0.2,0.2,1.8]';
-%points = [0,40,40,5,0;0,0,10,9,10]';
-
-trajectorytimestep = integrator_stepsize;
+points(:,3) = points(:,3) - 0.2;
+%% Number of parameters
 model.npar = index.pointsO + 3*index.pointsN;
 
 %Model Cost function
@@ -167,31 +175,44 @@ for i=1:model.N
         p(index.ptau));
 end
 
-
-
 model.xinitidx = index.sb:index.nv;
 
 %% Upper & Lower bounds
 model.ub = ones(1,index.nv)*inf;
 model.lb = -ones(1,index.nv)*inf;
 
-model.ub(index.ds) = 5;
-model.lb(index.ds) = -1;
-model.lb(index.ab) = -inf;
-model.ub(index.tv) = 1.6;
-model.lb(index.tv) = -1.6;
-model.lb(index.slack) = -0; % size of buffer zone around walls in meters
-model.lb(index.v) = 0;
-model.ub(index.beta) = 0.5;
-model.lb(index.beta) = -0.5;
-model.ub(index.s) = index.pointsN - 2;
-model.lb(index.s) = 0;
-model.ub(index.tau) = 2;
-model.lb(index.tau) = -2;
-model.ub(index.dottau) = 20;
-model.lb(index.dottau) = -20;
+% delta path progress
+model.ub(index.ds)=5;
+model.lb(index.ds)=-1;
 
+% Forward force lower bound
+model.lb(index.ab)=-inf;
 
+% Torque vectoring
+model.ub(index.tv)=1.2;
+model.lb(index.tv)=-1.2;
+
+% Slack variable
+model.lb(index.slack)=0;%Size of buffer zone around walls in meters
+
+% Speed lower bound
+model.lb(index.v)=0;
+
+% Steering Angle Bounds
+model.ub(index.beta)=0.5;
+model.lb(index.beta)=-0.5;
+
+% Path Progress bounds
+model.ub(index.s)=index.pointsN-2;
+model.lb(index.s)=0;
+
+% Torque Bounds
+model.ub(index.tau)=2;
+model.lb(index.tau)=-2;
+
+% Variation Torque
+model.ub(index.dottau)=15;
+model.lb(index.dottau)=-15;
 
 %% CodeOptions for FORCES solver
 codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
@@ -205,30 +226,8 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output); % need FORCES license to run
 
-%% CodeOptions for FORCES solver
-% codeoptions_stop = getOptions('MPCPathFollowing_stop'); % Need FORCES License to run
-% codeoptions_stop.maxit = 200;    % maximum number of iterations
-% codeoptions_stop.printlevel = 0; % use printlevel = 2 to print progress (but not for timings)
-% codeoptions_stop.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
-% codeoptions_stop.cleanup = 0;
-% codeoptions_stop.timing = 1;
-% model_stop=model;
-% for i=1:model_stop.N
-%    model_stop.objective{i} = @(z,p)objective2(...
-%        z,...
-%        getPointsFromParameters(p, pointsO, pointsN),...
-%        getRadiiFromParameters(p, pointsO, pointsN),...
-%        p(index.ps),...
-%        p(index.pax),...
-%        p(index.pbeta));
-% end
-% output_stop = newOutput('alldata', 1:model.N, 1:model.nvar);
-%
-% FORCES_NLP(model_stop, codeoptions_stop,output_stop); % Need FORCES License to run
 
-%% Tend
-tend = 250;
-eulersteps = 10;
+%% Initialization
 planintervall = 1;
 fpoints = points(1:2,1:2);
 pdir = diff(fpoints);
@@ -256,36 +255,30 @@ x0 = [zeros(model.N,index.nu),repmat(xs,model.N,1)]';
 tstart = 1;
 
 for i = 1:tend
-    tstart = i;    
+    tstart = i;
     %find bspline
     if(1)
-        if xs(index.s-index.nu) > 1
+        if xs(index.s - index.nu) > 1
             nextSplinePoints;
-            % spline step forward
-            splinestart = splinestart + 1;
-            xs(index.s-index.nu) =xs(index.s - index.nu) - 1;
-            % if(splinestart > pointsN)
-            % splinestart = splinestart - pointsN;
-            % end
+            %spline step forward
+            splinestart = splinestart+1;
+            xs(index.s-index.nu)=xs(index.s-index.nu)-1;
         end
     end
-    
     xs(index.ab-index.nu)=min(casadiGetMaxAcc(xs(index.v-index.nu))-0.0001,xs(index.ab-index.nu));
     problem.xinit = xs';
-    %do it every time because we don't care about the performance of this
-    %script
     ip = splinestart;
     [nkp, ~] = size(points);
     nextSplinePoints = zeros(index.pointsN,3);
-    for jj=1:index.pointsN
-        while ip>nkp
+    for jj = 1:index.pointsN
+        while ip > nkp
             ip = ip - nkp;
         end
         nextSplinePoints(jj,:) = points(ip,:);
         ip = ip + 1;
     end
     splinepointhist(i,:) = [xs(index.s-index.nu), nextSplinePoints(:)'];
-    
+
     problem.all_parameters = repmat (getParametersTHC(maxSpeed,maxxacc,...
         steeringreg,specificmoi,FB,FC,FD,RB,RC,RD,b_steer,k_steer,J_steer,...
         plag,plat,pprog,pab,pspeedcost,...
@@ -293,10 +286,9 @@ for i = 1:tend
 
     problem.x0 = x0(:);
 
-    
     % solve mpc
     [output,exitflag,info] = MPCPathFollowing(problem);
-    solvetimes(end+1)=info.solvetime;
+    solvetimes(end+1) = info.solvetime;
     if(exitflag==0)
         a = 1;
     end
@@ -304,8 +296,8 @@ for i = 1:tend
         drawT
         return
     end
-    %nextSplinePoints
-    %get output
+
+    % get output
     outputM = reshape(output.alldata,[model.nvar,model.N])';
     x0 = outputM';
     u = repmat(outputM(1,1:index.nu),eulersteps,1);
@@ -327,3 +319,23 @@ end
 
 drawT
 
+figure
+hold on
+title('Steering Torque')
+axis([-inf inf -2 2])
+ylabel('Torque [SCT]')
+plot(lhistory(:,1),lhistory(:,index.tau+1));
+
+figure
+hold on
+title('path progress')
+yyaxis left
+axis([-inf inf 0 3])
+ylabel('progress rate [1/s]')
+plot(lhistory(:,1),lhistory(:,index.ds+1));
+
+yyaxis right
+ylabel('progress [1]')
+axis([-inf inf 0 2])
+xlabel('[s]')
+plot(lhistory(:,1), lhistory(:,index.s+1));

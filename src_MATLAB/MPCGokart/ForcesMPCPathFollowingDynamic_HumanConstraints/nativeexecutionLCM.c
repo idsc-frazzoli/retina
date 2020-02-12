@@ -99,7 +99,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	// printf("received control message\n");
 	memcpy((int8_t*)&lastCRMsg, msg->data, msg->data_length);
     /* for (int i = 0; i < POINTSN; i++) {
-        struct PathEntry pe = lastCRMsg.path.controlPoints[i];
+		struct PathEntry pe = lastCRMsg.path.controlPoints[i];
 		printf("i=%d: pointX:%f\n",i,pe.pex);
 		printf("i=%d: pointY:%f\n",i,pe.pey);
 		printf("i=%d: pointR:%f\n",i,pe.per);
@@ -172,11 +172,11 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		params.all_parameters[i*pl + 19] = lastParaMsg.para.regularizerTV;
 		params.all_parameters[i*pl + 20] = lastParaMsg.para.regTorque;
 		for (int ip = 0; ip < POINTSN; ip++)
-			params.all_parameters[i*pl + NUMPARAM + ip]=lastCRMsg.path.controlPoints[ip].pex;
+			params.all_parameters[i*pl + NUMPARAM + ip] = lastCRMsg.path.controlPoints[ip].pex;
 		for (int ip = 0; ip < POINTSN; ip++)
-			params.all_parameters[i*pl + NUMPARAM + POINTSN + ip]=lastCRMsg.path.controlPoints[ip].pey;
+			params.all_parameters[i*pl + NUMPARAM + POINTSN + ip] = lastCRMsg.path.controlPoints[ip].pey;
 		for (int ip = 0; ip < POINTSN; ip++)
-			params.all_parameters[i*pl + NUMPARAM + 2*POINTSN + ip]=lastCRMsg.path.controlPoints[ip].per;
+			params.all_parameters[i*pl + NUMPARAM + 2*POINTSN + ip] = lastCRMsg.path.controlPoints[ip].per;
 	}
 
 	// assume that this works
@@ -228,11 +228,10 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].state.Psi = psi;
 			cnsmsg.cns[i].state.w2L = 0; // not in use
 			cnsmsg.cns[i].state.w2R = 0; // not in use
-			cnsmsg.cns[i].state.s = myoutput.alldata[i*S+12];
+			cnsmsg.cns[i].state.s = myoutput.alldata[i*S + 12];
 			cnsmsg.cns[i].state.bTemp = 60;
 			cnsmsg.cns[i].state.tau =0; // not in use
-			cnsmsg.cns[i].state.dotbeta= myoutput.alldata[i*S+1];
-
+			cnsmsg.cns[i].state.dotbeta = myoutput.alldata[i*S + 1];
 		}
 
 		// printf("prepared blob\n");
@@ -256,7 +255,7 @@ int main(int argc, char *argv[]) {
 
 	//for testing
 	/* for(int i = -100; i < 100; i++){
-		double v = i/100.0;
+		double v = i / 100.0;
 		double maxacc = getMaxAcc(v);
 		printf("%f: %f\n", v, maxacc);
 	} */
