@@ -45,13 +45,13 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   private final float w2L;
   /** right rear wheel speed */
   private final float w2R;
-  /** steering column encoder */
+  /** steering column encoder position */
   private final float s;
   /** brake temperature */
   private final float bTemp;
   /** steering column torque */
   private final float tau;
-  /** steering column encoder */
+  /** steering column encoder velocity */
   private final float uDotS;
 
   /** create GokartState
@@ -65,7 +65,10 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
    * @param Psi orientation in "1"
    * @param w2L left rear wheel speed in "s^-1"
    * @param w2R right rear wheel speed in "s^-1"
-   * @param s steer column encoder position in "SCE" */
+   * @param s steer column encoder position in "SCE" 
+   * @param tau applied steering column torque in "SCT"
+   * @param uDotS Steer column encoder velocity in "SCE/s"
+   */
   GokartState( //
       float time, //
       float Ux, //
@@ -94,7 +97,10 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
    * @param w2L left rear wheel speed in "s^-1"
    * @param w2R right rear wheel speed in "s^-1"
    * @param s steer column encoder position in "SCE"
-   * @param bTemp brake temperature in "degC" */
+   * @param bTemp brake temperature in "degC" 
+   * @param tau applied steering column torque in "SCT"
+   * @param uDotS Steer column encoder velocity in "SCE/s"
+   */
   public GokartState( //
       float time, //
       float Ux, //
@@ -135,7 +141,9 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
    * @param Psi orientation in "1"
    * @param w2L left rear wheel speed in "s^-1"
    * @param w2R right rear wheel speed in "s^-1"
-   * @param s steer column encoder position in "SCE" */
+   * @param s steer column encoder position in "SCE" 
+   * @param tau applied steering column torque in "SCT"
+   * @param uDotS Steer column encoder velocity in "SCE/s" */
   public GokartState( //
       Scalar time, //
       Scalar Ux, //
@@ -146,7 +154,8 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
       Scalar Psi, //
       Scalar w2L, //
       Scalar w2R, //
-      Scalar s, Scalar tau, //
+      Scalar s, 
+      Scalar tau, //
       Scalar uDotS) {
     this(time, Ux, Uy, dotPsi, X, Y, Psi, w2L, w2R, s, ZERO_DEGC, tau, uDotS);
   }
@@ -163,7 +172,10 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
    * @param w2L left rear wheel speed in "s^-1"
    * @param w2R right rear wheel speed in "s^-1"
    * @param s steer column encoder position in "SCE"
-   * @param bTemp brake temperature in "degC" */
+   * @param bTemp brake temperature in "degC"
+   * @param tau applied steering column torque in "SCT"
+   * @param uDotS Steer column encoder velocity in "SCE/s"
+   */
   public GokartState( //
       Scalar time, //
       Scalar Ux, //
@@ -263,11 +275,13 @@ import ch.ethz.idsc.tensor.sca.ScalarUnaryOperator;
   public Scalar getBTemp() {
     return Quantity.of(bTemp, NonSI.DEGREE_CELSIUS);
   }
-
+  
+  /** @return steering column torque in "SCT" */
   public Scalar getTau() {
     return Quantity.of(tau, SteerPutEvent.UNIT_RTORQUE);
   }
-
+  
+  /** @return steering column encoder velocity in "SCE/s" */
   public Scalar getUDotS() {
     return Quantity.of(uDotS, SteerPutEvent.UNIT_ENCODER_DOT);
   }
