@@ -158,9 +158,9 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[10] = inittau;
 
 	printf("init DotBeta: %f\n",params.xinit[9]);
-	/* for(int i = 0; i<10;i++)
-
-		printf("%i: %f\n",i,params.xinit[i]); */
+	
+	for(int i = 0; i<10;i++)
+		printf("%i: %f\n",i,params.xinit[i]);
 
 	// gather parameter data
 	int pl = 3*POINTSN + NUMPARAM;

@@ -20,14 +20,14 @@ public class MPCLudicConfig {
   public Scalar pacejkaFC = RealScalar.of(1);
   /** Pacejka's formula front wheels parameters, FD controls maximum grip limit */
   @FieldSubdivide(start = "6f", end = "8", intervals = 20)
-  public Scalar pacejkaFD = RealScalar.of(7.3);
+  public Scalar pacejkaFD = RealScalar.of(7.6);
   /** Pacejka's formula rear wheels parameters */
   public Scalar pacejkaRB = RealScalar.of(5.2);
   /** Pacejka's formula rear wheels parameters */
   public Scalar pacejkaRC = RealScalar.of(1.1);
   /** Pacejka's formula rear wheels parameters, RD controls maximum grip limit */
   @FieldSubdivide(start = "6f", end = "8", intervals = 20)
-  public Scalar pacejkaRD = RealScalar.of(6.8);
+  public Scalar pacejkaRD = RealScalar.of(7.2);
    /** Inertia of the steering column in SCT*s^2/SCE */
   //@FieldSubdivide(start = "0.01", end = "4", intervals = 50)
   public Scalar steerInertia = RealScalar.of(2);
