@@ -63,7 +63,6 @@ import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.SteerSignalModule;
-import ch.ethz.idsc.gokart.gui.lab.TorqueTestModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -198,9 +197,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       SeyeDetailModule.class, //
       PanoramaViewModule.class, //
       SideViewLcmModule.class, //
-      PresenterLcmModule.class, //
+      PresenterLcmModule.class //
       // DavisOverviewModule.class //
-      TorqueTestModule.class //
   );
 
   public static void main(String[] args) {
