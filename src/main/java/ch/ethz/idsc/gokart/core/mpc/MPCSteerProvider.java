@@ -24,14 +24,14 @@ import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
-  private static final Clip ANGLE_RANGE = Clips.interval(Quantity.of(-0.5, "SCE"), Quantity.of(0.5, "SCE"));
+  private static final Clip ANGLE_RANGE = //
+      Clips.interval(Quantity.of(-0.5, SteerPutEvent.UNIT_ENCODER), Quantity.of(0.5, SteerPutEvent.UNIT_ENCODER));
   // ---
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
-  private int count = 0;
 
   public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode) {
     super(timing);
@@ -55,8 +55,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
     Scalar torqueCmd = torqueMSG.Get(0);
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-    if (count++ % MPCLudicConfig.GLOBAL.ledUpdateCycle == 0) // TODO fix on led hardware or in LEDServerModule
-      MPCSteerProvider.notifyLED(torqueCmd.Get(3), currAngle);
+    MPCSteerProvider.notifyLED(torqueCmd.Get(3), currAngle);
     System.out.println(String.format("Torque msg: %s, Pwr Steer: %s", torqueCmd.toString(), MPCLudicConfig.GLOBAL.powerSteer ? feedForward.toString() : "off"));
     if (MPCLudicConfig.GLOBAL.powerSteer)
       return SteerPutEvent.createOn(torqueCmd.add(feedForward).multiply(MPCLudicConfig.GLOBAL.torqueScale));
@@ -66,8 +65,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-    if (count++ % MPCLudicConfig.GLOBAL.ledUpdateCycle == 0)
-      MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
+    MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
     if (MPCLudicConfig.GLOBAL.manualMode) {
       if (MPCLudicConfig.GLOBAL.powerSteer)
         return SteerPutEvent.createOn(feedForward);
