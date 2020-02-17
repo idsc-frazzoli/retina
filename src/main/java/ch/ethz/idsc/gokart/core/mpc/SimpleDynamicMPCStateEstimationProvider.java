@@ -18,6 +18,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.retina.util.math.NonSI;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
+import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
@@ -34,6 +35,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
   private Scalar tau = Quantity.of(0, SteerPutEvent.UNIT_RTORQUE);
   private Scalar uDots = Quantity.of(0, SteerPutEvent.UNIT_ENCODER_DOT);
   private GokartState lastGokartState = null;
+  private Scalar kTerm = RealScalar.of(4753);
   private final LinmotGetListener linmotGetListener = new LinmotGetListener() {
     @Override
     public void getEvent(LinmotGetEvent getEvent) {
@@ -54,9 +56,9 @@ import ch.ethz.idsc.tensor.qty.Quantity;
     @Override
     public void getEvent(SteerGetEvent getEvent) {
       if (steerColumnInterface.isSteerColumnCalibrated()) {
-        // TODO is this smart? Can we get the info directly from the getEvenet
+        // TODO is this smart? Can we get the info directly from the getEvent
         s = steerColumnInterface.getSteerColumnEncoderCentered();
-        //uDots = getEvent.motAsp();
+        uDots = Quantity.of(getEvent.motAsp().divide(kTerm), SteerPutEvent.UNIT_ENCODER_DOT);
         tau = getEvent.estMotTrq();
         lastUpdate = getTime();
       }
