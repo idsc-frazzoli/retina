@@ -55,6 +55,7 @@ public class MPCLudicConfig {
   /** Regularizer for input Tau, cost of using steering torque, only used for torque modes*/
   public Scalar regularizerTau = RealScalar.of(0.0005);
   @FieldSubdivide(start = "0.2f", end = "1.2", intervals = 25)
+  public Scalar torqueScale = RealScalar.of(1);
   public Boolean manualMode = false;
   public Boolean powerSteer = false;
   /**Number of PID updates to wait before publishing LED update */
