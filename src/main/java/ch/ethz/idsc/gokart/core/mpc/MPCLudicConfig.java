@@ -30,13 +30,13 @@ public class MPCLudicConfig {
   public Scalar pacejkaRD = RealScalar.of(7.3);
    /** Inertia of the steering column in SCT*s^2/SCE */
   //@FieldSubdivide(start = "0.01", end = "4", intervals = 50)
-  public Scalar steerInertia = RealScalar.of(2);
+  public Scalar steerInertia = RealScalar.of(3.3);
   /** Damping of the steering column in SCT*s/SCE */
   //@FieldSubdivide(start = "0.01", end = "1", intervals = 50)
-  public Scalar steerDamp = RealScalar.of(0.2);
+  public Scalar steerDamp = RealScalar.of(0.24);
   /** Stiffness of the steering column in SCT/SCE */
   //@FieldSubdivide(start = "0.001", end = "0.5", intervals = 50)
-  public Scalar steerStiff = RealScalar.of(0.2);
+  public Scalar steerStiff = RealScalar.of(0.9595);
   /** Parameters of the cost function (without unit of measure) */
   /** Lag Error cost, ensures controller uses closest control point for progress */
   public Scalar lagError = RealScalar.of(1);
@@ -55,7 +55,6 @@ public class MPCLudicConfig {
   /** Regularizer for input Tau, cost of using steering torque, only used for torque modes*/
   public Scalar regularizerTau = RealScalar.of(0.0005);
   @FieldSubdivide(start = "0.2f", end = "1.2", intervals = 25)
-  public Scalar torqueScale = RealScalar.of(0.48);
   public Boolean manualMode = false;
   public Boolean powerSteer = false;
   /**Number of PID updates to wait before publishing LED update */
