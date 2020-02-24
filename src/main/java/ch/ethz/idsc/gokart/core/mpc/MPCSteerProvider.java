@@ -22,6 +22,7 @@ import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
+import ch.ethz.idsc.tensor.sca.Sign;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
   private static final Clip ANGLE_RANGE = Clips.interval(Quantity.of(-0.5, "SCE"), Quantity.of(0.5, "SCE"));
@@ -96,6 +97,28 @@ import ch.ethz.idsc.tensor.sca.Clips;
   }
 
   private static void notifyLED(Scalar referenceAngle, Scalar currAngle) {
+	Scalar diff = referenceAngle.subtract(currAngle);
+	Boolean signDiff = Sign.isPositiveOrZero(diff); 
+	if(signDiff){
+	    int refIdx = 0;//angleToIdx(referenceAngle);
+	    int valIdx = 9;//angleToIdx(currAngle);
+	    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
+	    try {
+	      LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    }
+	} else {
+	    int refIdx = 19;// angleToIdx(referenceAngle);
+	    int valIdx = 27;//angleToIdx(currAngle);
+	    	    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
+	    try {
+	      LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    }
+	}
+	/*TODO remove after debugging
     int refIdx = angleToIdx(referenceAngle);
     int valIdx = angleToIdx(currAngle);
     System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
@@ -104,6 +127,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
     } catch (Exception e) {
       e.printStackTrace();
     }
+    */
   }
 
   private static int angleToIdx(Scalar angle) {
