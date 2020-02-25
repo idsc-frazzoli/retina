@@ -13,12 +13,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import ch.ethz.idsc.retina.util.GlobalAssert;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 
-public abstract class SerialStringSocket implements StartAndStoppable, SerialPortDataListener {
+/* package */ abstract class SerialStringSocket implements StartAndStoppable, SerialPortDataListener {
   private static final String DELIM = " ";
 
   private SerialPort serialPort;
@@ -34,7 +35,7 @@ public abstract class SerialStringSocket implements StartAndStoppable, SerialPor
     try {
       serialPort = SerialPort.getCommPort(port);
       serialPort.setBaudRate(baudRate);
-      serialPort.openPort();
+      GlobalAssert.that(serialPort.openPort());
 
       input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
       output = new BufferedWriter(new OutputStreamWriter(serialPort.getOutputStream()));
@@ -102,7 +103,7 @@ public abstract class SerialStringSocket implements StartAndStoppable, SerialPor
 
   protected abstract void loop();
 
-  protected abstract void receive(String... msgs);
+  protected abstract void receive(String... words);
 
   // TODO remove after debugging
   public static void main(String[] args) {

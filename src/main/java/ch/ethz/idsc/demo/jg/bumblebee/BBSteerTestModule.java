@@ -59,7 +59,7 @@ public class BBSteerTestModule extends AbstractClockedModule implements GetListe
     // ---
     BBSteerSocket.INSTANCE.addPutListener(this);
     BBSteerSocket.INSTANCE.addGetListener(this);
-    // BBSteerSocket.INSTANCE.addPutProvider(this);
+    BBSteerSocket.INSTANCE.addPutProvider(this);
   }
 
   @Override // from AbstractClockedModule
@@ -71,7 +71,7 @@ public class BBSteerTestModule extends AbstractClockedModule implements GetListe
   public void last() {
     BBSteerSocket.INSTANCE.removePutListener(this);
     BBSteerSocket.INSTANCE.removeGetListener(this);
-    // BBSteerSocket.INSTANCE.removePutProvider(this);
+    BBSteerSocket.INSTANCE.removePutProvider(this);
     // ---
     BBSteerSocket.INSTANCE.stop();
   }
@@ -94,17 +94,16 @@ public class BBSteerTestModule extends AbstractClockedModule implements GetListe
   @Override // from GetListener
   public void getEvent(BBSteerGetEvent getEvent) {
     System.out.println("GetEvent:");
-    System.out.println("\tMotor angle speed: " + getEvent.angSpd);
-    System.out.println("\tColumn torque sensor signal: " + getEvent.tsuTrq);
-    System.out.println("\tReference motor torque: " + getEvent.refMotTrq);
-    System.out.println("\tEstimated motor torque: " + getEvent.estMotTrq);
-    System.out.println("\tRelative integral motor angle: " + getEvent.relIntRotAng());
+    System.out.println("\tMotor angle speed: " + getEvent.angSpd + " -> " + getEvent.angSpd());
+    System.out.println("\tColumn torque sensor signal: " + getEvent.tsuTrq + " -> " + getEvent.tsuTrq());
+    System.out.println("\tReference motor torque: " + getEvent.refMotTrq + " -> " + getEvent.refMotTrq());
+    System.out.println("\tEstimated motor torque: " + getEvent.estMotTrq + " -> " + getEvent.estMotTrq());
   }
 
   @Override // from PutListener
-  public void putEvent(BBSteerPutEvent getEvent) {
+  public void putEvent(BBSteerPutEvent putEvent) {
     System.out.println("PutEvent:");
-    System.out.println("Requested motor torque: " + putEvent.getTorque());
+    System.out.println("\tRequested motor torque: " + putEvent.getTorque());
   }
 
   public static void main(String[] args) {

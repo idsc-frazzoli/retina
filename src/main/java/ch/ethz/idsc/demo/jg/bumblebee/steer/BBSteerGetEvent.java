@@ -10,21 +10,18 @@ import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 public class BBSteerGetEvent extends DataEvent {
-  /* package */ static final int LENGTH = 11;
+  /* package */ static final int LENGTH = 8;
 
   public final short angSpd;
   public final short tsuTrq;
   public final short refMotTrq;
   public final short estMotTrq;
-  // TODO 3-bit relIntRotAng
 
   public BBSteerGetEvent(ByteBuffer byteBuffer) {
     angSpd = byteBuffer.getShort();
     tsuTrq = byteBuffer.getShort();
     refMotTrq = byteBuffer.getShort();
     estMotTrq = byteBuffer.getShort();
-    // TODO 3-bit relIntRotAng
-    byteBuffer.get(new byte[3]);
   }
 
   @Override // from BufferInsertable
@@ -33,7 +30,6 @@ public class BBSteerGetEvent extends DataEvent {
     byteBuffer.putShort(tsuTrq);
     byteBuffer.putShort(refMotTrq);
     byteBuffer.putShort(estMotTrq);
-    byteBuffer.put(new byte[] { 0x00, 0x00, 0x00 }); // TODO 3-bit relIntRotAng
   }
 
   @Override // from BufferInsertable
@@ -48,7 +44,6 @@ public class BBSteerGetEvent extends DataEvent {
         tsuTrq, //
         refMotTrq, //
         estMotTrq //
-        // TODO add relIntRotAng
     );
   }
 
@@ -72,8 +67,8 @@ public class BBSteerGetEvent extends DataEvent {
     return Quantity.of(BBSteerPutEvent.SCALE_TRQ * estMotTrq, BBSteerPutEvent.UNIT_TRQ);
   }
 
-  /** @return relative integral motor angle with unit "deg" */
-  public Scalar relIntRotAng() {
-    return Quantity.of(BBSteerPutEvent.SCALE_ANG * 0 /* TODO insert relIntRotAng */ , BBSteerPutEvent.UNIT_ANG);
-  }
+  // /** @return relative integral motor angle with unit "deg" */
+  // public Scalar relIntRotAng() {
+  //   return Quantity.of(BBSteerPutEvent.SCALE_ANG * relIntRotAng, BBSteerPutEvent.UNIT_ANG);
+  // }
 }
