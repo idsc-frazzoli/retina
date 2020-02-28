@@ -62,7 +62,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
     this.count = this.count + 1;
     if (this.count >= MPCLudicConfig.GLOBAL.ledUpdateCycle) {
       // System.out.println("LED message triggered, count = " + this.count);
-      // MPCSteerProvider.notifyLED(torqueMSG.Get(3), currAngle);
+       MPCSteerProvider.notifyLED(torqueMSG.Get(2), currAngle);
       this.count = 0;
       // System.out.println("LED message sent, count = " + this.count);
     }
