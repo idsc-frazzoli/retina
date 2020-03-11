@@ -33,7 +33,7 @@ import ch.ethz.idsc.tensor.sca.Sign;
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
   private final MPCSteering mpcSteering;
   private final boolean torqueMode;
-  private final static Scalar MAX_DIFF = Quantity.of(0.05, "SCE");
+  private final static Scalar MAX_DIFF = Quantity.of(0.04, "SCE");
   private int count = 0;
 
   public MPCSteerProvider(Timing timing, MPCSteering mpcSteering, boolean torqueMode) {
