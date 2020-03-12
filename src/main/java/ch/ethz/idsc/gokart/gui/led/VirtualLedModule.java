@@ -17,6 +17,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+// could also be implemented as PutListener<LEDPutEvent>
 public class VirtualLedModule extends AbstractModule implements LEDListener {
   private final LEDLcmClient ledLcmClient = new LEDLcmClient();
   private final JFrame jFrame = new JFrame();

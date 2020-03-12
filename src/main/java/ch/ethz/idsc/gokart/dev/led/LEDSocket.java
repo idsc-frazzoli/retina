@@ -1,44 +1,96 @@
 // code by gjoel
 package ch.ethz.idsc.gokart.dev.led;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import ch.ethz.idsc.gokart.core.PutListener;
+import ch.ethz.idsc.gokart.core.PutProvider;
+import ch.ethz.idsc.gokart.core.RankedPutProviders;
+import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
+import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
 import ch.ethz.idsc.retina.util.StartAndStoppable;
-import ch.ethz.idsc.retina.util.tty.SerialPorts;
-import com.fazecast.jSerialComm.SerialPort;
 
 public final class LEDSocket implements StartAndStoppable {
-  private static final String PORT = "/dev/ttyUSB1";
-  private static final int BAUD_RATE = 9600;
-  private static final int BYTE_SIZE = 8;
-  // ---
-  private SerialPort serialPort = null;
-
   public static final LEDSocket INSTANCE = new LEDSocket();
+  // ---
+  private final RankedPutProviders<LEDPutEvent> rankedPutProviders = new RankedPutProviders<>();
+  private final List<PutListener<LEDPutEvent>> putListeners = new CopyOnWriteArrayList<>();
+  private final PutListener<LEDPutEvent> ledLcm = putEvent -> LEDLcm.publish(GokartLcmChannel.LED_STATUS, putEvent.status);
+  private Timer timer;
 
   @Override // from StartAndStoppable
-  public void start() {
-    serialPort = SerialPorts.create(PORT, BAUD_RATE, BYTE_SIZE);
-    serialPort.openPort();
+  public final void start() {
+    addPutProvider(LEDPutFallback.INSTANCE);
+    addPutListener(LEDSerialSocket.INSTANCE);
+    addPutListener(ledLcm);
+
+    timer = new Timer();
+    timer.schedule(new TimerTask() {
+      @Override
+      public void run() {
+        for (List<PutProvider<LEDPutEvent>> putProviders : rankedPutProviders.values())
+          for (PutProvider<LEDPutEvent> putProvider : putProviders) {
+            Optional<LEDPutEvent> optional = putProvider.putEvent();
+            if (optional.isPresent())
+              try {
+                LEDPutEvent putEvent = optional.get();
+                for (PutListener<LEDPutEvent> putListener : putListeners)
+                  putListener.putEvent(putEvent); // notify put listener
+                return;
+              } catch (Exception exception) {
+                exception.printStackTrace();
+              }
+          }
+      }
+    }, 70, 10);
   }
 
   @Override // from StartAndStoppable
-  public void stop() {
-    Optional.ofNullable(serialPort).ifPresent(SerialPort::closePort);
-    serialPort = null;
+  public final void stop() {
+    if (Objects.nonNull(timer)) {
+      timer.cancel();
+      timer = null;
+    }
+
+    removePutListener(ledLcm);
+    removePutListener(LEDSerialSocket.INSTANCE);
+    removePutProvider(LEDPutFallback.INSTANCE);
   }
 
-  public boolean isOpen() {
-    return Optional.ofNullable(serialPort).map(SerialPort::isOpen).orElse(false);
+  public final void addPutProvider(PutProvider<LEDPutEvent> putProvider) {
+    boolean added = rankedPutProviders.add(putProvider);
+    if (!added) {
+      System.err.println(putProvider.getClass().getSimpleName());
+      new RuntimeException("put provider not added").printStackTrace();
+    }
   }
 
-  public void write(LEDStatus ledStatus) {
-    write(Crc8MaximHelper.convert(ledStatus.asArray()));
+  public final void removePutProvider(PutProvider<LEDPutEvent> putProvider) {
+    boolean removed = rankedPutProviders.remove(putProvider);
+    if (!removed) {
+      System.err.println(putProvider.getClass().getSimpleName());
+      new RuntimeException("put provider not removed").printStackTrace();
+    }
   }
 
-  public void write(byte[] data) {
-    if (!isOpen())
-      throw new RuntimeException("Port: " + PORT + " is currently not open!");
-    serialPort.writeBytes(data, data.length);
+  public final void addPutListener(PutListener<LEDPutEvent> putListener) {
+    boolean added = putListeners.add(putListener);
+    if (!added) {
+      System.err.println(putListener.getClass().getSimpleName());
+      new RuntimeException("put listener not added").printStackTrace();
+    }
+  }
+
+  public final void removePutListener(PutListener<LEDPutEvent> putListener) {
+    boolean removed = putListeners.remove(putListener);
+    if (!removed) {
+      System.err.println(putListener.getClass().getSimpleName());
+      new RuntimeException("put listener not removed").printStackTrace();
+    }
   }
 }

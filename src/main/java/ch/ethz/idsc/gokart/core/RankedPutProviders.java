@@ -11,7 +11,7 @@ import ch.ethz.idsc.owl.ani.api.ProviderRank;
 import ch.ethz.idsc.retina.util.data.DataEvent;
 
 /** thread-safe data structure to maintain collection of put providers of various ranks */
-/* package */ class RankedPutProviders<PE extends DataEvent> {
+public class RankedPutProviders<PE extends DataEvent> {
   private final Map<ProviderRank, List<PutProvider<PE>>> map = new EnumMap<>(ProviderRank.class);
 
   public RankedPutProviders() {
