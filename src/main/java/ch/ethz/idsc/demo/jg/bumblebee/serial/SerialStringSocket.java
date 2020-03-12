@@ -34,13 +34,12 @@ import com.fazecast.jSerialComm.SerialPortEvent;
   public SerialStringSocket(String port, int baudRate) {
     try {
       serialPort = SerialPort.getCommPort(port);
+      serialPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
       serialPort.setBaudRate(baudRate);
       GlobalAssert.that(serialPort.openPort());
 
       input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
       output = new BufferedWriter(new OutputStreamWriter(serialPort.getOutputStream()));
-
-      serialPort.addDataListener(this);
     } catch (Exception e) {
       e.printStackTrace();
       serialPort = null;
@@ -70,7 +69,6 @@ import com.fazecast.jSerialComm.SerialPortEvent;
   @Override // from StartAndStoppable
   public final void start() {
     Optional.ofNullable(serialPort).ifPresent(port -> port.addDataListener(this));
-    // Optional.ofNullable(serialPort).ifPresent(SerialPort::openPort);
     timer = new Timer();
     timer.schedule(new TimerTask() {
       @Override
@@ -111,14 +109,14 @@ import com.fazecast.jSerialComm.SerialPortEvent;
     SerialStringSocket socket = new SerialStringSocket("COM6") {
       @Override
       protected long getPutPeriod_ms() {
-        return 1000;
+        return 10;
       }
 
       @Override
       protected void loop() {
         try {
           System.out.println(String.format("Send message %d.", ai.get()));
-          writeln(String.valueOf(ai.get() % 2 == 0 ? 255 : -256));
+          writeln(String.valueOf((ai.get() % 200) - 100 > 0 ? 255 : -256));
         } catch (IOException e) {
           e.printStackTrace();
         }
@@ -132,8 +130,13 @@ import com.fazecast.jSerialComm.SerialPortEvent;
     };
 
     socket.start();
-    while (ai.get() < 10) {
+    while (ai.get() < 1000) {
       // deliberately empty
+    }
+    try {
+      socket.writeln(String.valueOf(0));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
     socket.stop();
   }

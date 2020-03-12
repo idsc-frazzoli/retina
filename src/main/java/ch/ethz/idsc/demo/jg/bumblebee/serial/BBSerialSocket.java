@@ -50,14 +50,15 @@ public abstract class BBSerialSocket<GE extends DataEvent, PE extends DataEvent>
   @Override // from SerialStringSocket
   protected synchronized final void receive(String... words) {
     // FIXME gets interrupted
-    Arrays.stream(words).map(Integer::parseInt).forEach(System.out::println);
     System.out.println("checkpoint 0");
-    GE getEvent = createGetEvent(Arrays.stream(words).map(Integer::parseInt).collect(Collectors.toList()));
+    Arrays.stream(words).map(Integer::parseInt).forEach(System.out::println);
     System.out.println("checkpoint 1");
+    GE getEvent = createGetEvent(Arrays.stream(words).map(Integer::parseInt).collect(Collectors.toList()));
+    System.out.println("checkpoint 2");
     synchronized (getListeners) {
       for (GetListener<GE> listener : getListeners)
         try {
-          System.out.println("checkpoint 2");
+          System.out.println("checkpoint 3");
           listener.getEvent(getEvent); // notify get listener
         } catch (Exception exception) {
           exception.printStackTrace();
