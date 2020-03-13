@@ -142,7 +142,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		initab = 0;
 		printf("used else");}
 
-	// [x,y,theta,dottheta,v,yv,beta,dotbeta,ab,tau,s]
+	// [x,y,theta,dottheta,v,yv,ab,beta,s,dotbeta,tau]
 	inittau = lastCRMsg.state.tau;
 	params.xinit[0] = lastCRMsg.state.X+cos(lastCRMsg.state.Psi)*backToCoM;
 	params.xinit[1] = lastCRMsg.state.Y+sin(lastCRMsg.state.Psi)*backToCoM;

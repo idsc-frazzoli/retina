@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.ethz.idsc.gokart.core.adas.NaivePowerSteeringModule;
+import ch.ethz.idsc.gokart.core.man.ManualOverrideModule;
 import ch.ethz.idsc.gokart.core.man.PredictiveTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.mpc.LudicControlModule;
 import ch.ethz.idsc.gokart.core.track.TrackReconModule;
@@ -37,7 +38,8 @@ import ch.ethz.idsc.retina.util.sys.WindowConfiguration;
   static final List<Class<? extends AbstractModule>> MODULES_MPC_MIN = Arrays.asList( //
       LudicControlModule.class, //
       VirtualLedModule.class, //
-      ParametersModule.class // configure parameters
+      ParametersModule.class, // configure parameters
+      ManualOverrideModule.class //
   );
 
   public static void main(String[] args) {

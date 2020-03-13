@@ -11,6 +11,7 @@ import ch.ethz.idsc.gokart.core.man.ManualConfig;
 import ch.ethz.idsc.gokart.core.track.BSplineTrack;
 import ch.ethz.idsc.gokart.core.track.BSplineTrackLcmClient;
 import ch.ethz.idsc.gokart.core.track.BSplineTrackListener;
+import ch.ethz.idsc.gokart.dev.led.LEDSocket;
 import ch.ethz.idsc.gokart.dev.linmot.LinmotSocket;
 import ch.ethz.idsc.gokart.dev.rimo.RimoSocket;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
@@ -43,6 +44,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final MPCSteerProvider mpcSteerProvider;
+  private final MPCLEDProvider mpcLEDProvider;
   // ---
   final MPCRimoProvider mpcRimoProvider;
   final MPCLinmotProvider mpcLinmotProvider;
@@ -80,6 +82,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
     mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering, torqueBased());
+    mpcLEDProvider = new MPCLEDProvider(timing, mpcSteering);
     // link mpc steering
     mpcControlUpdateLcmClient.addListener(mpcSteering);
     mpcControlUpdateLcmClient.addListener(mpcPower);
@@ -120,6 +123,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     SteerSocket.INSTANCE.addPutProvider(mpcSteerProvider);
     RimoSocket.INSTANCE.addPutProvider(mpcRimoProvider);
     LinmotSocket.INSTANCE.addPutProvider(mpcLinmotProvider);
+    LEDSocket.INSTANCE.addPutProvider(mpcLEDProvider);
     //
     mpcBraking.start();
     mpcControlUpdateLcmClient.addListener(new MPCControlUpdateInterrupt(thread));
@@ -135,13 +139,11 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     thread.interrupt();
     // ---
     LinmotSocket.INSTANCE.removePutProvider(mpcLinmotProvider);
-    // ---
     SteerSocket.INSTANCE.removePutProvider(mpcSteerProvider);
-    // ---
     RimoSocket.INSTANCE.removePutProvider(mpcRimoProvider);
-    //
-    mpcBraking.stop();
+    LEDSocket.INSTANCE.removePutProvider(mpcLEDProvider);
     // ---
+    mpcBraking.stop();
     mpcControlUpdateLcmClient.stopSubscriptions();
     mpcStateEstimationProvider.last();
     // ---
@@ -169,7 +171,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   }
 
   protected static Function<ManualControlInterface, Scalar> toMPCmaxSpeed(Scalar minSpeed, Scalar maxSpeed) {
-     return manualControlInterface -> {
+    return manualControlInterface -> {
       Scalar forward = manualControlInterface.getAheadPair_Unit().Get(1);
       return Max.of(minSpeed, maxSpeed.multiply(forward));
     };
