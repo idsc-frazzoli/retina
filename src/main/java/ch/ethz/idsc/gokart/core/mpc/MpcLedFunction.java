@@ -4,8 +4,6 @@ import java.util.function.BiFunction;
 
 import ch.ethz.idsc.gokart.dev.led.LEDStatus;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
