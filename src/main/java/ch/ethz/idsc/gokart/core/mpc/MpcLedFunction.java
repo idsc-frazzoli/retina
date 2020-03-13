@@ -26,35 +26,23 @@ public enum MpcLedFunction implements BiFunction<Scalar, Scalar, LEDStatus> {
       Scalar diff = referenceAngle.subtract(currAngle);
       Scalar absDiff = diff.abs();
       Boolean signDiff = Sign.isPositiveOrZero(diff);
-      if (Sign.isPositiveOrZero(absDiff.subtract(MAX_DIFF))) {
+      if (Sign.isPositiveOrZero(absDiff.subtract(Quantity.of(0.5, "SCE")))) {
         if (signDiff) {
           int refIdx = 0;// angleToIdx(referenceAngle);
           int valIdx = 9;// angleToIdx(currAngle);
           System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-          try {
-            LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
+          return new LEDStatus(refIdx, valIdx);
         } else {
           int refIdx = 18;// angleToIdx(referenceAngle);
           int valIdx = 0;// angleToIdx(currAngle);
           System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-          try {
-            LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
+          return new LEDStatus(refIdx, valIdx);
         }
       } else {
         int refIdx = 14;// angleToIdx(referenceAngle);
         int valIdx = 14;// angleToIdx(currAngle);
         System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-        try {
-          LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
+        return new LEDStatus(refIdx, valIdx);
       }
     }
   };
