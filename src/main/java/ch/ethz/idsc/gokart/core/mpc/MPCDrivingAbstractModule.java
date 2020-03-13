@@ -44,7 +44,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
   private final MPCPreviewableTrack track;
   private final ManualControlProvider manualControlProvider = ManualConfig.GLOBAL.getProvider();
   private final MPCSteerProvider mpcSteerProvider;
-  private final MPCLEDProvider mpcLEDProvider;
+  private final MpcLedProvider mpcLEDProvider;
   // ---
   final MPCRimoProvider mpcRimoProvider;
   final MPCLinmotProvider mpcLinmotProvider;
@@ -82,7 +82,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     mpcRimoProvider = new MPCRimoProvider(timing, mpcPower);
     mpcLinmotProvider = new MPCLinmotProvider(timing, mpcBraking);
     mpcSteerProvider = new MPCSteerProvider(timing, mpcSteering, torqueBased());
-    mpcLEDProvider = new MPCLEDProvider(timing, mpcSteering);
+    mpcLEDProvider = new MpcLedProvider(timing, mpcSteering);
     // link mpc steering
     mpcControlUpdateLcmClient.addListener(mpcSteering);
     mpcControlUpdateLcmClient.addListener(mpcPower);

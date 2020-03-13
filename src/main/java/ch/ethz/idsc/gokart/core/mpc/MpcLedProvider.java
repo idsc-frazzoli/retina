@@ -1,4 +1,4 @@
-// code by mh, ta
+// code by ta
 package ch.ethz.idsc.gokart.core.mpc;
 
 import java.util.Optional;
@@ -14,14 +14,14 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
-/* package */ final class MPCLEDProvider implements LEDPutProvider {
+/* package */ final class MpcLedProvider implements LEDPutProvider {
   // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
-  final Timing timing;
+  private final Timing timing;
   private final MPCSteering mpcSteering;
   private final MpcLedFunction mpcLedFunction = MpcLedFunction.DETAILED;
 
-  public MPCLEDProvider(Timing timing, MPCSteering mpcSteering) {
+  public MpcLedProvider(Timing timing, MPCSteering mpcSteering) {
     this.mpcSteering = mpcSteering;
     this.timing = timing;
   }
