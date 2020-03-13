@@ -57,7 +57,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
     Scalar torqueCmd = torqueMSG.Get(0);
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-    MPCSteerProvider.notifyLED(torqueCmd.Get(3), currAngle);
     System.out.println(String.format("Torque msg: %s, Pwr Steer: %s", torqueCmd.toString(), MPCLudicConfig.GLOBAL.powerSteer ? feedForward.toString() : "off"));
     if (MPCLudicConfig.GLOBAL.powerSteer)
       return SteerPutEvent.createOn(torqueCmd.add(feedForward).multiply(MPCLudicConfig.GLOBAL.torqueScale));
@@ -67,7 +66,6 @@ import ch.ethz.idsc.tensor.sca.Sign;
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-    MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
     if (MPCLudicConfig.GLOBAL.manualMode) {
       if (MPCLudicConfig.GLOBAL.powerSteer)
         return SteerPutEvent.createOn(feedForward);
@@ -78,56 +76,5 @@ import ch.ethz.idsc.tensor.sca.Sign;
         steering.Get(0), //
         steering.Get(1));
     return SteerPutEvent.createOn(torqueCmd.add(feedForward));
-  }
-
-  private static void notifyLED(Scalar referenceAngle, Scalar currAngle) {
-	Scalar diff = referenceAngle.subtract(currAngle);
-	Scalar absDiff=diff.abs();
-	Boolean signDiff = Sign.isPositiveOrZero(diff);
-	if(Sign.isPositiveOrZero(absDiff.subtract(MAX_DIFF))){ 
-		if(signDiff){
-		    int refIdx = 0;//angleToIdx(referenceAngle);
-		    int valIdx = 9;//angleToIdx(currAngle);
-		    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-		    try {
-		      LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
-		    } catch (Exception e) {
-		      e.printStackTrace();
-		    }
-		} else {
-		    int refIdx = 18;// angleToIdx(referenceAngle);
-		    int valIdx = 0;//angleToIdx(currAngle);
-		    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-		    try {
-		      LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
-		    } catch (Exception e) {
-		      e.printStackTrace();
-		    }
-		}
-	} else {
-		int refIdx = 14;// angleToIdx(referenceAngle);
-	    int valIdx = 14;//angleToIdx(currAngle);
-	    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-	    try {
-	      LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
-	    } catch (Exception e) {
-	      e.printStackTrace();
-	    }
-	}
-	/*TODO previous implementation, to be removed
-    int refIdx = angleToIdx(referenceAngle);
-    int valIdx = angleToIdx(currAngle);
-    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-    try {
-      LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    */
-  }
-
-  private static int angleToIdx(Scalar angle) {
-    double angleCorr = ANGLE_RANGE.apply(angle).number().doubleValue();
-    return (int) Math.round((0.5 - angleCorr) * (LEDStatus.NUM_LEDS - 1));
   }
 }
