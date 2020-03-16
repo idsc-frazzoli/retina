@@ -137,10 +137,11 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime); // limits AB
 		initbeta = getInitSteer(lbeta, ldotbeta, dTime); // limits Beta
 		inittau = getInitTau(ltau, ldottau, dTime);
-		//printf("in loop Beta: %f\n",initbeta);
-	} else{
+		// printf("in loop Beta: %f\n",initbeta);
+	} else {
 		initab = 0;
-		printf("used else");}
+		printf("used else"); 
+	}
 
 	// [x,y,theta,dottheta,v,yv,ab,beta,s,dotbeta,tau]
 	inittau = lastCRMsg.state.tau;
