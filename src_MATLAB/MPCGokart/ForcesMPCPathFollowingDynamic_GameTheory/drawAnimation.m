@@ -1,6 +1,6 @@
 
 frames = tend;
-vidfile = VideoWriter('PotGame1','Motion JPEG AVI');
+vidfile = VideoWriter('Intersection1','Motion JPEG AVI');
 vidfile.FrameRate = 10;
 open(vidfile);
 set(gcf,'position',[100,100,1000,800])
@@ -20,6 +20,12 @@ for iff = 1:frames-1
        plot(rightline(:,1),rightline(:,2),'b')
        plot(rleftline(:,1),rleftline(:,2),'--b')
        plot(rrightline(:,1),rrightline(:,2),'--b')
+       [leftline2,middleline2,rightline2] = drawTrack(points2(:,1:2),points2(:,3)+0.5);
+       [rleftline2,rmiddleline2,rrightline2] = drawTrack(points2(:,1:2),points2(:,3));
+       plot(leftline2(:,1),leftline2(:,2),'k')
+       plot(rightline2(:,1),rightline2(:,2),'k')
+       plot(rleftline2(:,1),rleftline2(:,2),'--k')
+       plot(rrightline2(:,1),rrightline2(:,2),'--k')
     end
     if(1)
        %plot control points

@@ -121,12 +121,15 @@ model.hl = [-inf;-inf;-inf;-inf;-inf;0];
 % points = [18,35,42,55.2,56,51,42,40;...          %x
 %           41,55,57,56,43,40,45,31; ...    %y
 %           2.5,2.5,2.5,2.5,2.5,2.5,2.3,2.5]';   %phi
-points = [18,35,42,55.2,60,51,42,40;...          %x
-          41,55,57,56,43,40,42,31; ...    %y
-          2.5,2.5,2.5,2.5,2.3,2.3,2.3,2.3]';
+points = [18 ,22 ,35 ,42 ,55.2,60 ,51 ,42 ,40 ,30 ,22 ;...          %x
+          41 ,52 ,55 ,57 ,56  ,43 ,40 ,42 ,31 ,35 ,34 ; ...    %y
+          2.5,2.5,2.5,2.5,2.5 ,2.3,2.3,2.3,2.3,2.5,2.5]';
 points(:,3)=points(:,3)-0.2;
-points2=flip(points);
-
+points2=[30 ,22 ,18 ,22 ,35 ,42 ,55.2,60 ,51 ,42 ,40 ;...          %x
+         35 ,34 ,41 ,52 ,55 ,57 ,56  ,43 ,40 ,42 ,31 ; ...    %y
+         2.5,2.5,2.5,2.5,2.5,2.3,2.3 ,2.3,2.3,2.5,2.5]';
+points2(:,1)=points2(:,1)+20;
+points2(:,3)=points2(:,3)-0.2;
 %% Objective function
 trajectorytimestep = integrator_stepsize;
 
@@ -188,7 +191,7 @@ output = newOutput('alldata', 1:model.N, 1:model.nvar);
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
 
 %% Simulation kart 1
-tend = 50;
+tend = 300;
 eulersteps = 10;
 planintervall = 1;
 fpoints = points(1:2,1:2);
