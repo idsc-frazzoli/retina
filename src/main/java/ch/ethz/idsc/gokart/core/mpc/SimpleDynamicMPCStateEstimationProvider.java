@@ -59,7 +59,7 @@ import ch.ethz.idsc.tensor.qty.Quantity;
         // TODO is this smart? Can we get the info directly from the getEvent
         s = steerColumnInterface.getSteerColumnEncoderCentered();
         uDots = Quantity.of(getEvent.motAsp().divide(kTerm), SteerPutEvent.UNIT_ENCODER_DOT);
-        tau = getEvent.estMotTrq();
+        tau = getEvent.estMotTrq();//Should it use last commanded torque?
         lastUpdate = getTime();
       }
     }

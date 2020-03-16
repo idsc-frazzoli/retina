@@ -65,12 +65,12 @@ MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 static void getLastControls(
 	MPCPathFollowing_float* ab,
 	MPCPathFollowing_float* dotab,
-  MPCPathFollowing_float* tau,
-  MPCPathFollowing_float* dottau,
+  	MPCPathFollowing_float* tau,
+  	MPCPathFollowing_float* dottau,
 	MPCPathFollowing_float* beta,
 	MPCPathFollowing_float* dotbeta,
 	double* dStepTime,
-	double time){
+	double time) {
 	double lastSolutionTime = timeOfLastSolution;
 	double dTime = time-lastSolutionTime;
 	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
@@ -81,8 +81,8 @@ static void getLastControls(
 	*dotab = lastSolution[i*S];
 	*tau = lastSolution[i*S + 15];
 	*dottau = lastSolution[i*S + 1];
-	*beta = lastSolution[i*S+12];
-	*dotbeta = lastSolution[i*S+14];
+	*beta = lastSolution[i*S + 12];
+	*dotbeta = lastSolution[i*S + 14];
 }
 
 static void para_handler(const lcm_recv_buf_t *rbuf,
@@ -129,18 +129,19 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			&ldotab,
 			&ltau,
 			&ldottau,
-		    &lbeta,
-	  	    &ldotbeta,
+		    	&lbeta,
+	  	    	&ldotbeta,
 			&dTime,
 			lastCRMsg.state.time);
 
 		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime); // limits AB
 		initbeta = getInitSteer(lbeta, ldotbeta, dTime); // limits Beta
 		inittau = getInitTau(ltau, ldottau, dTime);
-		printf("in loop Beta: %f\n",initbeta);
-	} else
+		// printf("in loop Beta: %f\n",initbeta);
+	} else {
 		initab = 0;
-		printf("used else");}
+		printf("used else");
+	}
 
 	// [x,y,theta,dottheta,v,yv,beta,dotbeta,ab,tau,s]
 	inittau = lastCRMsg.state.tau;
@@ -156,8 +157,10 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[9] = lastCRMsg.state.dotbeta;
 	params.xinit[10] = inittau;
 
-	/* for(int i = 0; i < 7; i++) {
-		printf("%i: %f\n",i,params.xinit[i]); */
+	printf("init DotBeta: %f\n",params.xinit[9]);
+
+	//for(int i = 0; i<10;i++)
+	//	printf("%i: %f\n",i,params.xinit[i]);
 
 	// gather parameter data
 	int pl = 3*POINTSN + NUMPARAM;
@@ -267,7 +270,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 int main(int argc, char *argv[]) {
 	printf("start lcm server\n");
 
-	//for testing
+	// for testing
 	/* for(int i = -100; i < 100; i++){
 		double v = i / 100.0;
 		double maxacc = getMaxAcc(v);
