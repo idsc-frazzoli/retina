@@ -15,7 +15,6 @@ import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
 
 /* package */ final class MpcLedProvider implements LEDPutProvider {
-  // ---
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final Timing timing;
   private final MPCSteering mpcSteering;

@@ -124,7 +124,7 @@ public abstract class MPCDrivingAbstractModule extends AbstractModule implements
     RimoSocket.INSTANCE.addPutProvider(mpcRimoProvider);
     LinmotSocket.INSTANCE.addPutProvider(mpcLinmotProvider);
     LEDSocket.INSTANCE.addPutProvider(mpcLEDProvider);
-    //
+    // ---
     mpcBraking.start();
     mpcControlUpdateLcmClient.addListener(new MPCControlUpdateInterrupt(thread));
     thread.start();

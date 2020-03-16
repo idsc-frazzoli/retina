@@ -4,8 +4,10 @@ package ch.ethz.idsc.gokart.dev.led;
 import java.util.Optional;
 
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnTracker;
+import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
 import ch.ethz.idsc.owl.ani.api.ProviderRank;
+import ch.ethz.idsc.tensor.qty.Quantity;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
@@ -27,7 +29,7 @@ import ch.ethz.idsc.tensor.sca.Clips;
   @Override // from LEDPutProvider
   public Optional<LEDPutEvent> putEvent() {
     try {
-      Clip clip = Clips.absolute(steerColumnTracker.getIntervalWidth() * 0.5);
+      Clip clip = Clips.absolute(Quantity.of(steerColumnTracker.getIntervalWidth() * 0.5, SteerPutEvent.UNIT_ENCODER));
       ledStatus = new LEDStatus(LEDIndexHelper.getIn(steerColumnTracker.getSteerColumnEncoderCentered(), clip));
     } catch (Exception e) {
       if (counter++ % 10 == 0) {

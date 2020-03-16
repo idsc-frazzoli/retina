@@ -13,7 +13,7 @@ public enum LEDIndexHelper {
   }
 
   public static int getIn(Scalar value, Clip range) {
-    double normed = range.rescale(value).number().doubleValue();
+    double normed = range.rescale(value.negate()).number().doubleValue();
     return (int) Math.round(normed * (LEDStatus.NUM_LEDS - 1));
   }
 }

@@ -17,7 +17,6 @@ public enum MpcLedFunction implements BiFunction<Scalar, Scalar, LEDStatus> {
     public LEDStatus apply(Scalar referenceAngle, Scalar currAngle) {
       int refIdx = LEDIndexHelper.getIn(referenceAngle, ANGLE_RANGE);
       int valIdx = LEDIndexHelper.getIn(currAngle, ANGLE_RANGE);
-      System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
       return new LEDStatus(refIdx, valIdx);
     }
   },
