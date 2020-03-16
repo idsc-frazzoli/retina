@@ -29,13 +29,13 @@ public class MPCLudicConfig {
   @FieldSubdivide(start = "6f", end = "8", intervals = 20)
   public Scalar pacejkaRD = RealScalar.of(7.3);
    /** Inertia of the steering column in SCT*s^2/SCE */
-  //@FieldSubdivide(start = "0.01", end = "4", intervals = 50)
+  // @FieldSubdivide(start = "0.01", end = "4", intervals = 50)
   public Scalar steerInertia = RealScalar.of(3.3);
   /** Damping of the steering column in SCT*s/SCE */
-  //@FieldSubdivide(start = "0.01", end = "1", intervals = 50)
+  // @FieldSubdivide(start = "0.01", end = "1", intervals = 50)
   public Scalar steerDamp = RealScalar.of(0.24);
   /** Stiffness of the steering column in SCT/SCE */
-  //@FieldSubdivide(start = "0.001", end = "0.5", intervals = 50)
+  // @FieldSubdivide(start = "0.001", end = "0.5", intervals = 50)
   public Scalar steerStiff = RealScalar.of(0.9595);
   /** Parameters of the cost function (without unit of measure) */
   /** Lag Error cost, ensures controller uses closest control point for progress */
