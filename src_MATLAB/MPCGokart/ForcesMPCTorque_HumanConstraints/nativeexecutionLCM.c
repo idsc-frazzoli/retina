@@ -269,7 +269,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 int main(int argc, char *argv[]) {
 	printf("start lcm server\n");
 
-	//for testing
+	// for testing
 	/* for(int i = -100; i < 100; i++){
 		double v = i / 100.0;
 		double maxacc = getMaxAcc(v);
