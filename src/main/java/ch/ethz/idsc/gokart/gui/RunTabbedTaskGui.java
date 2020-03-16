@@ -32,6 +32,7 @@ import ch.ethz.idsc.gokart.core.fuse.Vmu931ReadingWatchdog;
 import ch.ethz.idsc.gokart.core.man.AutomaticPowerTestModule;
 import ch.ethz.idsc.gokart.core.man.DriftThrustManualModule;
 import ch.ethz.idsc.gokart.core.man.LookupTableRimoThrustManualModule;
+import ch.ethz.idsc.gokart.core.man.ManualOverrideModule;
 import ch.ethz.idsc.gokart.core.man.ManualResetModule;
 import ch.ethz.idsc.gokart.core.man.PredictiveTorqueVectoringModule;
 import ch.ethz.idsc.gokart.core.man.RimoThrustManualModule;
@@ -62,6 +63,7 @@ import ch.ethz.idsc.gokart.gui.lab.IgnitionModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotConstantPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.LinmotPressTestModule;
 import ch.ethz.idsc.gokart.gui.lab.SteerSignalModule;
+import ch.ethz.idsc.gokart.gui.led.KittLedModule;
 import ch.ethz.idsc.gokart.gui.top.GlobalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.LocalViewLcmModule;
 import ch.ethz.idsc.gokart.gui.top.PresenterLcmModule;
@@ -71,7 +73,6 @@ import ch.ethz.idsc.gokart.lcm.LoggerModule;
 import ch.ethz.idsc.gokart.lcm.SpyModule;
 import ch.ethz.idsc.gokart.lcm.imu.Vmu931LcmServerModule;
 import ch.ethz.idsc.gokart.gui.led.VirtualLedModule;
-import ch.ethz.idsc.gokart.gui.led.KittLedModule;
 import ch.ethz.idsc.gokart.gui.led.CoachLedModule;
 import ch.ethz.idsc.gokart.lcm.mod.AutoboxLcmServerModule;
 import ch.ethz.idsc.gokart.lcm.mod.Vlp16PosLcmServerModule;
@@ -148,7 +149,8 @@ import ch.ethz.idsc.tensor.io.ResourceData;
       AutomaticPowerTestModule.class, //
       RimoThrustManualModule.class, //
       LookupTableRimoThrustManualModule.class, //
-      DriftThrustManualModule.class //
+      DriftThrustManualModule.class, //
+      ManualOverrideModule.class //
   );
   static final List<Class<? extends AbstractModule>> MODULES_AUT = Arrays.asList( //
       FigureClothoidModule.class, //

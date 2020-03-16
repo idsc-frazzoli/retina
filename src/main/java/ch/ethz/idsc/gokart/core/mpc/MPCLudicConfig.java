@@ -58,6 +58,6 @@ public class MPCLudicConfig {
   public Scalar torqueScale = RealScalar.of(1);
   public Boolean manualMode = false;
   public Boolean powerSteer = false;
-  /**Number of PID updates to wait before publishing LED update */
-  public int ledUpdateCycle =11;
+  /** Number of PID updates to wait before publishing LED update */
+  public int ledUpdateCycle = 11;
 }

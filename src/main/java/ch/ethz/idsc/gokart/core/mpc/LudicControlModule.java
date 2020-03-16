@@ -37,7 +37,7 @@ public class LudicControlModule extends AbstractModule {
           endLudic();
           MPCLudicConfig.GLOBAL.manualMode = jToggleButton.isSelected();
           jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
-          System.out.println("Steering in Manual Mode: "+ MPCLudicConfig.GLOBAL.manualMode);
+          System.out.println("Steering in Manual Mode: " + MPCLudicConfig.GLOBAL.manualMode);
         });
         jPanel.add(jToggleButton);
       }
@@ -50,7 +50,7 @@ public class LudicControlModule extends AbstractModule {
           endLudic();
           MPCLudicConfig.GLOBAL.powerSteer = jToggleButton.isSelected();
           jToggleButton.setText(jToggleButton.isSelected() ? "On" : "Off");
-          System.out.println("Power Steering: "+ MPCLudicConfig.GLOBAL.powerSteer);
+          System.out.println("Power Steering: " + MPCLudicConfig.GLOBAL.powerSteer);
         });
         jPanel.add(jToggleButton);
       }
@@ -122,7 +122,6 @@ public class LudicControlModule extends AbstractModule {
 
   @Override
   protected void last() {
-    // ---
     jFrame.setVisible(false);
     jFrame.dispose();
     // ---
@@ -133,10 +132,6 @@ public class LudicControlModule extends AbstractModule {
     LudicControlModule linmotPressModule = new LudicControlModule();
     linmotPressModule.first();
     linmotPressModule.jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-  }
-
-  public static void main(String[] args) throws Exception {
-    standalone();
   }
 
   private void startLudic() {
@@ -155,5 +150,9 @@ public class LudicControlModule extends AbstractModule {
       } catch (Exception e) {
         e.printStackTrace();
       }
+  }
+
+  public static void main(String[] args) throws Exception {
+    standalone();
   }
 }

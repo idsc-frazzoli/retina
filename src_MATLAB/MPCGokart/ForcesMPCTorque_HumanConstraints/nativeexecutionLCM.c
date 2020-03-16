@@ -81,8 +81,8 @@ static void getLastControls(
 	*dotab = lastSolution[i*S];
 	*tau = lastSolution[i*S + 15];
 	*dottau = lastSolution[i*S + 1];
-	*beta = lastSolution[i*S + 12];
-	*dotbeta = lastSolution[i*S + 14];
+	*beta = lastSolution[i*S+12];
+	*dotbeta = lastSolution[i*S+14];
 }
 
 static void para_handler(const lcm_recv_buf_t *rbuf,
@@ -137,8 +137,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime); // limits AB
 		initbeta = getInitSteer(lbeta, ldotbeta, dTime); // limits Beta
 		inittau = getInitTau(ltau, ldottau, dTime);
-		//printf("in loop Beta: %f\n",initbeta);
-	} else{
+		printf("in loop Beta: %f\n",initbeta);
+	} else
 		initab = 0;
 		printf("used else");}
 
@@ -156,10 +156,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[9] = lastCRMsg.state.dotbeta;
 	params.xinit[10] = inittau;
 
-	printf("init DotBeta: %f\n",params.xinit[9]);
-
-	//for(int i = 0; i<10;i++)
-	//	printf("%i: %f\n",i,params.xinit[i]);
+	/* for(int i = 0; i < 7; i++) {
+		printf("%i: %f\n",i,params.xinit[i]); */
 
 	// gather parameter data
 	int pl = 3*POINTSN + NUMPARAM;
