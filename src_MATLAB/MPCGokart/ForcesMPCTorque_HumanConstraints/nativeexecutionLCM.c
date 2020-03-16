@@ -65,12 +65,12 @@ MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 static void getLastControls(
 	MPCPathFollowing_float* ab,
 	MPCPathFollowing_float* dotab,
-  MPCPathFollowing_float* tau,
-  MPCPathFollowing_float* dottau,
+  	MPCPathFollowing_float* tau,
+  	MPCPathFollowing_float* dottau,
 	MPCPathFollowing_float* beta,
 	MPCPathFollowing_float* dotbeta,
 	double* dStepTime,
-	double time){
+	double time) {
 	double lastSolutionTime = timeOfLastSolution;
 	double dTime = time-lastSolutionTime;
 	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
@@ -129,8 +129,8 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			&ldotab,
 			&ltau,
 			&ldottau,
-		    &lbeta,
-	  	    &ldotbeta,
+		    	&lbeta,
+	  	    	&ldotbeta,
 			&dTime,
 			lastCRMsg.state.time);
 
