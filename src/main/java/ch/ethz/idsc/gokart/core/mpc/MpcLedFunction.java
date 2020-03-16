@@ -9,6 +9,7 @@ import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Scalars;
 import ch.ethz.idsc.tensor.qty.Quantity;
+import ch.ethz.idsc.tensor.sca.Chop;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 
@@ -25,33 +26,28 @@ public enum MpcLedFunction implements BiFunction<Scalar, Scalar, LEDStatus> {
       // TODO remove hard-coded indices
       // Scalar diff = referenceAngle.subtract(currAngle);
       // if (Scalars.lessEquals(Quantity.of(0.5, SteerPutEvent.UNIT_ENCODER), diff.abs())) {
-      //   if (Sign.isPositiveOrZero(diff)) {
-      //     int refIdx = 0; // LEDIndexHelper.getIn(referenceAngle, ANGLE_RANGE);
-      //     int valIdx = 9; // LEDIndexHelper.getIn(currAngle, ANGLE_RANGE);
-      //     System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-      //     return new LEDStatus(refIdx, valIdx);
-      //   } else {
-      //     int refIdx = 18; // LEDIndexHelper.getIn(referenceAngle, ANGLE_RANGE);
-      //     int valIdx = 0; // LEDIndexHelper.getIn(currAngle, ANGLE_RANGE);
-      //     System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-      //     return new LEDStatus(refIdx, valIdx);
-      //   }
+      // if (Sign.isPositiveOrZero(diff)) {
+      // int refIdx = 0; // LEDIndexHelper.getIn(referenceAngle, ANGLE_RANGE);
+      // int valIdx = 9; // LEDIndexHelper.getIn(currAngle, ANGLE_RANGE);
+      // System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
+      // return new LEDStatus(refIdx, valIdx);
       // } else {
-      //   int refIdx = 14; // LEDIndexHelper.getIn(referenceAngle, ANGLE_RANGE);
-      //   int valIdx = 14; // LEDIndexHelper.getIn(currAngle, ANGLE_RANGE);
-      //   System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-      //   return new LEDStatus(refIdx, valIdx);
+      // int refIdx = 18; // LEDIndexHelper.getIn(referenceAngle, ANGLE_RANGE);
+      // int valIdx = 0; // LEDIndexHelper.getIn(currAngle, ANGLE_RANGE);
+      // System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
+      // return new LEDStatus(refIdx, valIdx);
       // }
-      switch (Integer.signum(Scalars.compare(referenceAngle, currAngle))) {
-      case -1:
-        return new LEDStatus(18, 0);
-      case 0:
+      // } else {
+      // int refIdx = 14; // LEDIndexHelper.getIn(referenceAngle, ANGLE_RANGE);
+      // int valIdx = 14; // LEDIndexHelper.getIn(currAngle, ANGLE_RANGE);
+      // System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
+      // return new LEDStatus(refIdx, valIdx);
+      // }
+      if (Chop.below(0.2).close(referenceAngle, currAngle))
         return new LEDStatus(14);
-      case 1:
-        return new LEDStatus(0, 9);
-      default:
-        return null;
-      }
+      if (Scalars.lessThan(referenceAngle, currAngle))
+        return new LEDStatus(18, 0);
+      return new LEDStatus(0, 9);
     }
   };
 
