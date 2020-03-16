@@ -10,7 +10,7 @@ import com.fazecast.jSerialComm.SerialPort;
 
 /* package */ final class LEDSerialSocket implements StartAndStoppable, PutListener<LEDPutEvent> {
   private static final String PORT = "/dev/ttyUSB1";
-  private static final int BAUD_RATE = 9600;
+  private static final int BAUD_RATE = 115200;
   private static final int BYTE_SIZE = 8;
   // ---
   private SerialPort serialPort = null;
