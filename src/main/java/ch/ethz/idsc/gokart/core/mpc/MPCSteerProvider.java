@@ -7,26 +7,18 @@ import java.util.Optional;
 import ch.ethz.idsc.gokart.calib.steer.HighPowerSteerPid;
 import ch.ethz.idsc.gokart.calib.steer.SteerFeedForward;
 import ch.ethz.idsc.gokart.core.fuse.Vlp16PassiveSlowing;
-import ch.ethz.idsc.gokart.dev.led.LEDStatus;
 import ch.ethz.idsc.gokart.dev.steer.SteerColumnInterface;
 import ch.ethz.idsc.gokart.dev.steer.SteerPositionControl;
 import ch.ethz.idsc.gokart.dev.steer.SteerPutEvent;
 import ch.ethz.idsc.gokart.dev.steer.SteerSocket;
-import ch.ethz.idsc.gokart.gui.GokartLcmChannel;
-import ch.ethz.idsc.gokart.lcm.led.LEDLcm;
 import ch.ethz.idsc.retina.util.math.SI;
 import ch.ethz.idsc.retina.util.sys.ModuleAuto;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.Timing;
 import ch.ethz.idsc.tensor.qty.Quantity;
-import ch.ethz.idsc.tensor.sca.Clip;
-import ch.ethz.idsc.tensor.sca.Clips;
 
 /* package */ final class MPCSteerProvider extends MPCBaseProvider<SteerPutEvent> {
-  private static final Clip ANGLE_RANGE = //
-      Clips.interval(Quantity.of(-0.5, SteerPutEvent.UNIT_ENCODER), Quantity.of(0.5, SteerPutEvent.UNIT_ENCODER));
-  // ---
   private final Vlp16PassiveSlowing vlp16PassiveSlowing = ModuleAuto.INSTANCE.getInstance(Vlp16PassiveSlowing.class);
   private final SteerColumnInterface steerColumnInterface = SteerSocket.INSTANCE.getSteerColumnTracker();
   private final SteerPositionControl steerPositionController = new SteerPositionControl(HighPowerSteerPid.GLOBAL);
@@ -55,7 +47,6 @@ import ch.ethz.idsc.tensor.sca.Clips;
     Scalar torqueCmd = torqueMSG.Get(0);
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-    MPCSteerProvider.notifyLED(torqueCmd.Get(3), currAngle);
     System.out.println(String.format("Torque msg: %s, Pwr Steer: %s", torqueCmd.toString(), MPCLudicConfig.GLOBAL.powerSteer ? feedForward.toString() : "off"));
     if (MPCLudicConfig.GLOBAL.powerSteer)
       return SteerPutEvent.createOn(torqueCmd.add(feedForward).multiply(MPCLudicConfig.GLOBAL.torqueScale));
@@ -65,7 +56,6 @@ import ch.ethz.idsc.tensor.sca.Clips;
   private SteerPutEvent angleSteer(Tensor steering) {
     Scalar currAngle = steerColumnInterface.getSteerColumnEncoderCentered();
     Scalar feedForward = SteerFeedForward.FUNCTION.apply(currAngle);
-    MPCSteerProvider.notifyLED(steering.Get(0), currAngle);
     if (MPCLudicConfig.GLOBAL.manualMode) {
       if (MPCLudicConfig.GLOBAL.powerSteer)
         return SteerPutEvent.createOn(feedForward);
@@ -76,21 +66,5 @@ import ch.ethz.idsc.tensor.sca.Clips;
         steering.Get(0), //
         steering.Get(1));
     return SteerPutEvent.createOn(torqueCmd.add(feedForward));
-  }
-
-  private static void notifyLED(Scalar referenceAngle, Scalar currAngle) {
-    int refIdx = angleToIdx(referenceAngle);
-    int valIdx = angleToIdx(currAngle);
-    System.out.println("Steer msg: " + refIdx + ", Pwr Steer: " + valIdx);
-    try {
-      LEDLcm.publish(GokartLcmChannel.LED_STATUS, new LEDStatus(refIdx, valIdx));
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  private static int angleToIdx(Scalar angle) {
-    double angleCorr = ANGLE_RANGE.apply(angle).number().doubleValue();
-    return (int) Math.round((0.5 - angleCorr) * (LEDStatus.NUM_LEDS - 1));
   }
 }

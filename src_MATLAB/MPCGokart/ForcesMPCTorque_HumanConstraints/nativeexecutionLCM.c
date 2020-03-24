@@ -65,24 +65,24 @@ MPCPathFollowing_extfunc pt2Function =&MPCPathFollowing_casadi2forces;
 static void getLastControls(
 	MPCPathFollowing_float* ab,
 	MPCPathFollowing_float* dotab,
-    MPCPathFollowing_float* tau,
-    MPCPathFollowing_float* dottau,
-	// MPCPathFollowing_float* beta,
-	// MPCPathFollowing_float* dotbeta,
+  	MPCPathFollowing_float* tau,
+  	MPCPathFollowing_float* dottau,
+	MPCPathFollowing_float* beta,
+	MPCPathFollowing_float* dotbeta,
 	double* dStepTime,
-	double time){
+	double time) {
 	double lastSolutionTime = timeOfLastSolution;
 	double dTime = time-lastSolutionTime;
 	int lastStep = (int)floor((time-lastSolutionTime)/ISS);
 	*dStepTime = dTime - lastStep*ISS;
 	// printf("timeval: %f\n",time);
 	// printf("last step: %d/dtime %f\n",lastStep,*dStepTime);
-	*ab = lastSolution[i*S+11];
+	*ab = lastSolution[i*S + 11];
 	*dotab = lastSolution[i*S];
 	*tau = lastSolution[i*S + 15];
 	*dottau = lastSolution[i*S + 1];
-	// *beta = lastSolution[i*S+12];
-	// *dotbeta = lastSolution[i*S+14];
+	*beta = lastSolution[i*S + 12];
+	*dotbeta = lastSolution[i*S + 14];
 }
 
 static void para_handler(const lcm_recv_buf_t *rbuf,
@@ -115,13 +115,13 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	MPCPathFollowing_float ldotab;
 	MPCPathFollowing_float ltau;
 	MPCPathFollowing_float ldottau;
-	// MPCPathFollowing_float lbeta;
-	// MPCPathFollowing_float ldotbeta;
+	MPCPathFollowing_float lbeta;
+	MPCPathFollowing_float ldotbeta;
 	double dTime;
 
 	MPCPathFollowing_float initab;
 	MPCPathFollowing_float inittau;
-	// MPCPathFollowing_float initbeta;
+	MPCPathFollowing_float initbeta;
 
 	if (lastCRMsg.state.time-timeOfLastSolution<timeTolerance) {
 		getLastControls(
@@ -129,19 +129,21 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			&ldotab,
 			&ltau,
 			&ldottau,
-		    // &lbeta,
-	  	    // &ldotbeta,
+		    	&lbeta,
+	  	    	&ldotbeta,
 			&dTime,
 			lastCRMsg.state.time);
 
 		initab = getInitAB(lab, ldotab, lastCRMsg.state.Ux, dTime); // limits AB
-		// initbeta = getInitSteer(lbeta, ldotbeta, dTime); // limits Beta
+		initbeta = getInitSteer(lbeta, ldotbeta, dTime); // limits Beta
 		inittau = getInitTau(ltau, ldottau, dTime);
-		printf("in loop Beta: %f\n",initbeta);
-	} else
+		// printf("in loop Beta: %f\n",initbeta);
+	} else {
 		initab = 0;
+		printf("used else");
+	}
 
-	// [x,y,theta,dottheta,v,yv,ab,beta,s,dotbeta,tau]
+	// [x,y,theta,dottheta,v,yv,beta,dotbeta,ab,tau,s]
 	inittau = lastCRMsg.state.tau;
 	params.xinit[0] = lastCRMsg.state.X+cos(lastCRMsg.state.Psi)*backToCoM;
 	params.xinit[1] = lastCRMsg.state.Y+sin(lastCRMsg.state.Psi)*backToCoM;
@@ -155,8 +157,10 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[9] = lastCRMsg.state.dotbeta;
 	params.xinit[10] = inittau;
 
-	/* for(int i = 0; i < 7; i++) {
-		printf("%i: %f\n",i,params.xinit[i]); */
+	printf("init DotBeta: %f\n",params.xinit[9]);
+
+	//for(int i = 0; i<10;i++)
+	//	printf("%i: %f\n",i,params.xinit[i]);
 
 	// gather parameter data
 	int pl = 3*POINTSN + NUMPARAM;

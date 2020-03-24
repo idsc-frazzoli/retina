@@ -21,6 +21,7 @@ behaviour='aggressive'; %aggressive,medium, beginner,drifting,custom,collision
 [maxSpeed,maxxacc,steeringreg,specificmoi,plag,...
     plat,pprog,pab,pspeedcost,pslack,ptv] = DriverConfig(behaviour);
 plat = 0.00001;
+ptau = 0.01;
 FB = 9;
 FC = 1;
 FD = 10; % gravity acceleration considered

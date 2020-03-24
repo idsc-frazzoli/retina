@@ -71,9 +71,7 @@ public abstract class AutoboxScheduledProvider<PE extends DataEvent> implements 
     removeExpired(); // <- mandatory
     // ---
     TimedPutEvent<PE> timedPutEvent = queue.peek(); // <- null if queue is empty
-    return Objects.nonNull(timedPutEvent) //
-        ? Optional.of(timedPutEvent.putEvent())
-        : Optional.empty();
+    return Optional.ofNullable(timedPutEvent).map(TimedPutEvent::putEvent);
   }
 
   /** schedules implementation specific calibration routine

@@ -20,7 +20,7 @@ if(1)
     % folders{end+1} = '\mpcposes\t3\';
     % folders{end+1} = '\mpcposes\t4\';
     % folders{end+1} = '\mpcposes\EM_NT\';
-    folders{end+1} = '\mpcposes\MPC_NT\';
+    folders{end+1} = '\mpcposes\10_02_2020\EM_Adv_v1\gokart.pose.lidar.csv';
 end
 % if(1)
 %     folders{end+1} = '\mpcposes\md1\';

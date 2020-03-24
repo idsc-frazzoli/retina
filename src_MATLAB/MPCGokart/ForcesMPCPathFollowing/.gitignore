@@ -10,8 +10,14 @@ MPCPathFollowing_model_1.o
 MPCPathFollowing_model_31.c
 MPCPathFollowing_model_31.o
 MPCPathFollowing_py.py
+MPCPathFollowing.mexw64
 MPCPathFollowing_simulinkBlock.mexa64
+MPCPathFollowing_simulinkBlock.mexw64
 MPCPathFollowing_simulinkBlockcompact.mexa64
+MPCPathFollowing_simulinkBlockcompact.mexw64
+MPCPathFollowing_casadi2forces.obj
+MPCPathFollowing_model_1.obj
+MPCPathFollowing_model_31.obj
 nativeMPCLCM
 stdout_temp
 

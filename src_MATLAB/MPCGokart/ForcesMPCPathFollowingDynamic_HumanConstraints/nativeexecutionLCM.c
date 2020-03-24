@@ -75,10 +75,10 @@ static void getLastControls(
 	*dStepTime = dTime - lastStep*ISS;
 	// printf("timeval: %f\n",time);
 	// printf("last step: %d/dtime %f\n",lastStep,*dStepTime);
-	*ab = lastSolution[i*S+11];
+	*ab = lastSolution[i*S + 11];
 	*dotab = lastSolution[i*S];
-	*beta = lastSolution[i*S+12];
-	*dotbeta = lastSolution[i*S+1];
+	*beta = lastSolution[i*S + 12];
+	*dotbeta = lastSolution[i*S + 1];
 }
 
 static void para_handler(const lcm_recv_buf_t *rbuf,
@@ -142,7 +142,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	params.xinit[7] = initbeta;
 	params.xinit[8] = lastCRMsg.path.startingProgress;
 
-	/* for(int i = 0; i < 7; i++) {
+	/* for(int i = 0; i < 7; i++)
 		printf("%i: %f\n",i,params.xinit[i]); */
 
 	// gather parameter data
@@ -183,7 +183,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 	for (int i = 0; i < N*pl; i++)
 		printf("i=%d: %f\n", i, params.all_parameters[i]);
 
-	memcpy(params.x0, lastSolution,sizeof(MPCPathFollowing_float)*S*N);
+	memcpy(params.x0, lastSolution, sizeof(MPCPathFollowing_float)*S*N);
 	// TODO MH fix for 2PI wrap around problem: change initial guess according
 	// change amount:
 	MPCPathFollowing_float deltaPsi = lastCRMsg.state.Psi - lastInitialPsi;
@@ -218,7 +218,7 @@ static void state_handler(const lcm_recv_buf_t *rbuf,
 			cnsmsg.cns[i].control.uB = 0; // not in use
 			cnsmsg.cns[i].control.aB = ab;
 			cnsmsg.cns[i].control.udotT = 0; // not in use
-			cnsmsg.cns[i].state.time = i*ISS+lastCRMsg.state.time;
+			cnsmsg.cns[i].state.time = i*ISS + lastCRMsg.state.time;
 			cnsmsg.cns[i].state.Ux = myoutput.alldata[i*S + 9];
 			cnsmsg.cns[i].state.Uy = myoutput.alldata[i*S + 10] - lastCRMsg.state.dotPsi*backToCoM;
 			// printf("pos: %f/%f rot: %f prog: %f dprog: %f\n",myoutput.alldata[i*S+4],myoutput.alldata[i*S+5],myoutput.alldata[i*S+6],myoutput.alldata[i*S+10],myoutput.alldata[i*S+2]);
