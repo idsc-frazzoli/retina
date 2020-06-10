@@ -157,64 +157,118 @@ ylabel('progress [1]')
 axis([-inf inf 0 2])
 xlabel('[s]')
 plot(lhistory(:,1), lhistory(:,index.s+1));
-% B1 = 9;
-% C1 = 1;
-% D1 = 10; % gravity acceleration considered
-% 
-% B2 = 5.2;
-% C2 = 1.1;
-% D2 = 10; % gravity acceleration considered
-% Cf=0.3;
-% param = [B1,C1,D1,B2,C2,D2,Cf];
-% 
-% for ii=1:length(lhistory(:,index.v+1))
-%     [ACCX(ii),ACCY(ii),ACCROTZ(ii)] = modelDx(lhistory(ii,index.v+1),lhistory(ii,index.yv+1),lhistory(ii,index.dottheta+1),ackermannAngle(ii),lhistory(ii,index.ab+1),lhistory(ii,index.tv+1), param);
-% end
-% 
-% figure
-% plot(lhistory(:,1),ACCX,'b')
-% hold on
-% plot(lhistory(:,1),ACCY,'r')
-% plot(lhistory(:,1),zeros(length(ACCX),1),'g')
-% legend('AccX','AccY')
-% 
-% figure
-% hold on
-% plot(lhistory(:,1),(lhistory(:,index.tv+1)/2+lhistory(:,index.ab+1))/0.73*1.19,'b')
-% plot(lhistory(:,1),(-lhistory(:,index.tv+1)/2+lhistory(:,index.ab+1))/0.73*1.19,'r')
-% legend('+','-')
-% 
-% reg=0.5;
-% % Pacejka's magic formula
-% magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
-% % Equation for the lateral force in tire frame
-% simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1);
-% %simpleaccy = @(VELY,VELX,taccx)magic(-VELY/(VELX+reg),B2,C2,D2);
-%     
-% % go-kart length between axles
-% l = 1.19;
-%     
-% % distance from the front axle to the center of mass
-% l1 = 0.73;
-%     
-% % distance from the back axle to the center of mass
-% l2 = l-l1;
-%     
-% % normal forces ( g is in D)
-% f1n = l2/l;
-% f2n = l1/l;
-%     
-% % Rotation Matrix
-% rotmat = @(beta)[cos(beta),sin(beta);-sin(beta),cos(beta)];
-% vel1=zeros(2,length(lhistory(:,index.v+1)));
-% 
-% for ii=1:length(lhistory(:,index.v+1))
-%     vel1(:,ii) = (rotmat(lhistory(ii,index.beta+1))*[lhistory(ii,index.v+1);lhistory(ii,index.yv+1)+l1*lhistory(ii,index.dottheta+1)])';
-%     f1y(ii)= simplefaccy(vel1(2,ii),vel1(1,ii));
-%     F1(:,ii) = rotmat(-lhistory(ii,index.beta+1))*[0;f1y(ii)]*f1n;
-% end
-% 
-% figure
-% plot(lhistory(:,1),F1(1,:)'+lhistory(:,index.ab+1),'r')
-% hold on
-% plot(lhistory(:,1),ACCX,'b')
+
+
+%%
+B1 = 9;
+C1 = 1;
+D1 = 10; % gravity acceleration considered
+
+B2 = 5.2;
+C2 = 1.1;
+D2 = 10; % gravity acceleration considered
+Cf=0.3;
+param = [B1,C1,D1,B2,C2,D2,Cf];
+
+for ii=1:length(lhistory(:,index.v+1))
+    [ACCX(ii),ACCY(ii),ACCROTZ(ii)] = modelDx(lhistory(ii,index.v+1),lhistory(ii,index.yv+1),lhistory(ii,index.dottheta+1),ackermannAngle(ii),lhistory(ii,index.ab+1),lhistory(ii,index.tv+1), param);
+    VELROTZ(ii)=lhistory(ii,index.dottheta+1);
+    VELY(ii)=lhistory(ii,index.yv+1);
+    VELX(ii)=lhistory(ii,index.v+1);
+end
+
+figure
+plot(lhistory(:,1),ACCX,'b','Linewidth',2)
+hold on
+plot(lhistory(:,1),ACCY,'r','Linewidth',2)
+plot(lhistory(:,1),ACCROTZ,'g','Linewidth',2)
+plot(lhistory(:,1),zeros(length(ACCX),1),'k','Linewidth',2)
+grid on
+legend('AccX','AccY','Yaw')
+
+figure
+hold on
+plot(lhistory(:,1),(lhistory(:,index.tv+1)/2+lhistory(:,index.ab+1))/(1.19-0.73)*1.19,'b','Linewidth',2)
+plot(lhistory(:,1),(-lhistory(:,index.tv+1)/2+lhistory(:,index.ab+1))/(1.19-0.73)*1.19,'r','Linewidth',2)
+grid on
+legend('AB+TV/2','AB-TV/2')
+
+reg=0.5;
+% Pacejka's magic formula
+magic = @(s,B,C,D)D.*sin(C.*atan(B.*s));
+% Equation for the lateral force in tire frame
+capfactor = @(taccx)(1-satfun((taccx/D2).^2)).^(1/2);
+simpleslip = @(VELY,VELX,taccx)-(1/capfactor(taccx))*VELY/(VELX+reg);
+simpleaccy = @(VELY,VELX,taccx)capfactor(taccx)*magic(simpleslip(VELY,VELX,taccx),B2,C2,D2);    %force/kg  applied by rear tires with Taccx travelling at Velx,Vely 
+simplefaccy = @(VELY,VELX)magic(-VELY/(VELX+reg),B1,C1,D1);
+%simpleaccy = @(VELY,VELX,taccx)magic(-VELY/(VELX+reg),B2,C2,D2);
+    
+% go-kart length between axles
+l = 1.19;
+    
+% distance from the front axle to the center of mass
+l1 = 0.73;
+    
+% distance from the back axle to the center of mass
+l2 = l-l1;
+    
+% normal forces ( g is in D)
+f1n = l2/l;
+f2n = l1/l;
+    
+% Rotation Matrix
+rotmat = @(beta)[cos(beta),sin(beta);-sin(beta),cos(beta)];
+vel1=zeros(2,length(lhistory(:,index.v+1)));
+
+for ii=1:length(lhistory(:,index.v+1))
+    vel1(:,ii) = (rotmat(lhistory(ii,index.beta+1))*[lhistory(ii,index.v+1);lhistory(ii,index.yv+1)+l1*lhistory(ii,index.dottheta+1)])';
+    f1y(ii)= simplefaccy(vel1(2,ii),vel1(1,ii));
+    F1(:,ii) = rotmat(-lhistory(ii,index.beta+1))*[0;f1y(ii)]*f1n;
+end
+
+figure
+plot(lhistory(:,1),F1(1,:)'+lhistory(:,index.ab+1),'r','Linewidth',2)
+hold on
+plot(lhistory(:,1),VELROTZ.*VELY,'g','Linewidth',2)
+plot(lhistory(:,1),ACCX,'b','Linewidth',2)
+grid on
+lgd=legend('F_{R,x}-F_{F,y}sin(\delta)','Y_{dot}\phi_{dot}','AccX');
+lgd.FontSize=14;
+title ('Longitudinal Acceleration')
+
+f1x=(lhistory(:,index.tv+1)/2+lhistory(:,index.ab+1))/f2n;
+f2x=(-lhistory(:,index.tv+1)/2+lhistory(:,index.ab+1))/f2n;
+f3x=(lhistory(:,index.ab+1))/f2n;
+K1=capfactor(f1x);
+K2=capfactor(f2x);
+figure
+plot(K1)
+hold on
+plot(K2)
+title('capfactor')
+w=1;
+F2x = lhistory(:,index.ab+1)';
+TVTrq = lhistory(:,index.tv+1)*w;%Torque from difrence in real wheel accelerations  
+for ii=1:length(lhistory(:,index.v+1))
+    F2y1(ii) = simpleaccy(VELY(ii)-l2*VELROTZ(ii),VELX(ii),f1x(ii))*f2n/2;    %Lateral acceleration from from right rear wheel
+    F2y2(ii) = simpleaccy(VELY(ii)-l2*VELROTZ(ii),VELX(ii),f2x(ii))*f2n/2;    %Lateral acceleration from from left rear wheel
+    F2y(ii) = simpleaccy(VELY(ii)-l2*VELROTZ(ii),VELX(ii),f3x(ii))*f2n;       %Lateral acceleration from  rear wheels
+end
+
+figure
+plot(F2y(1,:),F2x(1,:),'b*')
+xlabel('Fy')
+ylabel('Fx')
+title('rear wheel')
+
+figure
+plot(F2y1(1,:),f1x(:,1)*f2n,'g*')
+xlabel('Fy')
+ylabel('Fx')
+title('rear wheel left')
+
+figure
+plot(F2y2(1,:),f2x(:,1)*f2n,'r*')
+xlabel('Fy')
+ylabel('Fx')
+title('rear wheel right')

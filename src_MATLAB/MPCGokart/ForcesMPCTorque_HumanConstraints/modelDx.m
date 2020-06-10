@@ -41,8 +41,8 @@ function [ACCX,ACCY,ACCROTZ] = modelDx(VELX,VELY,VELROTZ,BETA,AB,TV, param)
     l = 1.19;   %Length of the Go-cart
     l1 = 0.73;  %Dist from C.O.M to front Tire
     l2 = l-l1;    %Dist to rear Axle
-    f1n = l2/l;   %portion of Mass supported by rear tires
-    f2n = l1/l;   %portion of Mass supported by front tire
+    f1n = l2/l;   %portion of Mass supported by front tires
+    f2n = l1/l;   %portion of Mass supported by rear tires
     w = 1;      %Distance between rear Tires
     
     %% Tire Forces

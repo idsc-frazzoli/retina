@@ -6,7 +6,7 @@
 %add force path (change that for yourself)
 addpath('..');
 userDir = getuserdir;
-addpath([userDir '/Forces']); % Location of FORCES PRO
+addpath([userDir '\Documents\Forces']); % Location of FORCES PRO
 % addpath('C:\Users\me\Documents\FORCES_client');
 addpath('casadi');
 addpath('../shared_dynamic')
@@ -41,11 +41,9 @@ splinestart = 1;
 nextsplinepoints = 0;
 
 %% TEND
-tend = 150;
-eulersteps = 10;
 
 % Runs
-tend = 300;
+tend = 200;
 
 % Integrator step
 eulersteps = 10;
@@ -124,15 +122,17 @@ model.hl = [-inf;-inf;-inf;-inf;-inf];
 
 %% Control points for trajectory sampling
 
-% points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20; ...          %x
-%           34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
-%           1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
+points = [25,35,45,49,46,37,27,28,35,45,48,45,36,28,22,21,20; ...          %x
+          34,35,34,38,42,40,42,48,49,46,52,54,52,53,54,47,40; ...    %y
+          1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5]';
 
-points = [10,10,20,10,20,20,40,60,80,90,90,90,80,50,20; ...          %x
-            10,35,45,55,75,90,90,90,80,60,42,15,10,5,5; ...    %y
-            4,3,5,4,3,4,4,6,4,3,2,3,4,4,6]';
-
-points(:,3) = points(:,3) - 0.2;
+%points = [10,10,20,10,20,20,40,60,80,90,90,90,80,50,20; ...          %x
+%            10,35,45,55,75,90,90,90,80,60,42,15,10,5,5; ...    %y
+%            4,3,5,4,3,4,4,6,4,3,2,3,4,4,6]';
+% points = [18,22,35,42,55.2,60,51,42,40,30,22;...          %x
+%           41,52,55,57,56,43,40,42,31,35,34; ...    %y
+%           2.5,2.5,2.5,2.5,2.5,2.3,2.3,2.3,2.3,2.5,2.5]';
+points(:,3) = points(:,3) - 0.1;
 
 % trajectorytimestep = integrator_stepsize;
 % [p,steps,speed,ttpos] = getTrajectory(points,2,1,trajectorytimestep);
@@ -192,11 +192,12 @@ model.lb(index.s)=0;
 %% CodeOptions for FORCES solver
 codeoptions = getOptions('MPCPathFollowing'); % Need FORCES License to run
 codeoptions.maxit = 200;    % Maximum number of iterations
-codeoptions.printlevel = 0; % Use printlevel = 2 to print progress (but not for timings)
+codeoptions.printlevel = 1; % Use printlevel = 2 to print progress (but not for timings)
 codeoptions.optlevel = 2;   % 0: no optimization, 1: optimize for size, 2: optimize for speed, 3: optimize for size & speed
+%codeoptions.platform = 'x86_64';
 codeoptions.cleanup = false;
 codeoptions.timing = 1;
-
+%codeoptions.solvemethod = 'SQP_NLP';
 output = newOutput('alldata', 1:model.N, 1:model.nvar);
 
 FORCES_NLP(model, codeoptions,output); % Need FORCES License to run
